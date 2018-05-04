@@ -1,0 +1,1388 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001-2018, Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-05 15:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../howto/functional.rst:3
+msgid "Functional Programming HOWTO"
+msgstr ""
+
+#: ../../howto/functional.rst:0
+msgid "Author"
+msgstr ""
+
+#: ../../howto/functional.rst:5
+msgid "A. M. Kuchling"
+msgstr ""
+
+#: ../../howto/functional.rst:0
+msgid "Release"
+msgstr ""
+
+#: ../../howto/functional.rst:6
+msgid "0.32"
+msgstr ""
+
+#: ../../howto/functional.rst:8
+msgid ""
+"In this document, we'll take a tour of Python's features suitable for "
+"implementing programs in a functional style.  After an introduction to the "
+"concepts of functional programming, we'll look at language features such as "
+":term:`iterator`\\s and :term:`generator`\\s and relevant library modules "
+"such as :mod:`itertools` and :mod:`functools`."
+msgstr ""
+
+#: ../../howto/functional.rst:16
+msgid "Introduction"
+msgstr ""
+
+#: ../../howto/functional.rst:18
+msgid ""
+"This section explains the basic concept of functional programming; if you're"
+" just interested in learning about Python language features, skip to the "
+"next section on :ref:`functional-howto-iterators`."
+msgstr ""
+
+#: ../../howto/functional.rst:22
+msgid ""
+"Programming languages support decomposing problems in several different "
+"ways:"
+msgstr ""
+
+#: ../../howto/functional.rst:24
+msgid ""
+"Most programming languages are **procedural**: programs are lists of "
+"instructions that tell the computer what to do with the program's input.  C,"
+" Pascal, and even Unix shells are procedural languages."
+msgstr ""
+
+#: ../../howto/functional.rst:28
+msgid ""
+"In **declarative** languages, you write a specification that describes the "
+"problem to be solved, and the language implementation figures out how to "
+"perform the computation efficiently.  SQL is the declarative language you're"
+" most likely to be familiar with; a SQL query describes the data set you "
+"want to retrieve, and the SQL engine decides whether to scan tables or use "
+"indexes, which subclauses should be performed first, etc."
+msgstr ""
+
+#: ../../howto/functional.rst:35
+msgid ""
+"**Object-oriented** programs manipulate collections of objects.  Objects "
+"have internal state and support methods that query or modify this internal "
+"state in some way. Smalltalk and Java are object-oriented languages.  C++ "
+"and Python are languages that support object-oriented programming, but don't"
+" force the use of object-oriented features."
+msgstr ""
+
+#: ../../howto/functional.rst:41
+msgid ""
+"**Functional** programming decomposes a problem into a set of functions. "
+"Ideally, functions only take inputs and produce outputs, and don't have any "
+"internal state that affects the output produced for a given input.  Well-"
+"known functional languages include the ML family (Standard ML, OCaml, and "
+"other variants) and Haskell."
+msgstr ""
+
+#: ../../howto/functional.rst:47
+msgid ""
+"The designers of some computer languages choose to emphasize one particular "
+"approach to programming.  This often makes it difficult to write programs "
+"that use a different approach.  Other languages are multi-paradigm languages"
+" that support several different approaches. Lisp, C++, and Python are multi-"
+"paradigm; you can write programs or libraries that are largely procedural, "
+"object-oriented, or functional in all of these languages.  In a large "
+"program, different sections might be written using different approaches; the"
+" GUI might be object-oriented while the processing logic is procedural or "
+"functional, for example."
+msgstr ""
+
+#: ../../howto/functional.rst:58
+msgid ""
+"In a functional program, input flows through a set of functions. Each "
+"function operates on its input and produces some output.  Functional style "
+"discourages functions with side effects that modify internal state or make "
+"other changes that aren't visible in the function's return value.  Functions"
+" that have no side effects at all are called **purely functional**.  "
+"Avoiding side effects means not using data structures that get updated as a "
+"program runs; every function's output must only depend on its input."
+msgstr ""
+
+#: ../../howto/functional.rst:66
+msgid ""
+"Some languages are very strict about purity and don't even have assignment "
+"statements such as ``a=3`` or ``c = a + b``, but it's difficult to avoid all"
+" side effects.  Printing to the screen or writing to a disk file are side "
+"effects, for example.  For example, in Python a call to the :func:`print` or"
+" :func:`time.sleep` function both return no useful value; they're only "
+"called for their side effects of sending some text to the screen or pausing "
+"execution for a second."
+msgstr ""
+
+#: ../../howto/functional.rst:74
+msgid ""
+"Python programs written in functional style usually won't go to the extreme "
+"of avoiding all I/O or all assignments; instead, they'll provide a "
+"functional-appearing interface but will use non-functional features "
+"internally. For example, the implementation of a function will still use "
+"assignments to local variables, but won't modify global variables or have "
+"other side effects."
+msgstr ""
+
+#: ../../howto/functional.rst:80
+msgid ""
+"Functional programming can be considered the opposite of object-oriented "
+"programming.  Objects are little capsules containing some internal state "
+"along with a collection of method calls that let you modify this state, and "
+"programs consist of making the right set of state changes.  Functional "
+"programming wants to avoid state changes as much as possible and works with "
+"data flowing between functions.  In Python you might combine the two "
+"approaches by writing functions that take and return instances representing "
+"objects in your application (e-mail messages, transactions, etc.)."
+msgstr ""
+
+#: ../../howto/functional.rst:89
+msgid ""
+"Functional design may seem like an odd constraint to work under.  Why should"
+" you avoid objects and side effects?  There are theoretical and practical "
+"advantages to the functional style:"
+msgstr ""
+
+#: ../../howto/functional.rst:93
+msgid "Formal provability."
+msgstr ""
+
+#: ../../howto/functional.rst:94
+msgid "Modularity."
+msgstr ""
+
+#: ../../howto/functional.rst:95
+msgid "Composability."
+msgstr ""
+
+#: ../../howto/functional.rst:96
+msgid "Ease of debugging and testing."
+msgstr ""
+
+#: ../../howto/functional.rst:100
+msgid "Formal provability"
+msgstr ""
+
+#: ../../howto/functional.rst:102
+msgid ""
+"A theoretical benefit is that it's easier to construct a mathematical proof "
+"that a functional program is correct."
+msgstr ""
+
+#: ../../howto/functional.rst:105
+msgid ""
+"For a long time researchers have been interested in finding ways to "
+"mathematically prove programs correct.  This is different from testing a "
+"program on numerous inputs and concluding that its output is usually "
+"correct, or reading a program's source code and concluding that the code "
+"looks right; the goal is instead a rigorous proof that a program produces "
+"the right result for all possible inputs."
+msgstr ""
+
+#: ../../howto/functional.rst:112
+msgid ""
+"The technique used to prove programs correct is to write down "
+"**invariants**, properties of the input data and of the program's variables "
+"that are always true.  For each line of code, you then show that if "
+"invariants X and Y are true **before** the line is executed, the slightly "
+"different invariants X' and Y' are true **after** the line is executed.  "
+"This continues until you reach the end of the program, at which point the "
+"invariants should match the desired conditions on the program's output."
+msgstr ""
+
+#: ../../howto/functional.rst:120
+msgid ""
+"Functional programming's avoidance of assignments arose because assignments "
+"are difficult to handle with this technique; assignments can break "
+"invariants that were true before the assignment without producing any new "
+"invariants that can be propagated onward."
+msgstr ""
+
+#: ../../howto/functional.rst:125
+msgid ""
+"Unfortunately, proving programs correct is largely impractical and not "
+"relevant to Python software. Even trivial programs require proofs that are "
+"several pages long; the proof of correctness for a moderately complicated "
+"program would be enormous, and few or none of the programs you use daily "
+"(the Python interpreter, your XML parser, your web browser) could be proven "
+"correct.  Even if you wrote down or generated a proof, there would then be "
+"the question of verifying the proof; maybe there's an error in it, and you "
+"wrongly believe you've proved the program correct."
+msgstr ""
+
+#: ../../howto/functional.rst:136
+msgid "Modularity"
+msgstr ""
+
+#: ../../howto/functional.rst:138
+msgid ""
+"A more practical benefit of functional programming is that it forces you to "
+"break apart your problem into small pieces.  Programs are more modular as a "
+"result.  It's easier to specify and write a small function that does one "
+"thing than a large function that performs a complicated transformation.  "
+"Small functions are also easier to read and to check for errors."
+msgstr ""
+
+#: ../../howto/functional.rst:146
+msgid "Ease of debugging and testing"
+msgstr ""
+
+#: ../../howto/functional.rst:148
+msgid "Testing and debugging a functional-style program is easier."
+msgstr ""
+
+#: ../../howto/functional.rst:150
+msgid ""
+"Debugging is simplified because functions are generally small and clearly "
+"specified.  When a program doesn't work, each function is an interface point"
+" where you can check that the data are correct.  You can look at the "
+"intermediate inputs and outputs to quickly isolate the function that's "
+"responsible for a bug."
+msgstr ""
+
+#: ../../howto/functional.rst:155
+msgid ""
+"Testing is easier because each function is a potential subject for a unit "
+"test. Functions don't depend on system state that needs to be replicated "
+"before running a test; instead you only have to synthesize the right input "
+"and then check that the output matches expectations."
+msgstr ""
+
+#: ../../howto/functional.rst:162
+msgid "Composability"
+msgstr ""
+
+#: ../../howto/functional.rst:164
+msgid ""
+"As you work on a functional-style program, you'll write a number of "
+"functions with varying inputs and outputs.  Some of these functions will be "
+"unavoidably specialized to a particular application, but others will be "
+"useful in a wide variety of programs.  For example, a function that takes a "
+"directory path and returns all the XML files in the directory, or a function"
+" that takes a filename and returns its contents, can be applied to many "
+"different situations."
+msgstr ""
+
+#: ../../howto/functional.rst:171
+msgid ""
+"Over time you'll form a personal library of utilities.  Often you'll "
+"assemble new programs by arranging existing functions in a new configuration"
+" and writing a few functions specialized for the current task."
+msgstr ""
+
+#: ../../howto/functional.rst:179
+msgid "Iterators"
+msgstr ""
+
+#: ../../howto/functional.rst:181
+msgid ""
+"I'll start by looking at a Python language feature that's an important "
+"foundation for writing functional-style programs: iterators."
+msgstr ""
+
+#: ../../howto/functional.rst:184
+msgid ""
+"An iterator is an object representing a stream of data; this object returns "
+"the data one element at a time.  A Python iterator must support a method "
+"called :meth:`~iterator.__next__` that takes no arguments and always returns"
+" the next element of the stream.  If there are no more elements in the "
+"stream, :meth:`~iterator.__next__` must raise the :exc:`StopIteration` "
+"exception. Iterators don't have to be finite, though; it's perfectly "
+"reasonable to write an iterator that produces an infinite stream of data."
+msgstr ""
+
+#: ../../howto/functional.rst:192
+msgid ""
+"The built-in :func:`iter` function takes an arbitrary object and tries to "
+"return an iterator that will return the object's contents or elements, "
+"raising :exc:`TypeError` if the object doesn't support iteration.  Several "
+"of Python's built-in data types support iteration, the most common being "
+"lists and dictionaries.  An object is called :term:`iterable` if you can get"
+" an iterator for it."
+msgstr ""
+
+#: ../../howto/functional.rst:199
+msgid "You can experiment with the iteration interface manually:"
+msgstr ""
+
+#: ../../howto/functional.rst:217
+msgid ""
+"Python expects iterable objects in several different contexts, the most "
+"important being the :keyword:`for` statement.  In the statement ``for X in "
+"Y``, Y must be an iterator or some object for which :func:`iter` can create "
+"an iterator.  These two statements are equivalent::"
+msgstr ""
+
+#: ../../howto/functional.rst:229
+msgid ""
+"Iterators can be materialized as lists or tuples by using the :func:`list` "
+"or :func:`tuple` constructor functions:"
+msgstr ""
+
+#: ../../howto/functional.rst:238
+msgid ""
+"Sequence unpacking also supports iterators: if you know an iterator will "
+"return N elements, you can unpack them into an N-tuple:"
+msgstr ""
+
+#: ../../howto/functional.rst:247
+msgid ""
+"Built-in functions such as :func:`max` and :func:`min` can take a single "
+"iterator argument and will return the largest or smallest element.  The "
+"``\"in\"`` and ``\"not in\"`` operators also support iterators: ``X in "
+"iterator`` is true if X is found in the stream returned by the iterator.  "
+"You'll run into obvious problems if the iterator is infinite; :func:`max`, "
+":func:`min` will never return, and if the element X never appears in the "
+"stream, the ``\"in\"`` and ``\"not in\"`` operators won't return either."
+msgstr ""
+
+#: ../../howto/functional.rst:255
+msgid ""
+"Note that you can only go forward in an iterator; there's no way to get the "
+"previous element, reset the iterator, or make a copy of it.  Iterator "
+"objects can optionally provide these additional capabilities, but the "
+"iterator protocol only specifies the :meth:`~iterator.__next__` method.  "
+"Functions may therefore consume all of the iterator's output, and if you "
+"need to do something different with the same stream, you'll have to create a"
+" new iterator."
+msgstr ""
+
+#: ../../howto/functional.rst:265
+msgid "Data Types That Support Iterators"
+msgstr ""
+
+#: ../../howto/functional.rst:267
+msgid ""
+"We've already seen how lists and tuples support iterators.  In fact, any "
+"Python sequence type, such as strings, will automatically support creation "
+"of an iterator."
+msgstr ""
+
+#: ../../howto/functional.rst:271
+msgid ""
+"Calling :func:`iter` on a dictionary returns an iterator that will loop over"
+" the dictionary's keys::"
+msgstr ""
+
+#: ../../howto/functional.rst:291
+msgid ""
+"Note that the order is essentially random, because it's based on the hash "
+"ordering of the objects in the dictionary."
+msgstr ""
+
+#: ../../howto/functional.rst:294
+msgid ""
+"Applying :func:`iter` to a dictionary always loops over the keys, but "
+"dictionaries have methods that return other iterators.  If you want to "
+"iterate over values or key/value pairs, you can explicitly call the "
+":meth:`~dict.values` or :meth:`~dict.items` methods to get an appropriate "
+"iterator."
+msgstr ""
+
+#: ../../howto/functional.rst:300
+msgid ""
+"The :func:`dict` constructor can accept an iterator that returns a finite "
+"stream of ``(key, value)`` tuples:"
+msgstr ""
+
+#: ../../howto/functional.rst:307
+msgid ""
+"Files also support iteration by calling the :meth:`~io.TextIOBase.readline` "
+"method until there are no more lines in the file.  This means you can read "
+"each line of a file like this::"
+msgstr ""
+
+#: ../../howto/functional.rst:315
+msgid ""
+"Sets can take their contents from an iterable and let you iterate over the "
+"set's elements::"
+msgstr ""
+
+#: ../../howto/functional.rst:325
+msgid "Generator expressions and list comprehensions"
+msgstr ""
+
+#: ../../howto/functional.rst:327
+msgid ""
+"Two common operations on an iterator's output are 1) performing some "
+"operation for every element, 2) selecting a subset of elements that meet "
+"some condition. For example, given a list of strings, you might want to "
+"strip off trailing whitespace from each line or extract all the strings "
+"containing a given substring."
+msgstr ""
+
+#: ../../howto/functional.rst:333
+msgid ""
+"List comprehensions and generator expressions (short form: \"listcomps\" and"
+" \"genexps\") are a concise notation for such operations, borrowed from the "
+"functional programming language Haskell (https://www.haskell.org/).  You can"
+" strip all the whitespace from a stream of strings with the following code::"
+msgstr ""
+
+#: ../../howto/functional.rst:346
+msgid "You can select only certain elements by adding an ``\"if\"`` condition::"
+msgstr ""
+
+#: ../../howto/functional.rst:351
+msgid ""
+"With a list comprehension, you get back a Python list; ``stripped_list`` is "
+"a list containing the resulting lines, not an iterator.  Generator "
+"expressions return an iterator that computes the values as necessary, not "
+"needing to materialize all the values at once.  This means that list "
+"comprehensions aren't useful if you're working with iterators that return an"
+" infinite stream or a very large amount of data.  Generator expressions are "
+"preferable in these situations."
+msgstr ""
+
+#: ../../howto/functional.rst:358
+msgid ""
+"Generator expressions are surrounded by parentheses (\"()\") and list "
+"comprehensions are surrounded by square brackets (\"[]\").  Generator "
+"expressions have the form::"
+msgstr ""
+
+#: ../../howto/functional.rst:371
+msgid ""
+"Again, for a list comprehension only the outside brackets are different "
+"(square brackets instead of parentheses)."
+msgstr ""
+
+#: ../../howto/functional.rst:374
+msgid ""
+"The elements of the generated output will be the successive values of "
+"``expression``.  The ``if`` clauses are all optional; if present, "
+"``expression`` is only evaluated and added to the result when ``condition`` "
+"is true."
+msgstr ""
+
+#: ../../howto/functional.rst:378
+msgid ""
+"Generator expressions always have to be written inside parentheses, but the "
+"parentheses signalling a function call also count.  If you want to create an"
+" iterator that will be immediately passed to a function you can write::"
+msgstr ""
+
+#: ../../howto/functional.rst:384
+msgid ""
+"The ``for...in`` clauses contain the sequences to be iterated over.  The "
+"sequences do not have to be the same length, because they are iterated over "
+"from left to right, **not** in parallel.  For each element in ``sequence1``,"
+" ``sequence2`` is looped over from the beginning.  ``sequence3`` is then "
+"looped over for each resulting pair of elements from ``sequence1`` and "
+"``sequence2``."
+msgstr ""
+
+#: ../../howto/functional.rst:390
+msgid ""
+"To put it another way, a list comprehension or generator expression is "
+"equivalent to the following Python code::"
+msgstr ""
+
+#: ../../howto/functional.rst:407
+msgid ""
+"This means that when there are multiple ``for...in`` clauses but no ``if`` "
+"clauses, the length of the resulting output will be equal to the product of "
+"the lengths of all the sequences.  If you have two lists of length 3, the "
+"output list is 9 elements long:"
+msgstr ""
+
+#: ../../howto/functional.rst:419
+msgid ""
+"To avoid introducing an ambiguity into Python's grammar, if ``expression`` "
+"is creating a tuple, it must be surrounded with parentheses.  The first list"
+" comprehension below is a syntax error, while the second one is correct::"
+msgstr ""
+
+#: ../../howto/functional.rst:430
+msgid "Generators"
+msgstr ""
+
+#: ../../howto/functional.rst:432
+msgid ""
+"Generators are a special class of functions that simplify the task of "
+"writing iterators.  Regular functions compute a value and return it, but "
+"generators return an iterator that returns a stream of values."
+msgstr ""
+
+#: ../../howto/functional.rst:436
+msgid ""
+"You're doubtless familiar with how regular function calls work in Python or "
+"C. When you call a function, it gets a private namespace where its local "
+"variables are created.  When the function reaches a ``return`` statement, "
+"the local variables are destroyed and the value is returned to the caller.  "
+"A later call to the same function creates a new private namespace and a "
+"fresh set of local variables. But, what if the local variables weren't "
+"thrown away on exiting a function?  What if you could later resume the "
+"function where it left off?  This is what generators provide; they can be "
+"thought of as resumable functions."
+msgstr ""
+
+#: ../../howto/functional.rst:445
+msgid "Here's the simplest example of a generator function:"
+msgstr ""
+
+#: ../../howto/functional.rst:451
+msgid ""
+"Any function containing a :keyword:`yield` keyword is a generator function; "
+"this is detected by Python's :term:`bytecode` compiler which compiles the "
+"function specially as a result."
+msgstr ""
+
+#: ../../howto/functional.rst:455
+msgid ""
+"When you call a generator function, it doesn't return a single value; "
+"instead it returns a generator object that supports the iterator protocol.  "
+"On executing the ``yield`` expression, the generator outputs the value of "
+"``i``, similar to a ``return`` statement.  The big difference between "
+"``yield`` and a ``return`` statement is that on reaching a ``yield`` the "
+"generator's state of execution is suspended and local variables are "
+"preserved.  On the next call to the generator's :meth:`~generator.__next__` "
+"method, the function will resume executing."
+msgstr ""
+
+#: ../../howto/functional.rst:464
+msgid "Here's a sample usage of the ``generate_ints()`` generator:"
+msgstr ""
+
+#: ../../howto/functional.rst:481
+msgid ""
+"You could equally write ``for i in generate_ints(5)``, or ``a,b,c = "
+"generate_ints(3)``."
+msgstr ""
+
+#: ../../howto/functional.rst:484
+msgid ""
+"Inside a generator function, ``return value`` causes "
+"``StopIteration(value)`` to be raised from the :meth:`~generator.__next__` "
+"method.  Once this happens, or the bottom of the function is reached, the "
+"procession of values ends and the generator cannot yield any further values."
+msgstr ""
+
+#: ../../howto/functional.rst:489
+msgid ""
+"You could achieve the effect of generators manually by writing your own "
+"class and storing all the local variables of the generator as instance "
+"variables.  For example, returning a list of integers could be done by "
+"setting ``self.count`` to 0, and having the :meth:`~iterator.__next__` "
+"method increment ``self.count`` and return it. However, for a moderately "
+"complicated generator, writing a corresponding class can be much messier."
+msgstr ""
+
+#: ../../howto/functional.rst:497
+msgid ""
+"The test suite included with Python's library, "
+":source:`Lib/test/test_generators.py`, contains a number of more interesting"
+" examples.  Here's one generator that implements an in-order traversal of a "
+"tree using generators recursively. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:513
+msgid ""
+"Two other examples in ``test_generators.py`` produce solutions for the "
+"N-Queens problem (placing N queens on an NxN chess board so that no queen "
+"threatens another) and the Knight's Tour (finding a route that takes a "
+"knight to every square of an NxN chessboard without visiting any square "
+"twice)."
+msgstr ""
+
+#: ../../howto/functional.rst:521
+msgid "Passing values into a generator"
+msgstr ""
+
+#: ../../howto/functional.rst:523
+msgid ""
+"In Python 2.4 and earlier, generators only produced output.  Once a "
+"generator's code was invoked to create an iterator, there was no way to pass"
+" any new information into the function when its execution is resumed.  You "
+"could hack together this ability by making the generator look at a global "
+"variable or by passing in some mutable object that callers then modify, but "
+"these approaches are messy."
+msgstr ""
+
+#: ../../howto/functional.rst:530
+msgid ""
+"In Python 2.5 there's a simple way to pass values into a generator. "
+":keyword:`yield` became an expression, returning a value that can be "
+"assigned to a variable or otherwise operated on::"
+msgstr ""
+
+#: ../../howto/functional.rst:536
+msgid ""
+"I recommend that you **always** put parentheses around a ``yield`` "
+"expression when you're doing something with the returned value, as in the "
+"above example. The parentheses aren't always necessary, but it's easier to "
+"always add them instead of having to remember when they're needed."
+msgstr ""
+
+#: ../../howto/functional.rst:541
+msgid ""
+"(:pep:`342` explains the exact rules, which are that a ``yield``-expression "
+"must always be parenthesized except when it occurs at the top-level "
+"expression on the right-hand side of an assignment.  This means you can "
+"write ``val = yield i`` but have to use parentheses when there's an "
+"operation, as in ``val = (yield i) + 12``.)"
+msgstr ""
+
+#: ../../howto/functional.rst:547
+msgid ""
+"Values are sent into a generator by calling its :meth:`send(value) "
+"<generator.send>` method.  This method resumes the generator's code and the "
+"``yield`` expression returns the specified value.  If the regular "
+":meth:`~generator.__next__` method is called, the ``yield`` returns "
+"``None``."
+msgstr ""
+
+#: ../../howto/functional.rst:552
+msgid ""
+"Here's a simple counter that increments by 1 and allows changing the value "
+"of the internal counter."
+msgstr ""
+
+#: ../../howto/functional.rst:567
+msgid "And here's an example of changing the counter:"
+msgstr ""
+
+#: ../../howto/functional.rst:584
+msgid ""
+"Because ``yield`` will often be returning ``None``, you should always check "
+"for this case.  Don't just use its value in expressions unless you're sure "
+"that the :meth:`~generator.send` method will be the only method used to "
+"resume your generator function."
+msgstr ""
+
+#: ../../howto/functional.rst:589
+msgid ""
+"In addition to :meth:`~generator.send`, there are two other methods on "
+"generators:"
+msgstr ""
+
+#: ../../howto/functional.rst:592
+msgid ""
+":meth:`throw(type, value=None, traceback=None) <generator.throw>` is used to"
+" raise an exception inside the generator; the exception is raised by the "
+"``yield`` expression where the generator's execution is paused."
+msgstr ""
+
+#: ../../howto/functional.rst:596
+msgid ""
+":meth:`~generator.close` raises a :exc:`GeneratorExit` exception inside the "
+"generator to terminate the iteration.  On receiving this exception, the "
+"generator's code must either raise :exc:`GeneratorExit` or "
+":exc:`StopIteration`; catching the exception and doing anything else is "
+"illegal and will trigger a :exc:`RuntimeError`.  :meth:`~generator.close` "
+"will also be called by Python's garbage collector when the generator is "
+"garbage-collected."
+msgstr ""
+
+#: ../../howto/functional.rst:604
+msgid ""
+"If you need to run cleanup code when a :exc:`GeneratorExit` occurs, I "
+"suggest using a ``try: ... finally:`` suite instead of catching "
+":exc:`GeneratorExit`."
+msgstr ""
+
+#: ../../howto/functional.rst:607
+msgid ""
+"The cumulative effect of these changes is to turn generators from one-way "
+"producers of information into both producers and consumers."
+msgstr ""
+
+#: ../../howto/functional.rst:610
+msgid ""
+"Generators also become **coroutines**, a more generalized form of "
+"subroutines. Subroutines are entered at one point and exited at another "
+"point (the top of the function, and a ``return`` statement), but coroutines "
+"can be entered, exited, and resumed at many different points (the ``yield`` "
+"statements)."
+msgstr ""
+
+#: ../../howto/functional.rst:617
+msgid "Built-in functions"
+msgstr ""
+
+#: ../../howto/functional.rst:619
+msgid ""
+"Let's look in more detail at built-in functions often used with iterators."
+msgstr ""
+
+#: ../../howto/functional.rst:621
+msgid ""
+"Two of Python's built-in functions, :func:`map` and :func:`filter` duplicate"
+" the features of generator expressions:"
+msgstr ""
+
+#: ../../howto/functional.rst:633
+msgid ""
+":func:`map(f, iterA, iterB, ...) <map>` returns an iterator over the "
+"sequence"
+msgstr ""
+
+#: ../../howto/functional.rst:625
+msgid ""
+"``f(iterA[0], iterB[0]), f(iterA[1], iterB[1]), f(iterA[2], iterB[2]), "
+"...``."
+msgstr ""
+
+#: ../../howto/functional.rst:635
+msgid "You can of course achieve the same effect with a list comprehension."
+msgstr ""
+
+#: ../../howto/functional.rst:637
+msgid ""
+":func:`filter(predicate, iter) <filter>` returns an iterator over all the "
+"sequence elements that meet a certain condition, and is similarly duplicated"
+" by list comprehensions.  A **predicate** is a function that returns the "
+"truth value of some condition; for use with :func:`filter`, the predicate "
+"must take a single value."
+msgstr ""
+
+#: ../../howto/functional.rst:650
+msgid "This can also be written as a list comprehension:"
+msgstr ""
+
+#: ../../howto/functional.rst:656
+msgid ""
+":func:`enumerate(iter, start=0) <enumerate>` counts off the elements in the "
+"iterable returning 2-tuples containing the count (from *start*) and each "
+"element. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:666
+msgid ""
+":func:`enumerate` is often used when looping through a list and recording "
+"the indexes at which certain conditions are met::"
+msgstr ""
+
+#: ../../howto/functional.rst:674
+msgid ""
+":func:`sorted(iterable, key=None, reverse=False) <sorted>` collects all the "
+"elements of the iterable into a list, sorts the list, and returns the sorted"
+" result.  The *key* and *reverse* arguments are passed through to the "
+"constructed list's :meth:`~list.sort` method. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:689
+msgid ""
+"(For a more detailed discussion of sorting, see the :ref:`sortinghowto`.)"
+msgstr ""
+
+#: ../../howto/functional.rst:692
+msgid ""
+"The :func:`any(iter) <any>` and :func:`all(iter) <all>` built-ins look at "
+"the truth values of an iterable's contents.  :func:`any` returns ``True`` if"
+" any element in the iterable is a true value, and :func:`all` returns "
+"``True`` if all of the elements are true values:"
+msgstr ""
+
+#: ../../howto/functional.rst:711
+msgid ""
+":func:`zip(iterA, iterB, ...) <zip>` takes one element from each iterable "
+"and returns them in a tuple::"
+msgstr ""
+
+#: ../../howto/functional.rst:717
+msgid ""
+"It doesn't construct an in-memory list and exhaust all the input iterators "
+"before returning; instead tuples are constructed and returned only if "
+"they're requested.  (The technical term for this behaviour is `lazy "
+"evaluation <https://en.wikipedia.org/wiki/Lazy_evaluation>`__.)"
+msgstr ""
+
+#: ../../howto/functional.rst:722
+msgid ""
+"This iterator is intended to be used with iterables that are all of the same"
+" length.  If the iterables are of different lengths, the resulting stream "
+"will be the same length as the shortest iterable. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:729
+msgid ""
+"You should avoid doing this, though, because an element may be taken from "
+"the longer iterators and discarded.  This means you can't go on to use the "
+"iterators further because you risk skipping a discarded element."
+msgstr ""
+
+#: ../../howto/functional.rst:735
+msgid "The itertools module"
+msgstr ""
+
+#: ../../howto/functional.rst:737
+msgid ""
+"The :mod:`itertools` module contains a number of commonly-used iterators as "
+"well as functions for combining several iterators.  This section will "
+"introduce the module's contents by showing small examples."
+msgstr ""
+
+#: ../../howto/functional.rst:741
+msgid "The module's functions fall into a few broad classes:"
+msgstr ""
+
+#: ../../howto/functional.rst:743
+msgid "Functions that create a new iterator based on an existing iterator."
+msgstr ""
+
+#: ../../howto/functional.rst:744
+msgid "Functions for treating an iterator's elements as function arguments."
+msgstr ""
+
+#: ../../howto/functional.rst:745
+msgid "Functions for selecting portions of an iterator's output."
+msgstr ""
+
+#: ../../howto/functional.rst:746
+msgid "A function for grouping an iterator's output."
+msgstr ""
+
+#: ../../howto/functional.rst:749
+msgid "Creating new iterators"
+msgstr ""
+
+#: ../../howto/functional.rst:751
+msgid ""
+":func:`itertools.count(start, step) <itertools.count>` returns an infinite "
+"stream of evenly spaced values.  You can optionally supply the starting "
+"number, which defaults to 0, and the interval between numbers, which "
+"defaults to 1::"
+msgstr ""
+
+#: ../../howto/functional.rst:762
+msgid ""
+":func:`itertools.cycle(iter) <itertools.cycle>` saves a copy of the contents"
+" of a provided iterable and returns a new iterator that returns its elements"
+" from first to last.  The new iterator will repeat these elements "
+"infinitely. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:769
+msgid ""
+":func:`itertools.repeat(elem, [n]) <itertools.repeat>` returns the provided "
+"element *n* times, or returns the element endlessly if *n* is not provided. "
+"::"
+msgstr ""
+
+#: ../../howto/functional.rst:777
+msgid ""
+":func:`itertools.chain(iterA, iterB, ...) <itertools.chain>` takes an "
+"arbitrary number of iterables as input, and returns all the elements of the "
+"first iterator, then all the elements of the second, and so on, until all of"
+" the iterables have been exhausted. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:785
+msgid ""
+":func:`itertools.islice(iter, [start], stop, [step]) <itertools.islice>` "
+"returns a stream that's a slice of the iterator.  With a single *stop* "
+"argument, it will return the first *stop* elements.  If you supply a "
+"starting index, you'll get *stop-start* elements, and if you supply a value "
+"for *step*, elements will be skipped accordingly.  Unlike Python's string "
+"and list slicing, you can't use negative values for *start*, *stop*, or "
+"*step*. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:799
+msgid ""
+":func:`itertools.tee(iter, [n]) <itertools.tee>` replicates an iterator; it "
+"returns *n* independent iterators that will all return the contents of the "
+"source iterator. If you don't supply a value for *n*, the default is 2.  "
+"Replicating iterators requires saving some of the contents of the source "
+"iterator, so this can consume significant memory if the iterator is large "
+"and one of the new iterators is consumed more than the others. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:818
+msgid "Calling functions on elements"
+msgstr ""
+
+#: ../../howto/functional.rst:820
+msgid ""
+"The :mod:`operator` module contains a set of functions corresponding to "
+"Python's operators.  Some examples are :func:`operator.add(a, b) "
+"<operator.add>` (adds two values), :func:`operator.ne(a, b)  <operator.ne>` "
+"(same as ``a != b``), and :func:`operator.attrgetter('id') "
+"<operator.attrgetter>` (returns a callable that fetches the ``.id`` "
+"attribute)."
+msgstr ""
+
+#: ../../howto/functional.rst:826
+msgid ""
+":func:`itertools.starmap(func, iter) <itertools.starmap>` assumes that the "
+"iterable will return a stream of tuples, and calls *func* using these tuples"
+" as the arguments::"
+msgstr ""
+
+#: ../../howto/functional.rst:838
+msgid "Selecting elements"
+msgstr ""
+
+#: ../../howto/functional.rst:840
+msgid ""
+"Another group of functions chooses a subset of an iterator's elements based "
+"on a predicate."
+msgstr ""
+
+#: ../../howto/functional.rst:843
+msgid ""
+":func:`itertools.filterfalse(predicate, iter) <itertools.filterfalse>` is "
+"the opposite of :func:`filter`, returning all elements for which the "
+"predicate returns false::"
+msgstr ""
+
+#: ../../howto/functional.rst:850
+msgid ""
+":func:`itertools.takewhile(predicate, iter) <itertools.takewhile>` returns "
+"elements for as long as the predicate returns true.  Once the predicate "
+"returns false, the iterator will signal the end of its results. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:863
+msgid ""
+":func:`itertools.dropwhile(predicate, iter) <itertools.dropwhile>` discards "
+"elements while the predicate returns true, and then returns the rest of the "
+"iterable's results. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:873
+msgid ""
+":func:`itertools.compress(data, selectors) <itertools.compress>` takes two "
+"iterators and returns only those elements of *data* for which the "
+"corresponding element of *selectors* is true, stopping whenever either one "
+"is exhausted::"
+msgstr ""
+
+#: ../../howto/functional.rst:882
+msgid "Combinatoric functions"
+msgstr ""
+
+#: ../../howto/functional.rst:884
+msgid ""
+"The :func:`itertools.combinations(iterable, r) <itertools.combinations>` "
+"returns an iterator giving all possible *r*-tuple combinations of the "
+"elements contained in *iterable*.  ::"
+msgstr ""
+
+#: ../../howto/functional.rst:899
+msgid ""
+"The elements within each tuple remain in the same order as *iterable* "
+"returned them.  For example, the number 1 is always before 2, 3, 4, or 5 in "
+"the examples above.  A similar function, "
+":func:`itertools.permutations(iterable, r=None) <itertools.permutations>`, "
+"removes this constraint on the order, returning all possible arrangements of"
+" length *r*::"
+msgstr ""
+
+#: ../../howto/functional.rst:918
+msgid ""
+"If you don't supply a value for *r* the length of the iterable is used, "
+"meaning that all the elements are permuted."
+msgstr ""
+
+#: ../../howto/functional.rst:921
+msgid ""
+"Note that these functions produce all of the possible combinations by "
+"position and don't require that the contents of *iterable* are unique::"
+msgstr ""
+
+#: ../../howto/functional.rst:928
+msgid ""
+"The identical tuple ``('a', 'a', 'b')`` occurs twice, but the two 'a' "
+"strings came from different positions."
+msgstr ""
+
+#: ../../howto/functional.rst:931
+msgid ""
+"The :func:`itertools.combinations_with_replacement(iterable, r) "
+"<itertools.combinations_with_replacement>` function relaxes a different "
+"constraint: elements can be repeated within a single tuple.  Conceptually an"
+" element is selected for the first position of each tuple and then is "
+"replaced before the second element is selected.  ::"
+msgstr ""
+
+#: ../../howto/functional.rst:946
+msgid "Grouping elements"
+msgstr ""
+
+#: ../../howto/functional.rst:948
+msgid ""
+"The last function I'll discuss, :func:`itertools.groupby(iter, "
+"key_func=None) <itertools.groupby>`, is the most complicated.  "
+"``key_func(elem)`` is a function that can compute a key value for each "
+"element returned by the iterable.  If you don't supply a key function, the "
+"key is simply each element itself."
+msgstr ""
+
+#: ../../howto/functional.rst:953
+msgid ""
+":func:`~itertools.groupby` collects all the consecutive elements from the "
+"underlying iterable that have the same key value, and returns a stream of "
+"2-tuples containing a key value and an iterator for the elements with that "
+"key."
+msgstr ""
+
+#: ../../howto/functional.rst:981
+msgid ""
+":func:`~itertools.groupby` assumes that the underlying iterable's contents "
+"will already be sorted based on the key.  Note that the returned iterators "
+"also use the underlying iterable, so you have to consume the results of "
+"iterator-1 before requesting iterator-2 and its corresponding key."
+msgstr ""
+
+#: ../../howto/functional.rst:988
+msgid "The functools module"
+msgstr ""
+
+#: ../../howto/functional.rst:990
+msgid ""
+"The :mod:`functools` module in Python 2.5 contains some higher-order "
+"functions. A **higher-order function** takes one or more functions as input "
+"and returns a new function.  The most useful tool in this module is the "
+":func:`functools.partial` function."
+msgstr ""
+
+#: ../../howto/functional.rst:995
+msgid ""
+"For programs written in a functional style, you'll sometimes want to "
+"construct variants of existing functions that have some of the parameters "
+"filled in. Consider a Python function ``f(a, b, c)``; you may wish to create"
+" a new function ``g(b, c)`` that's equivalent to ``f(1, b, c)``; you're "
+"filling in a value for one of ``f()``'s parameters.  This is called "
+"\"partial function application\"."
+msgstr ""
+
+#: ../../howto/functional.rst:1001
+msgid ""
+"The constructor for :func:`~functools.partial` takes the arguments "
+"``(function, arg1, arg2, ..., kwarg1=value1, kwarg2=value2)``.  The "
+"resulting object is callable, so you can just call it to invoke ``function``"
+" with the filled-in arguments."
+msgstr ""
+
+#: ../../howto/functional.rst:1006
+msgid "Here's a small but realistic example::"
+msgstr ""
+
+#: ../../howto/functional.rst:1018
+msgid ""
+":func:`functools.reduce(func, iter, [initial_value]) <functools.reduce>` "
+"cumulatively performs an operation on all the iterable's elements and, "
+"therefore, can't be applied to infinite iterables. *func* must be a function"
+" that takes two elements and returns a single value.  "
+":func:`functools.reduce` takes the first two elements A and B returned by "
+"the iterator and calculates ``func(A, B)``.  It then requests the third "
+"element, C, calculates ``func(func(A, B), C)``, combines this result with "
+"the fourth element returned, and continues until the iterable is exhausted."
+"  If the iterable returns no values at all, a :exc:`TypeError` exception is "
+"raised.  If the initial value is supplied, it's used as a starting point and"
+" ``func(initial_value, A)`` is the first calculation. ::"
+msgstr ""
+
+#: ../../howto/functional.rst:1042
+msgid ""
+"If you use :func:`operator.add` with :func:`functools.reduce`, you'll add up"
+" all the elements of the iterable.  This case is so common that there's a "
+"special built-in called :func:`sum` to compute it:"
+msgstr ""
+
+#: ../../howto/functional.rst:1054
+msgid ""
+"For many uses of :func:`functools.reduce`, though, it can be clearer to just"
+" write the obvious :keyword:`for` loop::"
+msgstr ""
+
+#: ../../howto/functional.rst:1066
+msgid ""
+"A related function is :func:`itertools.accumulate(iterable, "
+"func=operator.add) <itertools.accumulate>`.  It performs the same "
+"calculation, but instead of returning only the final result, "
+":func:`accumulate` returns an iterator that also yields each partial "
+"result::"
+msgstr ""
+
+#: ../../howto/functional.rst:1079
+msgid "The operator module"
+msgstr ""
+
+#: ../../howto/functional.rst:1081
+msgid ""
+"The :mod:`operator` module was mentioned earlier.  It contains a set of "
+"functions corresponding to Python's operators.  These functions are often "
+"useful in functional-style code because they save you from writing trivial "
+"functions that perform a single operation."
+msgstr ""
+
+#: ../../howto/functional.rst:1086
+msgid "Some of the functions in this module are:"
+msgstr ""
+
+#: ../../howto/functional.rst:1088
+msgid ""
+"Math operations: ``add()``, ``sub()``, ``mul()``, ``floordiv()``, ``abs()``,"
+" ..."
+msgstr ""
+
+#: ../../howto/functional.rst:1089
+msgid "Logical operations: ``not_()``, ``truth()``."
+msgstr ""
+
+#: ../../howto/functional.rst:1090
+msgid "Bitwise operations: ``and_()``, ``or_()``, ``invert()``."
+msgstr ""
+
+#: ../../howto/functional.rst:1091
+msgid ""
+"Comparisons: ``eq()``, ``ne()``, ``lt()``, ``le()``, ``gt()``, and ``ge()``."
+msgstr ""
+
+#: ../../howto/functional.rst:1092
+msgid "Object identity: ``is_()``, ``is_not()``."
+msgstr ""
+
+#: ../../howto/functional.rst:1094
+msgid "Consult the operator module's documentation for a complete list."
+msgstr ""
+
+#: ../../howto/functional.rst:1098
+msgid "Small functions and the lambda expression"
+msgstr ""
+
+#: ../../howto/functional.rst:1100
+msgid ""
+"When writing functional-style programs, you'll often need little functions "
+"that act as predicates or that combine elements in some way."
+msgstr ""
+
+#: ../../howto/functional.rst:1103
+msgid ""
+"If there's a Python built-in or a module function that's suitable, you don't"
+" need to define a new function at all::"
+msgstr ""
+
+#: ../../howto/functional.rst:1109
+msgid ""
+"If the function you need doesn't exist, you need to write it.  One way to "
+"write small functions is to use the :keyword:`lambda` statement.  ``lambda``"
+" takes a number of parameters and an expression combining these parameters, "
+"and creates an anonymous function that returns the value of the expression::"
+msgstr ""
+
+#: ../../howto/functional.rst:1118
+msgid ""
+"An alternative is to just use the ``def`` statement and define a function in"
+" the usual way::"
+msgstr ""
+
+#: ../../howto/functional.rst:1127
+msgid ""
+"Which alternative is preferable?  That's a style question; my usual course "
+"is to avoid using ``lambda``."
+msgstr ""
+
+#: ../../howto/functional.rst:1130
+msgid ""
+"One reason for my preference is that ``lambda`` is quite limited in the "
+"functions it can define.  The result has to be computable as a single "
+"expression, which means you can't have multiway ``if... elif... else`` "
+"comparisons or ``try... except`` statements.  If you try to do too much in a"
+" ``lambda`` statement, you'll end up with an overly complicated expression "
+"that's hard to read.  Quick, what's the following code doing? ::"
+msgstr ""
+
+#: ../../howto/functional.rst:1140
+msgid ""
+"You can figure it out, but it takes time to disentangle the expression to "
+"figure out what's going on.  Using a short nested ``def`` statements makes "
+"things a little bit better::"
+msgstr ""
+
+#: ../../howto/functional.rst:1150
+msgid "But it would be best of all if I had simply used a ``for`` loop::"
+msgstr ""
+
+#: ../../howto/functional.rst:1156
+msgid "Or the :func:`sum` built-in and a generator expression::"
+msgstr ""
+
+#: ../../howto/functional.rst:1160
+msgid ""
+"Many uses of :func:`functools.reduce` are clearer when written as ``for`` "
+"loops."
+msgstr ""
+
+#: ../../howto/functional.rst:1162
+msgid ""
+"Fredrik Lundh once suggested the following set of rules for refactoring uses"
+" of ``lambda``:"
+msgstr ""
+
+#: ../../howto/functional.rst:1165
+msgid "Write a lambda function."
+msgstr ""
+
+#: ../../howto/functional.rst:1166
+msgid "Write a comment explaining what the heck that lambda does."
+msgstr ""
+
+#: ../../howto/functional.rst:1167
+msgid ""
+"Study the comment for a while, and think of a name that captures the essence"
+" of the comment."
+msgstr ""
+
+#: ../../howto/functional.rst:1169
+msgid "Convert the lambda to a def statement, using that name."
+msgstr ""
+
+#: ../../howto/functional.rst:1170
+msgid "Remove the comment."
+msgstr ""
+
+#: ../../howto/functional.rst:1172
+msgid ""
+"I really like these rules, but you're free to disagree about whether this "
+"lambda-free style is better."
+msgstr ""
+
+#: ../../howto/functional.rst:1177
+msgid "Revision History and Acknowledgements"
+msgstr ""
+
+#: ../../howto/functional.rst:1179
+msgid ""
+"The author would like to thank the following people for offering "
+"suggestions, corrections and assistance with various drafts of this article:"
+" Ian Bicking, Nick Coghlan, Nick Efford, Raymond Hettinger, Jim Jewett, Mike"
+" Krell, Leandro Lameiro, Jussi Salmela, Collin Winter, Blake Winton."
+msgstr ""
+
+#: ../../howto/functional.rst:1184
+msgid "Version 0.1: posted June 30 2006."
+msgstr ""
+
+#: ../../howto/functional.rst:1186
+msgid "Version 0.11: posted July 1 2006.  Typo fixes."
+msgstr ""
+
+#: ../../howto/functional.rst:1188
+msgid ""
+"Version 0.2: posted July 10 2006.  Merged genexp and listcomp sections into "
+"one. Typo fixes."
+msgstr ""
+
+#: ../../howto/functional.rst:1191
+msgid ""
+"Version 0.21: Added more references suggested on the tutor mailing list."
+msgstr ""
+
+#: ../../howto/functional.rst:1193
+msgid ""
+"Version 0.30: Adds a section on the ``functional`` module written by Collin "
+"Winter; adds short section on the operator module; a few other edits."
+msgstr ""
+
+#: ../../howto/functional.rst:1198
+msgid "References"
+msgstr ""
+
+#: ../../howto/functional.rst:1201
+msgid "General"
+msgstr ""
+
+#: ../../howto/functional.rst:1203
+msgid ""
+"**Structure and Interpretation of Computer Programs**, by Harold Abelson and"
+" Gerald Jay Sussman with Julie Sussman.  Full text at "
+"https://mitpress.mit.edu/sicp/.  In this classic textbook of computer "
+"science, chapters 2 and 3 discuss the use of sequences and streams to "
+"organize the data flow inside a program.  The book uses Scheme for its "
+"examples, but many of the design approaches described in these chapters are "
+"applicable to functional-style Python code."
+msgstr ""
+
+#: ../../howto/functional.rst:1211
+msgid ""
+"http://www.defmacro.org/ramblings/fp.html: A general introduction to "
+"functional programming that uses Java examples and has a lengthy historical "
+"introduction."
+msgstr ""
+
+#: ../../howto/functional.rst:1214
+msgid ""
+"https://en.wikipedia.org/wiki/Functional_programming: General Wikipedia "
+"entry describing functional programming."
+msgstr ""
+
+#: ../../howto/functional.rst:1217
+msgid "https://en.wikipedia.org/wiki/Coroutine: Entry for coroutines."
+msgstr ""
+
+#: ../../howto/functional.rst:1219
+msgid ""
+"https://en.wikipedia.org/wiki/Currying: Entry for the concept of currying."
+msgstr ""
+
+#: ../../howto/functional.rst:1222
+msgid "Python-specific"
+msgstr ""
+
+#: ../../howto/functional.rst:1224
+msgid ""
+"http://gnosis.cx/TPiP/: The first chapter of David Mertz's book :title-"
+"reference:`Text Processing in Python` discusses functional programming for "
+"text processing, in the section titled \"Utilizing Higher-Order Functions in"
+" Text Processing\"."
+msgstr ""
+
+#: ../../howto/functional.rst:1229
+msgid ""
+"Mertz also wrote a 3-part series of articles on functional programming for "
+"IBM's DeveloperWorks site; see `part 1 "
+"<https://www.ibm.com/developerworks/linux/library/l-prog/index.html>`__, "
+"`part 2 "
+"<https://www.ibm.com/developerworks/linux/library/l-prog2/index.html>`__, "
+"and `part 3 "
+"<https://www.ibm.com/developerworks/linux/library/l-prog3/index.html>`__,"
+msgstr ""
+
+#: ../../howto/functional.rst:1237
+msgid "Python documentation"
+msgstr ""
+
+#: ../../howto/functional.rst:1239
+msgid "Documentation for the :mod:`itertools` module."
+msgstr ""
+
+#: ../../howto/functional.rst:1241
+msgid "Documentation for the :mod:`functools` module."
+msgstr ""
+
+#: ../../howto/functional.rst:1243
+msgid "Documentation for the :mod:`operator` module."
+msgstr ""
+
+#: ../../howto/functional.rst:1245
+msgid ":pep:`289`: \"Generator Expressions\""
+msgstr ""
+
+#: ../../howto/functional.rst:1247
+msgid ""
+":pep:`342`: \"Coroutines via Enhanced Generators\" describes the new "
+"generator features in Python 2.5."
+msgstr ""

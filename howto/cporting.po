@@ -1,0 +1,194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001-2018, Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-05 15:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../howto/cporting.rst:7
+msgid "Porting Extension Modules to Python 3"
+msgstr ""
+
+#: ../../howto/cporting.rst:0
+msgid "author"
+msgstr ""
+
+#: ../../howto/cporting.rst:9
+msgid "Benjamin Peterson"
+msgstr ""
+
+#: ../../howto/cporting.rst:14
+msgid ""
+"Although changing the C-API was not one of Python 3's objectives, the many "
+"Python-level changes made leaving Python 2's API intact impossible.  In "
+"fact, some changes such as :func:`int` and :func:`long` unification are more"
+" obvious on the C level.  This document endeavors to document "
+"incompatibilities and how they can be worked around."
+msgstr ""
+
+#: ../../howto/cporting.rst:23
+msgid "Conditional compilation"
+msgstr ""
+
+#: ../../howto/cporting.rst:25
+msgid ""
+"The easiest way to compile only some code for Python 3 is to check if "
+":c:macro:`PY_MAJOR_VERSION` is greater than or equal to 3. ::"
+msgstr ""
+
+#: ../../howto/cporting.rst:32
+msgid ""
+"API functions that are not present can be aliased to their equivalents "
+"within conditional blocks."
+msgstr ""
+
+#: ../../howto/cporting.rst:37
+msgid "Changes to Object APIs"
+msgstr ""
+
+#: ../../howto/cporting.rst:39
+msgid ""
+"Python 3 merged together some types with similar functions while cleanly "
+"separating others."
+msgstr ""
+
+#: ../../howto/cporting.rst:44
+msgid "str/unicode Unification"
+msgstr ""
+
+#: ../../howto/cporting.rst:46
+msgid ""
+"Python 3's :func:`str` type is equivalent to Python 2's :func:`unicode`; the"
+" C functions are called ``PyUnicode_*`` for both.  The old 8-bit string type"
+" has become :func:`bytes`, with C functions called ``PyBytes_*``.  Python "
+"2.6 and later provide a compatibility header, :file:`bytesobject.h`, mapping"
+" ``PyBytes`` names to ``PyString`` ones.  For best compatibility with Python"
+" 3, :c:type:`PyUnicode` should be used for textual data and "
+":c:type:`PyBytes` for binary data.  It's also important to remember that "
+":c:type:`PyBytes` and :c:type:`PyUnicode` in Python 3 are not "
+"interchangeable like :c:type:`PyString` and :c:type:`PyUnicode` are in "
+"Python 2.  The following example shows best practices with regards to "
+":c:type:`PyUnicode`, :c:type:`PyString`, and :c:type:`PyBytes`. ::"
+msgstr ""
+
+#: ../../howto/cporting.rst:95
+msgid "long/int Unification"
+msgstr ""
+
+#: ../../howto/cporting.rst:97
+msgid ""
+"Python 3 has only one integer type, :func:`int`.  But it actually "
+"corresponds to Python 2's :func:`long` type—the :func:`int` type used in "
+"Python 2 was removed.  In the C-API, ``PyInt_*`` functions are replaced by "
+"their ``PyLong_*`` equivalents."
+msgstr ""
+
+#: ../../howto/cporting.rst:104
+msgid "Module initialization and state"
+msgstr ""
+
+#: ../../howto/cporting.rst:106
+msgid ""
+"Python 3 has a revamped extension module initialization system.  (See "
+":pep:`3121`.)  Instead of storing module state in globals, they should be "
+"stored in an interpreter specific structure.  Creating modules that act "
+"correctly in both Python 2 and Python 3 is tricky.  The following simple "
+"example demonstrates how. ::"
+msgstr ""
+
+#: ../../howto/cporting.rst:197
+msgid "CObject replaced with Capsule"
+msgstr ""
+
+#: ../../howto/cporting.rst:199
+msgid ""
+"The :c:type:`Capsule` object was introduced in Python 3.1 and 2.7 to replace"
+" :c:type:`CObject`.  CObjects were useful, but the :c:type:`CObject` API was"
+" problematic: it didn't permit distinguishing between valid CObjects, which "
+"allowed mismatched CObjects to crash the interpreter, and some of its APIs "
+"relied on undefined behavior in C. (For further reading on the rationale "
+"behind Capsules, please see :issue:`5630`.)"
+msgstr ""
+
+#: ../../howto/cporting.rst:206
+msgid ""
+"If you're currently using CObjects, and you want to migrate to 3.1 or newer,"
+" you'll need to switch to Capsules. :c:type:`CObject` was deprecated in 3.1 "
+"and 2.7 and completely removed in Python 3.2.  If you only support 2.7, or "
+"3.1 and above, you can simply switch to :c:type:`Capsule`.  If you need to "
+"support Python 3.0, or versions of Python earlier than 2.7, you'll have to "
+"support both CObjects and Capsules. (Note that Python 3.0 is no longer "
+"supported, and it is not recommended for production use.)"
+msgstr ""
+
+#: ../../howto/cporting.rst:216
+msgid ""
+"The following example header file :file:`capsulethunk.h` may solve the "
+"problem for you.  Simply write your code against the :c:type:`Capsule` API "
+"and include this header file after :file:`Python.h`.  Your code will "
+"automatically use Capsules in versions of Python with Capsules, and switch "
+"to CObjects when Capsules are unavailable."
+msgstr ""
+
+#: ../../howto/cporting.rst:223
+msgid ""
+":file:`capsulethunk.h` simulates Capsules using CObjects.  However, "
+":c:type:`CObject` provides no place to store the capsule's \"name\".  As a "
+"result the simulated :c:type:`Capsule` objects created by "
+":file:`capsulethunk.h` behave slightly differently from real Capsules.  "
+"Specifically:"
+msgstr ""
+
+#: ../../howto/cporting.rst:228
+msgid "The name parameter passed in to :c:func:`PyCapsule_New` is ignored."
+msgstr ""
+
+#: ../../howto/cporting.rst:230
+msgid ""
+"The name parameter passed in to :c:func:`PyCapsule_IsValid` and "
+":c:func:`PyCapsule_GetPointer` is ignored, and no error checking of the name"
+" is performed."
+msgstr ""
+
+#: ../../howto/cporting.rst:234
+msgid ":c:func:`PyCapsule_GetName` always returns NULL."
+msgstr ""
+
+#: ../../howto/cporting.rst:236
+msgid ""
+":c:func:`PyCapsule_SetName` always raises an exception and returns failure."
+"  (Since there's no way to store a name in a CObject, noisy failure of "
+":c:func:`PyCapsule_SetName` was deemed preferable to silent failure here.  "
+"If this is inconvenient, feel free to modify your local copy as you see "
+"fit.)"
+msgstr ""
+
+#: ../../howto/cporting.rst:243
+msgid ""
+"You can find :file:`capsulethunk.h` in the Python source distribution as "
+":source:`Doc/includes/capsulethunk.h`.  We also include it here for your "
+"convenience:"
+msgstr ""
+
+#: ../../howto/cporting.rst:252
+msgid "Other options"
+msgstr ""
+
+#: ../../howto/cporting.rst:254
+msgid ""
+"If you are writing a new extension module, you might consider `Cython "
+"<http://cython.org/>`_.  It translates a Python-like language to C.  The "
+"extension modules it creates are compatible with Python 3 and Python 2."
+msgstr ""
