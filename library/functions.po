@@ -389,7 +389,7 @@ msgid ""
 "using :meth:`str.encode`."
 msgstr ""
 "如果是一个 *string*，您必须提供 *encoding* 参数（*errors* 参数仍是可选的）；:func:`bytearray` 会使用 "
-":meth:`str.encode` 方法来讲 string 转变成 bytes。"
+":meth:`str.encode` 方法来将 string 转变成 bytes。"
 
 #: ../../library/functions.rst:132
 msgid ""
@@ -407,7 +407,7 @@ msgstr "如果是一个符合 *buffer* 接口的对象，该对象的只读 buff
 msgid ""
 "If it is an *iterable*, it must be an iterable of integers in the range ``0 "
 "<= x < 256``, which are used as the initial contents of the array."
-msgstr "如果是一个 *iterable* 可迭代对象，它的元素必须是范围是``0 <= x < 256`` 的整数，它会被用作数组的初始内容。"
+msgstr "如果是一个 *iterable* 可迭代对象，它的元素的范围必须是 ``0 <= x < 256`` 的整数，它会被用作数组的初始内容。"
 
 #: ../../library/functions.rst:141
 msgid "Without an argument, an array of size 0 is created."
@@ -474,7 +474,7 @@ msgid ""
 "base 16).  :exc:`ValueError` will be raised if *i* is outside that range."
 msgstr ""
 "参数的合法范围是 0 到 1,114,111（16 进制表示是 0x10FFFF）。如果 *i* 超过这个范围，会触发 "
-":exc:`ValueError` 错误。"
+":exc:`ValueError` 异常。"
 
 #: ../../library/functions.rst:187
 msgid "Transform a method into a class method."
@@ -523,6 +523,8 @@ msgid ""
 "string, a byte string, or an AST object.  Refer to the :mod:`ast` module "
 "documentation for information on how to work with AST objects."
 msgstr ""
+"将 *source* 编译成 code 或者 AST 对象。Code 对象可以被 :func:`exec` 或 :func:`eval` "
+"执行。*source* 可以是常规的字符串、字节字符串，或者 AST 对象。参见 :mod:`ast` 模块的文档了解如何使用 AST 对象。"
 
 #: ../../library/functions.rst:219
 msgid ""
@@ -530,6 +532,7 @@ msgid ""
 "pass some recognizable value if it wasn't read from a file (``'<string>'`` "
 "is commonly used)."
 msgstr ""
+"*filename* 参数需要是代码读取的文件名；如果代码不需要从文件中读取，可以传入一些可辨识的值（经常会使用``'<string>'``）。"
 
 #: ../../library/functions.rst:223
 msgid ""
@@ -539,6 +542,9 @@ msgid ""
 "single interactive statement (in the latter case, expression statements that"
 " evaluate to something other than ``None`` will be printed)."
 msgstr ""
+"*mode* 参数指定了编译代码必须用的模式。如果 *source* 是语句序列，可以是 ``'exec'``；如果是单一表达式，可以是 "
+"``'eval'``；如果是单个交互式语句，可以是 ``'single'``。（在最后一种情况下，如果表达式执行结果不是 ``None`` "
+"将会被打印出来。）"
 
 #: ../../library/functions.rst:229
 msgid ""
@@ -552,6 +558,11 @@ msgid ""
 " integer then the *flags* argument is it -- the future statements in effect "
 "around the call to compile are ignored."
 msgstr ""
+"可选参数 *flags* 和 *dont_inherit* 控制编译 *source* 时会用到的 future 语句（参见 "
+":pep:`236`）。如果两者都没提供（或都为零），则用调用 :func:`compile` 的代码中有效future 语句来编译。如果给了 "
+"*flags* 参数但 *dont_inherit* 没有（或者为零），则 *flags* 指定的 future 语句以及那些无论如何会用到的 "
+"future 语句会被使用。如果 *dont_inherit* 是非零整数，则使用 *flags* 参数指定的，代码中有效的 future "
+"语句会被忽略。"
 
 #: ../../library/functions.rst:239
 msgid ""
@@ -561,6 +572,9 @@ msgid ""
 "attribute on the :class:`~__future__._Feature` instance in the "
 ":mod:`__future__` module."
 msgstr ""
+"Future 语句使用比特位来指定，多个语句可以通过按位或来指定。具体的特性的比特位可以通过 :mod:`__future__`  模块中的 "
+":class:`~__future__._Feature` 类的实例的 "
+":attr:`~__future__._Feature.compiler_flag` 属性来获得。"
 
 #: ../../library/functions.rst:244
 msgid ""
@@ -570,18 +584,23 @@ msgid ""
 " optimization; ``__debug__`` is true), ``1`` (asserts are removed, "
 "``__debug__`` is false) or ``2`` (docstrings are removed too)."
 msgstr ""
+"*optimize* 参数指定编译器的优化级别；默认值 ``-1``  选择与解释器的 :option:`-O` 选项相同的优化级别。 显式级别为  "
+"``0``（没有优化；``__debug__``  为真）、``1``（断言被删除，``__debug__`` 为假）或 "
+"``2``（文档字符串也被删除）。"
 
 #: ../../library/functions.rst:250
 msgid ""
 "This function raises :exc:`SyntaxError` if the compiled source is invalid, "
 "and :exc:`ValueError` if the source contains null bytes."
 msgstr ""
+"如果编译的源码不合法，此函数会触发 :exc:`SyntaxError` 异常；如果源码包含 null 字节，则会触发 "
+":exc:`ValueError` 异常。"
 
 #: ../../library/functions.rst:253
 msgid ""
 "If you want to parse Python code into its AST representation, see "
 ":func:`ast.parse`."
-msgstr ""
+msgstr "如果您想分析 Python 代码的 AST 表示，请参阅 :func:`ast.parse`。"
 
 #: ../../library/functions.rst:258
 msgid ""
@@ -590,25 +609,27 @@ msgid ""
 "to facilitate detection of incomplete and complete statements in the "
 ":mod:`code` module."
 msgstr ""
+"在 ``'single'``  或 ``'eval'`` 模式编译多行代码字符串时，输入必须以至少一个换行符结尾。 这使 :mod:`code` "
+"模块更容易检测语句的完整性。"
 
 #: ../../library/functions.rst:265
 msgid ""
 "It is possible to crash the Python interpreter with a sufficiently "
 "large/complex string when compiling to an AST object due to stack depth "
 "limitations in Python's AST compiler."
-msgstr ""
+msgstr "如果编译足够大或者足够复杂的字符串成 AST 对象时，Python 解释器会因为 Python AST 编译器的栈深度限制而奔溃。"
 
 #: ../../library/functions.rst:269
 msgid ""
 "Allowed use of Windows and Mac newlines.  Also input in ``'exec'`` mode does"
 " not have to end in a newline anymore.  Added the *optimize* parameter."
-msgstr ""
+msgstr "允许使用 Windows 和 Mac 的换行符。在 ``'exec'`` 模式不需要再以换行符结尾。增加了  *optimize* 参数。"
 
 #: ../../library/functions.rst:273
 msgid ""
 "Previously, :exc:`TypeError` was raised when null bytes were encountered in "
 "*source*."
-msgstr ""
+msgstr "之前 *source* 中包含 null 字节的话会触发 :exc:`TypeError` 异常。"
 
 #: ../../library/functions.rst:280
 msgid ""
