@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 15:01+0000\n"
+"POT-Creation-Date: 2018-05-23 13:22+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -1375,7 +1375,7 @@ msgid ""
 "similar name documented in the :ref:`number` section."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1078 ../../c-api/typeobj.rst:1351
+#: ../../c-api/typeobj.rst:1078 ../../c-api/typeobj.rst:1365
 msgid "Here is the structure definition::"
 msgstr ""
 
@@ -1407,66 +1407,72 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1154
 msgid ""
-"This function is used by :c:func:`PyMapping_Length` and "
+"This function is used by :c:func:`PyMapping_Size` and "
 ":c:func:`PyObject_Size`, and has the same signature.  This slot may be set "
 "to *NULL* if the object has no defined length."
 msgstr ""
 
 #: ../../c-api/typeobj.rst:1160
 msgid ""
-"This function is used by :c:func:`PyObject_GetItem` and has the same "
-"signature.  This slot must be filled for the :c:func:`PyMapping_Check` "
-"function to return ``1``, it can be *NULL* otherwise."
+"This function is used by :c:func:`PyObject_GetItem` and "
+":c:func:`PySequence_GetSlice`, and has the same signature as "
+":c:func:`!PyObject_GetItem`.  This slot must be filled for the "
+":c:func:`PyMapping_Check` function to return ``1``, it can be *NULL* "
+"otherwise."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1166
+#: ../../c-api/typeobj.rst:1168
 msgid ""
-"This function is used by :c:func:`PyObject_SetItem` and "
-":c:func:`PyObject_DelItem`.  It has the same signature as "
-":c:func:`PyObject_SetItem`, but *v* can also be set to *NULL* to delete an "
+"This function is used by :c:func:`PyObject_SetItem`, "
+":c:func:`PyObject_DelItem`, :c:func:`PyObject_SetSlice` and "
+":c:func:`PyObject_DelSlice`.  It has the same signature as "
+":c:func:`!PyObject_SetItem`, but *v* can also be set to *NULL* to delete an "
 "item.  If this slot is *NULL*, the object does not support item assignment "
 "and deletion."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1176
+#: ../../c-api/typeobj.rst:1179
 msgid "Sequence Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1183
+#: ../../c-api/typeobj.rst:1186
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the sequence protocol."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1188
+#: ../../c-api/typeobj.rst:1191
 msgid ""
 "This function is used by :c:func:`PySequence_Size` and "
-":c:func:`PyObject_Size`, and has the same signature."
+":c:func:`PyObject_Size`, and has the same signature.  It is also used for "
+"handling negative indices via the :c:member:`~PySequenceMethods.sq_item` and"
+" the :c:member:`~PySequenceMethods.sq_ass_item` slots."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1193
+#: ../../c-api/typeobj.rst:1198
 msgid ""
 "This function is used by :c:func:`PySequence_Concat` and has the same "
 "signature.  It is also used by the ``+`` operator, after trying the numeric "
-"addition via the :c:member:`~PyTypeObject.tp_as_number.nb_add` slot."
+"addition via the :c:member:`~PyNumberMethods.nb_add` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1199
+#: ../../c-api/typeobj.rst:1204
 msgid ""
 "This function is used by :c:func:`PySequence_Repeat` and has the same "
 "signature.  It is also used by the ``*`` operator, after trying numeric "
-"multiplication via the :c:member:`~PyTypeObject.tp_as_number.nb_multiply` "
-"slot."
-msgstr ""
-
-#: ../../c-api/typeobj.rst:1206
-msgid ""
-"This function is used by :c:func:`PySequence_GetItem` and has the same "
-"signature.  This slot must be filled for the :c:func:`PySequence_Check` "
-"function to return ``1``, it can be *NULL* otherwise."
+"multiplication via the :c:member:`~PyNumberMethods.nb_multiply` slot."
 msgstr ""
 
 #: ../../c-api/typeobj.rst:1210
+msgid ""
+"This function is used by :c:func:`PySequence_GetItem` and has the same "
+"signature.  It is also used by :c:func:`PyObject_GetItem`, after trying the "
+"subscription via the :c:member:`~PyMappingMethods.mp_subscript` slot. This "
+"slot must be filled for the :c:func:`PySequence_Check` function to return "
+"``1``, it can be *NULL* otherwise."
+msgstr ""
+
+#: ../../c-api/typeobj.rst:1216
 msgid ""
 "Negative indexes are handled as follows: if the :attr:`sq_length` slot is "
 "filled, it is called and the sequence length is used to compute a positive "
@@ -1474,99 +1480,110 @@ msgid ""
 "the index is passed as is to the function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1217
+#: ../../c-api/typeobj.rst:1223
 msgid ""
 "This function is used by :c:func:`PySequence_SetItem` and has the same "
-"signature.  This slot may be left to *NULL* if the object does not support "
-"item assignment and deletion."
+"signature.  It is also used by :c:func:`PyObject_SetItem` and "
+":c:func:`PyObject_DelItem`, after trying the item assignment and deletion "
+"via the :c:member:`~PyMappingMethods.mp_ass_subscript` slot. This slot may "
+"be left to *NULL* if the object does not support item assignment and "
+"deletion."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1223
+#: ../../c-api/typeobj.rst:1232
 msgid ""
 "This function may be used by :c:func:`PySequence_Contains` and has the same "
 "signature.  This slot may be left to *NULL*, in this case "
-":c:func:`PySequence_Contains` simply traverses the sequence until it finds a"
-" match."
+":c:func:`!PySequence_Contains` simply traverses the sequence until it finds "
+"a match."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1230
+#: ../../c-api/typeobj.rst:1239
 msgid ""
 "This function is used by :c:func:`PySequence_InPlaceConcat` and has the same"
-" signature.  It should modify its first operand, and return it."
+" signature.  It should modify its first operand, and return it.  This slot "
+"may be left to *NULL*, in this case :c:func:`!PySequence_InPlaceConcat` will"
+" fall back to :c:func:`PySequence_Concat`.  It is also used by the augmented"
+" assignment ``+=``, after trying numeric inplace addition via the "
+":c:member:`~PyNumberMethods.nb_inplace_add` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1235
+#: ../../c-api/typeobj.rst:1248
 msgid ""
 "This function is used by :c:func:`PySequence_InPlaceRepeat` and has the same"
-" signature.  It should modify its first operand, and return it."
+" signature.  It should modify its first operand, and return it.  This slot "
+"may be left to *NULL*, in this case :c:func:`!PySequence_InPlaceRepeat` will"
+" fall back to :c:func:`PySequence_Repeat`.  It is also used by the augmented"
+" assignment ``*=``, after trying numeric inplace multiplication via the "
+":c:member:`~PyNumberMethods.nb_inplace_multiply` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1245
+#: ../../c-api/typeobj.rst:1259
 msgid "Buffer Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1253
+#: ../../c-api/typeobj.rst:1267
 msgid ""
 "This structure holds pointers to the functions required by the :ref:`Buffer "
 "protocol <bufferobjects>`. The protocol defines how an exporter object can "
 "expose its internal data to consumer objects."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1259 ../../c-api/typeobj.rst:1308
-#: ../../c-api/typeobj.rst:1361 ../../c-api/typeobj.rst:1372
-#: ../../c-api/typeobj.rst:1383
+#: ../../c-api/typeobj.rst:1273 ../../c-api/typeobj.rst:1322
+#: ../../c-api/typeobj.rst:1375 ../../c-api/typeobj.rst:1386
+#: ../../c-api/typeobj.rst:1397
 msgid "The signature of this function is::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1263
+#: ../../c-api/typeobj.rst:1277
 msgid ""
 "Handle a request to *exporter* to fill in *view* as specified by *flags*. "
 "Except for point (3), an implementation of this function MUST take these "
 "steps:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1267
+#: ../../c-api/typeobj.rst:1281
 msgid ""
 "Check if the request can be met. If not, raise :c:data:`PyExc_BufferError`, "
 "set :c:data:`view->obj` to *NULL* and return ``-1``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1270
+#: ../../c-api/typeobj.rst:1284
 msgid "Fill in the requested fields."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1272
+#: ../../c-api/typeobj.rst:1286
 msgid "Increment an internal counter for the number of exports."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1274
+#: ../../c-api/typeobj.rst:1288
 msgid ""
 "Set :c:data:`view->obj` to *exporter* and increment :c:data:`view->obj`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1276
+#: ../../c-api/typeobj.rst:1290
 msgid "Return ``0``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1278
+#: ../../c-api/typeobj.rst:1292
 msgid ""
 "If *exporter* is part of a chain or tree of buffer providers, two main "
 "schemes can be used:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1281
+#: ../../c-api/typeobj.rst:1295
 msgid ""
 "Re-export: Each member of the tree acts as the exporting object and sets "
 ":c:data:`view->obj` to a new reference to itself."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1284
+#: ../../c-api/typeobj.rst:1298
 msgid ""
 "Redirect: The buffer request is redirected to the root object of the tree. "
 "Here, :c:data:`view->obj` will be a new reference to the root object."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1288
+#: ../../c-api/typeobj.rst:1302
 msgid ""
 "The individual fields of *view* are described in section :ref:`Buffer "
 "structure <buffer-structure>`, the rules how an exporter must react to "
@@ -1574,7 +1591,7 @@ msgid ""
 "types>`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1293
+#: ../../c-api/typeobj.rst:1307
 msgid ""
 "All memory pointed to in the :c:type:`Py_buffer` structure belongs to the "
 "exporter and must remain valid until there are no consumers left. "
@@ -1583,19 +1600,19 @@ msgid ""
 ":c:member:`~Py_buffer.internal` are read-only for the consumer."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1300
+#: ../../c-api/typeobj.rst:1314
 msgid ""
 ":c:func:`PyBuffer_FillInfo` provides an easy way of exposing a simple bytes "
 "buffer while dealing correctly with all request types."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1303
+#: ../../c-api/typeobj.rst:1317
 msgid ""
 ":c:func:`PyObject_GetBuffer` is the interface for the consumer that wraps "
 "this function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1312
+#: ../../c-api/typeobj.rst:1326
 msgid ""
 "Handle a request to release the resources of the buffer. If no resources "
 "need to be released, :c:member:`PyBufferProcs.bf_releasebuffer` may be "
@@ -1603,15 +1620,15 @@ msgid ""
 "these optional steps:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1317
+#: ../../c-api/typeobj.rst:1331
 msgid "Decrement an internal counter for the number of exports."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1319
+#: ../../c-api/typeobj.rst:1333
 msgid "If the counter is ``0``, free all memory associated with *view*."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1321
+#: ../../c-api/typeobj.rst:1335
 msgid ""
 "The exporter MUST use the :c:member:`~Py_buffer.internal` field to keep "
 "track of buffer-specific resources. This field is guaranteed to remain "
@@ -1619,52 +1636,52 @@ msgid ""
 "*view* argument."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1327
+#: ../../c-api/typeobj.rst:1341
 msgid ""
 "This function MUST NOT decrement :c:data:`view->obj`, since that is done "
 "automatically in :c:func:`PyBuffer_Release` (this scheme is useful for "
 "breaking reference cycles)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1332
+#: ../../c-api/typeobj.rst:1346
 msgid ""
 ":c:func:`PyBuffer_Release` is the interface for the consumer that wraps this"
 " function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1340
+#: ../../c-api/typeobj.rst:1354
 msgid "Async Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1348
+#: ../../c-api/typeobj.rst:1362
 msgid ""
 "This structure holds pointers to the functions required to implement "
 ":term:`awaitable` and :term:`asynchronous iterator` objects."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1365
+#: ../../c-api/typeobj.rst:1379
 msgid ""
 "The returned object must be an iterator, i.e. :c:func:`PyIter_Check` must "
 "return ``1`` for it."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1368
+#: ../../c-api/typeobj.rst:1382
 msgid ""
 "This slot may be set to *NULL* if an object is not an :term:`awaitable`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1376
+#: ../../c-api/typeobj.rst:1390
 msgid ""
 "Must return an :term:`awaitable` object.  See :meth:`__anext__` for details."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1378
+#: ../../c-api/typeobj.rst:1392
 msgid ""
 "This slot may be set to *NULL* if an object does not implement asynchronous "
 "iteration protocol."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1387
+#: ../../c-api/typeobj.rst:1401
 msgid ""
 "Must return an :term:`awaitable` object.  See :meth:`__anext__` for details."
 " This slot may be set to *NULL*."
