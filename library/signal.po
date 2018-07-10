@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.6\n"
+"Project-Id-Version: Python 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-05 15:01+0000\n"
+"POT-Creation-Date: 2018-06-30 05:56+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -345,11 +345,12 @@ msgid ""
 "Sets given interval timer (one of :const:`signal.ITIMER_REAL`, "
 ":const:`signal.ITIMER_VIRTUAL` or :const:`signal.ITIMER_PROF`) specified by "
 "*which* to fire after *seconds* (float is accepted, different from "
-":func:`alarm`) and after that every *interval* seconds. The interval timer "
-"specified by *which* can be cleared by setting seconds to zero."
+":func:`alarm`) and after that every *interval* seconds (if *interval* is "
+"non-zero). The interval timer specified by *which* can be cleared by setting"
+" *seconds* to zero."
 msgstr ""
 
-#: ../../library/signal.rst:284
+#: ../../library/signal.rst:285
 msgid ""
 "When an interval timer fires, a signal is sent to the process. The signal "
 "sent is dependent on the timer being used; :const:`signal.ITIMER_REAL` will "
@@ -358,23 +359,23 @@ msgid ""
 ":const:`SIGPROF`."
 msgstr ""
 
-#: ../../library/signal.rst:290
+#: ../../library/signal.rst:291
 msgid "The old values are returned as a tuple: (delay, interval)."
 msgstr ""
 
-#: ../../library/signal.rst:292
+#: ../../library/signal.rst:293
 msgid ""
 "Attempting to pass an invalid interval timer will cause an "
 ":exc:`ItimerError`.  Availability: Unix."
 msgstr ""
 
-#: ../../library/signal.rst:298
+#: ../../library/signal.rst:299
 msgid ""
 "Returns current value of a given interval timer specified by *which*. "
 "Availability: Unix."
 msgstr ""
 
-#: ../../library/signal.rst:304
+#: ../../library/signal.rst:305
 msgid ""
 "Set the wakeup file descriptor to *fd*.  When a signal is received, the "
 "signal number is written as a single byte into the fd.  This can be used by "
@@ -382,7 +383,7 @@ msgid ""
 "processed."
 msgstr ""
 
-#: ../../library/signal.rst:309
+#: ../../library/signal.rst:310
 msgid ""
 "The old wakeup fd is returned (or -1 if file descriptor wakeup was not "
 "enabled).  If *fd* is -1, file descriptor wakeup is disabled. If not -1, "
@@ -390,24 +391,50 @@ msgid ""
 " *fd* before calling poll or select again."
 msgstr ""
 
-#: ../../library/signal.rst:314
-msgid ""
-"Use for example ``struct.unpack('%uB' % len(data), data)`` to decode the "
-"signal numbers list."
-msgstr ""
-
-#: ../../library/signal.rst:317 ../../library/signal.rst:345
+#: ../../library/signal.rst:315 ../../library/signal.rst:366
 msgid ""
 "When threads are enabled, this function can only be called from the main "
 "thread; attempting to call it from other threads will cause a "
 ":exc:`ValueError` exception to be raised."
 msgstr ""
 
-#: ../../library/signal.rst:321
+#: ../../library/signal.rst:319
+msgid ""
+"There are two common ways to use this function. In both approaches, you use "
+"the fd to wake up when a signal arrives, but then they differ in how they "
+"determine *which* signal or signals have arrived."
+msgstr ""
+
+#: ../../library/signal.rst:324
+msgid ""
+"In the first approach, we read the data out of the fd's buffer, and the byte"
+" values give you the signal numbers. This is simple, but in rare cases it "
+"can run into a problem: generally the fd will have a limited amount of "
+"buffer space, and if too many signals arrive too quickly, then the buffer "
+"may become full, and some signals may be lost. If you use this approach, "
+"then you should set ``warn_on_full_buffer=True``, which will at least cause "
+"a warning to be printed to stderr when signals are lost."
+msgstr ""
+
+#: ../../library/signal.rst:333
+msgid ""
+"In the second approach, we use the wakeup fd *only* for wakeups, and ignore "
+"the actual byte values. In this case, all we care about is whether the fd's "
+"buffer is empty or non-empty; a full buffer doesn't indicate a problem at "
+"all. If you use this approach, then you should set "
+"``warn_on_full_buffer=False``, so that your users are not confused by "
+"spurious warning messages."
+msgstr ""
+
+#: ../../library/signal.rst:340
 msgid "On Windows, the function now also supports socket handles."
 msgstr ""
 
-#: ../../library/signal.rst:327
+#: ../../library/signal.rst:343
+msgid "Added ``warn_on_full_buffer`` parameter."
+msgstr ""
+
+#: ../../library/signal.rst:348
 msgid ""
 "Change system call restart behaviour: if *flag* is :const:`False`, system "
 "calls will be restarted when interrupted by signal *signalnum*, otherwise "
@@ -415,14 +442,14 @@ msgid ""
 " the man page :manpage:`siginterrupt(3)` for further information)."
 msgstr ""
 
-#: ../../library/signal.rst:332
+#: ../../library/signal.rst:353
 msgid ""
 "Note that installing a signal handler with :func:`signal` will reset the "
 "restart behaviour to interruptible by implicitly calling "
 ":c:func:`siginterrupt` with a true *flag* value for the given signal."
 msgstr ""
 
-#: ../../library/signal.rst:339
+#: ../../library/signal.rst:360
 msgid ""
 "Set the handler for signal *signalnum* to the function *handler*.  *handler*"
 " can be a callable Python object taking two arguments (see below), or one of"
@@ -431,7 +458,7 @@ msgid ""
 ":func:`getsignal` above).  (See the Unix man page :manpage:`signal(2)`.)"
 msgstr ""
 
-#: ../../library/signal.rst:349
+#: ../../library/signal.rst:370
 msgid ""
 "The *handler* is called with two arguments: the signal number and the "
 "current stack frame (``None`` or a frame object; for a description of frame "
@@ -439,7 +466,7 @@ msgid ""
 " see the attribute descriptions in the :mod:`inspect` module)."
 msgstr ""
 
-#: ../../library/signal.rst:354
+#: ../../library/signal.rst:375
 msgid ""
 "On Windows, :func:`signal` can only be called with :const:`SIGABRT`, "
 ":const:`SIGFPE`, :const:`SIGILL`, :const:`SIGINT`, :const:`SIGSEGV`, "
@@ -449,24 +476,24 @@ msgid ""
 "defined as ``SIG*`` module level constant."
 msgstr ""
 
-#: ../../library/signal.rst:365
+#: ../../library/signal.rst:386
 msgid ""
 "Examine the set of signals that are pending for delivery to the calling "
 "thread (i.e., the signals which have been raised while blocked).  Return the"
 " set of the pending signals."
 msgstr ""
 
-#: ../../library/signal.rst:369
+#: ../../library/signal.rst:390
 msgid ""
 "Availability: Unix (see the man page :manpage:`sigpending(2)` for further "
 "information)."
 msgstr ""
 
-#: ../../library/signal.rst:372
+#: ../../library/signal.rst:393
 msgid "See also :func:`pause`, :func:`pthread_sigmask` and :func:`sigwait`."
 msgstr ""
 
-#: ../../library/signal.rst:379
+#: ../../library/signal.rst:400
 msgid ""
 "Suspend execution of the calling thread until the delivery of one of the "
 "signals specified in the signal set *sigset*.  The function accepts the "
@@ -474,19 +501,19 @@ msgid ""
 " number."
 msgstr ""
 
-#: ../../library/signal.rst:383
+#: ../../library/signal.rst:404
 msgid ""
 "Availability: Unix (see the man page :manpage:`sigwait(3)` for further "
 "information)."
 msgstr ""
 
-#: ../../library/signal.rst:386
+#: ../../library/signal.rst:407
 msgid ""
 "See also :func:`pause`, :func:`pthread_sigmask`, :func:`sigpending`, "
 ":func:`sigwaitinfo` and :func:`sigtimedwait`."
 msgstr ""
 
-#: ../../library/signal.rst:394
+#: ../../library/signal.rst:415
 msgid ""
 "Suspend execution of the calling thread until the delivery of one of the "
 "signals specified in the signal set *sigset*.  The function accepts the "
@@ -498,7 +525,7 @@ msgid ""
 "*sigset*."
 msgstr ""
 
-#: ../../library/signal.rst:403
+#: ../../library/signal.rst:424
 msgid ""
 "The return value is an object representing the data contained in the "
 ":c:type:`siginfo_t` structure, namely: :attr:`si_signo`, :attr:`si_code`, "
@@ -506,52 +533,52 @@ msgid ""
 ":attr:`si_band`."
 msgstr ""
 
-#: ../../library/signal.rst:408
+#: ../../library/signal.rst:429
 msgid ""
 "Availability: Unix (see the man page :manpage:`sigwaitinfo(2)` for further "
 "information)."
 msgstr ""
 
-#: ../../library/signal.rst:411
+#: ../../library/signal.rst:432
 msgid "See also :func:`pause`, :func:`sigwait` and :func:`sigtimedwait`."
 msgstr ""
 
-#: ../../library/signal.rst:415
+#: ../../library/signal.rst:436
 msgid ""
 "The function is now retried if interrupted by a signal not in *sigset* and "
 "the signal handler does not raise an exception (see :pep:`475` for the "
 "rationale)."
 msgstr ""
 
-#: ../../library/signal.rst:423
+#: ../../library/signal.rst:444
 msgid ""
 "Like :func:`sigwaitinfo`, but takes an additional *timeout* argument "
 "specifying a timeout. If *timeout* is specified as :const:`0`, a poll is "
 "performed. Returns :const:`None` if a timeout occurs."
 msgstr ""
 
-#: ../../library/signal.rst:427
+#: ../../library/signal.rst:448
 msgid ""
 "Availability: Unix (see the man page :manpage:`sigtimedwait(2)` for further "
 "information)."
 msgstr ""
 
-#: ../../library/signal.rst:430
+#: ../../library/signal.rst:451
 msgid "See also :func:`pause`, :func:`sigwait` and :func:`sigwaitinfo`."
 msgstr ""
 
-#: ../../library/signal.rst:434
+#: ../../library/signal.rst:455
 msgid ""
 "The function is now retried with the recomputed *timeout* if interrupted by "
 "a signal not in *sigset* and the signal handler does not raise an exception "
 "(see :pep:`475` for the rationale)."
 msgstr ""
 
-#: ../../library/signal.rst:443
+#: ../../library/signal.rst:464
 msgid "Example"
 msgstr ""
 
-#: ../../library/signal.rst:445
+#: ../../library/signal.rst:466
 msgid ""
 "Here is a minimal example program. It uses the :func:`alarm` function to "
 "limit the time spent waiting to open a file; this is useful if the file is "
