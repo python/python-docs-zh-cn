@@ -34,5 +34,6 @@ Contributing to the Translation
 Join the Chinese (China) team on transifex to get start.
 
 You're recommended to read
-`大陆简中自由软件本地化工作指南 <http://mirrors.ustc.edu.cn/anthon/aosc-l10n/zh_CN_l10n.pdf>`_
-first.
+`大陆简中自由软件本地化工作指南：Free Software Localization Guide for Chinese (China)`__ first.
+
+__ http://mirrors.ustc.edu.cn/anthon/aosc-l10n/zh_CN_l10n.pdf
