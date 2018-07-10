@@ -4,9 +4,9 @@ set -ex
 cur=$(dirname "$(readlink -f "$0")")
 cd "$cur"/.. || exit 1
 if [ -d cpython ]; then
-	(cd cpython; git fetch; git checkout origin/3.6)
+	(cd cpython; git fetch; git checkout origin/3.7)
 else
-	git clone --depth=1 --branch=3.6 https://github.com/python/cpython.git
+	git clone --depth=1 --branch=3.7 https://github.com/python/cpython.git
 fi
 cd cpython/Doc
 mkdir -p locales/zh_CN/
