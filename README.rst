@@ -4,7 +4,7 @@ zh_CN Translation of the Python Documentation
 All translation are done on transifex.
 https://www.transifex.com/python-doc/public/
 
-See branch 3.6 for po files fetched from transifex.
+See branch newest for po files fetched from transifex.
 
 Documentation Contribution Agreement
 ------------------------------------
