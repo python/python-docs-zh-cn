@@ -1,7 +1,7 @@
 zh_CN Translation of the Python Documentation
 =============================================
 
-All translation are done on transifex.
+All translations are done on transifex.
 https://www.transifex.com/python-doc/public/
 
 See branch newest for po files fetched from transifex.
@@ -33,6 +33,6 @@ Contributing to the Translation
 
 Join the Chinese (China) team on transifex to get start.
 
-You're recommended to reading
+You're recommended to read
 `大陆简中自由软件本地化工作指南 <http://mirrors.ustc.edu.cn/anthon/aosc-l10n/zh_CN_l10n.pdf>`_
 first.
