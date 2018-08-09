@@ -404,7 +404,7 @@ msgid ""
 msgstr ""
 "这是一个可选的修复器，会进行多种转换，将 Python 代码变成更加常见的写法。类似 ``type(x) is SomeClass`` 和 "
 "``type(x) == SomeClass`` 的类型对比会被转换成 ``isinstance(x, SomeClass)``。``while 1``"
-" 转换成 ``while True``。这个修复器还会在合适的地方使用 :func:`sorted` 函数。举个例子，这样的代码："
+" 转换成 ``while True``。这个修复器还会在合适的地方使用 :func:`sorted` 函数。举个例子，这样的代码块："
 
 #: ../../library/2to3.rst:262
 msgid "is changed to ::"
@@ -416,21 +416,21 @@ msgstr "检测 sibling imports，并将其转换成相对 import。"
 
 #: ../../library/2to3.rst:272
 msgid "Handles module renames in the standard library."
-msgstr ""
+msgstr "处理标准库模块的重命名。"
 
 #: ../../library/2to3.rst:276
 msgid ""
 "Handles other modules renames in the standard library.  It is separate from "
 "the :2to3fixer:`imports` fixer only because of technical limitations."
-msgstr ""
+msgstr "处理标准库中其他模块的重命名。这个修复器由于一些技术上的限制，因此和 :2to3fixer:`imports` 拆分开了。"
 
 #: ../../library/2to3.rst:281
 msgid "Converts ``input(prompt)`` to ``eval(input(prompt))``."
-msgstr ""
+msgstr "将 ``input(prompt)`` 转换为 ``eval(input(prompt))``。"
 
 #: ../../library/2to3.rst:285
 msgid "Converts :func:`intern` to :func:`sys.intern`."
-msgstr ""
+msgstr "将 :func:`intern` 转换为 :func:`sys.intern`。"
 
 #: ../../library/2to3.rst:289
 msgid ""
@@ -439,6 +439,9 @@ msgid ""
 "int)`` and ``isinstance(x, (int, float, int))`` is converted to "
 "``isinstance(x, (int, float))``."
 msgstr ""
+"修复 :func:`isinstance` 函数第二个实参中重复的类型。举例来说，``isinstance(x, (int, int))`` 会转换为 "
+"``isinstance(x, int)``, ``isinstance(x, (int, float, int))`` 会转换为 "
+"``isinstance(x, (int, float))``。"
 
 #: ../../library/2to3.rst:296
 msgid ""
@@ -446,6 +449,9 @@ msgid ""
 ":func:`itertools.imap`.  Imports of :func:`itertools.ifilterfalse` are also "
 "changed to :func:`itertools.filterfalse`."
 msgstr ""
+"移除 :func:`itertools.ifilter`，:func:`itertools.izip` 以及 "
+":func:`itertools.imap` 的 import。对 :func:`itertools.ifilterfalse` 的 import "
+"也会替换成 :func:`itertools.filterfalse`。"
 
 #: ../../library/2to3.rst:302
 msgid ""
@@ -453,10 +459,13 @@ msgid ""
 ":func:`itertools.imap` to their built-in equivalents. "
 ":func:`itertools.ifilterfalse` is changed to :func:`itertools.filterfalse`."
 msgstr ""
+"修改 :func:`itertools.ifilter`，:func:`itertools.izip` 和 :func:`itertools.imap`"
+" 的调用为对应的内建实现。:func:`itertools.ifilterfalse` 会替换成 "
+":func:`itertools.filterfalse`。"
 
 #: ../../library/2to3.rst:308
 msgid "Renames :class:`long` to :class:`int`."
-msgstr ""
+msgstr "将 :class:`long` 重命名为 :class:`int`。"
 
 #: ../../library/2to3.rst:312
 msgid ""
@@ -464,22 +473,25 @@ msgid ""
 " to ``list(x)``.  Using ``from future_builtins import map`` disables this "
 "fixer."
 msgstr ""
+"用 :class:`list` 包装 :func:`map`。同时也会将 ``map(None, x)`` 替换为 ``list(x)``。使用 "
+"``from future_builtins import map`` 禁用这个修复器。"
 
 #: ../../library/2to3.rst:318
 msgid ""
 "Converts the old metaclass syntax (``__metaclass__ = Meta`` in the class "
 "body) to the new (``class X(metaclass=Meta)``)."
 msgstr ""
+"将老的元类语法（类体中的 ``__metaclass__ = Meta``）替换为新的（``class X(metaclass=Meta)``）。"
 
 #: ../../library/2to3.rst:323
 msgid ""
 "Fixes old method attribute names.  For example, ``meth.im_func`` is "
 "converted to ``meth.__func__``."
-msgstr ""
+msgstr "修复老的方法属性名。例如 ``meth.im_func`` 会被转换为 ``meth.__func__``。"
 
 #: ../../library/2to3.rst:328
 msgid "Converts the old not-equal syntax, ``<>``, to ``!=``."
-msgstr ""
+msgstr "转换老的不等语法，将 ``<>`` 转为 ``!=``。"
 
 #: ../../library/2to3.rst:332
 msgid ""
@@ -487,14 +499,16 @@ msgid ""
 ":func:`next` function.  It also renames :meth:`next` methods to "
 ":meth:`~iterator.__next__`."
 msgstr ""
+"将迭代器的 :meth:`iterator.next` 方法调用转为 :func:`next` 函数。也会将 :meth:`next` 方法重命名为 "
+":meth:`iterator.__next__`。"
 
 #: ../../library/2to3.rst:338
 msgid "Renames :meth:`__nonzero__` to :meth:`~object.__bool__`."
-msgstr ""
+msgstr "将 :meth:`__nonzero__` 转换为 :meth:`object.__bool__`。"
 
 #: ../../library/2to3.rst:342
 msgid "Converts octal literals into the new syntax."
-msgstr ""
+msgstr "将八进制字面量转为新的语法。"
 
 #: ../../library/2to3.rst:346
 msgid ""
@@ -503,72 +517,74 @@ msgid ""
 "statements are added, e.g. ``import collections.abc``.  The following "
 "mapping are made:"
 msgstr ""
+"将 :mod:`operator` 模块中的许多方法调用转为其他的等效函数调用。如果有需要，会添加适当的 ``import`` 语句，比如 "
+"``import collections.abc``。有以下转换映射："
 
 #: ../../library/2to3.rst:354
 msgid "``operator.isCallable(obj)``"
-msgstr ""
+msgstr "``operator.isCallable(obj)``"
 
 #: ../../library/2to3.rst:354
 msgid "``callable(obj)``"
-msgstr ""
+msgstr "``callable(obj)``"
 
 #: ../../library/2to3.rst:355
 msgid "``operator.sequenceIncludes(obj)``"
-msgstr ""
+msgstr "``operator.sequenceIncludes(obj)``"
 
 #: ../../library/2to3.rst:355
 msgid "``operator.contains(obj)``"
-msgstr ""
+msgstr "``operator.contains(obj)``"
 
 #: ../../library/2to3.rst:356
 msgid "``operator.isSequenceType(obj)``"
-msgstr ""
+msgstr "``operator.isSequenceType(obj)``"
 
 #: ../../library/2to3.rst:356
 msgid "``isinstance(obj, collections.abc.Sequence)``"
-msgstr ""
+msgstr "``isinstance(obj, collections.abc.Sequence)``"
 
 #: ../../library/2to3.rst:357
 msgid "``operator.isMappingType(obj)``"
-msgstr ""
+msgstr "``operator.isMappingType(obj)``"
 
 #: ../../library/2to3.rst:357
 msgid "``isinstance(obj, collections.abc.Mapping)``"
-msgstr ""
+msgstr "``isinstance(obj, collections.abc.Mapping)``"
 
 #: ../../library/2to3.rst:358
 msgid "``operator.isNumberType(obj)``"
-msgstr ""
+msgstr "``operator.isNumberType(obj)``"
 
 #: ../../library/2to3.rst:358
 msgid "``isinstance(obj, numbers.Number)``"
-msgstr ""
+msgstr "``isinstance(obj, numbers.Number)``"
 
 #: ../../library/2to3.rst:359
 msgid "``operator.repeat(obj, n)``"
-msgstr ""
+msgstr "``operator.repeat(obj, n)``"
 
 #: ../../library/2to3.rst:359
 msgid "``operator.mul(obj, n)``"
-msgstr ""
+msgstr "``operator.mul(obj, n)``"
 
 #: ../../library/2to3.rst:360
 msgid "``operator.irepeat(obj, n)``"
-msgstr ""
+msgstr "``operator.irepeat(obj, n)``"
 
 #: ../../library/2to3.rst:360
 msgid "``operator.imul(obj, n)``"
-msgstr ""
+msgstr "``operator.imul(obj, n)``"
 
 #: ../../library/2to3.rst:365
 msgid ""
 "Add extra parenthesis where they are required in list comprehensions.  For "
 "example, ``[x for x in 1, 2]`` becomes ``[x for x in (1, 2)]``."
-msgstr ""
+msgstr "在列表生成式中增加必须的括号。例如将 ``[x for x in 1, 2]`` 转换为 ``[x for x in (1, 2)]``。"
 
 #: ../../library/2to3.rst:370
 msgid "Converts the ``print`` statement to the :func:`print` function."
-msgstr ""
+msgstr "将 ``print`` 语句转换为 :func:`print` 函数。"
 
 #: ../../library/2to3.rst:374
 msgid ""
@@ -577,101 +593,108 @@ msgid ""
 "incorrect because substituting tuples for exceptions has been removed in "
 "3.0."
 msgstr ""
+"将 ``raise E, V`` 转换为 ``raise E(V)``，将 ``raise E, V, T`` 转换为 ``raise "
+"E(V).with_traceback(T)``。如果 ``E`` 是元组，这样的转换是不正确的，因为用元组代替异常的做法在 3.0 中已经移除了。"
 
 #: ../../library/2to3.rst:380
 msgid "Converts :func:`raw_input` to :func:`input`."
-msgstr ""
+msgstr "将 :func:`raw_input` 转换为 :func:`input`。"
 
 #: ../../library/2to3.rst:384
 msgid "Handles the move of :func:`reduce` to :func:`functools.reduce`."
-msgstr ""
+msgstr "将 :func:`reduce` 转换为 :func:`functools.reduce`。"
 
 #: ../../library/2to3.rst:388
 msgid "Converts :func:`reload` to :func:`importlib.reload`."
-msgstr ""
+msgstr "将 :func:`reload` 转换为 :func:`importlib.reload`。"
 
 #: ../../library/2to3.rst:392
 msgid "Changes :data:`sys.maxint` to :data:`sys.maxsize`."
-msgstr ""
+msgstr "将 :data:`sys.maxint` 转换为 :data:`sys.maxsize`。"
 
 #: ../../library/2to3.rst:396
 msgid "Replaces backtick repr with the :func:`repr` function."
-msgstr ""
+msgstr "将反引号 repr 表达式替换为 :func:`repr` 函数。"
 
 #: ../../library/2to3.rst:400
 msgid ""
 "Replaces use of the :class:`set` constructor with set literals.  This fixer "
 "is optional."
-msgstr ""
+msgstr "将 :class:`set` 构造函数替换为 set literals 写法。这个修复器是可选的。"
 
 #: ../../library/2to3.rst:405
 msgid "Renames :exc:`StandardError` to :exc:`Exception`."
-msgstr ""
+msgstr "将 :exc:`StandardError` 重命名为 :exc:`Exception`。"
 
 #: ../../library/2to3.rst:409
 msgid ""
 "Changes the deprecated :data:`sys.exc_value`, :data:`sys.exc_type`, "
 ":data:`sys.exc_traceback` to use :func:`sys.exc_info`."
 msgstr ""
+"将弃用的 :data:`sys.exc_value`，:data:`sys.exc_type`，:data:`sys.exc_traceback` "
+"替换为 :func:`sys.exc_info` 的用法。"
 
 #: ../../library/2to3.rst:414
 msgid "Fixes the API change in generator's :meth:`throw` method."
-msgstr ""
+msgstr "修复生成器的 :meth:`throw` 方法的 API 变更。"
 
 #: ../../library/2to3.rst:418
 msgid ""
 "Removes implicit tuple parameter unpacking.  This fixer inserts temporary "
 "variables."
-msgstr ""
+msgstr "移除隐式的元组参数解包。这个修复器会插入临时变量。"
 
 #: ../../library/2to3.rst:423
 msgid ""
 "Fixes code broken from the removal of some members in the :mod:`types` "
 "module."
-msgstr ""
+msgstr "修复 :mod:`type` 模块中一些成员的移除引起的代码问题。"
 
 #: ../../library/2to3.rst:428
 msgid "Renames :class:`unicode` to :class:`str`."
-msgstr ""
+msgstr "将 :class:`unicode` 重命名为 :class:`str`。"
 
 #: ../../library/2to3.rst:432
 msgid ""
 "Handles the rename of :mod:`urllib` and :mod:`urllib2` to the :mod:`urllib` "
 "package."
-msgstr ""
+msgstr "将 :mod:`urllib` 和 :mod:`urllib2` 重命名为 :mod:`urllib` 包。"
 
 #: ../../library/2to3.rst:437
 msgid ""
 "Removes excess whitespace from comma separated items.  This fixer is "
 "optional."
-msgstr ""
+msgstr "移除逗号分隔的元素之间多余的空白。这个修复器是可选的。"
 
 #: ../../library/2to3.rst:442
 msgid ""
 "Renames :func:`xrange` to :func:`range` and wraps existing :func:`range` "
 "calls with :class:`list`."
 msgstr ""
+"将 :func:`xrange` 重命名为 :func:`range`，并用 :class:`list` 包装原有的 :func:`range`。"
 
 #: ../../library/2to3.rst:447
 msgid "Changes ``for x in file.xreadlines()`` to ``for x in file``."
-msgstr ""
+msgstr "将 ``for x in file.xreadlines()`` 转换为 ``for x in file``。"
 
 #: ../../library/2to3.rst:451
 msgid ""
 "Wraps :func:`zip` usage in a :class:`list` call.  This is disabled when "
 "``from future_builtins import zip`` appears."
 msgstr ""
+"用 :class:`list` 包装 :func:`zip`。如果使用了 ``from future_builtins import zip`` "
+"的话会禁用。"
 
 #: ../../library/2to3.rst:456
 msgid ":mod:`lib2to3` - 2to3's library"
-msgstr ""
+msgstr ":mod:`lib2to3` —— 2to3 支持库"
 
 #: ../../library/2to3.rst:465
 msgid "**Source code:** :source:`Lib/lib2to3/`"
-msgstr ""
+msgstr "**源代码：** :source:`Lib/lib2to3/`"
 
 #: ../../library/2to3.rst:471
 msgid ""
 "The :mod:`lib2to3` API should be considered unstable and may change "
 "drastically in the future."
-msgstr ""
+msgstr ":mod:`lib2to3` API 并不稳定，并可能在未来大幅修改。"
