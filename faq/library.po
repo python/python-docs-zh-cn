@@ -519,6 +519,8 @@ msgid ""
 " types have their own free list; these free lists would have to be moved to "
 "the interpreter state. And so on."
 msgstr ""
+"也有建议说 GIL "
+"应该是解释器状态锁，而不是完全的全局锁；解释器不应该共享对象。不幸的是，这也不可能发生。由于目前许多对象的实现都有全局的状态，因此这是一个艰巨的工作。举例来说，小整型数和短字符串会缓存起来，这些缓存将不得不移动到解释器状态中。其他对象类型都有自己的自由变量列表，这些自由变量列表也必须移动到解释器状态中。等等。"
 
 #: ../../faq/library.rst:452
 msgid ""
@@ -527,20 +529,21 @@ msgid ""
 "extensions are being written at a faster rate than you can convert them to "
 "store all their global state in the interpreter state."
 msgstr ""
+"我甚至怀疑这些工作是否可能在优先的时间内完成，因为同样的问题在第三方拓展中也会存在。第三方拓展编写的速度可比你将它们转换为把全局状态存入解释器状态中的速度快得多。"
 
 #: ../../faq/library.rst:457
 msgid ""
 "And finally, once you have multiple interpreters not sharing any state, what"
 " have you gained over running each interpreter in a separate process?"
-msgstr ""
+msgstr "最后，假设多个解释器不共享任何状态，那么这样做比每个进程一个解释器好在哪里呢？"
 
 #: ../../faq/library.rst:462
 msgid "Input and Output"
-msgstr ""
+msgstr "输入输出"
 
 #: ../../faq/library.rst:465
 msgid "How do I delete a file? (And other file questions...)"
-msgstr ""
+msgstr "怎样删除文件？（以及其他文件相关的问题……）"
 
 #: ../../faq/library.rst:467
 msgid ""
@@ -549,6 +552,8 @@ msgid ""
 ":func:`~os.unlink` is simply the name of the Unix system call for this "
 "function."
 msgstr ""
+"使用 ``os.remove(filename)`` 或 ``os.unlink(filename)``。查看 :mod:`os` "
+"模块以获取更多文档。这两个函数是一样的，:func:`~os.unlink` 是这个函数在 Unix 系统调用中的名字。"
 
 #: ../../faq/library.rst:471
 msgid ""
@@ -558,10 +563,13 @@ msgid ""
 "directories as long as they're empty; if you want to delete an entire "
 "directory tree and its contents, use :func:`shutil.rmtree`."
 msgstr ""
+"如果要删除目录，应该使用 :func:`os.rmdir`；使用 :func:`os.mkdir` 创建目录。``os.makedirs(path)``"
+" 会创建 ``path`` 中任何不存在的目录。``os.removedirs(path)`` "
+"则会删除其中的目录，只要它们都是空的；如果你想删除整个目录以及其中的内容，可以使用 :func:`shutil.rmtree`。"
 
 #: ../../faq/library.rst:477
 msgid "To rename a file, use ``os.rename(old_path, new_path)``."
-msgstr ""
+msgstr "重命名文件可以使用 ``os.rename(old_path, new_path)``。"
 
 #: ../../faq/library.rst:479
 msgid ""
@@ -570,6 +578,9 @@ msgid ""
 "There's also ``os.ftruncate(fd, offset)`` for files opened with "
 ":func:`os.open`, where *fd* is the file descriptor (a small integer)."
 msgstr ""
+"如果需要截断文件，使用 ``f = open(filename, \"rb+\")`` 打开文件，然后使用 "
+"``f.truncate(offset)``；offset 默认是当前的搜索位置。也可以对使用 :func:`os.open` 打开的文件使用 "
+"``os.ftruncate(fd, offset)``，其中 *fd* 是文件描述符（一个小的整型数）。"
 
 #: ../../faq/library.rst:484
 msgid ""
@@ -577,20 +588,24 @@ msgid ""
 "files including :func:`~shutil.copyfile`, :func:`~shutil.copytree`, and "
 ":func:`~shutil.rmtree`."
 msgstr ""
+":mod:`shutil` 模块也包含了一些处理文件的函数，包括 "
+":func:`~shutil.copyfile`，:func:`~shutil.copytree` 和 :func:`~shutil.rmtree`。"
 
 #: ../../faq/library.rst:490
 msgid "How do I copy a file?"
-msgstr ""
+msgstr "怎样复制文件？"
 
 #: ../../faq/library.rst:492
 msgid ""
 "The :mod:`shutil` module contains a :func:`~shutil.copyfile` function.  Note"
 " that on MacOS 9 it doesn't copy the resource fork and Finder info."
 msgstr ""
+":mod:`shutil` 模块有一个 :func:`~shutil.copyfile` 函数。注意在 MacOS 9  中不会复制 resource "
+"fork 和 Finder info。"
 
 #: ../../faq/library.rst:497
 msgid "How do I read (or write) binary data?"
-msgstr ""
+msgstr "怎样读取（或写入）二进制数据？"
 
 #: ../../faq/library.rst:499
 msgid ""
@@ -598,12 +613,14 @@ msgid ""
 ":mod:`struct` module.  It allows you to take a string containing binary data"
 " (usually numbers) and convert it to Python objects; and vice versa."
 msgstr ""
+"要读写复杂的二进制数据格式，最好使用 :mod:`struct` 模块。该模块可以读取包含二进制数据（通常是数字）的字符串并转换为 Python "
+"对象，反之亦然。"
 
 #: ../../faq/library.rst:503
 msgid ""
 "For example, the following code reads two 2-byte integers and one 4-byte "
 "integer in big-endian format from a file::"
-msgstr ""
+msgstr "举例来说，下面的代码会从文件中以大端序格式读取一个 2 字节的整型和一个 4 字节的整型："
 
 #: ../../faq/library.rst:512
 msgid ""
@@ -611,12 +628,13 @@ msgid ""
 "one \"short integer\" (2 bytes), and 'l' reads one \"long integer\" (4 "
 "bytes) from the string."
 msgstr ""
+"格式字符串中的 ‘>’ 强制以大端序读取数据；字母 ‘h’ 从字符串中读取一个“短整型”（2 字节），字母 ‘l’ 读取一个“长整型”（4 字节）。"
 
 #: ../../faq/library.rst:516
 msgid ""
 "For data that is more regular (e.g. a homogeneous list of ints or floats), "
 "you can also use the :mod:`array` module."
-msgstr ""
+msgstr "对于更常规的数据（例如整型或浮点类型的列表），你也可以使用 :mod:`array` 模块。"
 
 #: ../../faq/library.rst:521
 msgid ""
@@ -625,10 +643,13 @@ msgid ""
 "instead (the default), the file will be open in text mode and ``f.read()`` "
 "will return :class:`str` objects rather than :class:`bytes` objects."
 msgstr ""
+"要读写二进制数据的话，需要强制以二进制模式打开文件（这里为 :func:`open` 函数传入 ``\"rb\"``）。如果（默认）传入 "
+"``\"r\"`` 的话，文件会以文本模式打开，``f.read()`` 会返回 :class:`str` 对象，而不是 :class:`bytes` "
+"对象。"
 
 #: ../../faq/library.rst:529
 msgid "I can't seem to use os.read() on a pipe created with os.popen(); why?"
-msgstr ""
+msgstr "似乎 os.popen() 创建的管道不能使用 os.read()，这是为什么？"
 
 #: ../../faq/library.rst:531
 msgid ""
@@ -638,36 +659,39 @@ msgid ""
 "function. Thus, to read *n* bytes from a pipe *p* created with "
 ":func:`os.popen`, you need to use ``p.read(n)``."
 msgstr ""
+":func:`os.read` 是一个底层函数，它接收的是文件描述符 —— 用小整型数表示的打开的文件。:func:`os.popen` "
+"创建的是一个高级文件对象，和内建的 :func:`open` 方法返回的类型一样。因此，如果要从 :func:`os.popen` 创建的管道 *p* "
+"中读取 *n* 个字节的话，你应该使用 ``p.read(n)``。"
 
 #: ../../faq/library.rst:618
 msgid "How do I access the serial (RS232) port?"
-msgstr ""
+msgstr "怎样访问（RS232）串口？"
 
 #: ../../faq/library.rst:620
 msgid "For Win32, POSIX (Linux, BSD, etc.), Jython:"
-msgstr ""
+msgstr "对于 Win32，POSIX（Linux，BSD 等），Jython："
 
 #: ../../faq/library.rst:622
 msgid "http://pyserial.sourceforge.net"
-msgstr ""
+msgstr "http://pyserial.sourceforge.net"
 
 #: ../../faq/library.rst:624
 msgid "For Unix, see a Usenet post by Mitch Chapman:"
-msgstr ""
+msgstr "对于 Unix，查看 Mitch Chapman 发布的帖子："
 
 #: ../../faq/library.rst:626
 msgid "https://groups.google.com/groups?selm=34A04430.CF9@ohioee.com"
-msgstr ""
+msgstr "https://groups.google.com/groups?selm=34A04430.CF9@ohioee.com"
 
 #: ../../faq/library.rst:630
 msgid "Why doesn't closing sys.stdout (stdin, stderr) really close it?"
-msgstr ""
+msgstr "为什么关闭 sys.stdout（stdin，stderr）并不会真正关掉它？"
 
 #: ../../faq/library.rst:632
 msgid ""
 "Python :term:`file objects <file object>` are a high-level layer of "
 "abstraction on low-level C file descriptors."
-msgstr ""
+msgstr "Python :term:`文件对象 <file object>` 是一个对底层 C 文件描述符的高层抽象。"
 
 #: ../../faq/library.rst:635
 msgid ""
@@ -677,6 +701,8 @@ msgid ""
 "descriptor.  This also happens automatically in ``f``'s destructor, when "
 "``f`` becomes garbage."
 msgstr ""
+"对于在 Python 中通过内建的 :func:`open` 函数创建的多数文件对象来说，``f.close()`` 从 Python "
+"的角度将其标记为已关闭，并且会关闭底层的 C 文件描述符。在 ``f`` 被垃圾回收的时候，析构函数中也会自动处理。"
 
 #: ../../faq/library.rst:641
 msgid ""
