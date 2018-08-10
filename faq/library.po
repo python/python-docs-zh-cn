@@ -335,24 +335,24 @@ msgstr "我的线程都没有运行，为什么？"
 msgid ""
 "As soon as the main thread exits, all threads are killed.  Your main thread "
 "is running too quickly, giving the threads no time to do any work."
-msgstr ""
+msgstr "一旦主线程退出，所有的子线程都会被杀掉。你的主线程运行得太快了，子线程还没来得及工作。"
 
 #: ../../faq/library.rst:256
 msgid ""
 "A simple fix is to add a sleep to the end of the program that's long enough "
 "for all the threads to finish::"
-msgstr ""
+msgstr "简单的解决方法是在程序中加一个时间足够长的 sleep，让子线程能够完成运行。"
 
 #: ../../faq/library.rst:271
 msgid ""
 "But now (on many platforms) the threads don't run in parallel, but appear to"
 " run sequentially, one at a time!  The reason is that the OS thread "
 "scheduler doesn't start a new thread until the previous thread is blocked."
-msgstr ""
+msgstr "但目前（在许多平台上）线程不是并行运行的，而是按顺序依次执行！原因是系统线程调度器在前一个线程阻塞之前不会启动新线程。"
 
 #: ../../faq/library.rst:275
 msgid "A simple fix is to add a tiny sleep to the start of the run function::"
-msgstr ""
+msgstr "简单的解决方法是在运行函数的开始处加一个时间很短的 sleep。"
 
 #: ../../faq/library.rst:288
 msgid ""
@@ -362,16 +362,21 @@ msgid ""
 " to the queue when it finishes, and let the main thread read as many tokens "
 "from the queue as there are threads."
 msgstr ""
+"比起用 :func:`time.sleep` 猜一个合适的等待时间，使用信号量机制会更好些。有一个办法是使用 :mod:`queue` 模块创建一个 "
+"queue 对象，让每一个线程在运行结束时 append 一个令牌到 queue 对象中，主线程中从 queue "
+"对象中读取与线程数量一致的令牌数量即可。"
 
 #: ../../faq/library.rst:296
 msgid "How do I parcel out work among a bunch of worker threads?"
-msgstr ""
+msgstr "如何将任务分配给多个工作线程？"
 
 #: ../../faq/library.rst:298
 msgid ""
 "The easiest way is to use the new :mod:`concurrent.futures` module, "
 "especially the :mod:`~concurrent.futures.ThreadPoolExecutor` class."
 msgstr ""
+"最简单的方法是使用新的 :mod:`concurrent.futures` 模块，尤其是其中的 "
+":mod:`~concurrent.futures.ThreadPoolExecutor` 类。"
 
 #: ../../faq/library.rst:301
 msgid ""
@@ -382,24 +387,27 @@ msgid ""
 "a ``.get()`` method to return them.  The class will take care of the locking"
 " necessary to ensure that each job is handed out exactly once."
 msgstr ""
+"或者，如果你想更好地控制分发算法，你也可以自己写逻辑实现。使用 :mod:`queue` "
+"模块来创建任务列表队列。:class:`~queue.Queue` 类维护一个了一个存有对象的列表，提供了 ``.put(obj)`` "
+"方法添加元素，并且可以用 ``.get()`` 方法获取元素。这个类会使用必要的加锁操作，以此确保每个任务只会执行一次。"
 
 #: ../../faq/library.rst:308
 msgid "Here's a trivial example::"
-msgstr ""
+msgstr "这是一个简单的例子："
 
 #: ../../faq/library.rst:346
 msgid "When run, this will produce the following output:"
-msgstr ""
+msgstr "运行时会产生如下输出："
 
 #: ../../faq/library.rst:364
 msgid ""
 "Consult the module's documentation for more details; the "
 ":class:`~queue.Queue` class provides a featureful interface."
-msgstr ""
+msgstr "查看模块的文档以获取更多信息；:class:`~queue.Queue` 类提供了多种接口。"
 
 #: ../../faq/library.rst:369
 msgid "What kinds of global value mutation are thread-safe?"
-msgstr ""
+msgstr "怎样修改全局变量是线程安全的？"
 
 #: ../../faq/library.rst:371
 msgid ""
@@ -410,6 +418,9 @@ msgid ""
 "instruction and therefore all the C implementation code reached from each "
 "instruction is therefore atomic from the point of view of a Python program."
 msgstr ""
+"Python VM 内部会使用 :term:`全局解释器锁` （GIL）来确保同一时间只有一个线程运行。通常 Python "
+"只会在字节码指令之间切换线程；切换的频率可以通过设置 :func:`sys.setswitchinterval` 指定。从 Python "
+"程序的角度来看，每一条字节码指令以及每一条指令对应的 C 代码实现都是原子的。"
 
 #: ../../faq/library.rst:378
 msgid ""
@@ -418,16 +429,18 @@ msgid ""
 "shared variables of built-in data types (ints, lists, dicts, etc) that "
 "\"look atomic\" really are."
 msgstr ""
+"理论上说，具体的结果要看具体的 PVM 字节码实现对指令的解释。而实际上，对内建类型（int，list，dict "
+"等）的共享变量的“类原子”操作都是原子的。"
 
 #: ../../faq/library.rst:383
 msgid ""
 "For example, the following operations are all atomic (L, L1, L2 are lists, "
 "D, D1, D2 are dicts, x, y are objects, i, j are ints)::"
-msgstr ""
+msgstr "举例来说，下面的操作是原子的（L、L1、L2 是列表，D、D1、D2 是字典，x、y 是对象，i，j 是 int 变量）："
 
 #: ../../faq/library.rst:398
 msgid "These aren't::"
-msgstr ""
+msgstr "这些不是原子的："
 
 #: ../../faq/library.rst:405
 msgid ""
@@ -436,10 +449,12 @@ msgid ""
 " affect things.  This is especially true for the mass updates to "
 "dictionaries and lists.  When in doubt, use a mutex!"
 msgstr ""
+"覆盖其他对象的操作会在其他对象的引用计数变成 0 时触发其 :meth:`__del__` "
+"方法，这可能会产生一些影响。对字典和列表进行大量操作时尤其如此。如果有疑问的话，使用互斥锁！"
 
 #: ../../faq/library.rst:412
 msgid "Can't we get rid of the Global Interpreter Lock?"
-msgstr ""
+msgstr "不能删除全局解释器锁吗？"
 
 #: ../../faq/library.rst:416
 msgid ""
@@ -448,6 +463,8 @@ msgid ""
 "multi-threaded Python program effectively only uses one CPU, due to the "
 "insistence that (almost) all Python code can only run while the GIL is held."
 msgstr ""
+":term:`全局解释器锁` （GIL）通常被视为 Python 在高端多核服务器上开发时的阻力，因为（几乎）所有 Python 代码只有在获取到 "
+"GIL 时才能运行，所以多线程的 Python 程序只能有效地使用一个 CPU。"
 
 #: ../../faq/library.rst:421
 msgid ""
@@ -460,6 +477,10 @@ msgid ""
 "performance (at least 30% slower), due to the amount of fine-grained locking"
 " necessary to compensate for the removal of the GIL."
 msgstr ""
+"在 Python 1.5 时代，Greg Stein 开发了一个完整的补丁包（“free threadings” 补丁），移除了 "
+"GIL，并用粒度更合适的锁来代替。Adam Olsen 最近也在他的 `python-safethread "
+"<https://code.google.com/archive/p/python-safethread>`_ "
+"项目里做了类似的实验。不幸的是，由于为了移除 GIL 而使用了大量细粒度的锁，这两个实验在单线程测试中的性能都有明显的下降（至少慢 30%）。"
 
 #: ../../faq/library.rst:429
 msgid ""
@@ -471,6 +492,10 @@ msgid ""
 ":mod:`multiprocessing` module provides a lower-level API in case you want "
 "more control over dispatching of tasks."
 msgstr ""
+"但这并意味着你不能在多核机器上很好地使用 Python！你只需将任务划分为多*进程*，而不是多*线程*。新的 "
+":mod:`concurrent.futures` 模块中的 "
+":class:`~concurrent.futures.ProcessPoolExecutor` "
+"类提供了一个简单的方法；如果你想对任务分发做更多控制，可以使用 :mod:`multiprocessing` 模块提供的底层 API。"
 
 #: ../../faq/library.rst:437
 msgid ""
@@ -480,6 +505,8 @@ msgid ""
 "work done.  Some standard library modules such as :mod:`zlib` and "
 ":mod:`hashlib` already do this."
 msgstr ""
+"恰当地使用 C 拓展也很有用；使用 C 拓展处理耗时较久的任务时，拓展可以在线程执行 C 代码时释放 GIL，让其他线程执行。:mod:`zlib` 和"
+" :mod:`hashlib` 等标准库模块已经这样做了。"
 
 #: ../../faq/library.rst:443
 msgid ""
