@@ -1615,7 +1615,7 @@ msgid ""
 msgstr ""
 "*buffering* "
 "是一个可选的整数，用于设置缓冲策略。传递0以切换缓冲关闭（仅允许在二进制模式下），1选择行缓冲（仅在文本模式下可用），并且>1的整数以指示固定大小的块缓冲区的大小（以字节为单位）。如果没有给出"
-" *buffering* 参数，则默认缓冲策略的工作方式如下："
+" *buffering* 参数，则默认缓冲策略的工作方式如下:"
 
 #: ../../library/functions.rst:1026
 msgid ""
@@ -1624,6 +1624,8 @@ msgid ""
 " size\" and falling back on :attr:`io.DEFAULT_BUFFER_SIZE`.  On many "
 "systems, the buffer will typically be 4096 or 8192 bytes long."
 msgstr ""
+"二进制文件以固定大小的块进行缓冲；使用启发式方法选择缓冲区的大小，尝试确定底层设备的“块大小”或使用 "
+":attr:`io.DEFAULT_BUFFER_SIZE`。在许多系统上，缓冲区的长度通常为4096或8192字节。"
 
 #: ../../library/functions.rst:1031
 msgid ""
@@ -1631,6 +1633,8 @@ msgid ""
 "returns ``True``) use line buffering.  Other text files use the policy "
 "described above for binary files."
 msgstr ""
+"“交互式”文本文件（ :meth:`~io.IOBase.isatty` 返回 ``True`` "
+"的文件）使用行缓冲。其他文本文件使用上述策略用于二进制文件。"
 
 #: ../../library/functions.rst:1035
 msgid ""
@@ -1640,6 +1644,9 @@ msgid ""
 ":term:`text encoding` supported by Python can be used.  See the "
 ":mod:`codecs` module for the list of supported encodings."
 msgstr ""
+"*encoding* 是用于解码或编码文件的编码的名称。这应该只在文本模式下使用。默认编码是依赖于平台的（不 管 "
+":func:`locale.getpreferredencoding` 返回何值），但可以使用任何Python支持的 :term:`text "
+"encoding` 。有关支持的编码列表，请参阅 :mod:`codecs` 模块。"
 
 #: ../../library/functions.rst:1042
 msgid ""
@@ -1649,24 +1656,27 @@ msgid ""
 "though any error handling name that has been registered with "
 ":func:`codecs.register_error` is also valid.  The standard names include:"
 msgstr ""
+"*errors* 是一个可选的字符串参数，用于指定如何处理编码和解码错误 - 这不能在二进制模式下使用。可以使用各种标准错误处理程序（列在 :ref"
+":`error-handlers` ），但是使用 :func:`codecs.register_error` "
+"注册的任何错误处理名称也是有效的。标准名称包括:"
 
 #: ../../library/functions.rst:1050
 msgid ""
 "``'strict'`` to raise a :exc:`ValueError` exception if there is an encoding "
 "error.  The default value of ``None`` has the same effect."
-msgstr ""
+msgstr "如果存在编码错误，``'strict'`` 会引发 :exc:`ValueError` 异常。 默认值 ``None`` 具有相同的效果。"
 
 #: ../../library/functions.rst:1054
 msgid ""
 "``'ignore'`` ignores errors.  Note that ignoring encoding errors can lead to"
 " data loss."
-msgstr ""
+msgstr "``'ignore'`` 忽略错误。请注意，忽略编码错误可能会导致数据丢失。"
 
 #: ../../library/functions.rst:1057
 msgid ""
 "``'replace'`` causes a replacement marker (such as ``'?'``) to be inserted "
 "where there is malformed data."
-msgstr ""
+msgstr "``'replace'`` 会将替换标记（例如 ``'?'`` ）插入有错误数据的地方。"
 
 #: ../../library/functions.rst:1060
 msgid ""
@@ -1676,6 +1686,9 @@ msgid ""
 "``surrogateescape`` error handler is used when writing data.  This is useful"
 " for processing files in an unknown encoding."
 msgstr ""
+"``'surrogateescape'`` "
+"将表示任何不正确的字节作为Unicode专用区中的代码点，范围从U+DC80到U+DCFF。当在写入数据时使用 ``surrogateescape`` "
+"错误处理程序时，这些私有代码点将被转回到相同的字节中。这对于处理未知编码的文件很有用。"
 
 #: ../../library/functions.rst:1067
 msgid ""
@@ -1683,18 +1696,19 @@ msgid ""
 " not supported by the encoding are replaced with the appropriate XML "
 "character reference ``&#nnn;``."
 msgstr ""
+"只有在写入文件时才支持 ``'xmlcharrefreplace'``。编码不支持的字符将替换为相应的XML字符引用 ``&#nnn;``。"
 
 #: ../../library/functions.rst:1071
 msgid ""
 "``'backslashreplace'`` replaces malformed data by Python's backslashed "
 "escape sequences."
-msgstr ""
+msgstr "``'backslashreplace'`` 用Python的反向转义序列替换格式错误的数据。"
 
 #: ../../library/functions.rst:1074
 msgid ""
 "``'namereplace'`` (also only supported when writing) replaces unsupported "
 "characters with ``\\N{...}`` escape sequences."
-msgstr ""
+msgstr "``'namereplace'`` （也只在编写时支持）用 ``\\N{...}`` 转义序列替换不支持的字符。"
 
 #: ../../library/functions.rst:1080
 msgid ""
@@ -1702,6 +1716,8 @@ msgid ""
 "applies to text mode).  It can be ``None``, ``''``, ``'\\n'``, ``'\\r'``, "
 "and ``'\\r\\n'``.  It works as follows:"
 msgstr ""
+"*newline* 控制 :term:`universal newlines` 模式如何生效（它仅适用于文本模式）。它可以是 "
+"``None``，``''``，``'\\n'``，``'\\r'`` 和 ``'\\r\\n'``。它的工作原理:"
 
 #: ../../library/functions.rst:1084
 msgid ""
@@ -1713,6 +1729,9 @@ msgid ""
 "has any of the other legal values, input lines are only terminated by the "
 "given string, and the line ending is returned to the caller untranslated."
 msgstr ""
+"从流中读取输入时，如果 *newline* 为 ``None``，则启用通用换行模式。输入中的行可以以 ``'\\n'``，``'\\r'`` 或 "
+"``'\\r\\n'`` 结尾，这些行被翻译成 ``'\\n'`` 在返回呼叫者之前。如果它是 "
+"``''``，则启用通用换行模式，但行结尾将返回给调用者未翻译。如果它具有任何其他合法值，则输入行仅由给定字符串终止，并且行结尾将返回给未调用的调用者。"
 
 #: ../../library/functions.rst:1092
 msgid ""
@@ -1722,6 +1741,9 @@ msgid ""
 "takes place.  If *newline* is any of the other legal values, any ``'\\n'`` "
 "characters written are translated to the given string."
 msgstr ""
+"将输出写入流时，如果 *newline* 为 ``None``，则写入的任何 ``'\\n'`` 字符都将转换为系统默认行分隔符 "
+":data:`os.linesep`。如果 *newline* 是 ``''`` 或 ``'\\n'``，则不进行翻译。如果 *newline* "
+"是任何其他合法值，则写入的任何 ``'\\n'`` 字符将被转换为给定的字符串。"
 
 #: ../../library/functions.rst:1098
 msgid ""
@@ -1730,6 +1752,8 @@ msgid ""
 "closed.  If a filename is given *closefd* must be ``True`` (the default) "
 "otherwise an error will be raised."
 msgstr ""
+"如果 *closefd* 是 ``False`` 并且给出了文件描述符而不是文件名，那么当文件关闭时，底层文件描述符将保持打开状态。如果给出文件名则 "
+"*closefd* 必须为 ``True`` （默认值），否则将引发错误。"
 
 #: ../../library/functions.rst:1103
 msgid ""
@@ -1739,6 +1763,9 @@ msgid ""
 "descriptor (passing :mod:`os.open` as *opener* results in functionality "
 "similar to passing ``None``)."
 msgstr ""
+"可以通过传递可调用的 *opener* 来使用自定义开启器。然后通过使用参数（ *file*，*flags* ）调用 *opener* "
+"获得文件对象的基础文件描述符。 *opener* 必须返回一个打开的文件描述符（使用 :mod:`os.open` as *opener* 时与传递 "
+"``None`` 的效果相同）。"
 
 #: ../../library/functions.rst:1109
 msgid "The newly created file is :ref:`non-inheritable <fd_inheritance>`."
@@ -1903,16 +1930,20 @@ msgid ""
 "for setting an attribute value. *fdel* is a function for deleting an "
 "attribute value.  And *doc* creates a docstring for the attribute."
 msgstr ""
+"*fget* 是获取属性值的函数。 *fset* 是用于设置属性值的函数。 *fdel* 是用于删除属性值的函数。并且 *doc* "
+"为属性对象创建文档字符串。"
 
 #: ../../library/functions.rst:1238
 msgid "A typical use is to define a managed attribute ``x``::"
-msgstr ""
+msgstr "一个典型的用法是定义一个托管属性 ``x``::"
 
 #: ../../library/functions.rst:1255
 msgid ""
 "If *c* is an instance of *C*, ``c.x`` will invoke the getter, ``c.x = "
 "value`` will invoke the setter and ``del c.x`` the deleter."
 msgstr ""
+"如果 *c* 是 *C* 的实例，``c.x`` 将调用getter，``c.x = value`` 将调用setter， ``del c.x`` "
+"将调用deleter。"
 
 #: ../../library/functions.rst:1258
 msgid ""
