@@ -8,9 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-25 08:59+0900\n"
+"POT-Creation-Date: 2018-09-18 09:12+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Shengjing Zhu <zsj950618@gmail.com>, 2018\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,392 +17,338 @@ msgstr ""
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../../library/asyncio-sync.rst:5
-msgid "Synchronization primitives"
-msgstr ""
-
 #: ../../library/asyncio-sync.rst:7
-msgid "**Source code:** :source:`Lib/asyncio/locks.py`"
+msgid "Synchronization Primitives"
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:9
-msgid "Locks:"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:11
-msgid ":class:`Lock`"
+msgid ""
+"asyncio synchronization primitives are designed to be similar to those of "
+"the :mod:`threading` module with two important caveats:"
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:12
-msgid ":class:`Event`"
+msgid ""
+"asyncio primitives are not thread-safe, therefore they should not be used "
+"for OS thread synchronization (use :mod:`threading` for that);"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:13
-msgid ":class:`Condition`"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:15
-msgid "Semaphores:"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:17
-msgid ":class:`Semaphore`"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:18
-msgid ":class:`BoundedSemaphore`"
+#: ../../library/asyncio-sync.rst:16
+msgid ""
+"methods of these synchronization primitives do not accept the *timeout* "
+"argument; use the :func:`asyncio.wait_for` function to perform operations "
+"with timeouts."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:20
-msgid ""
-"asyncio lock API was designed to be close to classes of the :mod:`threading`"
-" module (:class:`~threading.Lock`, :class:`~threading.Event`, "
-":class:`~threading.Condition`, :class:`~threading.Semaphore`, "
-":class:`~threading.BoundedSemaphore`), but it has no *timeout* parameter. "
-"The :func:`asyncio.wait_for` function can be used to cancel a task after a "
-"timeout."
+msgid "asyncio has the following basic sychronization primitives:"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:28
+#: ../../library/asyncio-sync.rst:22
+msgid ":class:`Lock`"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:23
+msgid ":class:`Event`"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:24
+msgid ":class:`Condition`"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:25
+msgid ":class:`Semaphore`"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:26
+msgid ":class:`BoundedSemaphore`"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:33
 msgid "Lock"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:32
-msgid "Primitive lock objects."
+#: ../../library/asyncio-sync.rst:37
+msgid "Implements a mutex lock for asyncio tasks.  Not thread-safe."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:34
+#: ../../library/asyncio-sync.rst:39
 msgid ""
-"A primitive lock is a synchronization primitive that is not owned by a "
-"particular coroutine when locked.  A primitive lock is in one of two states,"
-" 'locked' or 'unlocked'."
+"An asyncio lock can be used to guarantee exclusive access to a shared "
+"resource."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:38
+#: ../../library/asyncio-sync.rst:42
 msgid ""
-"The lock is created in the unlocked state. It has two basic methods, "
-":meth:`acquire` and :meth:`release`. When the state is unlocked, acquire() "
-"changes the state to locked and returns immediately.  When the state is "
-"locked, acquire() blocks until a call to release() in another coroutine "
-"changes it to unlocked, then the acquire() call resets it to locked and "
-"returns.  The release() method should only be called in the locked state; it"
-" changes the state to unlocked and returns immediately.  If an attempt is "
-"made to release an unlocked lock, a :exc:`RuntimeError` will be raised."
+"The preferred way to use a Lock is an :keyword:`async with` statement::"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:48
-msgid ""
-"When more than one coroutine is blocked in acquire() waiting for the state "
-"to turn to unlocked, only one coroutine proceeds when a release() call "
-"resets the state to unlocked; first coroutine which is blocked in acquire() "
-"is being processed."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:53
-msgid ":meth:`acquire` is a coroutine and should be called with ``await``."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:55
-msgid ""
-"Locks support the :ref:`context management protocol <async-with-locks>`."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:57 ../../library/asyncio-sync.rst:97
-#: ../../library/asyncio-sync.rst:145 ../../library/asyncio-sync.rst:237
+#: ../../library/asyncio-sync.rst:51 ../../library/asyncio-sync.rst:178
 #: ../../library/asyncio-sync.rst:274
-msgid "This class is :ref:`not thread safe <asyncio-multithreading>`."
-msgstr "这个类 :ref:`不是线程安全的 <asyncio-multithreading>`。"
-
-#: ../../library/asyncio-sync.rst:61
-msgid "Return ``True`` if the lock is acquired."
+msgid "which is equivalent to::"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:65
-msgid "Acquire a lock."
+#: ../../library/asyncio-sync.rst:64
+msgid "Acquire the lock."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:67 ../../library/asyncio-sync.rst:151
+#: ../../library/asyncio-sync.rst:66
 msgid ""
-"This method blocks until the lock is unlocked, then sets it to locked and "
+"This method waits until the lock is *unlocked*, sets it to *locked* and "
 "returns ``True``."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:70 ../../library/asyncio-sync.rst:123
-#: ../../library/asyncio-sync.rst:154 ../../library/asyncio-sync.rst:206
-#: ../../library/asyncio-sync.rst:215 ../../library/asyncio-sync.rst:248
-msgid "This method is a :ref:`coroutine <coroutine>`."
+#: ../../library/asyncio-sync.rst:71
+msgid "Release the lock."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:74
-msgid "Release a lock."
+#: ../../library/asyncio-sync.rst:73
+msgid "When the lock is *locked*, reset it to *unlocked* and return."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:76
-msgid ""
-"When the lock is locked, reset it to unlocked, and return.  If any other "
-"coroutines are blocked waiting for the lock to become unlocked, allow "
-"exactly one of them to proceed."
+#: ../../library/asyncio-sync.rst:75
+msgid "If the lock is *unlocked*, a :exc:`RuntimeError` is raised."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:80 ../../library/asyncio-sync.rst:190
-msgid "When invoked on an unlocked lock, a :exc:`RuntimeError` is raised."
+#: ../../library/asyncio-sync.rst:79
+msgid "Return ``True`` if the lock is *locked*."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:82 ../../library/asyncio-sync.rst:192
-msgid "There is no return value."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:86
+#: ../../library/asyncio-sync.rst:83
 msgid "Event"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:90
+#: ../../library/asyncio-sync.rst:87
+msgid "An event object.  Not thread-safe."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:89
 msgid ""
-"An Event implementation, asynchronous equivalent to "
-":class:`threading.Event`."
+"An asyncio event can be used to notify multiple asyncio tasks that some "
+"event has happened."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:92
 msgid ""
-"Class implementing event objects. An event manages a flag that can be set to"
-" true with the :meth:`set` method and reset to false with the :meth:`clear` "
-"method.  The :meth:`wait` method blocks until the flag is true. The flag is "
-"initially false."
+"An Event object manages an internal flag that can be set to *true* with the "
+":meth:`set` method and reset to *false* with the :meth:`clear` method.  The "
+":meth:`wait` method blocks until the flag is set to *true*.  The flag is set"
+" to *false* initially."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:101
+#: ../../library/asyncio-sync.rst:99
+msgid "Example::"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:124
+msgid "Wait until the event is set."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:126
 msgid ""
-"Reset the internal flag to false. Subsequently, coroutines calling "
-":meth:`wait` will block until :meth:`set` is called to set the internal flag"
-" to true again."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:107
-msgid "Return ``True`` if and only if the internal flag is true."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:111
-msgid ""
-"Set the internal flag to true. All coroutines waiting for it to become true "
-"are awakened. Coroutine that call :meth:`wait` once the flag is true will "
-"not block at all."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:117
-msgid "Block until the internal flag is true."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:119
-msgid ""
-"If the internal flag is true on entry, return ``True`` immediately. "
-"Otherwise, block until another coroutine calls :meth:`set` to set the flag "
-"to true, then return ``True``."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:127
-msgid "Condition"
+"If the event is set, return ``True`` immediately. Otherwise block until "
+"another task calls :meth:`set`."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:131
-msgid ""
-"A Condition implementation, asynchronous equivalent to "
-":class:`threading.Condition`."
+msgid "Set the event."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:134
-msgid ""
-"This class implements condition variable objects. A condition variable "
-"allows one or more coroutines to wait until they are notified by another "
-"coroutine."
+#: ../../library/asyncio-sync.rst:133
+msgid "All tasks waiting for event to be set will be immediately awakened."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:138
-msgid ""
-"If the *lock* argument is given and not ``None``, it must be a :class:`Lock`"
-" object, and it is used as the underlying lock.  Otherwise, a new "
-":class:`Lock` object is created and used as the underlying lock."
+msgid "Clear (unset) the event."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:142
+#: ../../library/asyncio-sync.rst:140
 msgid ""
-"Conditions support the :ref:`context management protocol <async-with-"
-"locks>`."
+"Tasks awaiting on :meth:`wait` will now block until the :meth:`set` method "
+"is called again."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:145
+msgid "Return ``True`` if the event is set."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:149
+msgid "Condition"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:153
+msgid "A Condition object.  Not thread-safe."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:155
+msgid ""
+"An asyncio condition primitive can be used by a task to wait for some event "
+"to happen and then get exclusive access to a shared resource."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:159
+msgid ""
+"In essence, a Condition object combines the functionality of an "
+":class:`Event` and a :class:`Lock`.  It is possible to have multiple "
+"Condition objects share one Lock, which allows coordinating exclusive access"
+" to a shared resource between different tasks interested in particular "
+"states of that shared resource."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:165
+msgid ""
+"The optional *lock* argument must be a :class:`Lock` object or ``None``.  In"
+" the latter case a new Lock object is created automatically."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:169
+msgid ""
+"The preferred way to use a Condition is an :keyword:`async with` statement::"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:191
 msgid "Acquire the underlying lock."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:158
+#: ../../library/asyncio-sync.rst:193
 msgid ""
-"By default, wake up one coroutine waiting on this condition, if any. If the "
-"calling coroutine has not acquired the lock when this method is called, a "
-":exc:`RuntimeError` is raised."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:162
-msgid ""
-"This method wakes up at most *n* of the coroutines waiting for the condition"
-" variable; it is a no-op if no coroutines are waiting."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:167
-msgid ""
-"An awakened coroutine does not actually return from its :meth:`wait` call "
-"until it can reacquire the lock. Since :meth:`notify` does not release the "
-"lock, its caller should."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:173
-msgid "Return ``True`` if the underlying lock is acquired."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:177
-msgid ""
-"Wake up all coroutines waiting on this condition. This method acts like "
-":meth:`notify`, but wakes up all waiting coroutines instead of one. If the "
-"calling coroutine has not acquired the lock when this method is called, a "
-":exc:`RuntimeError` is raised."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:184
-msgid "Release the underlying lock."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:186
-msgid ""
-"When the lock is locked, reset it to unlocked, and return. If any other "
-"coroutines are blocked waiting for the lock to become unlocked, allow "
-"exactly one of them to proceed."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:196
-msgid "Wait until notified."
+"This method waits until the underlying lock is *unlocked*, sets it to "
+"*locked* and returns ``True``."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:198
 msgid ""
-"If the calling coroutine has not acquired the lock when this method is "
-"called, a :exc:`RuntimeError` is raised."
+"Wake up at most *n* tasks (1 by default) waiting on this condition.  The "
+"method is no-op if no tasks are waiting."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:201
+#: ../../library/asyncio-sync.rst:201 ../../library/asyncio-sync.rst:216
 msgid ""
-"This method releases the underlying lock, and then blocks until it is "
-"awakened by a :meth:`notify` or :meth:`notify_all` call for the same "
-"condition variable in another coroutine.  Once awakened, it re-acquires the "
-"lock and returns ``True``."
+"The lock must be acquired before this method is called and released shortly "
+"after.  If called with an *unlocked* lock a :exc:`RuntimeError` error is "
+"raised."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:210
-msgid "Wait until a predicate becomes true."
+#: ../../library/asyncio-sync.rst:207
+msgid "Return ``True`` if the underlying lock is acquired."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:212
+#: ../../library/asyncio-sync.rst:211
+msgid "Wake up all tasks waiting on this condition."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:213
+msgid "This method acts like :meth:`notify`, but wakes up all waiting tasks."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:222
+msgid "Release the underlying lock."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:224
+msgid "When invoked on an unlocked lock, a :exc:`RuntimeError` is raised."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:229
+msgid "Wait until notified."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:231
 msgid ""
-"The predicate should be a callable which result will be interpreted as a "
-"boolean value. The final predicate value is the return value."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:219
-msgid "Semaphore"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:223
-msgid "A Semaphore implementation."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:225
-msgid ""
-"A semaphore manages an internal counter which is decremented by each "
-":meth:`acquire` call and incremented by each :meth:`release` call. The "
-"counter can never go below zero; when :meth:`acquire` finds that it is zero,"
-" it blocks, waiting until some other coroutine calls :meth:`release`."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:230
-msgid ""
-"The optional argument gives the initial value for the internal counter; it "
-"defaults to ``1``. If the value given is less than ``0``, :exc:`ValueError` "
-"is raised."
+"If the calling task has not acquired the lock when this method is called, a "
+":exc:`RuntimeError` is raised."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:234
 msgid ""
-"Semaphores support the :ref:`context management protocol <async-with-"
-"locks>`."
+"This method releases the underlying lock, and then blocks until it is "
+"awakened by a :meth:`notify` or :meth:`notify_all` call. Once awakened, the "
+"Condition re-acquires its lock and this method returns ``True``."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:241
-msgid "Acquire a semaphore."
+msgid "Wait until a predicate becomes *true*."
 msgstr ""
 
 #: ../../library/asyncio-sync.rst:243
 msgid ""
-"If the internal counter is larger than zero on entry, decrement it by one "
-"and return ``True`` immediately.  If it is zero on entry, block, waiting "
-"until some other coroutine has called :meth:`release` to make it larger than"
-" ``0``, and then return ``True``."
+"The predicate must be a callable which result will be interpreted as a "
+"boolean value.  The final value is the return value."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:252
+#: ../../library/asyncio-sync.rst:249
+msgid "Semaphore"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:253
+msgid "A Semaphore object.  Not thread-safe."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:255
+msgid ""
+"A semaphore manages an internal counter which is decremented by each "
+":meth:`acquire` call and incremented by each :meth:`release` call. The "
+"counter can never go below zero; when :meth:`acquire` finds that it is zero,"
+" it blocks, waiting until some task calls :meth:`release`."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:261
+msgid ""
+"The optional *value* argument gives the initial value for the internal "
+"counter (``1`` by default). If the given value is less than ``0`` a "
+":exc:`ValueError` is raised."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:265
+msgid ""
+"The preferred way to use a Semaphore is an :keyword:`async with` statement::"
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:287
+msgid "Acquire a semaphore."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:289
+msgid ""
+"If the internal counter is greater than zero, decrement it by one and return"
+" ``True`` immediately.  If it is zero, wait until a :meth:`release` is "
+"called and return ``True``."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:295
 msgid "Returns ``True`` if semaphore can not be acquired immediately."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:256
+#: ../../library/asyncio-sync.rst:299
 msgid ""
-"Release a semaphore, incrementing the internal counter by one. When it was "
-"zero on entry and another coroutine is waiting for it to become larger than "
-"zero again, wake up that coroutine."
+"Release a semaphore, incrementing the internal counter by one. Can wake up a"
+" task waiting to acquire the semaphore."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:262
+#: ../../library/asyncio-sync.rst:302
+msgid ""
+"Unlike :class:`BoundedSemaphore`, :class:`Semaphore` allows making more "
+"``release()`` calls than ``acquire()`` calls."
+msgstr ""
+
+#: ../../library/asyncio-sync.rst:307
 msgid "BoundedSemaphore"
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:266
-msgid "A bounded semaphore implementation. Inherit from :class:`Semaphore`."
+#: ../../library/asyncio-sync.rst:311
+msgid "A bounded semaphore object.  Not thread-safe."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:268
+#: ../../library/asyncio-sync.rst:313
 msgid ""
-"This raises :exc:`ValueError` in :meth:`~Semaphore.release` if it would "
-"increase the value above the initial value."
+"Bounded Semaphore is a version of :class:`Semaphore` that raises a "
+":exc:`ValueError` in :meth:`~Semaphore.release` if it increases the internal"
+" counter above the initial *value*."
 msgstr ""
 
-#: ../../library/asyncio-sync.rst:271
+#: ../../library/asyncio-sync.rst:323
 msgid ""
-"Bounded semaphores support the :ref:`context management protocol <async-"
-"with-locks>`."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:280
-msgid ""
-"Using locks, conditions and semaphores in the :keyword:`async with` "
-"statement"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:282
-msgid ""
-":class:`Lock`, :class:`Condition`, :class:`Semaphore`, and "
-":class:`BoundedSemaphore` objects can be used in :keyword:`async with` "
-"statements."
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:286
-msgid ""
-"The :meth:`acquire` method will be called when the block is entered, and "
-":meth:`release` will be called when the block is exited.  Hence, the "
-"following snippet::"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:293
-msgid "is equivalent to::"
-msgstr ""
-
-#: ../../library/asyncio-sync.rst:303
-msgid ""
-"Lock acquiring using ``await lock`` or ``yield from lock`` and "
+"Acquiring a lock using ``await lock`` or ``yield from lock`` and/or "
 ":keyword:`with` statement (``with await lock``, ``with (yield from lock)``) "
-"are deprecated."
+"is deprecated.  Use ``async with lock`` instead."
 msgstr ""
