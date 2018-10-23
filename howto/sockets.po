@@ -98,16 +98,18 @@ msgid ""
 " of sockets with INET makes talking to arbitrary machines around the world "
 "unbelievably easy (at least compared to other schemes)."
 msgstr ""
+"套接字做为 BSD Unix 操作系统的一部分在伯克利诞生，像野火一样在因特网传播。有一个很好的原因 —— 套接字与 INET "
+"的结合使得与世界各地的任意机器间通信变得令人难以置信的简单（至少对比与其他方案来说）"
 
 #: ../../howto/sockets.rst:54
 msgid "Creating a Socket"
-msgstr ""
+msgstr "创建套接字"
 
 #: ../../howto/sockets.rst:56
 msgid ""
 "Roughly speaking, when you clicked on the link that brought you to this "
 "page, your browser did something like the following::"
-msgstr ""
+msgstr "简略地说，当你点击带你来到这个页面的链接时，你的浏览器就已经做了下面这几件事情::"
 
 #: ../../howto/sockets.rst:64
 msgid ""
@@ -116,12 +118,13 @@ msgid ""
 "then be destroyed. That's right, destroyed. Client sockets are normally only"
 " used for one exchange (or a small set of sequential exchanges)."
 msgstr ""
+"当连接完成，套接字可以用来发送请求来接收页面上显示的文字。同样是这个套接字也会用来读取响应，最后再被销毁。是的，被销毁了。客户端套接字通常用来做一次交换（或者说一小组序列的交换）。"
 
 #: ../../howto/sockets.rst:70
 msgid ""
 "What happens in the web server is a bit more complex. First, the web server "
 "creates a \"server socket\"::"
-msgstr ""
+msgstr "网络服务器发生了什么这个问题就有点复杂了。首页，服务器创建一个「服务端套接字」::"
 
 #: ../../howto/sockets.rst:80
 msgid ""
@@ -132,6 +135,10 @@ msgid ""
 "same machine.  ``s.bind(('', 80))`` specifies that the socket is reachable "
 "by any address the machine happens to have."
 msgstr ""
+"有几件事需要注意：我们使用了 ``socket.gethostname()``，所以套接字将外网可见。如果我们使用的是 "
+"``s.bind(('localhost', 80))`` 或者 ``s.bind(('127.0.0.1', "
+"80))``，也会得到一个「服务端」套接字，但是后者只在同一机器上可见。``s.bind(('', 80))`` "
+"则指定套接字可以被机器上的任何地址碰巧连接"
 
 #: ../../howto/sockets.rst:87
 msgid ""
@@ -139,6 +146,7 @@ msgid ""
 "known\" services (HTTP, SNMP etc). If you're playing around, use a nice high"
 " number (4 digits)."
 msgstr ""
+"第二个需要注点是：低端口号通常被一些「常用的」服务（HTTP, SNMP 等）所保留。如果你想把程序跑起来，最好使用一个高位端口号（通常是4位的数字）。"
 
 #: ../../howto/sockets.rst:91
 msgid ""
@@ -147,12 +155,14 @@ msgid ""
 "outside connections. If the rest of the code is written properly, that "
 "should be plenty."
 msgstr ""
+"最后，``listen`` 方法的参数会告诉套接字库，我们希望在拒绝外部请求连接前最多使用 5 "
+"个连接请求的队列。如果所有的代码都要正确的写出来，代码量将会很大。"
 
 #: ../../howto/sockets.rst:95
 msgid ""
 "Now that we have a \"server\" socket, listening on port 80, we can enter the"
 " mainloop of the web server::"
-msgstr ""
+msgstr "现在我们已经有一个「服务端」套接字，监听了 80 端口，我们可以进入网络服务器的主循环了::"
 
 #: ../../howto/sockets.rst:106
 msgid ""
@@ -170,10 +180,15 @@ msgid ""
 "dynamically allocated port which will be recycled when the conversation "
 "ends."
 msgstr ""
+"事际上，通常有 3 种方法可以让这个循环工作起来 - 调度一个线程来处理 ``客户端套接字``，或者把这个应用改成使用非阻塞模式套接字，亦或是使用 "
+"``select`` 库来实现「服务端」套接字与任意活动 ``客户端套接字`` 之间的多路复用。稍后会详细介绍。现在最重要的是理解：这就是一个 "
+"*服务端* 套接字做的 *所有* 事情。它并没有发送任何数据。也没有接收任何数据。它只创建「客户端」套接字。每个 ``客户端套接字`` "
+"都是为了响应某些其它客户端套接字 ``connect()`` 到我们绑定的主机。一旦创建 ``客户端套接字`` "
+"完成，就会返回并监听更多的连接请求。现个客户端可以随意通信 - 它们使用了一些动态分配的端口，会话结束时端口才会被回收"
 
 #: ../../howto/sockets.rst:121
 msgid "IPC"
-msgstr ""
+msgstr "进程间通信"
 
 #: ../../howto/sockets.rst:123
 msgid ""
@@ -183,16 +198,19 @@ msgid ""
 "a shortcut around a couple of layers of network code and be quite a bit "
 "faster."
 msgstr ""
+"如果你需要在同一台机器上进行两个进程间的快速 IPC 通信，你应该了解管道或者共享内存。如果你决定使用 AF_INET "
+"类型的套接字，绑定「服务端」套接字到 ``'localhost'`` "
+"。在大多数平台，这将会使用一个许多网络层间的通用快捷方式（本地回环地址）并且速度会快很多"
 
 #: ../../howto/sockets.rst:129
 msgid ""
 "The :mod:`multiprocessing` integrates cross-platform IPC into a higher-level"
 " API."
-msgstr ""
+msgstr ":mod:`multiprocessing` 模块使跨平台 IPC 通信成为一个高层的 API"
 
 #: ../../howto/sockets.rst:134
 msgid "Using a Socket"
-msgstr ""
+msgstr "使用一个套接字"
 
 #: ../../howto/sockets.rst:136
 msgid ""
@@ -204,6 +222,7 @@ msgid ""
 "in a request, or perhaps a signon. But that's a design decision - it's not a"
 " rule of sockets."
 msgstr ""
+"第一个需要注意的的，浏览器的「客户端」套接字和网络服务器的「客户端」套接字一样令信讨厌。也就是说，这是一次「点对点」的会话。换句话说，*做为一个设计师，你将不得不决定一次会话的规则*。一般来说，``连接``中的套接字通过发送一个请求，或者信号开始这次会话。但是这是设计决定的，并不是套接字的规则"
 
 #: ../../howto/sockets.rst:143
 msgid ""
@@ -216,6 +235,10 @@ msgid ""
 "reply. Without a ``flush`` in there, you may wait forever for the reply, "
 "because the request may still be in your output buffer."
 msgstr ""
+"现在有两组用于通信的动词。你可以使用 ``send`` 和 ``recv``，或者你可以把客户端套接字改成文件类型的怪东西来使用  ``read`` 和"
+" ``write`` 方法。后者是 Java 语言中表示套接字的方法，在这儿我将不会讨论这个，但是要提醒你需要调用套接字的 ``flush`` "
+"方法，这些是缓冲区的文件，一个经常出现的错误是 ``write`` 一些东西，然后不调用 ``flush`` 就开始 ``read`` "
+"一个响应，你可能会为了这个响应一直等待，因为请求可能还在你的输出缓冲中。"
 
 #: ../../howto/sockets.rst:152
 msgid ""
@@ -227,6 +250,9 @@ msgid ""
 "you how many bytes they handled. It is *your* responsibility to call them "
 "again until your message has been completely dealt with."
 msgstr ""
+"现在我来到了套接字的两个主要的绊脚石 - ``send`` 和 ``recv`` "
+"操作网络缓冲区。它们并不一定可以处理所有你想要（期望）的字节，因为它们主要关注点是处理网络缓冲。通常，它们在关联的网络缓冲区 ``send`` 或者清空"
+" ``recv`` 时返回。然后告诉你处理了多少个字节。*你* 的责任是一直调用它们直到你所有的消息处理完成。"
 
 #: ../../howto/sockets.rst:160
 msgid ""
@@ -235,6 +261,8 @@ msgid ""
 "data on this connection. Ever.  You may be able to send data successfully; "
 "I'll talk more about this later."
 msgstr ""
+"当 ``recv`` 方法返回 0 "
+"字节时，就表示另一端已经关闭（或者它所在的进程关闭）了连接。你再也不能从这个连接上获取到任何数据了。你可以成功的发送数据；我将在后面讨论这一点。"
 
 #: ../../howto/sockets.rst:165
 msgid ""
@@ -242,6 +270,8 @@ msgid ""
 " request, then reads a reply.  That's it. The socket is discarded. This "
 "means that a client can detect the end of the reply by receiving 0 bytes."
 msgstr ""
+"像 HTTP 这样的协议只使用一个套接字进行一次传输。客户端发送一个请求，然后读取响应。就这么简单。套接字会被销毁。 表示客户端可以通过接收 0 "
+"字节序列表示检测到响应的结束。"
 
 #: ../../howto/sockets.rst:169
 msgid ""
@@ -256,12 +286,16 @@ msgid ""
 "they are* (much better), *or end by shutting down the connection*. The "
 "choice is entirely yours, (but some ways are righter than others)."
 msgstr ""
+"但是如果你打算在随后来的传输中复用套接字的话，你需要明白 *套接字里面是不存在 :abbr:`EOT (传输结束)`* 的。重复一下：套接字 "
+"``send`` 或者 ``recv`` 完 0 字节后返回，连接会中断。如果连接没有被断开，你可能会永远处于等待 ``recv`` "
+"的状态，因为（就目前来说）套接字 *不会* "
+"告诉你不用再读取了。现在如果你细心一点，你可能会意识到套接字基本事实：*消息必须要么具有固定长度，要么可以界定，要么指定了长度（比较好的做法），要么以关闭连接为结束*。选择完全由你而定（这比让别人定更合理）"
 
 #: ../../howto/sockets.rst:180
 msgid ""
 "Assuming you don't want to end the connection, the simplest solution is a "
 "fixed length message::"
-msgstr ""
+msgstr "假定你不希望结束连接，那么最简单的解决方案就是使用定长消息::"
 
 #: ../../howto/sockets.rst:217
 msgid ""
@@ -271,6 +305,9 @@ msgid ""
 "gets more complex. (And in C, it's not much worse, except you can't use "
 "``strlen`` if the message has embedded ``\\0``\\ s.)"
 msgstr ""
+"发送分部代码几乎可用于任何消息传递方案 - 在 Python 中你发送字符串，可以使用 ``len()`` 方法来确定它的长度（即使它嵌入了 ``\\ "
+"0`` 字符）。主要是接收代码变得更复杂。（在 C 语言中，并没有太糟糕，除非消息嵌入了 ``\\ 0`` 字符而且你又无法使用 ``strlen`` "
+"）"
 
 #: ../../howto/sockets.rst:223
 msgid ""
@@ -282,6 +319,9 @@ msgid ""
 "chunk size, (4096 or 8192 is frequently a good match for network buffer "
 "sizes), and scanning what you've received for a delimiter."
 msgstr ""
+"最简单的改进是让消息的第一个字符表示消息类型，由类型决定长度。现在你需要两次 ``recv`` - "
+"第一次取首字符来知晓长度，第二次在循环中获取剩余所有的消息。如果你决定到分界线，你将收到一些任意大小的块，（4096 或者 8192 "
+"通常是比较合适的网络缓冲区大小），扫描你接收到的分界符"
 
 #: ../../howto/sockets.rst:231
 msgid ""
@@ -291,6 +331,8 @@ msgid ""
 "of a following message. You'll need to put that aside and hold onto it, "
 "until it's needed."
 msgstr ""
+"一个需要意识到的复杂情况是：如果你的会话协议允许多个消息被发送回来（没有响应），调用 ``recv``  "
+"传入任意大小的块儿，你可能会因为读到后续接收的消息而停止读取。你需要将它放在一边并保存，直到它需要为止。"
 
 #: ../../howto/sockets.rst:237
 msgid ""
@@ -303,17 +345,21 @@ msgid ""
 "not always manage to get rid of everything in one pass. And despite having "
 "read this, you will eventually get bit by it!"
 msgstr ""
+"用消息的长度做为消息的前缀（比如说，5个数字字符）会更复杂，因为，你可能在一次 ``recv`` 中没法取完这 5 "
+"个字符，为了能把程序跑起来，你将设法避免这种情况；但是在高负载的网络中，除非你使用两个``recv`` 循环 - "
+"第一个用来确定消息长度，第二个用来获取消息体的数据，否则你的代码会很快中断。真讨厌，这也是当你发现 ``send`` "
+"方法并不总是在一个地方处理所有的东西的感觉。尽管你读过这篇文章，但最终还是会有所了解"
 
 #: ../../howto/sockets.rst:246
 msgid ""
 "In the interests of space, building your character, (and preserving my "
 "competitive position), these enhancements are left as an exercise for the "
 "reader. Lets move on to cleaning up."
-msgstr ""
+msgstr "限于篇幅，建立你的角色，（保持与我的竞争位置），这些改进将留给读者做为练习。让我们继续。"
 
 #: ../../howto/sockets.rst:252
 msgid "Binary Data"
-msgstr ""
+msgstr "二进制数据"
 
 #: ../../howto/sockets.rst:254
 msgid ""
@@ -327,6 +373,10 @@ msgid ""
 "network order is host order, these do nothing, but where the machine is "
 "byte-reversed, these swap the bytes around appropriately."
 msgstr ""
+"能过套接字传送二进制数据是很正常的。主要的问题在于并不是所有的机器都用同样的二进制数据格式。比如，摩托罗拉芯片用 1 做为两个十六进制字节 00 01 "
+"来表示一个 16 位整型。然而英特尔和迪吉多，是字节反转的 - 1 是 01 00。套接字库要求转换 16 位和 32 位整数 - ``ntohl, "
+"htonl, ntohs, htons`` 其中的 「n」表示 *network*，「h」表示 *host*，「s」表示 *short*，「l」表示 "
+"*long*。网络序列就是主机的序列的话它们什么都不做，但是如果机器是字节反转的，它们会适当地交换字节序"
 
 #: ../../howto/sockets.rst:264
 msgid ""
@@ -335,7 +385,7 @@ msgid ""
 "surprising amount of the time, all those longs have the value 0, or maybe 1."
 " The string \"0\" would be two bytes, while binary is four. Of course, this "
 "doesn't fit well with fixed-length messages. Decisions, decisions."
-msgstr ""
+msgstr "在现代的 32 位机器中，ascii 形式的二进制数据通常小于二进制形式"
 
 #: ../../howto/sockets.rst:272
 msgid "Disconnecting"
