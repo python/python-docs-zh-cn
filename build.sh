@@ -12,5 +12,4 @@ cd cpython/Doc
 mkdir -p locales/zh_CN/
 ln -sfn "$cur" locales/zh_CN/LC_MESSAGES
 make venv
-make html SPHINXOPTS='-D language=zh_CN -D html_search_language=zh -D gettext_compact=0 -j4'
-touch build/html/.nojekyll
+make html SPHINXOPTS='-D language=zh_CN -D html_search_language=zh -D gettext_compact=0 -j4 -W'
