@@ -1097,7 +1097,7 @@ msgstr ""
 "自定义类这种类型一般通过类定义来创建 (参见 :ref:`class` "
 "一节)。每个类都有通过一个字典对象实现的独立命名空间。类属性引用会被转化为在此字典中查找，例如 ``C.x`` 会被转化为 "
 "``C.__dict__[\"x\"]`` "
-"(不过也存在一些钩子对象以允许其他定位属性的方式)。当在其中未发现某个属性名称时，会继续在基类中查找。这种基类查找使用 C3 方法解析顺序，即使存在 "
+"(不过也存在一些钩子对象以允许其他定位属性的方式)。当未在其中发现某个属性名称时，会继续在基类中查找。这种基类查找使用 C3 方法解析顺序，即使存在 "
 "'钻石形' 继承结构即有多条继承路径连到一个共同祖先也能保持正确的行为。有关 Python 使用的 C3 MRO 的详情可查看配合 2.3 版发布的文档"
 " https://www.python.org/download/releases/2.3/mro/."
 
@@ -1165,6 +1165,12 @@ msgid ""
 "class attribute is found, and the object's class has a :meth:`__getattr__` "
 "method, that is called to satisfy the lookup."
 msgstr ""
+"类实例可通过调用类对象来创建 "
+"(见上文)。每个类实例都有通过一个字典对象实现的独立命名空间，属性引用会首先在此字典中查找。当未在其中发现某个属性，而实例对应的类中有该属性时，会继续在类属性中查找。如果找到的类属性为一个用户定义函数对象，它会被转化为实例方法对象，其"
+" :attr:`__self__` 属性即该实例。静态方法和类方法对象也会被转化；参见上文 \"Classes\" "
+"一节。要了解其他通过类实例来获取相应类属性的方式可参见 :ref:`descriptors` 一节，这样得到的属性可能与实际存放于类的 "
+":attr:`~object.__dict__` 中的对象不同。如果未找到类属性，而对象对应的类具有 :meth:`__getattr__` "
+"方法，则会调用该方法来满足查找要求。"
 
 #: ../../reference/datamodel.rst:826
 msgid ""
@@ -1173,22 +1179,25 @@ msgid ""
 ":meth:`__delattr__` method, this is called instead of updating the instance "
 "dictionary directly."
 msgstr ""
+"属性赋值和删除会更新实例的字典，但不会更新对应类的字典。如果类具有 :meth:`__setattr__` 或 :meth:`__delattr__` "
+"方法，则将调用方法而不再直接更新实例的字典。"
 
 #: ../../reference/datamodel.rst:836
 msgid ""
 "Class instances can pretend to be numbers, sequences, or mappings if they "
 "have methods with certain special names.  See section :ref:`specialnames`."
-msgstr ""
+msgstr "如果类实例具有某些特殊名称的方法，就可以伪装为数字、序列或映射。参见 :ref:`specialnames` 一节。"
 
 #: ../../reference/datamodel.rst:843
 msgid ""
 "Special attributes: :attr:`~object.__dict__` is the attribute dictionary; "
 ":attr:`~instance.__class__` is the instance's class."
 msgstr ""
+"特殊属性: :attr:`~object.__dict__` 为属性字典; :attr:`~instance.__class__` 为实例对应的类。"
 
 #: ../../reference/datamodel.rst:870
 msgid "I/O objects (also known as file objects)"
-msgstr ""
+msgstr "I/O 对象 (或称文件对象)"
 
 #: ../../reference/datamodel.rst:860
 msgid ""
