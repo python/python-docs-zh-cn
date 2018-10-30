@@ -1590,6 +1590,9 @@ msgid ""
 "(the call to the class).  The return value of :meth:`__new__` should be the "
 "new object instance (usually an instance of *cls*)."
 msgstr ""
+"调用以创建一个 *cls* 类的新实例。:meth:`__new__` 是一个静态方法 "
+"(因为是特例所以你不需要显式地声明)，它会将所请求实例所属的类作为第一个参数。其余的参数会被传递给对象构造器表达式 "
+"(对类的调用)。:meth:`__new__` 的返回值应为新对象实例 (通常是 *cls* 的实例)。"
 
 #: ../../reference/datamodel.rst:1161
 msgid ""
@@ -1598,6 +1601,8 @@ msgid ""
 "with appropriate arguments and then modifying the newly-created instance as "
 "necessary before returning it."
 msgstr ""
+"典型的实现会附带适宜的参数使用 ``super().__new__(cls[, ...])``，通过超类的 :meth:`__new__` "
+"方法来创建一个类的新实例，然后根据需要修改新创建的实例再将其返回。"
 
 #: ../../reference/datamodel.rst:1166
 msgid ""
@@ -1606,12 +1611,14 @@ msgid ""
 "where *self* is the new instance and the remaining arguments are the same as"
 " were passed to :meth:`__new__`."
 msgstr ""
+"如果 :meth:`__new__` 返回一个 *cls* 的实例，则新实例的 :meth:`__init__` 方法会在之后被执行，例如 "
+"``__init__(self[, ...])``，其中 *self* 为新实例，其余的参数与被传递给 :meth:`__new__` 的相同。"
 
 #: ../../reference/datamodel.rst:1171
 msgid ""
 "If :meth:`__new__` does not return an instance of *cls*, then the new "
 "instance's :meth:`__init__` method will not be invoked."
-msgstr ""
+msgstr "如果 :meth:`__new__` 未返回一个 *cls* 的实例，则新实例的 :meth:`__init__` 方法就不会被执行。"
 
 #: ../../reference/datamodel.rst:1174
 msgid ""
@@ -1620,6 +1627,8 @@ msgid ""
 "commonly overridden in custom metaclasses in order to customize class "
 "creation."
 msgstr ""
+":meth:`__new__` 的目的主要是允许不可变类型的子类 (例如 int, str 或 tuple) "
+"定制实例创建过程。它也常会在自定义元类中被重载以便定制类创建过程。"
 
 #: ../../reference/datamodel.rst:1183
 msgid ""
@@ -1630,6 +1639,9 @@ msgid ""
 " ensure proper initialization of the base class part of the instance; for "
 "example: ``super().__init__([args...])``."
 msgstr ""
+"在实例 (通过 :meth:`__new__`) 被创建之后，返回调用者之前调用。其参数与传递给类构造器表达式的参数相同。一个基类如果有 "
+":meth:`__init__` 方法，则其所派生的类如果也有 :meth:`__init__` "
+"方法，就必须显式地调用它以确保实例基类部分的正确初始化；例如: ``super().__init__([args...])``."
 
 #: ../../reference/datamodel.rst:1190
 msgid ""
@@ -1638,6 +1650,9 @@ msgid ""
 "it), no non-``None`` value may be returned by :meth:`__init__`; doing so "
 "will cause a :exc:`TypeError` to be raised at runtime."
 msgstr ""
+"因为对象是由 :meth:`__new__` 和 :meth:`__init__` 协作构造完成的 (由 :meth:`__new__` 创建，并由 "
+":meth:`__init__` 定制)，所以 :meth:`__init__` 返回的值只能是 ``None``，否则会在运行时引发 "
+":exc:`TypeError`。"
 
 #: ../../reference/datamodel.rst:1203
 msgid ""
