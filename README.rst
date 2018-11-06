@@ -367,7 +367,7 @@ Python docs 使用 reStructuredText 标记语言编写，因此我们在翻译�
 ============= ==================
 原文          翻译
 ============= ==================
-argument      参数、实参、形参
+argument      参数、实参
 attribute     属性
 boolean       boolean（布尔）
 class         class（类、类型）
@@ -394,7 +394,7 @@ module        module（模块）
 object        object（对象）
 operand       operand
 operator      操作符
-parameter     参数、实参、形参
+parameter     形参
 prompt        prompt
 return        返回
 set           set（集合）
