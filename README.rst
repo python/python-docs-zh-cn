@@ -385,8 +385,8 @@ index         索引
 instance      实例
 int           int（整型）
 interpreter   解释器
-iterate       跌代
-iterater      跌代器
+iterate       迭代
+iterater      迭代器
 list          list（列表）
 loop          循环
 method        method（方法）
