@@ -3155,7 +3155,7 @@ msgid ""
 "corresponding to operations that are not supported by the particular kind of"
 " number implemented (e.g., bitwise operations for non-integral numbers) "
 "should be left undefined."
-msgstr ""
+msgstr "定义以下方法即可模拟数字类型。特定种类的数字不支持的运算（例如非整数不能进行位运算）所对应的方法应当保持未定义状态。"
 
 #: ../../reference/datamodel.rst:2277
 msgid ""
@@ -3170,12 +3170,18 @@ msgid ""
 "an optional third argument if the ternary version of the built-in "
 ":func:`pow` function is to be supported."
 msgstr ""
+"调用这些方法来实现二进制算术运算 (``+``, ``-``, ``*``, ``@``, ``/``, ``//``, ``%``, "
+":func:`divmod`, :func:`pow`, ``**``, ``<<``, ``>>``, ``&``, ``^``, "
+"``|``)。例如，求表达式 ``x + y`` 的值，其中 *x* 是具有 :meth:`__add__` 方法的类的一个实例，则会调用 "
+"``x.__add__(y)``。:meth:`__divmod__` 方法应该等价于使用 :meth:`__floordiv__` 和 "
+":meth:`__mod__`，它不应该被关联到 :meth:`__truediv__`。请注意如果要支持三元版本的内置 :func:`pow` "
+"函数，则 :meth:`__pow__` 的定义应该接受可选的第三个参数。"
 
 #: ../../reference/datamodel.rst:2288
 msgid ""
 "If one of those methods does not support the operation with the supplied "
 "arguments, it should return ``NotImplemented``."
-msgstr ""
+msgstr "如果这些方法中的某一个不支持与所提供参数进行运算，它应该返回 ``NotImplemented``。"
 
 #: ../../reference/datamodel.rst:2311
 msgid ""
@@ -3188,12 +3194,17 @@ msgid ""
 "where *y* is an instance of a class that has an :meth:`__rsub__` method, "
 "``y.__rsub__(x)`` is called if ``x.__sub__(y)`` returns *NotImplemented*."
 msgstr ""
+"调用这些方法来实现具有反射（交换）操作数的二进制算术运算 (``+``, ``-``, ``*``, ``@``, ``/``, ``//``, "
+"``%``, :func:`divmod`, :func:`pow`, ``**``, ``<<``, ``>>``, ``&``, ``^``, "
+"``|``)。这些成员函数仅会在左操作数不支持相应运算 [#]_ 且两个操作数类型不同时被调用。[#]_ 例如，求表达式 ``x - y`` 的值，其中"
+" *y* 是具有 :meth:`__rsub__` 方法的类的一个实例，则当 ``x.__sub__(y)`` 返回 *NotImplemented* "
+"时会调用 ``y.__rsub__(x)``。"
 
 #: ../../reference/datamodel.rst:2322
 msgid ""
 "Note that ternary :func:`pow` will not try calling :meth:`__rpow__` (the "
 "coercion rules would become too complicated)."
-msgstr ""
+msgstr "请注意三元版的 :func:`pow` 并不会尝试调用 :meth:`__rpow__` (因为强制转换规则会太过复杂)。"
 
 #: ../../reference/datamodel.rst:2327
 msgid ""
@@ -3202,6 +3213,7 @@ msgid ""
 "will be called before the left operand's non-reflected method.  This "
 "behavior allows subclasses to override their ancestors' operations."
 msgstr ""
+"如果右操作数类型为左操作数类型的一个子类，且该子类提供了指定运算的反射方法，则此方法会先于左操作数的非反射方法被调用。此行为可允许子类重载其祖先类的运算符。"
 
 #: ../../reference/datamodel.rst:2347
 msgid ""
