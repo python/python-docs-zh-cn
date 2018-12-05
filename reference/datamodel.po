@@ -3424,6 +3424,8 @@ msgid ""
 "method. :term:`Coroutine` objects returned from :keyword:`async def` "
 "functions are awaitable."
 msgstr ""
+":term:`awaitable` 对象主要实现了 :meth:`__await__` 方法。 从 :keyword:`async def` 函数返回的"
+" :term:`Coroutine` 对象即属于可等待对象。"
 
 #: ../../reference/datamodel.rst:2559
 msgid ""
@@ -3431,6 +3433,8 @@ msgid ""
 "with :func:`types.coroutine` or :func:`asyncio.coroutine` are also "
 "awaitable, but they do not implement :meth:`__await__`."
 msgstr ""
+"从带有 :func:`types.coroutine` 或 :func:`asyncio.coroutine` 装饰器的生成器返回的 "
+":term:`generator iterator` 对象也属于可等待对象，但它们并未实现 :meth:`__await__`。"
 
 #: ../../reference/datamodel.rst:2565
 msgid ""
@@ -3438,10 +3442,12 @@ msgid ""
 ":term:`awaitable` objects.  For instance, :class:`asyncio.Future` implements"
 " this method to be compatible with the :keyword:`await` expression."
 msgstr ""
+"必须返回一个 :term:`iterator`。 应当被用来实现 :term:`awaitable` 对象。 "
+"例如，:class:`asyncio.Future` 实现了此方法以与 :keyword:`await` 表达式相兼容。"
 
 #: ../../reference/datamodel.rst:2571
 msgid ":pep:`492` for additional information about awaitable objects."
-msgstr ""
+msgstr ":pep:`492` 了解有关可等待对象的详细信息。"
 
 #: ../../reference/datamodel.rst:2577
 msgid "Coroutine Objects"
@@ -3457,6 +3463,10 @@ msgid ""
 "coroutine raises an exception, it is propagated by the iterator.  Coroutines"
 " should not directly raise unhandled :exc:`StopIteration` exceptions."
 msgstr ""
+":term:`Coroutine` 对象属于 :term:`awaitable` 对象。 协程的执行可通过调用 :meth:`__await__` "
+"并迭代其结果来进行控制。 当协程结束执行并返回时，迭代器会引发 :exc:`StopIteration`，该异常的 "
+":attr:`~StopIteration.value` 属性将指向返回值。 如果协程引发了异常，它会被迭代器所传播。 协程不应该直接引发未处理的 "
+":exc:`StopIteration` 异常。"
 
 #: ../../reference/datamodel.rst:2587
 msgid ""
@@ -3464,10 +3474,12 @@ msgid ""
 "of generators (see :ref:`generator-methods`).  However, unlike generators, "
 "coroutines do not directly support iteration."
 msgstr ""
+"协程也具有下面列出的方法，它们类似于生成器的对应方法 (参见 :ref:`generator-methods`)。 "
+"但是，与生成器不同，协程并不直接支持迭代。"
 
 #: ../../reference/datamodel.rst:2591
 msgid "It is a :exc:`RuntimeError` to await on a coroutine more than once."
-msgstr ""
+msgstr "等待一个协程超过一次将引发 :exc:`RuntimeError`。"
 
 #: ../../reference/datamodel.rst:2597
 msgid ""
@@ -3479,6 +3491,9 @@ msgid ""
 "exception) is the same as when iterating over the :meth:`__await__` return "
 "value, described above."
 msgstr ""
+"开始或恢复协程的执行。 如果 *value* 为 ``None``，则这相当于前往 :meth:`__await__` 所返回迭代器的下一项。 如果 "
+"*value* 不为 ``None``，此方法将委托给导致协程挂起的迭代器的 :meth:`~generator.send` 方法。 "
+"其结果（返回值，:exc:`StopIteration` 或是其他异常）将与上述对 :meth:`__await__` 返回值进行迭代的结果相同。"
 
 #: ../../reference/datamodel.rst:2607
 msgid ""
@@ -3490,6 +3505,9 @@ msgid ""
 " the :meth:`__await__` return value, described above.  If the exception is "
 "not caught in the coroutine, it propagates back to the caller."
 msgstr ""
+"在协程内引发指定的异常。 此方法将委托给导致协程挂起的迭代器的 :meth:`~generator.throw` 方法，如果存在该方法。 "
+"否则的话，异常会在挂起点被引发。 其结果（返回值，:exc:`StopIteration` 或是其他异常）将与上述对 :meth:`__await__`"
+" 返回值进行迭代的结果相同。 如果异常未在协程内被捕获，则将回传给调用者。"
 
 #: ../../reference/datamodel.rst:2618
 msgid ""
@@ -3500,16 +3518,19 @@ msgid ""
 "causing the coroutine to immediately clean itself up. Finally, the coroutine"
 " is marked as having finished executing, even if it was never started."
 msgstr ""
+"此方法会使得协程清理自身并退出。 如果协程被挂起，此方法会先委托给导致协程挂起的迭代器的 :meth:`~generator.close` "
+"方法，如果存在该方法。 然后它会在挂起点引发 :exc:`GeneratorExit`，使得协程立即清理自身。 "
+"最后，协程会被标记为已结束执行，即使它根本未被启动。"
 
 #: ../../reference/datamodel.rst:2626
 msgid ""
 "Coroutine objects are automatically closed using the above process when they"
 " are about to be destroyed."
-msgstr ""
+msgstr "当协程对象将要被销毁时，会使用以上处理过程来自动关闭。"
 
 #: ../../reference/datamodel.rst:2632
 msgid "Asynchronous Iterators"
-msgstr ""
+msgstr "异步迭代器"
 
 #: ../../reference/datamodel.rst:2634
 msgid ""
