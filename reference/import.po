@@ -317,6 +317,9 @@ msgid ""
 " to ``None``, forcing the next import of the module to result in a "
 ":exc:`ModuleNotFoundError`."
 msgstr ""
+":data:`sys.modules` 是可写的。 删除一个键不会销毁关联的模块（因为其他模块可能还在引用它），但会使得该名称的模块在缓存中不可用，导致"
+" Python 在下次导入时需要重新搜索该名称的模块。 键也可以被同仁为 ``None``，这将导致下次导入该模块时引发 "
+":exc:`ModuleNotFoundError`。"
 
 #: ../../reference/import.rst:198
 msgid ""
@@ -326,10 +329,13 @@ msgid ""
 ":func:`importlib.reload` will reuse the *same* module object, and simply "
 "reinitialise the module contents by rerunning the module's code."
 msgstr ""
+"但是要小心，因为如果你还保有对某个模块对象的引用，同时停用其在 :data:`sys.modules` "
+"中的缓存条目，然后又再次导入该名称的模块，则前后两个模块对象将 *不是* 同一个。 相反地，:func:`importlib.reload` 将重用 "
+"*同一个* 模块对象，并简单地通过重新运行模块的代码来重新初始化模块内容。"
 
 #: ../../reference/import.rst:206
 msgid "Finders and loaders"
-msgstr ""
+msgstr "查找器和加载器"
 
 #: ../../reference/import.rst:213
 msgid ""
@@ -342,6 +348,10 @@ msgid ""
 "<importer>` - they return themselves when they find that they can load the "
 "requested module."
 msgstr ""
+"如果指定名称的模块在 :data:`sys.modules` 找不到，则将发起调用 Python 的导入协议以查找和加载该模块。 "
+"此协议由两个概念性模块构成，即 :term:`查找器 <finder>` 和 :term:`加载器 <loader>`。 "
+"查找器的任务是确定是否能使用其所知的策略找到该名称的模块。 同时实现这两种接口的对象称为 :term:`导入器 <importer>` —— "
+"它们在确定能加载所需的模块时会返回其自身。"
 
 #: ../../reference/import.rst:221
 msgid ""
