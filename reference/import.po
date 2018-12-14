@@ -400,14 +400,14 @@ msgstr ""
 
 #: ../../reference/import.rst:245
 msgid "Import hooks"
-msgstr ""
+msgstr "导入钩子"
 
 #: ../../reference/import.rst:255
 msgid ""
 "The import machinery is designed to be extensible; the primary mechanism for"
 " this are the *import hooks*.  There are two types of import hooks: *meta "
 "hooks* and *import path hooks*."
-msgstr ""
+msgstr "导入机制被设计为可扩展；其中的基本机制是 *导入钩子*。 导入钩子有两种类型: *元钩子* 和 *导入路径钩子*。"
 
 #: ../../reference/import.rst:259
 msgid ""
@@ -417,6 +417,9 @@ msgid ""
 "modules, or even built-in modules.  Meta hooks are registered by adding new "
 "finder objects to :data:`sys.meta_path`, as described below."
 msgstr ""
+"元钩子在导入过程开始时被调用，此时任何其他导入过程尚未发生，但 :data:`sys.modules` 缓存查找除外。 这允许元钩子重载 "
+":data:`sys.path` 过程、冻结模块甚至内置模块。 元钩子的注册是通过向 :data:`sys.meta_path` "
+"添加新的查找器对象，具体如下所述。"
 
 #: ../../reference/import.rst:265
 msgid ""
@@ -425,10 +428,13 @@ msgid ""
 "item is encountered.  Import path hooks are registered by adding new "
 "callables to :data:`sys.path_hooks` as described below."
 msgstr ""
+"导入路径钩子是作为 :data:`sys.path` (或 ``package.__path__``) "
+"过程的一部分，在遇到它们所关联的路径项的时候被调用。 导入路径钩子的注册是通过向 :data:`sys.path_hooks` "
+"添加新的可调用对象，具体如下所述。"
 
 #: ../../reference/import.rst:272
 msgid "The meta path"
-msgstr ""
+msgstr "元路径"
 
 #: ../../reference/import.rst:278
 msgid ""
@@ -441,6 +447,10 @@ msgid ""
 "meta path finder can use any strategy it wants to determine whether it can "
 "handle the named module or not."
 msgstr ""
+"当指定名称的模块在 :data:`sys.modules` 中找不到时，Python 会接着搜索 "
+":data:`sys.meta_path`，其中包含元路径查找器对象列表。 这些查找器按顺序被查询以确定它们是否知道如何处理该名称的模块。 "
+"元路径查找器必须实现名为 :meth:`~importlib.abc.MetaPathFinder.find_spec()` "
+"的方法，该方法接受三个参数：名称、导入路径和目标模块（可选）。 元路径查找器可使用任何策略来确定它是否能处理指定名称的模块。"
 
 #: ../../reference/import.rst:287
 msgid ""
@@ -450,6 +460,9 @@ msgid ""
 "returning a spec, then a :exc:`ModuleNotFoundError` is raised.  Any other "
 "exceptions raised are simply propagated up, aborting the import process."
 msgstr ""
+"如果元路径查找器知道如何处理指定名称的模块，它将返回一个说明对象。 如果它不能处理该名称的模块，则会返回 ``None``。 如果 "
+":data:`sys.meta_path` 处理过程到达列表末尾仍未返回说明对象，则将引发 :exc:`ModuleNotFoundError`。 "
+"任何其他被引发异常将直接向上传播，并放弃导入过程。"
 
 #: ../../reference/import.rst:293
 msgid ""
@@ -464,6 +477,11 @@ msgid ""
 "existing module object that will be the target of loading later. The import "
 "system passes in a target module only during reload."
 msgstr ""
+"元路径查找器的 :meth:`~importlib.abc.MetaPathFinder.find_spec()` 方法调用带有两到三个参数。 "
+"第一个是被导入模块的完整限定名称，例如 ``foo.bar.baz``。 第二个参数是供模块搜索使用的路径条目。 对于最高层级模块，第二个参数为 "
+"``None``，但对于子模块或子包，第二个参数为父包 ``__path__`` 属性的值。 如果相应的 ``__path__`` 属性无法访问，将引发"
+" :exc:`ModuleNotFoundError`。 第三个参数是一个将被作为稍后加载目标的现有模块对象。 "
+"导入系统仅会在重加载期间传入一个目标模块。"
 
 #: ../../reference/import.rst:304
 msgid ""
