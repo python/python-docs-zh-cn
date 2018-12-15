@@ -495,13 +495,18 @@ msgid ""
 "traversal will call ``mpf.find_spec(\"foo.bar.baz\", foo.bar.__path__, "
 "None)``."
 msgstr ""
+"对于单个导入请求可以多次遍历元路径。 例如，假设所涉及的模块都尚未被缓存，则导入 ``foo.bar.baz`` "
+"将首先执行顶级的导入，在每个元路径查找器 (``mpf``) 上调用 ``mpf.find_spec(\"foo\", None, None)``。 "
+"在导入 ``foo`` 之后，``foo.bar`` 将通过第二次遍历元路径来导入，调用 ``mpf.find_spec(\"foo.bar\", "
+"foo.__path__, None)``。 一旦 ``foo.bar`` 完成导入，最后一次遍历将调用 "
+"``mpf.find_spec(\"foo.bar.baz\", foo.bar.__path__, None)``。"
 
 #: ../../reference/import.rst:314
 msgid ""
 "Some meta path finders only support top level imports. These importers will "
 "always return ``None`` when anything other than ``None`` is passed as the "
 "second argument."
-msgstr ""
+msgstr "有些元路径查找器只支持顶级导入。 当把 ``None`` 以外的对象作为第三个参数传入时，这些导入器将总是返回 ``None``。"
 
 #: ../../reference/import.rst:318
 msgid ""
@@ -510,6 +515,9 @@ msgid ""
 "modules, and one that knows how to import modules from an :term:`import "
 "path` (i.e. the :term:`path based finder`)."
 msgstr ""
+"Python 的默认 :data:`sys.meta_path` "
+"具有三种元路径查找器，一种知道如何导入内置模块，一种知道如何导入冻结模块，还有一种知道如何导入来自 :term:`import path` 的模块 (即"
+" :term:`path based finder`)。"
 
 #: ../../reference/import.rst:323
 msgid ""
@@ -518,27 +526,30 @@ msgid ""
 " now deprecated.  While it will continue to work without change, the import "
 "machinery will try it only if the finder does not implement ``find_spec()``."
 msgstr ""
+"元路径查找器的 :meth:`~importlib.abc.MetaPathFinder.find_spec` 方法替代了 "
+":meth:`~importlib.abc.MetaPathFinder.find_module`，后者现已弃用，它将继续可用但不会再做改变，导入机制仅会在查找器未实现"
+" ``find_spec()`` 时尝试使用它。"
 
 #: ../../reference/import.rst:332
 msgid "Loading"
-msgstr ""
+msgstr "加载"
 
 #: ../../reference/import.rst:334
 msgid ""
 "If and when a module spec is found, the import machinery will use it (and "
 "the loader it contains) when loading the module.  Here is an approximation "
 "of what happens during the loading portion of import::"
-msgstr ""
+msgstr "当一个模块说明被找到时，导入机制将在加载该模块时使用它（及其所包含的加载器）。 下面是导入的加载部分所发生过程的简要说明::"
 
 #: ../../reference/import.rst:369
 msgid "Note the following details:"
-msgstr ""
+msgstr "请注意以下细节:"
 
 #: ../../reference/import.rst:371
 msgid ""
 "If there is an existing module object with the given name in "
 ":data:`sys.modules`, import will have already returned it."
-msgstr ""
+msgstr "如果在 :data:`sys.modules` 中存在指定名称的模块对象，导入操作会已经将其返回。"
 
 #: ../../reference/import.rst:374
 msgid ""
@@ -548,6 +559,9 @@ msgid ""
 "prevents unbounded recursion in the worst case and multiple loading in the "
 "best."
 msgstr ""
+"在加载器执行模块代码之前，该模块将存在于 :data:`sys.modules` 中。 "
+"这一点很关键，因为该模块代码可能（直接或间接地）导入其自身；预先将其添加到 :data:`sys.modules` "
+"可防止在最坏情况下的无限递归和最好情况下的多次加载。"
 
 #: ../../reference/import.rst:380
 msgid ""
@@ -557,6 +571,9 @@ msgid ""
 "side-effect, must remain in the cache.  This contrasts with reloading where "
 "even the failing module is left in :data:`sys.modules`."
 msgstr ""
+"如果加载失败，则该模块 -- 只限加载失败的模块 -- 将从 :data:`sys.modules` 中移除。 任何已存在于 "
+":data:`sys.modules` 缓存的模块，以及任何作为附带影响被成功加载的模块仍会保留在缓存中。 "
+"这与重新加载不同，后者会把即使加载失败的模块也保留在 :data:`sys.modules` 中。"
 
 #: ../../reference/import.rst:386
 msgid ""
