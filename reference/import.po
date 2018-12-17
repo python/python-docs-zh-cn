@@ -380,7 +380,7 @@ msgid ""
 "module."
 msgstr ""
 "查找器并不真正加载模块。 如果它们能找到指定名称的模块，会返回一个 "
-":dfn:`模块说明`，这是对模块导入相关信息的封装，供后续导入机制用于在加载模块时使用。"
+":dfn:`模块规格说明`，这是对模块导入相关信息的封装，供后续导入机制用于在加载模块时使用。"
 
 #: ../../reference/import.rst:235
 msgid ""
@@ -395,7 +395,7 @@ msgid ""
 "directly, whereas now they return module specs which *contain* loaders. "
 "Loaders are still used during import but have fewer responsibilities."
 msgstr ""
-"在之前的 Python 版本中，查找器会直接返回 :term:`加载器 <loader>`，现在它们则返回模块说明，其中 *包含* 加载器。 "
+"在之前的 Python 版本中，查找器会直接返回 :term:`加载器 <loader>`，现在它们则返回模块规格说明，其中 *包含* 加载器。 "
 "加载器仍然在导入期间被使用，但负担的任务有所减少。"
 
 #: ../../reference/import.rst:245
@@ -650,7 +650,7 @@ msgid ""
 " a spec with the loader set to ``self``."
 msgstr ""
 "在许多情况下，查找器和加载器可以是同一对象；在此情况下 :meth:`~importlib.abc.MetaPathFinder.find_spec` "
-"方法将返回一个说明，其中加载器会被设为 ``self``。"
+"方法将返回一个规格说明，其中加载器会被设为 ``self``。"
 
 #: ../../reference/import.rst:425
 msgid ""
@@ -661,10 +661,13 @@ msgid ""
 "the module object.  If the method returns ``None``, the import machinery "
 "will create the new module itself."
 msgstr ""
+"模块加载器可以选择通过实现 :meth:`~importlib.abc.Loader.create_module` 方法在加载期间创建模块对象。 "
+"它接受一个参数，即模块规格说明，并返回新的模块对象供加载期间使用。 ``create_module()`` 不需要在模块对象上设置任何属性。 "
+"如果模块返回 ``None``，导入机制将自行创建新模块。"
 
 #: ../../reference/import.rst:432
 msgid "The :meth:`~importlib.abc.Loader.create_module` method of loaders."
-msgstr ""
+msgstr "加载器的 :meth:`~importlib.abc.Loader.create_module` 方法。"
 
 #: ../../reference/import.rst:435
 msgid ""
@@ -672,6 +675,8 @@ msgid ""
 ":meth:`~importlib.abc.Loader.exec_module` and the import machinery assumed "
 "all the boilerplate responsibilities of loading."
 msgstr ""
+":meth:`~importlib.abc.Loader.load_module` 方法被 "
+":meth:`~importlib.abc.Loader.exec_module` 所替代，导入机制会对加载的所有样板责任作出假定。"
 
 #: ../../reference/import.rst:440
 msgid ""
@@ -680,6 +685,8 @@ msgid ""
 "also implement ``exec_module()``.  However, ``load_module()`` has been "
 "deprecated and loaders should implement ``exec_module()`` instead."
 msgstr ""
+"为了与现有的加载器兼容，导入机制会使用导入器的 ``load_module()`` 方法，如果它存在且导入器也未实现 "
+"``exec_module()``。 但是，``load_module()`` 现已弃用，加载器应该转而实现 ``exec_module()``。"
 
 #: ../../reference/import.rst:445
 msgid ""
@@ -687,6 +694,7 @@ msgid ""
 "functionality described above in addition to executing the module.  All the "
 "same constraints apply, with some additional clarification:"
 msgstr ""
+"除了执行模块之外，``load_module()`` 方法必须实现上文描述的所有样板加载功能。 所有相同的限制仍然适用，并带有一些附加规定:"
 
 #: ../../reference/import.rst:449
 msgid ""
@@ -696,12 +704,15 @@ msgid ""
 " not exist in :data:`sys.modules`, the loader must create a new module "
 "object and add it to :data:`sys.modules`."
 msgstr ""
+"如果 :data:`sys.modules` 中存在指定名称的模块对象，加载器必须使用已存在的模块。 （否则 "
+":func:`importlib.reload` 将无法正确工作。） 如果该名称模块不存在于 :data:`sys.modules` "
+"中，加载器必须创建一个新的模块对象并将其加入 :data:`sys.modules`。"
 
 #: ../../reference/import.rst:455
 msgid ""
 "The module *must* exist in :data:`sys.modules` before the loader executes "
 "the module code, to prevent unbounded recursion or multiple loading."
-msgstr ""
+msgstr "在加载器执行模块代码之前，模块 *必须* 存在于 :data:`sys.modules` 之中，以防止无限递归或多次加载。"
 
 #: ../../reference/import.rst:459
 msgid ""
@@ -709,22 +720,27 @@ msgid ""
 ":data:`sys.modules`, but it must remove **only** the failing module(s), and "
 "only if the loader itself has loaded the module(s) explicitly."
 msgstr ""
+"如果加载失败，加载器必须移除任何它已加入到 :data:`sys.modules` 中的模块，但它必须 **仅限** "
+"移除加载失败的模块，且所移除的模块应为加载器自身显式加载的。"
 
 #: ../../reference/import.rst:464
 msgid ""
 "A :exc:`DeprecationWarning` is raised when ``exec_module()`` is defined but "
 "``create_module()`` is not."
 msgstr ""
+"当 ``exec_module()`` 已定义但 ``create_module()`` 未定义时将引发 "
+":exc:`DeprecationWarning`。"
 
 #: ../../reference/import.rst:468
 msgid ""
 "An :exc:`ImportError` is raised when ``exec_module()`` is defined but "
 "``create_module()`` is not."
 msgstr ""
+"当 ``exec_module()`` 已定义但 ``create_module()`` 未定义时将引发 :exc:`ImportError`。"
 
 #: ../../reference/import.rst:473
 msgid "Submodules"
-msgstr ""
+msgstr "子模块"
 
 #: ../../reference/import.rst:475
 msgid ""
@@ -735,16 +751,20 @@ msgid ""
 "``spam.foo``, ``spam`` will have an attribute ``foo`` which is bound to the "
 "submodule.  Let's say you have the following directory structure::"
 msgstr ""
+"当使用任意机制 (例如 ``importlib`` API, ``import`` 及 ``import-from`` 语句或者内置的 "
+"``__import__()``) 加载一个子模块时，父模块的命名空间中会添加一个对子模块对象的绑定。 例如，如果包 ``spam`` 有一个子模块 "
+"``foo``，则在导入 ``spam.foo`` 之后，``spam`` 将具有一个 绑定到相应子模块的 ``foo`` 属性。 "
+"假如现在有如下的目录结构::"
 
 #: ../../reference/import.rst:487
 msgid "and ``spam/__init__.py`` has the following lines in it::"
-msgstr ""
+msgstr "并且 ``spam/__init__.py`` 中有如下几行内容::"
 
 #: ../../reference/import.rst:492
 msgid ""
 "then executing the following puts a name binding to ``foo`` and ``bar`` in "
 "the ``spam`` module::"
-msgstr ""
+msgstr "则执行如下代码将在 ``spam`` 模块中添加对 ``foo`` 和 ``bar`` 的名称绑定::"
 
 #: ../../reference/import.rst:501
 msgid ""
