@@ -1293,6 +1293,13 @@ msgid ""
 "file system encoding, UTF-8, or something else), and if the hook cannot "
 "decode the argument, it should raise :exc:`ImportError`."
 msgstr ""
+"如果路径条目不存在于缓存中，基于路径的查找器会迭代 :data:`sys.path_hooks` 中的每个可调用对象。 对此列表中的每个 "
+":term:`路径条目钩子 <path entry hook>` 的调用会带有一个参数，即要搜索的路径条目。 每个可调用对象或是返回可处理路径条目的 "
+":term:`path entry finder`，或是引发 :exc:`ImportError`。 基于路径的查找器使用 "
+":exc:`ImportError` 来表示钩子无法找到与 :term:`path entry` 相对应的 :term:`path entry "
+"finder`。 该异常会被忽略并继续进行 :term:`import path` 的迭代。 "
+"每个钩子应该期待接收一个字符串或字节串对象；字节串对象的编码由钩子决定（例如可以是文件系统使用的编码  UTF-8 "
+"或其它编码），如果钩子无法解码参数，它应该引发 :exc:`ImportError`。"
 
 #: ../../reference/import.rst:825
 msgid ""
@@ -1303,6 +1310,10 @@ msgid ""
 " this path entry) and return ``None``, indicating that this :term:`meta path"
 " finder` could not find the module."
 msgstr ""
+"如果 :data:`sys.path_hooks` 迭代结束时没有返回 :term:`path entry finder`，则基于路径的查找器 "
+":meth:`~importlib.machinery.PathFinder.find_spec` 方法将在 "
+":data:`sys.path_importer_cache` 中存入 ``None`` (表示此路径条目没有对应的查找器) 并返回 "
+"``None``，表示此 :term:`meta path finder` 无法找到该模块。"
 
 #: ../../reference/import.rst:832
 msgid ""
@@ -1311,6 +1322,8 @@ msgid ""
 "used to ask the finder for a module spec, which is then used when loading "
 "the module."
 msgstr ""
+"如果 :data:`sys.path_hooks` 中的某个 :term:`path entry hook` 可调用对象的返回值 *是* 一个 "
+":term:`path entry finder`，则以下协议会被用来向查找器请求一个模块的规格说明，并在加载该模块时被使用。"
 
 #: ../../reference/import.rst:837
 msgid ""
@@ -1323,10 +1336,14 @@ msgid ""
 ":meth:`importlib.machinery.PathFinder.find_spec` will be the actual current "
 "working directory and not the empty string."
 msgstr ""
+"当前工作目录 -- 由一个空字符串表示 -- 的处理方式与 :data:`sys.path` 中的其他条目略有不同。 "
+"首先，如果发现当前工作目录不存在，则 :data:`sys.path_importer_cache` 中不会存放任何值。 "
+"其次，每个模块查找会对当前工作目录的值进行全新查找。 第三，由 :data:`sys.path_importer_cache` 所使用并由 "
+":meth:`importlib.machinery.PathFinder.find_spec` 所返回的路径将是实际的当前工作目录而非空字符串。"
 
 #: ../../reference/import.rst:847
 msgid "Path entry finder protocol"
-msgstr ""
+msgstr "路径条目查找器协议"
 
 #: ../../reference/import.rst:849
 msgid ""
