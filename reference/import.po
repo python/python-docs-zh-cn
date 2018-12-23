@@ -1372,6 +1372,8 @@ msgid ""
 "``None`` and \"submodule_search_locations\" to a list containing the "
 "portion."
 msgstr ""
+"为了向导入机制提示该规格说明代表一个命名空间的 :term:`部分`。 路径条目查找器会将规格说明中的 \"loader\" 设为 ``None`` "
+"并将 \"submodule_search_locations\" 设为一个包含该部分的列表。"
 
 #: ../../reference/import.rst:863
 msgid ""
@@ -1380,6 +1382,10 @@ msgid ""
 ":meth:`~importlib.abc.PathEntryFinder.find_module`, both of which are now "
 "deprecated, but will be used if ``find_spec()`` is not defined."
 msgstr ""
+":meth:`~importlib.abc.PathEntryFinder.find_spec` 替代了 "
+":meth:`~importlib.abc.PathEntryFinder.find_loader` 和 "
+":meth:`~importlib.abc.PathEntryFinder.find_module`，后两者现在都已弃用，但会在 "
+"``find_spec()`` 未定义时被使用。"
 
 #: ../../reference/import.rst:869
 msgid ""
@@ -1388,6 +1394,8 @@ msgid ""
 " backward compatibility.  However, if ``find_spec()`` is implemented on the "
 "path entry finder, the legacy methods are ignored."
 msgstr ""
+"较旧的路径条目查找器可能会实现这两个已弃用的方法中的一个而没有实现 ``find_spec()``。 为保持向后兼容，这两个方法仍会被接受。 "
+"但是，如果在路径条目查找器上实现了 ``find_spec()``，这两个遗留方法就会被忽略。"
 
 #: ../../reference/import.rst:874
 msgid ""
@@ -1403,6 +1411,11 @@ msgid ""
 "the loader, the second item of the 2-tuple return value must be a sequence, "
 "although it can be empty."
 msgstr ""
+":meth:`~importlib.abc.PathEntryFinder.find_loader` 接受一个参数，即被导入模块的完整限定名称。 "
+"``find_loader()`` 会返回一个二元组，其中第一项为加载器，第二项为一个命名空间 :term:`部分`。 当第一项（即加载器）为 "
+"``None`` 时，这意味着路径条目查找器虽然没有指定名称模块的加载器，但它知道该路径条目为指定名称模块提供了一个命名空间部分。 "
+"这几乎总是表明一种情况，即 Python 被要求导入一个并不以文件系统中的实体形式存在的命名空间包。 当一个路径条目查找器返回的加载器为 "
+"``None`` 时，该二元组返回值的第二项必须为一个序列，不过它也可以为空。"
 
 #: ../../reference/import.rst:886
 msgid ""
@@ -1410,6 +1423,8 @@ msgid ""
 "ignored and the loader is returned from the path based finder, terminating "
 "the search through the path entries."
 msgstr ""
+"如果 ``find_loader()`` 所返回加载器的值不为 "
+"``None``，则该部分会被忽略，而该加载器会自基于路径的查找器返回，终止对路径条目的搜索。"
 
 #: ../../reference/import.rst:890
 msgid ""
@@ -1420,6 +1435,8 @@ msgid ""
 "(they are expected to record the appropriate path information from the "
 "initial call to the path hook)."
 msgstr ""
+"为了向后兼容其他导入协议的实现，许多路径条目查找器也同样支持元路径查找器所支持的传统 ``find_module()`` 方法。 但是路径条目查找器 "
+"``find_module()`` 方法的调用绝不会带有 ``path`` 参数（它们被期望记录来自对路径钩子初始调用的恰当路径信息）。"
 
 #: ../../reference/import.rst:897
 msgid ""
@@ -1429,10 +1446,13 @@ msgid ""
 "entry finder, the import system will always call ``find_loader()`` in "
 "preference to ``find_module()``."
 msgstr ""
+"路径条目查找器的 ``find_module()`` 方法已弃用，因为它不允许路径条目查找器为命名空间包提供部分。 如果 "
+"``find_loader()`` 和 ``find_module()`` 同时存在于一个路径条目查找器中，导入系统将总是调用 "
+"``find_loader()`` 而不选择 ``find_module()``。"
 
 #: ../../reference/import.rst:905
 msgid "Replacing the standard import system"
-msgstr ""
+msgstr "替换标准导入系统"
 
 #: ../../reference/import.rst:907
 msgid ""
