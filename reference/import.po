@@ -1481,10 +1481,13 @@ msgid ""
 "``None``. The latter indicates that the meta path search should continue, "
 "while raising an exception terminates it immediately."
 msgstr ""
+"想要选择性地预先防止在元路径上从一个钩子导入某些模块（而不是完全禁用标准导入系统），直接从 "
+":meth:`~importlib.abc.MetaPathFinder.find_spec` 引发 "
+":exc:`ModuleNotFoundError` 而非返回 ``None`` 就够了。 返回后者表示元路径搜索应当继续，而引发异常则会立即终止搜索。"
 
 #: ../../reference/import.rst:926
 msgid "Special considerations for __main__"
-msgstr ""
+msgstr "有关 __main__ 的特殊事项"
 
 #: ../../reference/import.rst:928
 msgid ""
@@ -1496,16 +1499,19 @@ msgid ""
 "initialized depends on the flags and other options with which the "
 "interpreter is invoked."
 msgstr ""
+"对于 Python 的导入系统来说 :mod:`__main__` 模块是一个特殊情况。 正如在 :ref:`另一节 <programs>` "
+"中所述，``__main__`` 模块是在解释器启动时直接初始化的，与 :mod:`sys` 和 :mod:`builtins` 很类似。 "
+"但是，与那两者不同，它并不被严格归类为内置模块。 这是因为 ``__main__`` 被初始化的方式依赖于发起调用解释器所附带的旗标和其他选项。"
 
 #: ../../reference/import.rst:939
 msgid "__main__.__spec__"
-msgstr ""
+msgstr "__main__.__spec__"
 
 #: ../../reference/import.rst:941
 msgid ""
 "Depending on how :mod:`__main__` is initialized, ``__main__.__spec__`` gets "
 "set appropriately or to ``None``."
-msgstr ""
+msgstr "根据 :mod:`__main__` 被初始化的方式，``__main__.__spec__`` 会被设置相应值或是 ``None``。"
 
 #: ../../reference/import.rst:944
 msgid ""
@@ -1514,6 +1520,8 @@ msgid ""
 " populated when the ``__main__`` module is loaded as part of executing a "
 "directory, zipfile or other :data:`sys.path` entry."
 msgstr ""
+"当 Python 附加 :option:`-m` 选项启动时，``__spec__`` 会被设为相应模块或包的模块规格说明。 ``__spec__`` "
+"也会在 ``__main__`` 模块作为执行某个目录，zip 文件或其它 :data:`sys.path` 条目的一部分加载时被填充。"
 
 #: ../../reference/import.rst:949
 msgid ""
@@ -1521,22 +1529,24 @@ msgid ""
 "``__main__.__spec__`` is set to ``None``, as the code used to populate the "
 ":mod:`__main__` does not correspond directly with an importable module:"
 msgstr ""
+"在 :ref:`其余的情况 <using-on-interface-options>` 下 ``__main__.__spec__`` 会被设为 "
+"``None``，因为用于填充 :mod:`__main__` 的代码不直接与可导入的模块相对应:"
 
 #: ../../reference/import.rst:953
 msgid "interactive prompt"
-msgstr ""
+msgstr "交互型提示"
 
 #: ../../reference/import.rst:954
 msgid ":option:`-c` option"
-msgstr ""
+msgstr ":option:`-c` 选项"
 
 #: ../../reference/import.rst:955
 msgid "running from stdin"
-msgstr ""
+msgstr "从 stdin 运行"
 
 #: ../../reference/import.rst:956
 msgid "running directly from a source or bytecode file"
-msgstr ""
+msgstr "直接从源码或字节码文件运行"
 
 #: ../../reference/import.rst:958
 msgid ""
@@ -1545,6 +1555,8 @@ msgid ""
 " the :option:`-m` switch if valid module metadata is desired in "
 ":mod:`__main__`."
 msgstr ""
+"请注意在最后一种情况中 ``__main__.__spec__`` 总是为 ``None``，*即使* 文件从技术上说可以作为一个模块被导入。 "
+"如果想要让 :mod:`__main__` 中的元数据生效，请使用 :option:`-m` 开关。"
 
 #: ../../reference/import.rst:963
 msgid ""
@@ -1554,6 +1566,9 @@ msgid ""
 "__name__ == \"__main__\":`` checks only execute when the module is used to "
 "populate the ``__main__`` namespace, and not during normal import."
 msgstr ""
+"还要注意即使是在 ``__main__`` 对应于一个可导入模块且 ``__main__.__spec__`` 被相应地设定时，它们仍会被视为 "
+"*不同的* 模块。 这是由于以下事实：使用 ``if __name__ == \"__main__\":``  检测来保护的代码块仅会在模块被用来填充 "
+"``__main__`` 命名空间时而非普通的导入时被执行。"
 
 #: ../../reference/import.rst:971
 msgid "Open issues"
