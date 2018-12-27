@@ -236,11 +236,8 @@ msgid ""
 "reached."
 msgstr ""
 "推导式的结构是一个单独表达式后面加至少一个 :keyword:`!for` 子句以及零个或更多个 :keyword:`!for` 或 "
-":keyword:`!if` 子句。 在这种情况下，新容器的元素将会通过解析每个In this case, the elements of the "
-"new container are those that would be produced by considering each of the "
-":keyword:`!for` or :keyword:`!if` clauses a block, nesting from left to "
-"right, and evaluating the expression to produce an element each time the "
-"innermost block is reached."
+":keyword:`!if` 子句。 在这种情况下，新容器的元素产生方式是将每个 :keyword:`!for` 或 :keyword:`!if` "
+"子句视为一个代码块，按从左至右的顺序嵌套，然后每次到达最内层代码块时就对表达式进行求值以产生一个元素。"
 
 #: ../../reference/expressions.rst:194
 msgid ""
@@ -249,6 +246,8 @@ msgid ""
 " This ensures that names assigned to in the target list don't \"leak\" into "
 "the enclosing scope."
 msgstr ""
+"不过，除了最左边 :keyword:`!for` 子句中的可迭代表达式，推导式是在另一个隐式嵌套的作用域内执行的。 "
+"这能确保赋给目标列表的名称不会“泄露”到外层的作用域。"
 
 #: ../../reference/expressions.rst:198
 msgid ""
@@ -259,6 +258,10 @@ msgid ""
 "enclosing scope as they may depend on the values obtained from the leftmost "
 "iterable. For example: ``[x*y for x in range(10) for y in range(x, x+10)]``."
 msgstr ""
+"最左边 :keyword:`!for` 子句中的可迭代表达式会直接在外层作用域中被求值，然后作为一个参数被传给隐式嵌套的作用域。 后续的 "
+":keyword:`!for` 子句以及最左侧 :keyword:`!for` "
+"子句中的任何筛选条件不能在外层作用域中被求值，因为它们可能依赖于从最左侧可迭代对象中获得的值。 例如: ``[x*y for x in "
+"range(10) for y in range(x, x+10)]``."
 
 #: ../../reference/expressions.rst:205
 msgid ""
@@ -268,6 +271,9 @@ msgid ""
 ":exc:`DeprecationWarning` when compiled, in Python 3.8+ they will emit "
 ":exc:`SyntaxError`)."
 msgstr ""
+"为了确保推导式得出的结果总是一个类型正确的容器，在隐式嵌套的作用域内禁止使用 ``yield`` 和 ``yield from`` 表达式 (在 "
+"Python 3.7 中，这样的表达式会在编译时引发 :exc:`DeprecationWarning`，在 Python 3.8+ 中它们将引发 "
+":exc:`SyntaxError`)。"
 
 #: ../../reference/expressions.rst:213
 msgid ""
@@ -282,10 +288,16 @@ msgid ""
 "asynchronous comprehension may suspend the execution of the coroutine "
 "function in which it appears. See also :pep:`530`."
 msgstr ""
+"从 Python 3.6 开始，在 :keyword:`async def` 函数中可以使用 :keyword:`!async for` 子句来迭代 "
+":term:`asynchronous iterator`。 在 :keyword:`!async def` "
+"函数中构建推导式可以通过在打头的表达式后加上 :keyword:`!for` 或 :keyword:`!async for` 子句，也可能包含额外的 "
+":keyword:`!for` 或 :keyword:`!async for` 子句，还可能使用 :keyword:`await` 表达式。 "
+"如果一个推导式包含 :keyword:`!async for` 子句或者 :keyword:`!await` 表达式，则被称为 "
+":dfn:`异步推导式`。 异步推导式可以暂停执行它所在的协程函数。 另请参阅 :pep:`530`。"
 
 #: ../../reference/expressions.rst:225
 msgid "Asynchronous comprehensions were introduced."
-msgstr ""
+msgstr "引入了异步推导式。"
 
 #: ../../reference/expressions.rst:228 ../../reference/expressions.rst:395
 msgid ""
