@@ -891,6 +891,9 @@ msgid ""
 "a function, a method or a data member).  It should be considered an "
 "implementation detail and subject to change without notice."
 msgstr ""
+"那种仅限从一个对象内部访问的“私有”实例变量在 Python 中并不存在。 但是，大多数 Python 代码都遵循这样一个约定：带有一个下划线的名称 "
+"(例如 ``_spam``) 应该被当作是 API 的非仅供部分 (无论它是函数、方法或是数据成员)。 "
+"这应当被视为一个实现细节，可能不经通知即加以改变。"
 
 #: ../../tutorial/classes.rst:678
 msgid ""
@@ -903,12 +906,15 @@ msgid ""
 "  This mangling is done without regard to the syntactic position of the "
 "identifier, as long as it occurs within the definition of a class."
 msgstr ""
+"由于存在对于类私有成员的有效使用场景（例如避免名称与子类所定义的名称相冲突），因此存在对此种机制的有限支持，称为 :dfn:`名称改写`。 任何形式为 "
+"``__spam`` 的标识符（至少带有两个前缀下划线，至多一个后缀下划线）的文本将被替换为 ``_classname__spam``，其中 "
+"``classname`` 为去除了前缀下划线的当前类名称。 这种改写不考虑标识符的句法位置，只要它出现在类定义内部就会进行。"
 
 #: ../../tutorial/classes.rst:687
 msgid ""
 "Name mangling is helpful for letting subclasses override methods without "
 "breaking intraclass method calls.  For example::"
-msgstr "名称修改有助于让子类重载方法而不破坏类内方法调用。例如::"
+msgstr "名称改写有助于让子类重载方法而不破坏类内方法调用。例如::"
 
 #: ../../tutorial/classes.rst:709
 msgid ""
@@ -917,13 +923,16 @@ msgid ""
 "the ``Mapping`` class  and ``_MappingSubclass__update`` in the "
 "``MappingSubclass`` class respectively."
 msgstr ""
+"上面的示例即使在 ``MappingSubclass`` 引入了一个 ``__update`` 标识符的情况下也不会出错，因为它会在 "
+"``Mapping`` 类中被替换为 ``_Mapping__update`` 而在 ``MappingSubclass`` 类中被替换为 "
+"``_MappingSubclass__update``。"
 
 #: ../../tutorial/classes.rst:714
 msgid ""
 "Note that the mangling rules are designed mostly to avoid accidents; it "
 "still is possible to access or modify a variable that is considered private."
 "  This can even be useful in special circumstances, such as in the debugger."
-msgstr "请注意，修剪规则主要是为了避免事故;它仍然可以访问或修改被视为私有的变量。这在特殊情况下甚至可能很有用，例如在调试器中。"
+msgstr "请注意，改写规则的设计主要是为了避免意外冲突；访问或修改被视为私有的变量仍然是可能的。这在特殊情况下甚至会很有用，例如在调试器中。"
 
 #: ../../tutorial/classes.rst:718
 msgid ""
@@ -934,10 +943,13 @@ msgid ""
 "applies to ``getattr()``, ``setattr()`` and ``delattr()``, as well as when "
 "referencing ``__dict__`` directly."
 msgstr ""
+"请注意传递给 ``exec()`` 或 ``eval()`` 的代码不会将发起调用类的类名视作当前类；这类似于 ``global`` "
+"语句的效果，因此这种效果仅限于同时经过字节码编译的代码。 同样的限制也适用于 ``getattr()``, ``setattr()`` 和 "
+"``delattr()``，以及对于 ``__dict__`` 的直接引用。"
 
 #: ../../tutorial/classes.rst:729
 msgid "Odds and Ends"
-msgstr "其余琐碎"
+msgstr "杂项说明"
 
 #: ../../tutorial/classes.rst:731
 msgid ""
@@ -945,7 +957,8 @@ msgid ""
 "or C \"struct\", bundling together a few named data items.  An empty class "
 "definition will do nicely::"
 msgstr ""
-"有时，使用类似于Pascal “record”或C “struct”的数据类型是有用的，将一些命名数据项捆绑在一起。定义一个空类就很适合::"
+"有时会需要使用类似于 Pascal 的“record”或 C 的“struct”这样的数据类型，将一些命名数据项捆绑在一起。 "
+"这种情况适合定义一个空类::"
 
 #: ../../tutorial/classes.rst:745
 msgid ""
