@@ -7,6 +7,7 @@
 # ww song <sww4718168@gmail.com>, 2018
 # Freesand Leo <yuqinju@163.com>, 2019
 # 叶浚安 <ye.pandaaaa906@gmail.com>, 2019
+# TX Lee <litmxs@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-01 10:14+0900\n"
 "PO-Revision-Date: 2017-02-16 23:30+0000\n"
-"Last-Translator: 叶浚安 <ye.pandaaaa906@gmail.com>, 2019\n"
+"Last-Translator: TX Lee <litmxs@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1174,18 +1175,23 @@ msgid ""
 "will block until all of the threads have made their :meth:`~Barrier.wait` "
 "calls. At this point, the threads are released simultaneously."
 msgstr ""
+"壁垒类提供了一个简单的同步原语mple synchronization primitive for use by a fixed number of "
+"threads that need to wait for each other.  Each of the threads tries to pass"
+" the barrier by calling the :meth:`~Barrier.wait` method and will block "
+"until all of the threads have made their :meth:`~Barrier.wait` calls. At "
+"this point, the threads are released simultaneously."
 
 #: ../../library/threading.rst:883
 msgid ""
 "The barrier can be reused any number of times for the same number of "
 "threads."
-msgstr ""
+msgstr "壁垒对象可以被多次使用，但进程的数量不能改变。"
 
 #: ../../library/threading.rst:885
 msgid ""
 "As an example, here is a simple way to synchronize a client and server "
 "thread::"
-msgstr ""
+msgstr "这是一个使用简便的方法实现客户端进程与服务端进程同步的例子："
 
 #: ../../library/threading.rst:905
 msgid ""
@@ -1194,6 +1200,9 @@ msgid ""
 "released.  *timeout* is the default timeout value if none is specified for "
 "the :meth:`wait` method."
 msgstr ""
+"创建一个需要 *parties* 个线程的壁垒对象。如果提供了 *action* "
+"参数（它应该是可调用的），它会在所有线程被释放时在其中一个线程中自动调用。 *timeout* 是默认的超时时间，如果没有在 :meth:`wait` "
+"方法中指定超时时间的话。"
 
 #: ../../library/threading.rst:912
 msgid ""
@@ -1202,6 +1211,8 @@ msgid ""
 "provided, it is used in preference to any that was supplied to the class "
 "constructor."
 msgstr ""
+"冲出壁垒。当壁垒中所有线程都已经调用了这个方法，它们将被同时从阻塞中释放。如果提供了 *timeout* 参数，这里的 *timeout* "
+"参数将优先于创建壁垒对象时提供的 *timeout* 被使用。"
 
 #: ../../library/threading.rst:917
 msgid ""
@@ -1209,36 +1220,38 @@ msgid ""
 "for each thread.  This can be used to select a thread to do some special "
 "housekeeping, e.g.::"
 msgstr ""
+"函数返回值是一个整数，取值范围在0到 *parties* -- "
+"1，每个线程中的返回值不相同。可以用于应对需要从所有线程中选择一个线程执行一些特别的工作，例如："
 
 #: ../../library/threading.rst:926
 msgid ""
 "If an *action* was provided to the constructor, one of the threads will have"
 " called it prior to being released.  Should this call raise an error, the "
 "barrier is put into the broken state."
-msgstr ""
+msgstr "如果创建壁垒对象时在构造函数中提供了 *action* 参数，它将在其中一个线程释放前被调用。如果此调用引发了异常，壁垒对象将进入损坏态。"
 
 #: ../../library/threading.rst:930
 msgid "If the call times out, the barrier is put into the broken state."
-msgstr ""
+msgstr "如果发生了超时，壁垒对象将进入破损态。"
 
 #: ../../library/threading.rst:932
 msgid ""
 "This method may raise a :class:`BrokenBarrierError` exception if the barrier"
 " is broken or reset while a thread is waiting."
-msgstr ""
+msgstr "如果壁垒对象进入破损态，或重置壁垒时仍有线程等待释放，将会引发 :class:`BrokenBarrierError` 异常。"
 
 #: ../../library/threading.rst:937
 msgid ""
 "Return the barrier to the default, empty state.  Any threads waiting on it "
 "will receive the :class:`BrokenBarrierError` exception."
-msgstr ""
+msgstr "重置壁垒为默认的初始态。如果壁垒中仍有线程等待释放，这些线程将会收到 :class:`BrokenBarrierError` 异常。"
 
 #: ../../library/threading.rst:940
 msgid ""
 "Note that using this function may can require some external synchronization "
 "if there are other threads whose state is unknown.  If a barrier is broken "
 "it may be better to just leave it and create a new one."
-msgstr ""
+msgstr "注意使用此函数时，如果有某些线程状态未知，则可能需其它的同步来确保线程已被释放。如果壁垒进入了破损态，最好废弃它并新建一个壁垒。"
 
 #: ../../library/threading.rst:946
 msgid ""
@@ -1246,30 +1259,33 @@ msgid ""
 " to :meth:`wait` to fail with the :class:`BrokenBarrierError`.  Use this for"
 " example if one of the needs to abort, to avoid deadlocking the application."
 msgstr ""
+"使壁垒进入破损态。这将导致所有已经调用和未来调用的 :meth:`wait` 方法中引发 :class:`BrokenBarrierError` "
+"异常。使用这个方法的一种情况是需要中止程序以避免死锁。 "
 
 #: ../../library/threading.rst:951
 msgid ""
 "It may be preferable to simply create the barrier with a sensible *timeout* "
 "value to automatically guard against one of the threads going awry."
-msgstr ""
+msgstr "更好的方式是：创建壁垒时提供一个合理的超时时间，来自动避免某个线程出错。"
 
 #: ../../library/threading.rst:957
 msgid "The number of threads required to pass the barrier."
-msgstr ""
+msgstr "冲出壁垒所需要的线程数量。"
 
 #: ../../library/threading.rst:961
 msgid "The number of threads currently waiting in the barrier."
-msgstr ""
+msgstr "当前时刻正在壁垒中阻塞的线程数量。"
 
 #: ../../library/threading.rst:965
 msgid "A boolean that is ``True`` if the barrier is in the broken state."
-msgstr ""
+msgstr "一个布尔值，值为 ``True`` 表明壁垒为破损态。"
 
 #: ../../library/threading.rst:970
 msgid ""
 "This exception, a subclass of :exc:`RuntimeError`, is raised when the "
 ":class:`Barrier` object is reset or broken."
 msgstr ""
+"异常类，是 :exc:`RuntimeError` 异常的子类，在 :class:`Barrier` 对象重置时仍有线程阻塞时和对象进入破损态时被引发。"
 
 #: ../../library/threading.rst:977
 msgid ""
