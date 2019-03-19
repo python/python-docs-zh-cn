@@ -448,7 +448,7 @@ msgstr "再次回退，所以 ``[bcd]*`` 只匹配 ``bc`` 。"
 msgid ""
 "Try ``b`` again.  This time the character at the current position is "
 "``'b'``, so it succeeds."
-msgstr ""
+msgstr "再试一次 ``b`` 。 这次当前位置的字符是 ``'b'`` ，所以它成功了。"
 
 #: ../../howto/regex.rst:219
 msgid ""
@@ -459,6 +459,8 @@ msgid ""
 " ``[bcd]*``, and if that subsequently fails, the engine will conclude that "
 "the string doesn't match the RE at all."
 msgstr ""
+"正则现在已经结束了，它已经匹配了``'abcb'``。 这演示了匹配引擎最初如何进行，如果没有找到匹配，它将逐步回退并一次又一次地重试正则的其余部分。 "
+"它将回退，直到它为``[bcd]*``尝试零匹配，如果随后失败，引擎将断定该字符串与正则完全不匹配。"
 
 #: ../../howto/regex.rst:226
 msgid ""
@@ -469,6 +471,9 @@ msgid ""
 "similar example, ``ca+t`` will match ``'cat'`` (1 ``'a'``), ``'caaat'`` (3 "
 "``'a'``\\ s), but won't match ``'ct'``."
 msgstr ""
+"另一个重复的元字符是 ``+``，它匹配一次或多次。 "
+"要特别注意``*``和``+``之间的区别；``*``匹配*零次*或更多次，因此重复的任何东西都可能根本不存在，而``+``至少需要*一次*。 "
+"使用类似的例子，``ca+t``将匹配``'cat'``（1个``'a'``），``'caaat'``（3个``'a'``），但不会匹配``'ct'``。"
 
 #: ../../howto/regex.rst:233
 msgid ""
@@ -477,6 +482,8 @@ msgid ""
 "something as being optional.  For example, ``home-?brew`` matches either "
 "``'homebrew'`` or ``'home-brew'``."
 msgstr ""
+"还有两个重复限定符。 问号字符 ``?`` 匹配一次或零次；你可以把它想象成是可选的。 "
+"例如，``home-?brew``匹配``'homebrew'``或``'home-brew'``。"
 
 #: ../../howto/regex.rst:238
 msgid ""
@@ -486,13 +493,16 @@ msgid ""
 "``'a/b'``, ``'a//b'``, and ``'a///b'``.  It won't match ``'ab'``, which has "
 "no slashes, or ``'a////b'``, which has four."
 msgstr ""
+"最复杂的重复限定符是``{m,n}``，其中*m*和*n*是十进制整数。 这个限定符意味着必须至少有*m*次重复，最多*n*。 "
+"例如，``a/{1,3}b`` 将匹配 ``'a/b'`` ，``'a//b'`` 和 ``'a///b'`` 。 "
+"它不匹配没有斜线的``'ab'``，或者有四个的``'a////b'``。"
 
 #: ../../howto/regex.rst:244
 msgid ""
 "You can omit either *m* or *n*; in that case, a reasonable value is assumed "
 "for the missing value.  Omitting *m* is interpreted as a lower limit of 0, "
 "while omitting *n* results in an upper bound of infinity."
-msgstr ""
+msgstr "你可以省略*m*或*n*; 在这种情况下，将假定缺失值的合理值。 省略*m*被解释为0的下限，而省略*n*则导致无穷大的上限。"
 
 #: ../../howto/regex.rst:248
 msgid ""
@@ -502,10 +512,13 @@ msgid ""
 "better to use ``*``, ``+``, or ``?`` when you can, simply because they're "
 "shorter and easier to read."
 msgstr ""
+"还原论者的读者可能会注意到其他三个限定符都可以用这种表示法表达。 "
+"``{0,}``与``*``相同，``{1,}``相当于``+``，``{0,1}``和``?``相同。 "
+"最好使用``*``，``+``或``?``，只要因为它们更短更容易阅读。"
 
 #: ../../howto/regex.rst:256
 msgid "Using Regular Expressions"
-msgstr ""
+msgstr "使用正则表达式"
 
 #: ../../howto/regex.rst:258
 msgid ""
@@ -514,17 +527,19 @@ msgid ""
 "regular expression engine, allowing you to compile REs into objects and then"
 " perform matches with them."
 msgstr ""
+"现在我们已经看了一些简单的正则表达式，我们如何在Python中实际使用它们？ :mod:`re` "
+"模块提供了正则表达式引擎的接口，允许你将正则编译为对象，然后用它们进行匹配。"
 
 #: ../../howto/regex.rst:265
 msgid "Compiling Regular Expressions"
-msgstr ""
+msgstr "编译正则表达式"
 
 #: ../../howto/regex.rst:267
 msgid ""
 "Regular expressions are compiled into pattern objects, which have methods "
 "for various operations such as searching for pattern matches or performing "
 "string substitutions. ::"
-msgstr ""
+msgstr "正则表达式被编译成模式对象，模式对象具有各种操作的方法，例如搜索模式匹配或执行字符串替换。::"
 
 #: ../../howto/regex.rst:276
 msgid ""
@@ -532,6 +547,8 @@ msgid ""
 " various special features and syntax variations.  We'll go over the "
 "available settings later, but for now a single example will do::"
 msgstr ""
+":func:`re.compile` 也接受一个可选的 *flags* 参数，用于启用各种特殊功能和语法变体。 "
+"我们稍后将介绍可用的设置，但现在只需一个例子 ::"
 
 #: ../../howto/regex.rst:282
 msgid ""
@@ -543,6 +560,10 @@ msgid ""
 "simply a C extension module included with Python, just like the "
 ":mod:`socket` or :mod:`zlib` modules."
 msgstr ""
+"正则作为字符串传递给 :func:`re.compile` 。 "
+"正则被处理为字符串，因为正则表达式不是核心Python语言的一部分，并且没有创建用于表达它们的特殊语法。 "
+"（有些应用程序根本不需要正则，因此不需要通过包含它们来扩展语言规范。）相反，:mod:`re` 模块只是Python附带的C扩展模块，就类似于 "
+":mod:`socket` 或 :mod:`zlib` 模块。"
 
 #: ../../howto/regex.rst:289
 msgid ""
@@ -584,7 +605,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:314
 msgid "``\\section``"
-msgstr ""
+msgstr "``\\section``"
 
 #: ../../howto/regex.rst:314
 msgid "Text string to be matched"
@@ -592,7 +613,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:316
 msgid "``\\\\section``"
-msgstr ""
+msgstr "``\\\\section``"
 
 #: ../../howto/regex.rst:316
 msgid "Escaped backslash for :func:`re.compile`"
@@ -600,7 +621,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:318 ../../howto/regex.rst:345
 msgid "``\"\\\\\\\\section\"``"
-msgstr ""
+msgstr "``\"\\\\\\\\section\"``"
 
 #: ../../howto/regex.rst:318
 msgid "Escaped backslashes for a string literal"
@@ -645,23 +666,23 @@ msgstr ""
 
 #: ../../howto/regex.rst:343
 msgid "``\"ab*\"``"
-msgstr ""
+msgstr "``\"ab*\"``"
 
 #: ../../howto/regex.rst:343
 msgid "``r\"ab*\"``"
-msgstr ""
+msgstr "``r\"ab*\"``"
 
 #: ../../howto/regex.rst:345
 msgid "``r\"\\\\section\"``"
-msgstr ""
+msgstr "``r\"\\\\section\"``"
 
 #: ../../howto/regex.rst:347
 msgid "``\"\\\\w+\\\\s+\\\\1\"``"
-msgstr ""
+msgstr "``\"\\\\w+\\\\s+\\\\1\"``"
 
 #: ../../howto/regex.rst:347
 msgid "``r\"\\w+\\s+\\1\"``"
-msgstr ""
+msgstr "``r\"\\w+\\s+\\1\"``"
 
 #: ../../howto/regex.rst:352
 msgid "Performing Matches"
@@ -687,7 +708,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:362
 msgid "``match()``"
-msgstr ""
+msgstr "``match()``"
 
 #: ../../howto/regex.rst:362
 msgid "Determine if the RE matches at the beginning of the string."
@@ -695,7 +716,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:365
 msgid "``search()``"
-msgstr ""
+msgstr "``search()``"
 
 #: ../../howto/regex.rst:365
 msgid "Scan through a string, looking for any location where this RE matches."
@@ -703,7 +724,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:368
 msgid "``findall()``"
-msgstr ""
+msgstr "``findall()``"
 
 #: ../../howto/regex.rst:368
 msgid "Find all substrings where the RE matches, and returns them as a list."
@@ -711,7 +732,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:371
 msgid "``finditer()``"
-msgstr ""
+msgstr "``finditer()``"
 
 #: ../../howto/regex.rst:371
 msgid ""
@@ -769,7 +790,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:420
 msgid "``group()``"
-msgstr ""
+msgstr "``group()``"
 
 #: ../../howto/regex.rst:420
 msgid "Return the string matched by the RE"
@@ -777,7 +798,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:422
 msgid "``start()``"
-msgstr ""
+msgstr "``start()``"
 
 #: ../../howto/regex.rst:422
 msgid "Return the starting position of the match"
@@ -785,7 +806,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:424
 msgid "``end()``"
-msgstr ""
+msgstr "``end()``"
 
 #: ../../howto/regex.rst:424
 msgid "Return the ending position of the match"
@@ -793,7 +814,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:426
 msgid "``span()``"
-msgstr ""
+msgstr "``span()``"
 
 #: ../../howto/regex.rst:426
 msgid "Return a tuple containing the (start, end) positions  of the match"
@@ -1459,7 +1480,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:996
 msgid "``.*[.].*$``"
-msgstr ""
+msgstr "``.*[.].*$``"
 
 #: ../../howto/regex.rst:998
 msgid ""
@@ -1486,7 +1507,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:1012
 msgid "``.*[.]([^b]..|.[^a].|..[^t])$``"
-msgstr ""
+msgstr "``.*[.]([^b]..|.[^a].|..[^t])$``"
 
 #: ../../howto/regex.rst:1014
 msgid ""
@@ -1501,7 +1522,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:1022
 msgid "``.*[.]([^b].?.?|.[^a]?.?|..?[^t]?)$``"
-msgstr ""
+msgstr "``.*[.]([^b].?.?|.[^a]?.?|..?[^t]?)$``"
 
 #: ../../howto/regex.rst:1024
 msgid ""
@@ -1541,7 +1562,7 @@ msgstr ""
 
 #: ../../howto/regex.rst:1046
 msgid "``.*[.](?!bat$|exe$)[^.]*$``"
-msgstr ""
+msgstr "``.*[.](?!bat$|exe$)[^.]*$``"
 
 #: ../../howto/regex.rst:1050
 msgid "Modifying Strings"
