@@ -1042,12 +1042,19 @@ msgid ""
 " lowercasing doesn't take the current locale into account; it will if you "
 "also set the :const:`LOCALE` flag."
 msgstr ""
+"执行不区分大小写的匹配；字符类和字面字符串将通过忽略大小写来匹配字母。 例如，``[A-Z]``也匹配小写字母。 除非使用 :const:`ASCII`"
+" 标志来禁用非ASCII匹配，否则完全Unicode匹配也有效。 当Unicode模式``[a-z]``或``[A-Z]``与 "
+":const:`IGNORECASE` 标志结合使用时，它们将匹配52个ASCII字母和4个额外的非ASCII字母：'İ "
+"'（U+0130，拉丁大写字母I，带上面的点），'ı'（U+0131，拉丁文小写字母无点i），'s'（U+017F，拉丁文小写字母长s）和'K'（U+212A，开尔文标志）。"
+" "
+"``Spam``将匹配``'Spam'``，``'spam'``，``'spAM'``或``'ſpam'``（后者仅在Unicode模式下匹配）。此小写不考虑当前区域设置；如果你还设置了"
+" :const:`LOCALE`标志，则将考虑。"
 
 #: ../../howto/regex.rst:580
 msgid ""
 "Make ``\\w``, ``\\W``, ``\\b``, ``\\B`` and case-insensitive matching "
 "dependent on the current locale instead of the Unicode database."
-msgstr ""
+msgstr "使``\\w``、``\\W``、``\\b``、``\\B``和大小写敏感匹配依赖于当前区域而不是Unicode数据库。"
 
 #: ../../howto/regex.rst:583
 msgid ""
@@ -1067,12 +1074,15 @@ msgid ""
 "matching is already enabled by default in Python 3 for Unicode (str) "
 "patterns, and it is able to handle different locales/languages."
 msgstr ""
+"区域设置是C库的一个功能，旨在帮助编写考虑到语言差异的程序。例如，如果你正在处理编码的法语文本，那么你希望能够编写``\\w+``来匹配单词，但``\\w``只匹配字符类``[A-Za-z]``字节模式；它不会匹配对应于``é``或``ç``的字节。如果你的系统配置正确并且选择了法语区域设置，某些C函数将告诉程序对应于``é``的字节也应该被视为字母。在编译正则表达式时设置:const:`LOCALE`标志将导致生成的编译对象将这些C函数用于``\\w``；这比较慢，但也可以使``\\w+``匹配你所期望的法语单词。在Python"
+" 3中不鼓励使用此标志，因为语言环境机制非常不可靠，它一次只处理一个“文化”，它只适用于8位语言环境。默认情况下，Python "
+"3中已经为Unicode（str）模式启用了Unicode匹配，并且它能够处理不同的语言环境/语言。"
 
 #: ../../howto/regex.rst:605
 msgid ""
 "(``^`` and ``$`` haven't been explained yet;  they'll be introduced in "
 "section :ref:`more-metacharacters`.)"
-msgstr ""
+msgstr "（``^``和``$``还没有解释；它们将在以下部分介绍 :ref:`more-metacharacters` 。）"
 
 #: ../../howto/regex.rst:608
 msgid ""
@@ -1084,12 +1094,15 @@ msgid ""
 "matches either at the end of the string and at the end of each line "
 "(immediately preceding each newline)."
 msgstr ""
+"通常``^``只匹配字符串的开头，而``$``只匹配字符串的结尾，紧接在字符串末尾的换行符（如果有的话）之前。 "
+"当指定了这个标志时，``^``匹配字符串的开头和字符串中每一行的开头，紧跟在每个换行符之后。 "
+"类似地，``$``元字符匹配字符串的结尾和每行的结尾（紧接在每个换行符之前）。"
 
 #: ../../howto/regex.rst:621
 msgid ""
 "Makes the ``'.'`` special character match any character at all, including a "
 "newline; without this flag, ``'.'`` will match anything *except* a newline."
-msgstr ""
+msgstr "使``'.'``特殊字符匹配任何字符，包括换行符；没有这个标志，``'.'``将匹配任何字符*除了*换行符。"
 
 #: ../../howto/regex.rst:629
 msgid ""
@@ -1097,6 +1110,8 @@ msgid ""
 "only matching instead of full Unicode matching. This is only meaningful for "
 "Unicode patterns, and is ignored for byte patterns."
 msgstr ""
+"使``\\w``、``\\W``、``\\b``、``\\B``、``\\s``和``\\S``执行仅ASCII匹配而不是完整匹配 Unicode "
+"匹配。 这仅对Unicode模式有意义，并且对于字节模式将被忽略。"
 
 #: ../../howto/regex.rst:638
 msgid ""
@@ -1109,16 +1124,19 @@ msgid ""
 "comments are marked by a ``'#'`` that's neither in a character class or "
 "preceded by an unescaped backslash."
 msgstr ""
+"此标志允许你编写更易读的正则表达式，方法是为您提供更灵活的格式化方式。 "
+"指定此标志后，将忽略正则字符串中的空格，除非空格位于字符类中或前面带有未转义的反斜杠；这使你可以更清楚地组织和缩进正则。 "
+"此标志还允许你将注释放在正则中，引擎将忽略该注释；注释标记为``'#'``既不是在字符类中，也不是在未转义的反斜杠之前。"
 
 #: ../../howto/regex.rst:647
 msgid ""
 "For example, here's a RE that uses :const:`re.VERBOSE`; see how much easier "
 "it is to read? ::"
-msgstr ""
+msgstr "例如，这里的正则使用 :const:`re.VERBOSE`；看看阅读有多容易？::"
 
 #: ../../howto/regex.rst:660
 msgid "Without the verbose setting, the RE would look like this::"
-msgstr ""
+msgstr "如果没有详细设置，正则将如下所示::"
 
 #: ../../howto/regex.rst:666
 msgid ""
@@ -1126,27 +1144,29 @@ msgid ""
 "has been used to break up the RE into smaller pieces, but it's still more "
 "difficult to understand than the version using :const:`re.VERBOSE`."
 msgstr ""
+"在上面的例子中，Python的字符串文字的自动连接已被用于将正则分解为更小的部分，但它仍然比以下使用 :const:`re.VERBOSE` "
+"版本更难理解。"
 
 #: ../../howto/regex.rst:672
 msgid "More Pattern Power"
-msgstr ""
+msgstr "更多模式能力"
 
 #: ../../howto/regex.rst:674
 msgid ""
 "So far we've only covered a part of the features of regular expressions.  In"
 " this section, we'll cover some new metacharacters, and how to use groups to"
 " retrieve portions of the text that was matched."
-msgstr ""
+msgstr "到目前为止，我们只介绍了正则表达式的一部分功能。 在本节中，我们将介绍一些新的元字符，以及如何使用组来检索匹配的文本部分。"
 
 #: ../../howto/regex.rst:682
 msgid "More Metacharacters"
-msgstr ""
+msgstr "更多元字符"
 
 #: ../../howto/regex.rst:684
 msgid ""
 "There are some metacharacters that we haven't covered yet.  Most of them "
 "will be covered in this section."
-msgstr ""
+msgstr "我们还没有涉及到一些元字符。 其中大部分内容将在本节中介绍。"
 
 #: ../../howto/regex.rst:687
 msgid ""
@@ -1159,6 +1179,8 @@ msgid ""
 "once at a given location, they can obviously be matched an infinite number "
 "of times."
 msgstr ""
+"要讨论的其余一些元字符是 :dfn:`zero-width assertions` 。 "
+"它们不会使引擎通过字符串推进；相反，它们根本不消耗任何字符，只是成功或失败。例如，``\\b``是一个断言，当前位置位于字边界；这个位置根本不会被``\\b``改变。这意味着永远不应重复零宽度断言，因为如果它们在给定位置匹配一次，它们显然可以无限次匹配。"
 
 #: ../../howto/regex.rst:703
 msgid "``|``"
@@ -1173,12 +1195,15 @@ msgid ""
 " ``'Crow'`` or ``'Servo'``, not ``'Cro'``, a ``'w'`` or an ``'S'``, and "
 "``'ervo'``."
 msgstr ""
+"或者“or”运算符。 如果*A*和*B*是正则表达式，``A|B``将匹配任何与*A*或*B*匹配的字符串。 "
+"``|``具有非常低的优先级，以便在交替使用多字符字符串时使其合理地工作。 "
+"``Crow|Servo``将匹配``'Crow'``或``'Servo'``，而不是``'Cro'``、``'w'``或``'S'``和``'ervo'``。"
 
 #: ../../howto/regex.rst:702
 msgid ""
 "To match a literal ``'|'``, use ``\\|``, or enclose it inside a character "
 "class, as in ``[|]``."
-msgstr ""
+msgstr "要匹配字面``'|'``，请使用``\\|``，或将其括在字符类中，如``[|]``。"
 
 #: ../../howto/regex.rst:718
 msgid "``^``"
@@ -1191,16 +1216,18 @@ msgid ""
 ":const:`MULTILINE` mode, this also matches immediately after each newline "
 "within the string."
 msgstr ""
+"在行的开头匹配。 除非设置了 :const:`MULTILINE` 标志，否则只会在字符串的开头匹配。 在 :const:`MULTILINE` "
+"模式下，这也在字符串中的每个换行符后立即匹配。"
 
 #: ../../howto/regex.rst:710
 msgid ""
 "For example, if you wish to match the word ``From`` only at the beginning of"
 " a line, the RE to use is ``^From``. ::"
-msgstr ""
+msgstr "例如，如果你希望仅在行的开头匹配单``From``，则要使用的正则 ``^From``。::"
 
 #: ../../howto/regex.rst:718
 msgid "To match a literal ``'^'``, use ``\\^``."
-msgstr ""
+msgstr "要匹配字面 ``'^'``，使用 ``\\^``。"
 
 #: ../../howto/regex.rst:732
 msgid "``$``"
@@ -1210,7 +1237,7 @@ msgstr "``$``"
 msgid ""
 "Matches at the end of a line, which is defined as either the end of the "
 "string, or any location followed by a newline character.     ::"
-msgstr ""
+msgstr "匹配行的末尾，定义为字符串的结尾，或者后跟换行符的任何位置。::"
 
 #: ../../howto/regex.rst:731
 msgid ""
