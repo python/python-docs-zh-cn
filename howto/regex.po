@@ -1402,7 +1402,7 @@ msgid ""
 "including arbitrary characters in a string, so be sure to use a raw string "
 "when incorporating backreferences in a RE."
 msgstr ""
-"模式中的反向引用允许你指定还必须在字符串中的当前位置找到先前捕获组的内容。 例如，如果可以在当前位置找到组1的确切内容，则 ``\\1`` "
+"模式中的后向引用允许你指定还必须在字符串中的当前位置找到先前捕获组的内容。 例如，如果可以在当前位置找到组1的确切内容，则 ``\\1`` "
 "将成功，否则将失败。 请记住，Python 的字符串文字也使用反斜杠后跟数字以允许在字符串中包含任意字符，因此正则中引入反向引用时务必使用原始字符串。"
 
 #: ../../howto/regex.rst:863
@@ -1415,7 +1415,7 @@ msgid ""
 "string --- there are few text formats which repeat data in this way --- but "
 "you'll soon find out that they're *very* useful when performing string "
 "substitutions."
-msgstr "像这样的反向引用通常不仅仅用于搜索字符串——很少有文本格式以这种方式重复数据——但是你很快就会发现它们在执行字符串替换时*非常*有用。"
+msgstr "像这样的后向引用通常不仅仅用于搜索字符串——很少有文本格式以这种方式重复数据——但是你很快就会发现它们在执行字符串替换时*非常*有用。"
 
 #: ../../howto/regex.rst:875
 msgid "Non-capturing and Named Groups"
@@ -1498,12 +1498,14 @@ msgid ""
 "performance difference in searching between capturing and non-capturing "
 "groups; neither form is any faster than the other."
 msgstr ""
+"除了你无法检索组匹配内容的事实外，非捕获组的行为与捕获组完全相同；你可以在里面放任何东西，用重复元字符重复它，比如``*``，然后把它嵌入其他组（捕获或不捕获）。``(?:...)``在修改现有模式时特别有用，因为你可以添加新组而不更改所有其他组的编号方式。"
+" 值得一提的是，捕获和非捕获组之间的搜索没有性能差异；两种形式没有一种更快。"
 
 #: ../../howto/regex.rst:927
 msgid ""
 "A more significant feature is named groups: instead of referring to them by "
 "numbers, groups can be referenced by a name."
-msgstr ""
+msgstr "更重要的功能是命名组：不是通过数字引用它们，而是可以通过名称引用组。"
 
 #: ../../howto/regex.rst:930
 msgid ""
@@ -1516,19 +1518,22 @@ msgid ""
 "groups are still given numbers, so you can retrieve information about a "
 "group in two ways::"
 msgstr ""
+"命名组的语法是Python特定的扩展之一：``(?P<name>...)``。 *name*显然是该组的名称。 "
+"命名组的行为与捕获组完全相同，并且还将名称与组关联。 处理捕获组的:ref:`匹配对象 <match-"
+"objects>`方法都接受按编号引用组的整数或包含所需组名的字符串。 命名组仍然是给定的数字，因此你可以通过两种方式检索有关组的信息::"
 
 #: ../../howto/regex.rst:945
 msgid ""
 "Named groups are handy because they let you use easily-remembered names, "
 "instead of having to remember numbers.  Here's an example RE from the "
 ":mod:`imaplib` module::"
-msgstr ""
+msgstr "命名组很有用，因为它们允许你使用容易记住的名称，而不必记住数字。 这是来自 :mod:`imaplib` 模块的示例正则 ::"
 
 #: ../../howto/regex.rst:956
 msgid ""
 "It's obviously much easier to retrieve ``m.group('zonem')``, instead of "
 "having to remember to retrieve group 9."
-msgstr ""
+msgstr "检索``m.group('zonem')``显然要容易得多，而不必记住检索第9组。"
 
 #: ../../howto/regex.rst:959
 msgid ""
@@ -1540,17 +1545,20 @@ msgid ""
 "words, ``\\b(\\w+)\\s+\\1\\b`` can also be written as "
 "``\\b(?P<word>\\w+)\\s+(?P=word)\\b``::"
 msgstr ""
+"表达式中的后向引用语法，例如``(...)\\1``，指的是组的编号。 当然有一种变体使用组名而不是数字。 "
+"这是另一个Python扩展：``(?P=name)``表示在当前点再次匹配名为*name*的组的内容。 "
+"用于查找双字的正则表达式，``\\b(\\w+)\\s+\\1\\b``也可以写为``\\b(?P<word>\\w+)\\s+(?P=word)\\b``::"
 
 #: ../../howto/regex.rst:972
 msgid "Lookahead Assertions"
-msgstr ""
+msgstr "前向断言"
 
 #: ../../howto/regex.rst:974
 msgid ""
 "Another zero-width assertion is the lookahead assertion.  Lookahead "
 "assertions are available in both positive and negative form, and  look like "
 "this:"
-msgstr ""
+msgstr "另一个零宽度断言是前向断言。 前向断言以正面和负面形式提供，如下所示："
 
 #: ../../howto/regex.rst:982
 msgid "``(?=...)``"
@@ -1564,6 +1572,8 @@ msgid ""
 "tried, the matching engine doesn't advance at all; the rest of the pattern "
 "is tried right where the assertion started."
 msgstr ""
+"正向前向断言。 如果包含的正则表达式，由``...``表示，在当前位置成功匹配，则成功，否则失败。 "
+"但是，一旦尝试了包含的表达式，匹配的引擎就不会前进；模式其余的部分会在在断言开始的地方尝试。"
 
 #: ../../howto/regex.rst:987
 msgid "``(?!...)``"
@@ -1574,7 +1584,7 @@ msgid ""
 "Negative lookahead assertion.  This is the opposite of the positive "
 "assertion; it succeeds if the contained expression *doesn't* match at the "
 "current position in the string."
-msgstr ""
+msgstr "负向前向断言。 这与积正向断言相反；如果包含的表达式在字符串中的当前位置*不*匹配，则成功。"
 
 #: ../../howto/regex.rst:989
 msgid ""
@@ -1583,10 +1593,12 @@ msgid ""
 " name and an extension, separated by a ``.``.  For example, in ``news.rc``, "
 "``news`` is the base name, and ``rc`` is the filename's extension."
 msgstr ""
+"更具体一些，让我们看看前向是有用的情况。 考虑一个简单的模式来匹配文件名并将其拆分为基本名称和扩展名，用``.``分隔。 "
+"例如，在``news.rc``中，``news``是基本名称，``rc``是文件名的扩展名。"
 
 #: ../../howto/regex.rst:994
 msgid "The pattern to match this is quite simple:"
-msgstr ""
+msgstr "与此匹配的模式非常简单："
 
 #: ../../howto/regex.rst:996
 msgid "``.*[.].*$``"
@@ -1601,12 +1613,15 @@ msgid ""
 "expression matches ``foo.bar`` and ``autoexec.bat`` and ``sendmail.cf`` and "
 "``printers.conf``."
 msgstr ""
+"请注意，``.``需要特别处理，因为它是元字符，所以它在字符类中只能匹配特定字符。 "
+"还要注意尾随的``$``；添加此项以确保扩展名中的所有其余字符串都必须包含在扩展名中。 "
+"这个正则表达式匹配``foo.bar``、``autoexec.bat``、``sendmail.cf``和``printers.conf``。"
 
 #: ../../howto/regex.rst:1005
 msgid ""
 "Now, consider complicating the problem a bit; what if you want to match "
 "filenames where the extension is not ``bat``? Some incorrect attempts:"
-msgstr ""
+msgstr "现在，考虑使更复杂一点的问题；如果你想匹配扩展名不是``bat``的文件名怎么办？ 一些错误的尝试："
 
 #: ../../howto/regex.rst:1008
 msgid ""
@@ -1614,6 +1629,8 @@ msgid ""
 "requiring that the first character of the extension is not a ``b``.  This is"
 " wrong, because the pattern also doesn't match ``foo.bar``."
 msgstr ""
+"``.*[.][^b].*$`` 上面的第一次尝试试图通过要求扩展名的第一个字符不是``b``来排除``bat``。 "
+"这是错误的，因为模式也与``foo.bar``不匹配。"
 
 #: ../../howto/regex.rst:1012
 msgid "``.*[.]([^b]..|.[^a].|..[^t])$``"
@@ -1629,6 +1646,10 @@ msgid ""
 "a filename with a two-letter extension such as ``sendmail.cf``.  We'll "
 "complicate the pattern again in an effort to fix it."
 msgstr ""
+"当你尝试通过要求以下一种情况匹配来修补第一个解决方案时，表达式变得更加混乱：扩展的第一个字符不是``b``。 "
+"第二个字符不``a``；或者第三个字符不是``t``。 "
+"这接受``foo.bar``并拒绝``autoexec.bat``，但它需要三个字母的扩展名，并且不接受带有两个字母扩展名的文件名，例如``sendmail.cf``。"
+" 为了解决这个问题，我们会再次使模式复杂化。"
 
 #: ../../howto/regex.rst:1022
 msgid "``.*[.]([^b].?.?|.[^a]?.?|..?[^t]?)$``"
@@ -1639,7 +1660,7 @@ msgid ""
 "In the third attempt, the second and third letters are all made optional in "
 "order to allow matching extensions shorter than three characters, such as "
 "``sendmail.cf``."
-msgstr ""
+msgstr "在第三次尝试中，第二个和第三个字母都是可选的，以便允许匹配的扩展名短于三个字符，例如``sendmail.cf``。"
 
 #: ../../howto/regex.rst:1028
 msgid ""
@@ -1648,10 +1669,12 @@ msgid ""
 "``bat`` and ``exe`` as extensions, the pattern would get even more "
 "complicated and confusing."
 msgstr ""
+"模式现在变得非常复杂，这使得它难以阅读和理解。 "
+"更糟糕的是，如果问题发生变化并且你想要将``bat``和``exe``排除为扩展，那么该模式将变得更加复杂和混乱。"
 
 #: ../../howto/regex.rst:1033
 msgid "A negative lookahead cuts through all this confusion:"
-msgstr ""
+msgstr "负面前向消除了所有这些困扰："
 
 #: ../../howto/regex.rst:1035
 msgid ""
@@ -1662,13 +1685,16 @@ msgid ""
 " only starts with ``bat``, will be allowed.  The ``[^.]*`` makes sure that "
 "the pattern works when there are multiple dots in the filename."
 msgstr ""
+"``.*[.](?!bat$)[^.]*$``负向前向意味着：如果表达式``bat``此时不匹配，请尝试其余的模式;如果``bat$``匹配，整个模式将失败。"
+" 尾随的``$``是必需的，以确保允许像``sample.batch``这样的扩展只以``bat``开头的文件能通过。 "
+"``[^.]*``确保当文件名中有多个点时，模式有效。"
 
 #: ../../howto/regex.rst:1042
 msgid ""
 "Excluding another filename extension is now easy; simply add it as an "
 "alternative inside the assertion.  The following pattern excludes filenames "
 "that end in either ``bat`` or ``exe``:"
-msgstr ""
+msgstr "现在很容易排除另一个文件扩展名；只需在断言中添加它作为替代。 以下模式排除以``bat``或``exe``结尾的文件名："
 
 #: ../../howto/regex.rst:1046
 msgid "``.*[.](?!bat$|exe$)[^.]*$``"
@@ -1676,14 +1702,14 @@ msgstr "``.*[.](?!bat$|exe$)[^.]*$``"
 
 #: ../../howto/regex.rst:1050
 msgid "Modifying Strings"
-msgstr ""
+msgstr "修改字符串"
 
 #: ../../howto/regex.rst:1052
 msgid ""
 "Up to this point, we've simply performed searches against a static string. "
 "Regular expressions are also commonly used to modify strings in various "
 "ways, using the following pattern methods:"
-msgstr ""
+msgstr "到目前为止，我们只是针对静态字符串执行搜索。 正则表达式通常也用于以各种方式修改字符串，使用以下模式方法："
 
 #: ../../howto/regex.rst:1059
 msgid "``split()``"
@@ -1691,7 +1717,7 @@ msgstr "``split()``"
 
 #: ../../howto/regex.rst:1059
 msgid "Split the string into a list, splitting it wherever the RE matches"
-msgstr ""
+msgstr "将字符串拆分为一个列表，在正则匹配的任何地方将其拆分"
 
 #: ../../howto/regex.rst:1062
 msgid "``sub()``"
@@ -1701,7 +1727,7 @@ msgstr "``sub()``"
 msgid ""
 "Find all substrings where the RE matches, and replace them with a different "
 "string"
-msgstr ""
+msgstr "找到正则匹配的所有子字符串，并用不同的字符串替换它们"
 
 #: ../../howto/regex.rst:1065
 msgid "``subn()``"
@@ -1711,11 +1737,11 @@ msgstr "``subn()``"
 msgid ""
 "Does the same thing as :meth:`!sub`,  but returns the new string and the "
 "number of replacements"
-msgstr ""
+msgstr "与:meth:`!sub`相同，但返回新字符串和替换次数"
 
 #: ../../howto/regex.rst:1072
 msgid "Splitting Strings"
-msgstr ""
+msgstr "分割字符串"
 
 #: ../../howto/regex.rst:1074
 msgid ""
@@ -1726,6 +1752,9 @@ msgid ""
 "splitting by whitespace or by a fixed string.  As you'd expect, there's a "
 "module-level :func:`re.split` function, too."
 msgstr ""
+"模式的:meth:`~re.Pattern.split`方法在正则匹配的任何地方拆分字符串，返回一个片段列表。 "
+"它类似于:meth:`~str.split`字符串方法，但在分隔符的分隔符中提供了更多的通用性；字符串的:meth:`!split`仅支持按空格或固定字符串进行拆分。"
+" 正如你所期望的那样，还有一个模块级 :func:`re.split` 函数。"
 
 #: ../../howto/regex.rst:1085
 msgid ""
@@ -1734,6 +1763,8 @@ msgid ""
 " part of the resulting list.  If *maxsplit* is nonzero, at most *maxsplit* "
 "splits are performed."
 msgstr ""
+"通过正则表达式的匹配拆分*字符串*。 如果在正则中使用捕获括号，则它们的内容也将作为结果列表的一部分返回。 如果* maxsplit "
+"*非零，则最多执行*maxsplit*次拆分。"
 
 #: ../../howto/regex.rst:1090
 msgid ""
@@ -1743,6 +1774,9 @@ msgid ""
 "the following example, the delimiter is any sequence of non-alphanumeric "
 "characters. ::"
 msgstr ""
+"你可以通过传递*maxsplit*的值来限制分割的数量。 "
+"当*maxsplit*非零时，将最多进行*maxsplit*次拆分，并且字符串的其余部分将作为列表的最后一个元素返回。 "
+"在以下示例中，分隔符是任何非字母数字字符序列。::"
 
 #: ../../howto/regex.rst:1102
 msgid ""
@@ -1751,16 +1785,17 @@ msgid ""
 " used in the RE, then their values are also returned as part of the list.  "
 "Compare the following calls::"
 msgstr ""
+"有时你不仅对分隔符之间的文本感兴趣，而且还需要知道分隔符是什么。 如果在正则中使用捕获括号，则它们的值也将作为列表的一部分返回。 比较以下调用::"
 
 #: ../../howto/regex.rst:1114
 msgid ""
 "The module-level function :func:`re.split` adds the RE to be used as the "
 "first argument, but is otherwise the same.   ::"
-msgstr ""
+msgstr "模块级函数:func:`re.split`添加要正则作为第一个参数，但在其他方面是相同的。::"
 
 #: ../../howto/regex.rst:1126
 msgid "Search and Replace"
-msgstr ""
+msgstr "搜索和替换"
 
 #: ../../howto/regex.rst:1128
 msgid ""
@@ -1769,6 +1804,8 @@ msgid ""
 "replacement value, which can be either a string or a function, and the "
 "string to be processed."
 msgstr ""
+"另一个常见任务是找到模式的所有匹配项，并用不同的字符串替换它们。 "
+":meth:`~re.Pattern.sub`方法接受一个替换值，可以是字符串或函数，也可以是要处理的字符串。"
 
 #: ../../howto/regex.rst:1135
 msgid ""
@@ -1776,32 +1813,33 @@ msgid ""
 "occurrences of the RE in *string* by the replacement *replacement*.  If the "
 "pattern isn't found, *string* is returned unchanged."
 msgstr ""
+"返回通过替换*replacement*替换*string*中正则的最左边非重叠出现而获得的字符串。 如果未找到模式，则*string*将保持不变。"
 
 #: ../../howto/regex.rst:1139
 msgid ""
 "The optional argument *count* is the maximum number of pattern occurrences "
 "to be replaced; *count* must be a non-negative integer.  The default value "
 "of 0 means to replace all occurrences."
-msgstr ""
+msgstr "可选参数*count*是要替换的模式最大的出现次数；* count *必须是非负整数。 默认值0表示替换所有。"
 
 #: ../../howto/regex.rst:1143
 msgid ""
 "Here's a simple example of using the :meth:`~re.Pattern.sub` method.  It "
 "replaces colour names with the word ``colour``::"
-msgstr ""
+msgstr "这是一个使用 :meth:`~re.Pattern.sub` 方法的简单示例。 它用``colour``这个词取代颜色名称::"
 
 #: ../../howto/regex.rst:1152
 msgid ""
 "The :meth:`~re.Pattern.subn` method does the same work, but returns a "
 "2-tuple containing the new string value and the number of replacements  that"
 " were performed::"
-msgstr ""
+msgstr ":meth:`~re.Pattern.subn`方法完成相同的工作，但返回一个包含新字符串值和已执行的替换次数的2元组::"
 
 #: ../../howto/regex.rst:1161
 msgid ""
 "Empty matches are replaced only when they're not adjacent to a previous "
 "empty match. ::"
-msgstr ""
+msgstr "仅当空匹配与前一个空匹配不相邻时，才会替换空匹配。::"
 
 #: ../../howto/regex.rst:1168
 msgid ""
@@ -1813,12 +1851,16 @@ msgid ""
 "incorporate portions of the original text in the resulting replacement "
 "string."
 msgstr ""
+"如果*replacement*是一个字符串，则处理其中的任何反斜杠转义。 "
+"也就是说，``\\n``被转换为单个换行符，``\\r``被转换为回车符，依此类推。 诸如``\\&``之类的未知转义是孤立的。 "
+"后向引用，例如``\\6``，被替换为正则中相应组匹配的子字符串。 这使你可以在生成的替换字符串中合并原始文本的部分内容。"
 
 #: ../../howto/regex.rst:1175
 msgid ""
 "This example matches the word ``section`` followed by a string enclosed in "
 "``{``, ``}``, and changes ``section`` to ``subsection``::"
 msgstr ""
+"这个例子匹配单词``section``后跟一个用``{``，``}``括起来的字符串，并将``section``改为``subsection`` ::"
 
 #: ../../howto/regex.rst:1182
 msgid ""
