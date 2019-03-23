@@ -1923,10 +1923,11 @@ msgid ""
 "you may expect them to.  This section will point out some of the most common"
 " pitfalls."
 msgstr ""
+"正则表达式对于某些应用程序来说是一个强大的工具，但在某些方面，它们的行为并不直观，有时它们的行为方式与你的预期不同。 本节将指出一些最常见的陷阱。"
 
 #: ../../howto/regex.rst:1233
 msgid "Use String Methods"
-msgstr ""
+msgstr "使用字符串方法"
 
 #: ../../howto/regex.rst:1235
 msgid ""
@@ -1939,6 +1940,9 @@ msgid ""
 " optimized for the purpose, instead of the large, more generalized regular "
 "expression engine."
 msgstr ""
+"有时使用 :mod:`re` 模块是一个错误。 如果你匹配固定字符串或单个字符类，并且你没有使用任何 :mod:`re` 功能，例如 "
+":const:`~re.IGNORECASE` 标志，那么正则表达式的全部功能可能不是必需的。 "
+"字符串有几种方法可以使用固定字符串执行操作，它们通常要快得多，因为实现是一个针对此目的而优化的单个小 C 循环，而不是大型、更通用的正则表达式引擎。"
 
 #: ../../howto/regex.rst:1243
 msgid ""
@@ -1952,6 +1956,11 @@ msgid ""
 " ``word`` have a word boundary on either side.  This takes the job beyond  "
 ":meth:`!replace`'s abilities.)"
 msgstr ""
+"一个例子可能是用另一个固定字符串替换一个固定字符串；例如，你可以用 ``deed`` 替换 ``word`` 。 :func:`re.sub` "
+"看起来像是用于此的函数，但请考虑 :meth:`~str.replace` 方法。 注意 :meth:`！replace` 也会替换单词里面的 "
+"``word`` ，把 ``swordfish`` 变成 ``sdeedfish`` ，但简单的正则 ``word`` 也会这样做。 "
+"（为了避免对单词的部分进行替换，模式必须是 ``\\bword\\b`` ，以便要求 ``word`` 在任何一方都有一个单词边界。这使得工作超出了 "
+":meth:`！replace` 的能力。）"
 
 #: ../../howto/regex.rst:1252
 msgid ""
@@ -1961,16 +1970,18 @@ msgid ""
 " capable of doing both tasks and will be faster than any regular expression "
 "operation can be."
 msgstr ""
+"另一个常见任务是从字符串中删除单个字符的每个匹配项或将其替换为另一个字符。 你可以用 ``re.sub('\\n', ' ', S)`` "
+"之类的东西来做这件事，但是 :meth:`~str.translate` 能够完成这两项任务，并且比任何正则表达式都快。"
 
 #: ../../howto/regex.rst:1258
 msgid ""
 "In short, before turning to the :mod:`re` module, consider whether your "
 "problem can be solved with a faster and simpler string method."
-msgstr ""
+msgstr "简而言之，在转向 :mod:`re` 模块之前，请考虑是否可以使用更快更简单的字符串方法解决问题。"
 
 #: ../../howto/regex.rst:1263
 msgid "match() versus search()"
-msgstr ""
+msgstr "match() 和 search()"
 
 #: ../../howto/regex.rst:1265
 msgid ""
@@ -1981,12 +1992,15 @@ msgid ""
 "start at 0; if the match wouldn't start at zero,  :func:`!match` will *not* "
 "report it. ::"
 msgstr ""
+" :func:`~re.match` 函数只检查正则是否在字符串的开头匹配，而 :func:`~re.search` 将向前扫描字符串以进行匹配。 "
+"记住这一区别非常重要。 记住， :func:`!match` 只报告一个从位置 0 开始的成功匹配；如果匹配不会从头开始，则 "
+":func:`!match` 将 *不* 报告它。::"
 
 #: ../../howto/regex.rst:1276
 msgid ""
 "On the other hand, :func:`~re.search` will scan forward through the string, "
 "reporting the first match it finds. ::"
-msgstr ""
+msgstr "另一方面， :func:`~re.search` 将向前扫描字符串，报告它找到的第一个匹配项。::"
 
 #: ../../howto/regex.rst:1284
 msgid ""
@@ -2000,6 +2014,10 @@ msgid ""
 "looking for the starting character, only trying the full match if a ``'C'`` "
 "is found."
 msgstr ""
+"有时你会被诱惑继续使用 :func:`re.match` ，只需在你的正则前面添加 ``.*`` 。抵制这种诱惑并使用 "
+":func:`re.search` 代替。 正则表达式编译器对正则进行一些分析，以加快寻找匹配的过程。 "
+"其中一个分析可以确定匹配的第一个特征必须是什么；例如，以 ``Crow`` 开头的模式必须与 ``'C'`` 匹配。 "
+"分析让引擎快速扫描字符串，寻找起始字符，只在找到 ``'C'`` 时尝试完全匹配。"
 
 #: ../../howto/regex.rst:1293
 msgid ""
