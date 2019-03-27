@@ -695,6 +695,7 @@ msgid ""
 "convenience methods listed above, but this is how to log at custom log "
 "levels."
 msgstr ""
+":meth:`Logger.log` 将日志级别作为显式参数。对于记录消息而言，这比使用上面列出的日志级别方便方法更加冗长，但这是自定义日志级别的方法。"
 
 #: ../../howto/logging.rst:460
 msgid ""
@@ -707,6 +708,10 @@ msgid ""
 "loggers with names of ``foo.bar``, ``foo.bar.baz``, and ``foo.bam`` are all "
 "descendants of ``foo``."
 msgstr ""
+":func:`getLogger` 返回对具有指定名称的记录器实例的引用（如果已提供），或者如果没有则返回 ``root`` "
+"。名称是以句点分隔的层次结构。多次调用 :func:`getLogger` "
+"具有相同的名称将返回对同一记录器对象的引用。在分层列表中较低的记录器是列表中较高的记录器的子项。例如，给定一个名为 ``foo`` 的记录器，名称为 "
+"``foo.bar`` 、 ``foo.bar.baz`` 和 ``foo.bam`` 的记录器都是 ``foo`` 子项。"
 
 #: ../../howto/logging.rst:468
 msgid ""
@@ -719,6 +724,9 @@ msgid ""
 "the logger is used to determine whether the event is passed to the logger's "
 "handlers."
 msgstr ""
+"记录器具有 *有效等级* 的概念。如果未在记录器上显式设置级别，则使用其父级别作为其有效级别。如果父级没有明确的级别设置，则检查 *其* "
+"父级。依此类推，搜索所有上级元素，直到找到明确设置的级别。根记录器始终具有显式级别集（默认情况下为 ``WARNING`` "
+"）。在决定是否处理事件时，记录器的有效级别用于确定事件是否传递给记录器的处理程序。"
 
 #: ../../howto/logging.rst:476
 msgid ""
@@ -729,10 +737,12 @@ msgid ""
 "needed. (You can, however, turn off propagation by setting the *propagate* "
 "attribute of a logger to ``False``.)"
 msgstr ""
+"子记录器将消息传播到与其上级记录器关联的处理程序。因此，不必为应用程序使用的所有记录器定义和配置处理程序。为顶级记录器配置处理程序并根据需要创建子记录器就足够了。（但是，你可以通过将记录器的"
+" *propagate* 属性设置 ``False`` 来关闭传播。）"
 
 #: ../../howto/logging.rst:487
 msgid "Handlers"
-msgstr ""
+msgstr "处理程序"
 
 #: ../../howto/logging.rst:489
 msgid ""
@@ -746,6 +756,10 @@ msgid ""
 "individual handlers where each handler is responsible for sending messages "
 "of a specific severity to a specific location."
 msgstr ""
+":class:`~logging.Handler` 对象负责将适当的日志消息（基于日志消息的严重性）分派给处理程序的指定目标。 "
+":class:`Logger` 对象可以使用 :meth:`~Logger.addHandler` "
+"方法向自己添加零个或多个处理程序对象。作为示例场景，应用程序可能希望将所有日志消息发送到日志文件，将错误或更高的所有日志消息发送到标准输出，以及将所有关键消息发送至一个邮件地址。"
+" 此方案需要三个单独的处理程序，其中每个处理程序负责将特定严重性的消息发送到特定位置。"
 
 #: ../../howto/logging.rst:499
 msgid ""
@@ -753,6 +767,8 @@ msgid ""
 "handlers`); the tutorials use mainly :class:`StreamHandler` and "
 ":class:`FileHandler` in its examples."
 msgstr ""
+"标准库包含很多处理程序类型（参见 :ref:`useful-handlers` ）；教程主要使用 :class:`StreamHandler` 和 "
+":class:`FileHandler` 。"
 
 #: ../../howto/logging.rst:503
 msgid ""
@@ -761,6 +777,7 @@ msgid ""
 "application developers who are using the built-in handler objects (that is, "
 "not creating custom handlers) are the following configuration methods:"
 msgstr ""
+"处理程序中很少有方法可供应用程序开发人员使用。与使用内置处理程序对象（即不创建自定义处理程序）的应用程序开发人员相关的唯一处理程序方法是以下配置方法："
 
 #: ../../howto/logging.rst:508
 msgid ""
@@ -771,18 +788,22 @@ msgid ""
 "level set in each handler determines which messages that handler will send "
 "on."
 msgstr ""
+":meth:`~handler.setLevel` 方法，就像在记录器对象中一样，指定将被分派到适当目标的最低严重性。为什么有两个 "
+":func:`setLevel` 方法？记录器中设置的级别确定将传递给其处理程序的消息的严重性。每个处理程序中设置的级别确定处理程序将发送哪些消息。"
 
 #: ../../howto/logging.rst:514
 msgid ""
 ":meth:`~Handler.setFormatter` selects a Formatter object for this handler to"
 " use."
-msgstr ""
+msgstr ":meth:`~Handler.setFormatter` 选择一个该处理程序使用的 Formatter 对象。"
 
 #: ../../howto/logging.rst:517
 msgid ""
 ":meth:`~Handler.addFilter` and :meth:`~Handler.removeFilter` respectively "
 "configure and deconfigure filter objects on handlers."
 msgstr ""
+":meth:`~Handler.addFilter` 和 :meth:`~Handler.removeFilter` "
+"分别在处理程序上配置和取消配置过滤器对象。"
 
 #: ../../howto/logging.rst:520
 msgid ""
@@ -791,10 +812,12 @@ msgid ""
 "defines the interface that all handlers should have and establishes some "
 "default behavior that child classes can use (or override)."
 msgstr ""
+"应用程序代码不应直接实例化并使用 :class:`Handler` 的实例。 相反， :class:`Handler` "
+"类是一个基类，它定义了所有处理程序应该具有的接口，并建立了子类可以使用（或覆盖）的一些默认行为。"
 
 #: ../../howto/logging.rst:527
 msgid "Formatters"
-msgstr ""
+msgstr "格式化程序"
 
 #: ../../howto/logging.rst:529
 msgid ""
@@ -805,12 +828,15 @@ msgid ""
 "takes three optional arguments -- a message format string, a date format "
 "string and a style indicator."
 msgstr ""
+"格式化程序对象配置日志消息的最终顺序、结构和内容。 与 :class:`logging.Handler` "
+"类不同，应用程序代码可以实例化格式化程序类，但如果应用程序需要特殊行为，则可能会对格式化程序进行子类化。构造函数有三个可选参数 —— "
+"消息格式字符串、日期格式字符串和样式指示符。"
 
 #: ../../howto/logging.rst:538
 msgid ""
 "If there is no message format string, the default is to use the raw message."
 "  If there is no date format string, the default date format is:"
-msgstr ""
+msgstr "如果没有消息格式字符串，则默认使用原始消息。如果没有日期格式字符串，则默认日期格式为："
 
 #: ../../howto/logging.rst:545
 msgid ""
