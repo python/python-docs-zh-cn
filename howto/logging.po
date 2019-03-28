@@ -1437,6 +1437,9 @@ msgid ""
 "handlers consult all their filters for permission. If any filter returns a "
 "false value, the message is not processed further."
 msgstr ""
+"当基于记录器级别和处理程序级别的过滤不够时，可以将 :class:`Filter` 的实例添加到 :class:`Logger` 和 "
+":class:`Handler` 实例（通过它们的 :meth:`~Handler.addFilter` "
+"方法）。在决定进一步处理消息之前，记录器和处理程序都会查询其所有过滤器以获得许可。如果任何过滤器返回 false 值，则不会进一步处理该消息。"
 
 #: ../../howto/logging.rst:993
 msgid ""
@@ -1444,10 +1447,12 @@ msgid ""
 "name. If this feature is used, messages sent to the named logger and its "
 "children are allowed through the filter, and all others dropped."
 msgstr ""
+"基本 :class:`Filter` "
+"的功能允许按特定的记录器名称进行过滤。如果使用此功能，则允许通过过滤器发送到指定记录器及其子项的消息，并丢弃所有消息。"
 
 #: ../../howto/logging.rst:1001
 msgid "Exceptions raised during logging"
-msgstr ""
+msgstr "记录日志中引发的异常"
 
 #: ../../howto/logging.rst:1003
 msgid ""
@@ -1457,6 +1462,7 @@ msgid ""
 "errors - do not cause the application using logging to terminate "
 "prematurely."
 msgstr ""
+"日志包设计为忽略记录日志生产时发生的异常。这样，处理日志记录事件时发生的错误（例如日志记录错误配置、网络或其他类似错误）不会导致使用日志记录的应用程序过早终止。"
 
 #: ../../howto/logging.rst:1008
 msgid ""
@@ -1465,6 +1471,9 @@ msgid ""
 "method of a :class:`Handler` subclass are passed to its "
 ":meth:`~Handler.handleError` method."
 msgstr ""
+":class:`SystemExit` 和 :class:`KeyboardInterrupt` 异常永远不会被忽略。 在 "
+":class:`Handler` 子类的 :meth:`~handler.emit` 方法中发生的其他异常被传递给它的 "
+":meth:`~handler.handleError` 方法。"
 
 #: ../../howto/logging.rst:1013
 msgid ""
@@ -1473,6 +1482,8 @@ msgid ""
 ":data:`raiseExceptions`, is set. If set, a traceback is printed to "
 ":data:`sys.stderr`. If not set, the exception is swallowed."
 msgstr ""
+":class:`Handler` 中默认实现的 :meth:`~handler.handleError` 检查是否设置了模块级变量 "
+":data:`raiseExceptions` 。如果有设置，则会将跟踪打印到 :data:`sys.stderr` 。如果未设置，则忽略异常。"
 
 #: ../../howto/logging.rst:1018
 msgid ""
@@ -1481,10 +1492,12 @@ msgid ""
 " occur. It's advised that you set :data:`raiseExceptions` to ``False`` for "
 "production usage."
 msgstr ""
+":data:`raiseExceptions` 默认值是 ``True``。 这是因为在开发期间，你通常希望收到任何发生异常的通知。建议你将 "
+":data：`raiseExceptions` 设置为 ``False`` 以供生产环境使用。"
 
 #: ../../howto/logging.rst:1028
 msgid "Using arbitrary objects as messages"
-msgstr ""
+msgstr "使用任意对象作为消息"
 
 #: ../../howto/logging.rst:1030
 msgid ""
@@ -1497,6 +1510,10 @@ msgid ""
 ":class:`~handlers.SocketHandler` emits an event by pickling it and sending "
 "it over the wire."
 msgstr ""
+"在前面的部分和示例中，都假设记录事件时传递的消息是字符串。 "
+"但是，这不是唯一的可能性。你可以将任意对象作为消息传递，并且当日志记录系统需要将其转换为字符串表示时，将调用其 :meth:`~object .__ "
+"str__` 方法。实际上，如果你愿意，你可以完全避免计算字符串表示。例如， :class:`~handlers.SocketHandler` 通过 "
+"pickle 并网络发送来发出事件。"
 
 #: ../../howto/logging.rst:1041
 msgid "Optimization"
@@ -1512,12 +1529,17 @@ msgid ""
 " true if the event would be created by the Logger for that level of call. "
 "You can write code like this::"
 msgstr ""
+"消息参数的格式化将被推迟，直到无法避免。但是，计算传递给日志记录方法的参数也可能很消耗资源，如果记录器只是丢弃你的事件，你可能希望避免这样做。要决定做什么，可以调用"
+" :meth:`~Logger.isEnabledFor` 方法，该方法接受一个 level 参数，如果记录器为该级别的调用创建了该事件，则返回 "
+"true 。 你可以写这样的代码::"
 
 #: ../../howto/logging.rst:1055
 msgid ""
 "so that if the logger's threshold is set above ``DEBUG``, the calls to "
 ":func:`expensive_func1` and :func:`expensive_func2` are never made."
 msgstr ""
+"因此，如果记录器的阈值设置在“DEBUG”以上，则永远不会调用 :func:`expensive_func1` 和 "
+":func:`expensive_func2` 。"
 
 #: ../../howto/logging.rst:1058
 msgid ""
@@ -1530,6 +1552,10 @@ msgid ""
 " need to be recomputed when the logging configuration changes dynamically "
 "while the application is running (which is not all that common)."
 msgstr ""
+"在某些情况下， :meth:`~Logger.isEnabledFor` "
+"本身可能比你想要的更消耗资源（例如，对于深度嵌套的记录器，其中显式级别仅在记录器层次结构中设置为高）。在这种情况下（或者如果你想避免在紧密循环中调用方法），你可以在本地或实例变量中将调用的结果缓存到"
+" :meth:`~Logger.isEnabledFor` "
+"，并使用它而不是调用每次方法。只在日志记录配置在应用程序运行时动态更改（这不常见）时需重新计算这样的缓存值。"
 
 #: ../../howto/logging.rst:1067
 msgid ""
@@ -1538,6 +1564,7 @@ msgid ""
 "Here's a list of things you can do to avoid processing during logging which "
 "you don't need:"
 msgstr ""
+"对于需要对收集的日志信息进行更精确控制的特定应用程序，还可以进行其他优化。 以下是你可以执行的操作列表，以避免在你不需要的日志记录期间进行处理："
 
 #: ../../howto/logging.rst:1073
 msgid "What you don't want to collect"
