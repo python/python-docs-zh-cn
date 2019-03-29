@@ -258,13 +258,13 @@ msgstr ""
 msgid ""
 "``field``\\s may optionally specify a default value, using normal Python "
 "syntax::"
-msgstr ""
+msgstr "``field``\\s 可以选择使用普通的 Python 语法指定默认值::"
 
 #: ../../library/dataclasses.rst:170
 msgid ""
 "In this example, both ``a`` and ``b`` will be included in the added "
 ":meth:`__init__` method, which will be defined as::"
-msgstr ""
+msgstr "在这个例子中， ``a`` 和 ``b`` 都将包含在添加的 :meth:`__init__` 方法中，它们将被定义为::"
 
 #: ../../library/dataclasses.rst:175
 msgid ""
@@ -272,6 +272,7 @@ msgid ""
 " field with a default value.  This is true either when this occurs in a "
 "single class, or as a result of class inheritance."
 msgstr ""
+"如果没有默认值的字段跟在具有默认值的字段后，将引发 :exc:`TypeError` 。当这发生在单个类中时，或者作为类继承的结果时，都是如此。"
 
 #: ../../library/dataclasses.rst:181
 msgid ""
@@ -281,6 +282,8 @@ msgid ""
 "replace the default field value with a call to the provided :func:`field` "
 "function.  For example::"
 msgstr ""
+"对于常见和简单的用例，不需要其他功能。但是，有些数据类功能需要额外的每字段信息。为了满足这种对附加信息的需求，你可以通过调用提供的 "
+":func:`field` 函数来替换默认字段值。例如::"
 
 #: ../../library/dataclasses.rst:194
 msgid ""
@@ -289,17 +292,20 @@ msgid ""
 "sentinel is used because ``None`` is a valid value for ``default``.  No code"
 " should directly use the ``MISSING`` value."
 msgstr ""
+"如上所示， ``MISSING`` 值是一个 sentinel 对象，用于检测是否提供了 ``default`` 和 "
+"``default_factory`` 参数。 使用此 sentinel 是因为 ``None`` 是 ``default`` "
+"的有效值。没有代码应该直接使用 ``MISSING`` 值。"
 
 #: ../../library/dataclasses.rst:200
 msgid "The parameters to :func:`field` are:"
-msgstr ""
+msgstr ":func:`field` 参数有："
 
 #: ../../library/dataclasses.rst:202
 msgid ""
 "``default``: If provided, this will be the default value for this field.  "
 "This is needed because the :meth:`field` call itself replaces the normal "
 "position of the default value."
-msgstr ""
+msgstr "``default`` ：如果提供，这将是该字段的默认值。这是必需的，因为 :meth:`field` 调用本身会替换一般的默认值。"
 
 #: ../../library/dataclasses.rst:206
 msgid ""
@@ -309,24 +315,29 @@ msgid ""
 " discussed below.  It is an error to specify both ``default`` and "
 "``default_factory``."
 msgstr ""
+"``default_factory`` "
+"：如果提供，它必须是一个零参数可调用对象，当该字段需要一个默认值时，它将被调用。除了其他目的之外，这可以用于指定具有可变默认值的字段，如下所述。 "
+"同时指定 ``default`` 和 ``default_factory`` 将产生错误。"
 
 #: ../../library/dataclasses.rst:212
 msgid ""
 "``init``: If true (the default), this field is included as a parameter to "
 "the generated :meth:`__init__` method."
-msgstr ""
+msgstr "``init`` ：如果为true（默认值），则该字段作为参数包含在生成的 :meth:`__init__` 方法中。"
 
 #: ../../library/dataclasses.rst:215
 msgid ""
 "``repr``: If true (the default), this field is included in the string "
 "returned by the generated :meth:`__repr__` method."
-msgstr ""
+msgstr "``repr`` ：如果为true（默认值），则该字段包含在生成的 :meth:`__repr__` 方法返回的字符串中。"
 
 #: ../../library/dataclasses.rst:218
 msgid ""
 "``compare``: If true (the default), this field is included in the generated "
 "equality and comparison methods (:meth:`__eq__`, :meth:`__gt__`, et al.)."
 msgstr ""
+"``compare`` ：如果为true（默认值），则该字段包含在生成的相等性和比较方法中（ :meth:`__eq__` ， "
+":meth:`__gt__` 等等）。"
 
 #: ../../library/dataclasses.rst:222
 msgid ""
@@ -336,6 +347,9 @@ msgid ""
 "field should be considered in the hash if it's used for comparisons.  "
 "Setting this value to anything other than ``None`` is discouraged."
 msgstr ""
+"``hash`` ：这可以是布尔值或 ``None`` 。如果为true，则此字段包含在生成的 :meth:`__hash__` 方法中。如果为 "
+"``None`` （默认值），请使用 ``compare`` 的值，这通常是预期的行为。如果字段用于比较，则应在 hash "
+"中考虑该字段。不鼓励将此值设置为 ``None`` 以外的任何值。"
 
 #: ../../library/dataclasses.rst:229
 msgid ""
@@ -345,6 +359,8 @@ msgid ""
 "hash value.  Even if a field is excluded from the hash, it will still be "
 "used for comparisons."
 msgstr ""
+"设置 ``hash=False`` 但 ``compare=True`` 的一个可能原因是，如果一个计算 hash "
+"的代价很高的字段是检验等价性需要的，但还有其他字段可以计算类型的 hash 。 即使从 hash 中排除某个字段，它仍将用于比较。"
 
 #: ../../library/dataclasses.rst:235
 msgid ""
@@ -355,6 +371,9 @@ msgid ""
 "Multiple third-parties can each have their own key, to use as a namespace in"
 " the metadata."
 msgstr ""
+"``metadata`` ：这可以是映射或 None 。 None 被视为一个空的字典。这个值包含在 "
+":func:`~insterss.MappingProxyType` 中，使其成为只读，并暴露在 :class:`Field` "
+"对象上。数据类根本不使用它，它是作为第三方扩展机制提供的。多个第三方可以各自拥有自己的键值，以用作元数据中的命名空间。"
 
 #: ../../library/dataclasses.rst:243
 msgid ""
@@ -366,12 +385,16 @@ msgid ""
 "fields, just as if the default value itself were specified.  For example, "
 "after::"
 msgstr ""
+"如果通过调用 :func:`field()` 指定字段的默认值，则该字段的类属性将替换为指定的 ``default`` 值。如果没有提供 "
+"``default`` ，那么将删除类属性。目的是在 :func:`dataclass` "
+"装饰器运行之后，类属性将包含字段的默认值，就像指定了默认值一样。例如，之后::"
 
 #: ../../library/dataclasses.rst:259
 msgid ""
 "The class attribute ``C.z`` will be ``10``, the class attribute ``C.t`` will"
 " be ``20``, and the class attributes ``C.x`` and ``C.y`` will not be set."
 msgstr ""
+"类属性 ``C.z`` 将是 ``10`` ，类属性 ``C.t`` 将是 ``20``，类属性 ``C.x`` 和 ``C.y`` 将不设置。"
 
 #: ../../library/dataclasses.rst:265
 msgid ""

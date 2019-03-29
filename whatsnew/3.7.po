@@ -4144,6 +4144,8 @@ msgid ""
 "escaping all characters other than ASCII letters, numbers, and ``'_'``. "
 "(Contributed by Serhiy Storchaka in :issue:`29995`.)"
 msgstr ""
+":func:`re.escape` 更改为只转义正则表达式特殊字符，而不转义 ASCII 字母、数字和 ``'_'`` 以外的所有字符。 （由 "
+"Serhiy Storchaka 在 :issue:`29995` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2359
 msgid ""
@@ -4151,6 +4153,8 @@ msgid ""
 "recent to be more consistent with :mod:`traceback`. (Contributed by Jesse "
 "Bakker in :issue:`32121`.)"
 msgstr ""
+":class:`tracemalloc.Traceback` 帧现在是按从最旧到最新排序，以便与 :mod:`traceback` 更为一致。 （由 "
+"Jesse Bakker 在 :issue:`32121` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2363
 msgid ""
@@ -4160,6 +4164,10 @@ msgid ""
 "``if sock.type == socket.SOCK_STREAM`` work as expected on all platforms. "
 "(Contributed by Yury Selivanov in :issue:`32331`.)"
 msgstr ""
+"在支持 :const:`socket.SOCK_NONBLOCK` 或 :const:`socket.SOCK_CLOEXEC` "
+"标志位的操作系统上，:attr:`socket.type <socket.socket.type>` 不再应用它们。 因此，像 ``if "
+"sock.type == socket.SOCK_STREAM`` 之类的检测会在所有平台上按预期的方式工作。 （由 Yury Selivanov 在 "
+":issue:`32331` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2370
 msgid ""
@@ -4171,6 +4179,11 @@ msgid ""
 "previous behaviour, or use :attr:`STARTUPINFO.lpAttributeList "
 "<subprocess.STARTUPINFO.lpAttributeList>`."
 msgstr ""
+"在 Windows 上当重定向标准句柄时，:class:`subprocess.Popen` 的 *close_fds* 参数的默认值从 "
+":const:`False` 更改为 :const:`True`。 如果你以前依赖于在使用带有标准 io 重定向的 "
+":class:`subprocess.Popen` 时所继承的句柄，则必须传入 ``close_fds=False`` 以保留原先的行为，或是使用 "
+":attr:`STARTUPINFO.lpAttributeList "
+"<subprocess.STARTUPINFO.lpAttributeList>`。"
 
 #: ../../whatsnew/3.7.rst:2378
 msgid ""
@@ -4179,6 +4192,9 @@ msgid ""
 ":data:`sys.path_importer_cache` which are set to ``None``. (Contributed by "
 "Brett Cannon in :issue:`33169`.)"
 msgstr ""
+":meth:`importlib.machinery.PathFinder.invalidate_caches` -- 此方法隐式地影响 "
+":func:`importlib.invalidate_caches` -- 现在会删除 :data:`sys.path_importer_cache`"
+" 中被设为 ``None`` 的条目。 （由 Brett Cannon 在 :issue:`33169` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2383
 msgid ""
@@ -4191,6 +4207,13 @@ msgid ""
 " methods returned :class:`asyncio.Future` instances. (Contributed by Yury "
 "Selivanov in :issue:`32327`.)"
 msgstr ""
+"在 :mod:`asyncio` 中，:meth:`loop.sock_recv() <asyncio.loop.sock_recv>`, "
+":meth:`loop.sock_sendall() <asyncio.loop.sock_sendall>`, "
+":meth:`loop.sock_accept() <asyncio.loop.sock_accept>`, "
+":meth:`loop.getaddrinfo() <asyncio.loop.getaddrinfo>`, "
+":meth:`loop.getnameinfo() <asyncio.loop.getnameinfo>` "
+"已被更改为正确的协程方法以与培训五日文档相匹配。 之前，这些方法会返回 :class:`asyncio.Future` 实例。 （由 Yury "
+"Selivanov 在 :issue:`32327` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2394
 msgid ""
@@ -4198,6 +4221,8 @@ msgid ""
 "server sockets, instead of returning it directly. (Contributed by Yury "
 "Selivanov in :issue:`32662`.)"
 msgstr ""
+":attr:`asyncio.Server.sockets` 现在会返回服务器套接字列表的副本，而不是直接地返回它。 （由 Yury Selivanov"
+" 在 :issue:`32662` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2398
 msgid ""
@@ -4205,6 +4230,8 @@ msgid ""
 "instead of a :class:`bytes` instance. (Contributed by Victor Stinner in "
 ":issue:`21071`.)"
 msgstr ""
+":attr:`Struct.format <struct.Struct.format>` 现在是一个 :class:`str` 实例而非 "
+":class:`bytes` 实例。 （由 Victor Stinner 在 :issue:`21071` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2402
 msgid ""
@@ -4212,6 +4239,8 @@ msgid ""
 "arbitrary numbers are no longer allowed. (Contributed by Serhiy Storchaka in"
 " :issue:`31778`.)"
 msgstr ""
+":meth:`ast.literal_eval()` 现在更为严格。 任意地加减数字已不再被允许。 （由 Serhiy Storchaka 在 "
+":issue:`31778` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2406
 msgid ""
@@ -4225,12 +4254,20 @@ msgid ""
 ":class:`datetime.date`. (Contributed by Alexander Belopolsky in "
 ":issue:`28292`.)"
 msgstr ""
+"当一个日期超出 ``0001-01-01`` 到 ``9999-12-31`` 范围时 :meth:`Calendar.itermonthdates "
+"<calendar.Calendar.itermonthdates>` 现在将始终如一地引发异常，以便支持不能容忍此类异常的应用程序，可以使用新增的 "
+":meth:`Calendar.itermonthdays3 <calendar.Calendar.itermonthdays3>` 和 "
+":meth:`Calendar.itermonthdays4 <calendar.Calendar.itermonthdays4>`。 "
+"这些新方法返回元组，并且其不受 :class:`datetime.date` 所支持的范围限制。 （由 Alexander Belopolsky 在 "
+":issue:`28292` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2416
 msgid ""
 ":class:`collections.ChainMap` now preserves the order of the underlying "
 "mappings.  (Contributed by Raymond Hettinger in :issue:`32792`.)"
 msgstr ""
+":class:`collections.ChainMap` 现在会保留底层映射的顺序。 （由 Raymond Hettinger 在 "
+":issue:`32792` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2419
 msgid ""
@@ -4239,6 +4276,9 @@ msgid ""
 ":exc:`RuntimeError` if called during interpreter shutdown. (Contributed by "
 "Mark Nemec in :issue:`33097`.)"
 msgstr ""
+"如果在解释器关闭期间被调用，:class:`concurrent.futures.ThreadPoolExecutor` 和 "
+":class:`concurrent.futures.ProcessPoolExecutor` 的 ``submit()`` 方法现在会引发 "
+":exc:`RuntimeError`。 （由 Mark Nemec 在 :issue:`33097` 中贡献。）"
 
 #: ../../whatsnew/3.7.rst:2424
 msgid ""
