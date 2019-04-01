@@ -530,6 +530,7 @@ msgid ""
 "It is an error for ``changes`` to contain any fields that are defined as "
 "having ``init=False``.  A :exc:`ValueError` will be raised in this case."
 msgstr ""
+"``changes`` 包含任何定义为 ``init=False`` 的字段是错误的。在这种情况下会引发 :exc:`ValueError` 。"
 
 #: ../../library/dataclasses.rst:379
 msgid ""
@@ -541,12 +542,16 @@ msgid ""
 "perhaps a custom ``replace()`` (or similarly named) method which handles "
 "instance copying."
 msgstr ""
+"提前提醒 ``init=False`` 字段在调用 :func:`replace` "
+"时的工作方式。如果它们完全被初始化的话，它们不是从源对象复制的，而是在 :meth:`__post_init__` 中初始化。估计 "
+"``init=False`` 字段很少能被正确地使用。如果使用它们，那么使用备用类构造函数或者可能是处理实例复制的自定义 ``replace()`` "
+"（或类似命名的）方法可能是明智的。"
 
 #: ../../library/dataclasses.rst:390
 msgid ""
 "Returns True if its parameter is a dataclass or an instance of one, "
 "otherwise returns False."
-msgstr ""
+msgstr "如果其参数是数据类或数据类实例，则返回 True ，否则返回 False 。"
 
 #: ../../library/dataclasses.rst:393
 msgid ""
@@ -554,10 +559,11 @@ msgid ""
 "dataclass itself), then add a further check for ``not isinstance(obj, "
 "type)``::"
 msgstr ""
+"如果你需要知道一个类是否是一个数据类的实例（而不是一个数据类本身），那么再添加一个 ``not isinstance(obj, type)`` 检查::"
 
 #: ../../library/dataclasses.rst:401
 msgid "Post-init processing"
-msgstr ""
+msgstr "初始化后处理"
 
 #: ../../library/dataclasses.rst:403
 msgid ""
@@ -569,12 +575,16 @@ msgid ""
 ":meth:`__init__` method is generated, then :meth:`__post_init__` will not "
 "automatically be called."
 msgstr ""
+"生成的 :meth:`__init__` 代码将调用一个名为 :meth:`__post_init__` 的方法，如果在类上已经定义了 "
+":meth:`__post_init__` 。它通常被称为 ``self.__post_init__()`` 。但是，如果定义了任何 "
+"``InitVar`` 字段，它们也将按照它们在类中定义的顺序传递给 :meth:`__post_init__` 。 如果没有 :meth:`__ "
+"init__` 方法生成，那么 :meth:`__post_init__` 将不会被自动调用。"
 
 #: ../../library/dataclasses.rst:411
 msgid ""
 "Among other uses, this allows for initializing field values that depend on "
 "one or more other fields.  For example::"
-msgstr ""
+msgstr "在其他用途中，这允许初始化依赖于一个或多个其他字段的字段值。例如::"
 
 #: ../../library/dataclasses.rst:423
 msgid ""
@@ -582,10 +592,12 @@ msgid ""
 ":meth:`__post_init__`.  Also see the warning about how :func:`replace` "
 "handles ``init=False`` fields."
 msgstr ""
+"有关将参数传递给 :meth:`__post_init__` 的方法，请参阅下面有关仅初始化变量的段落。另请参阅关于 :func:`replace` "
+"处理 ``init=False`` 字段的警告。"
 
 #: ../../library/dataclasses.rst:428
 msgid "Class variables"
-msgstr ""
+msgstr "类变量"
 
 #: ../../library/dataclasses.rst:430
 msgid ""
@@ -597,10 +609,13 @@ msgid ""
 "``ClassVar`` pseudo-fields are not returned by the module-level "
 ":func:`fields` function."
 msgstr ""
+"两个地方 :func:`dataclass` 实际检查字段类型的之一是确定字段是否是如 :pep:`526` 所定义的类变量。它通过检查字段的类型是否为"
+" ``typing.ClassVar`` 来完成此操作。如果一个字段是一个 ``ClassVar`` "
+"，它将被排除在考虑范围之外，并被数据类机制忽略。这样的 ``ClassVar`` 伪字段不会由模块级的 :func:`fields` 函数返回。"
 
 #: ../../library/dataclasses.rst:439
 msgid "Init-only variables"
-msgstr ""
+msgstr "仅初始化变量"
 
 #: ../../library/dataclasses.rst:441
 msgid ""
@@ -613,22 +628,29 @@ msgid ""
 "generated :meth:`__init__` method, and are passed to the optional "
 ":meth:`__post_init__` method.  They are not otherwise used by dataclasses."
 msgstr ""
+"另一个 :func:`dataclass` 检查类型注解地方是为了确定一个字段是否是一个仅初始化变量。它通过查看字段的类型是否为 "
+"``dataclasses.InitVar`` 类型来实现。如果一个字段是一个 ``InitVar`` "
+"，它被认为是一个称为仅初始化字段的伪字段。因为它不是一个真正的字段，所以它不会被模块级的 :func:`fields` "
+"函数返回。仅初始化字段作为参数添加到生成的 :meth:`__init__` 方法中，并传递给可选的 :meth:`__post_init__` "
+"方法。数据类不会使用它们。"
 
 #: ../../library/dataclasses.rst:451
 msgid ""
 "For example, suppose a field will be initialized from a database, if a value"
 " is not provided when creating the class::"
-msgstr ""
+msgstr "例如，假设一个字段将从数据库初始化，如果在创建类时未提供其值::"
 
 #: ../../library/dataclasses.rst:466
 msgid ""
 "In this case, :func:`fields` will return :class:`Field` objects for ``i`` "
 "and ``j``, but not for ``database``."
 msgstr ""
+"在这种情况下， :func:`fields` 将返回 ``i`` 和 ``j`` 的 :class:`Field` 对象，但不包括 "
+"``database`` 。"
 
 #: ../../library/dataclasses.rst:470
 msgid "Frozen instances"
-msgstr ""
+msgstr "冻结的实例"
 
 #: ../../library/dataclasses.rst:472
 msgid ""
@@ -638,6 +660,9 @@ msgid ""
 ":meth:`__delattr__` methods to the class.  These methods will raise a "
 ":exc:`FrozenInstanceError` when invoked."
 msgstr ""
+"无法创建真正不可变的 Python 对象。但是，通过将 ``frozen=True`` 传递给 :meth:`dataclass` "
+"装饰器，你可以模拟不变性。在这种情况下，数据类将向类添加 :meth:`__setattr__` 和 :meth:`__delattr__` 方法。 "
+"些方法在调用时会引发 :exc:`FrozenInstanceError` 。"
 
 #: ../../library/dataclasses.rst:478
 msgid ""
@@ -645,6 +670,8 @@ msgid ""
 ":meth:`__init__` cannot use simple assignment to initialize fields, and must"
 " use :meth:`object.__setattr__`."
 msgstr ""
+"使用 ``frozen=True`` 时会有很小的性能损失： :meth:`__ init__` 不能使用简单的赋值来初始化字段，并必须使用 "
+":meth:`object.__ setattr__` 。"
 
 #: ../../library/dataclasses.rst:483
 msgid "Inheritance"
@@ -661,20 +688,24 @@ msgid ""
 "ordered mapping of fields.  Because the fields are in insertion order, "
 "derived classes override base classes.  An example::"
 msgstr ""
+"当数组由 :meth:`dataclass` 装饰器创建时，它会查看反向 MRO 中的所有类的基类（即从 :class:`object` 开始 "
+"），并且对于它找到的每个数据类， "
+"将该基类中的字段添加到字段的有序映射中。添加完所有基类字段后，它会将自己的字段添加到有序映射中。所有生成的方法都将使用这种组合的，计算的有序字段映射。由于字段是按插入顺序排列的，因此派生类会重载基类。一个例子::"
 
 #: ../../library/dataclasses.rst:505
 msgid ""
 "The final list of fields is, in order, ``x``, ``y``, ``z``.  The final type "
 "of ``x`` is ``int``, as specified in class ``C``."
 msgstr ""
+"最后的字段列表依次是 ``x`` 、 ``y`` 、 ``z`` 。 ``x`` 的最终类型是 ``int`` ，如类 ``C`` 中所指定的那样。"
 
 #: ../../library/dataclasses.rst:508
 msgid "The generated :meth:`__init__` method for ``C`` will look like::"
-msgstr ""
+msgstr "为 ``C`` 生成的 :meth:`__init__` 方法看起来像::"
 
 #: ../../library/dataclasses.rst:513
 msgid "Default factory functions"
-msgstr ""
+msgstr "默认工厂函数"
 
 #: ../../library/dataclasses.rst:515
 msgid ""
