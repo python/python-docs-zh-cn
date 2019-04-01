@@ -328,7 +328,7 @@ msgid ""
 msgstr ""
 "*args* "
 "被所有调用需要，应当为一个字符串，或者一个程序参数序列。提供一个参数序列通常更好，它可以更小心地使用参数中的转义字符以及引用（例如允许文件名中的空格）。如果传递一个简单的字符串，则"
-" *shell* 参数必须为 :const:`True`（见下文）或者该字符串中将被运行的程序名必须用简单的命名而不指定任何参数。"
+" *shell* 参数必须为 :const:`True` （见下文）或者该字符串中将被运行的程序名必须用简单的命名而不指定任何参数。"
 
 #: ../../library/subprocess.rst:262
 msgid ""
@@ -407,6 +407,11 @@ msgid ""
 ":mod:`fnmatch`, :func:`os.walk`, :func:`os.path.expandvars`, "
 ":func:`os.path.expanduser`, and :mod:`shutil`)."
 msgstr ""
+"如果 *shell* 设为 :const:`True`，则指定的指令将通过 Shell 执行。如果您主要使用 Python 来提供它在大多数系统 "
+"shell 上提供的增强控制流，并且仍然希望方便地访问其他 shell 功能，例如 shell 管道，通配符，环境变量扩展以及 ``~`` "
+"到用户的主目录的扩展，这将非常有用。但是，注意 Python 自己也提供了许多类 shell 特性的实现（例如， :mod:`glob`, "
+":mod:`fnmatch`, :func:`os.walk`, :func:`os.path.expandvars`, "
+":func:`os.path.expanduser`, :mod:`shutil` 和 :mod:`pathlib`）。"
 
 #: ../../library/subprocess.rst:313
 msgid ""
@@ -415,21 +420,25 @@ msgid ""
 "instead of ``locale.getpreferredencoding()``.  See the "
 ":class:`io.TextIOWrapper` class for more information on this change."
 msgstr ""
+"当 *universal_newline* 被设为 :const:`True`，则类使用 "
+":func:`locale.getpreferredencoding(False) <locale.getpreferredencoding>` "
+"编码来代替 :func:`locale.getpreferredencoding() "
+"<locale.getpreferredencoding>`。关于它们的区别的更多信息，见 :class:`io.TextIOWrapper`。"
 
 #: ../../library/subprocess.rst:321 ../../library/subprocess.rst:405
 msgid ""
 "Read the `Security Considerations`_ section before using ``shell=True``."
-msgstr ""
+msgstr "在使用 ``shell=True`` 之前， 请阅读 `Security Considerations`_ 段落。"
 
 #: ../../library/subprocess.rst:323
 msgid ""
 "These options, along with all of the other options, are described in more "
 "detail in the :class:`Popen` constructor documentation."
-msgstr ""
+msgstr "这些选项以及所有其他选项在 :class:`Popen` 构造函数文档中有更详细的描述。"
 
 #: ../../library/subprocess.rst:328
 msgid "Popen Constructor"
-msgstr ""
+msgstr "Popen 构造函数"
 
 #: ../../library/subprocess.rst:330
 msgid ""
@@ -438,6 +447,7 @@ msgid ""
 "are able to handle the less common cases not covered by the convenience "
 "functions."
 msgstr ""
+"此模块的底层的进程创建与管理由 :class:`Popen` 类处理。它提供了很大的灵活性，因此开发者能够处理未被便利函数覆盖的不常见用例。"
 
 #: ../../library/subprocess.rst:343
 msgid ""
@@ -446,6 +456,8 @@ msgid ""
 "the class uses the Windows ``CreateProcess()`` function.  The arguments to "
 ":class:`Popen` are as follows."
 msgstr ""
+"在一个新的进程中执行子程序。在 POSIX，此类使用类似于 :meth:`os.execvp` 的行为来执行子程序。在 Windows，此类使用了 "
+"Windows ``CreateProcess()`` 函数。 :class:`Popen` 的参数如下："
 
 #: ../../library/subprocess.rst:348
 msgid ""
@@ -456,6 +468,9 @@ msgid ""
 "additional differences from the default behavior.  Unless otherwise stated, "
 "it is recommended to pass *args* as a sequence."
 msgstr ""
+"*args* 应当是一个程序的参数列表或者一个简单的字符串。默认情况下，如果 *args* 是一个序列，将运行的程序是此序列的第一项。如果 *args*"
+" 是一个字符串，解释是平台相关的，如下所述。有关默认行为的其他差异，见 *shell* 和 *executable* 参数。除非另有说明，推荐将 "
+"*args* 作为序列传递。"
 
 #: ../../library/subprocess.rst:355
 msgid ""
@@ -463,12 +478,13 @@ msgid ""
 "path of the program to execute.  However, this can only be done if not "
 "passing arguments to the program."
 msgstr ""
+"在 POSIX，如果 *args* 是一个字符串，此字符串被作为将被执行的程序的命名或路径解释。但是，只有在不传递任何参数给程序的情况下才能这么做。"
 
 #: ../../library/subprocess.rst:361
 msgid ""
 ":meth:`shlex.split` can be useful when determining the correct tokenization "
 "for *args*, especially in complex cases::"
-msgstr ""
+msgstr ":meth:`shlex.split` 在确定正确 *args* 的正确标记化时非常有用，尤其是在复杂情况下::"
 
 #: ../../library/subprocess.rst:372
 msgid ""
@@ -478,6 +494,8 @@ msgid ""
 "used in the shell (such as filenames containing spaces or the *echo* command"
 " shown above) are single list elements."
 msgstr ""
+"特别注意，由 shell 中的空格分隔的选项（例如 *-input*）和参数（例如 *eggs.txt* "
+"）位于分开的列表元素中，而在需要时使用引号或反斜杠转义的参数在 shell （例如包含空格的文件名或上面显示的 *echo* 命令）是单独的列表元素。"
 
 #: ../../library/subprocess.rst:378
 msgid ""
@@ -485,6 +503,8 @@ msgid ""
 "manner described in :ref:`converting-argument-sequence`.  This is because "
 "the underlying ``CreateProcess()`` operates on strings."
 msgstr ""
+"在 Windows，如果 *args* 是一个序列，他将通过一个在 :ref:`converting-argument-sequence` "
+"描述的方式被转换为一个字符串。这是因为底层的 ``CreateProcess()`` 只处理字符串。"
 
 #: ../../library/subprocess.rst:382
 msgid ""
@@ -492,6 +512,8 @@ msgid ""
 "the shell as the program to execute.  If *shell* is ``True``, it is "
 "recommended to pass *args* as a string rather than as a sequence."
 msgstr ""
+"参数 *shell* （默认为 :const:`False`）指定是否使用 shell 执行程序。如果 *shell* 为 "
+":const:`True`，更推荐将 *args* 作为字符串传递而非序列。"
 
 #: ../../library/subprocess.rst:386
 msgid ""
@@ -504,6 +526,10 @@ msgid ""
 "be treated as additional arguments to the shell itself.  That is to say, "
 ":class:`Popen` does the equivalent of::"
 msgstr ""
+"在 POSIX，当 ``shell=True``， shell 默认为 :file:`/bin/sh`。如果 *args* "
+"是一个字符串，此字符串指定将通过 shell "
+"执行的命令。这意味着字符串的格式必须和在命令提示符中所输入的完全相同。这包括，例如，引号和反斜杠转义包含空格的文件名。如果 *args* "
+"是一个序列，第一项指定了命令，另外的项目将作为传递给 shell （而非命令） 的参数对待。也就是说， :class:`Popen` 等同于::"
 
 #: ../../library/subprocess.rst:397
 msgid ""
@@ -513,34 +539,37 @@ msgid ""
 "into the shell (e.g. :command:`dir` or :command:`copy`).  You do not need "
 "``shell=True`` to run a batch file or console-based executable."
 msgstr ""
+"在 Windows，使用 ``shell=True``，环境变量 :envvar:`COMSPEC` 指定了默认 shell。在 Windows "
+"你唯一需要指定 ``shell=True`` 的情况是你想要执行内置在 shell 中的命令（例如 :command:`dir` 或者 "
+":command:`copy`）。在运行一个批处理文件或者基于控制台的可执行文件时，不需要 ``shell=True``。"
 
 #: ../../library/subprocess.rst:407
 msgid ""
 "*bufsize* will be supplied as the corresponding argument to the :func:`open`"
 " function when creating the stdin/stdout/stderr pipe file objects:"
-msgstr ""
+msgstr "*bufsize* 将在 :func:`open` 函数创建了 stdin/stdout/stderr 管道文件对象时作为对应的参数供应:"
 
 #: ../../library/subprocess.rst:411
 msgid ""
 ":const:`0` means unbuffered (read and write are one system call and can "
 "return short)"
-msgstr ""
+msgstr ":const:`0` 表示不使用缓冲区 （读取与写入是一个系统调用并且可以返回短内容）"
 
 #: ../../library/subprocess.rst:413
 msgid ""
 ":const:`1` means line buffered (only usable if ``universal_newlines=True`` "
 "i.e., in a text mode)"
-msgstr ""
+msgstr ":const:`1` 表示行缓冲（只有 ``universal_newlines=True`` 时才有用，例如，在文本模式中）"
 
 #: ../../library/subprocess.rst:415
 msgid "any other positive value means use a buffer of approximately that size"
-msgstr ""
+msgstr "任何其他正值表示使用一个约为对应大小的缓冲区"
 
 #: ../../library/subprocess.rst:417
 msgid ""
 "negative bufsize (the default) means the system default of "
 "io.DEFAULT_BUFFER_SIZE will be used."
-msgstr ""
+msgstr "负的 *bufsize* （默认）表示使用系统默认的 :data:`io.DEFAULT_BUFFER_SIZE`。"
 
 #: ../../library/subprocess.rst:420
 msgid ""
@@ -550,6 +579,8 @@ msgid ""
 "allowed short reads.  This was unintentional and did not match the behavior "
 "of Python 2 as most code expected."
 msgstr ""
+"*bufsize* 现在默认为 -1 来启用缓冲以匹配大多数代码所期望的行为。在Python 3.2.4 和 3.3.1 之前的版本中，它错误地默认为 "
+"0，这是无缓冲的并且允许短读取。这是无意的，并且与大多数代码所期望的 Python 2 的行为不匹配。"
 
 #: ../../library/subprocess.rst:427
 msgid ""
