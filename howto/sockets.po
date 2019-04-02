@@ -477,6 +477,8 @@ msgid ""
 "calls, in much the same ways. It's just that, if you do it right, your app "
 "will be almost inside-out."
 msgstr ""
+"如果你已理解上述内容，那么你已经了解了使用套接字的机制所需了解的大部分内容。你仍将以相同的方式使用相同的函数调用。 "
+"只是，如果你做得对，你的应用程序几乎是由内到外的。"
 
 #: ../../howto/sockets.rst:320
 msgid ""
@@ -487,6 +489,9 @@ msgid ""
 "the exact same idea. You do this after creating the socket, but before using"
 " it. (Actually, if you're nuts, you can switch back and forth.)"
 msgstr ""
+"在 Python 中，使用 ``socket.setblocking(0)`` 使其无阻塞。 在 C 中，它更复杂，（一方面，你需要在 BSD 风格的 "
+"``O_NONBLOCK`` 和几乎无法区分的 Posix 风格的 ``O_NDELAY`` 之间做出选择，这与 ``TCP_NODELAY`` "
+"完全不同。) 。但这是完全相同的想法。你可以在创建套接字之后但在使用之前执行此操作。 （实际上，如果你疯了，你可以来回切换。）"
 
 #: ../../howto/sockets.rst:327
 msgid ""
@@ -497,6 +502,9 @@ msgid ""
 "will grow large, buggy and suck CPU. So let's skip the brain-dead solutions "
 "and do it right."
 msgstr ""
+"主要的机制差异是 ``send`` 、 ``recv`` 、 ``connect`` 和 ``accept`` 可以在没有做任何事情的情况下返回。 "
+"你（当然）有很多选择。你可以检查返回代码和错误代码，通常会让自己发疯。如果你不相信我，请尝试一下。你的应用程序将变得越来越大、越来越 Bug 、吸干 "
+"CPU。因此，让我们跳过脑死亡的解决方案并做正确的事。"
 
 #: ../../howto/sockets.rst:334
 msgid "Use ``select``."
@@ -508,6 +516,8 @@ msgid ""
 "but it's close enough to the C version that if you understand ``select`` in "
 "Python, you'll have little trouble with it in C::"
 msgstr ""
+"在 C 中，编码 ``select`` 相当复杂。 在 Python 中，它是很简单，但它与 C 版本足够接近，如果你在 Python 中理解 "
+"``select`` ，那么在 C 中你会几乎不会遇到麻烦::"
 
 #: ../../howto/sockets.rst:347
 msgid ""
@@ -519,13 +529,16 @@ msgid ""
 "generally a sensible thing to do - give it a nice long timeout (say a "
 "minute) unless you have good reason to do otherwise."
 msgstr ""
+"你传递给 ``select`` "
+"三个列表：第一个包含你可能想要尝试读取的所有套接字；第二个是你可能想要尝试写入的所有套接字，以及要检查错误的最后一个（通常为空）。你应该注意，套接字可以进入多个列表。"
+" ``select`` 调用是阻塞的，但你可以给它一个超时。这通常是一件明智的事情 —— 给它一个很长的超时（比如一分钟），除非你有充分的理由不这样做。"
 
 #: ../../howto/sockets.rst:355
 msgid ""
 "In return, you will get three lists. They contain the sockets that are "
 "actually readable, writable and in error. Each of these lists is a subset "
 "(possibly empty) of the corresponding list you passed in."
-msgstr ""
+msgstr "作为返回，你将获得三个列表。它们包含实际可读、可写和有错误的套接字。 这些列表中的每一个都是你传入的相应列表的子集（可能为空）。"
 
 #: ../../howto/sockets.rst:359
 msgid ""
@@ -536,6 +549,9 @@ msgid ""
 "nothing.  (Actually, any reasonably healthy socket will return as writable -"
 " it just means outbound network buffer space is available.)"
 msgstr ""
+"如果一个套接字在输出可读列表中，那么你可以像我们一样接近这个业务，那个套接字上的 ``recv`` 将返回 *一些内容* "
+"。可写列表的也相同，你将能够发送 *一些内容* 。 也许不是你想要的全部，但 *有些东西* 比没有东西更好。 "
+"（实际上，任何合理健康的套接字都将以可写方式返回 —— 它只是意味着出站网络缓冲区空间可用。）"
 
 #: ../../howto/sockets.rst:366
 msgid ""
@@ -545,6 +561,9 @@ msgid ""
 "it in the potential_writers list. If it shows up in the writable list, you "
 "have a decent chance that it has connected."
 msgstr ""
+"如果你有一个“服务器”套接字，请将其放在 potential_readers 列表中。如果它出现在可读列表中，那么你的 ``accept`` "
+"（几乎肯定）会起作用。如果你已经创建了一个新的套接字 ``connect`` 其他人，请将它放在 potential_writers "
+"列表中。如果它出现在可写列表中，那么它有可能已连接。"
 
 #: ../../howto/sockets.rst:372
 msgid ""
@@ -554,6 +573,8 @@ msgid ""
 " problem of determining whether the other end is done, or just busy with "
 "something else."
 msgstr ""
+"实际上，即使使用阻塞套接字， ``select`` 也很方便。这是确定是否阻塞的一种方法 —— "
+"当缓冲区中存在某些内容时，套接字返回为可读。然而，这仍然无助于确定另一端是否完成或者只是忙于其他事情的问题。"
 
 #: ../../howto/sockets.rst:377
 msgid ""
@@ -563,3 +584,6 @@ msgid ""
 " differently on Windows. In fact, on Windows I usually use threads (which "
 "work very, very well) with my sockets."
 msgstr ""
+"**可移植性警告** ：在 Unix 上， ``select`` 适用于套接字和文件。 不要在 Windows 上尝试。在 Windows 上， "
+"``select`` 仅适用于套接字。另请注意，在 C 中，许多更高级的套接字选项在 Windows 上的执行方式不同。事实上，在 Windows "
+"上我通常在使用我的套接字使用线程（非常非常好）。"
