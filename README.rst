@@ -4,7 +4,19 @@ zh_CN Translation of the Python Documentation
 All translations are done on transifex.
 https://www.transifex.com/python-doc/public/
 
-See branch 3.7 for po files fetched from transifex.
+Maintained versions:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Version
+     - Build status
+     - Translation progress
+   * - `3.7 <https://github.com/python/python-docs-zh-cn/tree/3.7>`_
+     - .. image:: https://travis-ci.org/python/python-docs-zh-cn.svg?branch=3.7
+          :target: https://travis-ci.org/python/python-docs-zh-cn
+     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http%3A%2F%2Fgce.zhsj.me%2Fpython/newest
+          :target: https://www.transifex.com/python-doc/python-newest/
 
 Documentation Contribution Agreement
 ------------------------------------
