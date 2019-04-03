@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2018, Python Software Foundation
+# Copyright (C) 2001-2019, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -8,15 +8,16 @@
 # 操旭 <caoxu3000@126.com>, 2017
 # Tony Tong <firfly.net@qq.com>, 2018
 # ww song <sww4718168@gmail.com>, 2018
+# gashero liu <harry.python@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-01 09:38+0900\n"
+"POT-Creation-Date: 2019-01-01 10:14+0900\n"
 "PO-Revision-Date: 2017-02-16 17:42+0000\n"
-"Last-Translator: ww song <sww4718168@gmail.com>, 2018\n"
+"Last-Translator: gashero liu <harry.python@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +27,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:8
 msgid "Extending Python with C or C++"
-msgstr ""
+msgstr "使用C/C++扩展Python"
 
 #: ../../extending/extending.rst:10
 msgid ""
@@ -34,7 +35,7 @@ msgid ""
 "program in C.  Such :dfn:`extension modules` can do two things that can't be"
 " done directly in Python: they can implement new built-in object types, and "
 "they can call C library functions and system calls."
-msgstr ""
+msgstr "如果你会用C，实现Python嵌入模块很简单。利用扩展模块可做很多Python不方便做的事情，他们可以直接调用C库和系统调用。"
 
 #: ../../extending/extending.rst:15
 msgid ""
@@ -43,12 +44,14 @@ msgid ""
 " aspects of the Python run-time system.  The Python API is incorporated in a"
 " C source file by including the header ``\"Python.h\"``."
 msgstr ""
+"为了支持扩展，Python API定义了一系列函数、宏和变量，提供了对Python运行时系统的访问支持。Python的C API由C源码组成，并包含 "
+"\"Python.h\" 头文件。"
 
 #: ../../extending/extending.rst:20
 msgid ""
 "The compilation of an extension module depends on its intended use as well "
 "as on your system setup; details are given in later chapters."
-msgstr ""
+msgstr "编写扩展模块与你的系统相关，下面会详解。"
 
 #: ../../extending/extending.rst:25
 msgid ""
@@ -65,7 +68,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:40
 msgid "A Simple Example"
-msgstr ""
+msgstr "一个简单的例子"
 
 #: ../../extending/extending.rst:42
 msgid ""
@@ -82,17 +85,17 @@ msgid ""
 "is called ``spam``, the C file containing its implementation is called "
 ":file:`spammodule.c`; if the module name is very long, like ``spammify``, "
 "the module name can be just :file:`spammify.c`.)"
-msgstr ""
+msgstr "一个C扩展模块的文件名可以直接是 模块名.c 或者是 模块名module.c 。第一行应该导入头文件:"
 
 #: ../../extending/extending.rst:58
 msgid "The first line of our file can be::"
-msgstr ""
+msgstr "文件的第一行应该是:"
 
 #: ../../extending/extending.rst:62
 msgid ""
 "which pulls in the Python API (you can add a comment describing the purpose "
 "of the module and a copyright notice if you like)."
-msgstr ""
+msgstr "这会导入Python API (你可以添加注释来描述模块的目标和版权提示)。"
 
 #: ../../extending/extending.rst:67
 msgid ""
@@ -113,13 +116,18 @@ msgid ""
 "file does not exist on your system, it declares the functions "
 ":c:func:`malloc`, :c:func:`free` and :c:func:`realloc` directly."
 msgstr ""
+"所有用户可见的符号都定义自爱 :file:`Python.h` 中，并拥有前缀 ``Py`` 或 ``PY`` "
+"，除了那些已经定义在i包准头文件的。为了方便，以及为了让Python解释器应用广泛， ``Python.h`` 也包含了少量标准头文件： "
+"``<stdio.h>`` ， ``<string.h>`` ， ``<errno.h>`` ，和 ``<stdlib.h>`` "
+"。如果后面的头文件在你的系统上不存在，还会直接声明函数 :c:func:`malloc` ， :c:func:`free` 和 "
+":c:func:`realloc` 。"
 
 #: ../../extending/extending.rst:79
 msgid ""
 "The next thing we add to our module file is the C function that will be "
 "called when the Python expression ``spam.system(string)`` is evaluated "
 "(we'll see shortly how it ends up being called)::"
-msgstr ""
+msgstr "下面添加C代码到扩展模块，当调用 \"spam.system(string)\" 时会做出响应:"
 
 #: ../../extending/extending.rst:95
 msgid ""
@@ -128,6 +136,8 @@ msgid ""
 "the C function.  The C function always has two arguments, conventionally "
 "named *self* and *args*."
 msgstr ""
+"有个直接翻译参数列表的方法(例如单独的 ``“ls-l\"``)到要传递给C函数的参数。C函数总是有两个参数，通常名字是 *self* 和 *args*"
+" 。"
 
 #: ../../extending/extending.rst:100
 msgid ""
@@ -146,6 +156,9 @@ msgid ""
 "determine the required types of the arguments as well as the types of the C "
 "variables into which to store the converted values.  More about this later."
 msgstr ""
+"args "
+"参数是一个指向Python的tuple对象的指针，包含参数。每个tuple子项对应一个调用参数。这些参数也全都是Python对象，所以需要先转换成C值。函数"
+" :c:func:`PyArg_ParseTuple()` 检查参数类型并转换成C值。它使用模板字符串检测需要的参数类型。细节在后面讲。"
 
 #: ../../extending/extending.rst:112
 msgid ""
@@ -156,10 +169,12 @@ msgid ""
 "the calling function can return *NULL* immediately (as we saw in the "
 "example)."
 msgstr ""
+":c:func:`PyArg_ParseTuple` "
+"正常返回非零，并已经按照提供的地址存入了各个变量值。如果出错(零)则应该让函数返回NULL以通知解释器出错(有如例子中看到的)。"
 
 #: ../../extending/extending.rst:122
 msgid "Intermezzo: Errors and Exceptions"
-msgstr ""
+msgstr "关于错误和异常"
 
 #: ../../extending/extending.rst:124
 msgid ""
@@ -180,7 +195,7 @@ msgstr ""
 msgid ""
 "The Python API defines a number of functions to set various types of "
 "exceptions."
-msgstr ""
+msgstr "Python API中定义了一些函数来设置这些变量。"
 
 #: ../../extending/extending.rst:137
 msgid ""
@@ -190,6 +205,8 @@ msgid ""
 "indicates the cause of the error and is converted to a Python string object "
 "and stored as the \"associated value\" of the exception."
 msgstr ""
+"最常用的就是 :c:func:`PyErr_SetString` 。参数是异常对象和C字符串。异常对象一般由像 "
+"PyExc_ZeroDivisionError 这样的对象来预定义。C字符串指明异常原因，并最终存储在异常的第一个参数里面。"
 
 #: ../../extending/extending.rst:143
 msgid ""
@@ -200,6 +217,9 @@ msgid ""
 "and its associated value.  You don't need to :c:func:`Py_INCREF` the objects"
 " passed to any of these functions."
 msgstr ""
+"另一个有用的函数是 :c:func:`PyErr_SetFromErrno` ，仅接受一个异常对象，异常描述包含在全局变量 "
+":c:data:`errno` 中。最通用的函数还是 :c:func:`PyErr_SetObject` "
+"，包含两个参数，分别为异常对象和异常描述。你不需要使用 :c:func:`Py_INCREF` 来增加传递到其他函数的参数对象的引用计数。"
 
 #: ../../extending/extending.rst:150
 msgid ""
@@ -209,6 +229,8 @@ msgid ""
 ":c:func:`PyErr_Occurred` to see whether an error occurred in a function "
 "call, since you should be able to tell from the return value."
 msgstr ""
+"你可以通过 :c:func:`PyErr_Occurred` 获知当前异常，返回当前异常对象，如果确实没有则为 *NULL* "
+"。一般来说，你在调用函数时不需要调用 :c:func:`PyErr_Occurred` 检查是否发生了异常，你可以直接检查返回值。"
 
 #: ../../extending/extending.rst:156
 msgid ""
@@ -223,6 +245,9 @@ msgid ""
 "executing Python code and tries to find an exception handler specified by "
 "the Python programmer."
 msgstr ""
+"如果调用更下层函数时出错了，那么本函数返回NULL表示错误，并且整个调用栈中只要有一处调用  :c:func:`PyErr_*` 函数设置异常(通常用 "
+"*NULL* 或 ``-1`` "
+")就可以。一般来说，首先发现错误的函数应该设置异常。一旦这个错误到达了Python解释器的主循环，则会中断当前执行代码并追究异常。"
 
 #: ../../extending/extending.rst:166
 msgid ""
@@ -232,6 +257,8 @@ msgid ""
 " can cause information about the cause of the error to be lost: most "
 "operations can fail for a variety of reasons.)"
 msgstr ""
+"(有一种情况下，模块可能依靠其他 PyErr_*() "
+"函数给出更加详细的错误信息，并且是正确的。但是按照一般规则，这并不重要，很多操作都会因为种种原因而挂掉。)"
 
 #: ../../extending/extending.rst:172
 msgid ""
@@ -242,6 +269,8 @@ msgid ""
 "itself (possibly by trying something else, or pretending nothing went "
 "wrong)."
 msgstr ""
+"想要忽略这些函数设置的异常，异常情况必须明确的使用 :c:func:`PyErr_Clear` "
+"来清除。只有在C代码想要自己处理异常而不是传给解释器时才这么做。(可能想尝试其他的，或假装出错)。"
 
 #: ../../extending/extending.rst:178
 msgid ""
@@ -260,13 +289,15 @@ msgid ""
 "positive value or zero for success and ``-1`` for failure, like Unix system "
 "calls."
 msgstr ""
+"还要注意的是 :c:func:`PyArg_ParseTuple` "
+"系列函数的异常，返回一个整数状态码是有效的，0是成功，-1是失败，有如Unix系统调用。"
 
 #: ../../extending/extending.rst:188
 msgid ""
 "Finally, be careful to clean up garbage (by making :c:func:`Py_XDECREF` or "
 ":c:func:`Py_DECREF` calls for objects you have already created) when you "
 "return an error indicator!"
-msgstr ""
+msgstr "最后，小心垃圾情理，也就是 :c:func:`Py_XDECREF` 和 :c:func:`Py_DECREF` 的调用，会返回的异常。"
 
 #: ../../extending/extending.rst:192
 msgid ""
@@ -281,13 +312,18 @@ msgid ""
 " particular range or must satisfy other conditions, "
 ":c:data:`PyExc_ValueError` is appropriate."
 msgstr ""
+"选择抛出哪个异常完全是你的个人爱好了。有一系列的C对象代表了内置Python异常，例如 "
+":c:data:`PyExc_ZeroDivisionError` ，你可以直接使用。当然，你可能选择更合适的异常，不过别使用 "
+":c:data:`PyExc_TypeError` 告知文件打开失败(有个更合适的 :c:data:`PyExc_IOError` "
+")。如果参数列表有误， :c:func:`PyArg_ParseTuple` 通常会抛出 :c:data:`PyExc_TypeError` "
+"。如果参数值域有误， PyExc_ValueError 更合适一些。"
 
 #: ../../extending/extending.rst:202
 msgid ""
 "You can also define a new exception that is unique to your module. For this,"
 " you usually declare a static object variable at the beginning of your "
 "file::"
-msgstr ""
+msgstr "你也可以为你的模块定义一个唯一的新异常。需要在文件前部声明一个静态对象变量，如:"
 
 #: ../../extending/extending.rst:207
 msgid ""
@@ -303,6 +339,9 @@ msgid ""
 "class being :exc:`Exception` (unless another class is passed in instead of "
 "*NULL*), described in :ref:`bltin-exceptions`."
 msgstr ""
+"注意实际的Python异常名字是 :exc:`spam.error` 。 :c:func:`PyErr_NewException` 函数使用 "
+":exc:`Exception` 为基类创建一个类(除非是使用另外一个类替代 *NULL* )。描述参考 :ref:`bltin-exceptions`"
+" 。"
 
 #: ../../extending/extending.rst:230
 msgid ""
@@ -314,22 +353,24 @@ msgid ""
 "dangling pointer, C code which raises the exception could cause a core dump "
 "or other unintended side effects."
 msgstr ""
+"同样注意的是创建类保存了 :c:data:`SpamError` 的一个引用，这是有意的。为了防止被垃圾回收掉，否则 "
+":c:data:`SpamError` 随时会成为野指针。"
 
 #: ../../extending/extending.rst:237
 msgid ""
 "We discuss the use of ``PyMODINIT_FUNC`` as a function return type later in "
 "this sample."
-msgstr ""
+msgstr "一会讨论 ``PyMODINIT_FUNC`` 作为函数返回类型的用法。"
 
 #: ../../extending/extending.rst:240
 msgid ""
 "The :exc:`spam.error` exception can be raised in your extension module using"
 " a call to :c:func:`PyErr_SetString` as shown below::"
-msgstr ""
+msgstr ":exc:`spam.error` 异常可以在扩展模块中抛出，通过 :c:func:`PyErr_SetString` 函数调用，如下："
 
 #: ../../extending/extending.rst:263
 msgid "Back to the Example"
-msgstr ""
+msgstr "回到例子"
 
 #: ../../extending/extending.rst:265
 msgid ""
