@@ -9,6 +9,7 @@
 # Tony Tong <firfly.net@qq.com>, 2018
 # ww song <sww4718168@gmail.com>, 2018
 # gashero liu <harry.python@gmail.com>, 2019
+# Freesand Leo <yuqinju@163.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-01 10:14+0900\n"
 "PO-Revision-Date: 2017-02-16 17:42+0000\n"
-"Last-Translator: gashero liu <harry.python@gmail.com>, 2019\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -205,8 +206,9 @@ msgid ""
 "indicates the cause of the error and is converted to a Python string object "
 "and stored as the \"associated value\" of the exception."
 msgstr ""
-"最常用的就是 :c:func:`PyErr_SetString` 。参数是异常对象和C字符串。异常对象一般由像 "
-"PyExc_ZeroDivisionError 这样的对象来预定义。C字符串指明异常原因，并最终存储在异常的第一个参数里面。"
+"最常用的就是 :c:func:`PyErr_SetString`。 其参数是异常对象和 C 字符串。 异常对象一般是像 "
+":c:data:`PyExc_ZeroDivisionError` 这样的预定义对象。 C 字符串指明异常原因，并被转换为一个 Python "
+"字符串对象存储为异常的“关联值”。"
 
 #: ../../extending/extending.rst:143
 msgid ""
@@ -245,9 +247,10 @@ msgid ""
 "executing Python code and tries to find an exception handler specified by "
 "the Python programmer."
 msgstr ""
-"如果调用更下层函数时出错了，那么本函数返回NULL表示错误，并且整个调用栈中只要有一处调用  :c:func:`PyErr_*` 函数设置异常(通常用 "
-"*NULL* 或 ``-1`` "
-")就可以。一般来说，首先发现错误的函数应该设置异常。一旦这个错误到达了Python解释器的主循环，则会中断当前执行代码并追究异常。"
+"当函数 *f* 调用另一个函数 *g* 时检测到后者出错了，*f* 自身将返回一个错误值 (通常为 *NULL* 或 ``-1``)。 它 *不应* "
+"调用某个 :c:func:`PyErr_\\*` 函数 --- 这种函数已经由 *g* 调用过了。 然后 *f* 的调用者也应该返回一个错误提示 "
+"*它的* 调用者，同样 *不应* 调用 :c:func:`PyErr_\\*`，依此类推 --- 错误的最详细原因已经由首先检测到它的函数报告了。 "
+"一旦这个错误到达了 Python 解释器的主循环，它将中断当前执行的 Python 代码并尝试找到由 Python 程序编写者所指定的异常句柄。"
 
 #: ../../extending/extending.rst:166
 msgid ""
@@ -257,8 +260,8 @@ msgid ""
 " can cause information about the cause of the error to be lost: most "
 "operations can fail for a variety of reasons.)"
 msgstr ""
-"(有一种情况下，模块可能依靠其他 PyErr_*() "
-"函数给出更加详细的错误信息，并且是正确的。但是按照一般规则，这并不重要，很多操作都会因为种种原因而挂掉。)"
+"（在某些情况下，当模块确实能够通过调用其它 :c:func:`PyErr_\\*` 函数给出更加详细的错误消息，并且在这些情况是可以这样做的。 "
+"但是按照一般规则，这是不必要的，并可能导致有关错误原因的信息丢失：大多数操作会由于种种原因而失败。）"
 
 #: ../../extending/extending.rst:172
 msgid ""
@@ -269,8 +272,8 @@ msgid ""
 "itself (possibly by trying something else, or pretending nothing went "
 "wrong)."
 msgstr ""
-"想要忽略这些函数设置的异常，异常情况必须明确的使用 :c:func:`PyErr_Clear` "
-"来清除。只有在C代码想要自己处理异常而不是传给解释器时才这么做。(可能想尝试其他的，或假装出错)。"
+"想要忽略由一个失败的函数调用所设置的异常，异常条件必须通过调用 :c:func:`PyErr_Clear` 显式地被清除。 C 代码应当调用 "
+":c:func:`PyErr_Clear` 的唯一情况是如果它不想将错误传给解释器而是想完全由自己来处理它（可能是尝试其他方法，或是假装没有出错）。"
 
 #: ../../extending/extending.rst:178
 msgid ""
@@ -289,15 +292,17 @@ msgid ""
 "positive value or zero for success and ``-1`` for failure, like Unix system "
 "calls."
 msgstr ""
-"还要注意的是 :c:func:`PyArg_ParseTuple` "
-"系列函数的异常，返回一个整数状态码是有效的，0是成功，-1是失败，有如Unix系统调用。"
+"还要注意的是，除了 :c:func:`PyArg_ParseTuple` 等重要的例外，返回整数状态码的函数通常都是返回正值或零来表示成功，而以 "
+"``-1`` 表示失败，如同 Unix 系统调用一样。"
 
 #: ../../extending/extending.rst:188
 msgid ""
 "Finally, be careful to clean up garbage (by making :c:func:`Py_XDECREF` or "
 ":c:func:`Py_DECREF` calls for objects you have already created) when you "
 "return an error indicator!"
-msgstr "最后，小心垃圾情理，也就是 :c:func:`Py_XDECREF` 和 :c:func:`Py_DECREF` 的调用，会返回的异常。"
+msgstr ""
+"最后，当你返回一个错误指示器时要注意清理垃圾（通过为你已经创建的对象执行 :c:func:`Py_XDECREF` 或 "
+":c:func:`Py_DECREF` 调用）！"
 
 #: ../../extending/extending.rst:192
 msgid ""
@@ -534,6 +539,10 @@ msgid ""
 "distribution as :file:`Modules/xxmodule.c`.  This file may be used as a  "
 "template or simply read as an example."
 msgstr ""
+"更多关于模块的现实的例子包含在Python源码包的 :file:`Modules/xxmodule.c` "
+"中。这些文件可以用作你的代码模板，或者学习。脚本 modulator.py "
+"包含在源码发行版或Windows安装中，提供了一个简单的GUI，用来声明需要实现的函数和对象，并且可以生成供填入的模板。脚本在 "
+"Tools/modulator/ 目录。查看README以了解用法。"
 
 #: ../../extending/extending.rst:421
 msgid ""
@@ -545,7 +554,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:430
 msgid "Compilation and Linkage"
-msgstr ""
+msgstr "编译和链接"
 
 #: ../../extending/extending.rst:432
 msgid ""
