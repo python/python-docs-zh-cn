@@ -8,8 +8,8 @@
 # 操旭 <caoxu3000@126.com>, 2017
 # Tony Tong <firfly.net@qq.com>, 2018
 # ww song <sww4718168@gmail.com>, 2018
-# gashero liu <harry.python@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
+# gashero liu <harry.python@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-01 10:14+0900\n"
 "PO-Revision-Date: 2017-02-16 17:42+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: gashero liu <harry.python@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -569,6 +569,7 @@ msgid ""
 "on Windows (chapter :ref:`building-on-windows`) for more information about "
 "this."
 msgstr ""
+"如果使用动态载入，细节依赖于系统，查看关于( :ref:`构建` )扩展模块部分，和关于在( :ref:`Windows下构建扩展`) 的细节。"
 
 #: ../../extending/extending.rst:439
 msgid ""
@@ -588,6 +589,8 @@ msgid ""
 "running ':program:`make` Makefile'.  (This is necessary each time you change"
 " the :file:`Setup` file.)"
 msgstr ""
+"然后重新构建解释器，使用 :program:`make` 。你也可以在 :file:`Modules/` 子目录使用 :program:`make` "
+"，但是你接下来首先要重建 Makefile文件，使用 make Makefile 命令。(这对你改变  :flie:`Setup` 文件来说很重要)。"
 
 #: ../../extending/extending.rst:456
 msgid ""
@@ -597,7 +600,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:467
 msgid "Calling Python Functions from C"
-msgstr ""
+msgstr "在C中调用Python函数"
 
 #: ../../extending/extending.rst:469
 msgid ""
@@ -609,6 +612,7 @@ msgid ""
 "will require calling the Python callback functions from a C callback.  Other"
 " uses are also imaginable."
 msgstr ""
+"迄今为止，我们一直把注意力集中于让Python调用C函数，其实反过来也很有用，就是用C调用Python函数。这在回调函数中尤其有用。如果一个C接口使用回调，那么就要实现这个回调机制。"
 
 #: ../../extending/extending.rst:477
 msgid ""
@@ -618,6 +622,8 @@ msgid ""
 "interested, have a look at the implementation of the :option:`-c` command "
 "line option in :file:`Modules/main.c` from the Python source code.)"
 msgstr ""
+"幸运的是，Python解释器是比较方便回调的，并给标准Python函数提供了标准接口。(这里就不再详述解析Python代码作为输入的方式，如果有兴趣可以参考"
+" :file:`Python/pythonmain.c` 中的 :option:`-c` 命令代码。)"
 
 #: ../../extending/extending.rst:483
 msgid ""
@@ -628,6 +634,8 @@ msgid ""
 "global variable --- or wherever you see fit. For example, the following "
 "function might be part of a module definition::"
 msgstr ""
+"调用Python函数，首先Python程序要传递Python函数对象。应该提供个函数(或其他接口)来实现。当调用这个函数时，用全局变量保存Python函数对象的指针，还要调用"
+" (:c:func:`Py_INCREF`) 来增加引用计数，当然不用全局变量也没什么关系。例如如下:"
 
 #: ../../extending/extending.rst:513
 msgid ""
@@ -636,6 +644,8 @@ msgid ""
 "  The :c:func:`PyArg_ParseTuple` function and its arguments are documented "
 "in section :ref:`parsetuple`."
 msgstr ""
+"这个函数必须使用 :const:`METH_VARARGS` 标志注册到解释器，这在 :ref:`methodtable` 章节会描述。 "
+":c:func:`PyArg_ParseTuple` 函数及其参数的文档在 :ref:`parsetuple` 。"
 
 #: ../../extending/extending.rst:518
 msgid ""
@@ -644,6 +654,8 @@ msgid ""
 "pointers (but note that *temp* will not be  *NULL* in this context).  More "
 "info on them in section :ref:`refcounts`."
 msgstr ""
+"然后，就要调用函数了，使用 :c:func:`PyEval_CallObject` 来安全的描述 *NULL* (但注意 *temp* 不在  "
+"*NULL* 的上下文)。更多内容参考 :ref:`refcounts` 。"
 
 #: ../../extending/extending.rst:525
 msgid ""
@@ -656,6 +668,9 @@ msgid ""
 "tuple. :c:func:`Py_BuildValue` returns a tuple when its format string "
 "consists of zero or more format codes between parentheses.  For example::"
 msgstr ""
+":c:func:`PyEval_CallObject` "
+"返回一个Python对象指针表示返回值。该函数有2个参数，都是指向Python对象的指针：Python函数，和参数列表。参数列表必须是tuple对象，其长度是参数数量。要调用无参数的Python函数，可以传递NULL或空元组。要用唯一参数调用，传递单一元组。"
+" :c:func:`Py_BuildValue` 返回元组，当其格式为字符串或多个编码时，例如："
 
 #: ../../extending/extending.rst:545
 msgid ""
@@ -666,6 +681,9 @@ msgid ""
 ":c:func:`Py_DECREF`\\ -ed immediately after the "
 ":c:func:`PyObject_CallObject` call."
 msgstr ""
+":c:func:`PyObject_CallObject` 返回Python对象指针，这也是Python函数的返回值。 "
+":c:func:`PyObject_CallObject` 是一个对其参数 \"引用计数无关\" 的函数。例子中新的元组创建用于参数列表，并且在  "
+":c:func:`PyObject_CallObject` 之后立即使用了 :c:func:`Py_DECREF` 。"
 
 #: ../../extending/extending.rst:552
 msgid ""
@@ -675,6 +693,10 @@ msgid ""
 "should somehow :c:func:`Py_DECREF` the result, even (especially!) if you are"
 " not interested in its value."
 msgstr ""
+":c:func:`PyEval_CallObject` 的返回值总是新的，新建对象或者是对已有对象增加引用计数。所以你必须获取这个对象指针，在使用后用 "
+":c:func:Py_DECREF` (特别的) "
+"减少其引用计数，即便是对返回值没有兴趣也要这么做。但是在减少这个引用计数之前，你必须先检查返回的指针是否为NULL。如果是NULL，则表示出现了异常并中止了。如果没有处理则会向上传递并最终显示调用栈，当然，你最好还是处理好异常。如果你对异常没有兴趣，可以用"
+" PyErr_Clear() 清除异常，例如:"
 
 #: ../../extending/extending.rst:558
 msgid ""
@@ -686,6 +708,10 @@ msgid ""
 "handle the exception. If this is not possible or desirable, the exception "
 "should be cleared by calling :c:func:`PyErr_Clear`.  For example::"
 msgstr ""
+"在你这么做之前，需要先检查返回值是否是 *NULL* 。如果是，Python函数会终止并抛出异常。如果C代码调用了从Python传入的函数 "
+":c:func:`PyObject_CallObject` "
+"，因该立即返回错误来告知Python调用者，然后解释器会打印栈回溯，或者调用Python代码来处理这个异常。如果无法处理，异常会被 "
+":c:func:`PyErr_Clear` 清除，例如："
 
 #: ../../extending/extending.rst:571
 msgid ""
@@ -698,6 +724,9 @@ msgid ""
 "simplest way to do this is to call :c:func:`Py_BuildValue`.  For example, if"
 " you want to pass an integral event code, you might use the following code::"
 msgstr ""
+"依赖于具体的回调函数，你还要提供一个参数列表到 :c:func:`PyEval_CallObject` "
+"。在某些情况下参数列表是由Python程序提供的，通过接口再传到回调函数。这样就可以不改变形式直接传递。另外一些时候你要构造一个新的tuple来传递参数。最简单的方法就是"
+" :c:func:`Py_BuildValue` 函数构造tuple。例如，你要传递一个事件对象时可以用:"
 
 #: ../../extending/extending.rst:590
 msgid ""
