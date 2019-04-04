@@ -735,6 +735,8 @@ msgid ""
 "complete: :c:func:`Py_BuildValue` may run out of memory, and this should be "
 "checked."
 msgstr ""
+"注意 ``Py_DECREF(arglist)`` 所在处会立即调用，在错误检查之前。当然还要注意一些常规的错误，比如 "
+":c:func:`Py_BuildValue` 可能会遭遇内存不足等等。"
 
 #: ../../extending/extending.rst:594
 msgid ""
@@ -743,14 +745,16 @@ msgid ""
 " in the above example, we use :c:func:`Py_BuildValue` to construct the "
 "dictionary. ::"
 msgstr ""
+"你还需要注意，用关键字参数调用 :c:func:`PyObject_Call` ，需要支持普通参数和关键字参数。有如如上例子中，我们使用 "
+":c:func:`Py_BuildValue` 来构造字典。"
 
 #: ../../extending/extending.rst:612
 msgid "Extracting Parameters in Extension Functions"
-msgstr ""
+msgstr "提取扩展函数的参数"
 
 #: ../../extending/extending.rst:616
 msgid "The :c:func:`PyArg_ParseTuple` function is declared as follows::"
-msgstr ""
+msgstr "函数 :c:func:`PyArg_ParseTuple` 的声明如下："
 
 #: ../../extending/extending.rst:620
 msgid ""
@@ -760,6 +764,8 @@ msgid ""
 "Reference Manual.  The remaining arguments must be addresses of variables "
 "whose type is determined by the format string."
 msgstr ""
+"参数 *arg* 必须是一个tuple对象，包含传递过来的参数， *format* 参数必须是格式化字符串，语法解释见 \"Python C/API\""
+" 的5.5节。剩余参数是各个变量的地址，类型要与格式化字符串对应。"
 
 #: ../../extending/extending.rst:626
 msgid ""
@@ -768,6 +774,8 @@ msgid ""
 "variables passed to the call: if you make mistakes there, your code will "
 "probably crash or at least overwrite random bits in memory.  So be careful!"
 msgstr ""
+"注意 :c:func:`PyArg_ParseTuple` "
+"会检测他需要的Python参数类型，却无法检测传递给他的C变量地址，如果这里出错了，可能会在内存中随机写入东西，小心。"
 
 #: ../../extending/extending.rst:631
 msgid ""
@@ -777,16 +785,16 @@ msgstr "注意任何由调用者提供的Python对象引用是 *借来的* 引�
 
 #: ../../extending/extending.rst:634
 msgid "Some example calls::"
-msgstr ""
+msgstr "一些调用的例子："
 
 #: ../../extending/extending.rst:704
 msgid "Keyword Parameters for Extension Functions"
-msgstr ""
+msgstr "给扩展函数的关键字参数"
 
 #: ../../extending/extending.rst:708
 msgid ""
 "The :c:func:`PyArg_ParseTupleAndKeywords` function is declared as follows::"
-msgstr ""
+msgstr "函数 :c:func:`PyArg_ParseTupleAndKeywords` 声明如下："
 
 #: ../../extending/extending.rst:713
 msgid ""
@@ -799,29 +807,33 @@ msgid ""
 ":c:func:`PyArg_ParseTupleAndKeywords` returns true, otherwise it returns "
 "false and raises an appropriate exception."
 msgstr ""
+"参数 *arg* 和 *format* 定义同 :c:func:`PyArg_ParseTuple` 。参数 *kwdict* "
+"是关键字字典，用于接受运行时传来的关键字参数。参数 *kwlist* 是一个 *NULL* 结尾的字符串，定义了可以接受的参数名，并从左到右与 "
+"*format* 中各个变量对应。如果执行成功 :c:func:`PyArg_ParseTupleAndKeywords` "
+"会返回true，否则返回false并抛出异常。"
 
 #: ../../extending/extending.rst:723
 msgid ""
 "Nested tuples cannot be parsed when using keyword arguments!  Keyword "
 "parameters passed in which are not present in the *kwlist* will cause "
 ":exc:`TypeError` to be raised."
-msgstr ""
+msgstr "嵌套的元组在使用关键字参数时无法生效，不在 *kwlist* 中的关键字参数会导致 :exc:`TypeError` 异常。"
 
 #: ../../extending/extending.rst:729
 msgid ""
 "Here is an example module which uses keywords, based on an example by Geoff "
 "Philbrick (philbrick@hks.com)::"
-msgstr ""
+msgstr "如下是使用关键字参数的例子模块，作者是 Geoff Philbrick (phibrick@hks.com):"
 
 #: ../../extending/extending.rst:783
 msgid "Building Arbitrary Values"
-msgstr ""
+msgstr "构造任意值"
 
 #: ../../extending/extending.rst:785
 msgid ""
 "This function is the counterpart to :c:func:`PyArg_ParseTuple`.  It is "
 "declared as follows::"
-msgstr ""
+msgstr "这个函数与 :c:func:`PyArg_ParseTuple` 很相似，声明如下："
 
 #: ../../extending/extending.rst:790
 msgid ""
@@ -830,6 +842,8 @@ msgid ""
 "function, not output) must not be pointers, just values.  It returns a new "
 "Python object, suitable for returning from a C function called from Python."
 msgstr ""
+"接受一个格式字符串，与 :c:func:`PyArg_ParseTuple` "
+"相同，但是参数必须是原变量的地址指针(输入给函数，而非输出)。最终返回一个Python对象适合于返回C函数调用给Python代码。"
 
 #: ../../extending/extending.rst:795
 msgid ""
@@ -842,11 +856,15 @@ msgid ""
 "by that format unit.  To force it to return a tuple of size 0 or one, "
 "parenthesize the format string."
 msgstr ""
+"一个与 :c:func:`PyArg_ParseTuple` "
+"的不同是，后面可能需要的要求返回一个元组(Python参数里诶包总是在内部描述为元组)，比如用于传递给其他Python函数以参数。 "
+":c:func:`Py_BuildValue` 并不总是生成元组，在多于1个参数时会生成元组，而如果没有参数则返回 ``None`` "
+"，一个参数则直接返回该参数的对象。如果要求强制生成一个长度为空的元组，或包含一个元素的元组，需要在格式字符串中加上括号。"
 
 #: ../../extending/extending.rst:803
 msgid ""
 "Examples (to the left the call, to the right the resulting Python value):"
-msgstr ""
+msgstr "例子(左侧是调用，右侧是Python值结果)："
 
 #: ../../extending/extending.rst:829
 msgid "Reference Counts"
@@ -860,6 +878,8 @@ msgid ""
 "``new`` and ``delete`` are used with essentially the same meaning and we'll "
 "restrict the following discussion to the C case."
 msgstr ""
+"在C/C++语言中，程序员负责动态分配和回收堆(heap)当中的内存。在C里，通过函数 :c:func:`malloc` 和 "
+":c:func:`free` 来完成。在C++里是操作 ``new`` 和 ``delete`` 来实现相同的功能。"
 
 #: ../../extending/extending.rst:837
 msgid ""
