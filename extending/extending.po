@@ -29,7 +29,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:8
 msgid "Extending Python with C or C++"
-msgstr "使用C/C++扩展Python"
+msgstr "使用 C 或 C++ 扩展 Python"
 
 #: ../../extending/extending.rst:10
 msgid ""
@@ -37,7 +37,9 @@ msgid ""
 "program in C.  Such :dfn:`extension modules` can do two things that can't be"
 " done directly in Python: they can implement new built-in object types, and "
 "they can call C library functions and system calls."
-msgstr "如果你会用C，实现Python嵌入模块很简单。利用扩展模块可做很多Python不方便做的事情，他们可以直接调用C库和系统调用。"
+msgstr ""
+"如果你会用 C，添加新的 Python 内置模块会很简单。以下两件不能用 Python 直接做的事，可以通过 :dfn:`extension "
+"modules` 来实现：实现新的内置对象类型；调用 C 的库函数和系统调用。"
 
 #: ../../extending/extending.rst:15
 msgid ""
@@ -46,14 +48,14 @@ msgid ""
 " aspects of the Python run-time system.  The Python API is incorporated in a"
 " C source file by including the header ``\"Python.h\"``."
 msgstr ""
-"为了支持扩展，Python API定义了一系列函数、宏和变量，提供了对Python运行时系统的访问支持。Python的C API由C源码组成，并包含 "
-"`\"Python.h\"` 头文件。"
+"为了支持扩展，Python API（应用程序编程接口）定义了一系列函数、宏和变量，可以访问 Python 运行时系统的大部分内容。Python 的 "
+"API 可以通过在一个 C 源文件中引用 ``\"Python.h\"`` 头文件来使用。"
 
 #: ../../extending/extending.rst:20
 msgid ""
 "The compilation of an extension module depends on its intended use as well "
 "as on your system setup; details are given in later chapters."
-msgstr "编写扩展模块与你的系统相关，下面会详解。"
+msgstr "扩展模块的编写方式取决与你的目的以及系统设置；下面章节会详细介绍。"
 
 #: ../../extending/extending.rst:25
 msgid ""
@@ -87,17 +89,20 @@ msgid ""
 "is called ``spam``, the C file containing its implementation is called "
 ":file:`spammodule.c`; if the module name is very long, like ``spammify``, "
 "the module name can be just :file:`spammify.c`.)"
-msgstr "一个C扩展模块的文件名可以直接是 模块名.c 或者是 模块名module.c 。第一行应该导入头文件:"
+msgstr ""
+"首先创建一个 :file:`spammodule.c` 文件。（传统上，如果一个模块叫 ``spam``，则对应实现它的 C 文件叫 "
+":file:`spammodule.c`；如果这个模块名字非常长，比如 ``spammify``，则这个模块的文件可以直接叫 "
+":file:`spammify.c`。）"
 
 #: ../../extending/extending.rst:58
 msgid "The first line of our file can be::"
-msgstr "文件的第一行应该是:"
+msgstr "文件的第一行可以是::"
 
 #: ../../extending/extending.rst:62
 msgid ""
 "which pulls in the Python API (you can add a comment describing the purpose "
 "of the module and a copyright notice if you like)."
-msgstr "这会导入Python API (你可以添加注释来描述模块的目标和版权提示)。"
+msgstr "这会导入 Python API（如果你喜欢，你可以在这里添加描述模块目标和版权信息的注释)。"
 
 #: ../../extending/extending.rst:67
 msgid ""
@@ -570,7 +575,9 @@ msgid ""
 "on Windows (chapter :ref:`building-on-windows`) for more information about "
 "this."
 msgstr ""
-"如果使用动态载入，细节依赖于系统，查看关于( :ref:`构建` )扩展模块部分，和关于在( :ref:`Windows下构建扩展`) 的细节。"
+"在你能使用你的新写的扩展之前，你还需要做两件事情：使用 Python "
+"系统来编译和链接。如果你使用动态加载，这取决于你使用的操作系统的动态加载机制；更多信息请参考编译扩展模块的章节（ :ref:`building` "
+"章节），以及在 Windows 上编译需要的额外信息（ :ref:`building-on-windows` 章节）。"
 
 #: ../../extending/extending.rst:439
 msgid ""
@@ -695,10 +702,9 @@ msgid ""
 "should somehow :c:func:`Py_DECREF` the result, even (especially!) if you are"
 " not interested in its value."
 msgstr ""
-":c:func:`PyEval_CallObject` 的返回值总是新的，新建对象或者是对已有对象增加引用计数。所以你必须获取这个对象指针，在使用后用 "
-":c:func:Py_DECREF` (特别的) "
-"减少其引用计数，即便是对返回值没有兴趣也要这么做。但是在减少这个引用计数之前，你必须先检查返回的指针是否为NULL。如果是NULL，则表示出现了异常并中止了。如果没有处理则会向上传递并最终显示调用栈，当然，你最好还是处理好异常。如果你对异常没有兴趣，可以用"
-" PyErr_Clear() 清除异常，例如:"
+":c:func:`PyEval_CallObject` "
+"的返回值总是“新”的：要么是一个新建的对象；要么是已有对象，但增加了引用计数。所以除非你想把结果保存在全局变量中，你需要对这个值使用 "
+":c:func:`Py_DECREF`，即使你对里面的内容（特别！）不感兴趣。"
 
 #: ../../extending/extending.rst:558
 msgid ""
@@ -766,8 +772,8 @@ msgid ""
 "Reference Manual.  The remaining arguments must be addresses of variables "
 "whose type is determined by the format string."
 msgstr ""
-"参数 *arg* 必须是一个tuple对象，包含传递过来的参数， *format* 参数必须是格式化字符串，语法解释见 \"Python C/API\""
-" 的5.5节。剩余参数是各个变量的地址，类型要与格式化字符串对应。"
+"参数 *arg* 必须是一个元组对象，包含从 Python 传递给 C 函数的参数列表。*format* 参数必须是一个格式字符串，语法请参考 "
+"Python C/API 手册中的 :ref:`arg-parsing`。剩余参数是各个变量的地址，类型要与格式字符串对应。"
 
 #: ../../extending/extending.rst:626
 msgid ""
