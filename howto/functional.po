@@ -8,7 +8,6 @@
 # Fei Yin <icebirds@163.com>, 2018
 # Zephyr Waitzman <i@wi24rd.ml>, 2018
 # Kder <kder@live.cn>, 2018
-# yuxin wang <wangyuxinwhy@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
 # chen_chao <wenbushi@gmail.com>, 2019
 # 
@@ -84,7 +83,8 @@ msgid ""
 "instructions that tell the computer what to do with the program's input.  C,"
 " Pascal, and even Unix shells are procedural languages."
 msgstr ""
-"大多数的编程语言都是过程式的，所谓程序就是一连串告诉计算机怎样处理程序输入的指令。C、Pascal 甚至 Unix shells 都是过程式语言。"
+"大多数的编程语言都是 **过程式** 的，所谓程序就是一连串告诉计算机怎样处理程序输入的指令。C、Pascal 甚至 Unix shells "
+"都是过程式语言。"
 
 #: ../../howto/functional.rst:28
 msgid ""
@@ -358,7 +358,7 @@ msgid ""
 msgstr ""
 "迭代器是一个表示数据流的对象；这个对象每次只返回一个元素。Python 迭代器必须支持 :meth:`~iterator.__next__` "
 "方法；这个方法不接受参数，并总是返回数据流中的下一个元素。如果数据流中没有元素，:meth:`~iterator.__next__` 会抛出 "
-":exc:`StopIteration` 异常。迭代器未必是有限的；完全有理由构造一个输出无限的数据流的迭代器。"
+":exc:`StopIteration` 异常。迭代器未必是有限的；完全有理由构造一个输出无限数据流的迭代器。"
 
 #: ../../howto/functional.rst:192
 msgid ""
@@ -371,7 +371,7 @@ msgid ""
 msgstr ""
 "内置的 :func:`iter` 函数接受任意对象并试图返回一个迭代器来输出对象的内容或元素，并会在对象不支持迭代的时候抛出 "
 ":exc:`TypeError` 异常。Python 有几种内置数据类型支持迭代，最常见的就是列表和字典。如果一个对象能生成迭代器，那么它就会被称作 "
-":term:`可迭代的`。"
+":term:`可迭代的`（:term:`iterable`）。"
 
 #: ../../howto/functional.rst:199
 msgid "You can experiment with the iteration interface manually:"
@@ -523,11 +523,8 @@ msgid ""
 " infinite stream or a very large amount of data.  Generator expressions are "
 "preferable in these situations."
 msgstr ""
-"通过列表推导式，你会获得一个 Python 列表；``stripped_list`` 就是一个包\n"
-"含所有结果行的列表，并不是迭代器。生成器表达时会返回一个迭代器，它在必\n"
-"要的时候计算结果，避免一次性丘处所有的值。这意味着，如果迭代器返回一个\n"
-"无限数据流或者大量的数据，列表推导式就不太好用了。这些情况下生成器表达\n"
-"式更受青睐。"
+"通过列表推导式，你会获得一个 Python 列表；``stripped_list`` "
+"就是一个包含所有结果行的列表，并不是迭代器。生成器表达时会返回一个迭代器，它在必要的时候计算结果，避免一次性丘处所有的值。这意味着，如果迭代器返回一个无限数据流或者大量的数据，列表推导式就不太好用了。这些情况下生成器表达式会更受青睐。"
 
 #: ../../howto/functional.rst:359
 msgid ""
@@ -606,7 +603,7 @@ msgid ""
 "Generators are a special class of functions that simplify the task of "
 "writing iterators.  Regular functions compute a value and return it, but "
 "generators return an iterator that returns a stream of values."
-msgstr ""
+msgstr "生成器是一类用来简化编写迭代器工作的特殊函数。普通的函数计算并返回一个值，而生成器返回一个能返回数据流的迭代器。"
 
 #: ../../howto/functional.rst:437
 msgid ""
@@ -620,10 +617,13 @@ msgid ""
 "function where it left off?  This is what generators provide; they can be "
 "thought of as resumable functions."
 msgstr ""
+"毫无疑问，你已经对如何在 Python 和 C 中调用普通函数很熟悉了，这时候函数会获得一个创建局部变量的私有命名空间。当函数到达 ``return``"
+" "
+"表达式时，局部变量会被销毁然后把返回给调用者。之后调用同样的函数时会创建一个新的私有命名空间和一组全新的局部变量。但是，如果在退出一个函数时不扔掉局部变量会如何呢？如果稍后你能够从退出函数的地方重新恢复又如何呢？这就是生成器所提供的；他们可以被看成可恢复的函数。"
 
 #: ../../howto/functional.rst:446
 msgid "Here's the simplest example of a generator function:"
-msgstr ""
+msgstr "这里有简单的生成器函数示例::"
 
 #: ../../howto/functional.rst:452
 msgid ""
@@ -631,6 +631,8 @@ msgid ""
 "this is detected by Python's :term:`bytecode` compiler which compiles the "
 "function specially as a result."
 msgstr ""
+"任何包含了 :keyword:`yield` 关键词的函数都是生成器函数；Python 的 :term:`bytecode` "
+"编译器会检测到并因此而特殊处理。"
 
 #: ../../howto/functional.rst:456
 msgid ""
@@ -643,16 +645,20 @@ msgid ""
 "preserved.  On the next call to the generator's :meth:`~generator.__next__` "
 "method, the function will resume executing."
 msgstr ""
+"当你调用一个生成器函数，它并不会返回单独的值，而是返回一个支持生成器协议的生成器对象。当执行 ``yield`` 表达式时，生成器会输出 ``i`` "
+"的值，就像 ``return`` 表达式一样。``yield`` 和 ``return`` 最大的区别在于，到达``yield`` "
+"的时候生成器的执行状态会挂起并保留局部变量。在下一次调用生成器 :meth:`~generator.__next__` 方法的时候，函数会恢复执行。"
 
 #: ../../howto/functional.rst:465
 msgid "Here's a sample usage of the ``generate_ints()`` generator:"
-msgstr ""
+msgstr "这里有一个 ``generate_ints()`` 生成器的示例:"
 
 #: ../../howto/functional.rst:482
 msgid ""
 "You could equally write ``for i in generate_ints(5)``, or ``a, b, c = "
 "generate_ints(3)``."
 msgstr ""
+"同样，你可以写出 ``for i in generate_ints(5)``，或者 ``a, b, c = generate_ints(3)``。"
 
 #: ../../howto/functional.rst:485
 msgid ""
@@ -661,6 +667,8 @@ msgid ""
 "method.  Once this happens, or the bottom of the function is reached, the "
 "procession of values ends and the generator cannot yield any further values."
 msgstr ""
+"在生成器函数里面，``return value`` 会触发从 :meth:`~generator.__next__` 方法抛出 "
+"``StopIteration(value)`` 异常。一旦抛出这个异常，或者函数结束，处理数据的过程就会停止，生成器也不会再生成新的值。"
 
 #: ../../howto/functional.rst:490
 msgid ""
@@ -671,6 +679,9 @@ msgid ""
 "method increment ``self.count`` and return it. However, for a moderately "
 "complicated generator, writing a corresponding class can be much messier."
 msgstr ""
+"你可以手动编写自己的类来达到生成器的效果，把生成器的所有局部变量作为实例的成员变量存储起来。比如，返回一个整数列表可以通过把 "
+"``self.count``设为0，然后通过 :meth:`~iterator.__next__` 方法增加 ``self.count`` "
+"然后返回。然而，对于一个中等复杂程度的生成器，写出一个相应的类可能会相当繁杂。"
 
 #: ../../howto/functional.rst:498
 msgid ""
@@ -679,6 +690,8 @@ msgid ""
 " examples.  Here's one generator that implements an in-order traversal of a "
 "tree using generators recursively. ::"
 msgstr ""
+"包含在 Python 库中的测试套件 :source:`Lib/test/test_generators.py` "
+"里有很多非常有趣的例子。这里是一个用生成器事先树的递归中序遍历示例。::"
 
 #: ../../howto/functional.rst:514
 msgid ""
@@ -688,10 +701,12 @@ msgid ""
 "knight to every square of an NxN chessboard without visiting any square "
 "twice)."
 msgstr ""
+"另外两个 ``test_generators.py`` 中的例子给出了 N 皇后问题（在 NxN 的棋盘上放置 N "
+"个皇后，任何一个都不能吃掉另一个），以及马的遍历路线（在NxN 的棋盘上给马找出一条不重复的走过所有格子的路线）的解。"
 
 #: ../../howto/functional.rst:522
 msgid "Passing values into a generator"
-msgstr ""
+msgstr "向生成器传递值"
 
 #: ../../howto/functional.rst:524
 msgid ""
@@ -1389,7 +1404,7 @@ msgstr "引用文献"
 
 #: ../../howto/functional.rst:1202
 msgid "General"
-msgstr ""
+msgstr "通用文献"
 
 #: ../../howto/functional.rst:1204
 msgid ""
@@ -1401,6 +1416,10 @@ msgid ""
 "examples, but many of the design approaches described in these chapters are "
 "applicable to functional-style Python code."
 msgstr ""
+"**Structure and Interpretation of Computer Programs**, Harold Abelson, "
+"Gerald Jay Sussman 和 Julie Sussman 所著。全文可见 https://mitpress.mit.edu/sicp/ "
+"。在这部计算机科学的经典教科书中，第二和第三章讨论了使用序列和流来在组织程序内部的数据传递。书中的示例采用Scheme "
+"语言，但其中这些章节中描述的很多设计方法同样适用于函数式风格 的Python 代码。"
 
 #: ../../howto/functional.rst:1212
 msgid ""
@@ -1408,25 +1427,28 @@ msgid ""
 "functional programming that uses Java examples and has a lengthy historical "
 "introduction."
 msgstr ""
+"http://www.defmacro.org/ramblings/fp.html: 一个使用 Java 示例的函数式编程的总体介绍，有很长的历史说明。"
 
 #: ../../howto/functional.rst:1215
 msgid ""
 "https://en.wikipedia.org/wiki/Functional_programming: General Wikipedia "
 "entry describing functional programming."
 msgstr ""
+"https://en.wikipedia.org/wiki/Functional_programming: 一般性的函数式编程的 Wikipedia "
+"条目。"
 
 #: ../../howto/functional.rst:1218
 msgid "https://en.wikipedia.org/wiki/Coroutine: Entry for coroutines."
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/Coroutine: 协程条目。"
 
 #: ../../howto/functional.rst:1220
 msgid ""
 "https://en.wikipedia.org/wiki/Currying: Entry for the concept of currying."
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/Currying: 函数柯里化条目。"
 
 #: ../../howto/functional.rst:1223
 msgid "Python-specific"
-msgstr ""
+msgstr "Python 相关"
 
 #: ../../howto/functional.rst:1225
 msgid ""
@@ -1435,6 +1457,9 @@ msgid ""
 "text processing, in the section titled \"Utilizing Higher-Order Functions in"
 " Text Processing\"."
 msgstr ""
+"http://gnosis.cx/TPiP/：David Mertz 书中的第一章 :title-reference:`Text Processing "
+"in Python`，\\\"Utilizing Higher-Order Functions in Text Processing\\\" "
+"标题部分讨论了文本处理的函数式编程。"
 
 #: ../../howto/functional.rst:1230
 msgid ""
@@ -1446,29 +1471,34 @@ msgid ""
 "and `part 3 "
 "<https://www.ibm.com/developerworks/linux/library/l-prog3/index.html>`__,"
 msgstr ""
+"Mertz 还在 IBM 的 DeveloperWorks 站点上关于函数式编程写了一系列共3篇文章；参见`part "
+"1<https://www.ibm.com/developerworks/linux/library/l-prog/index.html>`__,`part2<https://www.ibm.com/developerworks/linux/library/l-prog2/index.html>`__,"
+" 和`part "
+"3<https://www.ibm.com/developerworks/linux/library/l-prog3/index.html>`__,"
 
 #: ../../howto/functional.rst:1238
 msgid "Python documentation"
-msgstr ""
+msgstr "Python 文档"
 
 #: ../../howto/functional.rst:1240
 msgid "Documentation for the :mod:`itertools` module."
-msgstr ""
+msgstr ":mod:`itertools` 模块文档。"
 
 #: ../../howto/functional.rst:1242
 msgid "Documentation for the :mod:`functools` module."
-msgstr ""
+msgstr ":mod:`functools` 模块文档。"
 
 #: ../../howto/functional.rst:1244
 msgid "Documentation for the :mod:`operator` module."
-msgstr ""
+msgstr ":mod:`operator` 模块文档。"
 
 #: ../../howto/functional.rst:1246
 msgid ":pep:`289`: \"Generator Expressions\""
-msgstr ""
+msgstr ":pep:`289`: \"Generator Expressions\""
 
 #: ../../howto/functional.rst:1248
 msgid ""
 ":pep:`342`: \"Coroutines via Enhanced Generators\" describes the new "
 "generator features in Python 2.5."
 msgstr ""
+":pep:`342`: \"Coroutines via Enhanced Generators\" 描述了 Python 2.5 中新的生成器特性。"
