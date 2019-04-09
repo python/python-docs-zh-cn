@@ -799,7 +799,7 @@ msgid ""
 "Make a copy when using a list as a key.  This doesn't work because the list,"
 " being a mutable object, could contain a reference to itself, and then the "
 "copying code would run into an infinite loop."
-msgstr ""
+msgstr "使用列表作为键时进行复制。这没有用的，因为作为可变对象的列表可以包含对自身的引用，然后复制代码将进入无限循环。"
 
 #: ../../faq/design.rst:539
 msgid ""
@@ -808,6 +808,8 @@ msgid ""
 " by accident. It also invalidates an important invariant of dictionaries: "
 "every value in ``d.keys()`` is usable as a key of the dictionary."
 msgstr ""
+"允许列表作为键，但告诉用户不要修改它们。当你意外忘记或修改列表时，这将产生程序中的一类难以跟踪的错误。它还使一个重要的字典不变量无效： "
+"``d.keys()`` 中的每个值都可用作字典的键。"
 
 #: ../../faq/design.rst:544
 msgid ""
@@ -818,6 +820,8 @@ msgid ""
 "read-only -- and again, self-referential objects could cause an infinite "
 "loop."
 msgstr ""
+"将列表用作字典键后，应标记为其只读。问题是，它不仅仅是可以改变其值的顶级对象；你可以使用包含列表作为键的元组。将任何内容作为键关联到字典中都需要将从那里可到达的所有对象标记为只读"
+" —— 并且自引用对象可能会导致无限循环。"
 
 #: ../../faq/design.rst:550
 msgid ""
@@ -828,13 +832,16 @@ msgid ""
 "dictionary (or other hash based structure), remain fixed while the object is"
 " in the dictionary (or other structure). ::"
 msgstr ""
+"如果需要，可以使用以下方法来解决这个问题，但使用它需要你自担风险：你可以将一个可变结构包装在一个类实例中，该实例同时具有 :meth:`__eq__` "
+"和 :meth:`__hash__` 方法。然后，你必须确保驻留在字典（或其他基于 hash "
+"的结构）中的所有此类包装器对象的哈希值在对象位于字典（或其他结构）中时保持固定。::"
 
 #: ../../faq/design.rst:574
 msgid ""
 "Note that the hash computation is complicated by the possibility that some "
 "members of the list may be unhashable and also by the possibility of "
 "arithmetic overflow."
-msgstr ""
+msgstr "注意，哈希计算由于列表的某些成员可能不可用以及算术溢出的可能性而变得复杂。"
 
 #: ../../faq/design.rst:578
 msgid ""
@@ -844,6 +851,9 @@ msgid ""
 "a dictionary or not.  If you fail to meet these restrictions dictionaries "
 "and other hash based structures will misbehave."
 msgstr ""
+"此外，必须始终如此，如果 ``o1 == o2`` （即 ``o1.__eq__(o2) is True`` ）则 ``hash(o1) == "
+"hash(o2)``（即 ``o1.__hash__() == o2.__hash__()`` ），无论对象是否在字典中。 "
+"如果你不能满足这些限制，字典和其他基于 hash 的结构将会出错。"
 
 #: ../../faq/design.rst:583
 msgid ""
@@ -852,6 +862,8 @@ msgid ""
 "you are prepared to think hard about the requirements and the consequences "
 "of not meeting them correctly.  Consider yourself warned."
 msgstr ""
+"对于 ListWrapper "
+"，只要包装器对象在字典中，包装列表就不能更改以避免异常。除非你准备好认真考虑需求以及不正确地满足这些需求的后果，否则不要这样做。请留意。"
 
 #: ../../faq/design.rst:590
 msgid "Why doesn't list.sort() return the sorted list?"
