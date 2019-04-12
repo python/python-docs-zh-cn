@@ -114,8 +114,9 @@ msgid ""
 ":meth:`~Cursor.fetchone` method to retrieve a single matching row, or call "
 ":meth:`~Cursor.fetchall` to get a list of the matching rows."
 msgstr ""
-"如果需要获取 SELECT 语句的查询结果，可以把游标对象作为 :term:`迭代器`，然后调用它的 :meth:`~Cursor.fetchone` "
-"方法来一条一条的获取匹配到的记录，也可以调用 meth:`~Cursor.fetchall` 方法来得到一个列表，它包含匹配到的所有记录。"
+"要在执行 SELECT 语句后获取数据，你可以把游标作为 :term:`iterator`，然后调用它的 "
+":meth:`~Cursor.fetchone` 方法来获取一条匹配的行，也可以调用 :meth:`~Cursor.fetchall` "
+"来得到包含多个匹配行的列表。"
 
 #: ../../library/sqlite3.rst:89
 msgid "This example uses the iterator form::"
@@ -197,6 +198,8 @@ msgid ""
 "look into the converters dictionary and use the converter function "
 "registered for that type there."
 msgstr ""
+"设置这个参数后，:mod:`sqlite3` 模块将解析它返回的每一列申明的类型。它会申明的类型的第一个单词，比如“integer primary "
+"key”，它会解析出“integer”，再比如“number(10)”，它会解析出“number”。然后，它会在转换器字典里查找那个类型注册的转换器函数，并调用它。"
 
 #: ../../library/sqlite3.rst:163
 msgid ""
@@ -210,12 +213,17 @@ msgid ""
 "will parse out everything until the first blank for the column name: the "
 "column name would simply be \"x\"."
 msgstr ""
+"设置这个参数后，SQLite 接口将解析它返回的每一列的列名。它会在其中查找 [mytype] "
+"这个形式的字符串，然后用‘mytype’来决定那个列的类型。它会尝试在转换器字典中查找‘mytype’键对应的转换器函数，然后用这个转换器函数返回的值来做为列的类型。在"
+" :attr:`Cursor.description` 中找到的列名仅仅是列名的第一个单词，比如你在 SQL 中使用 ``'as \"x "
+"[datetime]\"'``，然后它会解析出第一个空白字符前的所有字符来作为列名：列名就是“x”。"
 
 #: ../../library/sqlite3.rst:175
 msgid ""
 "Opens a connection to the SQLite database file *database*. By default "
 "returns a :class:`Connection` object, unless a custom *factory* is given."
 msgstr ""
+"连接 SQLite 数据库 *database*。默认返回 :class:`Connection` 对象，除非使用了自定义的 *factory* 参数。"
 
 #: ../../library/sqlite3.rst:178
 msgid ""
@@ -224,6 +232,8 @@ msgid ""
 "opened. You can use ``\":memory:\"`` to open a database connection to a "
 "database that resides in RAM instead of on disk."
 msgstr ""
+"*database* 是准备打开的数据库文件的路径（绝对路径或相对于当前目录的相对路径），它是 :term:`path-like "
+"object`。你也可以用 ``\":memory:\"`` 在内存中打开一个数据库。"
 
 #: ../../library/sqlite3.rst:183
 msgid ""
@@ -233,12 +243,16 @@ msgid ""
 "connection should wait for the lock to go away until raising an exception. "
 "The default for the timeout parameter is 5.0 (five seconds)."
 msgstr ""
+"当一个数据库被多个连接访问的时候，如果其中一个进程修改这个数据库，在这个事务提交之前，这个 SQLite 数据库将会被一直锁定。*timeout* "
+"参数指定了这个连接等待锁释放的超时时间，超时之后会引发一个异常。这个超时时间默认是 5.0（5秒）。"
 
 #: ../../library/sqlite3.rst:189
 msgid ""
 "For the *isolation_level* parameter, please see the "
 ":attr:`~Connection.isolation_level` property of :class:`Connection` objects."
 msgstr ""
+"*isolation_level* 参数，请查看 :class:`Connection` 对象的 "
+":attr:`~Connection.isolation_level` 属性。"
 
 #: ../../library/sqlite3.rst:192
 msgid ""
@@ -946,7 +960,7 @@ msgstr ""
 
 #: ../../library/sqlite3.rst:845
 msgid "SQLite and Python types"
-msgstr ""
+msgstr "SQLite 与 Python 类型"
 
 #: ../../library/sqlite3.rst:849
 msgid "Introduction"
