@@ -14,8 +14,8 @@
 # cdarlint <cdarling@126.com>, 2019
 # 马强 <jackylvm@foxmail.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
-# Meng Du <alphanow@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
+# Meng Du <alphanow@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-12 10:20+0900\n"
 "PO-Revision-Date: 2017-02-16 23:30+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: Meng Du <alphanow@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -417,6 +417,8 @@ msgid ""
 "or :const:`None`, the current time as returned by :func:`.time` is used.  "
 "The dst flag is set to ``1`` when DST applies to the given time."
 msgstr ""
+"与 :func:`gmtime` 相似但转换为当地时间。如果未提供 *secs* 或为 :const:`None` ，则使用由 "
+":func:`.time` 返回的当前时间。当 DST 适用于给定时间时，dst标志设置为 ``1`` 。"
 
 #: ../../library/time.rst:279
 msgid ""
@@ -430,6 +432,10 @@ msgid ""
 " libraries). The earliest date for which it can generate a time is platform-"
 "dependent."
 msgstr ""
+"这是 :func:`localtime` 的反函数。它的参数是 :class:`struct_time` 或者完整的 9 元组（因为需要 dst "
+"标志；如果它是未知的则使用 ``-1`` 作为dst标志），它表示 *local* 的时间，而不是 UTC 。它返回一个浮点数，以便与 "
+":func:`.time` 兼容。如果输入值不能表示为有效时间，则 :exc:`OverflowError` 或 :exc:`ValueError` "
+"将被引发（这取决于Python或底层C库是否捕获到无效值）。它可以生成时间的最早日期取决于平台。"
 
 #: ../../library/time.rst:291
 msgid ""
@@ -438,14 +444,15 @@ msgid ""
 "updates. The reference point of the returned value is undefined, so that "
 "only the difference between the results of consecutive calls is valid."
 msgstr ""
+"返回单调时钟的值（以小数秒为单位），即不能倒退的时钟。时钟不受系统时钟更新的影响。返回值的参考点未定义，因此只有连续调用结果之间的差异才有效。"
 
 #: ../../library/time.rst:297
 msgid "The function is now always available and always system-wide."
-msgstr ""
+msgstr "该功能现在始终可用且始终在系统范围内。"
 
 #: ../../library/time.rst:303
 msgid "Similar to :func:`monotonic`, but return time as nanoseconds."
-msgstr ""
+msgstr "与 :func:`monotonic` 相似，但是返回时间为纳秒数。"
 
 #: ../../library/time.rst:312
 msgid ""
@@ -455,10 +462,11 @@ msgid ""
 "point of the returned value is undefined, so that only the difference "
 "between the results of consecutive calls is valid."
 msgstr ""
+"返回性能计数器的值（以小数秒为单位），即具有最高可用分辨率的时钟，以测量短持续时间。它确实包括睡眠期间经过的时间，并且是系统范围的。返回值的参考点未定义，因此只有连续调用结果之间的差异才有效。"
 
 #: ../../library/time.rst:322
 msgid "Similar to :func:`perf_counter`, but return time as nanoseconds."
-msgstr ""
+msgstr "与 :func:`perf_counter` 相似，但是返回时间为纳秒。"
 
 #: ../../library/time.rst:334
 msgid ""
@@ -468,10 +476,11 @@ msgid ""
 "returned value is undefined, so that only the difference between the results"
 " of consecutive calls is valid."
 msgstr ""
+"返回当前进程的系统和用户CPU时间总和的值（以小数秒为单位）。它不包括睡眠期间经过的时间。根据定义，它在整个进程范围中。返回值的参考点未定义，因此只有连续调用结果之间的差异才有效。"
 
 #: ../../library/time.rst:344
 msgid "Similar to :func:`process_time` but return time as nanoseconds."
-msgstr ""
+msgstr "与 :func:`process_time` 相似，但是返回时间为纳秒。"
 
 #: ../../library/time.rst:350
 msgid ""
@@ -483,13 +492,15 @@ msgid ""
 "requested by an arbitrary amount because of the scheduling of other activity"
 " in the system."
 msgstr ""
+"暂停执行调用线程达到给定的秒数。参数可以是浮点数，以指示更精确的睡眠时间。实际的暂停时间可能小于请求的时间，因为任何捕获的信号将在执行该信号的捕获例程后终止"
+" :func:`sleep` 。此外，由于系统中其他活动的安排，暂停时间可能比请求的时间长任意量。"
 
 #: ../../library/time.rst:358
 msgid ""
 "The function now sleeps at least *secs* even if the sleep is interrupted by "
 "a signal, except if the signal handler raises an exception (see :pep:`475` "
 "for the rationale)."
-msgstr ""
+msgstr "即使睡眠被信号中断，该函数现在至少睡眠 *secs* ，除非信号处理程序引发异常（参见 :pep:`475` 作为基本原理）。"
 
 #: ../../library/time.rst:369
 msgid ""
@@ -499,12 +510,15 @@ msgid ""
 ":func:`localtime` is used.  *format* must be a string.  :exc:`ValueError` is"
 " raised if any field in *t* is outside of the allowed range."
 msgstr ""
+"转换一个元组或 :class:`struct_time` 表示的由 :func:`gmtime` 或 :func:`localtime` 返回的时间到由"
+" *format* 参数指定的字符串。如果未提供 *t* ，则使用由 :func:`localtime` 返回的当前时间。 *format* "
+"必须是一个字符串。如果 *t* 中的任何字段超出允许范围，则引发 :exc:`ValueError` 。"
 
 #: ../../library/time.rst:375
 msgid ""
 "0 is a legal argument for any position in the time tuple; if it is normally "
 "illegal the value is forced to a correct one."
-msgstr ""
+msgstr "0是时间元组中任何位置的合法参数；如果它通常是非法的，则该值被强制改为正确的值。"
 
 #: ../../library/time.rst:378
 msgid ""
@@ -512,6 +526,7 @@ msgid ""
 "shown without the optional field width and precision specification, and are "
 "replaced by the indicated characters in the :func:`strftime` result:"
 msgstr ""
+"以下指令可以嵌入 *format* 字符串中。它们显示时没有可选的字段宽度和精度规范，并被 :func:`strftime` 结果中的指示字符替换："
 
 #: ../../library/time.rst:383
 msgid "Directive"
@@ -741,7 +756,7 @@ msgid ""
 "When used with the :func:`strptime` function, the ``%p`` directive only "
 "affects the output hour field if the ``%I`` directive is used to parse the "
 "hour."
-msgstr ""
+msgstr "当与 :func:`strptime` 函数一起使用时，如果使用 ``%I`` 指令来解析小时， ``%p`` 指令只影响输出小时字段。"
 
 #: ../../library/time.rst:472
 msgid ""
@@ -749,18 +764,20 @@ msgid ""
 "representing `leap seconds`_ and value ``61`` is supported for historical "
 "reasons."
 msgstr ""
+"范围真的是 ``0`` 到 ``61`` ；值 ``60`` 在表示 `leap seconds`_ 的时间戳中有效，并且由于历史原因支持值 "
+"``61`` 。"
 
 #: ../../library/time.rst:477
 msgid ""
 "When used with the :func:`strptime` function, ``%U`` and ``%W`` are only "
 "used in calculations when the day of the week and the year are specified."
-msgstr ""
+msgstr "当与 :func:`strptime` 函数一起使用时， ``%U`` 和 ``%W`` 仅用于指定星期几和年份的计算。"
 
 #: ../../library/time.rst:480
 msgid ""
 "Here is an example, a format for dates compatible with that specified  in "
 "the :rfc:`2822` Internet email standard.  [#]_ ::"
-msgstr ""
+msgstr "下面是一个示例，一个与 :rfc:`2822` Internet电子邮件标准以兼容的日期格式。  [#]_ ::"
 
 #: ../../library/time.rst:487
 msgid ""
@@ -769,6 +786,8 @@ msgid ""
 " of format codes supported on your platform, consult the "
 ":manpage:`strftime(3)` documentation."
 msgstr ""
+"某些平台可能支持其他指令，但只有此处列出的指令具有 ANSI C 标准化的含义。要查看平台支持的完整格式代码集，请参阅 "
+":manpage:`strftime(3)` 文档。"
 
 #: ../../library/time.rst:492
 msgid ""
@@ -777,6 +796,8 @@ msgid ""
 "order; this is also not portable. The field width is normally 2 except for "
 "``%j`` where it is 3."
 msgstr ""
+"在某些平台上，可选的字段宽度和精度规范可以按照以下顺序紧跟在指令的初始 ``'%'`` 之后；这也不可移植。字段宽度通常为2，除了 ``%j`` "
+"，它是3。"
 
 #: ../../library/time.rst:503
 msgid ""
@@ -784,6 +805,8 @@ msgid ""
 "is a :class:`struct_time` as returned by :func:`gmtime` or "
 ":func:`localtime`."
 msgstr ""
+"根据格式解析表示时间的字符串。 返回值为一个被 :func:`gmtime` 或 :func:`localtime` 返回的 "
+":class:`struct_time` 。"
 
 #: ../../library/time.rst:507
 msgid ""
@@ -795,6 +818,10 @@ msgid ""
 "data when more accurate values cannot be inferred are ``(1900, 1, 1, 0, 0, "
 "0, 0, 1, -1)``. Both *string* and *format* must be strings."
 msgstr ""
+"*format* 参数使用与 :func:`strftime` ；使用的指令相同的指令。它默认为匹配 :func:`ctime` 返回格式的 "
+"``\"%a %b %d %H:%M:%S %Y\"``` 。如果 *string*不能根据 *format* 解析，或者解析后它有多余的数据，则引发 "
+":exc:`ValueError` 。当无法推断出更准确的值时，用于填充任何缺失数据的默认值是 ``(1900, 1, 1, 0, 0, 0, 0, "
+"1, -1)`` 。 *string* 和 *format* 都必须是字符串。"
 
 #: ../../library/time.rst:515
 msgid "For example:"
@@ -807,6 +834,8 @@ msgid ""
 "platform-specific except for recognizing UTC and GMT which are always known "
 "(and are considered to be non-daylight savings timezones)."
 msgstr ""
+"支持 ``%Z`` 指令是基于 ``tzname`` 中包含的值以及 ``daylight`` 是否为真。因此，它是特定于平台的，除了识别始终已知的 "
+"UTC 和 GMT （并且被认为是非夏令时时区）。"
 
 #: ../../library/time.rst:527
 msgid ""
@@ -816,6 +845,8 @@ msgid ""
 "platform and thus does not necessarily support all directives available that"
 " are not documented as supported."
 msgstr ""
+"仅支持文档中指定的指令。因为每个平台都实现了 ``strftime()`` ，它有时会提供比列出的指令更多的指令。但是 ``strptime()`` "
+"独立于任何平台，因此不一定支持所有未记录为支持的可用指令。"
 
 #: ../../library/time.rst:536
 msgid ""
@@ -824,6 +855,8 @@ msgid ""
 ":term:`named tuple` interface: values can be accessed by index and by "
 "attribute name.  The following values are present:"
 msgstr ""
+"返回的时间值序列的类型为 :func:`gmtime` 、 :func:`localtime` 和 :func:`strptime` 。它是一个带有 "
+":term:`named tuple` 接口的对象：可以通过索引和属性名访问值。 存在以下值："
 
 #: ../../library/time.rst:542
 msgid "Index"
@@ -969,7 +1002,7 @@ msgstr "以秒为单位的UTC以东偏离"
 msgid ""
 "Note that unlike the C structure, the month value is a range of [1, 12], not"
 " [0, 11]."
-msgstr ""
+msgstr "请注意，与C结构不同，月份值是 [1,12] 的范围，而不是 [0,11] 。"
 
 #: ../../library/time.rst:571
 msgid ""
@@ -978,6 +1011,8 @@ msgid ""
 "that this is not known, and will usually result in the correct state being "
 "filled in."
 msgstr ""
+"在调用 :func:`mktime` 时， :attr:`tm_isdst` 可以在夏令时生效时设置为1，而在夏令时不生效时设置为0。 "
+"值-1表示这是未知的，并且通常会导致填写正确的状态。"
 
 #: ../../library/time.rst:575
 msgid ""
@@ -985,6 +1020,8 @@ msgid ""
 ":class:`struct_time`, or having elements of the wrong type, a "
 ":exc:`TypeError` is raised."
 msgstr ""
+"当一个长度不正确的元组被传递给期望 :class:`struct_time` 的函数，或者具有错误类型的元素时，会引发 :exc:`TypeError`"
+" 。"
 
 #: ../../library/time.rst:581
 msgid ""
@@ -996,6 +1033,11 @@ msgid ""
 "<https://en.wikipedia.org/wiki/Unix_time>`_. To find out what the epoch is "
 "on a given platform, look at ``gmtime(0)``."
 msgstr ""
+"返回浮点数的 seconds since the epoch_ 。epoch 的具体日期和 `leap seconds`_ "
+"的处理取决于平台。在Windows和大多数Unix系统上， epoch 是1970年1月1日00:00:00（UTC），并且闰秒不计入 seconds "
+"since the epoch 。 这通常被称为 `Unix time "
+"<https://en.wikipedia.org/wiki/Unix_time>`_ 。 要找出给定平台上的 epoch ，请查看 "
+"``gmtime(0)`` 。"
 
 #: ../../library/time.rst:591
 msgid ""
@@ -1005,6 +1047,7 @@ msgid ""
 "lower value than a previous call if the system clock has been set back "
 "between the two calls."
 msgstr ""
+"请注意，即使时间总是作为浮点数返回，但并非所有系统都提供高于1秒的精度。虽然此函数通常返回非递减值，但如果在两次调用之间设置了系统时钟，则它可以返回比先前调用更低的值。"
 
 #: ../../library/time.rst:597
 msgid ""
@@ -1015,6 +1058,9 @@ msgid ""
 "returned, from which the components of the calendar date may be accessed as "
 "attributes."
 msgstr ""
+"返回的数字 :func:`.time` 可以通过将其传递给 :func:`gmtime` "
+"函数或转换为UTC中更常见的时间格式（即年、月、日、小时等）或通过将它传递给 :func:`localtime` "
+"函数获得本地时间。在这两种情况下都返回一个 :class:`struct_time` 对象，日历日期组件可以从中作为属性访问。"
 
 #: ../../library/time.rst:612
 msgid ""
@@ -1024,22 +1070,25 @@ msgid ""
 "returned value is undefined, so that only the difference between the results"
 " of consecutive calls in the same thread is valid."
 msgstr ""
+"返回当前线程的系统和用户CPU时间之和的值（以小数秒为单位）。它不包括睡眠期间经过的时间。根据定义，它是特定于线程的。返回值的参考点未定义，因此只有同一线程中连续调用结果之间的差异才有效。"
 
 #: ../../library/time.rst:620
 msgid ""
 ":ref:`Availability <availability>`: Windows, Linux, Unix systems supporting "
 "``CLOCK_THREAD_CPUTIME_ID``."
 msgstr ""
+":ref:`可用性 <availability>` ： Windows、 Linux、 Unix 系统支持 "
+"``CLOCK_THREAD_CPUTIME_ID`` 。"
 
 #: ../../library/time.rst:626
 msgid "Similar to :func:`thread_time` but return time as nanoseconds."
-msgstr ""
+msgstr "与 :func:`thread_time` 相似，但返回纳秒时间。"
 
 #: ../../library/time.rst:633
 msgid ""
 "Similar to :func:`time` but returns time as an integer number of nanoseconds"
 " since the epoch_."
-msgstr ""
+msgstr "与 :func:`time` 相似，但返回时间为 epoch_ 以来的整数纳秒。"
 
 #: ../../library/time.rst:640
 msgid ""
@@ -1051,6 +1100,9 @@ msgid ""
 "saving time rules, or to nonzero if there is a time, past, present or future"
 " when daylight saving time applies)."
 msgstr ""
+"重置库例程使用的时间转换规则。环境变量 :envvar:`TZ` 指定如何完成。它还将设置变量 ``tzname`` （来自 :envvar:`TZ` "
+"环境变量）， ``timezone`` （UTC的西部非DST秒）， ``altzone`` （UTC以西的DST秒）和 ``daylight`` "
+"（如果此时区没有任何夏令时规则则为0，如果有夏令时适用的时间，无论过去、现在或未来，则为非零）。"
 
 #: ../../library/time.rst:652
 msgid ""
@@ -1058,16 +1110,18 @@ msgid ""
 "affect the output of functions like :func:`localtime` without calling "
 ":func:`tzset`, this behavior should not be relied on."
 msgstr ""
+"虽然在很多情况下，更改 :envvar:`TZ` 环境变量而不调用 :func:`tzset` 可能会影响函数的输出，例如 "
+":func:`localtime` ，不应该依赖此行为。"
 
 #: ../../library/time.rst:656
 msgid "The :envvar:`TZ` environment variable should contain no whitespace."
-msgstr ""
+msgstr ":envvar:`TZ` 不应该包含空格。"
 
 #: ../../library/time.rst:658
 msgid ""
 "The standard format of the :envvar:`TZ` environment variable is (whitespace "
 "added for clarity)::"
-msgstr ""
+msgstr ":envvar:`TZ` 环境变量的标准格式是（为了清晰起见，添加了空格）::"
 
 #: ../../library/time.rst:663
 msgid "Where the components are:"
@@ -1094,6 +1148,8 @@ msgid ""
 " of the Prime Meridian; otherwise, it is west. If no offset follows dst, "
 "summer time is assumed to be one hour ahead of standard time."
 msgstr ""
+"偏移量的形式为： ``± hh[:mm[:ss]]`` 。这表示添加到达UTC的本地时间的值。如果前面有 '-' "
+"，则时区位于本初子午线的东边；否则，在它是西边。如果dst之后没有偏移，则假设夏令时比标准时间提前一小时。"
 
 #: ../../library/time.rst:695
 msgid "``start[/time], end[/time]``"
@@ -1103,7 +1159,7 @@ msgstr "``start[/time], end[/time]``"
 msgid ""
 "Indicates when to change to and back from DST. The format of the start and "
 "end dates are one of the following:"
-msgstr ""
+msgstr "指示何时更改为DST和从DST返回。开始日期和结束日期的格式为以下之一："
 
 #: ../../library/time.rst:681
 msgid ":samp:`J{n}`"
@@ -1113,7 +1169,7 @@ msgstr ":samp:`J{n}`"
 msgid ""
 "The Julian day *n* (1 <= *n* <= 365). Leap days are not counted, so in all "
 "years February 28 is day 59 and March 1 is day 60."
-msgstr ""
+msgstr "Julian日 *n* （1 <= *n* <= 365）。闰日不计算在内，因此在所有年份中，2月28日是第59天，3月1日是第60天。"
 
 #: ../../library/time.rst:685
 msgid ":samp:`{n}`"
@@ -1123,7 +1179,7 @@ msgstr ":samp:`{n}`"
 msgid ""
 "The zero-based Julian day (0 <= *n* <= 365). Leap days are counted, and it "
 "is possible to refer to February 29."
-msgstr ""
+msgstr "从零开始的Julian日（0 <= *n* <= 365）。 闰日计入，可以引用2月29日。"
 
 #: ../../library/time.rst:692
 msgid ":samp:`M{m}.{n}.{d}`"
@@ -1136,12 +1192,16 @@ msgid ""
 "*m*\" which may occur in either the fourth or the fifth week). Week 1 is the"
 " first week in which the *d*'th day occurs. Day zero is a Sunday."
 msgstr ""
+"一年中 *m* 月的第 *n* 周（1 <= *n* <= 5 ，1 <= *m* <= 12 ，第5周表示 “可能在* m* "
+"月第4周或第5周出现的最后第 *d* 日”）的第 *d* 天（0 <= *d* <= 6）。 第1周是第 *d*天发生的第一周。第0天是星期天。"
 
 #: ../../library/time.rst:694
 msgid ""
 "``time`` has the same format as ``offset`` except that no leading sign ('-' "
 "or '+') is allowed. The default, if time is not given, is 02:00:00."
 msgstr ""
+"``time`` 的格式与 ``offset`` 的格式相同，但不允许使用前导符号（ '-' 或 '+' "
+"）。如果没有给出时间，则默认值为02:00:00。"
 
 #: ../../library/time.rst:708
 msgid ""
@@ -1153,6 +1213,11 @@ msgid ""
 "located at :file:`/usr/share/zoneinfo`. For example,  ``'US/Eastern'``, "
 "``'Australia/Melbourne'``, ``'Egypt'`` or  ``'Europe/Amsterdam'``. ::"
 msgstr ""
+"在许多Unix系统（包括 \\*BSD ， Linux ， Solaris 和 Darwin 上），使用系统的区域信息（ "
+":manpage:`tzfile(5)` ）数据库来指定时区规则会更方便。为此，将 :envvar:`TZ` "
+"环境变量设置为所需时区数据文件的路径，相对于系统 'zoneinfo' 时区数据库的根目录，通常位于 "
+":file:`/usr/share/zoneinfo` 。 例如，``'US/Eastern'`` 、 "
+"``'Australia/Melbourne'`` 、 ``'Egypt'`` 或 ``'Europe/Amsterdam'``。 ::"
 
 #: ../../library/time.rst:729
 msgid "Clock ID Constants"
@@ -1162,13 +1227,13 @@ msgstr "Clock ID 常量"
 msgid ""
 "These constants are used as parameters for :func:`clock_getres` and "
 ":func:`clock_gettime`."
-msgstr ""
+msgstr "这些常量用作 :func:`clock_getres` 和 :func:`clock_gettime` 的参数。"
 
 #: ../../library/time.rst:736
 msgid ""
 "Identical to :data:`CLOCK_MONOTONIC`, except it also includes any time that "
 "the system is suspended."
-msgstr ""
+msgstr "与 :data:`CLOCK_MONOTONIC` 相同，除了它还包括系统暂停的任何时间。"
 
 #: ../../library/time.rst:739
 msgid ""
@@ -1177,6 +1242,8 @@ msgid ""
 "have  discontinuities if the time is changed using ``settimeofday()`` or "
 "similar."
 msgstr ""
+"这允许应用程序获得一个暂停感知的单调时钟，而不必处理 :data:`CLOCK_REALTIME` 的复杂性，如果使用 "
+"``settimeofday()`` 或类似的时间更改时间可能会有不连续性。"
 
 #: ../../library/time.rst:745
 msgid ":ref:`Availability <availability>`: Linux 2.6.39 or later."
@@ -1188,6 +1255,8 @@ msgid ""
 " hardware source, and may give close to nanosecond resolution. "
 "``CLOCK_HIGHRES`` is the nonadjustable, high-resolution clock."
 msgstr ""
+"Solaris OS 有一个 ``CLOCK_HIGHRES`` 计时器，试图使用最佳硬件源，并可能提供接近纳秒的分辨率。 "
+"``CLOCK_HIGHRES`` 是不可调节的高分辨率时钟。"
 
 #: ../../library/time.rst:756
 msgid ":ref:`Availability <availability>`: Solaris."
@@ -1197,7 +1266,7 @@ msgstr ":ref:`可用性 <availability>`: Solaris."
 msgid ""
 "Clock that cannot be set and represents monotonic time since some "
 "unspecified starting point."
-msgstr ""
+msgstr "无法设置的时钟，表示自某些未指定的起点以来的单调时间。"
 
 #: ../../library/time.rst:772
 msgid ""
