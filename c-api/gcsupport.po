@@ -44,6 +44,9 @@ msgid ""
 "instances of the type are mutable, a :c:member:`~PyTypeObject.tp_clear` "
 "implementation must also be provided."
 msgstr ""
+"若要创建一个容器类，类型对象的 :c:member:`~PyTypeObject.tp_flags` 字段必须包含 "
+":const:`Py_TPFLAGS_HAVE_GC` 并提供一个 :c:member:`~PyTypeObject.tp_traverse` "
+"处理的实现。如果该类型的实例是可变的，还需要实现 :c:member:`~PyTypeObject.tp_clear` 。"
 
 #: ../../c-api/gcsupport.rst:24
 msgid ""
@@ -135,7 +138,7 @@ msgid ""
 "Releases memory allocated to an object using :c:func:`PyObject_GC_New` or "
 ":c:func:`PyObject_GC_NewVar`."
 msgstr ""
-"释放对象的内存，该对象初始化时由 :c:func:`PyObject_GC_New` 或 :c:func:`PyObject_GC_NewVar` "
+"释放对象的内存，该对象初始化时由 :c:func:`PyObject_GC_New` 或 :c:func:`PyObject_GC_NewVar` "
 "分配内存。"
 
 #: ../../c-api/gcsupport.rst:89
@@ -172,8 +175,8 @@ msgid ""
 "uses several visitor functions to implement cyclic garbage detection; it's "
 "not expected that users will need to write their own visitor functions."
 msgstr ""
-"传给 :c:member:`~PyTypeObject.tp_traverse` 处理的访问函数类型。*object* "
-"是需要被遍历的对象，第三个形参对应于 :c:member:`~PyTypeObject.tp_traverse` 处理的 *arg* "
+"传给 :c:member:`~PyTypeObject.tp_traverse` 处理的访问函数的类型。*object* "
+"是容器中需要被遍历的一个对象，第三个形参对应于 :c:member:`~PyTypeObject.tp_traverse` 处理的 *arg* "
 "。Python核心使用多个访问者函数实现循环引用的垃圾检测，不需要用户自行实现访问者函数。"
 
 #: ../../c-api/gcsupport.rst:116
@@ -191,6 +194,9 @@ msgid ""
 "object argument.  If *visit* returns a non-zero value that value should be "
 "returned immediately."
 msgstr ""
+"用于容器对象的遍历函数。在函数的实现中，必须对 *self* 容器内直接包含的每个对象调用 *visit* 函数，容器内的对象作为 *visit* "
+"的形参，*arg* 作为参数。不能使用 *NULL* 对象作为 *visit* 函数的参数。如果 *visit* "
+"返回非零值，此函数需要立即返回此非零值。"
 
 #: ../../c-api/gcsupport.rst:128
 msgid ""
@@ -199,6 +205,9 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_traverse` implementation must name its arguments"
 " exactly *visit* and *arg*:"
 msgstr ""
+"为了简化 :c:member:`~PyTypeObject.tp_traverse` 处理的实现，Python提供了一个 "
+":c:func:`Py_VISIT` 宏。若要使用这个宏，必须把 :c:member:`~PyTypeObject.tp_traverse` "
+"的参数命名为 *visit* 和 *arg* 。"
 
 #: ../../c-api/gcsupport.rst:135
 msgid ""
@@ -206,12 +215,17 @@ msgid ""
 "*arg*.  If *visit* returns a non-zero value, then return it. Using this "
 "macro, :c:member:`~PyTypeObject.tp_traverse` handlers look like::"
 msgstr ""
+"如果 *o* 不是 *NULL* ，则调用 *visit* 回调函数，并把 *o* 和 *arg* 作为回调函数的参数。如果 *visit* "
+"返回一个非零值，则把此非零值返回上层调用。在使用此宏后， :c:member:`~PyTypeObject.tp_traverse` "
+"处理组织为以下形式："
 
 #: ../../c-api/gcsupport.rst:148
 msgid ""
 "The :c:member:`~PyTypeObject.tp_clear` handler must be of the "
 ":c:type:`inquiry` type, or *NULL* if the object is immutable."
 msgstr ""
+" :c:member:`~PyTypeObject.tp_clear` 处理必须是 :c:type:`inquiry` "
+"类型的。当对象是不可变类型时，该处理则为 *NULL* 类型。"
 
 #: ../../c-api/gcsupport.rst:154
 msgid ""
@@ -222,3 +236,5 @@ msgid ""
 "collector will call this method if it detects that this object is involved "
 "in a reference cycle."
 msgstr ""
+"丢弃产生循环引用的引用。不可变对象不需要声明此方法，因为他们不可能直接产生循环引用。需要注意的是，对象在调用此方法后必须仍是有效的（不能对引用只调用 "
+":c:func:`Py_DECREF` 方法）。当垃圾回收器检测到该对象在循环引用中时，此方法会被调用。"
