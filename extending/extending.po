@@ -8,9 +8,9 @@
 # 操旭 <caoxu3000@126.com>, 2017
 # Tony Tong <firfly.net@qq.com>, 2018
 # ww song <sww4718168@gmail.com>, 2018
-# gashero liu <harry.python@gmail.com>, 2019
 # Shengjing Zhu <zsj950618@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
+# gashero liu <harry.python@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-13 11:09+0900\n"
 "PO-Revision-Date: 2017-02-16 17:42+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: gashero liu <harry.python@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -912,6 +912,11 @@ msgid ""
 "as referencing uninitialized data --- core dumps, wrong results, mysterious "
 "crashes."
 msgstr ""
+"每个由 :c:func:`malloc` 分配的内存块，最终都要由 :c:func:`free` 退回到可用内存池里面去。而调用 "
+":c:func:`free` 的时机非常重要，如果一个内存块忘了 :c:func:`free` "
+"则会导致内存泄漏，这块内存在程序结束前将无法重新使用。这叫做 :dfn:`内存泄漏` 。而如果对同一内存块 :c:func:`free` "
+"了以后，另外一个指针再次访问，则再次使用 :c:func:`malloc` 复用这块内存会导致冲突。这叫做 :dfn:`野指针` "
+"。等同于使用未初始化的数据，core dump，错误结果，神秘的崩溃等。"
 
 #: ../../extending/extending.rst:853
 msgid ""
@@ -929,6 +934,7 @@ msgid ""
 "from happening by having a coding convention or strategy that minimizes this"
 " kind of errors."
 msgstr ""
+"内存泄露往往发生在一些并不常见的代码流程上面。比如一个函数申请了内存以后，做了些计算，然后释放内存块。现在一些对函数的修改可能增加对计算的测试并检测错误条件，然后过早的从函数返回了。这很容易忘记在退出前释放内存，特别是后期修改的代码。这种内存泄漏，一旦引入，通常很长时间都难以检测到，错误退出被调用的频度较低，而现代电脑又有非常巨大的虚拟内存，所以泄漏仅在长期运行或频繁调用泄漏函数时才会变得明显。因此，有必要避免内存泄漏，通过代码规范会策略来最小化此类错误。"
 
 #: ../../extending/extending.rst:866
 msgid ""
@@ -940,6 +946,9 @@ msgid ""
 " reference to it is deleted. When the counter reaches zero, the last "
 "reference to the object has been deleted and the object is freed."
 msgstr ""
+"Python通过 :c:func:`malloc` 和 :c:func:`free` "
+"包含大量的内存分配和释放，同样需要避免内存泄漏和野指针。他选择的方法就是 :dfn:`引用计数` "
+"。其原理比较简单：每个对象都包含一个计数器，计数器的增减与对象引用的增减直接相关，当引用计数为0时，表示对象已经没有存在的意义了，对象就可以删除了。"
 
 #: ../../extending/extending.rst:874
 msgid ""
@@ -956,6 +965,11 @@ msgid ""
 " garbage collector will be available for C. Until then, we'll have to live "
 "with reference counts."
 msgstr ""
+"另一个叫法是 :dfn:`自动垃圾回收` "
+"。(有时引用计数也被看作是垃圾回收策略，于是这里的\"自动\"用以区分两者)。自动垃圾回收的优点是用户不需要明确的调用 :c:func:`free` "
+"。(另一个优点是改善速度或内存使用，然而这并不难)。缺点是对C，没有可移植的自动垃圾回收器，而引用计数则可以可移植的实现(只要 "
+":c:func:`malloc` 和 :c:func:`free` "
+"函数是可用的，这也是C标准担保的)。也许以后有一天会出现可移植的自动垃圾回收器，但在此前我们必须与引用计数一起工作。"
 
 #: ../../extending/extending.rst:886
 msgid ""
@@ -970,6 +984,7 @@ msgid ""
 "in a reference cycle, or referenced from the objects in the cycle, even "
 "though there are no further references to the cycle itself."
 msgstr ""
+"Python使用传统的引用计数实现，也提供了循环监测器，用以检测引用循环。这使得应用无需担心直接或间接的创建了循环引用，这是引用计数垃圾收集的一个弱点。引用循环是对象(可能直接)的引用了本身，所以循环中的每个对象的引用计数都不是0。典型的引用计数实现无法回收处于引用循环中的对象，或者被循环所引用的对象，哪怕没有循环以外的引用了。"
 
 #: ../../extending/extending.rst:897
 msgid ""
@@ -986,7 +1001,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:911
 msgid "Reference Counting in Python"
-msgstr ""
+msgstr "Python中的引用计数"
 
 #: ../../extending/extending.rst:913
 msgid ""
@@ -998,6 +1013,9 @@ msgid ""
 "this purpose (and others), every object also contains a pointer to its type "
 "object."
 msgstr ""
+"有两个宏 ``Py_INCREF(x)`` 和 ``Py_DECREF(x)`` ，会处理引用计数的增减。 :c:func:`Py_DECREF` "
+"也会在引用计数到达0时释放对象。为了灵活，并不会直接调用 :c:func:`free` ，而是通过对象的 :dfn:`类型对象` "
+"的函数指针来调用。为了这个目的(或其他的)，每个对象同时包含一个指向自身类型对象的指针。"
 
 #: ../../extending/extending.rst:920
 msgid ""
