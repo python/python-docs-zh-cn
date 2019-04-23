@@ -69,6 +69,9 @@ msgid ""
 "with C code and are more portable between implementations of Python than "
 "writing and compiling a C extension module."
 msgstr ""
+"C扩展接口特指CPython，扩展模块无法在其他Python实现上工作。在大多数情况下，应该避免写C扩展，来保持可移植性。举个例子，如果你的用例调用了C库或系统调用，你应该考虑使用"
+" :mod:`ctypes` 模块或 `cffi<https://cffi.readthedocs.org>`_ "
+"库，而不是自己写C代码。这些模块允许你写Python代码来接口C代码，而且可移植性更好。不知为何编译失败了。"
 
 #: ../../extending/extending.rst:40
 msgid "A Simple Example"
@@ -99,7 +102,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:58
 msgid "The first two lines of our file can be::"
-msgstr ""
+msgstr "文件中开始的两行是："
 
 #: ../../extending/extending.rst:63
 msgid ""
@@ -121,6 +124,8 @@ msgid ""
 "It is recommended to always define ``PY_SSIZE_T_CLEAN`` before including "
 "``Python.h``.  See :ref:`parsetuple` for a description of this macro."
 msgstr ""
+"推荐总是在 ``Python.h`` 前定义 ``PY_SSIZE_T_CLEAN`` 。查看 :ref:`parsetuple` "
+"来了解这个宏的更多内容。"
 
 #: ../../extending/extending.rst:75
 msgid ""
@@ -161,7 +166,7 @@ msgstr ""
 msgid ""
 "The *self* argument points to the module object for module-level functions; "
 "for a method it would point to the object instance."
-msgstr ""
+msgstr "对模块级函数，*self*参数指向模块对象；对于对象实例则指向方法。"
 
 #: ../../extending/extending.rst:107
 msgid ""
@@ -209,6 +214,11 @@ msgid ""
 "Python Library Reference).  It is important to know about them to understand"
 " how errors are passed around."
 msgstr ""
+"一个Python解释器的常见惯例是，函数发生错误时，应该设置一个异常环境并返回错误值(通常是 *NULL* "
+"指针)。异常存储在解释器静态全局变量中，如果为 *NULL* "
+"，则没有发生异常。异常的第一个参数也需要保存在静态全局变量中，也就是raise的第二个参数(第二个参数到 "
+":keyword:`raise`)。第三个变量包含栈回溯信息。这三个变量等同于Python变量 :meth:`sys.exc_info` "
+"(查看Python库参考的模块 :mod:`sys` 的章节)。这对于理解到底发生了什么错误是很重要的。"
 
 #: ../../extending/extending.rst:139
 msgid ""
@@ -302,6 +312,9 @@ msgid ""
 "do this, so this note is only relevant to those who call :c:func:`malloc` "
 "directly."
 msgstr ""
+"每次失败的 :c:func:`malloc` 调用必须转换为一个异常。 :c:func:`malloc` (或 :c:func:`realloc` "
+")的直接调用者必须调用 :c:func:`PyErr_NoMemory` 来返回错误来提示。所有对象创建函数(例如 "
+":c:func:`PyLong_FromLong` )已经这么做了，所以这个提示仅用于直接调用 :c:func:`malloc` 的情况。"
 
 #: ../../extending/extending.rst:188
 msgid ""
@@ -353,7 +366,7 @@ msgid ""
 "and initialize it in your module's initialization function "
 "(:c:func:`PyInit_spam`) with an exception object (leaving out the error "
 "checking for now)::"
-msgstr ""
+msgstr "以及初始化你的模块的初始化函数 (:c:func:`PyInit_spam`) 包含一个异常对象(先不管错误检查)："
 
 #: ../../extending/extending.rst:229
 msgid ""
@@ -429,6 +442,8 @@ msgid ""
 " Python object.  This is done using the function :c:func:`PyLong_FromLong`. "
 "::"
 msgstr ""
+"我们的 :func:`spam.system` 函数必须返回 :c:data:`sts` 的值作为Python对象。这通过使用函数 "
+":c:func:`PyLong_FromLong` 来实现。"
 
 #: ../../extending/extending.rst:293
 msgid ""
@@ -502,7 +517,7 @@ msgstr ""
 #: ../../extending/extending.rst:340
 msgid ""
 "The method table must be referenced in the module definition structure::"
-msgstr ""
+msgstr "这个方法表必须被模块定义结构所引用。"
 
 #: ../../extending/extending.rst:351
 msgid ""
@@ -511,6 +526,8 @@ msgid ""
 ":c:func:`PyInit_name`, where *name* is the name of the module, and should be"
 " the only non-\\ ``static`` item defined in the module file::"
 msgstr ""
+"这个结构体必须传递给解释器的模块初始化函数。初始化函数必须命名为 :c:func:`PyInit_name` ，其中 *name* "
+"是模块的名字，并应该定义为非 ``static`` ，且在模块文件里："
 
 #: ../../extending/extending.rst:362
 msgid ""
@@ -518,6 +535,8 @@ msgid ""
 "type, declares any special linkage declarations required by the platform, "
 "and for C++ declares the function as ``extern \"C\"``."
 msgstr ""
+"注意 PyMODINIT_FUNC 声明了函数作为 ``PyObject *`` 返回类型，声明任何平台的链接生命，以及给C++生命函数的 "
+"``extern \"C\"`` 。"
 
 #: ../../extending/extending.rst:366
 msgid ""
@@ -532,6 +551,11 @@ msgid ""
 "satisfactorily. The init function must return the module object to its "
 "caller, so that it then gets inserted into ``sys.modules``."
 msgstr ""
+"当Python程序首次导入模块 :mod:`spam` 时， :c:func:`PyInit_spam` "
+"被调用。(查看后续注释了解嵌入Python)。他会调用 :c:func:`PyModule_Create` "
+"，会返回模块对象，并插入内置函数对象到新创建的模块里，基于表(一个 :c:type:`PyMethodDef` 结构体的数组类型)到模块定义。 "
+":c:func:`PyModule_Create` 返回一个指向刚创建模块的指针。也可能因为严重错误而中止，或返回 *NULL* "
+"在模块无法初始化成功时。初始化函数必须返回模块对象给调用者，所以之后会被插入 ``sys.modules`` 。"
 
 #: ../../extending/extending.rst:377
 msgid ""
@@ -614,7 +638,7 @@ msgstr ""
 msgid ""
 "If your module requires additional libraries to link with, these can be "
 "listed on the line in the configuration file as well, for instance:"
-msgstr ""
+msgstr "如果你的模块需要额外的链接，这些内容可以列出在配置文件里，举个实例："
 
 #: ../../extending/extending.rst:471
 msgid "Calling Python Functions from C"
