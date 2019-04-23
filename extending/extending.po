@@ -1029,6 +1029,11 @@ msgid ""
 " on, store it, or call :c:func:`Py_DECREF`. Forgetting to dispose of an "
 "owned reference creates a memory leak."
 msgstr ""
+"最大的问题依旧：何时使用 ``Py_INCREF(x)`` 和 ``Py_DECREF(x)`` "
+"？我们首先引入一些概念。没有人\"拥有\"一个对象，你可以 :dfn:`拥有一个引用` "
+"到一个对象。一个对象的引用计数定义为拥有引用的数量。引用的拥有者有责任调用 :c:func:`Py_DECREF` "
+"，在引用不再需要时。引用的拥有关系可以被传递。有三种办法来处置拥有的引用：传递、存储、调用 :c:func:`Py_DECREF` "
+"。忘记处置一个拥有的引用会导致内存泄漏。"
 
 #: ../../extending/extending.rst:929
 msgid ""
@@ -1038,6 +1043,8 @@ msgid ""
 "borrowed. Using a borrowed reference after the owner has disposed of it "
 "risks using freed memory and should be avoided completely [#]_."
 msgstr ""
+"还可以 :dfn:`借用`[#]_ 一个对象的引用。借用不应该调用 :c:func:`Py_DECREF` "
+"。借用者必须确保不能持有对象超过拥有者借出的时间。在拥有者处置对象后使用借用的引用是有风险的，应该完全避免 [#]_ 。"
 
 #: ../../extending/extending.rst:935
 msgid ""
@@ -1049,6 +1056,7 @@ msgid ""
 "code a borrowed reference can be used after the owner from which it was "
 "borrowed has in fact disposed of it."
 msgstr ""
+"借用相对于引用的优点是你无需担心整条路径上代码的引用，或者说，通过借用你无需担心内存泄漏的风险。借用的缺点是一些看起来正确代码上的借用可能会在拥有者处置后使用对象。"
 
 #: ../../extending/extending.rst:943
 msgid ""
@@ -1058,17 +1066,19 @@ msgid ""
 "gives full owner responsibilities (the new owner must dispose of the "
 "reference properly, as well as the previous owner)."
 msgstr ""
+"借用可以变为拥有引用，通过调用 :c:func:`Py_INCREF` "
+"。这不会影响已经借出的拥有者的状态。这回创建一个新的拥有引用，并给予完全的拥有者责任(新的拥有者必须恰当的处置引用，就像之前的拥有者那样)。"
 
 #: ../../extending/extending.rst:953
 msgid "Ownership Rules"
-msgstr ""
+msgstr "拥有规则"
 
 #: ../../extending/extending.rst:955
 msgid ""
 "Whenever an object reference is passed into or out of a function, it is part"
 " of the function's interface specification whether ownership is transferred "
 "with the reference or not."
-msgstr ""
+msgstr "当一个对象引用传递进出一个函数时，函数的接口应该指定拥有关系的传递是否包含引用。"
 
 #: ../../extending/extending.rst:959
 msgid ""
@@ -1090,6 +1100,10 @@ msgid ""
 ":c:func:`PyDict_GetItem`, and :c:func:`PyDict_GetItemString` all return "
 "references that you borrow from the tuple, list or dictionary."
 msgstr ""
+"很多另一个对象提取对象的函数，也会传递引用关系，例如 :c:func:`PyObject_GetAttrString` "
+"。这里的情况不够清晰，一些不太常用的例程是例外的 :c:func:`PyTuple_GetItem` ， "
+":c:func:`PyList_GetItem` ， :c:func:`PyDict_GetItem` ， "
+":c:func:`PyDict_GetItemString` 都是返回从元组、列表、字典里借用的引用。"
 
 #: ../../extending/extending.rst:974
 msgid ""
@@ -1097,6 +1111,8 @@ msgid ""
 " even though it may actually create the object it returns: this is possible "
 "because an owned reference to the object is stored in ``sys.modules``."
 msgstr ""
+"函数 :c:func:`PyImport_AddModule` 也会返回借用的引用，哪怕可能会返回创建的对象：这个可能因为一个拥有的引用对象是存储在 "
+"``sys.modules`` 里。"
 
 #: ../../extending/extending.rst:978
 msgid ""
@@ -1108,6 +1124,10 @@ msgid ""
 "passed to them --- even if they fail!  (Note that :c:func:`PyDict_SetItem` "
 "and friends don't take over ownership --- they are \"normal.\")"
 msgstr ""
+"当你传递一个对象引用到另一个函数时，通常函数是借用出去的。如果需要存储，就使用 :c:func:`Py_INCREF` "
+"来变成独立的拥有者。这个规则有两个重要的例外： :c:func:`PyTuple_SetItem` 和 :c:func:`PyList_SetItem`"
+" 。这些函数接受传递来的引用关系，哪怕会失败！(注意 :c:func:`PyDict_SetItem` "
+"及其同类不会接受引用关系，他们是\"正常的\")。"
 
 #: ../../extending/extending.rst:986
 msgid ""
@@ -1127,7 +1147,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:1000
 msgid "Thin Ice"
-msgstr ""
+msgstr "危险的薄冰"
 
 #: ../../extending/extending.rst:1002
 msgid ""
@@ -1200,7 +1220,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:1078
 msgid "NULL Pointers"
-msgstr ""
+msgstr "NULL指针"
 
 #: ../../extending/extending.rst:1080
 msgid ""
@@ -1252,7 +1272,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:1117
 msgid "Writing Extensions in C++"
-msgstr ""
+msgstr "在C++中编写扩展"
 
 #: ../../extending/extending.rst:1119
 msgid ""
@@ -1269,7 +1289,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:1133
 msgid "Providing a C API for an Extension Module"
-msgstr ""
+msgstr "给扩展模块提供C API"
 
 #: ../../extending/extending.rst:1138
 msgid ""
