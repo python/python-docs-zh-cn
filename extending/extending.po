@@ -597,6 +597,8 @@ msgid ""
 "``PyInit_spam``, and creation of the module is left to the import machinery."
 " For details on multi-phase initialization, see :PEP:`489`."
 msgstr ""
+"不像我们的 ``spam`` 例子， ``xxmodule`` 使用了 *多阶段初始化* (Python3.5开始引入)， "
+"``PyInit_spam`` 会返回一个 PyModuleDef 结构体，然后创建的模块放到导入机制。细节参考 :PEP:`489` 的多阶段初始化。"
 
 #: ../../extending/extending.rst:434
 msgid "Compilation and Linkage"
@@ -625,6 +627,9 @@ msgid ""
 "the :file:`Modules/` directory of an unpacked source distribution, add a "
 "line to the file :file:`Modules/Setup.local` describing your file:"
 msgstr ""
+"如果你不使用动态加载，或者想要让模块永久性的作为Python解释器的一部分，就必须修改配置设置，并重新构建解释器。幸运的是在Unix上很简单，只需要把你的文件"
+" ( :file:`spammodule.c` 为例) 放在解压缩源码发行包的 :file:`Modules/` 目录下，添加一行到 "
+":file:`Modules/Setup.local` 来描述你的文件："
 
 #: ../../extending/extending.rst:454
 msgid ""
@@ -1026,6 +1031,10 @@ msgid ""
 "the cycle detector is disabled in this way, the :mod:`gc` module will not be"
 " available."
 msgstr ""
+"循环探测器可以检测垃圾循环并回收。 :mod:`gc` 模块提供了方法运行探测器 ( :func:`~gc.collect` 函数) "
+"，而且可以在运行时配置禁用探测器。循环探测器被当作可选组件，默认是包含的，也可以在构建时禁用，在Unix平台(包括Mac OS X)使用 :option"
+":`!--without-cycle-gc` 选项到 :program:`configure` 脚本。如果循环探测器被禁用， :mod:`gc` "
+"模块就不可用了。"
 
 #: ../../extending/extending.rst:911
 msgid "Reference Counting in Python"
@@ -1118,6 +1127,9 @@ msgid ""
 "instance, :c:func:`PyLong_FromLong` maintains a cache of popular values and "
 "can return a reference to a cached item."
 msgstr ""
+"大多数函数返回一个对象的引用，并传递引用拥有关系。通常，所有创建对象的函数，例如 :c:func:`PyLong_FromLong` 和 "
+":c:func:`Py_BuildValue` ，会传递拥有关系给接收者。即便是对象不是真正新的，你仍然可以获得对象的新引用。一个实例是 "
+":c:func:`PyLong_FromLong` 维护了一个流行值的缓存，并可以返回已缓存项目的新引用。"
 
 #: ../../extending/extending.rst:967
 msgid ""
@@ -1165,13 +1177,15 @@ msgid ""
 "  Only when such a borrowed reference must be stored or passed on, it must "
 "be turned into an owned reference by calling :c:func:`Py_INCREF`."
 msgstr ""
+"当一个C函数被Python调用时，会从调用方传来的参数借用引用。调用者拥有对象的引用，所以借用的引用生命周期可以保证到函数返回。只要当借用的引用需要存储或传递时，就必须转换为拥有的引用，通过调用"
+" :c:func:`Py_INCREF` 。"
 
 #: ../../extending/extending.rst:992
 msgid ""
 "The object reference returned from a C function that is called from Python "
 "must be an owned reference --- ownership is transferred from the function to"
 " its caller."
-msgstr ""
+msgstr "Python调用从C函数返回的对象引用时必须是拥有的引用---拥有关系被从函数传递给调用者。"
 
 #: ../../extending/extending.rst:1000
 msgid "Thin Ice"
@@ -1183,14 +1197,14 @@ msgid ""
 "reference can lead to problems.  These all have to do with implicit "
 "invocations of the interpreter, which can cause the owner of a reference to "
 "dispose of it."
-msgstr ""
+msgstr "有少数情况下，借用的引用看起来无害，但却可能导致问题。这通常是因为解释器的隐式调用，并可能导致引用拥有者处置这个引用。"
 
 #: ../../extending/extending.rst:1006
 msgid ""
 "The first and most important case to know about is using :c:func:`Py_DECREF`"
 " on an unrelated object while borrowing a reference to a list item.  For "
 "instance::"
-msgstr ""
+msgstr "首先需要特别注意的情况是使用 :c:func:`Py_DECREF` 到一个无关对象，而这个对象的引用是借用自一个列表的元素。举个实例："
 
 #: ../../extending/extending.rst:1018
 msgid ""
@@ -1198,6 +1212,7 @@ msgid ""
 "``list[1]`` with the value ``0``, and finally prints the borrowed reference."
 " Looks harmless, right?  But it's not!"
 msgstr ""
+"这个函数首先借用一个引用 ``list[0]`` ，然后替换 ``list[1]`` 为值 ``0`` ，最后打印借用的引用。看起来无害是吧，但却不是。"
 
 #: ../../extending/extending.rst:1022
 msgid ""
