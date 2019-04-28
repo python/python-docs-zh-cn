@@ -11,8 +11,8 @@
 # Kade For, 2019
 # walkinrain <walkinrain2008@163.com>, 2019
 # 叶浚安 <ye.pandaaaa906@gmail.com>, 2019
-# Freesand Leo <yuqinju@163.com>, 2019
 # Meng Du <alphanow@gmail.com>, 2019
+# Freesand Leo <yuqinju@163.com>, 2019
 # Liying Yang <xlctemp@gmail.com>, 2019
 # 
 #, fuzzy
@@ -831,8 +831,8 @@ msgid ""
 "likely to become corrupted.  This may cause any other process to get an "
 "exception when it tries to use the queue later on."
 msgstr ""
-"如果一个进程在使用队列时被 :meth:`Process.terminate` 或者 :func:`os.kill` "
-"终止了，那么队列中的数据很可能被破坏，然后导致其他进程在试图使用队列时抛出异常。"
+"如果一个进程通过调用 :meth:`Process.terminate` 或 :func:`os.kill` 在尝试使用 :class:`Queue` "
+"期间被终止了，那么队列中的数据很可能被破坏。 这可能导致其他进程在尝试使用该队列时遇到异常。"
 
 #: ../../library/multiprocessing.rst:726
 msgid ""
@@ -898,7 +898,7 @@ msgid ""
 "The usual :exc:`queue.Empty` and :exc:`queue.Full` exceptions from the "
 "standard library's :mod:`queue` module are raised to signal timeouts."
 msgstr ""
-"一旦超时，将抛出标准库 :mod:`queue`  模块中常见的异常:exc:`queue.Empty` 和 :exc:`queue.Full`。"
+"一旦超时，将抛出标准库 :mod:`queue`  模块中常见的异常 :exc:`queue.Empty` 和 :exc:`queue.Full`。"
 
 #: ../../library/multiprocessing.rst:764
 msgid ""
@@ -926,13 +926,13 @@ msgstr ""
 msgid ""
 "Return ``True`` if the queue is empty, ``False`` otherwise.  Because of "
 "multithreading/multiprocessing semantics, this is not reliable."
-msgstr "如果队列是空的，返回 ``True``  ，反之返回 ``False`` 。 同样由于多线程或多进程的存在，该状态是不可靠的。"
+msgstr "如果队列是空的，返回 ``True`` ，反之返回 ``False`` 。 由于多线程或多进程的环境，该状态是不可靠的。"
 
 #: ../../library/multiprocessing.rst:782
 msgid ""
 "Return ``True`` if the queue is full, ``False`` otherwise.  Because of "
 "multithreading/multiprocessing semantics, this is not reliable."
-msgstr ""
+msgstr "如果队列是满的，返回 ``True`` ，反之返回 ``False`` 。 由于多线程或多进程的环境，该状态是不可靠的。"
 
 #: ../../library/multiprocessing.rst:787
 msgid ""
@@ -944,10 +944,14 @@ msgid ""
 " an item on the queue if a free slot is immediately available, else raise "
 "the :exc:`queue.Full` exception (*timeout* is ignored in that case)."
 msgstr ""
+"将 obj 放入队列。如果可选参数 *block* 是 ``True`` (默认值) 而且 *timeout* 是 ``None`` (默认值), "
+"将会阻塞当前进程，直到有空的缓冲槽。如果 *timeout* 是正数，将会在阻塞了最多 *timeout* 秒之后还是没有可用的缓冲槽时抛出 "
+":exc:`queue.Full`  异常。反之 (*block* 是 ``False`` 时)，仅当有可用缓冲槽时才放入对象，否则抛出 "
+":exc:`queue.Full` 异常 (在这种情形下 *timeout* 参数会被忽略)。"
 
 #: ../../library/multiprocessing.rst:798
 msgid "Equivalent to ``put(obj, False)``."
-msgstr ""
+msgstr "相当于 ``put(obj, False)``。"
 
 #: ../../library/multiprocessing.rst:802
 msgid ""
@@ -959,6 +963,10 @@ msgid ""
 "``False``), return an item if one is immediately available, else raise the "
 ":exc:`queue.Empty` exception (*timeout* is ignored in that case)."
 msgstr ""
+"从队列中取出并返回对象。如果可选参数 *block* 是 ``True`` (默认值) 而且 *timeout* 是 ``None`` (默认值), "
+"将会阻塞当前进程，直到队列中出现可用的对象。如果 *timeout* 是正数，将会在阻塞了最多 *timeout* 秒之后还是没有可用的对象时抛出 "
+":exc:`queue.Empty` 异常。反之 (*block* 是 ``False`` 时)，仅当有可用对象能够取出时返回，否则抛出 "
+":exc:`queue.Empty` 异常 (在这种情形下 *timeout* 参数会被忽略)。"
 
 #: ../../library/multiprocessing.rst:812
 msgid "Equivalent to ``get(False)``."
@@ -969,13 +977,15 @@ msgid ""
 ":class:`multiprocessing.Queue` has a few additional methods not found in "
 ":class:`queue.Queue`.  These methods are usually unnecessary for most code:"
 msgstr ""
+":class:`multiprocessing.Queue` 类有一些在 :class:`queue.Queue` "
+"类中没有出现的方法。这些方法在大多数情形下并不是必须的。 "
 
 #: ../../library/multiprocessing.rst:820
 msgid ""
 "Indicate that no more data will be put on this queue by the current process."
 "  The background thread will quit once it has flushed all buffered data to "
 "the pipe.  This is called automatically when the queue is garbage collected."
-msgstr ""
+msgstr "指示当前进程将不会再往队列中放入对象。一旦所有缓冲区中的数据被写入管道之后，后台的线程会退出。这个方法在队列被gc回收时会自动调用。"
 
 #: ../../library/multiprocessing.rst:827
 msgid ""
@@ -983,6 +993,7 @@ msgid ""
 "been called.  It blocks until the background thread exits, ensuring that all"
 " data in the buffer has been flushed to the pipe."
 msgstr ""
+"等待后台线程。这个方法仅在调用了 :meth:`close` 方法之后可用。这会阻塞当前进程，直到后台线程退出，确保所有缓冲区中的数据都被写入管道中。"
 
 #: ../../library/multiprocessing.rst:831
 msgid ""
@@ -990,6 +1001,8 @@ msgid ""
 " attempt to join the queue's background thread.  The process can call "
 ":meth:`cancel_join_thread` to make :meth:`join_thread` do nothing."
 msgstr ""
+"默认情况下，如果一个不是队列创建者的进程试图退出，它会尝试等待这个队列的后台线程。这个进程可以使用  "
+":meth:`cancel_join_thread` 让  :meth:`join_thread` 方法什么都不做直接跳过。"
 
 #: ../../library/multiprocessing.rst:837
 msgid ""
@@ -997,6 +1010,8 @@ msgid ""
 " background thread from being joined automatically when the process exits --"
 " see :meth:`join_thread`."
 msgstr ""
+"防止 :meth:`join_thread` 方法阻塞当前进程。具体而言，这防止进程退出时自动等待后台线程退出。详见 "
+":meth:`join_thread`。"
 
 #: ../../library/multiprocessing.rst:841
 msgid ""
@@ -1006,6 +1021,8 @@ msgid ""
 "exit immediately without waiting to flush enqueued data to the underlying "
 "pipe, and you don't care about lost data."
 msgstr ""
+"可能这个方法称为”``allow_exit_without_flush()``“ "
+"会更好。这有可能会导致正在排队进入队列的数据丢失，大多数情况下你不需要用到这个方法，仅当你不关心底层管道中可能丢失的数据，只是希望进程能够马上退出时使用。"
 
 #: ../../library/multiprocessing.rst:850
 msgid ""
@@ -1016,12 +1033,14 @@ msgid ""
 "information.  The same holds true for any of the specialized queue types "
 "listed below."
 msgstr ""
+"该类的功能依赖于宿主操作系统具有可用的共享信号量实现。否则该类将被禁用，任何试图实例化一个 :class:`Queue` 对象的操作都会抛出 "
+":exc:`ImportError` 异常，更多信息详见 :issue:`3770` 。后续说明的任何专用队列对象亦如此。"
 
 #: ../../library/multiprocessing.rst:859
 msgid ""
 "It is a simplified :class:`Queue` type, very close to a locked "
 ":class:`Pipe`."
-msgstr ""
+msgstr "这是一个简化的 :class:`Queue` 类的实现，很像带锁的:class:`Pipe`。"
 
 #: ../../library/multiprocessing.rst:863
 msgid "Return ``True`` if the queue is empty, ``False`` otherwise."
@@ -1029,17 +1048,19 @@ msgstr "如果队列为空返回 ``True`` ，否则返回 ``False`` 。"
 
 #: ../../library/multiprocessing.rst:867
 msgid "Remove and return an item from the queue."
-msgstr ""
+msgstr "从队列中移出并返回一个对象。"
 
 #: ../../library/multiprocessing.rst:871
 msgid "Put *item* into the queue."
-msgstr ""
+msgstr "将  *item* 放入队列。"
 
 #: ../../library/multiprocessing.rst:876
 msgid ""
 ":class:`JoinableQueue`, a :class:`Queue` subclass, is a queue which "
 "additionally has :meth:`task_done` and :meth:`join` methods."
 msgstr ""
+":class:`JoinableQueue` 类是 :class:`Queue` 的子类，额外添加了 :meth:`task_done` 和 "
+":meth:`join` 方法。"
 
 #: ../../library/multiprocessing.rst:881
 msgid ""
@@ -1048,6 +1069,8 @@ msgid ""
 ":meth:`task_done` tells the queue that the processing on the task is "
 "complete."
 msgstr ""
+"指出之前进入队列的任务已经完成。由队列的消费者进程使用。对于每次调用:meth:`~Queue.get`获取的任务，执行完成后调用 "
+":meth:`task_done` 告诉队列该任务已经处理完成。"
 
 #: ../../library/multiprocessing.rst:886
 msgid ""
@@ -1055,6 +1078,8 @@ msgid ""
 "all items have been processed (meaning that a :meth:`task_done` call was "
 "received for every item that had been :meth:`~Queue.put` into the queue)."
 msgstr ""
+"如果 :meth:`~queue.Queue.join`方法正在阻塞之中，该方法会在所有对象都被处理完的时候返回 (即对之前使用 "
+":meth:`~Queue.put` 放进队列中的所有对象都已经返回了对应的 :meth:`task_done` ) 。"
 
 #: ../../library/multiprocessing.rst:890
 msgid ""
@@ -1064,7 +1089,7 @@ msgstr "如果被调用的次数多于放入队列中的项目数量，将引发
 
 #: ../../library/multiprocessing.rst:896
 msgid "Block until all items in the queue have been gotten and processed."
-msgstr ""
+msgstr "阻塞至队列中所有的元素都被接收和处理完毕。"
 
 #: ../../library/multiprocessing.rst:898
 msgid ""
@@ -1074,6 +1099,8 @@ msgid ""
 "the count of unfinished tasks drops to zero, :meth:`~queue.Queue.join` "
 "unblocks."
 msgstr ""
+"当条目添加到队列的时候，未完成任务的计数就会增加。每当消费者进程调用 :meth:`task_done` "
+"表示这个条目已经被回收，该条目所有工作已经完成，未完成计数就会减少。当未完成计数降到零的时候， :meth:`join` 阻塞被解除。"
 
 #: ../../library/multiprocessing.rst:906
 msgid "Miscellaneous"
@@ -1081,17 +1108,17 @@ msgstr "杂项"
 
 #: ../../library/multiprocessing.rst:910
 msgid "Return list of all live children of the current process."
-msgstr ""
+msgstr "返回当前进程存活的子进程的列表。"
 
 #: ../../library/multiprocessing.rst:912
 msgid ""
 "Calling this has the side effect of \"joining\" any processes which have "
 "already finished."
-msgstr ""
+msgstr "调用该方法有“等待”已经结束的进程的副作用。"
 
 #: ../../library/multiprocessing.rst:917
 msgid "Return the number of CPUs in the system."
-msgstr ""
+msgstr "返回系统的CPU数量。"
 
 #: ../../library/multiprocessing.rst:919
 msgid ""
@@ -1099,6 +1126,7 @@ msgid ""
 "use.  The number of usable CPUs can be obtained with "
 "``len(os.sched_getaffinity(0))``"
 msgstr ""
+"该数量不同于当前进程可以使用的CPU数量。可用的CPU数量可以由 ``len(os.sched_getaffinity(0))`` 方法获得。"
 
 #: ../../library/multiprocessing.rst:923
 msgid "May raise :exc:`NotImplementedError`."
@@ -1111,11 +1139,11 @@ msgstr ":func:`os.cpu_count`"
 #: ../../library/multiprocessing.rst:930
 msgid ""
 "Return the :class:`Process` object corresponding to the current process."
-msgstr ""
+msgstr "返回与当前进程相对应的 :class:`Process` 对象。"
 
 #: ../../library/multiprocessing.rst:932
 msgid "An analogue of :func:`threading.current_thread`."
-msgstr ""
+msgstr "和 :func:`threading.current_thread` 相同。"
 
 #: ../../library/multiprocessing.rst:936
 msgid ""
@@ -1123,18 +1151,21 @@ msgid ""
 "frozen to produce a Windows executable.  (Has been tested with **py2exe**, "
 "**PyInstaller** and **cx_Freeze**.)"
 msgstr ""
+"为使用了 :mod:`multiprocessing`  的程序，提供冻结以产生 Windows 可执行文件的支持。(在 **py2exe**, "
+"**PyInstaller** 和 **cx_Freeze** 上测试通过)"
 
 #: ../../library/multiprocessing.rst:940
 msgid ""
 "One needs to call this function straight after the ``if __name__ == "
 "'__main__'`` line of the main module.  For example::"
-msgstr ""
+msgstr "需要在 main 模块的 ``if __name__ == '__main__'`` 该行之后马上调用该函数。例如："
 
 #: ../../library/multiprocessing.rst:952
 msgid ""
 "If the ``freeze_support()`` line is omitted then trying to run the frozen "
 "executable will raise :exc:`RuntimeError`."
 msgstr ""
+"如果没有调用  ``freeze_support()`` 在尝试运行被冻结的可执行文件时会抛出 :exc:`RuntimeError` 异常。"
 
 #: ../../library/multiprocessing.rst:955
 msgid ""
@@ -1143,6 +1174,8 @@ msgid ""
 " by the Python interpreter on Windows (the program has not been frozen), "
 "then ``freeze_support()`` has no effect."
 msgstr ""
+"对  ``freeze_support()`` 的调用在非 Windows 平台上是无效的。如果该模块在 Windows 平台的 Python "
+"解释器中正常运行 (该程序没有被冻结)， 调用``freeze_support()`` 也是无效的。"
 
 #: ../../library/multiprocessing.rst:962
 msgid ""
@@ -1152,12 +1185,15 @@ msgid ""
 "``'fork'`` and ``'spawn'`` are always supported, with ``'fork'`` being the "
 "default."
 msgstr ""
+"返回支持的启动方法的列表，该列表的首项即为默认选项。可能的启动方法有  ``'fork'``, ``'spawn'`` "
+"和``'forkserver'``。在 Windows 中，只有  ``'spawn'`` 是可用的。Unix平台总是支持``'fork'`` "
+"和``'spawn'``，且 ``'fork'`` 是默认值。 "
 
 #: ../../library/multiprocessing.rst:972
 msgid ""
 "Return a context object which has the same attributes as the "
 ":mod:`multiprocessing` module."
-msgstr ""
+msgstr "返回一个 Context 对象。该对象具有和 :mod:`multiprocessing` 模块相同的API。"
 
 #: ../../library/multiprocessing.rst:975
 msgid ""
