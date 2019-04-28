@@ -1237,12 +1237,15 @@ msgid ""
 "this was the last reference to that object, it would free the memory "
 "associated with it, thereby invalidating ``item``."
 msgstr ""
+"既然是Python写的， :meth:`__del__` 方法可以执行任意Python代码。是否可能在 :c:func:`bug` 的 ``item``"
+" 废止引用呢，是的。假设列表传递到 :c:func:`bug` 会被 :meth:`__del__` 方法所访问，就可以执行一个语句来实现 ``del "
+"list[0]`` ，然后假设这是最后一个对对象的引用，就需要释放内存，从而使得 ``item`` 无效化。"
 
 #: ../../extending/extending.rst:1037
 msgid ""
 "The solution, once you know the source of the problem, is easy: temporarily "
 "increment the reference count.  The correct version of the function reads::"
-msgstr ""
+msgstr "解决方法是，当你知道了问题的根源，就容易了：临时增加引用计数。正确版本的函数代码如下："
 
 #: ../../extending/extending.rst:1051
 msgid ""
@@ -1250,6 +1253,8 @@ msgid ""
 " bug and someone spent a considerable amount of time in a C debugger to "
 "figure out why his :meth:`__del__` methods would fail..."
 msgstr ""
+"这是个真实的故事。一个旧版本的Python包含了这个bug的变种，而一些人花费了大量时间在C调试器上去寻找为什么 :meth:`__del__` "
+"方法会失败。"
 
 #: ../../extending/extending.rst:1055
 msgid ""
@@ -1263,6 +1268,10 @@ msgid ""
 "complete. Obviously, the following function has the same problem as the "
 "previous one::"
 msgstr ""
+"这个问题的第二种情况是借用的引用涉及线程的变种。通常，Python解释器里多个线程无法进入对方的路径，因为有个全局锁保护着Python整个对象空间。但可以使用宏"
+" :c:macro:`Py_BEGIN_ALLOW_THREADS` 来临时释放这个锁，重新获取锁用 "
+":c:macro:`Py_END_ALLOW_THREADS` "
+"。这通常围绕在阻塞I/O调用外，使得其他线程可以在等待I/O期间使用处理器。显然，如下函数会跟之前那个有一样的问题："
 
 #: ../../extending/extending.rst:1078
 msgid "NULL Pointers"
@@ -1279,6 +1288,9 @@ msgid ""
 "*NULL*, there would be a lot of redundant tests and the code would run more "
 "slowly."
 msgstr ""
+"通常，函数接受对象引用作为参数，而非期待你传入 *NULL* 指针，你非这么干会导致dump core (或者之后导致core dumps) "
+"。函数返回对象引用时，返回的 *NULL* 用以指示发生了异常。 *NULL* 参数的理由在从其他函数接收时并未测试，如果每个函数都测试 *NULL* "
+"，就会导致大量的冗余测试，并使得代码运行更慢。"
 
 #: ../../extending/extending.rst:1088
 msgid ""
@@ -1286,6 +1298,8 @@ msgid ""
 "may be *NULL* is received, for example, from :c:func:`malloc` or from a "
 "function that may raise an exception."
 msgstr ""
+"好的方法是仅在 \"源头\" 测试 *NULL* ，当一个指针可能是 *NULL* 时，例如 :c:func:`malloc` "
+"或者从一个可能抛出异常的函数。"
 
 #: ../../extending/extending.rst:1092
 msgid ""
@@ -1293,6 +1307,8 @@ msgid ""
 "*NULL* pointers --- however, their variants :c:func:`Py_XINCREF` and "
 ":c:func:`Py_XDECREF` do."
 msgstr ""
+"宏 :c:func:`Py_INCREF` 和 :c:func:`Py_DECREF` 不会检查 *NULL* 指针。但他们的变种 "
+":c:func:`Py_XINCREF` 和 :c:func:`Py_XDECREF` 会检查。"
 
 #: ../../extending/extending.rst:1096
 msgid ""
@@ -1302,19 +1318,21 @@ msgid ""
 "expected types, and this would generate redundant tests.  There are no "
 "variants with *NULL* checking."
 msgstr ""
+"用以检查对象类型的宏( ``Pytype_Check()`` )不会检查 *NULL* "
+"指针，有很多代码会多次测试一个对象是否是预期的类型，这可能产生冗余的测试。而 *NULL* 检查没有冗余。"
 
 #: ../../extending/extending.rst:1102
 msgid ""
 "The C function calling mechanism guarantees that the argument list passed to"
 " C functions (``args`` in the examples) is never *NULL* --- in fact it "
 "guarantees that it is always a tuple [#]_."
-msgstr ""
+msgstr "C函数调用机制会确保传递到C函数的参数列表 (例如 ``args`` )不会是 *NULL* ，实际上会确保总是元组 [#]_ 。"
 
 #: ../../extending/extending.rst:1106
 msgid ""
 "It is a severe error to ever let a *NULL* pointer \"escape\" to the Python "
 "user."
-msgstr ""
+msgstr "把 *NULL* 指针转义给Python用户是个严重的错误。"
 
 #: ../../extending/extending.rst:1117
 msgid "Writing Extensions in C++"
