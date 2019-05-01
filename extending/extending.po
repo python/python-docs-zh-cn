@@ -1414,9 +1414,9 @@ msgid ""
 "this module, retrieve the value of this name, and then retrieve the pointer "
 "from the Capsule."
 msgstr ""
-"Python提供了一个特别的机制来传递C级别信息(指针)，从一个扩展模块到另一个：Capsules胶囊。一个胶囊是一个Python数据类型，会保存指针("
-" :c:type:`void \\*` )。胶囊只能通过其C "
-"API来创建和访问，但可以像其他Python对象一样的传递。通常，我们可以指定一个扩展模块命名空间的名字。其他扩展模块可以导入这个模块，获取这个名字的值，然后从胶囊获取指针。"
+"Python提供了一个特别的机制来传递C级别信息(指针)，从一个扩展模块到另一个：Capsules。一个Capsule是一个Python数据类型，会保存指针("
+" :c:type:`void \\*` )。Capsule只能通过其C "
+"API来创建和访问，但可以像其他Python对象一样的传递。通常，我们可以指定一个扩展模块命名空间的名字。其他扩展模块可以导入这个模块，获取这个名字的值，然后从Capsule获取指针。"
 
 #: ../../extending/extending.rst:1173
 msgid ""
@@ -1427,8 +1427,8 @@ msgid ""
 " distributed in different ways between the module providing the code and the"
 " client modules."
 msgstr ""
-"胶囊可以用多种方式导出C API给扩展模块。每个函数可以用自己的胶囊，或者所有C "
-"API指针可以存储在一个数组里，数组地址再发布给胶囊。存储和获取指针也可以用多种方式，供客户端模块使用。"
+"Capsule可以用多种方式导出C API给扩展模块。每个函数可以用自己的Capsule，或者所有C "
+"API指针可以存储在一个数组里，数组地址再发布给Capsule。存储和获取指针也可以用多种方式，供客户端模块使用。"
 
 #: ../../extending/extending.rst:1179
 msgid ""
@@ -1439,15 +1439,15 @@ msgid ""
 "of runtime type-safety; there is no feasible way to tell one unnamed Capsule"
 " from another."
 msgstr ""
-"使用的方法，对胶囊的名字很重要。函数 :c:func:`PyCapsule_New` 会接受一个名字参数( :c:type:`const char "
-"\\*` )，你可以传入 *NULL* "
-"给名字，但强烈建议指定个名字。恰当的命名胶囊提供了一定程度的运行时类型安全；而却没有可行的方法来告知我们一个未命名的胶囊。"
+"使用的方法，对Capsule的名字很重要。函数 :c:func:`PyCapsule_New` 会接受一个名字参数( :c:type:`const "
+"char \\*` )，你可以传入 *NULL* "
+"给名字，但强烈建议指定个名字。恰当的命名Capsule提供了一定程度的运行时类型安全；而却没有可行的方法来告知我们一个未命名的Capsule。"
 
 #: ../../extending/extending.rst:1186
 msgid ""
 "In particular, Capsules used to expose C APIs should be given a name "
 "following this convention::"
-msgstr "通常来说，胶囊用于暴露C API，其名字应该遵循如下规范："
+msgstr "通常来说，Capsule用于暴露C API，其名字应该遵循如下规范："
 
 #: ../../extending/extending.rst:1191
 msgid ""
@@ -1456,8 +1456,8 @@ msgid ""
 "convention.  This behavior gives C API users a high degree of certainty that"
 " the Capsule they load contains the correct C API."
 msgstr ""
-"便利函数 :c:func:`PyCapsule_Import` 可以方便的载入通过胶囊提供的C API，仅在胶囊的名字匹配时。这个行为为C "
-"API用户提供了高度的确定性来载入正确的C API。"
+"便利函数 :c:func:`PyCapsule_Import` 可以方便的载入通过Capsule提供的C "
+"API，仅在Capsule的名字匹配时。这个行为为C API用户提供了高度的确定性来载入正确的C API。"
 
 #: ../../extending/extending.rst:1196
 msgid ""
@@ -1470,7 +1470,7 @@ msgid ""
 "client modules only have to call this macro before accessing the C API."
 msgstr ""
 "如下例子展示了将大部分负担交由导出模块作者的方法，适用于常用的库模块。其会存储所有C API指针(例子里只有一个)在 :c:type:`void` "
-"指针的数组里，并使其值变为胶囊。对应的模块头文件提供了宏来管理导入模块和获取C API指针；客户端模块只需要在访问C API前调用这个宏即可。"
+"指针的数组里，并使其值变为Capsule。对应的模块头文件提供了宏来管理导入模块和获取C API指针；客户端模块只需要在访问C API前调用这个宏即可。"
 
 #: ../../extending/extending.rst:1204
 msgid ""
@@ -1482,24 +1482,28 @@ msgid ""
 "function :c:func:`PySpam_System` is also exported to other extension "
 "modules."
 msgstr ""
+"导出的模块修改自 :mod:`spam` 模块，来自 :ref:`extending-simpleexample` 段落。函数 "
+":func:`spam.system` 不会直接调用C库函数 :c:func:`system` ，但一个函数 "
+":c:func:`PySpam_System` 会负责调用，当然现实中会更复杂些(例如添加 \"spam\" 到每个命令)。函数 "
+":c:func:`PySpam_System` 也会导出给其他扩展模块。"
 
 #: ../../extending/extending.rst:1211
 msgid ""
 "The function :c:func:`PySpam_System` is a plain C function, declared "
 "``static`` like everything else::"
-msgstr ""
+msgstr "函数 :c:func:`PySpam_System` 是个纯C函数，声明 ``static`` 就像其他地方那样::"
 
 #: ../../extending/extending.rst:1220
 msgid "The function :c:func:`spam_system` is modified in a trivial way::"
-msgstr ""
+msgstr "函数 :c:func:`spam_system` 按照如下方式修改::"
 
 #: ../../extending/extending.rst:1234
 msgid "In the beginning of the module, right after the line ::"
-msgstr ""
+msgstr "在模块开头，在此行后::"
 
 #: ../../extending/extending.rst:1238
 msgid "two more lines must be added::"
-msgstr ""
+msgstr "添加另外两行::"
 
 #: ../../extending/extending.rst:1243
 msgid ""
@@ -1507,19 +1511,19 @@ msgid ""
 " the exporting module, not a client module. Finally, the module's "
 "initialization function must take care of initializing the C API pointer "
 "array::"
-msgstr ""
+msgstr "``#define`` 用于告知头文件需要包含给导出的模块，而不是客户端模块。最终，模块的初始化函数必须负责初始化C API指针数组::"
 
 #: ../../extending/extending.rst:1269
 msgid ""
 "Note that ``PySpam_API`` is declared ``static``; otherwise the pointer array"
 " would disappear when :func:`PyInit_spam` terminates!"
-msgstr ""
+msgstr "注意 ``PySpam_API`` 声明为 ``static`` ；此外指针数组会在 :func:`PyInit_spam` 结束后消失!"
 
 #: ../../extending/extending.rst:1272
 msgid ""
 "The bulk of the work is in the header file :file:`spammodule.h`, which looks"
 " like this::"
-msgstr ""
+msgstr "头文件 :file:`spammodule.h` 里的一堆工作，看起来如下所示::"
 
 #: ../../extending/extending.rst:1323
 msgid ""
@@ -1527,6 +1531,8 @@ msgid ""
 ":c:func:`PySpam_System` is to call the function (or rather macro) "
 ":c:func:`import_spam` in its initialization function::"
 msgstr ""
+"客户端模块必须在其初始化函数里按顺序调用函数 :c:func:`import_spam` (或其他宏)才能访问函数 "
+":c:func:`PySpam_System` 。"
 
 #: ../../extending/extending.rst:1341
 msgid ""
@@ -1534,6 +1540,7 @@ msgid ""
 " is rather complicated. However, the basic structure is the same for each "
 "function that is exported, so it has to be learned only once."
 msgstr ""
+"这种方法的主要缺点是，文件 :file:`spammodule.h` 过于复杂。当然，对每个要导出的函数，基本结构是相似的，所以只需要学习一次。"
 
 #: ../../extending/extending.rst:1345
 msgid ""
@@ -1544,6 +1551,9 @@ msgid ""
 " Capsules (files :file:`Include/pycapsule.h` and :file:`Objects/pycapsule.c`"
 " in the Python source code distribution)."
 msgstr ""
+"最后需要提醒的是Capsule提供了额外的功能，用于存储在Capsule里的指针的内存分配和释放。细节参考 Python/C API参考手册的章节 "
+":ref:`capsules` 和Capsule的实现(在Python源码发行包的 :file:`Include/pycapsule.h` 和 "
+":file:`Objects/pycapsule.c` )。"
 
 #: ../../extending/extending.rst:1353
 msgid "Footnotes"
