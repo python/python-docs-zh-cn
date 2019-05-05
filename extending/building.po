@@ -64,6 +64,10 @@ msgid ""
 "``PyInitU_<modulename>``, with ``<modulename>`` encoded using Python's "
 "*punycode* encoding with hyphens replaced by underscores. In Python::"
 msgstr ""
+"对于仅有ASCII编码的模块名，函数必须是 ``PyInit_<modulename>`` ，将 ``<modulename>`` "
+"替换为模块的名字。当使用 :ref:`multi-phase-initialization` "
+"时，允许使用非ASCII编码的模块名。此时初始化函数的名字是 ``PyInitU_<modulename>`` ，而 ``<modulename>`` "
+"需要用Python的 *punycode* 编码，连字号需替换为下划线。在Python里::"
 
 #: ../../extending/building.rst:39
 msgid ""
@@ -73,10 +77,12 @@ msgid ""
 "function corresponding to the filename is found. See the *\"Multiple modules"
 " in one library\"* section in :pep:`489` for details."
 msgstr ""
+"可以在一个动态库里导出多个模块，通过定义多个初始化函数。而导入他们需要符号链接或自定义导入器，因为缺省时只有对应了文件名的函数才会被发现。查看 "
+"*\"一个库里的多模块\"* 章节，在 :pep:`489` 了解更多细节。"
 
 #: ../../extending/building.rst:49
 msgid "Building C and C++ Extensions with distutils"
-msgstr ""
+msgstr "使用distutils构建C和C++扩展"
 
 #: ../../extending/building.rst:53
 msgid ""
@@ -84,16 +90,17 @@ msgid ""
 "Python. Since distutils also supports creation of binary packages, users "
 "don't necessarily need a compiler and distutils to install the extension."
 msgstr ""
+"扩展模块可以用distutils来构建，这是Python自带的。distutils也支持创建二进制包，用户无需编译器而distutils就能安装扩展。"
 
 #: ../../extending/building.rst:57
 msgid ""
 "A distutils package contains a driver script, :file:`setup.py`. This is a "
 "plain Python file, which, in the most simple case, could look like this:"
-msgstr ""
+msgstr "一个distutils包包含了一个驱动脚本 :file:`setup.py` 。这是个纯Python文件，大多数时候也很简单，看起来如下："
 
 #: ../../extending/building.rst:73
 msgid "With this :file:`setup.py`, and a file :file:`demo.c`, running ::"
-msgstr ""
+msgstr "通过文件 :file:`setup.py` ，和文件 :file:`demo.c` ，运行如下 ::"
 
 #: ../../extending/building.rst:77
 msgid ""
@@ -102,6 +109,9 @@ msgid ""
 "will end up in a subdirectory :file:`build/lib.system`, and may have a name "
 "like :file:`demo.so` or :file:`demo.pyd`."
 msgstr ""
+"这会编译 :file:`demo.c` ，然后产生一个扩展模块叫做 ``demo`` 在目录 :file:`build` "
+"里。依赖于系统，模块文件会放在某个子目录形如 :file:`build/lib.system` ，名字可能是 :file:`demo.so` 或 "
+":file:`demo.pyd` 。"
 
 #: ../../extending/building.rst:82
 msgid ""
@@ -114,6 +124,9 @@ msgid ""
 "documentation in :ref:`distutils-index` to learn more about the features of "
 "distutils; this section explains building extension modules only."
 msgstr ""
+"在文件 :file:`setup.py` 里，所有动作的入口通过 ``setup`` "
+"函数。该函数可以接受可变数量个关键字参数，上面的例子只使用了一个子集。特别需要注意的例子指定了构建包的元信息，以及指定了包内容。通常一个包会包括多个模块，就像Python的源码模块、文档、子包等。请参数distutils的文档，在"
+" :ref:`distutils-index` 来了解更多distutils的特性；本章节只解释构建扩展模块的部分。"
 
 #: ../../extending/building.rst:91
 msgid ""
@@ -124,13 +137,16 @@ msgid ""
 "example, the instance defines an extension named ``demo`` which is build by "
 "compiling a single source file, :file:`demo.c`."
 msgstr ""
+"通常预计算参数给 :func:`setup` ，想要更好的结构化驱动脚本。有如如上例子函数 :func:`~distutils.core.setup` "
+"的 ``ext_modules`` 参数是一列扩展模块，每个是一个 :class:`~distutils.extension.Extension` "
+"类的实例。例子中的实例定义了扩展命名为 ``demo`` ，从单一源码文件构建 :file:`demo.c` 。"
 
 #: ../../extending/building.rst:99
 msgid ""
 "In many cases, building an extension is more complex, since additional "
 "preprocessor defines and libraries may be needed. This is demonstrated in "
 "the example below."
-msgstr ""
+msgstr "更多时候，构建一个扩展会复杂的多，需要额外的预处理器定义和库。如下例子展示了这些。"
 
 #: ../../extending/building.rst:127
 msgid ""
@@ -141,6 +157,9 @@ msgid ""
 " distutils passes this information in different ways to the compiler. For "
 "example, on Unix, this may result in the compilation commands ::"
 msgstr ""
+"例子中函数 :func:`~distutils.core.setup` "
+"在调用时额外传递了元信息，是推荐发布包构建时的内容。对于这个扩展，其指定了预处理器定义，include目录，库目录，库。依赖于编译器，distutils还会用其他方式传递信息给编译器。例如在Unix上，结果是如下编译命令"
+" ::"
 
 #: ../../extending/building.rst:139
 msgid ""
