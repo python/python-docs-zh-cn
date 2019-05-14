@@ -11,8 +11,8 @@
 # Zhe He <hezhe88@gmail.com>, 2019
 # ChenYuan <github@qiushi.ac.cn>, 2019
 # Siyuan Xu <mf20070535@126.com>, 2019
-# Meng Du <alphanow@gmail.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
+# Meng Du <alphanow@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-05-14 11:26+0900\n"
 "PO-Revision-Date: 2017-02-16 17:43+0000\n"
-"Last-Translator: ppcfish <ppcfish@gmail.com>, 2019\n"
+"Last-Translator: Meng Du <alphanow@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -310,7 +310,7 @@ msgid ""
 "implicitly global.  If a variable is assigned a value anywhere within the "
 "function's body, it's assumed to be a local unless explicitly declared as "
 "global."
-msgstr ""
+msgstr "在Python中，仅在函数内引用的变量是隐式全局变量。如果在函数体内的任何位置为变量赋值，则除非明确声明为全局，否则将其视为局部值。"
 
 #: ../../faq/programming.rst:201
 msgid ""
@@ -322,6 +322,9 @@ msgid ""
 "to a component of an imported module.  This clutter would defeat the "
 "usefulness of the ``global`` declaration for identifying side-effects."
 msgstr ""
+"虽然起初有点令人惊讶，但片刻考虑就可以解释。一方面，要求 :keyword:`global` "
+"表示已分配的变量可以防止意外的副作用。另一方面，如果所有全局引用都需要 ``global`` ，那么你一直都在使用 ``global`` "
+"。你必须将对内置函数或导入模块的组件的每个引用声明为全局。这种杂乱会破坏 ``global`` 声明用于识别副作用的有用性。"
 
 #: ../../faq/programming.rst:211
 msgid ""
@@ -333,7 +336,7 @@ msgstr "为什么在具有不同值的循环中定义的lambdas都返回相同�
 msgid ""
 "Assume you use a for loop to define a few different lambdas (or even plain "
 "functions), e.g.::"
-msgstr ""
+msgstr "假设你使用for循环来定义几个不同的 lambda （甚至是普通函数），例如：::"
 
 #: ../../faq/programming.rst:220
 msgid ""
@@ -342,6 +345,8 @@ msgid ""
 "``1``, ``4``, ``9``, and ``16``.  However, when you actually try you will "
 "see that they all return ``16``::"
 msgstr ""
+"这给你一个包含5个lambdas的列表，它们计算 ``x**2`` 。你可能会期望，当它们被调用时，它们将分别返回 ``0`` 、 ``1`` 、 "
+"``4`` 、 ``9`` 和 ``16`` 。但是，当你真正尝试时，你会看到它们都返回 ``16`` 。::"
 
 #: ../../faq/programming.rst:230
 msgid ""
@@ -351,12 +356,15 @@ msgid ""
 "the functions now return ``4**2``, i.e. ``16``.  You can also verify this by"
 " changing the value of ``x`` and see how the results of the lambdas change::"
 msgstr ""
+"发生这种情况是因为 ``x`` 不是lambdas的内部变量，而是在外部作用域中定义，并且在调用lambda时访问它 - 而不是在定义它时。 "
+"在循环结束时， ``x`` 的值是 ``4`` ，所以所有的函数现在返回 ``4**2`` ，即 ``16`` 。你还可以通过更改 ``x`` "
+"的值来验证这一点，并查看lambdas的结果如何变化::"
 
 #: ../../faq/programming.rst:240
 msgid ""
 "In order to avoid this, you need to save the values in variables local to "
 "the lambdas, so that they don't rely on the value of the global ``x``::"
-msgstr ""
+msgstr "为了避免这种情况，你需要将值保存在lambdas的局部变量中，这样它们就不依赖于全局``x`` 的值 ::"
 
 #: ../../faq/programming.rst:247
 msgid ""
@@ -366,12 +374,15 @@ msgid ""
 " the first lambda, ``1`` in the second, ``2`` in the third, and so on. "
 "Therefore each lambda will now return the correct result::"
 msgstr ""
+"这里， ``n=x`` 在lambda本地创建一个新的变量 ``n`` ，并在定义lambda时计算，使它具有与 ``x`` "
+"在循环中该点相同的值。这意味着 ``n`` 的值在第一个lambda中为 ``0`` ，在第二个lambda中为 ``1`` ，在第三个中为 ``2``"
+" ，依此类推。因此每个lambda现在将返回正确的结果::"
 
 #: ../../faq/programming.rst:258
 msgid ""
 "Note that this behaviour is not peculiar to lambdas, but applies to regular "
 "functions too."
-msgstr ""
+msgstr "请注意，这种行为并不是lambda所特有的，但也适用于常规函数。"
 
 #: ../../faq/programming.rst:263
 msgid "How do I share global variables across modules?"
@@ -386,6 +397,8 @@ msgid ""
 "each module, any changes made to the module object get reflected everywhere."
 "  For example:"
 msgstr ""
+"在单个程序中跨模块共享信息的规范方法是创建一个特殊模块（通常称为config或cfg）。只需在应用程序的所有模块中导入配置模块；然后该模块可用作全局名称。因为每个模块只有一个实例，所以对模块对象所做的任何更改都会在任何地方反映出来。"
+" 例如："
 
 #: ../../faq/programming.rst:271
 msgid "config.py::"
@@ -403,7 +416,7 @@ msgstr "main.py::"
 msgid ""
 "Note that using a module is also the basis for implementing the Singleton "
 "design pattern, for the same reason."
-msgstr ""
+msgstr "请注意，出于同样的原因，使用模块也是实现Singleton设计模式的基础。"
 
 #: ../../faq/programming.rst:291
 msgid "What are the \"best practices\" for using import in a module?"
@@ -506,7 +519,7 @@ msgstr "为什么对象之间共享默认值？"
 msgid ""
 "This type of bug commonly bites neophyte programmers.  Consider this "
 "function::"
-msgstr ""
+msgstr "这种类型的缺陷通常会惹恼新手程序员。考虑这个函数 ::"
 
 #: ../../faq/programming.rst:350
 msgid ""
@@ -514,6 +527,8 @@ msgid ""
 "The second time, ``mydict`` contains two items because when ``foo()`` begins"
 " executing, ``mydict`` starts out with an item already in it."
 msgstr ""
+"第一次调用此函数时，``mydict`` 包含一个项目。第二次，``mydict``包含两个项目，因为当 ``foo()`` 开始执行时， "
+"``mydict`` 已有一个项目。"
 
 #: ../../faq/programming.rst:354
 msgid ""
