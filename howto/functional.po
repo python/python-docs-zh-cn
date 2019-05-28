@@ -9,8 +9,8 @@
 # Zephyr Waitzman <i@wi24rd.ml>, 2018
 # Kder <kder@live.cn>, 2018
 # Freesand Leo <yuqinju@163.com>, 2019
-# chen_chao <wenbushi@gmail.com>, 2019
 # zkonge, 2019
+# chen_chao <wenbushi@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-01-01 10:14+0900\n"
 "PO-Revision-Date: 2017-02-16 17:44+0000\n"
-"Last-Translator: zkonge, 2019\n"
+"Last-Translator: chen_chao <wenbushi@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1064,7 +1064,7 @@ msgstr ""
 
 #: ../../howto/functional.rst:819
 msgid "Calling functions on elements"
-msgstr "在元素上调用函数"
+msgstr "对元素使用函数"
 
 #: ../../howto/functional.rst:821
 msgid ""
@@ -1194,7 +1194,7 @@ msgstr ""
 
 #: ../../howto/functional.rst:947
 msgid "Grouping elements"
-msgstr "对元素分组"
+msgstr "为元素分组"
 
 #: ../../howto/functional.rst:949
 msgid ""
@@ -1204,6 +1204,8 @@ msgid ""
 "element returned by the iterable.  If you don't supply a key function, the "
 "key is simply each element itself."
 msgstr ""
+"我要讨论的最后一个函数，:func:`itertools.groupby(iter,key_func=None) "
+"<itertools.groupby>`，是最复杂的函数。``key_func(elem)``是一个可以对迭代器返回的每个元素计算键值的函数。如果你不提供这个键值函数，它就会简化成每个元素自身。"
 
 #: ../../howto/functional.rst:954
 msgid ""
@@ -1212,6 +1214,8 @@ msgid ""
 "2-tuples containing a key value and an iterator for the elements with that "
 "key."
 msgstr ""
+":func:`~itertools.groupby` 从所依据的可迭代对象中连续地收集具有相同值的元素，然后返回一个长度为2的元组的数据流, "
+"每个元组包含键值以及对应这个键值的元素所组成的迭代器。"
 
 #: ../../howto/functional.rst:982
 msgid ""
@@ -1220,10 +1224,13 @@ msgid ""
 "also use the underlying iterable, so you have to consume the results of "
 "iterator-1 before requesting iterator-2 and its corresponding key."
 msgstr ""
+":func:`~itertools.groupby` "
+"假定了所依据的可迭代对象的内容已经根据键值排序。注意，返回的迭代器也会使用所依据的可迭代对象，所以在请求迭代器 2和相应的键之前你必须先消耗迭代器 1 "
+"的结果。"
 
 #: ../../howto/functional.rst:989
 msgid "The functools module"
-msgstr ""
+msgstr "functools 模块"
 
 #: ../../howto/functional.rst:991
 msgid ""
@@ -1232,6 +1239,9 @@ msgid ""
 "and returns a new function.  The most useful tool in this module is the "
 ":func:`functools.partial` function."
 msgstr ""
+"Python 2.5 中的 :mod:`functools` 模块 "
+"包含了一些高阶函数。**高阶函数**接受一个或多个函数作为输入，返回新的函数。这个模块中最有用的工具是:func:`functools.partial`"
+" 函数。"
 
 #: ../../howto/functional.rst:996
 msgid ""
@@ -1242,6 +1252,9 @@ msgid ""
 "filling in a value for one of ``f()``'s parameters.  This is called "
 "\"partial function application\"."
 msgstr ""
+"对于用函数式风格编写的程序，有时你会希望通过给定部分参数，将已有的函数构变形称新的函数。考虑一个 Python 函数 ``f(a, b, "
+"c)``；你希望创建一个和 ``f(1, b, c)`` 等价的新函数 ``g(b, c)``；也就是说你给定了 ``f()`` "
+"的一个参数的值。这就是所谓的“部分函数应用”。"
 
 #: ../../howto/functional.rst:1002
 msgid ""
@@ -1250,10 +1263,12 @@ msgid ""
 "resulting object is callable, so you can just call it to invoke ``function``"
 " with the filled-in arguments."
 msgstr ""
+":func:`~functools.partial` 接受参数 ``(function, arg1, arg2, ..., kwarg1=value1,"
+" kwarg2=value2)``。它会返回一个可调用的对象，所以你能够直接调用这个结果以使用给定参数的 ``function``。"
 
 #: ../../howto/functional.rst:1007
 msgid "Here's a small but realistic example::"
-msgstr ""
+msgstr "这里有一个很小但很现实的例子::"
 
 #: ../../howto/functional.rst:1019
 msgid ""
@@ -1269,6 +1284,12 @@ msgid ""
 "raised.  If the initial value is supplied, it's used as a starting point and"
 " ``func(initial_value, A)`` is the first calculation. ::"
 msgstr ""
+":func:`functools.reduce(func, iter, [initial_value]) "
+"<functools.reduce>`持续地在可迭代对象的所有元素上执行操作，因此它不能够用在无限的可迭代对象上。*func* "
+"必须是一个接受两个元素并返回一个值的函数。:func:`functools.reduce` 接受迭代器返回的前两个元素 A 和 B 并计算 "
+"``func(A, B)``。然后它会请求第三个元素，C，计算 ``func(func(A, B), "
+"C)``，然后把这个结果再和第四个元素组合并返回，如此继续下去直到消耗整个可迭代对象。如果输入的可迭代对象完全不返回任何值，:exc:`TypeError`"
+" 异常就会抛出。如果提供了初值(initial value)，它会被用作起始值，也就是先计算 ``func(initial_value, A)。::"
 
 #: ../../howto/functional.rst:1043
 msgid ""
@@ -1276,12 +1297,16 @@ msgid ""
 " all the elements of the iterable.  This case is so common that there's a "
 "special built-in called :func:`sum` to compute it:"
 msgstr ""
+"如果你在 :func:`functools.reduce` 中使用 "
+":func:`operator.add`，你就会把可迭代对象中的所有元素加起来.这种情况非常常见, 所以 Python 有一个特殊的内置函数 "
+":func:`sum`:"
 
 #: ../../howto/functional.rst:1055
 msgid ""
 "For many uses of :func:`functools.reduce`, though, it can be clearer to just"
 " write the obvious :keyword:`for` loop::"
 msgstr ""
+"不过, 对于很多使用 :func:`functools.reduce` 的情形, 使用明显的 :keyword:`for` 循环会更清晰::"
 
 #: ../../howto/functional.rst:1067
 msgid ""
@@ -1291,10 +1316,13 @@ msgid ""
 ":func:`accumulate` returns an iterator that also yields each partial "
 "result::"
 msgstr ""
+"一个相关的函数是 :func:`itertools.accumulate(iterable, func=operator.add) "
+"<itertools.accumulate>` 。它执行同样的计算, 不过相对于只返回最终结果，:func:`accumulate` "
+"会返回一个迭代器来输出所有中间结果::"
 
 #: ../../howto/functional.rst:1080
 msgid "The operator module"
-msgstr ""
+msgstr "operator 模块"
 
 #: ../../howto/functional.rst:1082
 msgid ""
