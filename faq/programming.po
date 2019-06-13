@@ -11,8 +11,8 @@
 # ChenYuan <github@qiushi.ac.cn>, 2019
 # Siyuan Xu <mf20070535@126.com>, 2019
 # Meng Du <alphanow@gmail.com>, 2019
-# ppcfish <ppcfish@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
+# ppcfish <ppcfish@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-05-14 11:26+0900\n"
 "PO-Revision-Date: 2017-02-16 17:43+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: ppcfish <ppcfish@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -966,17 +966,19 @@ msgstr ""
 
 #: ../../faq/programming.rst:741
 msgid "Is it possible to write obfuscated one-liners in Python?"
-msgstr ""
+msgstr "是否可以用Python编写混淆的单行程序?"
 
 #: ../../faq/programming.rst:743
 msgid ""
 "Yes.  Usually this is done by nesting :keyword:`lambda` within "
 ":keyword:`!lambda`.  See the following three examples, due to Ulf Bartelt::"
 msgstr ""
+"可以。通常是通过在 :keyword:`lambda` 中嵌套 :keyword:`!lambda` 来实现的。请参阅以下三个来自Ulf "
+"Bartelt的示例代码："
 
 #: ../../faq/programming.rst:770
 msgid "Don't try this at home, kids!"
-msgstr ""
+msgstr "请不要在家里尝试，骚年！"
 
 #: ../../faq/programming.rst:776
 msgid "What does the slash(/) in the parameter list of a function mean?"
@@ -1174,12 +1176,14 @@ msgid ""
 " empty lines at the end, the line terminators for all the blank lines will "
 "be removed::"
 msgstr ""
+"可以使用 ``S.rstrip(\"\\r\\n\")`` 从字符串 ``S`` 的末尾删除所有的换行符，而不删除其他尾随空格。如果字符串 ``S`` "
+"表示多行，且末尾有几个空行，则将删除所有空行的换行符："
 
 #: ../../faq/programming.rst:994
 msgid ""
 "Since this is typically only desired when reading text one line at a time, "
 "using ``S.rstrip()`` this way works well."
-msgstr ""
+msgstr "由于通常只在一次读取一行文本时才需要这样做，所以使用 ``S.rstrip()`` 这种方式工作得很好。"
 
 #: ../../faq/programming.rst:999
 msgid "Is there a scanf() or sscanf() equivalent?"
@@ -1954,7 +1958,7 @@ msgstr ""
 #: ../../faq/programming.rst:1655
 msgid ""
 "My class defines __del__ but it is not called when I delete the object."
-msgstr "我的类定义了 __del__ 但是在删除对象时没有调用它。"
+msgstr "类定义了 __del__ 方法，但是删除对象时没有调用它。"
 
 #: ../../faq/programming.rst:1657
 msgid "There are several possible reasons for this."
@@ -1966,6 +1970,8 @@ msgid ""
 "decrements the object's reference count, and if this reaches zero "
 ":meth:`__del__` is called."
 msgstr ""
+"del 语句不一定调用 :meth:`__del__` —— 它只是减少对象的引用计数，如果（引用计数）达到零，才会调用:meth:`__del__` "
+"。"
 
 #: ../../faq/programming.rst:1663
 msgid ""
@@ -1980,6 +1986,10 @@ msgid ""
 "You can run :func:`gc.collect` to force a collection, but there *are* "
 "pathological cases where objects will never be collected."
 msgstr ""
+"如果数据结构包含循环链接（例如，每个子级都有一个父级引用，每个父级都有一个子级列表的树），则引用计数将永远不会返回零。尽管Python "
+"偶尔会运行一个算法来检测这样的循环，但在数据结构的最后一次引用计数清零后，垃圾收集器可能需要一段时间来运行，因此您的 :meth:`__del__` "
+"方法可能会在不方便和随机的时间被调用。这对于重现一个问题，是非常不方便的。更糟糕的是，对象 :meth:`__del__` "
+"的方法执行顺序是任意的。你可以运行 :func:`gc.collect` 来强制回收，但在一些病态的情况下，对象永远不会被回收。"
 
 #: ../../faq/programming.rst:1674
 msgid ""
@@ -1990,6 +2000,9 @@ msgid ""
 "``close()`` and ``close()`` should make sure that it can be called more than"
 " once for the same object."
 msgstr ""
+"尽管使用了循环收集器，但是在对象上定义一个显式 ``close()`` 方法仍然是一个好主意，无论何时使用完这些对象都可以调用它。然后， "
+"``close()`` 方法可以删除引用子对象的属性。不要直接调用 :meth:`__del__` 应该调用 ``close()`` ， "
+"``close()`` 能确保同一对象可以多次调用它。"
 
 #: ../../faq/programming.rst:1681
 msgid ""
@@ -1998,12 +2011,14 @@ msgid ""
 "reference count. Tree data structures, for instance, should use weak "
 "references for their parent and sibling references (if they need them!)."
 msgstr ""
+"另一种避免循环引用的方法是使用 :mod:`weakref` "
+"模块，该模块允许您指向对象而不增加其引用计数。例如，树状数据结构应该对其父级和同级引用使用弱引用（如果需要的话！）"
 
 #: ../../faq/programming.rst:1694
 msgid ""
 "Finally, if your :meth:`__del__` method raises an exception, a warning "
 "message is printed to :data:`sys.stderr`."
-msgstr ""
+msgstr "最后，如果 :meth:`__del__` 方法引发异常，会将警告消息打印到 :data:`sys.stderr` 。"
 
 #: ../../faq/programming.rst:1699
 msgid "How do I get a list of all instances of a given class?"
