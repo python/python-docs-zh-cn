@@ -140,6 +140,8 @@ msgid ""
 "specified index.  Lists have similar functions, :c:func:`PyListSize` and "
 ":c:func:`PyList_GetItem`."
 msgstr ""
+"这取决于对象的类型。 如果是元组，:c:func:`PyTuple_Size` 可返回其长度而 :c:func:`PyTuple_GetItem` "
+"可返回指定序号上的项。 对于列表也有类似的函数 :c:func:`PyListSize` 和 :c:func:`PyList_GetItem`。"
 
 #: ../../faq/extending.rst:87
 msgid ""
@@ -148,6 +150,8 @@ msgid ""
 "length.  Note that Python bytes objects may contain null bytes so C's "
 ":c:func:`strlen` should not be used."
 msgstr ""
+"对于字节串，:c:func:`PyBytes_Size` 可返回其长度而 :c:func:`PyBytes_AsStringAndSize` "
+"提供一个指向其值和长度的指针。 请注意 Python 字节串可能为空，因此 C 的 :c:func:`strlen` 不应被使用。"
 
 #: ../../faq/extending.rst:92
 msgid ""
@@ -167,6 +171,10 @@ msgid ""
 "well as many other useful protocols such as numbers "
 "(:c:func:`PyNumber_Index` et al.) and mappings in the PyMapping APIs."
 msgstr ""
+"还有一个针对 Python 对象的高层级 API，通过所谓的‘抽象’接口提供 —— 请参阅 ``Include/abstract.h`` 了解详情。 "
+"它允许使用 :c:func:`PySequence_Length`, :c:func:`PySequence_GetItem` 这样的调用来与任意种类的"
+" Python 序列进行对接，此外还可使用许多其他有用的协议例如数字 (:c:func:`PyNumber_Index` 等) 以及 PyMapping"
+" API 中的各种映射等等。"
 
 #: ../../faq/extending.rst:104
 msgid "How do I use Py_BuildValue() to create a tuple of arbitrary length?"
@@ -187,6 +195,8 @@ msgid ""
 "to call, a format string like that used with :c:func:`Py_BuildValue`, and "
 "the argument values::"
 msgstr ""
+"可以使用 :c:func:`PyObject_CallMethod` 函数来调用某个对象的任意方法。 形参为该对象、要调用的方法名、类似 "
+":c:func:`Py_BuildValue` 所用的格式字符串以及要传给方法的参数值::"
 
 #: ../../faq/extending.rst:121
 msgid ""
@@ -194,12 +204,13 @@ msgid ""
 "defined. You are responsible for eventually :c:func:`Py_DECREF`\\ 'ing the "
 "return value."
 msgstr ""
+"这适用于任何具有方法的对象 —— 不论是内置方法还是用户自定义方法。 你需要负责对返回值进行最终的 :c:func:`Py_DECREF` 处理。"
 
 #: ../../faq/extending.rst:124
 msgid ""
 "To call, e.g., a file object's \"seek\" method with arguments 10, 0 "
 "(assuming the file object pointer is \"f\")::"
-msgstr ""
+msgstr "例如调用某个文件对象的 \"seek\" 方法并传入参数 10, 0 (假定文件对象的指针为 \"f\")::"
 
 #: ../../faq/extending.rst:135
 msgid ""
@@ -208,6 +219,8 @@ msgid ""
 "format, and to call a function with one argument, surround the argument in "
 "parentheses, e.g. \"(i)\"."
 msgstr ""
+"请注意由于 :c:func:`PyObject_CallObject` *总是* 接受一个元组作为参数列表，要调用不带参数的函数，则传入格式为 "
+"\"()\"，要调用只带一个参数的函数，则应将参数包含于圆括号中，例如 \"(i)\"。"
 
 #: ../../faq/extending.rst:142
 msgid ""
@@ -222,14 +235,17 @@ msgid ""
 "print_error, or just allow the standard traceback mechanism to work. Then, "
 "the output will go wherever your ``write()`` method sends it."
 msgstr ""
+"在 Python 代码中，定义一个支持 ``write()`` 方法的对象。 将此对象赋值给 :data:`sys.stdout` 和 "
+":data:`sys.stderr`。 调用 print_error 或者只是允许标准回溯机制生效。 在此之后，输出将转往你的 ``write()`` "
+"方法所指向的任何地方。"
 
 #: ../../faq/extending.rst:149
 msgid "The easiest way to do this is to use the :class:`io.StringIO` class:"
-msgstr ""
+msgstr "做到这一点的最简单方式是使用 :class:`io.StringIO` 类："
 
 #: ../../faq/extending.rst:161
 msgid "A custom object to do the same would look like this:"
-msgstr ""
+msgstr "实现同样效果的自定义对象看起来是这样的："
 
 #: ../../faq/extending.rst:182
 msgid "How do I access a module written in Python from C?"
@@ -237,7 +253,7 @@ msgstr "如何从C访问用Python编写的模块？"
 
 #: ../../faq/extending.rst:184
 msgid "You can get a pointer to the module object as follows::"
-msgstr ""
+msgstr "你可以通过如下方式获得一个指向模块对象的指针::"
 
 #: ../../faq/extending.rst:188
 msgid ""
@@ -247,22 +263,25 @@ msgid ""
 "doesn't enter the module into any namespace -- it only ensures it has been "
 "initialized and is stored in :data:`sys.modules`."
 msgstr ""
+"如果模块尚未被导入（即它还不存在于 :data:`sys.modules` 中），这会初始化该模块；否则它只是简单地返回 "
+"``sys.modules[\"<modulename>\"]`` 的值。 请注意它并不会将模块加入任何命名空间 —— 它只是确保模块被初始化并存在于 "
+":data:`sys.modules` 中。"
 
 #: ../../faq/extending.rst:194
 msgid ""
 "You can then access the module's attributes (i.e. any name defined in the "
 "module) as follows::"
-msgstr ""
+msgstr "之后你就可以通过如下方式来访问模块的属性（即模块中定义的任何名称）::"
 
 #: ../../faq/extending.rst:199
 msgid ""
 "Calling :c:func:`PyObject_SetAttrString` to assign to variables in the "
 "module also works."
-msgstr ""
+msgstr "调用 :c:func:`PyObject_SetAttrString` 为模块中的变量赋值也是可以的。"
 
 #: ../../faq/extending.rst:204
 msgid "How do I interface to C++ objects from Python?"
-msgstr "如何从Python接口到C ++对象？"
+msgstr "如何在 Python 中对接 C ++ 对象？"
 
 #: ../../faq/extending.rst:206
 msgid ""
@@ -273,6 +292,9 @@ msgid ""
 "building a new Python type around a C structure (pointer) type will also "
 "work for C++ objects."
 msgstr ""
+"根据你的需求，可以选择许多方式。 手动的实现方式请查阅 :ref:`\"扩展与嵌入\" 文档 <extending-index>` 来入门。 "
+"需要知道的是对于 Python 运行时系统来说，C 和 C++ 并不没有太大的区别 —— 因此围绕一个 C 结构（指针）类型构建新 Python "
+"对象的策略同样适用于 C++ 对象。"
 
 #: ../../faq/extending.rst:212
 msgid "For C++ libraries, see :ref:`c-wrapper-software`."
