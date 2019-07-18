@@ -710,6 +710,9 @@ msgid ""
 "number of bytes.  As a special case, ``'0s'`` means a single, empty string "
 "(while ``'0c'`` means 0 characters)."
 msgstr ""
+"对于 ``'s'`` 格式字符，计数会被解析为字节的长度，而不是像其他格式字符那样的重复计数；例如，``'10s'`` 表示一个 10 字节的字节串，而"
+" ``'10c'`` 表示 10 个字符。 如果未给出计数，则默认值为 1。 对于打包操作，字节串会被适当地截断或填充空字节以符合要求。 "
+"对于解包操作，结果字节对象总是恰好具有指定数量的字节。 作为特殊情况，``'0s'`` 表示一个空字符串（而 ``'0c'`` 表示 0 个字符）。"
 
 #: ../../library/struct.rst:314
 msgid ""
@@ -718,12 +721,16 @@ msgid ""
 "``'Q'``), if ``x`` is outside the valid range for that format then "
 ":exc:`struct.error` is raised."
 msgstr ""
+"当使用某一种整数格式 (``'b'``, ``'B'``, ``'h'``, ``'H'``, ``'i'``, ``'I'``, ``'l'``, "
+"``'L'``, ``'q'``, ``'Q'``) 打包值 ``x`` 时，如果 ``x`` 在该格式的有效范围之外则将引发 "
+":exc:`struct.error`。"
 
 #: ../../library/struct.rst:319
 msgid ""
 "In 3.0, some of the integer formats wrapped out-of-range values and raised "
 ":exc:`DeprecationWarning` instead of :exc:`struct.error`."
 msgstr ""
+"在 3.0 中，某些包装了超范围值的整数格式会引发 :exc:`DeprecationWarning` 而不是 :exc:`struct.error`。"
 
 #: ../../library/struct.rst:323
 msgid ""
@@ -738,6 +745,11 @@ msgid ""
 "consumes ``count`` bytes, but that the string returned can never contain "
 "more than 255 bytes."
 msgstr ""
+"``'p'`` 格式字符用于编码“Pascal 字符串”，即存储在由计数指定的 *固定长度字节* 中的可变长度短字符串。 "
+"所存储的第一个字节为字符串长度或 255 中的较小值。 之后是字符串对应的字节。 如果传入 :func:`pack` 的字符串过长（超过计数值减 "
+"1），则只有字符串前 ``count-1`` 个字节会被存储。 如果字符串短于 ``count-1``，则会填充空字节以使得恰好使用了 count "
+"个字节。 请注意对于 :func:`unpack`，``'p'`` 格式字符会消耗 ``count`` 个字节，但返回的字符串永远不会包含超过 255 "
+"个字节。"
 
 #: ../../library/struct.rst:336
 msgid ""
@@ -746,6 +758,8 @@ msgid ""
 "used. Either 0 or 1 in the native or standard bool representation will be "
 "packed, and any non-zero value will be ``True`` when unpacking."
 msgstr ""
+"对于 ``'?'`` 格式字符，返回值为 :const:`True` 或 :const:`False`。 在打包时将会使用参数对象的逻辑值。 "
+"以本机或标准 bool 类型表示的 0 或 1 将被打包，任何非零值在解包时将为 ``True``。"
 
 #: ../../library/struct.rst:346
 msgid "Examples"
@@ -755,17 +769,17 @@ msgstr "示例"
 msgid ""
 "All examples assume a native byte order, size, and alignment with a big-"
 "endian machine."
-msgstr ""
+msgstr "所有示例都假定使用一台大端机器的本机字节顺序、大小和对齐方式。"
 
 #: ../../library/struct.rst:352
 msgid "A basic example of packing/unpacking three integers::"
-msgstr ""
+msgstr "打包/解包三个整数的基础示例::"
 
 #: ../../library/struct.rst:362
 msgid ""
 "Unpacked fields can be named by assigning them to variables or by wrapping "
 "the result in a named tuple::"
-msgstr ""
+msgstr "解包的字段可通过将它们赋值给变量或将结果包装为一个具名元组来命名::"
 
 #: ../../library/struct.rst:373
 msgid ""
