@@ -1360,6 +1360,9 @@ msgid ""
 "bit. Unicode characters are encoded like this (with x being payload bits, "
 "which when concatenated give the Unicode character):"
 msgstr ""
+"还有另一种编码格式能够对所有的 Unicode 字符进行编码：UTF-8。 UTF-8 是一种 8 位编码，这意味着在 UTF-8 中没有字节顺序问题。"
+" UTF-8 字节序列中的每个字节由两部分组成：标志位（最重要的位）和内容位。 标志位是由零至四个值为 ``1`` 的二进制位加一个值为 ``0`` "
+"的二进制位构成的序列。 Unicode 字符会按以下形式进行编码（其中 x 为内容位，当拼接为一体时将给出对应的 Unicode 字符）："
 
 #: ../../library/codecs.rst:928
 msgid "Range"
@@ -1404,7 +1407,7 @@ msgstr "11110xxx 10xxxxxx 10xxxxxx 10xxxxxx"
 #: ../../library/codecs.rst:939
 msgid ""
 "The least significant bit of the Unicode character is the rightmost x bit."
-msgstr ""
+msgstr "Unicode 字符最不重要的一个位就是最右侧的二进制位 x。"
 
 #: ../../library/codecs.rst:941
 msgid ""
@@ -1412,6 +1415,8 @@ msgid ""
 "character in the decoded string (even if it's the first character) is "
 "treated as a ``ZERO WIDTH NO-BREAK SPACE``."
 msgstr ""
+"由于 UTF-8 是一种 8 位编码格式，因此 BOM 是不必要的，并且已编码字符串中的任何 ``U+FEFF`` "
+"字符（即使是作为第一个字符）都会被视为是 ``ZERO WIDTH NO-BREAK SPACE``。"
 
 #: ../../library/codecs.rst:945
 msgid ""
@@ -1427,18 +1432,23 @@ msgid ""
 "rather improbable that any charmap encoded file starts with these byte "
 "values (which would e.g. map to"
 msgstr ""
+"在没有外部信息的情况下，就不可能毫无疑义地确定一个字符串使用了何种编码格式。 每种字符映射编码格式都可以解码任意的随机字节序列。 然而对 UTF-8 "
+"来说这却是不可能的，因为 UTF-8 字节序列具有不允许任意字节序列的特别结构。 为了提升 UTF-8 编码检测的可靠性，Microsoft 发明了一种"
+" UTF-8 变体形式 (Python 2.5 称之为 ``\"utf-8-sig\"``) 专门用于其 Notepad 程序：在任何 Unicode "
+"字符在被写入文件之前，会先写入一个 UTF-8 编码的 BOM (它看起来是这样一个字节序列: ``0xef``, ``0xbb``, "
+"``0xbf``)。 由于任何字符映射编码后的文件都不大可能以这些字节值开头（例如它们会映射为"
 
 #: ../../library/codecs.rst:0
 msgid "LATIN SMALL LETTER I WITH DIAERESIS"
-msgstr ""
+msgstr "LATIN SMALL LETTER I WITH DIAERESIS"
 
 #: ../../library/codecs.rst:0
 msgid "RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK"
-msgstr ""
+msgstr "RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK"
 
 #: ../../library/codecs.rst:0
 msgid "INVERTED QUESTION MARK"
-msgstr ""
+msgstr "INVERTED QUESTION MARK"
 
 #: ../../library/codecs.rst:961
 msgid ""
@@ -1451,6 +1461,10 @@ msgid ""
 "three bytes if they appear as the first three bytes in the file.  In UTF-8, "
 "the use of the BOM is discouraged and should generally be avoided."
 msgstr ""
+"对于 iso-8859-1 编码格式来说），这提升了根据字节序列来正确猜测 ``utf-8-sig`` 编码格式的成功率。 所以在这里 BOM "
+"的作用并不是帮助确定生成字节序列所使用的字节顺序，而是作为帮助猜测编码格式的记号。 在进行编码时 utf-8-sig 编解码器将把 ``0xef``, "
+"``0xbb``, ``0xbf`` 作为头三个字节写入文件。 在进行解码时 ``utf-8-sig`` "
+"将跳过这三个字节，如果它们作为文件的头三个字节出现的话。 在 UTF-8 中并不推荐使用 BOM，通常应当避免它们的出现。"
 
 #: ../../library/codecs.rst:974
 msgid "Standard Encodings"
