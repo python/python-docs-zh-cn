@@ -1381,6 +1381,11 @@ msgid ""
 "larger than :const:`MAXYEAR`. Note that no time zone adjustments are done "
 "even if the input is an aware object."
 msgstr ""
+"datetime2 是从中去掉的一段 timedelta 的结果，如果 ``timedelta.days`` > 0 则是在时间线上前进，如果 "
+"``timedelta.days`` < 0 则后退。 结果具有与输入的 datetime 相同的 :attr:`~.datetime.tzinfo` "
+"属性，并且操作完成后 datetime2 - datetime1 == timedelta。 如果 datetime2.year 将小于 "
+":const:`MINYEAR` 或大于 :const:`MAXYEAR` 则会引发 :exc:`OverflowError`。 "
+"请注意即使输入的是一个感知型对象，该方法也不会进行时区调整。"
 
 #: ../../library/datetime.rst:966
 msgid ""
@@ -1389,6 +1394,8 @@ msgid ""
 " input datetime, and no time zone adjustments are done even if the input is "
 "aware."
 msgstr ""
+"计算 datetime2 使得 datetime2 + timedelta == datetime1。 与相加操作一样，结果具有与输入的 "
+"datetime 相同的 :attr:`~.datetime.tzinfo` 属性，即使输入的是一个感知型对象，该方法也不会进行时区调整。"
 
 #: ../../library/datetime.rst:971
 msgid ""
@@ -1396,6 +1403,8 @@ msgid ""
 "only if both operands are naive, or if both are aware.  If one is aware and "
 "the other is naive, :exc:`TypeError` is raised."
 msgstr ""
+"从一个 :class:`.datetime` 减去一个 :class:`.datetime` 仅对两个操作数均为无知型或均为感知型时有定义。 "
+"如果一个是感知型而另一个是无知型，则会引发 :exc:`TypeError`。"
 
 #: ../../library/datetime.rst:975
 msgid ""
@@ -1405,6 +1414,9 @@ msgid ""
 "such that ``datetime2 + t == datetime1``.  No time zone adjustments are done"
 " in this case."
 msgstr ""
+"如果两个操作数都是无知型，或都是感知型且具有相同的 :attr:`~.datetime.tzinfo` "
+"属性，:attr:`~.datetime.tzinfo` 属性会被忽略，结果是一个使得 ``datetime2 + t == datetime1`` 的"
+" :class:`timedelta` 对象 *t*。 在此情况下不会进行时区调整。"
 
 #: ../../library/datetime.rst:980
 msgid ""
@@ -1414,12 +1426,15 @@ msgid ""
 "(b.replace(tzinfo=None) - b.utcoffset())`` except that the implementation "
 "never overflows."
 msgstr ""
+"如果两个操作数都是感知型且具有不同的 :attr:`~.datetime.tzinfo` 属性，``a-b`` 操作的行为就如同 *a* 和 *b* "
+"被首先转换为无知型 UTC 日期时间。 结果将是 ``(a.replace(tzinfo=None) - a.utcoffset()) - "
+"(b.replace(tzinfo=None) - b.utcoffset())`` 除非具体实现绝对不溢出。"
 
 #: ../../library/datetime.rst:986
 msgid ""
 "*datetime1* is considered less than *datetime2* when *datetime1* precedes "
 "*datetime2* in time."
-msgstr ""
+msgstr "当 *datetime1* 的时间在 *datetime2* 之前则认为 *datetime1* 小于 *datetime2*。"
 
 #: ../../library/datetime.rst:989
 msgid ""
@@ -1427,6 +1442,8 @@ msgid ""
 " if an order comparison is attempted.  For equality comparisons, naive "
 "instances are never equal to aware instances."
 msgstr ""
+"如果比较的一方是无知型而另一方是感知型，则如果尝试进行顺序比较将引发 :exc:`TypeError`。 "
+"对于相等比较，无知型实例将永远不等于感知型实例。"
 
 #: ../../library/datetime.rst:993
 msgid ""
@@ -1437,12 +1454,16 @@ msgid ""
 "adjusted by subtracting their UTC offsets (obtained from "
 "``self.utcoffset()``)."
 msgstr ""
+"如果两个比较方都是感知型，且具有相同的 :attr:`~.datetime.tzinfo` 属性，相同的 "
+":attr:`~.datetime.tzinfo` 属性会被忽略并对基本日期时间值进行比较。 如果两个比较方都是感知型且具有不同的 "
+":attr:`~.datetime.tzinfo` 属性，两个比较方将首先通过减去它们的 UTC 差值（使用 ``self.utcoffset()`` "
+"获取）来进行调整。"
 
 #: ../../library/datetime.rst:999
 msgid ""
 "Equality comparisons between naive and aware :class:`.datetime` instances "
 "don't raise :exc:`TypeError`."
-msgstr ""
+msgstr "无知型和感知型 :class:`.datetime` 实例之间的比较不会引发 :exc:`TypeError`。"
 
 #: ../../library/datetime.rst:1005
 msgid ""
@@ -1456,6 +1477,11 @@ msgid ""
 ":exc:`TypeError` is raised unless the comparison is ``==`` or ``!=``.  The "
 "latter cases return :const:`False` or :const:`True`, respectively."
 msgstr ""
+"为了防止比较操作回退为默认的对象地址比较方案，datetime 比较通常会引发 :exc:`TypeError`，如果比较目标不同样为 "
+":class:`.datetime` 对象的话。 不过也可能会返回 ``NotImplemented`` 如果比较目标具有 "
+":meth:`timetuple` 属性的话。 这个钩子给予其他日期对象类型实现混合类型比较的机会。 否则，当 :class:`.datetime` "
+"对象与不同类型的对象比较时将会引发 :exc:`TypeError`，除非 ``==`` 或 ``!=`` 比较。 后两种情况将分别返回 "
+":const:`False` 或 :const:`True`。"
 
 #: ../../library/datetime.rst:1015
 msgid ""
