@@ -2136,6 +2136,8 @@ msgid ""
 "methods.  Exactly which methods are needed depends on the uses made of aware"
 " :mod:`datetime` objects.  If in doubt, simply implement all of them."
 msgstr ""
+"一个 :class:`tzinfo` 的实体子类可能需要实现以下方法。 具体需要实现的方法取决于感知型 :mod:`datetime` 对象如何使用它。"
+" 如果有疑问，可以简单地全都实现。"
 
 #: ../../library/datetime.rst:1708
 msgid ""
@@ -2150,18 +2152,23 @@ msgid ""
 "day).  Most implementations of :meth:`utcoffset` will probably look like one"
 " of these two::"
 msgstr ""
+"返回本地时间与 UTC 的差值为一个 :class:`timedelta` 对象，在 UTC 以东为正值。 如果本地时间在 UTC 以西则为负值。 "
+"请注意这应当是与 UTC 的总计差值；即如果 :class:`tzinfo` 对象同时代表时区和 DST 调整，:meth:`utcoffset` "
+"应当返回两者的和。 如果 UTC 差值不确定则返回 ``None``。 其他情况下返回值必须为一个 :class:`timedelta` "
+"对象，值的范围严格限制于 ``-timedelta(hours=24)`` 和 ``timedelta(hours=24)`` "
+"之间（差值的幅度必须小于一天）。 大多数 :meth:`utcoffset` 的实现看起来可能像是以下两者之一::"
 
 #: ../../library/datetime.rst:1722
 msgid ""
 "If :meth:`utcoffset` does not return ``None``, :meth:`dst` should not return"
 " ``None`` either."
-msgstr ""
+msgstr "如果 :meth:`utcoffset` 返回值不为 ``None``，则 :meth:`dst` 也不应返回 ``None``。"
 
 #: ../../library/datetime.rst:1725
 msgid ""
 "The default implementation of :meth:`utcoffset` raises "
 ":exc:`NotImplementedError`."
-msgstr ""
+msgstr "默认的 :meth:`utcoffset` 实现会引发 :exc:`NotImplementedError`。"
 
 #: ../../library/datetime.rst:1734
 msgid ""
@@ -2177,16 +2184,22 @@ msgid ""
 " and :meth:`tzinfo.fromutc` calls :meth:`dst` to account for DST changes "
 "when crossing time zones."
 msgstr ""
+"返回夏令时（DST）调整值为一个 :class:`timedelta` 对象或当 DST 信息未知时返回 ``None``。 如果 DST 未启用则返回"
+" ``timedelta(0)``。 如果 DST 已启用则返回调整值为一个 :class:`timedelta` 对象（参见 "
+":meth:`utcoffset` 了解详情）。 请注意 DST 差值如果可用，就会直接被加入 :meth:`utcoffset` 所返回的 UTC "
+"差值，因此无需额外查询 :meth:`dst` 除非你希望单独获取 DST 信息。 例如，:meth:`datetime.timetuple` 会调用其"
+" :attr:`~.datetime.tzinfo` 属性的 :meth:`dst` 方法来确定应当如何设置 :attr:`tm_isdst` 旗标，而"
+" :meth:`tzinfo.fromutc` 会调用 :meth:`dst` 来在跨越时区时处理 DST 的改变。"
 
 #: ../../library/datetime.rst:1746
 msgid ""
 "An instance *tz* of a :class:`tzinfo` subclass that models both standard and"
 " daylight times must be consistent in this sense:"
-msgstr ""
+msgstr "一个可以同时处理标准时和夏令时的 :class:`tzinfo` 子类的实例 *tz* 必须在此情形中保持一致："
 
 #: ../../library/datetime.rst:1749
 msgid "``tz.utcoffset(dt) - tz.dst(dt)``"
-msgstr ""
+msgstr "``tz.utcoffset(dt) - tz.dst(dt)``"
 
 #: ../../library/datetime.rst:1751
 msgid ""
