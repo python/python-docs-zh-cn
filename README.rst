@@ -12,11 +12,16 @@ Maintained versions:
    * - Version
      - Build status
      - Translation progress
+   * - `3.8 <https://github.com/python/python-docs-zh-cn/tree/3.8>`_
+     - .. image:: https://travis-ci.org/python/python-docs-zh-cn.svg?branch=3.8-staging
+          :target: https://travis-ci.org/python/python-docs-zh-cn
+     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/newest
+          :target: https://www.transifex.com/python-doc/python-newest/
    * - `3.7 <https://github.com/python/python-docs-zh-cn/tree/3.7>`_
      - .. image:: https://travis-ci.org/python/python-docs-zh-cn.svg?branch=3.7-staging
           :target: https://travis-ci.org/python/python-docs-zh-cn
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http%3A%2F%2Fgce.zhsj.me%2Fpython/newest
-          :target: https://www.transifex.com/python-doc/python-newest/
+     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/37
+          :target: https://www.transifex.com/python-doc/python-37/
 
 Documentation Contribution Agreement
 ------------------------------------
