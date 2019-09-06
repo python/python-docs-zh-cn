@@ -14,6 +14,7 @@
 # Meng Du <alphanow@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
 # Liying Yang <xlctemp@gmail.com>, 2019
+# weditor <weditor@163.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-01 14:24+0000\n"
 "PO-Revision-Date: 2017-02-16 23:19+0000\n"
-"Last-Translator: Liying Yang <xlctemp@gmail.com>, 2019\n"
+"Last-Translator: weditor <weditor@163.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,7 +135,7 @@ msgstr ""
 
 #: ../../library/multiprocessing.rst:105
 msgid "Available on Unix and Windows.  The default on Windows and macOS."
-msgstr ""
+msgstr "可在Unix和Windows上使用。 Windows上的默认设置。"
 
 #: ../../library/multiprocessing.rst:114
 msgid "*fork*"
@@ -182,6 +183,8 @@ msgid ""
 "method should be considered unsafe as it can lead to crashes of the "
 "subprocess. See :issue:`33725`."
 msgstr ""
+"对于 macOS，*spawn* 启动方式是默认方式。 因为 *fork* 可能导致subprocess崩溃，被认为是不安全的，查看 "
+":issue:`33725` 。"
 
 #: ../../library/multiprocessing.rst:133
 msgid ""
@@ -206,6 +209,10 @@ msgid ""
 "objects because the system allows only a limited number of named semaphores,"
 " and shared memory segments occupy some space in the main memory.)"
 msgstr ""
+"在 Unix 上通过 *spawn* 和 *forkserver* 方式启动多进程会同时启动一个 *资源追踪* "
+"进程，负责追踪当前程序的进程产生的、并且不再被使用的命名系统资源(如命名信号量以及 "
+":class:`~multiprocessing.shared_memory.SharedMemory`  "
+"对象)。当所有进程退出后，资源追踪会负责释放这些仍被追踪的的对象。通常情况下是不会有这种对象的，但是假如一个子进程被某个信号杀死，就可能存在这一类资源的“泄露”情况。（泄露的信号量以及共享内存不会被释放，直到下一次系统重启，对着两类资源来说，这是一个比较大的问题，因为操作系统允许的命名信号量是有限的，而共享内存也会占据主内存的一片空间）"
 
 #: ../../library/multiprocessing.rst:152
 msgid ""
@@ -445,7 +452,7 @@ msgid ""
 "(If you try this it will actually output three full tracebacks interleaved "
 "in a semi-random fashion, and then you may have to stop the parent process "
 "somehow.)"
-msgstr ""
+msgstr "（如果尝试执行上面的代码，它会以一种半随机的方式将三个完整的堆栈内容交替输出，然后你只能以某种方式停止父进程。)"
 
 #: ../../library/multiprocessing.rst:459
 msgid "Reference"
@@ -961,7 +968,7 @@ msgstr ""
 msgid ""
 "If the queue is closed, :exc:`ValueError` is raised instead of "
 ":exc:`AssertionError`."
-msgstr ""
+msgstr "如果队列已经关闭，会抛出  :exc:`ValueError`  而不是  :exc:`AssertionError` 。"
 
 #: ../../library/multiprocessing.rst:813
 msgid "Equivalent to ``put(obj, False)``."
@@ -986,7 +993,7 @@ msgstr ""
 msgid ""
 "If the queue is closed, :exc:`ValueError` is raised instead of "
 ":exc:`OSError`."
-msgstr ""
+msgstr "如果队列已经关闭，会抛出 :exc:`ValueError` 而不是 :exc:`OSError` 。"
 
 #: ../../library/multiprocessing.rst:831
 msgid "Equivalent to ``get(False)``."
@@ -1171,6 +1178,8 @@ msgid ""
 "the :func:`current_process`. For the main process, ``parent_process`` will "
 "be ``None``."
 msgstr ""
+"返回父进程  :class:`Process`  对象，和父进程调用 :func:`current_process` "
+"返回的对象一样。如果一个进程已经是主进程， ``parent_process`` 会返回 ``None``."
 
 #: ../../library/multiprocessing.rst:963
 msgid ""
@@ -1618,18 +1627,25 @@ msgid ""
 "``False`` and is thus ignored.  Returns ``True`` if the lock has been "
 "acquired or ``False`` if the timeout period has elapsed."
 msgstr ""
+"当  *timeout* 是一个正浮点数时，会在等待锁的过程中最多阻塞等待 *timeout* 秒，当  *timeout* 是负数时，效果和  "
+"*timeout* 为0时一样，当  *timeout* 是 ``None`` （默认值）时，等待时间是无限长。需要注意的是，对于 *timeout* "
+"参数是负数和 ``None`` 的情况, 其行为与  :meth:`threading.Lock.acquire` 是不一样的。当 *block* 参数"
+" 为 ``False`` 时，  *timeout* 并没有实际用处，会直接忽略。否则，函数会在拿到锁后返回 ``True`` 或者 超时没拿到锁后返回"
+" ``False`` 。"
 
 #: ../../library/multiprocessing.rst:1287
 msgid ""
 "Release a lock.  This can be called from any process or thread, not only the"
 " process or thread which originally acquired the lock."
-msgstr ""
+msgstr "释放锁，可以在任何进程、线程使用，并不限于锁的拥有者。"
 
 #: ../../library/multiprocessing.rst:1290
 msgid ""
 "Behavior is the same as in :meth:`threading.Lock.release` except that when "
 "invoked on an unlocked lock, a :exc:`ValueError` is raised."
 msgstr ""
+"当尝试释放一个没有被持有的锁时，会抛出 :exc:`ValueError` 异常，除此之外其行为与 "
+":meth:`threading.Lock.release` 一样。"
 
 #: ../../library/multiprocessing.rst:1296
 msgid ""
@@ -1646,12 +1662,14 @@ msgid ""
 "instance of ``multiprocessing.synchronize.RLock`` initialized with a default"
 " context."
 msgstr ""
+"注意 :class:`RLock` 是一个工厂函数，调用后返回一个使用默认 context 初始化的 "
+"``multiprocessing.synchronize.RLock`` 实例。"
 
 #: ../../library/multiprocessing.rst:1306
 msgid ""
 ":class:`RLock` supports the :term:`context manager` protocol and thus may be"
 " used in :keyword:`with` statements."
-msgstr ""
+msgstr ":class:`RLock` 支持 :term:`上下文管理器` ，可以用在with语句内。"
 
 #: ../../library/multiprocessing.rst:1314
 msgid ""
@@ -1665,6 +1683,10 @@ msgid ""
 " of :meth:`threading.RLock.acquire`, starting with the name of the argument "
 "itself."
 msgstr ""
+"当 *block* 参数设置为 ``True`` "
+"时，会一直阻塞直到锁处于空闲状态（没有被任何进程、线程拥有），除非当前进程或线程已经拥有了这把锁。然后当前进程/线程会持有这把锁（在锁没有其他持有者的情况下），锁内的递归等级加一，并返回"
+" ``True`` . 注意， 这个函数第一个参数的行为和 :meth:`threading.RLock.acquire` "
+"的实现有几个不同点，包括参数名本身。"
 
 #: ../../library/multiprocessing.rst:1324
 msgid ""
