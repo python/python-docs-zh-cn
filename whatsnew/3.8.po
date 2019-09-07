@@ -2100,10 +2100,12 @@ msgid ""
 "their changes in a git fork of CPython or as patch files, as they would do "
 "for any other change to the source tree."
 msgstr ""
+"现在构建系统总是会从源码树内的 ``Modules/Setup`` 读取数据。 建议希望定制该文件的开发者在 CPython 的一个 git "
+"分叉或补丁文件中维护他们的更改，就如他们对源码树做任何其他改变时一样。"
 
 #: ../../whatsnew/3.8.rst:1299
 msgid "(Contributed by Antoine Pitrou in :issue:`32430`.)"
-msgstr ""
+msgstr "（由 Antoine Pitrou 在 :issue:`32430` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1301
 msgid ""
@@ -2120,6 +2122,15 @@ msgid ""
 "``__index__()`` method if available. (Contributed by Serhiy Storchaka in "
 ":issue:`36048` and :issue:`20092`.)"
 msgstr ""
+"将 Python 数字转换为 C 整型的函数例如 :c:func:`PyLong_AsLong` 以及带有 ``'i'`` "
+"之类整型转换格式单元的参数解析函数例如 :c:func:`PyArg_ParseTuple` 现在如果可能将会使用 "
+":meth:`~object.__index__` 特殊方法而不是 :meth:`~object.__int__`。 对于带有 "
+"``__int__()`` 方法但没有 ``__index__()`` 方法的对象 (例如 :class:`~decimal.Decimal` 和 "
+":class:`~fractions.Fraction`) 将会发出弃用警告。 对于实现了 ``__index__()`` 的对象 "
+":c:func:`PyNumber_Check` 现在将返回 ``1``。 :c:func:`PyNumber_Long`, "
+":c:func:`PyNumber_Float` 和 :c:func:`PyFloat_AsDouble` 现在如果可能也将会使用 "
+"``__index__()`` 方法。 （由 Serhiy Storchaka 在 :issue:`36048` 和 :issue:`20092` "
+"中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1315
 msgid ""
@@ -2129,6 +2140,9 @@ msgid ""
 "or deallocation may need to be adjusted. (Contributed by Eddie Elizondo in "
 ":issue:`35810`.)"
 msgstr ""
+"堆分配类型对象现在将增加它们在 :c:func:`PyObject_Init` (及其对应的宏 ``PyObject_INIT``) "
+"中的引用计数而不是在 :c:func:`PyType_GenericAlloc` 中。 修改实例分配或中止分配的类型可能需要进行调整。 （由 "
+"Elizondo 在 :issue:`35810` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1321
 msgid ""
@@ -2137,6 +2151,9 @@ msgid ""
 "parameter for indicating the number of positional-only arguments. "
 "(Contributed by Pablo Galindo in :issue:`37221`.)"
 msgstr ""
+"新增函数 :c:func:`PyCode_NewWithPosOnlyArgs` 允许创建代码对象例如 "
+":c:func:`PyCode_New`，但带有一个额外的 *posonlyargcount* 形参以指明仅限位置参数的数量。 （由 Pablo "
+"Galindo 在 :issue:`37221` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1328
 msgid "Deprecated"
@@ -2148,6 +2165,8 @@ msgid ""
 "``bdist_wheel`` (wheel packages) instead. (Contributed by Victor Stinner in "
 ":issue:`37481`.)"
 msgstr ""
+"distutils 的 ``bdist_wininst`` 命令现在已弃用，请改用 ``bdist_wheel`` (wheel 包)。 （由 "
+"Victor Stinner 在 :issue:`37481` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1334
 msgid ""
@@ -2156,6 +2175,10 @@ msgid ""
 "instead of :exc:`PendingDeprecationWarning`. They will be removed in Python "
 "3.9. (Contributed by Serhiy Storchaka in :issue:`29209`.)"
 msgstr ""
+":mod:`~xml.etree.ElementTree` 模块中的已弃用方法 ``getchildren()`` 和 "
+"``getiterator()`` 现在会引发 :exc:`DeprecationWarning` 而不是 "
+":exc:`PendingDeprecationWarning`。 它们将在 Python 3.9 中被移除。 （由 Serhiy Storchaka "
+"在 :issue:`29209` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1340
 msgid ""
@@ -2165,6 +2188,9 @@ msgid ""
 "prohibited in Python 3.9. (Contributed by Elvis Pranskevichus in "
 ":issue:`34075`.)"
 msgstr ""
+"将不是 :class:`concurrent.futures.ThreadPoolExecutor` 实例的对象传给 "
+":meth:`asyncio.loop.set_default_executor()` 已被弃用，并将在 Python 3.9 中被禁止。 （由 "
+"Elvis Pranskevichus 在 :issue:`34075` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1346
 msgid ""
@@ -2172,16 +2198,18 @@ msgid ""
 ":class:`wsgiref.util.FileWrapper` and :class:`fileinput.FileInput` have been"
 " deprecated."
 msgstr ""
+":class:`xml.dom.pulldom.DOMEventStream`, :class:`wsgiref.util.FileWrapper` 和"
+" :class:`fileinput.FileInput` 的 :meth:`__getitem__` 方法已被弃用。"
 
 #: ../../whatsnew/3.8.rst:1350
 msgid ""
 "Implementations of these methods have been ignoring their *index* parameter,"
 " and returning the next item instead."
-msgstr ""
+msgstr "这些方法的实现会忽略它们的 *index* 形参，并改为返回下一条目。"
 
 #: ../../whatsnew/3.8.rst:1353
 msgid "(Contributed by Berker Peksag in :issue:`9372`.)"
-msgstr ""
+msgstr "（由 Berker Peksag 在 :issue:`9372` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1355
 msgid ""
@@ -2189,6 +2217,8 @@ msgid ""
 "attribute in favor of the ``__annotations__`` attribute which has the same "
 "information.  (Contributed by Raymond Hettinger in :issue:`36320`.)"
 msgstr ""
+":class:`typing.NamedTuple` 类已弃用了 ``_field_types`` 属性而改用具有同样信息的 "
+"``__annotations__`` 属性。 （由 Raymond Hettinger 在 :issue:`36320` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1359
 msgid ""
@@ -2197,6 +2227,9 @@ msgid ""
 "versions. :class:`~ast.Constant` should be used instead. (Contributed by "
 "Serhiy Storchaka in :issue:`32892`.)"
 msgstr ""
+":mod:`ast` 类 ``Num``, ``Str``, ``Bytes``, ``NameConstant`` 和 ``Ellipsis`` "
+"被视为已弃用并将在未来的 Python 版本中被移除。 应当改用 :class:`~ast.Constant`。 （由 Serhiy Storchaka"
+" 在 :issue:`32892` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1364
 msgid ""
@@ -2206,6 +2239,10 @@ msgid ""
 ":meth:`~ast.NodeVisitor.visit_Constant` method to handle all constant nodes."
 " (Contributed by Serhiy Storchaka in :issue:`36917`.)"
 msgstr ""
+":class:`ast.NodeVisitor` 的方法 ``visit_Num()``, ``visit_Str()``, "
+"``visit_Bytes()``, ``visit_NameConstant()`` 和 ``visit_Ellipsis()`` "
+"现在已被弃用，并且在未来的 Python 版本中将不再被调用。 添加 :meth:`~ast.NodeVisitor.visit_Constant` "
+"方法来处理所有常量节点。 （由 Serhiy Storchaka 在 :issue:`36917` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1371
 msgid ""
