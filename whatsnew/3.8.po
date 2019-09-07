@@ -2498,6 +2498,9 @@ msgid ""
 "iterable expression in the leftmost :keyword:`!for` clause). (Contributed by"
 " Serhiy Storchaka in :issue:`10544`.)"
 msgstr ""
+"yield 表达式（包括 ``yield`` 和 ``yield from`` 子句）现在不允许在推导式和生成器表达式中使用（但 "
+":keyword:`!for` 子句最左边的可迭代对象表达式除外）。 （由 Serhiy Storchaka 在 :issue:`10544` "
+"中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1488
 msgid ""
@@ -2508,6 +2511,9 @@ msgid ""
 "tests (``==`` and ``!=``) instead. (Contributed by Serhiy Storchaka in "
 ":issue:`34850`.)"
 msgstr ""
+"当标识号检测 (``is`` 和 ``is not``) 与特定类型的字面值 (例如字符串、整数) 一同使用时编译器现在会产生 "
+":exc:`SyntaxWarning`。  这在 CPython 中通常是可行的，但并不被语言定义所保证。 该警告会建议用户改用相等性检测 "
+"(``==`` and ``!=``)。 （由 Serhiy Storchaka 在 :issue:`34850` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1495
 msgid ""
@@ -2516,6 +2522,8 @@ msgid ""
 "when getting the attribute from the type dictionary are no longer ignored.  "
 "(Contributed by Serhiy Storchaka in :issue:`35459`.)"
 msgstr ""
+"CPython 解释器在某些情形下可以忽略异常。 在 Python 3.8 中这种情况会更少发生。 特别地，从类型字典获取属性时引发的异常不会再被忽略。"
+" （由 Serhiy Storchaka 在 :issue:`35459` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1500
 msgid ""
@@ -2526,6 +2534,10 @@ msgid ""
 "will affect they string representation. (Contributed by Serhiy Storchaka in "
 ":issue:`36793`.)"
 msgstr ""
+"从内置类型 :class:`bool`, :class:`int`, :class:`float`, :class:`complex` "
+"和标准库的少量类中移除了 ``__str__`` 实现。  它们现在会从 :class:`object` 继承 ``__str__()``。 "
+"作为结果，在这些类的子类中定义 ``__repr__()`` 方法将会影响它们的字符串表示。 （由 Serhiy Storchaka 在 "
+":issue:`36793` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1507
 msgid ""
@@ -2535,6 +2547,9 @@ msgid ""
 "the ``sys.platform.startswith('aix')``. (Contributed by M. Felt in "
 ":issue:`36588`.)"
 msgstr ""
+"在 AIX 上，:attr:`sys.platform` 将不再包含副版本号。 它将总是 ``'aix'`` 而不是 ``'aix3'`` .. "
+"``'aix7'``。 由于较旧的 Python 版本会包含该版本号，因此推荐总是使用 "
+"``sys.platform.startswith('aix')``。 （由 M. Felt 在 :issue:`36588` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1513
 msgid ""
@@ -2545,6 +2560,11 @@ msgid ""
 "behaviour is not desired, guard the call by checking "
 ":c:func:`_Py_IsFinalizing` or :c:func:`sys.is_finalizing`."
 msgstr ""
+"现在 :c:func:`PyEval_AcquireLock` 和 :c:func:`PyEval_AcquireThread` "
+"如果在解释器终结化时被调用将会终结当前线程，以使它们与  :c:func:`PyEval_RestoreThread`, "
+":c:func:`Py_END_ALLOW_THREADS` 以及 :c:func:`PyGILState_Ensure` 保持一致。 "
+"如果不想要这样的行为，请通过检测 :c:func:`_Py_IsFinalizing` 或 :c:func:`sys.is_finalizing` "
+"来保护该调用。"
 
 #: ../../whatsnew/3.8.rst:1521
 msgid "Changes in the Python API"
@@ -2557,6 +2577,8 @@ msgid ""
 "function is no longer deprecated on Windows. (Contributed by Victor Stinner "
 "in :issue:`37412`.)"
 msgstr ""
+"在 Windows 上 :func:`os.getcwdb` 函数现在会使用 UTF-8 编码格式而不是 ANSI 代码页：请参看 :pep:`529`"
+" 了解具体原因。 该函数在 Windows 上不再被弃用。 （由 Victor Stinner 在 :issue:`37412` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1528
 msgid ""
@@ -2567,6 +2589,10 @@ msgid ""
 "a non-zero :attr:`~Popen.returncode`. (Contributed by Joannah Nanjekye and "
 "Victor Stinner in :issue:`35537`.)"
 msgstr ""
+"现在 :class:`subprocess.Popen` 在某些情况下会使用 :func:`os.posix_spawn` 以获得更好的性能。 在适用于"
+" Linux 的  Windows 子系统和 QEMU 用户模拟器上，使用 :func:`os.posix_spawn` 的 Popen "
+"构造器不会再由于找不到程序而引发异常，而是让子进程失败并返回一个非零的 :attr:`~Popen.returncode`。 （由 Joannah "
+"Nanjekye 和 Victor Stinner 在 :issue:`35537` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1535
 msgid ""
@@ -2575,12 +2601,15 @@ msgid ""
 "subinterpreter now raises :exc:`RuntimeError`. (Contributed by Eric Snow in "
 ":issue:`34651`, modified by Christian Heimes in :issue:`37951`.)"
 msgstr ""
+"* :class:`subprocess.Popen` 的 *preexec_fn* 参数已不再兼容子解释器。 在子解释器中使用该形参现在将引发 "
+":exc:`RuntimeError`。 （由 Eric Snow 在 :issue:`34651` 中贡献，由 Christian Heimes 在 "
+":issue:`37951` 中修改。）"
 
 #: ../../whatsnew/3.8.rst:1541
 msgid ""
 "The :meth:`imap.IMAP4.logout` method no longer ignores silently arbitrary "
 "exceptions."
-msgstr ""
+msgstr ":meth:`imap.IMAP4.logout` 方法不会再忽略静默的任意异常。"
 
 #: ../../whatsnew/3.8.rst:1548
 msgid ""
@@ -2588,6 +2617,8 @@ msgid ""
 "given multimodal data.  Instead, it returns the first mode encountered in "
 "the input data.  (Contributed by Raymond Hettinger in :issue:`35892`.)"
 msgstr ""
+"当传入多模数据时 :func:`statistics.mode` 函数不会再引发异常。 它将改为返回在输入数据中遇到的第一个模式。 （由 Raymond"
+" Hettinger 在 :issue:`35892` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1553
 msgid ""
@@ -2598,6 +2629,10 @@ msgid ""
 "changing the selection.  (Contributed by Serhiy Storchaka in "
 ":issue:`31508`.)"
 msgstr ""
+":class:`tkinter.ttk.Treeview` 类的 :meth:`~tkinter.ttk.Treeview.selection` "
+"方法不再接受参数。 带参数调用该方法来改变选择在 Python 3.6 中已弃用。 请使用专门方法例如 "
+":meth:`~tkinter.ttk.Treeview.selection_set` 来改变选择。 （由 Serhiy Storchaka 在 "
+":issue:`31508` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1559
 msgid ""
@@ -2606,6 +2641,9 @@ msgid ""
 "attribute order specified by the user. (Contributed by Diego Rojas and "
 "Raymond Hettinger in :issue:`34160`.)"
 msgstr ""
+":mod:`xml.dom.minidom` 模块和 :mod:`xml.etree` 的 :meth:`writexml`, "
+":meth:`toxml` 和 :meth:`toprettyxml` 方法现在会保留用户指定的属性顺序。 （由 Diego Rojas 和 "
+"Raymond Hettinger 在 :issue:`34160` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1564
 msgid ""
@@ -2614,6 +2652,9 @@ msgid ""
 "database if it does not exist. (Contributed by Serhiy Storchaka in "
 ":issue:`32749`.)"
 msgstr ""
+"附带 ``'r'`` 旗标打开的 :mod:`dbm.dumb` 数据库现在将是只读的。 如果数据库不存在，附带 ``'r'`` 和 ``'w'`` "
+"旗标的 :func:`dbm.dumb.open` 不会再创建数据库。 （由 Serhiy Storchaka 在 :issue:`32749` "
+"中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1569
 msgid ""
@@ -2625,6 +2666,10 @@ msgid ""
 " an XML doctype declaration. (Contributed by Serhiy Storchaka in "
 ":issue:`29209`.)"
 msgstr ""
+"在 :class:`~xml.etree.ElementTree.XMLParser` 的子类中定义的 ``doctype()`` "
+"方法将不会再被调用，并将导致发出 :exc:`RuntimeWarning` 而不是 :exc:`DeprecationWarning`。 "
+"请在目标上定义 :meth:`doctype() <xml.etree.ElementTree.TreeBuilder.doctype>` 方法来处理 "
+"XML doctype 声明。 （由 Serhiy Storchaka 在 :issue:`29209` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1576
 msgid ""
@@ -2633,12 +2678,17 @@ msgid ""
 "``type.__new__``.  A :exc:`DeprecationWarning` was emitted in Python 3.6--"
 "3.7.  (Contributed by Serhiy Storchaka in :issue:`23722`.)"
 msgstr ""
+"现在当自定义元类未在传给 ``type.__new__`` 的命名空间中提供 ``__classcell__`` 入口时将引发 "
+":exc:`RuntimeError`。 在 Python 3.6--3.7 中是则是引发 :exc:`DeprecationWarning`。 （由 "
+"Serhiy Storchaka 在 :issue:`23722` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1581
 msgid ""
 "The :class:`cProfile.Profile` class can now be used as a context manager. "
 "(Contributed by Scott Sanderson in :issue:`29235`.)"
 msgstr ""
+":class:`cProfile.Profile` 类现在可被用作上下文管理器。 （由 Scott Sanderson 在 :issue:`29235`"
+" 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1584
 msgid ""
@@ -2647,18 +2697,21 @@ msgid ""
 "\"fast-copy\" syscalls (see :ref:`shutil-platform-dependent-efficient-copy-"
 "operations` section)."
 msgstr ""
+":func:`shutil.copyfile`, :func:`shutil.copy`, :func:`shutil.copy2`, "
+":func:`shutil.copytree` 和 :func:`shutil.move` 会使用平台专属的 \"fast-copy\" 系统调用（参见"
+" :ref:`shutil-platform-dependent-efficient-copy-operations` 一节）。"
 
 #: ../../whatsnew/3.8.rst:1589
 msgid ""
 ":func:`shutil.copyfile` default buffer size on Windows was changed from 16 "
 "KiB to 1 MiB."
-msgstr ""
+msgstr ":func:`shutil.copyfile` 在 Windows 上的默认缓冲区大小从 16 KiB 改为 1 MiB。"
 
 #: ../../whatsnew/3.8.rst:1592
 msgid ""
 "The ``PyGC_Head`` struct has changed completely.  All code that touched the "
 "struct member should be rewritten.  (See :issue:`33597`)"
-msgstr ""
+msgstr "``PyGC_Head`` 结构已被完全改变。 所有接触到该结构的代码都应当被重写。 (参见 :issue:`33597`)"
 
 #: ../../whatsnew/3.8.rst:1595
 msgid ""
@@ -2671,6 +2724,11 @@ msgid ""
 "issue.  We'll work on helping you adjust (possibly including adding accessor"
 " functions to the public API).  (See :issue:`35886`.)"
 msgstr ""
+"``PyInterpreterState`` 结构已被移入 \"internal\" 头文件 (特别是 "
+"Include/internal/pycore_pystate.h)。 不透明的 ``PyInterpreterState`` 作为公有 API "
+"(和稳定版 ABI) 的一部分仍然可用。 文档指明该结构的任何字段都不是公有的，因此我们希望没人在使用它们。 "
+"但是，如果你确实依赖其中某一个或更多个私有字段并且没有其他替代选项，则请开一个 BPO 问题。 我们将尽力帮助你进行调整 (可能包括向公有 API "
+"添加访问器函数)。 (参见 :issue:`35886`。)"
 
 #: ../../whatsnew/3.8.rst:1605
 msgid ""
