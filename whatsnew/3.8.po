@@ -2841,6 +2841,8 @@ msgid ""
 " It should not be called explicitly: use :c:func:`PyOS_AfterFork_Child` "
 "instead. (Contributed by Victor Stinner in :issue:`36728`.)"
 msgstr ""
+":c:func:`PyEval_ReInitThreads` 函数已从 C API 中移除。 它不应当被显式地调用；请改用 "
+":c:func:`PyOS_AfterFork_Child`。 （由 Victor Stinner 在 :issue:`36728` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1672
 msgid ""
@@ -2852,6 +2854,10 @@ msgid ""
 " by the ``*shared*`` section of ``Modules/Setup``. (Contributed by Victor "
 "Stinner in :issue:`21536`.)"
 msgstr ""
+"在 Unix 上，C 扩展不会再被链接到 libpython，但 Android 和 Cygwin 例外。 当 Python "
+"被嵌入时，``libpython`` 不可使用 ``RTLD_LOCAL`` 加载，而要改用 ``RTLD_GLOBAL``。 之前使用 "
+"``RTLD_LOCAL`` 已经不可能加载未链接到 ``libpython`` 的 C 扩展了，例如通过 ``Modules/Setup`` 的 "
+"``*shared*`` 部分构建的标准库 C 扩展。 （由 Victor Stinner 在 :issue:`21536` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1680
 msgid ""
@@ -2862,6 +2868,10 @@ msgid ""
 ":ref:`arg-parsing` for detail. (Contributed by Inada Naoki in "
 ":issue:`36381`.)"
 msgstr ""
+"在解析或构建值时（例如 :c:func:`PyArg_ParseTuple`, :c:func:`Py_BuildValue`, "
+":c:func:`PyObject_CallFunction` 等等）使用形如 ``#`` 的格式而不定义 ``PY_SSIZE_T_CLEAN`` "
+"现在将会引发 ``DeprecationWarning``。 它将在 3.10 或 4.0 中被移除。 请参阅 :ref:`arg-parsing` "
+"了解详情。 （由 Inada Naoki 在 :issue:`36381` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1686
 msgid ""
@@ -2873,10 +2883,14 @@ msgid ""
 "created through :c:func:`PyType_FromSpec` behave like other classes in "
 "managed code."
 msgstr ""
+"堆分配类型的实例（例如使用 :c:func:`PyType_FromSpec` 创建的实例）会保存一个对其类型对象的引用。 "
+"提升这些类型对象引用计数的操作已从 :c:func:`PyType_GenericAlloc` 移至更低层级的函数 "
+":c:func:`PyObject_Init` 和 :c:func:`PyObject_INIT`。 这使用通过This makes types "
+"created through :c:func:`PyType_FromSpec` 所创建类型的行为与管理代码中的其他类保持一致。"
 
 #: ../../whatsnew/3.8.rst:1694
 msgid "Statically allocated types are not affected."
-msgstr ""
+msgstr "静态分配类型将不受影响。"
 
 #: ../../whatsnew/3.8.rst:1696
 msgid ""
@@ -2886,11 +2900,13 @@ msgid ""
 "this, these classes need to call Py_DECREF on the type object during "
 "instance deallocation."
 msgstr ""
+"在大部分情况下，这应该都不会有附带影响。 但是，在分配实例后手动提升引用计数的类型（也许是为了绕过漏洞）现在可能永远不会被销毁。 "
+"要避免这种情况，这些类需要在实例撤销分配期间在类型对象上调用 Py_DECREF。"
 
 #: ../../whatsnew/3.8.rst:1702
 msgid ""
 "To correctly port these types into 3.8, please apply the following changes:"
-msgstr ""
+msgstr "要正确地将这些类型移植到 3.8，请应用以下修改："
 
 #: ../../whatsnew/3.8.rst:1705
 msgid ""
@@ -2900,6 +2916,10 @@ msgid ""
 ":c:func:`PyObject_GC_NewVar`, or any other custom allocator that uses "
 ":c:func:`PyObject_Init` or :c:func:`PyObject_INIT`."
 msgstr ""
+"在分配实例之后在类型对象上移除 :c:macro:`Py_INCREF` —— 如果有的话。 这可以发生在调用 "
+":c:func:`PyObject_New`, :c:func:`PyObject_NewVar`, "
+":c:func:`PyObject_GC_New`, :c:func:`PyObject_GC_NewVar` 或任何其他使用 "
+":c:func:`PyObject_Init` 或 :c:func:`PyObject_INIT` 的自定义分配器之后。"
 
 #: ../../whatsnew/3.8.rst:1712 ../../whatsnew/3.8.rst:1729
 #: ../../whatsnew/3.8.rst:1746
@@ -2910,21 +2930,21 @@ msgstr "示例::"
 msgid ""
 "Ensure that all custom ``tp_dealloc`` functions of heap-allocated types "
 "decrease the type's reference count."
-msgstr ""
+msgstr "确保所有堆分配类型的自定义 ``tp_dealloc`` 函数会减少类型的引用计数。"
 
 #: ../../whatsnew/3.8.rst:1741
 msgid "(Contributed by Eddie Elizondo in :issue:`35810`.)"
-msgstr ""
+msgstr "（由 Eddie Elizondo 在 :issue:`35810` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1743
 msgid ""
 "The :c:macro:`Py_DEPRECATED()` macro has been implemented for MSVC. The "
 "macro now must be placed before the symbol name."
-msgstr ""
+msgstr ":c:macro:`Py_DEPRECATED()` 宏已经针对 MSVC 实现。 这个宏现在必须放在符号名称之前。"
 
 #: ../../whatsnew/3.8.rst:1750
 msgid "(Contributed by Zackery Spytz in :issue:`33407`.)"
-msgstr ""
+msgstr "（由 Zackery Spytz 在 :issue:`33407` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1752
 msgid ""
@@ -2935,10 +2955,14 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_finalize` (:const:`Py_TPFLAGS_HAVE_FINALIZE` is "
 "not checked anymore before reading :c:member:`~PyTypeObject.tp_finalize`)."
 msgstr ""
+"解释器将不再假装支持跨发布版本的扩展类型二进制兼容性。 由第三方扩展模块所导出的 :c:type:`PyTypeObject` 应该具有当前 "
+"Python 版本所要求的所有空位，包括 :c:member:`~PyTypeObject.tp_finalize` "
+"(:const:`Py_TPFLAGS_HAVE_FINALIZE` 不会再在读取 "
+":c:member:`~PyTypeObject.tp_finalize` 之前被检查)。"
 
 #: ../../whatsnew/3.8.rst:1759
 msgid "(Contributed by Antoine Pitrou in :issue:`32388`.)"
-msgstr ""
+msgstr "（由 Antoine Pitrou 在 :issue:`32388` 中贡献。）"
 
 #: ../../whatsnew/3.8.rst:1761
 msgid ""
@@ -2946,6 +2970,8 @@ msgid ""
 "(*posonlyargcount*) to support :pep:`570`, indicating the number of "
 "positional-only arguments."
 msgstr ""
+":c:func:`PyCode_New` 在第二个位置添加了新的形参 (*posonlyargcount*) 以支持 "
+":pep:`570`，指明仅限位置参数的数量。"
 
 #: ../../whatsnew/3.8.rst:1764
 msgid ""
