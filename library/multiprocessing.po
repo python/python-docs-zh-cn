@@ -13,8 +13,8 @@
 # Pandaaaa906 <ye.pandaaaa906@gmail.com>, 2019
 # Meng Du <alphanow@gmail.com>, 2019
 # Liying Yang <xlctemp@gmail.com>, 2019
-# weditor <weditor@163.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
+# weditor <weditor@163.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -23,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-01 14:24+0000\n"
 "PO-Revision-Date: 2017-02-16 23:19+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: weditor <weditor@163.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1655,6 +1655,8 @@ msgid ""
 "thread may acquire it again without blocking; that process or thread must "
 "release it once for each time it has been acquired."
 msgstr ""
+"递归锁对象: 类似于 :class:`threading.RLock` "
+"。递归锁必须由持有线程、进程亲自释放。如果某个进程或者线程拿到了递归锁，这个进程或者线程可以再次拿到这个锁而不需要等待。但是这个进程或者线程的拿锁操作和释放锁操作的次数必须相同。"
 
 #: ../../library/multiprocessing.rst:1302
 msgid ""
@@ -1698,6 +1700,9 @@ msgid ""
 "thread takes ownership and the recursion level is incremented, resulting in "
 "a return value of ``True``."
 msgstr ""
+"当 *block* 参数是 ``False`` , "
+"将不会阻塞，如果此时锁被其他进程或者线程持有，当前进程、线程获取锁操作失败，锁的递归等级也不会改变，函数返回 ``False`` ,  "
+"如果当前锁已经处于释放状态，则当前进程、线程则会拿到锁，并且锁内的递归等级加一，函数返回 ``True`` 。"
 
 #: ../../library/multiprocessing.rst:1332
 msgid ""
@@ -1705,6 +1710,8 @@ msgid ""
 ":meth:`Lock.acquire`.  Note that some of these behaviors of *timeout* differ"
 " from the implemented behaviors in :meth:`threading.RLock.acquire`."
 msgstr ""
+"*timeout* 参数的使用方法及行为与 :meth:`Lock.acquire` 一样。但是要注意 *timeout* 的其中一些行为和 "
+":meth:`threading.RLock.acquire` 中实现的行为是不同的。"
 
 #: ../../library/multiprocessing.rst:1339
 msgid ""
@@ -1715,6 +1722,7 @@ msgid ""
 "after the decrement the recursion level is still nonzero, the lock remains "
 "locked and owned by the calling process or thread."
 msgstr ""
+"释放锁，使锁内的递归等级减一。如果释放后锁内的递归等级降低为0，则会重置锁的状态为释放状态（即没有被任何进程、线程持有），重置后如果有有其他进程和线程在等待这把锁，他们中的一个会获得这个锁而继续运行。如果释放后锁内的递归等级还没到达0，则这个锁仍将保持未释放状态且当前进程和线程仍然是持有者。"
 
 #: ../../library/multiprocessing.rst:1347
 msgid ""
@@ -1724,16 +1732,21 @@ msgid ""
 "state.  Note that the type of exception raised in this situation differs "
 "from the implemented behavior in :meth:`threading.RLock.release`."
 msgstr ""
+"只有当前进程或线程是锁的持有者时，才允许调用这个方法。如果当前进程或线程不是这个锁的拥有者，或者这个锁处于已释放的状态(即没有任何拥有者)，调用这个方法会抛出"
+" :exc:`AssertionError` 异常。注意这里抛出的异常类型和 :meth:`threading.RLock.release` "
+"中实现的行为不一样。"
 
 #: ../../library/multiprocessing.rst:1356
 msgid "A semaphore object: a close analog of :class:`threading.Semaphore`."
-msgstr ""
+msgstr "一种信号量对象:  类似于  :class:`threading.Semaphore`."
 
 #: ../../library/multiprocessing.rst:1363
 msgid ""
 "On Mac OS X, ``sem_timedwait`` is unsupported, so calling ``acquire()`` with"
 " a timeout will emulate that function's behavior using a sleeping loop."
 msgstr ""
+"在 Mac OS X 上，不支持  ``sem_timedwait`` ，所以，使用调用 ``acquire()`` 时如果使用 timeout "
+"参数，会通过循环sleep来模拟这个函数的行为。 "
 
 #: ../../library/multiprocessing.rst:1368
 msgid ""
