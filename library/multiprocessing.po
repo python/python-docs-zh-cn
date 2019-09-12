@@ -54,9 +54,9 @@ msgid ""
 "programmer to fully leverage multiple processors on a given machine.  It "
 "runs on both Unix and Windows."
 msgstr ""
-":mod:`multiprocessing` 是一个用与 :mod:`threading` 模块相似API的支持产生进程的包。 "
+":mod:`multiprocessing` 是一个用于产生进程的包，具有与 :mod:`threading` 模块相似API。 "
 ":mod:`multiprocessing` 包同时提供本地和远程并发，使用子进程代替线程，有效避免 :term:`Global Interpreter"
-" Lock` 带来的影响。因此， :mod:`multiprocessing` 模块允许程序员充分利用机器上的多个核心。Unix 和 Windows "
+" Lock` 带来的影响。因此， :mod:`multiprocessing` 模块允许程序员充分利用机器上的多核。Unix 和 Windows "
 "上都可以运行。"
 
 #: ../../library/multiprocessing.rst:22
@@ -71,7 +71,7 @@ msgid ""
 "module.  This basic example of data parallelism using "
 ":class:`~multiprocessing.pool.Pool`, ::"
 msgstr ""
-":mod:`multiprocessing` 模块还引入了在 :mod:`threading` 模块中没有类似物的API。这方面的一个主要例子是 "
+":mod:`multiprocessing` 模块还引入了在 :mod:`threading` 模块中没有的API。一个主要的例子就是 "
 ":class:`~multiprocessing.pool.Pool` "
 "对象，它提供了一种方便的方法，可以跨多个输入值并行化函数的执行，跨进程分配输入数据（数据并行）。以下示例演示了在模块中定义此类函数的常见做法，以便子进程可以成功导入该模块。这个数据并行的基本例子使用"
 " :class:`~multiprocessing.pool.Pool` ， ::"
@@ -2107,6 +2107,8 @@ msgid ""
 " *shared objects*.  Other processes can access the shared objects by using "
 "proxies."
 msgstr ""
+"管理器提供了一种创建共享数据的方法，从而可以在不同进程中共享，甚至可以通过网络跨机器共享数据。管理器维护一个用于管理 *共享对象* "
+"的服务。其他进程可以通过代理访问这些共享对象。"
 
 #: ../../library/multiprocessing.rst:1625
 msgid ""
@@ -2115,6 +2117,8 @@ msgid ""
 "manager object corresponds to a spawned child process and has methods which "
 "will create shared objects and return corresponding proxies."
 msgstr ""
+"返回一个已启动的 :class:`~multiprocessing.managers.SyncManager` "
+"管理器对象，这个对象可以用于在不同进程中共享数据。返回的管理器对象对应了一个已经启动的子进程，并且拥有一系列方法可以用于创建共享对象、返回对应的代理。"
 
 #: ../../library/multiprocessing.rst:1633
 msgid ""
@@ -2122,10 +2126,11 @@ msgid ""
 "their parent process exits.  The manager classes are defined in the "
 ":mod:`multiprocessing.managers` module:"
 msgstr ""
+"当管理器被垃圾回收或者父进程退出时，管理器进程会立即退出。管理器类定义在 :mod:`multiprocessing.managers` 模块:"
 
 #: ../../library/multiprocessing.rst:1639
 msgid "Create a BaseManager object."
-msgstr ""
+msgstr "创建一个 BaseManager 对象。"
 
 #: ../../library/multiprocessing.rst:1641
 msgid ""
@@ -2133,12 +2138,14 @@ msgid ""
 "``get_server().serve_forever()`` to ensure that the manager object refers to"
 " a started manager process."
 msgstr ""
+"一旦创建，应该及时调用 :meth:`start` 或者  ``get_server().serve_forever()`` "
+"以确保管理器对象对应的管理进程已经启动。"
 
 #: ../../library/multiprocessing.rst:1644
 msgid ""
 "*address* is the address on which the manager process listens for new "
 "connections.  If *address* is ``None`` then an arbitrary one is chosen."
-msgstr ""
+msgstr "*address* 是管理器对象监听的地址。如果 *address* 是 ``None`` ,则允许和任意主机的请求建立连接。"
 
 #: ../../library/multiprocessing.rst:1647
 msgid ""
@@ -2147,12 +2154,16 @@ msgid ""
 "then ``current_process().authkey`` is used. Otherwise *authkey* is used and "
 "it must be a byte string."
 msgstr ""
+"*authkey* 是认证标识，用于检查连接服务进程的请求合法性。如果 *authkey* 是 ``None``, 则会使用 "
+"``current_process().authkey`` , 否则，就使用 *authkey* , 需要保证它必须是 byte 类型的字符串。"
 
 #: ../../library/multiprocessing.rst:1654
 msgid ""
 "Start a subprocess to start the manager.  If *initializer* is not ``None`` "
 "then the subprocess will call ``initializer(*initargs)`` when it starts."
 msgstr ""
+"为管理器开启一个子进程，如果 *initializer* 不是 ``None`` , 子进程在启动时将会调用  "
+"``initializer(*initargs)`` 。"
 
 #: ../../library/multiprocessing.rst:1659
 msgid ""
@@ -2160,20 +2171,22 @@ msgid ""
 "the control of the Manager. The :class:`Server` object supports the "
 ":meth:`serve_forever` method::"
 msgstr ""
+"返回一个  :class:`Server`  对象，它是管理器在后台控制的真实的服务。 :class:`Server`  对象拥有 "
+":meth:`serve_forever` 方法。"
 
 #: ../../library/multiprocessing.rst:1668
 msgid ":class:`Server` additionally has an :attr:`address` attribute."
-msgstr ""
+msgstr ":class:`Server` 额外拥有一个 :attr:`address` 属性。"
 
 #: ../../library/multiprocessing.rst:1672
 msgid "Connect a local manager object to a remote manager process::"
-msgstr ""
+msgstr "将本地管理器对象连接到一个远程管理器进程::"
 
 #: ../../library/multiprocessing.rst:1680
 msgid ""
 "Stop the process used by the manager.  This is only available if "
 ":meth:`start` has been used to start the server process."
-msgstr ""
+msgstr "停止管理器的进程。这个方法只能用于已经使用 :meth:`start` 启动的服务进程。"
 
 #: ../../library/multiprocessing.rst:1683
 msgid "This can be called multiple times."
@@ -2183,13 +2196,13 @@ msgstr "它可以被多次调用。"
 msgid ""
 "A classmethod which can be used for registering a type or callable with the "
 "manager class."
-msgstr ""
+msgstr "一个 classmethod，可以将一个类型或者可调用对象注册到管理器类。"
 
 #: ../../library/multiprocessing.rst:1690
 msgid ""
 "*typeid* is a \"type identifier\" which is used to identify a particular "
 "type of shared object.  This must be a string."
-msgstr ""
+msgstr "*typeid* 是一种 \"类型标识符\"，用于唯一表示某种共享对象类型，必须是一个字符串。"
 
 #: ../../library/multiprocessing.rst:1693
 msgid ""
