@@ -2471,6 +2471,7 @@ msgid ""
 "of the referent, whereas applying :func:`repr` will return the "
 "representation of the proxy."
 msgstr ""
+"注意，对代理使用 :func:`str` 函数会返回指涉对象的字符串表示，但是 :func:`repr` 却会返回代理本身的内部字符串表示。"
 
 #: ../../library/multiprocessing.rst:1962
 msgid ""
@@ -2479,6 +2480,9 @@ msgid ""
 ":`multiprocessing-proxy_objects`.  This permits nesting of these managed "
 "lists, dicts, and other :ref:`multiprocessing-proxy_objects`:"
 msgstr ""
+"被代理的对象很重要的一点是必须可以被序列化，这样才能允许他们在进程间传递。因此，指涉对象可以包含 :ref:`multiprocessing-"
+"proxy_objects` 。这允许管理器中列表、字典或者其他 :ref:`multiprocessing-proxy_objects` "
+"对象之间的嵌套。"
 
 #: ../../library/multiprocessing.rst:1978
 msgid "Similarly, dict and list proxies may be nested inside one another::"
@@ -2494,6 +2498,9 @@ msgid ""
 "through the manager and so to effectively modify such an item, one could re-"
 "assign the modified value to the container proxy::"
 msgstr ""
+"如果指涉对象包含了普通 :class:`list` 或 :class:`dict` "
+"对象，对这些内部可变对象的修改不会通过管理器传播，因为代理无法得知被包含的值什么时候被修改了。但是把存放在容器代理中的值本身是会通过管理器传播的（会触发代理对象中的"
+" ``__setitem__`` ）从而有效修改这些对象，所以可以把修改过的值重新赋值给容器代理::"
 
 #: ../../library/multiprocessing.rst:2010
 msgid ""
@@ -2501,6 +2508,8 @@ msgid ""
 ":`multiprocessing-proxy_objects` for most use cases but also demonstrates a "
 "level of control over the synchronization."
 msgstr ""
+"在大多是使用情形下，这种实现方式并不比嵌套 :ref:`multiprocessing-proxy_objects` "
+"方便，但是依然演示了对于同步的一种控制级别。"
 
 #: ../../library/multiprocessing.rst:2016
 msgid ""
@@ -2540,6 +2549,8 @@ msgid ""
 "new shared object -- see documentation for the *method_to_typeid* argument "
 "of :meth:`BaseManager.register`."
 msgstr ""
+"返回结果会是一个值拷贝或者一个新的共享对象的代理 - 见函数 :meth:`BaseManager.register` 中关于参数 "
+"*method_to_typeid* 的文档。"
 
 #: ../../library/multiprocessing.rst:2048
 msgid ""
@@ -2548,6 +2559,8 @@ msgid ""
 "process then this is converted into a :exc:`RemoteError` exception and is "
 "raised by :meth:`_callmethod`."
 msgstr ""
+"如果这个调用熬出了异常，则这个异常会被 :meth:`_callmethod` 透传出来。如果是管理器进程本身抛出的一些其他异常，则会被 "
+":meth:`_callmethod` 转换为 :exc:`RemoteError` 异常重新抛出。"
 
 #: ../../library/multiprocessing.rst:2053
 msgid ""
@@ -2589,7 +2602,7 @@ msgstr "代理对象使用了一个弱引用回调函数，当它被垃圾回收
 msgid ""
 "A shared object gets deleted from the manager process when there are no "
 "longer any proxies referring to it."
-msgstr ""
+msgstr "当共享对象没有被任何代理器引用时，会被管理器进程删除。"
 
 #: ../../library/multiprocessing.rst:2096
 msgid "Process Pools"
@@ -2839,13 +2852,14 @@ msgstr ""
 
 #: ../../library/multiprocessing.rst:2314
 msgid "Listeners and Clients"
-msgstr ""
+msgstr "监听者及客户端"
 
 #: ../../library/multiprocessing.rst:2319
 msgid ""
 "Usually message passing between processes is done using queues or by using "
 ":class:`~Connection` objects returned by :func:`~multiprocessing.Pipe`."
 msgstr ""
+"通常情况下，进程间通过队列或者 :func:`~multiprocessing.Pipe` 返回的 :class:`~Connection` 传递消息。"
 
 #: ../../library/multiprocessing.rst:2323
 msgid ""
@@ -2855,12 +2869,15 @@ msgid ""
 "*digest authentication* using the :mod:`hmac` module, and for polling "
 "multiple connections at the same time."
 msgstr ""
+"不过，:mod:`multiprocessing.connection` "
+"模块其实提供了一些更灵活的特性。最基础的用法是通过它抽象出来的高级API来操作socket或者Windows命名管道。也提供一些高级用法，如通过 "
+":mod:`hmac` 模块来支持 *摘要认证*，以及同时监听多个管道连接。"
 
 #: ../../library/multiprocessing.rst:2332
 msgid ""
 "Send a randomly generated message to the other end of the connection and "
 "wait for a reply."
-msgstr ""
+msgstr "发送一个随机生成的消息到另一端，并等待回复。"
 
 #: ../../library/multiprocessing.rst:2335
 msgid ""
@@ -2868,18 +2885,20 @@ msgid ""
 "then a welcome message is sent to the other end of the connection.  "
 "Otherwise :exc:`~multiprocessing.AuthenticationError` is raised."
 msgstr ""
+"如果收到的回复与使用 *authkey* 作为键生成的信息摘要匹配成功，就会发送一个欢迎信息给管道另一端。否则抛出 "
+":exc:`~multiprocessing.AuthenticationError` 异常。"
 
 #: ../../library/multiprocessing.rst:2341
 msgid ""
 "Receive a message, calculate the digest of the message using *authkey* as "
 "the key, and then send the digest back."
-msgstr ""
+msgstr "接收一条信息，使用 *authkey* 作为键计算信息摘要，然后将摘要发送回去。"
 
 #: ../../library/multiprocessing.rst:2344
 msgid ""
 "If a welcome message is not received, then "
 ":exc:`~multiprocessing.AuthenticationError` is raised."
-msgstr ""
+msgstr "如果没有收到欢迎消息，就抛出 :exc:`~multiprocessing.AuthenticationError` 异常。"
 
 #: ../../library/multiprocessing.rst:2349
 msgid ""
