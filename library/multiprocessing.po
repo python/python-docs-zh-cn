@@ -2145,7 +2145,7 @@ msgstr ""
 msgid ""
 "*address* is the address on which the manager process listens for new "
 "connections.  If *address* is ``None`` then an arbitrary one is chosen."
-msgstr "*address* 是管理器对象监听的地址。如果 *address* 是 ``None`` ,则允许和任意主机的请求建立连接。"
+msgstr "*address* 是管理器服务进程监听的地址。如果 *address* 是 ``None`` ,则允许和任意主机的请求建立连接。"
 
 #: ../../library/multiprocessing.rst:1647
 msgid ""
@@ -3179,9 +3179,10 @@ msgid ""
 "process program will share a single authentication key which can be used "
 "when setting up connections between themselves."
 msgstr ""
-"如果要求认证但是没有指定认证密钥，则会使用 ``current_process().authkey`` 的返回值（见 "
-":class:`~multiprocessing.Process` "
-"）。这个值会自动被该进程的子进程继承。这意味着（默认情况下）一个多进程程序中的所有进程相互之间建立连接的时候，会使用相同的认证密钥，"
+"如果要求认证但是没有指定认证密钥，则会使用 ``current_process().authkey`` 的返回值 (参见 "
+":class:`~multiprocessing.Process` )。 这个值会被当前进程所创建的任何 "
+":class:`~multiprocessing.Process` 对象自动继承。 "
+"这意味着（默认情况下）当一个多进程程序的所有进程在彼此之间建立连接的时候，会共享同一个认证密钥。"
 
 #: ../../library/multiprocessing.rst:2580
 msgid ""
@@ -3201,13 +3202,13 @@ msgid ""
 " mixed up."
 msgstr ""
 "当前模块也提供了一些对 logging 的支持。注意， :mod:`logging` "
-"模块本身并没有使用进程间共享的锁，所以来自于多个进程的日志可能（具体取决于使用的日志 handler）相互覆盖或者混杂。"
+"模块本身并没有使用进程间共享的锁，所以来自于多个进程的日志可能（具体取决于使用的日志 handler 类型）相互覆盖或者混杂。"
 
 #: ../../library/multiprocessing.rst:2593
 msgid ""
 "Returns the logger used by :mod:`multiprocessing`.  If necessary, a new one "
 "will be created."
-msgstr ""
+msgstr "返回 :mod:`multiprocessing` 使用的 logger，必要的话会创建一个新的。"
 
 #: ../../library/multiprocessing.rst:2596
 msgid ""
@@ -3215,13 +3216,15 @@ msgid ""
 "default handler. Messages sent to this logger will not by default propagate "
 "to the root logger."
 msgstr ""
+"如果创建的首个 logger 日志级别为 :data:`logging.NOTSET` 并且没有默认 handler。通过这个 logger "
+"打印的消息不会传递到根 logger。"
 
 #: ../../library/multiprocessing.rst:2600
 msgid ""
 "Note that on Windows child processes will only inherit the level of the "
 "parent process's logger -- any other customization of the logger will not be"
 " inherited."
-msgstr ""
+msgstr "注意在 Windows 上，子进程只会继承父进程 logger 的日志级别 - 对于logger的其他自定义项不会继承。"
 
 #: ../../library/multiprocessing.rst:2607
 msgid ""
@@ -3230,24 +3233,29 @@ msgid ""
 "output to :data:`sys.stderr` using format ``'[%(levelname)s/%(processName)s]"
 " %(message)s'``."
 msgstr ""
+"此函数会调用 :func:`get_logger` 但是会在返回的 logger 上增加一个 handler，将所有输出都使用 "
+"``'[%(levelname)s/%(processName)s] %(message)s'`` 的格式发送到 :data:`sys.stderr` "
+"。"
 
 #: ../../library/multiprocessing.rst:2612
 msgid "Below is an example session with logging turned on::"
-msgstr ""
+msgstr "下面是一个在交互式解释器中打开日志功能的例子::"
 
 #: ../../library/multiprocessing.rst:2627
 msgid "For a full table of logging levels, see the :mod:`logging` module."
-msgstr ""
+msgstr "要查看日志等级的完整列表，见 :mod:`logging` 模块。"
 
 #: ../../library/multiprocessing.rst:2631
 msgid "The :mod:`multiprocessing.dummy` module"
-msgstr ""
+msgstr ":mod:`multiprocessing.dummy` 模块"
 
 #: ../../library/multiprocessing.rst:2636
 msgid ""
 ":mod:`multiprocessing.dummy` replicates the API of :mod:`multiprocessing` "
 "but is no more than a wrapper around the :mod:`threading` module."
 msgstr ""
+":mod:`multiprocessing.dummy` 复制了 :mod:`multiprocessing` 的 API，不过是在 "
+":mod:`threading` 模块之上包装了一层。"
 
 #: ../../library/multiprocessing.rst:2643
 msgid "Programming guidelines"
@@ -3261,55 +3269,55 @@ msgstr "使用 :mod:`multiprocessing` 时，应遵循一些指导原则和习惯
 
 #: ../../library/multiprocessing.rst:2650
 msgid "All start methods"
-msgstr ""
+msgstr "所有start方法"
 
 #: ../../library/multiprocessing.rst:2652
 msgid "The following applies to all start methods."
-msgstr ""
+msgstr "下面这些适用于所有start方法。"
 
 #: ../../library/multiprocessing.rst:2654
 msgid "Avoid shared state"
-msgstr ""
+msgstr "避免共享状态"
 
 #: ../../library/multiprocessing.rst:2656
 msgid ""
 "As far as possible one should try to avoid shifting large amounts of data "
 "between processes."
-msgstr ""
+msgstr "应该尽可能避免在进程间传递大量数据，越少越好。"
 
 #: ../../library/multiprocessing.rst:2659
 msgid ""
 "It is probably best to stick to using queues or pipes for communication "
 "between processes rather than using the lower level synchronization "
 "primitives."
-msgstr ""
+msgstr "最好坚持使用队列或者管道进行进程间通信，而不是底层的同步原语。"
 
 #: ../../library/multiprocessing.rst:2663
 msgid "Picklability"
-msgstr ""
+msgstr "可序列化"
 
 #: ../../library/multiprocessing.rst:2665
 msgid "Ensure that the arguments to the methods of proxies are picklable."
-msgstr ""
+msgstr "保证所代理的方法的参数是可以序列化的。"
 
 #: ../../library/multiprocessing.rst:2667
 msgid "Thread safety of proxies"
-msgstr ""
+msgstr "代理的线程安全性"
 
 #: ../../library/multiprocessing.rst:2669
 msgid ""
 "Do not use a proxy object from more than one thread unless you protect it "
 "with a lock."
-msgstr ""
+msgstr "不要在多线程中同时使用一个代理对象，除非你用锁保护它。"
 
 #: ../../library/multiprocessing.rst:2672
 msgid ""
 "(There is never a problem with different processes using the *same* proxy.)"
-msgstr ""
+msgstr "（而在不同进程中使用 *相同* 的代理对象却没有问题。）"
 
 #: ../../library/multiprocessing.rst:2674
 msgid "Joining zombie processes"
-msgstr ""
+msgstr "使用 Join 避免僵尸进程"
 
 #: ../../library/multiprocessing.rst:2676
 msgid ""
