@@ -51,8 +51,8 @@ msgstr ""
 "模块 :mod:`pickle` 实现了对一个 Python 对象结构的二进制序列化和反序列化。 *\"Pickling\"* 是将 Python "
 "对象及其所拥有的层次结构转化为一个字节流的过程，而 *\"unpickling\"* 是相反的操作，会将（来自一个 :term:`binary "
 "file` 或者 :term:`bytes-like object` 的）字节流转化回一个对象层次结构。Pickling（和 "
-"unpickling）也被称为“序列化”, “编组” [#]_ 或者 “平面化”。而为了避免混乱，此处采用术语 “pickling” 和 "
-"“unpickling”。"
+"unpickling）也被称为“序列化”, “编组” [#]_ 或者 “平面化”。而为了避免混乱，此处采用术语 “打包 (pickling)” 和 "
+"“解包 (unpickling)”。"
 
 #: ../../library/pickle.rst:33
 msgid "The ``pickle`` module **is not secure**. Only unpickle data you trust."
@@ -63,7 +63,7 @@ msgid ""
 "It is possible to construct malicious pickle data which will **execute "
 "arbitrary code during unpickling**. Never unpickle data that could have come"
 " from an untrusted source, or that could have been tampered with."
-msgstr "构建恶意的pickle数据来**在解封时执行任意代码**是可能的。绝对不要对不信任来源的数据和可能被篡改过的数据进行unpickle。"
+msgstr "构建恶意的 pickle 数据来**在解封时执行任意代码**是可能的。绝对不要对不信任来源的数据和可能被篡改过的数据进行解包。"
 
 #: ../../library/pickle.rst:39
 msgid ""
@@ -151,7 +151,7 @@ msgstr ""
 "同样用于序列化的 :mod:`marshal` 格式不保证数据能移植到不同的 Python 版本中。因为它的主要任务是支持 :file:`.pyc` "
 "文件，必要时会以破坏向后兼容的方式更改这种序列化格式，为此 Python 的实现者保留了更改格式的权利。:mod:`pickle` "
 "序列化格式可以在不同版本的 Python 中实现向后兼容，前提是选择了合适的 pickle 协议。如果你的数据要在 Python 2 与 Python "
-"3 之间跨越传递，Pickling 和 Unpickling 的代码在 2 和 3 之间也是不同的。"
+"3 之间跨越传递，打包和解包的代码在 2 和 3 之间也是不同的。"
 
 #: ../../library/pickle.rst:90
 msgid "Comparison with ``json``"
@@ -274,8 +274,8 @@ msgid ""
 ":class:`bytes` objects and cannot be unpickled by Python 2.x.  This was the "
 "default protocol in Python 3.0--3.7."
 msgstr ""
-"v3 版协议是在 Python 3.0 中引入的。 它显式地支持 :class:`bytes` 字节对象，不能使用Python 2.x "
-"unpickle。这是Python 3.0-3.7的默认协议。"
+"v3 版协议是在 Python 3.0 中引入的。 它显式地支持 :class:`bytes` 字节对象，不能使用 Python 2.x 解包。这是 "
+"Python 3.0-3.7 的默认协议。"
 
 #: ../../library/pickle.rst:157
 msgid ""
@@ -303,7 +303,7 @@ msgstr ""
 "序列化是一种比持久化更底层的概念，虽然 :mod:`pickle` "
 "读取和写入的是文件对象，但它不处理持久对象的命名问题，也不处理对持久对象的并发访问（甚至更复杂）的问题。:mod:`pickle` "
 "模块可以将复杂对象转换为字节流，也可以将字节流转换为具有相同内部结构的对象。处理这些字节流最常见的做法是将它们写入文件，但它们也可以通过网络发送或存储在数据库中。:mod:`shelve`"
-" 模块提供了一个简单的接口，用于在 DBM 类型的数据库文件上 pickle 和 unpickle 对象。"
+" 模块提供了一个简单的接口，用于在 DBM 类型的数据库文件上打包和解包对象。"
 
 #: ../../library/pickle.rst:177
 msgid "Module Interface"
@@ -436,25 +436,25 @@ msgstr ":mod:`pickle` 模块定义了以下 3 个异常："
 msgid ""
 "Common base class for the other pickling exceptions.  It inherits "
 ":exc:`Exception`."
-msgstr ""
+msgstr "其他 pickle 异常的基类。它是 :exc:`Exception` 的一个子类。"
 
 #: ../../library/pickle.rst:276
 msgid ""
 "Error raised when an unpicklable object is encountered by :class:`Pickler`. "
 "It inherits :exc:`PickleError`."
-msgstr ""
+msgstr "当 :class:`Pickler` 遇到无法解包的对象时抛出此错误。它是 :exc:`PickleError` 的子类。"
 
 #: ../../library/pickle.rst:279
 msgid ""
 "Refer to :ref:`pickle-picklable` to learn what kinds of objects can be "
 "pickled."
-msgstr ""
+msgstr "参考 :ref:`pickle-picklable` 来了解哪些对象可以被打包。"
 
 #: ../../library/pickle.rst:284
 msgid ""
 "Error raised when there is a problem unpickling an object, such as a data "
 "corruption or a security violation.  It inherits :exc:`PickleError`."
-msgstr ""
+msgstr "当解包出错时抛出此异常，例如数据损坏或对象不安全。它是 :exc:`PickleError` 的子类。"
 
 #: ../../library/pickle.rst:287
 msgid ""
@@ -462,16 +462,19 @@ msgid ""
 "(but not necessarily limited to) AttributeError, EOFError, ImportError, and "
 "IndexError."
 msgstr ""
+"注意，解包时可能还会抛出其他异常，包括（但不限于） AttributeError、EOFError、ImportError 和 IndexError。"
 
 #: ../../library/pickle.rst:292
 msgid ""
 "The :mod:`pickle` module exports three classes, :class:`Pickler`, "
 ":class:`Unpickler` and :class:`PickleBuffer`:"
 msgstr ""
+":mod:`pickle` 模块包含了 3 个类，:class:`Pickler`、:class:`Unpickler` 和 "
+":class:`PickleBuffer`："
 
 #: ../../library/pickle.rst:297
 msgid "This takes a binary file for writing a pickle data stream."
-msgstr ""
+msgstr "它接受一个二进制文件用于写入 pickle 数据流。"
 
 #: ../../library/pickle.rst:299
 msgid ""
@@ -480,6 +483,9 @@ msgid ""
 "not specified, the default is :data:`DEFAULT_PROTOCOL`.  If a negative "
 "number is specified, :data:`HIGHEST_PROTOCOL` is selected."
 msgstr ""
+"可选参数 *protocol* 是一个整数，告知 pickler 使用指定的协议，可选择的协议范围从 0 到 "
+":data:`HIGHEST_PROTOCOL`。如果没有指定，这一参数默认值为 "
+":data:`DEFAULT_PROTOCOL`。指定一个负数就相当于指定 :data:`HIGHEST_PROTOCOL`。"
 
 #: ../../library/pickle.rst:304
 msgid ""
@@ -488,6 +494,9 @@ msgid ""
 ":class:`io.BytesIO` instance, or any other custom object that meets this "
 "interface."
 msgstr ""
+"参数 *file* 必须有一个 write() 方法，该 write() "
+"方法要能接收字节作为其唯一参数。因此，它可以是一个打开的磁盘文件（用于写入二进制内容），也可以是一个 :class:`io.BytesIO` "
+"实例，也可以是满足这一接口的其他任何自定义对象。"
 
 #: ../../library/pickle.rst:309
 msgid ""
@@ -495,6 +504,8 @@ msgid ""
 "map the new Python 3 names to the old module names used in Python 2, so that"
 " the pickle data stream is readable with Python 2."
 msgstr ""
+"如果 *fix_imports* 为 True 且 *protocol* 小于 3，pickle 将尝试将 Python 3 中的新名称映射到 "
+"Python 2 中的旧模块名称，因此 Python 2 也可以读取打包出的数据流。"
 
 #: ../../library/pickle.rst:313
 msgid ""
