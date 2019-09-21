@@ -581,6 +581,10 @@ msgid ""
 ":attr:`dispatch_table` attribute then this will be used as the default "
 "dispatch table for instances of that class."
 msgstr ""
+"Pickler 对象默认并没有 :attr:`dispatch_table` 属性，该对象默认使用 :mod:`copyreg` 模块中定义的全局 "
+"dispatch 表。如果要为特定 Pickler 对象自定义序列化过程，可以将 :attr:`dispatch_table` 属性设置为类字典对象"
+"（dict-like object）。另外，如果 :class:`Pickler` 的子类设置了 :attr:`dispatch_table` "
+"属性，则该子类的实例会使用这个表作为默认的 dispatch 表。"
 
 #: ../../library/pickle.rst:363
 msgid "See :ref:`pickle-dispatch` for usage examples."
@@ -594,10 +598,13 @@ msgid ""
 " optionally return ``NotImplemented`` to fallback on "
 ":attr:`dispatch_table`-registered reducers to pickle ``obj``."
 msgstr ""
+"可以在 :class:`Pickler` 的子类中定义的特殊 reducer。此方法的优先级高于 :attr:`dispatch_table` 中的任何"
+" reducer。它应该与 :meth:`__reduce__` 方法遵循相同的接口，它也可以返回 ``NotImplemented``，这将使用 "
+":attr:`dispatch_table` 里注册的 reducer 来打包 ``obj``。"
 
 #: ../../library/pickle.rst:375
 msgid "For a detailed example, see :ref:`reducer_override`."
-msgstr ""
+msgstr "参阅 :ref:`reducer_override` 获取详细的示例。"
 
 #: ../../library/pickle.rst:381
 msgid ""
@@ -607,20 +614,22 @@ msgid ""
 "referential objects, doing otherwise will cause :class:`Pickler` to recurse "
 "infinitely."
 msgstr ""
+"已弃用。设为 True 则启用快速模式。快速模式禁用了“备忘录” (memo) 的使用，即不生成多余的 PUT 操作码来加快打包过程。不应将其与自指 "
+"(self-referential) 对象一起使用，否则将导致 :class:`Pickler` 无限递归。"
 
 #: ../../library/pickle.rst:387
 msgid "Use :func:`pickletools.optimize` if you need more compact pickles."
-msgstr ""
+msgstr "如果需要进一步提高 pickle 的压缩率，请使用 :func:`pickletools.optimize`。"
 
 #: ../../library/pickle.rst:392
 msgid "This takes a binary file for reading a pickle data stream."
-msgstr ""
+msgstr "它接受一个二进制文件用于读取 pickle 数据流。"
 
 #: ../../library/pickle.rst:394
 msgid ""
 "The protocol version of the pickle is detected automatically, so no protocol"
 " argument is needed."
-msgstr ""
+msgstr "Pickle 协议版本是自动检测出来的，所以不需要参数来指定协议。"
 
 #: ../../library/pickle.rst:397
 msgid ""
@@ -631,6 +640,9 @@ msgid ""
 "opened for binary reading, an :class:`io.BytesIO` object, or any other "
 "custom object that meets this interface."
 msgstr ""
+"参数 *file* 必须有三个方法，read() 方法接受一个整数参数，readinto() 方法接受一个缓冲区作为参数，readline() "
+"方法不需要参数，这与 :class:`io.BufferedIOBase` 里定义的接口是相同的。因此 *file* "
+"可以是一个磁盘上用于二进制读取的文件，也可以是一个 :class:`io.BytesIO` 实例，也可以是满足这一接口的其他任何自定义对象。"
 
 #: ../../library/pickle.rst:404
 msgid ""
@@ -645,6 +657,13 @@ msgid ""
 ":class:`~datetime.datetime`, :class:`~datetime.date` and "
 ":class:`~datetime.time` pickled by Python 2."
 msgstr ""
+"可选的参数是 *fix_imports*, *encoding* 和 *errors*，用于控制由Python 2 生成的 pickle "
+"流的兼容性。如果 *fix_imports* 为 True，则 pickle 将尝试将旧的 Python 2 名称映射到 Python 3 "
+"中对应的新名称。*encoding* 和 *errors* 参数告诉 pickle 如何解码 Python 2 存储的 8 "
+"位字符串实例；这两个参数默认分别为 'ASCII' 和 'strict'。*encoding* 参数可置为 'bytes' 来将这些 8 "
+"位字符串实例读取为字节对象。读取 NumPy array 和 Python 2 存储的 "
+":class:`~datetime.datetime`、:class:`~datetime.date` 和 "
+":class:`~datetime.time` 实例时，请使用 ``encoding='latin1'``。"
 
 #: ../../library/pickle.rst:415
 msgid ""
@@ -653,6 +672,9 @@ msgid ""
 " *buffer_callback* argument was None when a :class:`Pickler` was "
 "instantiated (or when :func:`dump` or :func:`dumps` was called)."
 msgstr ""
+"如果 *buffers* 为 None（默认值），则反序列化所需的所有数据都必须包含在 pickle 流中。这意味着在实例化 "
+":class:`Pickler` 时（或调用 :func:`dump` 或 :func:`dumps` 时），参数 *buffer_callback* "
+"为 None。"
 
 #: ../../library/pickle.rst:420
 msgid ""
