@@ -3386,6 +3386,9 @@ msgid ""
 ":meth:`Queue.cancel_join_thread <multiprocessing.Queue.cancel_join_thread>` "
 "method of the queue to avoid this behaviour.)"
 msgstr ""
+"记住，往队列放入数据的进程会一直等待直到队列中所有项被\"feeder\" 线程传给底层管道。（子进程可以调用队列的 "
+":meth:`Queue.cancel_join_thread <multiprocessing.Queue.cancel_join_thread>` "
+"方法禁止这种行为）"
 
 #: ../../library/multiprocessing.rst:2714
 msgid ""
@@ -3395,20 +3398,22 @@ msgid ""
 "put items on the queue will terminate.  Remember also that non-daemonic "
 "processes will be joined automatically."
 msgstr ""
+"这意味着，任何使用队列的时候，你都要确保在进程join之前，所有存放到队列中的项将会被其他进程、线程完全消费。否则不能保证这个写过队列的进程可以正常终止。记住非精灵进程会自动"
+" join 。"
 
 #: ../../library/multiprocessing.rst:2720
 msgid "An example which will deadlock is the following::"
-msgstr ""
+msgstr "下面是一个会导致死锁的例子::"
 
 #: ../../library/multiprocessing.rst:2734
 msgid ""
 "A fix here would be to swap the last two lines (or simply remove the "
 "``p.join()`` line)."
-msgstr ""
+msgstr "交换最后两行可以修复这个问题（或者直接删掉 ``p.join()``）。"
 
 #: ../../library/multiprocessing.rst:2737
 msgid "Explicitly pass resources to child processes"
-msgstr ""
+msgstr "显示传递资源给子进程"
 
 #: ../../library/multiprocessing.rst:2739
 msgid ""
@@ -3417,6 +3422,7 @@ msgid ""
 "However, it is better to pass the object as an argument to the constructor "
 "for the child process."
 msgstr ""
+"在Unix上，使用 *fork* 方式启动的子进程可以使用父进程中全局创建的共享资源。不过，最好是显式将资源对象通过参数的形式传递给子进程。"
 
 #: ../../library/multiprocessing.rst:2744
 msgid ""
@@ -3426,6 +3432,8 @@ msgid ""
 "  This might be important if some resource is freed when the object is "
 "garbage collected in the parent process."
 msgstr ""
+"除了（部分原因）让代码兼容 Windows "
+"以及其他的进程启动方式外，这种形式还保证了在子进程生命期这个对象是不会被父进程垃圾回收的。如果父进程中的某些对象被垃圾回收会导致资源释放，这就变得很重要。"
 
 #: ../../library/multiprocessing.rst:2751
 msgid "So for instance ::"
@@ -3437,17 +3445,19 @@ msgstr "应当重写成这样："
 
 #: ../../library/multiprocessing.rst:2775
 msgid "Beware of replacing :data:`sys.stdin` with a \"file like object\""
-msgstr ""
+msgstr "谨防将 :data:`sys.stdin` 数据替换为 “类似文件的对象”"
 
 #: ../../library/multiprocessing.rst:2777
 msgid ":mod:`multiprocessing` originally unconditionally called::"
-msgstr ""
+msgstr ":mod:`multiprocessing` 原本会无条件地这样调用::"
 
 #: ../../library/multiprocessing.rst:2781
 msgid ""
 "in the :meth:`multiprocessing.Process._bootstrap` method --- this resulted "
 "in issues with processes-in-processes. This has been changed to::"
 msgstr ""
+"在  :meth:`multiprocessing.Process._bootstrap`  方法中 —— "
+"这会导致与\"进程中的进程\"相关的一些问题。这已经被修改成了::"
 
 #: ../../library/multiprocessing.rst:2787
 msgid ""
@@ -3474,17 +3484,17 @@ msgstr ""
 
 #: ../../library/multiprocessing.rst:2809
 msgid "The *spawn* and *forkserver* start methods"
-msgstr ""
+msgstr "*spawn* 和 *forkserver* 启动方式"
 
 #: ../../library/multiprocessing.rst:2811
 msgid ""
 "There are a few extra restriction which don't apply to the *fork* start "
 "method."
-msgstr ""
+msgstr "相对于 *fork* 启动方式，有一些额外的限制。"
 
 #: ../../library/multiprocessing.rst:2814
 msgid "More picklability"
-msgstr ""
+msgstr "更依赖序列化"
 
 #: ../../library/multiprocessing.rst:2816
 msgid ""
@@ -3493,10 +3503,13 @@ msgid ""
 "instances will be picklable when the :meth:`Process.start "
 "<multiprocessing.Process.start>` method is called."
 msgstr ""
+":meth:`Process.__init__` 的所有参数都必须可序列化。同样的，当你继承 "
+":class:`~multiprocessing.Process` 时，需要保证当调用 :meth:`Process.start "
+"<multiprocessing.Process.start>` 方法时，实例可以被序列化。"
 
 #: ../../library/multiprocessing.rst:2821
 msgid "Global variables"
-msgstr ""
+msgstr "全局变量"
 
 #: ../../library/multiprocessing.rst:2823
 msgid ""
@@ -3505,29 +3518,32 @@ msgid ""
 "in the parent process at the time that :meth:`Process.start "
 "<multiprocessing.Process.start>` was called."
 msgstr ""
+"记住，如果子进程中的代码尝试访问一个全局变量，它所看到的值（如果有）可能和父进程中执行 :meth:`Process.start "
+"<multiprocessing.Process.start>` 那一刻的值不一样。"
 
 #: ../../library/multiprocessing.rst:2828
 msgid ""
 "However, global variables which are just module level constants cause no "
 "problems."
-msgstr ""
+msgstr "当全局变量知识模块级别的常量时，是不会有问题的。"
 
 #: ../../library/multiprocessing.rst:2831
 msgid "Safe importing of main module"
-msgstr ""
+msgstr "安全导入主模块"
 
 #: ../../library/multiprocessing.rst:2833
 msgid ""
 "Make sure that the main module can be safely imported by a new Python "
 "interpreter without causing unintended side effects (such a starting a new "
 "process)."
-msgstr ""
+msgstr "确保主模块可以被新启动的Python解释器安全导入而不会引发什么副作用（比如又启动了一个子进程）"
 
 #: ../../library/multiprocessing.rst:2837
 msgid ""
 "For example, using the *spawn* or *forkserver* start method running the "
 "following module would fail with a :exc:`RuntimeError`::"
 msgstr ""
+"例如，使用 *spawn* 或 *forkserver* 启动方式执行下面的模块，会引发 :exc:`RuntimeError` 异常而失败。"
 
 #: ../../library/multiprocessing.rst:2849
 msgid ""
