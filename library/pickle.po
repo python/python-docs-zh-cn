@@ -13,6 +13,7 @@
 # Menghua Xiao <arieshout@gmail.com>, 2019
 # ChenYuan <github@qiushi.ac.cn>, 2019
 # 郝晨煜 <solitaire2312@gmail.com>, 2019
+# Naisen Xu <723648649@qq.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2019
 # 
 #, fuzzy
@@ -716,7 +717,7 @@ msgid ""
 "functions."
 msgstr ""
 "如有必要，导入 *module* 模块并返回其中名叫 *name* 的对象，其中 *module* 和 *name* 参数都是 :class:`str`"
-" 对象。注意，不要被这个函数的名字迷惑，:meth:`find_class` 同样可以用来导入函数。"
+" 对象。注意，不要被这个函数的名字迷惑， :meth:`find_class` 同样可以用来导入函数。"
 
 #: ../../library/pickle.rst:452
 msgid ""
@@ -767,6 +768,8 @@ msgid ""
 "``B`` (unsigned bytes).  :exc:`BufferError` is raised if the buffer is "
 "neither C- nor Fortran-contiguous."
 msgstr ""
+"返回该缓冲区底层内存区域的 :class:`memoryview`。 返回的对象是一维的、C 连续布局的 memoryview，格式为 ``B`` "
+"(无符号字节)。 如果缓冲区既不是 C 连续布局也不是 Fortran 连续布局的，则抛出 :exc:`BufferError` 异常。"
 
 #: ../../library/pickle.rst:483
 msgid "Release the underlying buffer exposed by the PickleBuffer object."
@@ -1146,8 +1149,8 @@ msgid ""
 "of alphanumeric characters (for protocol 0) [#]_ or just an arbitrary object"
 " (for any newer protocol)."
 msgstr ""
-"为了给对象持久化提供便利，:mod:`pickle` 模块支持引用除了已封存数据流之外的对象。这些外部对象以持久化 ID 的方式被 pickle "
-"模块引用，这个 ID 是一个字母+数字的字符串（对应于 0 版协议）[#]_ 或是一个任意对象（用于任意新版协议）。"
+"为了获取对象持久化的利益， :mod:`pickle` 模块支持引用已封存数据流之外的对象。 这样的对象是通过一个持久化 ID "
+"来引用的，它应当是一个由字母数字类字符组成的字符串 (对于第 0 版协议) [#]_ 或是一个任意对象 (用于任意新版协议)。"
 
 #: ../../library/pickle.rst:735
 msgid ""
@@ -1258,7 +1261,7 @@ msgstr "使用方法如下所示："
 
 #: ../../library/pickle.rst:864
 msgid "Custom Reduction for Types, Functions, and Other Objects"
-msgstr ""
+msgstr "类型，函数和其他对象的自定义归约"
 
 #: ../../library/pickle.rst:868
 msgid ""
@@ -1267,6 +1270,8 @@ msgid ""
 " the object's type, or we may want to customize the pickling of functions "
 "and classes."
 msgstr ""
+"有时，:attr:`~Pickler.dispatch_table` 可能不够灵活。 "
+"特别是当我们想要基于对象类型以外的其他规则来对封存进行定制，或是当我们想要对函数和类的封存进行定制的时候。"
 
 #: ../../library/pickle.rst:873
 msgid ""
@@ -1276,6 +1281,9 @@ msgid ""
 "alternatively return ``NotImplemented`` to fallback to the traditional "
 "behavior."
 msgstr ""
+"对于那些情况，可能要基于 :class:`Pickler` 类进行子类化并实现 :meth:`~Pickler.reducer_override` "
+"方法。 此方法可返回任意的归约元组 (参见 :meth:`__reduce__`)。 它也可以选择返回 ``NotImplemented`` "
+"来回退到传统行为。"
 
 #: ../../library/pickle.rst:878
 msgid ""
@@ -1283,6 +1291,9 @@ msgid ""
 ":meth:`~Pickler.reducer_override` are defined, then "
 ":meth:`~Pickler.reducer_override` method takes priority."
 msgstr ""
+"如果同时定义了 :attr:`~Pickler.dispatch_table` 和 "
+":meth:`~Pickler.reducer_override`，则 :meth:`~Pickler.reducer_override` "
+"方法具有优先权。"
 
 #: ../../library/pickle.rst:883
 msgid ""
@@ -1292,16 +1303,20 @@ msgid ""
 ":class:`dict`, :class:`set`, :class:`frozenset`, :class:`list` and "
 ":class:`tuple`."
 msgstr ""
+"出于性能理由，可能不会为以下对象调用 :meth:`~Pickler.reducer_override`: ``None``, ``True``, "
+"``False``, 以及 :class:`int`, :class:`float`, :class:`bytes`, :class:`str`, "
+":class:`dict`, :class:`set`, :class:`frozenset`, :class:`list` 和 "
+":class:`tuple` 的具体实例。"
 
 #: ../../library/pickle.rst:889
 msgid ""
 "Here is a simple example where we allow pickling and reconstructing a given "
 "class::"
-msgstr ""
+msgstr "以下是一个简单的例子，其中我们允许封存并重新构建一个给定的类::"
 
 #: ../../library/pickle.rst:924
 msgid "Out-of-band Buffers"
-msgstr ""
+msgstr "外部缓冲区"
 
 #: ../../library/pickle.rst:928
 msgid ""
@@ -1312,6 +1327,8 @@ msgid ""
 "structure of objects into a sequential stream of bytes, intrinsically "
 "involves copying data to and from the pickle stream."
 msgstr ""
+"在某些场景中，:mod:`pickle` 模块会被用来传输海量的数据。 因此，最小化内存复制次数以保证性能和节省资源是很重要的。 但是 "
+":mod:`pickle` 模块的正常运作会将图类对象结构转换为字节序列流，因此在本质上就要从封存流中来回复制数据。"
 
 #: ../../library/pickle.rst:935
 msgid ""
@@ -1320,10 +1337,12 @@ msgid ""
 "implementation of the communications system) support the out-of-band "
 "transfer facilities provided by pickle protocol 5 and higher."
 msgstr ""
+"如果 *provider* (待传输对象类型的实现) 和 *consumer* (通信系统的实现) 都支持 pickle 第 5 "
+"版或更高版本所提供的外部传输功能，则此约束可以被撤销。"
 
 #: ../../library/pickle.rst:941
 msgid "Provider API"
-msgstr ""
+msgstr "提供方 API"
 
 #: ../../library/pickle.rst:943
 msgid ""
@@ -1332,6 +1351,8 @@ msgid ""
 ":class:`PickleBuffer` instance (instead of e.g. a :class:`bytes` object) for"
 " any large data."
 msgstr ""
+"大的待封存数据对象必须实现协议 5 及以上版本专属的 :meth:`__reduce_ex__` 方法，该方法将为任意大的数据返回一个 "
+":class:`PickleBuffer` 实例（而不是 :class:`bytes` 对象等）。"
 
 #: ../../library/pickle.rst:948
 msgid ""
@@ -1341,16 +1362,18 @@ msgid ""
 "opt-in to tell :mod:`pickle` that they will handle those buffers by "
 "themselves."
 msgstr ""
+":class:`PickleBuffer` 对象会 *表明* 底层缓冲区可被用于外部数据传输。 那些对象仍将保持与 :mod:`pickle` "
+"模块的正常用法兼容。 但是，使用方也可以选择告知 :mod:`pickle` 它们将自行处理那些缓冲区。"
 
 #: ../../library/pickle.rst:955
 msgid "Consumer API"
-msgstr ""
+msgstr "使用方 API"
 
 #: ../../library/pickle.rst:957
 msgid ""
 "A communications system can enable custom handling of the "
 ":class:`PickleBuffer` objects generated when serializing an object graph."
-msgstr ""
+msgstr "当序列化一个对象图时，通信系统可以启用对所生成 :class:`PickleBuffer` 对象的定制处理。"
 
 #: ../../library/pickle.rst:960
 msgid ""
@@ -1361,6 +1384,9 @@ msgid ""
 "their data copied into the pickle stream, only a cheap marker will be "
 "inserted."
 msgstr ""
+"发送端需要传递 *buffer_callback* 参数到 :class:`Pickler` (或是到 :func:`dump` 或 "
+":func:`dumps` 函数)，该回调函数将在封存对象图时附带每个所生成的 :class:`PickleBuffer` 被调用。 由 "
+"*buffer_callback* 所累积的缓冲区的数据将不会被拷贝到 pickle 流，而是仅插入一个简单的标记。"
 
 #: ../../library/pickle.rst:967
 msgid ""
@@ -1372,6 +1398,10 @@ msgid ""
 "reconstructors of the objects whose pickling produced the original "
 ":class:`PickleBuffer` objects."
 msgstr ""
+"接收端需要传递 *buffers* 参数到 :class:`Unpickler` (或是到 :func:`load` 或 :func:`loads` "
+"函数)，其值是一个由缓冲区组成的可迭代对象，它会被传递给 *buffer_callback*。 该可迭代对象应当按其被传递给 "
+"*buffer_callback* 时的顺序产生缓冲区。 这些缓冲区将提供对象重构造器所期望的数据，对这些数据的封存产生了原本的 "
+":class:`PickleBuffer` 对象。"
 
 #: ../../library/pickle.rst:975
 msgid ""
@@ -1379,7 +1409,7 @@ msgid ""
 "is free to implement its own transfer mechanism for out-of-band buffers. "
 "Potential optimizations include the use of shared memory or datatype-"
 "dependent compression."
-msgstr ""
+msgstr "在发送端和接受端之间，通信系统可以自由地实现它自己用于外部缓冲区的传输机制。 潜在的优化包括使用共享内存或基于特定数据类型的压缩等。"
 
 #: ../../library/pickle.rst:981
 msgid "Example"
@@ -1389,7 +1419,7 @@ msgstr "示例"
 msgid ""
 "Here is a trivial example where we implement a :class:`bytearray` subclass "
 "able to participate in out-of-band buffer pickling::"
-msgstr ""
+msgstr "下面是一个小例子，在其中我们实现了一个 :class:`bytearray` 的子类，能够用于外部缓冲区封存::"
 
 #: ../../library/pickle.rst:1007
 msgid ""
@@ -1397,18 +1427,19 @@ msgid ""
 "providing object if it has the right type.  This is an easy way to simulate "
 "zero-copy behaviour on this toy example."
 msgstr ""
+"重构造器 (``_reconstruct`` 类方法) 会在缓冲区的提供对象具有正确类型时返回该对象。 在此小示例中这是模拟零拷贝行为的便捷方式。"
 
 #: ../../library/pickle.rst:1011
 msgid ""
 "On the consumer side, we can pickle those objects the usual way, which when "
 "unserialized will give us a copy of the original object::"
-msgstr ""
+msgstr "在使用方，我们可以按通常方式封存那些对象，它们在反序列化时将提供原始对象的一个副本::"
 
 #: ../../library/pickle.rst:1020
 msgid ""
 "But if we pass a *buffer_callback* and then give back the accumulated "
 "buffers when unserializing, we are able to get back the original object::"
-msgstr ""
+msgstr "但是如果我们传入 *buffer_callback* 然后在反序列化时给回累积的缓冲区，我们就能够取回原始对象::"
 
 #: ../../library/pickle.rst:1030
 msgid ""
@@ -1419,14 +1450,16 @@ msgid ""
 "making as few copies as possible) when transferring between distinct "
 "processes or systems."
 msgstr ""
+"这个例子受限于 :class:`bytearray` 会自行分配内存这一事实：你无法基于另一个对象的内存创建 :class:`bytearray` "
+"的实例。 但是，第三方数据类型例如 NumPy 数组则没有这种限制，允许在单独进程或系统间传输时使用零拷贝的封存（或是尽可能少地拷贝） 。"
 
 #: ../../library/pickle.rst:1037
 msgid ":pep:`574` -- Pickle protocol 5 with out-of-band data"
-msgstr ""
+msgstr ":pep:`574` -- 带有外部数据缓冲区的 pickle 协议 5"
 
 #: ../../library/pickle.rst:1043
 msgid "Restricting Globals"
-msgstr ""
+msgstr "限制全局变量"
 
 #: ../../library/pickle.rst:1048
 msgid ""
@@ -1435,6 +1468,8 @@ msgid ""
 "it permits the unpickler to import and invoke arbitrary code.  Just consider"
 " what this hand-crafted pickle data stream does when loaded::"
 msgstr ""
+"默认情况下，解封将会导入在 pickle 数据中找到的任何类或函数。 对于许多应用来说，此行为是不可接受的，因为它会允许解封器导入并发起调用任意代码。 "
+"只须考虑当这个手工构建的 pickle 数据流被加载时会做什么::"
 
 #: ../../library/pickle.rst:1058
 msgid ""
