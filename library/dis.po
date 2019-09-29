@@ -1226,10 +1226,13 @@ msgid ""
 "callable object off the stack, calls the callable object with those "
 "arguments, and pushes the return value returned by the callable object."
 msgstr ""
+"调用一个可调用对象并传入位置参数。 *argc* 指明位置参数的数量。 栈顶包含位置参数，其中最右边的参数在最顶端。 "
+"在参数之下是一个待调用的可调用对象。 ``CALL_FUNCTION`` "
+"会从栈中弹出所有参数以及可调用对象，附带这些参数调用该可调用对象，并将可调用对象所返回的返回值推入栈顶。"
 
 #: ../../library/dis.rst:1137
 msgid "This opcode is used only for calls with positional arguments."
-msgstr ""
+msgstr "此操作码仅用于附带位置参数的调用。"
 
 #: ../../library/dis.rst:1143
 msgid ""
@@ -1243,12 +1246,15 @@ msgid ""
 "with those arguments, and pushes the return value returned by the callable "
 "object."
 msgstr ""
+"调用一个可调用对象并传入位置参数（如果有的话）和关键字参数。 *argc* 指明位置参数和关键字参数的总数量。 栈顶元素包含一个关键字参数名称的元组。 "
+"在元组之下是根据元组排序的关键字参数。 在关键字参数之下是位置参数，其中最右边的参数在最顶端。 在参数之下是一个待调用的可调用对象。 "
+"``CALL_FUNCTION_KW`` 会从栈中弹出所有参数以及可调用对象，附带这些参数调用该可调用对象，并将可调用对象所返回的返回值推入栈顶。"
 
 #: ../../library/dis.rst:1153
 msgid ""
 "Keyword arguments are packed in a tuple instead of a dictionary, *argc* "
 "indicates the total number of arguments."
-msgstr ""
+msgstr "关键字参数会被打包为一个元组而非字典，*argc* 指明参数的总数量。"
 
 #: ../../library/dis.rst:1160
 msgid ""
@@ -1265,6 +1271,11 @@ msgid ""
 "stack, calls the callable object with those arguments, and pushes the return"
 " value returned by the callable object."
 msgstr ""
+"调用一个可调用对象并附带位置参数和关键字参数变量集合。 如果设置了 *flags* 的最低位，则栈顶包含一个由额外关键字参数组成的映射对象。 "
+"在该对象之下是一个包含位置参数的可迭代对象和一个待调用的可调用对象。 :opcode:`BUILD_MAP_UNPACK_WITH_CALL` 和 "
+":opcode:`BUILD_TUPLE_UNPACK_WITH_CALL` 可用于合并多个映射对象和包含参数的可迭代对象。  "
+"在该可调用对象被调用之前，映射对象和可迭代对象会被分别“解包”并将它们的内容分别作为关键字参数和位置参数传入。 ``CALL_FUNCTION_EX``"
+" 会从栈中弹出所有参数以及可调用对象，附带这些参数调用该可调用对象，并将可调用对象所返回的返回值推入栈顶。"
 
 #: ../../library/dis.rst:1179
 msgid ""
@@ -1274,6 +1285,9 @@ msgid ""
 " Otherwise, ``NULL`` and  method is pushed (method is bound method or "
 "something else)."
 msgstr ""
+"从 TOS 对象加载一个名为 ``co_names[namei]`` 的方法。 TOS 将被弹出，并且当解释器可以直接调用未绑定方法时，方法和 TOS "
+"会被推入栈顶。 TOS 将被用作 :opcode:`CALL_METHOD` 的第一个参数 (``self``)。 否则，``NULL`` "
+"和方法会被推入栈顶（方法是绑定方法或其他对象）。"
 
 #: ../../library/dis.rst:1190
 msgid ""
@@ -1283,38 +1297,40 @@ msgid ""
 "them, two items described in :opcode:`LOAD_METHOD` on the stack. All of them"
 " are popped and return value is pushed."
 msgstr ""
+"调用一个方法。 *argc* 是位置参数的数量。 不支持关键字参数。 此操作码被设计用于配合 :opcode:`LOAD_METHOD` 使用。 "
+"位置参数放在栈顶。 在它们之下放在栈中的是由 :opcode:`LOAD_METHOD` 所描述的两个条目。 它们会被全部弹出并将返回值推入栈顶。"
 
 #: ../../library/dis.rst:1201
 msgid ""
 "Pushes a new function object on the stack.  From bottom to top, the consumed"
 " stack must consist of values if the argument carries a specified flag value"
-msgstr ""
+msgstr "将一个新函数对象推入栈顶。 从底端到顶端，如果参数带有指定的旗标值则所使用的栈必须由这些值组成。"
 
 #: ../../library/dis.rst:1204
 msgid ""
 "``0x01`` a tuple of default values for positional-only and positional-or-"
 "keyword parameters in positional order"
-msgstr ""
+msgstr "``0x01`` 一个默认值的元组，用于按位置排序的仅限位置形参以及位置或关键字形参"
 
 #: ../../library/dis.rst:1206
 msgid "``0x02`` a dictionary of keyword-only parameters' default values"
-msgstr ""
+msgstr "``0x02`` 一个仅限关键字形参的默认值的字典"
 
 #: ../../library/dis.rst:1207
 msgid "``0x04`` an annotation dictionary"
-msgstr ""
+msgstr "``0x04`` 是一个标注字典"
 
 #: ../../library/dis.rst:1208
 msgid "``0x08`` a tuple containing cells for free variables, making a closure"
-msgstr ""
+msgstr "``0x08`` 一个包含用于自由变量的单元的元组，生成一个闭包"
 
 #: ../../library/dis.rst:1209
 msgid "the code associated with the function (at TOS1)"
-msgstr ""
+msgstr "与函数相关联的代码 (在 TOS1)"
 
 #: ../../library/dis.rst:1210
 msgid "the :term:`qualified name` of the function (at TOS)"
-msgstr ""
+msgstr "函数的 :term:`qualified name` (在 TOS)"
 
 #: ../../library/dis.rst:1217
 msgid ""
@@ -1322,6 +1338,8 @@ msgid ""
 "``slice(TOS1, TOS)`` is pushed; if it is 3, ``slice(TOS2, TOS1, TOS)`` is "
 "pushed. See the :func:`slice` built-in function for more information."
 msgstr ""
+"将一个切片对象推入栈顶。 *argc* 必须为 2 或 3。 如果为 2，则推入 ``slice(TOS1, TOS)``；如果为 3，则推入 "
+"``slice(TOS2, TOS1, TOS)``。 请参阅 :func:`slice` 内置函数了解详细信息。"
 
 #: ../../library/dis.rst:1224
 msgid ""
@@ -1330,6 +1348,8 @@ msgid ""
 "argument. For each opcode, at most three prefixal ``EXTENDED_ARG`` are "
 "allowed, forming an argument from two-byte to four-byte."
 msgstr ""
+"为任意带有大到无法放入默认的单字节的参数的操作码添加前缀。 *ext* 存放一个附加字节作为参数中的高比特位。 对于每个操作码，最多允许三个 "
+"``EXTENDED_ARG`` 前缀，构成两字节到三字节的参数。"
 
 #: ../../library/dis.rst:1232
 msgid ""
@@ -1337,40 +1357,42 @@ msgid ""
 "optional *fmt_spec* from the stack, then a required *value*. *flags* is "
 "interpreted as follows:"
 msgstr ""
+"用于实现格式化字面值字符串（f-字符串）。 从栈中弹出一个可选的 *fmt_spec*，然后是一个必须的 *value*。 *flags* "
+"的解读方式如下："
 
 #: ../../library/dis.rst:1236
 msgid "``(flags & 0x03) == 0x00``: *value* is formatted as-is."
-msgstr ""
+msgstr "``(flags & 0x03) == 0x00``: *value* 按原样格式化。"
 
 #: ../../library/dis.rst:1237
 msgid ""
 "``(flags & 0x03) == 0x01``: call :func:`str` on *value* before formatting "
 "it."
-msgstr ""
+msgstr "``(flags & 0x03) == 0x01``: 在格式化 *value* 之前调用其 :func:`str`。"
 
 #: ../../library/dis.rst:1239
 msgid ""
 "``(flags & 0x03) == 0x02``: call :func:`repr` on *value* before formatting "
 "it."
-msgstr ""
+msgstr "``(flags & 0x03) == 0x02``: 在格式化 *value* 之前调用其 :func:`repr`。"
 
 #: ../../library/dis.rst:1241
 msgid ""
 "``(flags & 0x03) == 0x03``: call :func:`ascii` on *value* before formatting "
 "it."
-msgstr ""
+msgstr "``(flags & 0x03) == 0x03``: 在格式化 *value* 之前调用其 :func:`ascii`。"
 
 #: ../../library/dis.rst:1243
 msgid ""
 "``(flags & 0x04) == 0x04``: pop *fmt_spec* from the stack and use it, else "
 "use an empty *fmt_spec*."
-msgstr ""
+msgstr "``(flags & 0x04) == 0x04``: 从栈中弹出 *fmt_spec* 并使用它，否则使用空的 *fmt_spec*。"
 
 #: ../../library/dis.rst:1246
 msgid ""
 "Formatting is performed using :c:func:`PyObject_Format`.  The result is "
 "pushed on the stack."
-msgstr ""
+msgstr "使用 :c:func:`PyObject_Format` 执行格式化。 结果会被推入栈顶。"
 
 #: ../../library/dis.rst:1254
 msgid ""
@@ -1378,12 +1400,16 @@ msgid ""
 "opcodes which don't use their argument and those that do (``< "
 "HAVE_ARGUMENT`` and ``>= HAVE_ARGUMENT``, respectively)."
 msgstr ""
+"这不是一个真正的操作码。 它用于标明使用参数和不使用参数的操作码 (分别为 ``< HAVE_ARGUMENT`` 和 ``>= "
+"HAVE_ARGUMENT``) 之间的分隔线。"
 
 #: ../../library/dis.rst:1258
 msgid ""
 "Now every instruction has an argument, but opcodes ``< HAVE_ARGUMENT`` "
 "ignore it. Before, only opcodes ``>= HAVE_ARGUMENT`` had an argument."
 msgstr ""
+"现在每条指令都带有参数，但操作码 ``< HAVE_ARGUMENT`` 会忽略它。 之前仅限操作码 ``>= HAVE_ARGUMENT`` "
+"带有参数。"
 
 #: ../../library/dis.rst:1266
 msgid "Opcode collections"
@@ -1393,23 +1419,23 @@ msgstr "操作码集合"
 msgid ""
 "These collections are provided for automatic introspection of bytecode "
 "instructions:"
-msgstr ""
+msgstr "提供这些集合用于字节码指令的自动内省："
 
 #: ../../library/dis.rst:1273
 msgid "Sequence of operation names, indexable using the bytecode."
-msgstr ""
+msgstr "操作名称的序列，可使用字节码来索引。"
 
 #: ../../library/dis.rst:1278
 msgid "Dictionary mapping operation names to bytecodes."
-msgstr ""
+msgstr "映射操作名称到字节码的字典"
 
 #: ../../library/dis.rst:1283
 msgid "Sequence of all compare operation names."
-msgstr ""
+msgstr "所有比较操作名称的序列。"
 
 #: ../../library/dis.rst:1288
 msgid "Sequence of bytecodes that access a constant."
-msgstr ""
+msgstr "访问常量的字节码序列。"
 
 #: ../../library/dis.rst:1293
 msgid ""
