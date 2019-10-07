@@ -595,7 +595,7 @@ msgstr "程序退出。"
 msgid ""
 "We might try to implement the class using a :meth:`__del__` method as "
 "follows::"
-msgstr ""
+msgstr "我们可以尝试使用 :meth:`__del__` 方法来实现这个类，如下所示::"
 
 #: ../../library/weakref.rst:537
 msgid ""
@@ -604,34 +604,37 @@ msgid ""
 "longer forced to :const:`None` during :term:`interpreter shutdown`. So this "
 "code should work without any issues on CPython."
 msgstr ""
+"从 Python 3.4 开始，:meth:`__del__` 方法不会再阻止循环引用被作为垃圾回收，并且模块全局变量在 "
+":term:`interpreter shutdown` 期间不会被强制设为 :const:`None`。 因此这段代码在 CPython "
+"上应该会正常运行而不会出现任何问题。"
 
 #: ../../library/weakref.rst:542
 msgid ""
 "However, handling of :meth:`__del__` methods is notoriously implementation "
 "specific, since it depends on internal details of the interpreter's garbage "
 "collector implementation."
-msgstr ""
+msgstr "然而，:meth:`__del__` 方法的处理会严重地受到具体实现的影响，因为它依赖于解释器垃圾回收实现方式的内部细节。"
 
 #: ../../library/weakref.rst:546
 msgid ""
 "A more robust alternative can be to define a finalizer which only references"
 " the specific functions and objects that it needs, rather than having access"
 " to the full state of the object::"
-msgstr ""
+msgstr "更健壮的替代方式可以是定义一个终结器，只引用它所需要的特定函数和对象，而不是获取对整个对象状态的访问权::"
 
 #: ../../library/weakref.rst:562
 msgid ""
 "Defined like this, our finalizer only receives a reference to the details it"
 " needs to clean up the directory appropriately. If the object never gets "
 "garbage collected the finalizer will still be called at exit."
-msgstr ""
+msgstr "像这样定义后，我们的终结器将只接受一个对其完成正确清理目录任务所需细节的引用。 如果对象一直未被作为垃圾回收，终结器仍会在退出时被调用。"
 
 #: ../../library/weakref.rst:566
 msgid ""
 "The other advantage of weakref based finalizers is that they can be used to "
 "register finalizers for classes where the definition is controlled by a "
 "third party, such as running code when a module is unloaded::"
-msgstr ""
+msgstr "基于弱引用的终结器还具有另一项优势，就是它们可被用来为定义由第三方控制的类注册终结器，例如当一个模块被卸载时运行特定代码::"
 
 #: ../../library/weakref.rst:578
 msgid ""
@@ -641,3 +644,6 @@ msgid ""
 "finally: ...`` and ``with: ...`` do not guarantee that cleanup occurs "
 "either."
 msgstr ""
+"如果当程序退出时你恰好在守护线程中创建终结器对象，则有可能该终结器不会在退出时被调用。 但是，在一个守护线程中 "
+":func:`atexit.register`, ``try: ... finally: ...`` 和 ``with: ...`` "
+"同样不能保证执行清理。"
