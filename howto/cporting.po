@@ -4,15 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
+# Junkai Shao <skaifun.dev@gmail.com>, 2019
+# telnetning <telnetning@gmail.com>, 2019
 # Meng Du <alphanow@gmail.com>, 2019
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.8\n"
+"Project-Id-Version: Python 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-01 14:24+0000\n"
-"PO-Revision-Date: 2017-02-16 17:44+0000\n"
+"POT-Creation-Date: 2019-01-01 10:14+0900\n"
+"PO-Revision-Date: 2019-09-01 03:37+0000\n"
 "Last-Translator: Meng Du <alphanow@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -25,29 +27,217 @@ msgstr ""
 msgid "Porting Extension Modules to Python 3"
 msgstr "将扩展模块移植到 Python 3"
 
+#: ../../howto/cporting.rst:0
+msgid "author"
+msgstr "作者"
+
 #: ../../howto/cporting.rst:9
-msgid ""
-"We recommend the following resources for porting extension modules to Python"
-" 3:"
-msgstr ""
+msgid "Benjamin Peterson"
+msgstr "Benjamin Peterson"
 
-#: ../../howto/cporting.rst:11
-msgid ""
-"The `Migrating C extensions`_ chapter from *Supporting Python 3: An in-depth"
-" guide*, a book on moving from Python 2 to Python 3 in general, guides the "
-"reader through porting an extension module."
-msgstr ""
+#: ../../howto/cporting.rstNone
+msgid "Abstract"
+msgstr "摘要"
 
-#: ../../howto/cporting.rst:15
+#: ../../howto/cporting.rst:14
 msgid ""
-"The `Porting guide`_ from the *py3c* project provides opinionated "
-"suggestions with supporting code."
+"Although changing the C-API was not one of Python 3's objectives, the many "
+"Python-level changes made leaving Python 2's API intact impossible.  In "
+"fact, some changes such as :func:`int` and :func:`long` unification are more"
+" obvious on the C level.  This document endeavors to document "
+"incompatibilities and how they can be worked around."
 msgstr ""
+"尽管更改 C-API 并不是 Python 3 的目标之一，但许多 Python 级别的更改使得 Python 2 的 API "
+"无法完整实现。实际上，一些变化如 :func:`int` 和 :func:`long` 的统一在 C "
+"级别更明显。本文档致力于记录不兼容性以及如何解决这些问题。"
 
-#: ../../howto/cporting.rst:17
+#: ../../howto/cporting.rst:23
+msgid "Conditional compilation"
+msgstr "条件编译"
+
+#: ../../howto/cporting.rst:25
 msgid ""
-"The `Cython`_ and `CFFI`_ libraries offer abstractions over Python's C API. "
-"Extensions generally need to be re-written to use one of them, but the "
-"library then handles differences between various Python versions and "
-"implementations."
+"The easiest way to compile only some code for Python 3 is to check if "
+":c:macro:`PY_MAJOR_VERSION` is greater than or equal to 3. ::"
+msgstr "仅编译 Python 3 的一些代码的最简单方法是检查 :c:macro:`PY_MAJOR_VERSION` 是否大于或等于3。 ::"
+
+#: ../../howto/cporting.rst:32
+msgid ""
+"API functions that are not present can be aliased to their equivalents "
+"within conditional blocks."
+msgstr "不存在的 API 函数可以在条件块中别名为它们的等价物。"
+
+#: ../../howto/cporting.rst:37
+msgid "Changes to Object APIs"
+msgstr "对象API的更改"
+
+#: ../../howto/cporting.rst:39
+msgid ""
+"Python 3 merged together some types with similar functions while cleanly "
+"separating others."
+msgstr "Python 3 将一些具有类似功能的类型合并在一起，同时干净地分离了其他类型。"
+
+#: ../../howto/cporting.rst:44
+msgid "str/unicode Unification"
+msgstr "str/unicode 统一"
+
+#: ../../howto/cporting.rst:46
+msgid ""
+"Python 3's :func:`str` type is equivalent to Python 2's :func:`unicode`; the"
+" C functions are called ``PyUnicode_*`` for both.  The old 8-bit string type"
+" has become :func:`bytes`, with C functions called ``PyBytes_*``.  Python "
+"2.6 and later provide a compatibility header, :file:`bytesobject.h`, mapping"
+" ``PyBytes`` names to ``PyString`` ones.  For best compatibility with Python"
+" 3, :c:type:`PyUnicode` should be used for textual data and "
+":c:type:`PyBytes` for binary data.  It's also important to remember that "
+":c:type:`PyBytes` and :c:type:`PyUnicode` in Python 3 are not "
+"interchangeable like :c:type:`PyString` and :c:type:`PyUnicode` are in "
+"Python 2.  The following example shows best practices with regards to "
+":c:type:`PyUnicode`, :c:type:`PyString`, and :c:type:`PyBytes`. ::"
 msgstr ""
+"Python 3 的 :func:`str` 类型相当于 Python 2 的 :func:`unicode` ； C函数被称为 "
+"``PyUnicode_*`` 。旧的 8 位字符串类型变为 :func:`bytes` ，其中 C 函数称为 ``PyBytes_*`` 。 "
+"Python 2.6 及更高版本提供了一个兼容性头文件 :file:`bytesobject.h` ，将 ``PyBytes`` 名称映射到 "
+"``PyString`` 。 为了保持与 Python 3 的最佳兼容性， :c:type:`PyUnicode` 应该用于文本数据，并且 "
+":c:type:`PyBytes` 用于二进制数据。同样重要的是要记住 :c:type:`pyBytes` 和 Python 3中的 "
+":c:type:`PyUnicode` 不可互换，如 :c:type:`PyString` 和 :c:type:`PyUnicode` 在 Python"
+" 2 以下中示例显示了以下方面的最佳实践 :c:type:`PyUnicode` 、 :c:type:`PyString` 和 "
+":c:type:`PyBytes` 。::"
+
+#: ../../howto/cporting.rst:95
+msgid "long/int Unification"
+msgstr "long/int 统一"
+
+#: ../../howto/cporting.rst:97
+msgid ""
+"Python 3 has only one integer type, :func:`int`.  But it actually "
+"corresponds to Python 2's :func:`long` type—the :func:`int` type used in "
+"Python 2 was removed.  In the C-API, ``PyInt_*`` functions are replaced by "
+"their ``PyLong_*`` equivalents."
+msgstr ""
+"Python 3 只有一个整数类型， :func:`int` 。但它实际上对应于Python 2 :func:`long` 类型 —— 删除了 "
+"Python 2 中使用的 :func:`int` 类型。在 C-API 中， ``PyInt_*`` 函数被它们等价的 ``PyLong_*`` "
+"替换。"
+
+#: ../../howto/cporting.rst:104
+msgid "Module initialization and state"
+msgstr "模块初始化和状态"
+
+#: ../../howto/cporting.rst:106
+msgid ""
+"Python 3 has a revamped extension module initialization system.  (See "
+":pep:`3121`.)  Instead of storing module state in globals, they should be "
+"stored in an interpreter specific structure.  Creating modules that act "
+"correctly in both Python 2 and Python 3 is tricky.  The following simple "
+"example demonstrates how. ::"
+msgstr ""
+"Python 3 有一个改进的扩展模块初始化系统。（参见 :pep:`3121` "
+"。）而不是将模块状态存储在全局变量中，它们应该存储在特定于解释器的结构中。创建在 Python 2 和 Python 3 "
+"中正确运行的模块非常棘手。以下简单示例演示了如何操作。::"
+
+#: ../../howto/cporting.rst:197
+msgid "CObject replaced with Capsule"
+msgstr "CObject 替换为 Capsule"
+
+#: ../../howto/cporting.rst:199
+msgid ""
+"The :c:type:`Capsule` object was introduced in Python 3.1 and 2.7 to replace"
+" :c:type:`CObject`.  CObjects were useful, but the :c:type:`CObject` API was"
+" problematic: it didn't permit distinguishing between valid CObjects, which "
+"allowed mismatched CObjects to crash the interpreter, and some of its APIs "
+"relied on undefined behavior in C. (For further reading on the rationale "
+"behind Capsules, please see :issue:`5630`.)"
+msgstr ""
+":c:type:`Capsule` 对象是在 Python 3.1 和 2.7 中引入的，用于替换 :c:type:`CObject` 。 "
+"CObject 是有用的，但是 :c:type:`CObject` API 是有问题的：它不允许区分有效的 CObject ，这导致不匹配的 "
+"CObject 使解释器崩溃，并且它的一些 API 依赖于 C 中的未定义行为。有关 Capsule 背后的基本原理的进一步阅读，请参阅 "
+":issue:`5630` 。）"
+
+#: ../../howto/cporting.rst:206
+msgid ""
+"If you're currently using CObjects, and you want to migrate to 3.1 or newer,"
+" you'll need to switch to Capsules. :c:type:`CObject` was deprecated in 3.1 "
+"and 2.7 and completely removed in Python 3.2.  If you only support 2.7, or "
+"3.1 and above, you can simply switch to :c:type:`Capsule`.  If you need to "
+"support Python 3.0, or versions of Python earlier than 2.7, you'll have to "
+"support both CObjects and Capsules. (Note that Python 3.0 is no longer "
+"supported, and it is not recommended for production use.)"
+msgstr ""
+"如果你当前正在使用 CObject ，并且想要迁移到 3.1 或更高版本，则需要切换到 Capsules 。 :c:type:`CObject` 在 "
+"3.1 和 2.7 中已弃用，在 Python 3.2 中已完全删除。如果你只支持 2.7 或 3.1 及以上，你可以简单地切换到 "
+":c:type:`Capsule` 。如果你需要支持 Python 3.0 或早于 2.7 的 Python 版本，则必须同时支持 CObject 和 "
+"Capsule 。（请注意，不再支持 Python 3.0 ，不建议将其用于生产用途。）"
+
+#: ../../howto/cporting.rst:216
+msgid ""
+"The following example header file :file:`capsulethunk.h` may solve the "
+"problem for you.  Simply write your code against the :c:type:`Capsule` API "
+"and include this header file after :file:`Python.h`.  Your code will "
+"automatically use Capsules in versions of Python with Capsules, and switch "
+"to CObjects when Capsules are unavailable."
+msgstr ""
+"以下示例头文件 :file:`capsulethunk.h` 可以为你解决问题。只需针对 :c:type:`Capsule` API "
+"编写代码，并在以下文件后包含此头文件 :file:`Python.h` 。你的代码将自动在带有 Capsule 的 Python 版本中使用 "
+"Capsules ，并在 Capsule 不可用时切换到 CObjects 。"
+
+#: ../../howto/cporting.rst:223
+msgid ""
+":file:`capsulethunk.h` simulates Capsules using CObjects.  However, "
+":c:type:`CObject` provides no place to store the capsule's \"name\".  As a "
+"result the simulated :c:type:`Capsule` objects created by "
+":file:`capsulethunk.h` behave slightly differently from real Capsules.  "
+"Specifically:"
+msgstr ""
+":file:`capsulethunk.h` 使用 CObject 模拟 Capsules 。 但是， :c:type:`CObject` "
+"没有提供存储胶囊的“名称”的地方。因此，模拟 :c:type:`Capsule` 对象由 :file:`capsulethunk.h` "
+"创建，其行为与真实 Capsule 略有不同。特别地："
+
+#: ../../howto/cporting.rst:228
+msgid "The name parameter passed in to :c:func:`PyCapsule_New` is ignored."
+msgstr "传递给 :c:func:`PyCapsule_New` 的 name 参数被忽略。"
+
+#: ../../howto/cporting.rst:230
+msgid ""
+"The name parameter passed in to :c:func:`PyCapsule_IsValid` and "
+":c:func:`PyCapsule_GetPointer` is ignored, and no error checking of the name"
+" is performed."
+msgstr ""
+"传入以下命令的 name 参数 :c:func:`PyCapsule_IsValid` 和 :c:func:`PyCapsule_GetPointer`"
+" 被忽略，并且不执行错误检查。"
+
+#: ../../howto/cporting.rst:234
+msgid ":c:func:`PyCapsule_GetName` always returns NULL."
+msgstr ":c:func:`PyCapsule_GetName` 总是返回 NULL 。"
+
+#: ../../howto/cporting.rst:236
+msgid ""
+":c:func:`PyCapsule_SetName` always raises an exception and returns failure."
+"  (Since there's no way to store a name in a CObject, noisy failure of "
+":c:func:`PyCapsule_SetName` was deemed preferable to silent failure here.  "
+"If this is inconvenient, feel free to modify your local copy as you see "
+"fit.)"
+msgstr ""
+":c:func:`PyCapsule_SetName` 总是引发异常并返回失败。（由于无法在 CObject 中存储名称，因此 "
+":c:func:`PyCapsule_SetName` 的明显失败被认为优于静默失败。如果这样不方便，请随意根据需要修改本地副本。）"
+
+#: ../../howto/cporting.rst:243
+msgid ""
+"You can find :file:`capsulethunk.h` in the Python source distribution as "
+":source:`Doc/includes/capsulethunk.h`.  We also include it here for your "
+"convenience:"
+msgstr ""
+"你可以在 Python 源代码分发中的 :source:`Doc/includes/capsulethunk.h` 找到 "
+":file:`capsulethunk.h` 。为方便起见，我们还将其包含在此处："
+
+#: ../../howto/cporting.rst:252
+msgid "Other options"
+msgstr "其他选项"
+
+#: ../../howto/cporting.rst:254
+msgid ""
+"If you are writing a new extension module, you might consider `Cython "
+"<http://cython.org/>`_.  It translates a Python-like language to C.  The "
+"extension modules it creates are compatible with Python 3 and Python 2."
+msgstr ""
+"如果你正在编写新的扩展模块，你可能会考虑 `Cython <http://cython.org/>`_ 。 它将类似 Python 的语言转换为 C "
+"。它创建的扩展模块与 Python 3 和 Python 2 兼容。"
