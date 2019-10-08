@@ -10,16 +10,16 @@ Maintained versions:
    :header-rows: 1
 
    * - Version
-     - Build status
+     - Sync status
      - Translation progress
    * - `3.8 <https://github.com/python/python-docs-zh-cn/tree/3.8>`_
-     - .. image:: https://travis-ci.org/python/python-docs-zh-cn.svg?branch=3.8-staging
-          :target: https://travis-ci.org/python/python-docs-zh-cn
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-38/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-38
      - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/newest
           :target: https://www.transifex.com/python-doc/python-newest/
    * - `3.7 <https://github.com/python/python-docs-zh-cn/tree/3.7>`_
-     - .. image:: https://travis-ci.org/python/python-docs-zh-cn.svg?branch=3.7-staging
-          :target: https://travis-ci.org/python/python-docs-zh-cn
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-37/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-37
      - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/37
           :target: https://www.transifex.com/python-doc/python-37/
 

@@ -1,0 +1,25 @@
+name: python-37
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "38 * * * *"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/update
+        with:
+          pythonVersion: "3.7"
+          locale: zh_CN
+        env:
+          TRANSIFEX_APIKEY: ${{ secrets.TRANSIFEX_APIKEY }}
+      - uses: ./.github/actions/commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
