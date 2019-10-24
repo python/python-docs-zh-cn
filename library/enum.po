@@ -896,25 +896,25 @@ msgstr "如果定义了 :meth:`__new__` 或 :meth:`__init__` 则枚举成员的�
 
 #: ../../library/enum.rst:955
 msgid "TimePeriod"
-msgstr ""
+msgstr "TimePeriod"
 
 #: ../../library/enum.rst:957
 msgid "An example to show the :attr:`_ignore_` attribute in use::"
-msgstr ""
+msgstr "一个演示如何使用 :attr:`_ignore_` 属性的例子::"
 
 #: ../../library/enum.rst:974
 msgid "How are Enums different?"
-msgstr ""
+msgstr "各种枚举有何区别？"
 
 #: ../../library/enum.rst:976
 msgid ""
 "Enums have a custom metaclass that affects many aspects of both derived Enum"
 " classes and their instances (members)."
-msgstr ""
+msgstr "枚举具有自定义的元类，它会影响所派生枚举类及其实例（成员）的各个方面。"
 
 #: ../../library/enum.rst:981
 msgid "Enum Classes"
-msgstr ""
+msgstr "枚举类"
 
 #: ../../library/enum.rst:983
 msgid ""
@@ -926,10 +926,15 @@ msgid ""
 "the final :class:`Enum` class are correct (such as :meth:`__new__`, "
 ":meth:`__getnewargs__`, :meth:`__str__` and :meth:`__repr__`)."
 msgstr ""
+":class:`EnumMeta` 元类负责提供 :meth:`__contains__`, :meth:`__dir__`, "
+":meth:`__iter__` 及其他方法以允许用户通过 :class:`Enum` 类来完成一般类做不到的事情，例如 `list(Color)` 或"
+" `some_enum_var in Color`。 :class:`EnumMeta` 会负责确保最终 :class:`Enum` "
+"类中的各种其他方法是正确的 (例如 :meth:`__new__`, :meth:`__getnewargs__`, :meth:`__str__` 和"
+" :meth:`__repr__`)。"
 
 #: ../../library/enum.rst:993
 msgid "Enum Members (aka instances)"
-msgstr ""
+msgstr "枚举成员（即实例）"
 
 #: ../../library/enum.rst:995
 msgid ""
@@ -939,14 +944,16 @@ msgid ""
 " no new ones are ever instantiated by returning only the existing member "
 "instances."
 msgstr ""
+"有关枚举成员最有趣的特点是它们都是单例对象。 :class:`EnumMeta` 会在创建 :class:`Enum` "
+"类本身时将它们全部创建完成，然后准备好一个自定义的 :meth:`__new__`，通过只返回现有的成员实例来确保不会再实例化新的对象。"
 
 #: ../../library/enum.rst:1003
 msgid "Finer Points"
-msgstr ""
+msgstr "细节要点"
 
 #: ../../library/enum.rst:1006
 msgid "Supported ``__dunder__`` names"
-msgstr ""
+msgstr "支持 ``__dunder__`` 名称"
 
 #: ../../library/enum.rst:1008
 msgid ""
@@ -960,25 +967,27 @@ msgid ""
 "is also a very good idea to set the member's :attr:`_value_` appropriately."
 "  Once all the members are created it is no longer used."
 msgstr ""
+"如果指定了 :meth:`__new__`，它必须创建并返回枚举成员；相应地设定成员的 :attr:`_value_` 也是一个很好的主意。 "
+"一旦所有成员都创建完成它就不会再被使用。"
 
 #: ../../library/enum.rst:1017
 msgid "Supported ``_sunder_`` names"
-msgstr ""
+msgstr "支持的 ``_sunder_`` 名称"
 
 #: ../../library/enum.rst:1019
 msgid "``_name_`` -- name of the member"
-msgstr ""
+msgstr "``_name_`` -- 成员的名称"
 
 #: ../../library/enum.rst:1020
 msgid ""
 "``_value_`` -- value of the member; can be set / modified in ``__new__``"
-msgstr ""
+msgstr "``_value_`` -- 成员的值；可以在 ``__new__`` 中设置 / 修改"
 
 #: ../../library/enum.rst:1022
 msgid ""
 "``_missing_`` -- a lookup function used when a value is not found; may be "
 "overridden"
-msgstr ""
+msgstr "``_missing_`` -- 当未发现某个值时所使用的查找函数；可被重载"
 
 #: ../../library/enum.rst:1024
 msgid ""
@@ -986,12 +995,13 @@ msgid ""
 "that will not be transformed into members, and will be removed from the "
 "final class"
 msgstr ""
+"``_ignore_`` -- 一个名称列表，可以为 :func:`list` 或 :func:`str`，它将不会被转化为成员，并会从最终类中被移除"
 
 #: ../../library/enum.rst:1027
 msgid ""
 "``_order_`` -- used in Python 2/3 code to ensure member order is consistent "
 "(class attribute, removed during class creation)"
-msgstr ""
+msgstr "``_order_`` -- 用于 Python 2/3 代码以确保成员顺序一致（类属性，在类创建期间会被移除）"
 
 #: ../../library/enum.rst:1029
 msgid ""
@@ -999,14 +1009,16 @@ msgid ""
 ":class:`auto` to get an appropriate value for an enum member; may be "
 "overridden"
 msgstr ""
+"``_generate_next_value_`` -- 用于 `Functional API`_ 并通过 :class:`auto` "
+"为枚举成员获取适当的值；可被重载"
 
 #: ../../library/enum.rst:1033
 msgid "``_missing_``, ``_order_``, ``_generate_next_value_``"
-msgstr ""
+msgstr "``_missing_``, ``_order_``, ``_generate_next_value_``"
 
 #: ../../library/enum.rst:1034
 msgid "``_ignore_``"
-msgstr ""
+msgstr "``_ignore_``"
 
 #: ../../library/enum.rst:1036
 msgid ""
@@ -1014,6 +1026,8 @@ msgid ""
 "can be provided.  It will be checked against the actual order of the "
 "enumeration and raise an error if the two do not match::"
 msgstr ""
+"用来帮助 Python 2 / Python 3 代码保持同步提供 :attr:`_order_` 属性。 "
+"它将与枚举的实际顺序进行对照检查，如果两者不匹配则会引发错误::"
 
 #: ../../library/enum.rst:1052
 msgid ""
