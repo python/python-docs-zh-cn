@@ -11,6 +11,7 @@
 # 开 方 <kaifang.1995@gmail.com>, 2019
 # Yunxuan Chai <wsyxbcl@gmail.com>, 2019
 # Chang Ye <yech1990@gmail.com>, 2019
+# Freesand Leo <yuqinju@163.com>, 2019
 # Arisaka97 <solitaire2312@gmail.com>, 2019
 # 
 #, fuzzy
@@ -149,6 +150,14 @@ msgid ""
 " All other non-string data are stringified with :func:`str` before being "
 "written."
 msgstr ""
+"返回一个 writer 对象，该对象负责将用户的数据在给定的文件类对象上转换为带分隔符的字符串。*csvfile* 可以是具有 "
+":func:`write` 方法的任何对象。如果 *csvfile* 是文件对象，则打开它时应使用 ``newline=''``。 [1]_ 可选参数 "
+"*dialect* 是用于不同的 CSV 方言的特定参数组。它可以是 :class:`Dialect` 类的子类的实例，也可以是 "
+":func:`list_dialects` 函数返回的字符串之一。另一个可选关键字参数 *fmtparams* "
+"可以覆写当前方言格式中的单个格式设置。有关方言和格式设置参数的完整详细信息，请参见 :ref:`csv-fmt-params` "
+"部分。为了尽量简化与数据库 API 模块之间的对接，:const:`None` 值会写入为空字符串。虽然这个转换是不可逆的，但它让 SQL "
+"空数据值转储到 CSV 文件更容易，而无需预处理从 ``cursor.fetch*`` 调用返回的数据。写入前，所有非字符串数据都先用 "
+":func:`str` 转化为字符串再写入。"
 
 #: ../../library/csv.rst:117
 msgid ""
@@ -158,12 +167,15 @@ msgid ""
 "parameters of the dialect. For full details about the dialect and formatting"
 " parameters, see section :ref:`csv-fmt-params`."
 msgstr ""
+"将 *name* 与 *dialect* 关联起来。*name* 必须是字符串。要指定变种 (dialect)，可以给出 "
+":class:`Dialect` 的子类，或给出 *fmtparams* 关键字参数，或两者都给出，此时关键字参数会覆盖 *dialect* 参数。 "
+"有关变种和格式设置参数的完整详细信息，请参见 :ref:`csv-fmt-params` 部分。"
 
 #: ../../library/csv.rst:126
 msgid ""
 "Delete the dialect associated with *name* from the dialect registry.  An "
 ":exc:`Error` is raised if *name* is not a registered dialect name."
-msgstr ""
+msgstr "从变种注册表中删除 *name* 对应的变种。如果 *name* 不是已注册的变种名称，则抛出 :exc:`Error` 异常。"
 
 #: ../../library/csv.rst:132
 msgid ""
@@ -171,20 +183,22 @@ msgid ""
 "*name* is not a registered dialect name.  This function returns an immutable"
 " :class:`Dialect`."
 msgstr ""
+"返回 *name* 对应的变种。如果 *name* 不是已注册的变种名称，则抛出 :exc:`Error` 异常。该函数返回的是不可变的 "
+":class:`Dialect` 对象。"
 
 #: ../../library/csv.rst:138
 msgid "Return the names of all registered dialects."
-msgstr ""
+msgstr "返回所有已注册变种的名称。"
 
 #: ../../library/csv.rst:143
 msgid ""
 "Returns the current maximum field size allowed by the parser. If *new_limit*"
 " is given, this becomes the new limit."
-msgstr ""
+msgstr "返回解析器当前允许的最大字段大小。如果指定了 *new_limit*，则它将成为新的最大字段大小。"
 
 #: ../../library/csv.rst:147
 msgid "The :mod:`csv` module defines the following classes:"
-msgstr ""
+msgstr ":mod:`csv` 模块定义了以下类："
 
 #: ../../library/csv.rst:152
 msgid ""
@@ -208,12 +222,14 @@ msgid ""
 " ``None``).  If a non-blank row has fewer fields than fieldnames, the "
 "missing values are filled-in with ``None``."
 msgstr ""
+"如果某一行中的字段多于字段名，则其余字段将放入列表中，字段名由 *restkey* 指定（默认为 "
+"``None``）。如果非空白行的字段少于字段名，则缺少的值将用 ``None`` 填充。"
 
 #: ../../library/csv.rst:166
 msgid ""
 "All other optional or keyword arguments are passed to the underlying "
 ":class:`reader` instance."
-msgstr ""
+msgstr "所有其他可选或关键字参数都传递给底层的 :class:`reader` 实例。"
 
 #: ../../library/csv.rst:169
 msgid "Returned rows are now of type :class:`OrderedDict`."
@@ -234,12 +250,19 @@ msgid ""
 "other optional or keyword arguments are passed to the underlying "
 ":class:`writer` instance."
 msgstr ""
+"创建一个对象，该对象在操作上类似常规 writer，但能将字典映射到输出行。*fieldnames* 参数是由 key（键）组成的 :mod:`序列 "
+"<collections.abc>`，用于指定字典中的 value （值）的顺序，这些值会按指定顺序传递给 :meth:`writerow` 方法并写入"
+" *f* 文件。如果字典缺少 *fieldnames* 中的键，则可选参数 *restval* 用于指定要写入的值。如果传递给 "
+":meth:`writerow` 方法的字典的某些键在 *fieldnames* 中找不到，则可选参数 *extrasaction* "
+"用于指定要执行的操作。如果将其设置为 ``'raise'`` (默认值)，则会引发 :exc:`ValueError`。 如果将其设置为 "
+"``'ignore'``，则字典中的其他键值将被忽略。 所有其他可选或关键字参数都传递给底层的 :class:`writer` 实例。"
 
 #: ../../library/csv.rst:205
 msgid ""
 "Note that unlike the :class:`DictReader` class, the *fieldnames* parameter "
 "of the :class:`DictWriter` class is not optional."
 msgstr ""
+"注意，与 :class:`DictReader` 类不同，:class:`DictWriter` 类的 *fieldnames* 参数不是可选参数。"
 
 #: ../../library/csv.rst:224
 msgid ""
@@ -247,12 +270,14 @@ msgid ""
 "attributes, which are used to define the parameters for a specific "
 ":class:`reader` or :class:`writer` instance."
 msgstr ""
+":class:`Dialect` 类是主要依赖于其属性的容器类，用于将定义好的参数传递给特定的 :class:`reader` 或 "
+":class:`writer` 实例。"
 
 #: ../../library/csv.rst:231
 msgid ""
 "The :class:`excel` class defines the usual properties of an Excel-generated "
 "CSV file.  It is registered with the dialect name ``'excel'``."
-msgstr ""
+msgstr ":class:`excel` 类定义了 Excel 生成的 CSV 文件的常规属性。它在变种注册表中的名称是 ``'excel'``。"
 
 #: ../../library/csv.rst:237
 msgid ""
@@ -260,6 +285,8 @@ msgid ""
 "generated TAB-delimited file.  It is registered with the dialect name "
 "``'excel-tab'``."
 msgstr ""
+":class:`excel_tab` 类定义了 Excel 生成的、制表符分隔的 CSV 文件的常规属性。它在变种注册表中的名称是 ``'excel-"
+"tab'``。"
 
 #: ../../library/csv.rst:243
 msgid ""
@@ -267,10 +294,12 @@ msgid ""
 "generated on UNIX systems, i.e. using ``'\\n'`` as line terminator and "
 "quoting all fields.  It is registered with the dialect name ``'unix'``."
 msgstr ""
+":class:`unix_dialect` 类定义了在 UNIX 系统上生成的 CSV 文件的常规属性，即使用 ``'\\n'`` "
+"作为换行符，且所有字段都有引号包围。它在变种注册表中的名称是 ``'unix'``。"
 
 #: ../../library/csv.rst:252
 msgid "The :class:`Sniffer` class is used to deduce the format of a CSV file."
-msgstr ""
+msgstr ":class:`Sniffer` 类用于推断 CSV 文件的格式。"
 
 #: ../../library/csv.rst:254
 msgid "The :class:`Sniffer` class provides two methods:"
@@ -282,12 +311,14 @@ msgid ""
 " the parameters found.  If the optional *delimiters* parameter is given, it "
 "is interpreted as a string containing possible valid delimiter characters."
 msgstr ""
+"分析给定的 *sample* 并返回一个 :class:`Dialect` 子类，该子类中包含了分析出的格式参数。如果给出可选的 "
+"*delimiters* 参数，则该参数会被解释为字符串，该字符串包含了可能的有效分隔符。"
 
 #: ../../library/csv.rst:266
 msgid ""
 "Analyze the sample text (presumed to be in CSV format) and return "
 ":const:`True` if the first row appears to be a series of column headers."
-msgstr ""
+msgstr "分析示例文本（假定为 CSV 格式），如果第一行很可能是一系列列标题，则返回 :const:`True`。"
 
 #: ../../library/csv.rst:269
 msgid "An example for :class:`Sniffer` use::"
@@ -295,11 +326,11 @@ msgstr "使用 :class:`Sniffer` 的示例："
 
 #: ../../library/csv.rst:278
 msgid "The :mod:`csv` module defines the following constants:"
-msgstr ""
+msgstr ":mod:`csv` 模块定义了以下常量："
 
 #: ../../library/csv.rst:282
 msgid "Instructs :class:`writer` objects to quote all fields."
-msgstr ""
+msgstr "指示 :class:`writer` 对象给所有字段加上引号。"
 
 #: ../../library/csv.rst:287
 msgid ""
@@ -307,14 +338,15 @@ msgid ""
 "special characters such as *delimiter*, *quotechar* or any of the characters"
 " in *lineterminator*."
 msgstr ""
+"指示 :class:`writer` 对象仅为包含特殊字符（例如 *定界符*、*引号字符* 或 *行结束符* 中的任何字符）的字段加上引号。"
 
 #: ../../library/csv.rst:294
 msgid "Instructs :class:`writer` objects to quote all non-numeric fields."
-msgstr ""
+msgstr "指示 :class:`writer` 对象为所有非数字字段加上引号。"
 
 #: ../../library/csv.rst:296
 msgid "Instructs the reader to convert all non-quoted fields to type *float*."
-msgstr ""
+msgstr "指示 reader 将所有未用引号引出的字段转换为 *float* 类型。"
 
 #: ../../library/csv.rst:301
 msgid ""
@@ -323,24 +355,26 @@ msgid ""
 " character.  If *escapechar* is not set, the writer will raise :exc:`Error` "
 "if any characters that require escaping are encountered."
 msgstr ""
+"指示 :class:`writer` 对象不使用引号引出字段。当 *定界符* 出现在输出数据中时，其前面应该有 *转义符*。如果未设置 "
+"*转义符*，则遇到任何需要转义的字符时，writer 都会抛出 :exc:`Error` 异常。"
 
 #: ../../library/csv.rst:306
 msgid ""
 "Instructs :class:`reader` to perform no special processing of quote "
 "characters."
-msgstr ""
+msgstr "指示 :class:`reader` 不对引号字符进行特殊处理。"
 
 #: ../../library/csv.rst:308
 msgid "The :mod:`csv` module defines the following exception:"
-msgstr ""
+msgstr ":mod:`csv` 模块定义了以下异常："
 
 #: ../../library/csv.rst:313
 msgid "Raised by any of the functions when an error is detected."
-msgstr ""
+msgstr "该异常可能由任何发生错误的函数抛出。"
 
 #: ../../library/csv.rst:318
 msgid "Dialects and Formatting Parameters"
-msgstr ""
+msgstr "变种与格式参数"
 
 #: ../../library/csv.rst:320
 msgid ""
@@ -354,15 +388,19 @@ msgid ""
 " also specify individual formatting parameters, which have the same names as"
 " the attributes defined below for the :class:`Dialect` class."
 msgstr ""
+"为了更容易指定输入和输出记录的格式，特定的一组格式参数组合为一个 dialect（变种）。一个 dialect 是一个 :class:`Dialect`"
+" 类的子类，它具有一组特定的方法和一个 :meth:`validate` 方法。创建 :class:`reader` 或 :class:`writer`"
+" 对象时，程序员可以将某个字符串或 :class:`Dialect` 类的子类指定为 dialect 参数。要想补充或覆盖 *dialect* "
+"参数，程序员还可以单独指定某些格式参数，这些参数的名称与下面 :class:`Dialect` 类定义的属性相同。"
 
 #: ../../library/csv.rst:330
 msgid "Dialects support the following attributes:"
-msgstr ""
+msgstr "Dialect 类支持以下属性："
 
 #: ../../library/csv.rst:335
 msgid ""
 "A one-character string used to separate fields.  It defaults to ``','``."
-msgstr ""
+msgstr "一个用于分隔字段的单字符，默认为 ``','``。"
 
 #: ../../library/csv.rst:340
 msgid ""
@@ -371,12 +409,16 @@ msgid ""
 ":const:`False`, the *escapechar* is used as a prefix to the *quotechar*.  It"
 " defaults to :const:`True`."
 msgstr ""
+"控制出现在字段中的 *引号字符* 本身应如何被引出。当该属性为 :const:`True` 时，双写引号字符。如果该属性为 "
+":const:`False`，则在 *引号字符* 的前面放置 *转义符*。默认值为 :const:`True`。"
 
 #: ../../library/csv.rst:345
 msgid ""
 "On output, if *doublequote* is :const:`False` and no *escapechar* is set, "
 ":exc:`Error` is raised if a *quotechar* is found in a field."
 msgstr ""
+"在输出时，如果 *doublequote* 是 :const:`False`，且 *转义符* 未指定，且在字段中发现 *引号字符* 时，会抛出 "
+":exc:`Error` 异常。"
 
 #: ../../library/csv.rst:351
 msgid ""
@@ -386,12 +428,15 @@ msgid ""
 " from the following character. It defaults to :const:`None`, which disables "
 "escaping."
 msgstr ""
+"一个用于 writer 的单字符，用来在 *quoting* 设置为 :const:`QUOTE_NONE` 的情况下转义 *定界符*，在 "
+"*doublequote* 设置为 :const:`False` 的情况下转义 *引号字符*。在读取时，*escapechar* "
+"去除了其后所跟字符的任何特殊含义。该属性默认为 :const:`None`，表示禁用转义。"
 
 #: ../../library/csv.rst:359
 msgid ""
 "The string used to terminate lines produced by the :class:`writer`. It "
 "defaults to ``'\\r\\n'``."
-msgstr ""
+msgstr "放在 :class:`writer` 产生的行的结尾，默认为 ``'\\r\\n'``。"
 
 #: ../../library/csv.rst:364
 msgid ""
@@ -399,13 +444,15 @@ msgid ""
 " as end-of-line, and ignores *lineterminator*. This behavior may change in "
 "the future."
 msgstr ""
+":class:`reader` 经过硬编码，会识别 ``'\\r'`` 或 ``'\\n'`` 作为行尾，并忽略 "
+"*lineterminator*。未来可能会更改这一行为。"
 
 #: ../../library/csv.rst:371
 msgid ""
 "A one-character string used to quote fields containing special characters, "
 "such as the *delimiter* or *quotechar*, or which contain new-line "
 "characters.  It defaults to ``'\"'``."
-msgstr ""
+msgstr "一个单字符，用于包住含有特殊字符的字段，特殊字符如 *定界符* 或 *引号字符* 或换行符。默认为 ``'\"'``。"
 
 #: ../../library/csv.rst:378
 msgid ""
@@ -428,7 +475,7 @@ msgstr ""
 
 #: ../../library/csv.rst:395
 msgid "Reader Objects"
-msgstr ""
+msgstr "Reader 对象"
 
 #: ../../library/csv.rst:397
 msgid ""
