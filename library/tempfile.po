@@ -6,6 +6,7 @@
 # Translators:
 # Fred <fred.wei@foxmail.com>, 2018
 # Arisaka97 <solitaire2312@gmail.com>, 2019
+# Freesand Leo <yuqinju@163.com>, 2019
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-11 00:37+0000\n"
 "PO-Revision-Date: 2017-02-16 23:30+0000\n"
-"Last-Translator: Arisaka97 <solitaire2312@gmail.com>, 2019\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,7 +81,7 @@ msgid ""
 "examples`).  On completion of the context or destruction of the file object "
 "the temporary file will be removed from the filesystem."
 msgstr ""
-"生成的对象可以用作上下文管理器（参见 :ref:`tempfile-examples`）。完成文件对象的上下文或销毁后，临时文件将从文件系统中删除。"
+"生成的对象可以用作上下文管理器（参见 :ref:`tempfile-examples`）。完成上下文或销毁临时文件对象后，临时文件将从文件系统中删除。"
 
 #: ../../library/tempfile.rst:49
 msgid ""
@@ -165,7 +166,7 @@ msgstr ""
 msgid ""
 "The resulting file has one additional method, :func:`rollover`, which causes"
 " the file to roll over to an on-disk file regardless of its size."
-msgstr ""
+msgstr "此函数生成的文件对象有一个额外的方法——:func:`rollover`，可以忽略文件大小，让文件立即写入磁盘。"
 
 #: ../../library/tempfile.rst:107
 msgid ""
@@ -175,10 +176,13 @@ msgid ""
 "depending on whether :func:`rollover` has been called.  This file-like "
 "object can be used in a :keyword:`with` statement, just like a normal file."
 msgstr ""
+"返回的对象是文件类对象 (file-like object)，它的 :attr:`_file` 属性是 :class:`io.BytesIO` 或 "
+":class:`io.StringIO` 对象（取决于指定的是二进制模式还是文本模式）或真实的文件对象（取决于是否已调用 "
+":func:`rollover`）。文件类对象可以像普通文件一样在 :keyword:`with` 语句中使用。"
 
 #: ../../library/tempfile.rst:114
 msgid "the truncate method now accepts a ``size`` argument."
-msgstr ""
+msgstr "现在，文件的 truncate 方法可接受一个 ``size`` 参数。"
 
 #: ../../library/tempfile.rst:123
 msgid ""
@@ -188,6 +192,8 @@ msgid ""
 "the temporary directory object the newly created temporary directory and all"
 " its contents are removed from the filesystem."
 msgstr ""
+"此函数会安全地创建一个临时目录，且使用与 :func:`mkdtemp` 相同的规则。此函数返回的对象可用作上下文管理器（参见 :ref"
+":`tempfile-examples`）。完成上下文或销毁临时目录对象后，新创建的临时目录及其所有内容将从文件系统中删除。"
 
 #: ../../library/tempfile.rst:129
 msgid ""
@@ -196,18 +202,20 @@ msgid ""
 " :attr:`name` will be assigned to the target of the :keyword:`!as` clause in"
 " the :keyword:`with` statement, if there is one."
 msgstr ""
+"可以从返回对象的 :attr:`name` 属性中找到临时目录的名称。当返回的对象用作上下文管理器时，这个 :attr:`name` 会作为 "
+":keyword:`with` 语句中 :keyword:`!as` 子句的目标（如果有 as 的话）。"
 
 #: ../../library/tempfile.rst:134
 msgid ""
 "The directory can be explicitly cleaned up by calling the :func:`cleanup` "
 "method."
-msgstr ""
+msgstr "可以调用 :func:`cleanup` 方法来手动清理目录。"
 
 #: ../../library/tempfile.rst:138 ../../library/tempfile.rst:213
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``tempfile.mkdtemp`` with "
 "argument ``fullpath``."
-msgstr ""
+msgstr "引发一个 ``tempfile.mkdtemp`` :ref:`审计事件 <auditing>`，附带参数 ``fullpath``。"
 
 #: ../../library/tempfile.rst:144
 msgid ""
@@ -219,12 +227,14 @@ msgid ""
 "executable by no one.  The file descriptor is not inherited by child "
 "processes."
 msgstr ""
+"以最安全的方式创建一个临时文件。假设所在平台正确实现了 :func:`os.open` 的 :const:`os.O_EXCL` "
+"标志，则创建文件时不会有竞争的情况。该文件只能由创建者读写，如果所在平台用权限位来标记文件是否可执行，那么没有人有执行权。文件描述符不会过继给子进程。"
 
 #: ../../library/tempfile.rst:152
 msgid ""
 "Unlike :func:`TemporaryFile`, the user of :func:`mkstemp` is responsible for"
 " deleting the temporary file when done with it."
-msgstr ""
+msgstr "与 :func:`TemporaryFile` 不同，:func:`mkstemp` 用户用完临时文件后需要自行将其删除。"
 
 #: ../../library/tempfile.rst:155
 msgid ""
@@ -233,6 +243,8 @@ msgid ""
 "between the file name and the suffix; if you need one, put it at the "
 "beginning of *suffix*."
 msgstr ""
+"如果 *suffix* 不是 ``None`` 则文件名将以该后缀结尾，是 ``None`` 则没有后缀。:func:`mkstemp` "
+"不会在文件名和后缀之间加点，如果需要加一个点号，请将其放在 *suffix* 的开头。"
 
 #: ../../library/tempfile.rst:160
 msgid ""
@@ -322,15 +334,15 @@ msgstr ""
 
 #: ../../library/tempfile.rst:233
 msgid "The directory named by the :envvar:`TMPDIR` environment variable."
-msgstr ""
+msgstr ":envvar:`TMPDIR` 环境变量指向的目录。"
 
 #: ../../library/tempfile.rst:235
 msgid "The directory named by the :envvar:`TEMP` environment variable."
-msgstr ""
+msgstr ":envvar:`TEMP` 环境变量指向的目录。"
 
 #: ../../library/tempfile.rst:237
 msgid "The directory named by the :envvar:`TMP` environment variable."
-msgstr ""
+msgstr ":envvar:`TMP` 环境变量指向的目录。"
 
 #: ../../library/tempfile.rst:239
 msgid "A platform-specific location:"
