@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-01 12:19+0000\n"
+"POT-Creation-Date: 2020-01-10 12:22+0000\n"
 "PO-Revision-Date: 2017-02-16 17:36+0000\n"
 "Last-Translator: ppcfish <ppcfish@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1425,20 +1425,41 @@ msgid ""
 msgstr ""
 
 #: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1225
-msgid ""
-"Extension modules are shared between (sub-)interpreters as follows: the "
-"first time a particular extension is imported, it is initialized normally, "
-"and a (shallow) copy of its module's dictionary is squirreled away.  When "
-"the same extension is imported by another (sub-)interpreter, a new module is"
-" initialized and filled with the contents of this copy; the extension's "
-"``init`` function is not called.  Note that this is different from what "
-"happens when an extension is imported after the interpreter has been "
-"completely re-initialized by calling :c:func:`Py_FinalizeEx` and "
-":c:func:`Py_Initialize`; in that case, the extension's ``initmodule`` "
-"function *is* called again."
+msgid "Extension modules are shared between (sub-)interpreters as follows:"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1242
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1227
+msgid ""
+"For modules using multi-phase initialization, e.g. "
+":c:func:`PyModule_FromDefAndSpec`, a separate module object is created and "
+"initialized for each interpreter. Only C-level static and global variables "
+"are shared between these module objects."
+msgstr ""
+
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1233
+msgid ""
+"For modules using single-phase initialization, e.g. "
+":c:func:`PyModule_Create`, the first time a particular extension is "
+"imported, it is initialized normally, and a (shallow) copy of its module's "
+"dictionary is squirreled away. When the same extension is imported by "
+"another (sub-)interpreter, a new module is initialized and filled with the "
+"contents of this copy; the extension's ``init`` function is not called. "
+"Objects in the module's dictionary thus end up shared across "
+"(sub-)interpreters, which might cause unwanted behavior (see `Bugs and "
+"caveats`_ below)."
+msgstr ""
+
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1244
+msgid ""
+"Note that this is different from what happens when an extension is imported "
+"after the interpreter has been completely re-initialized by calling "
+":c:func:`Py_FinalizeEx` and :c:func:`Py_Initialize`; in that case, the "
+"extension's ``initmodule`` function *is* called again. As with multi-phase "
+"initialization, this means that only C-level static and global variables are"
+" shared between these modules."
+msgstr ""
+
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1258
 msgid ""
 "Destroy the (sub-)interpreter represented by the given thread state. The "
 "given thread state must be the current thread state.  See the discussion of "
@@ -1449,28 +1470,33 @@ msgid ""
 "sub-interpreters that haven't been explicitly destroyed at that point."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1252
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1268
 msgid "Bugs and caveats"
 msgstr "错误和警告"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1254
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1270
 msgid ""
 "Because sub-interpreters (and the main interpreter) are part of the same "
 "process, the insulation between them isn't perfect --- for example, using "
 "low-level file operations like  :func:`os.close` they can (accidentally or "
 "maliciously) affect each other's open files.  Because of the way extensions "
 "are shared between (sub-)interpreters, some extensions may not work "
-"properly; this is especially likely when the extension makes use of (static)"
-" global variables, or when the extension manipulates its module's dictionary"
-" after its initialization.  It is possible to insert objects created in one "
-"sub-interpreter into a namespace of another sub-interpreter; this should be "
-"done with great care to avoid sharing user-defined functions, methods, "
-"instances or classes between sub-interpreters, since import operations "
-"executed by such objects may affect the wrong (sub-)interpreter's dictionary"
-" of loaded modules."
+"properly; this is especially likely when using single-phase initialization "
+"or (static) global variables. It is possible to insert objects created in "
+"one sub-interpreter into a namespace of another (sub-)interpreter; this "
+"should be avoided if possible."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1268
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1280
+msgid ""
+"Special care should be taken to avoid sharing user-defined functions, "
+"methods, instances or classes between sub-interpreters, since import "
+"operations executed by such objects may affect the wrong (sub-)interpreter's"
+" dictionary of loaded modules. It is equally important to avoid sharing "
+"objects from which the above are reachable."
+msgstr ""
+
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1286
 msgid ""
 "Also note that combining this functionality with :c:func:`PyGILState_\\*` "
 "APIs is delicate, because these APIs assume a bijection between Python "
@@ -1482,25 +1508,25 @@ msgid ""
 "Python created threads will probably be broken when using sub-interpreters."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1279
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1297
 msgid "Asynchronous Notifications"
 msgstr "异步通知"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1281
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1299
 msgid ""
 "A mechanism is provided to make asynchronous notifications to the main "
 "interpreter thread.  These notifications take the form of a function pointer"
 " and a void pointer argument."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1290
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1308
 msgid ""
 "Schedule a function to be called from the main interpreter thread.  On "
 "success, ``0`` is returned and *func* is queued for being called in the main"
 " thread.  On failure, ``-1`` is returned without setting any exception."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1294
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1312
 msgid ""
 "When successfully queued, *func* will be *eventually* called from the main "
 "interpreter thread with the argument *arg*.  It will be called "
@@ -1508,17 +1534,17 @@ msgid ""
 "these conditions met:"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1299
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1317
 msgid "on a :term:`bytecode` boundary;"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1300
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1318
 msgid ""
 "with the main thread holding the :term:`global interpreter lock` (*func* can"
 " therefore use the full C API)."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1303
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1321
 msgid ""
 "*func* must return ``0`` on success, or ``-1`` on failure with an exception "
 "set.  *func* won't be interrupted to perform another asynchronous "
@@ -1526,13 +1552,13 @@ msgid ""
 "if the global interpreter lock is released."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1308
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1326
 msgid ""
 "This function doesn't need a current thread state to run, and it doesn't "
 "need the global interpreter lock."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1312
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1330
 msgid ""
 "This is a low-level function, only useful for very special cases. There is "
 "no guarantee that *func* will be called as quick as possible.  If the main "
@@ -1542,18 +1568,18 @@ msgid ""
 ":ref:`PyGILState API<gilstate>`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1324
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1342
 msgid "Profiling and Tracing"
 msgstr "分析和跟踪"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1329
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1347
 msgid ""
 "The Python interpreter provides some low-level support for attaching "
 "profiling and execution tracing facilities.  These are used for profiling, "
 "debugging, and coverage analysis tools."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1333
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1351
 msgid ""
 "This C interface allows the profiling or tracing code to avoid the overhead "
 "of calling through Python-level callable objects, making a direct C function"
@@ -1563,7 +1589,7 @@ msgid ""
 "reported to the Python-level trace functions in previous versions."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1343
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1361
 msgid ""
 "The type of the trace function registered using :c:func:`PyEval_SetProfile` "
 "and :c:func:`PyEval_SetTrace`. The first parameter is the object passed to "
@@ -1575,68 +1601,68 @@ msgid ""
 "the value of *what*:"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1352
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1370
 msgid "Value of *what*"
 msgstr "*what* 的值"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1352
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1370
 msgid "Meaning of *arg*"
 msgstr "*arg* 的含义"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1354
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1372
 msgid ":const:`PyTrace_CALL`"
 msgstr ":const:`PyTrace_CALL`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1354
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1359
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1370
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1372
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1377
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1388
 msgid "Always :c:data:`Py_None`."
 msgstr "总是 :c:data:`Py_None`."
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1356
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1374
 msgid ":const:`PyTrace_EXCEPTION`"
 msgstr ":const:`PyTrace_EXCEPTION`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1356
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1374
 msgid "Exception information as returned by :func:`sys.exc_info`."
 msgstr ":func:`sys.exc_info` 返回的异常信息。"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1359
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1377
 msgid ":const:`PyTrace_LINE`"
 msgstr ":const:`PyTrace_LINE`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1361
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1379
 msgid ":const:`PyTrace_RETURN`"
 msgstr ":const:`PyTrace_RETURN`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1361
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1379
 msgid ""
 "Value being returned to the caller, or ``NULL`` if caused by an exception."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1364
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1382
 msgid ":const:`PyTrace_C_CALL`"
 msgstr ":const:`PyTrace_C_CALL`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1364
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1366
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1368
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1382
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1384
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1386
 msgid "Function object being called."
 msgstr "正在调用函数对象。"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1366
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1384
 msgid ":const:`PyTrace_C_EXCEPTION`"
 msgstr ":const:`PyTrace_C_EXCEPTION`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1368
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1386
 msgid ":const:`PyTrace_C_RETURN`"
 msgstr ":const:`PyTrace_C_RETURN`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1370
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1388
 msgid ":const:`PyTrace_OPCODE`"
 msgstr ":const:`PyTrace_OPCODE`"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1375
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1393
 msgid ""
 "The value of the *what* parameter to a :c:type:`Py_tracefunc` function when "
 "a new call to a function or method is being reported, or a new entry into a "
@@ -1645,7 +1671,7 @@ msgid ""
 "the corresponding frame."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1384
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1402
 msgid ""
 "The value of the *what* parameter to a :c:type:`Py_tracefunc` function when "
 "an exception has been raised.  The callback function is called with this "
@@ -1657,7 +1683,7 @@ msgid ""
 "profiler."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1395
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1413
 msgid ""
 "The value passed as the *what* parameter to a :c:type:`Py_tracefunc` "
 "function (but not a profiling function) when a line-number event is being "
@@ -1665,31 +1691,31 @@ msgid ""
 " *0* on that frame."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1402
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1420
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a call is about to return."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1408
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1426
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function is about to be called."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1414
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1432
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has raised an exception."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1420
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1438
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has returned."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1426
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1444
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions (but "
 "not profiling functions) when a new opcode is about to be executed.  This "
@@ -1697,7 +1723,7 @@ msgid ""
 ":attr:`f_trace_opcodes` to *1* on the frame."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1434
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1452
 msgid ""
 "Set the profiler function to *func*.  The *obj* parameter is passed to the "
 "function as its first parameter, and may be any Python object, or ``NULL``."
@@ -1708,7 +1734,7 @@ msgid ""
 ":const:`PyTrace_EXCEPTION`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1444
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1462
 msgid ""
 "Set the tracing function to *func*.  This is similar to "
 ":c:func:`PyEval_SetProfile`, except the tracing function does receive line-"
@@ -1719,48 +1745,48 @@ msgid ""
 " *what* parameter."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1454
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1472
 msgid "Advanced Debugger Support"
 msgstr "高级调试器支持"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1459
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1477
 msgid ""
 "These functions are only intended to be used by advanced debugging tools."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1464
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1482
 msgid ""
 "Return the interpreter state object at the head of the list of all such "
 "objects."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1469
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1487
 msgid "Return the main interpreter state object."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1474
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1492
 msgid ""
 "Return the next interpreter state object after *interp* from the list of all"
 " such objects."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1480
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1498
 msgid ""
 "Return the pointer to the first :c:type:`PyThreadState` object in the list "
 "of threads associated with the interpreter *interp*."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1486
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1504
 msgid ""
 "Return the next thread state object after *tstate* from the list of all such"
 " objects belonging to the same :c:type:`PyInterpreterState` object."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1493
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1511
 msgid "Thread Local Storage Support"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1497
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1515
 msgid ""
 "The Python interpreter provides low-level support for thread-local storage "
 "(TLS) which wraps the underlying native TLS implementation to support the "
@@ -1770,19 +1796,19 @@ msgid ""
 "thread."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1504
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1522
 msgid ""
 "The GIL does *not* need to be held when calling these functions; they supply"
 " their own locking."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1507
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1525
 msgid ""
 "Note that :file:`Python.h` does not include the declaration of the TLS APIs,"
 " you need to include :file:`pythread.h` to use thread-local storage."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1511
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1529
 msgid ""
 "None of these API functions handle memory management on behalf of the "
 ":c:type:`void\\*` values.  You need to allocate and deallocate them "
@@ -1791,22 +1817,22 @@ msgid ""
 "either."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1519
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1537
 msgid "Thread Specific Storage (TSS) API"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1521
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1539
 msgid ""
 "TSS API is introduced to supersede the use of the existing TLS API within "
 "the CPython interpreter.  This API uses a new type :c:type:`Py_tss_t` "
 "instead of :c:type:`int` to represent thread keys."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1527
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1545
 msgid "\"A New C-API for Thread-Local Storage in CPython\" (:pep:`539`)"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1532
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1550
 msgid ""
 "This data structure represents the state of a thread key, the definition of "
 "which may depend on the underlying TLS implementation, and it has an "
@@ -1814,53 +1840,53 @@ msgid ""
 "public members in this structure."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1537
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1555
 msgid ""
 "When :ref:`Py_LIMITED_API <stable>` is not defined, static allocation of "
 "this type by :c:macro:`Py_tss_NEEDS_INIT` is allowed."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1543
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1561
 msgid ""
 "This macro expands to the initializer for :c:type:`Py_tss_t` variables. Note"
 " that this macro won't be defined with :ref:`Py_LIMITED_API <stable>`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1548
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1566
 msgid "Dynamic Allocation"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1550
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1568
 msgid ""
 "Dynamic allocation of the :c:type:`Py_tss_t`, required in extension modules "
 "built with :ref:`Py_LIMITED_API <stable>`, where static allocation of this "
 "type is not possible due to its implementation being opaque at build time."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1557
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1575
 msgid ""
 "Return a value which is the same state as a value initialized with "
 ":c:macro:`Py_tss_NEEDS_INIT`, or ``NULL`` in the case of dynamic allocation "
 "failure."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1564
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1582
 msgid ""
 "Free the given *key* allocated by :c:func:`PyThread_tss_alloc`, after first "
 "calling :c:func:`PyThread_tss_delete` to ensure any associated thread locals"
 " have been unassigned. This is a no-op if the *key* argument is `NULL`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1570
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1588
 msgid ""
 "A freed key becomes a dangling pointer, you should reset the key to `NULL`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1575
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1593
 msgid "Methods"
 msgstr "方法"
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1577
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1595
 msgid ""
 "The parameter *key* of these functions must not be ``NULL``.  Moreover, the "
 "behaviors of :c:func:`PyThread_tss_set` and :c:func:`PyThread_tss_get` are "
@@ -1868,13 +1894,13 @@ msgid ""
 ":c:func:`PyThread_tss_create`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1585
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1603
 msgid ""
 "Return a non-zero value if the given :c:type:`Py_tss_t` has been initialized"
 " by :c:func:`PyThread_tss_create`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1591
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1609
 msgid ""
 "Return a zero value on successful initialization of a TSS key.  The behavior"
 " is undefined if the value pointed to by the *key* argument is not "
@@ -1883,7 +1909,7 @@ msgid ""
 "no-op and immediately returns success."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1600
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1618
 msgid ""
 "Destroy a TSS key to forget the values associated with the key across all "
 "threads, and change the key's initialization state to uninitialized.  A "
@@ -1892,31 +1918,31 @@ msgid ""
 " same key -- calling it on an already destroyed key is a no-op."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1609
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1627
 msgid ""
 "Return a zero value to indicate successfully associating a :c:type:`void\\*`"
 " value with a TSS key in the current thread.  Each thread has a distinct "
 "mapping of the key to a :c:type:`void\\*` value."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1616
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1634
 msgid ""
 "Return the :c:type:`void\\*` value associated with a TSS key in the current "
 "thread.  This returns ``NULL`` if no value is associated with the key in the"
 " current thread."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1624
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1642
 msgid "Thread Local Storage (TLS) API"
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1626
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1644
 msgid ""
 "This API is superseded by :ref:`Thread Specific Storage (TSS) API <thread-"
 "specific-storage-api>`."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1631
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1649
 msgid ""
 "This version of the API does not support platforms where the native TLS key "
 "is defined in a way that cannot be safely cast to ``int``.  On such "
@@ -1925,7 +1951,7 @@ msgid ""
 "platforms."
 msgstr ""
 
-#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1636
+#: /home/travis/build/python/cpython-doc-catalog/Doc/c-api/init.rst:1654
 msgid ""
 "Due to the compatibility problem noted above, this version of the API should"
 " not be used in new code."
