@@ -8,16 +8,16 @@
 # focusheart <focusheart@gmail.com>, 2019
 # Naisen Xu <723648649@qq.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
-# Freesand Leo <yuqinju@163.com>, 2019
+# Freesand Leo <yuqinju@163.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 12:40+0000\n"
+"POT-Creation-Date: 2020-02-22 12:45+0000\n"
 "PO-Revision-Date: 2017-02-16 23:06+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2019\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2206,17 +2206,61 @@ msgid ""
 "A. Yes.  In the CPython and PyPy3 implementations, the C/CFFI versions of "
 "the decimal module integrate the high speed `libmpdec "
 "<https://www.bytereef.org/mpdecimal/doc/libmpdec/index.html>`_ library for "
-"arbitrary precision correctly-rounded decimal floating point arithmetic. "
-"``libmpdec`` uses `Karatsuba multiplication "
+"arbitrary precision correctly-rounded decimal floating point arithmetic "
+"[#]_. ``libmpdec`` uses `Karatsuba multiplication "
 "<https://en.wikipedia.org/wiki/Karatsuba_algorithm>`_ for medium-sized "
 "numbers and the `Number Theoretic Transform "
 "<https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-"
-"theoretic_transform>`_ for very large numbers.  However, to realize this "
-"performance gain, the context needs to be set for unrounded calculations."
+"theoretic_transform>`_ for very large numbers."
 msgstr ""
-"A. 是的，在 CPython 和 PyPy3 实现中，decimal 模块的 C/CFFI 版本集成了高速 `libmpdec "
+"A. 是的。 在 CPython 和 PyPy3 实现中，decimal 模块的 C/CFFI 版本集成了高速 `libmpdec "
 "<https://www.bytereef.org/mpdecimal/doc/libmpdec/index.html>`_ "
-"库用于实现任意精度正确舍入的十进制浮点算术。 ``libmpdec`` 会对中等的数字使用 `Karatsuba 乘法 "
+"库用于实现任意精度正确舍入的十进制浮点算术 [#]_。 ``libmpdec`` 会对中等大小的数字使用 `Karatsuba 乘法 "
 "<https://en.wikipedia.org/wiki/Karatsuba_algorithm>`_ 而对非常巨大的数字使用 `数字原理变换 "
 "<https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-"
-"theoretic_transform>`_ 。 但是，想要实现这种性能提升，需要对未舍入的运算设置上下文。"
+"theoretic_transform>`_。"
+
+#: ../../library/decimal.rst:2131
+msgid ""
+"The context must be adapted for exact arbitrary precision arithmetic. "
+":attr:`Emin` and :attr:`Emax` should always be set to the maximum values, "
+":attr:`clamp` should always be 0 (the default).  Setting :attr:`prec` "
+"requires some care."
+msgstr ""
+"必须要对任意精度算术适配上下文。 :attr:`Emin` 和 :attr:`Emax` 应当总是设为最大值，:attr:`clamp` 应当总是设为 "
+"0 (默认值)。 设置 :attr:`prec` 需要十分谨慎。"
+
+#: ../../library/decimal.rst:2135
+msgid ""
+"The easiest approach for trying out bignum arithmetic is to use the maximum "
+"value for :attr:`prec` as well [#]_::"
+msgstr "进行大数字算术的最便捷方式也是使用 :attr:`prec` 的最大值 [#]_::"
+
+#: ../../library/decimal.rst:2144
+msgid ""
+"For inexact results, :attr:`MAX_PREC` is far too large on 64-bit platforms "
+"and the available memory will be insufficient::"
+msgstr "对于不精确的结果，在 64 位平台上 :attr:`MAX_PREC` 的值太大了，可用的内存将会不足::"
+
+#: ../../library/decimal.rst:2152
+msgid ""
+"On systems with overallocation (e.g. Linux), a more sophisticated approach "
+"is to adjust :attr:`prec` to the amount of available RAM.  Suppose that you "
+"have 8GB of RAM and expect 10 simultaneous operands using a maximum of 500MB"
+" each::"
+msgstr ""
+"在具有超量分配的系统上 (即 Linux)，一种更复杂的方式根据可用的 RAM 大小来调整 :attr:`prec`。 假设你有 8GB 的 RAM "
+"并期望同时有 10 个操作数，每个最多使用 500MB::"
+
+#: ../../library/decimal.rst:2176
+msgid ""
+"In general (and especially on systems without overallocation), it is "
+"recommended to estimate even tighter bounds and set the :attr:`Inexact` trap"
+" if all calculations are expected to be exact."
+msgstr "总体而言（特别是在没有超量分配的系统上），如果期望所有计算都是精确的则推荐预估更严格的边界并设置 :attr:`Inexact` 陷阱。"
+
+#: ../../library/decimal.rst:2185
+msgid ""
+"This approach now works for all exact results except for non-integer powers."
+" Also backported to 3.7 and 3.8."
+msgstr "此方式现在适用于除非整数乘方以外的所有精确结果。 并已向下移植到 3.7 和 3.8。"
