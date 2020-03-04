@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-10 04:47+0000\n"
+"POT-Creation-Date: 2020-03-04 04:58+0000\n"
 "PO-Revision-Date: 2019-09-01 03:38+0000\n"
 "Last-Translator: ppcfish <ppcfish@gmail.com>, 2019\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -125,10 +125,10 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:86 ../../c-api/typeobj.rst:188
 #: ../../c-api/typeobj.rst:255 ../../c-api/typeobj.rst:322
-#: ../../c-api/typeobj.rst:340 ../../c-api/typeobj.rst:682
-#: ../../c-api/typeobj.rst:699 ../../c-api/typeobj.rst:779
-#: ../../c-api/typeobj.rst:874 ../../c-api/typeobj.rst:967
-#: ../../c-api/typeobj.rst:1022
+#: ../../c-api/typeobj.rst:340 ../../c-api/typeobj.rst:694
+#: ../../c-api/typeobj.rst:711 ../../c-api/typeobj.rst:791
+#: ../../c-api/typeobj.rst:886 ../../c-api/typeobj.rst:979
+#: ../../c-api/typeobj.rst:1034
 msgid "This field is inherited by subtypes."
 msgstr ""
 
@@ -633,9 +633,9 @@ msgid ""
 "The :c:member:`~PyTypeObject.tp_traverse` pointer is used by the garbage "
 "collector to detect reference cycles. A typical implementation of a "
 ":c:member:`~PyTypeObject.tp_traverse` function simply calls "
-":c:func:`Py_VISIT` on each of the instance's members that are Python "
-"objects.  For example, this is function :c:func:`local_traverse` from the "
-":mod:`_thread` extension module::"
+":c:func:`Py_VISIT` on each of the instance's members that are Python objects"
+" that the instance owns. For example, this is function "
+":c:func:`local_traverse` from the :mod:`_thread` extension module::"
 msgstr ""
 
 #: ../../c-api/typeobj.rst:511
@@ -653,14 +653,27 @@ msgid ""
 "module's :func:`~gc.get_referents` function will include it."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:519
+#: ../../c-api/typeobj.rst:520
+msgid ""
+"When implementing :c:member:`~PyTypeObject.tp_traverse`, only the members "
+"that the instance *owns* (by having strong references to them) must be "
+"visited. For instance, if an object supports weak references via the "
+":c:member:`~PyTypeObject.tp_weaklist` slot, the pointer supporting the "
+"linked list (what *tp_weaklist* points to) must **not** be visited as the "
+"instance does not directly own the weak references to itself (the "
+"weakreference list is there to support the weak reference machinery, but the"
+" instance has no strong reference to the elements inside it, as they are "
+"allowed to be removed even if the instance is still alive)."
+msgstr ""
+
+#: ../../c-api/typeobj.rst:531
 msgid ""
 "Note that :c:func:`Py_VISIT` requires the *visit* and *arg* parameters to "
 ":c:func:`local_traverse` to have these specific names; don't name them just "
 "anything."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:523
+#: ../../c-api/typeobj.rst:535
 msgid ""
 "This field is inherited by subtypes together with "
 ":c:member:`~PyTypeObject.tp_clear` and the :const:`Py_TPFLAGS_HAVE_GC` flag "
@@ -669,13 +682,13 @@ msgid ""
 "they are all zero in the subtype."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:531
+#: ../../c-api/typeobj.rst:543
 msgid ""
 "An optional pointer to a clear function for the garbage collector. This is "
 "only used if the :const:`Py_TPFLAGS_HAVE_GC` flag bit is set."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:534
+#: ../../c-api/typeobj.rst:546
 msgid ""
 "The :c:member:`~PyTypeObject.tp_clear` member function is used to break "
 "reference cycles in cyclic garbage detected by the garbage collector.  Taken"
@@ -691,7 +704,7 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:544
+#: ../../c-api/typeobj.rst:556
 msgid ""
 "Implementations of :c:member:`~PyTypeObject.tp_clear` should drop the "
 "instance's references to those of its members that may be Python objects, "
@@ -699,7 +712,7 @@ msgid ""
 "example::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:558
+#: ../../c-api/typeobj.rst:570
 msgid ""
 "The :c:func:`Py_CLEAR` macro should be used, because clearing references is "
 "delicate:  the reference to the contained object must not be decremented "
@@ -714,7 +727,7 @@ msgid ""
 " in a safe order."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:569
+#: ../../c-api/typeobj.rst:581
 msgid ""
 "Because the goal of :c:member:`~PyTypeObject.tp_clear` functions is to break"
 " reference cycles, it's not necessary to clear contained objects like Python"
@@ -724,13 +737,13 @@ msgid ""
 "invoke :c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:575
+#: ../../c-api/typeobj.rst:587
 msgid ""
 "More information about Python's garbage collection scheme can be found in "
 "section :ref:`supporting-cycle-detection`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:578
+#: ../../c-api/typeobj.rst:590
 msgid ""
 "This field is inherited by subtypes together with "
 ":c:member:`~PyTypeObject.tp_traverse` and the :const:`Py_TPFLAGS_HAVE_GC` "
@@ -739,7 +752,7 @@ msgid ""
 "they are all zero in the subtype."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:586
+#: ../../c-api/typeobj.rst:598
 msgid ""
 "An optional pointer to the rich comparison function, whose signature is "
 "``PyObject *tp_richcompare(PyObject *a, PyObject *b, int op)``. The first "
@@ -747,7 +760,7 @@ msgid ""
 ":c:type:`PyTypeObject`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:591
+#: ../../c-api/typeobj.rst:603
 msgid ""
 "The function should return the result of the comparison (usually ``Py_True``"
 " or ``Py_False``).  If the comparison is undefined, it must return "
@@ -755,14 +768,14 @@ msgid ""
 " set an exception condition."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:598
+#: ../../c-api/typeobj.rst:610
 msgid ""
 "If you want to implement a type for which only a limited set of comparisons "
 "makes sense (e.g. ``==`` and ``!=``, but not ``<`` and friends), directly "
 "raise :exc:`TypeError` in the rich comparison function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:602
+#: ../../c-api/typeobj.rst:614
 msgid ""
 "This field is inherited by subtypes together with "
 ":c:member:`~PyTypeObject.tp_hash`: a subtype inherits "
@@ -772,75 +785,75 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_hash` are both ``NULL``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:607
+#: ../../c-api/typeobj.rst:619
 msgid ""
 "The following constants are defined to be used as the third argument for "
 ":c:member:`~PyTypeObject.tp_richcompare` and for "
 ":c:func:`PyObject_RichCompare`:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:611
+#: ../../c-api/typeobj.rst:623
 msgid "Constant"
 msgstr "常数"
 
-#: ../../c-api/typeobj.rst:611
+#: ../../c-api/typeobj.rst:623
 msgid "Comparison"
 msgstr "对照"
 
-#: ../../c-api/typeobj.rst:613
+#: ../../c-api/typeobj.rst:625
 msgid ":const:`Py_LT`"
 msgstr ":const:`Py_LT`"
 
-#: ../../c-api/typeobj.rst:613
+#: ../../c-api/typeobj.rst:625
 msgid "``<``"
 msgstr "``<``"
 
-#: ../../c-api/typeobj.rst:615
+#: ../../c-api/typeobj.rst:627
 msgid ":const:`Py_LE`"
 msgstr ":const:`Py_LE`"
 
-#: ../../c-api/typeobj.rst:615
+#: ../../c-api/typeobj.rst:627
 msgid "``<=``"
 msgstr "``<=``"
 
-#: ../../c-api/typeobj.rst:617
+#: ../../c-api/typeobj.rst:629
 msgid ":const:`Py_EQ`"
 msgstr ":const:`Py_EQ`"
 
-#: ../../c-api/typeobj.rst:617
+#: ../../c-api/typeobj.rst:629
 msgid "``==``"
 msgstr "``==``"
 
-#: ../../c-api/typeobj.rst:619
+#: ../../c-api/typeobj.rst:631
 msgid ":const:`Py_NE`"
 msgstr ":const:`Py_NE`"
 
-#: ../../c-api/typeobj.rst:619
+#: ../../c-api/typeobj.rst:631
 msgid "``!=``"
 msgstr "``!=``"
 
-#: ../../c-api/typeobj.rst:621
+#: ../../c-api/typeobj.rst:633
 msgid ":const:`Py_GT`"
 msgstr ":const:`Py_GT`"
 
-#: ../../c-api/typeobj.rst:621
+#: ../../c-api/typeobj.rst:633
 msgid "``>``"
 msgstr "``>``"
 
-#: ../../c-api/typeobj.rst:623
+#: ../../c-api/typeobj.rst:635
 msgid ":const:`Py_GE`"
 msgstr ":const:`Py_GE`"
 
-#: ../../c-api/typeobj.rst:623
+#: ../../c-api/typeobj.rst:635
 msgid "``>=``"
 msgstr "``>=``"
 
-#: ../../c-api/typeobj.rst:626
+#: ../../c-api/typeobj.rst:638
 msgid ""
 "The following macro is defined to ease writing rich comparison functions:"
 msgstr "定义以下宏是为了简化编写丰富的比较函数："
 
-#: ../../c-api/typeobj.rst:630
+#: ../../c-api/typeobj.rst:642
 msgid ""
 "Return ``Py_True`` or ``Py_False`` from the function, depending on the "
 "result of a comparison. VAL_A and VAL_B must be orderable by C comparison "
@@ -848,15 +861,15 @@ msgid ""
 "specifies the requested operation, as for :c:func:`PyObject_RichCompare`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:636
+#: ../../c-api/typeobj.rst:648
 msgid "The return value's reference count is properly incremented."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:638
+#: ../../c-api/typeobj.rst:650
 msgid "On error, sets an exception and returns NULL from the function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:645
+#: ../../c-api/typeobj.rst:657
 msgid ""
 "If the instances of this type are weakly referenceable, this field is "
 "greater than zero and contains the offset in the instance structure of the "
@@ -866,13 +879,13 @@ msgid ""
 ":c:type:`PyObject\\*` which is initialized to ``NULL``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:652
+#: ../../c-api/typeobj.rst:664
 msgid ""
 "Do not confuse this field with :c:member:`~PyTypeObject.tp_weaklist`; that "
 "is the list head for weak references to the type object itself."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:655
+#: ../../c-api/typeobj.rst:667
 msgid ""
 "This field is inherited by subtypes, but see the rules listed below. A "
 "subtype may override this offset; this means that the subtype uses a "
@@ -881,7 +894,7 @@ msgid ""
 " not be a problem."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:660
+#: ../../c-api/typeobj.rst:672
 msgid ""
 "When a type defined by a class statement has no :attr:`~object.__slots__` "
 "declaration, and none of its base types are weakly referenceable, the type "
@@ -890,7 +903,7 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_weaklistoffset` of that slot's offset."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:665
+#: ../../c-api/typeobj.rst:677
 msgid ""
 "When a type's :attr:`__slots__` declaration contains a slot named "
 ":attr:`__weakref__`, that slot becomes the weak reference list head for "
@@ -898,25 +911,25 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_weaklistoffset`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:670
+#: ../../c-api/typeobj.rst:682
 msgid ""
 "When a type's :attr:`__slots__` declaration does not contain a slot named "
 ":attr:`__weakref__`, the type inherits its "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` from its base type."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:676
+#: ../../c-api/typeobj.rst:688
 msgid ""
 "An optional pointer to a function that returns an iterator for the object.  "
 "Its presence normally signals that the instances of this type are iterable "
 "(although sequences may be iterable without this function)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:680
+#: ../../c-api/typeobj.rst:692
 msgid "This function has the same signature as :c:func:`PyObject_GetIter`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:687
+#: ../../c-api/typeobj.rst:699
 msgid ""
 "An optional pointer to a function that returns the next item in an iterator."
 " When the iterator is exhausted, it must return ``NULL``; a "
@@ -925,92 +938,92 @@ msgid ""
 "instances of this type are iterators."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:693
+#: ../../c-api/typeobj.rst:705
 msgid ""
 "Iterator types should also define the :c:member:`~PyTypeObject.tp_iter` "
 "function, and that function should return the iterator instance itself (not "
 "a new iterator instance)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:697
+#: ../../c-api/typeobj.rst:709
 msgid "This function has the same signature as :c:func:`PyIter_Next`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:704
+#: ../../c-api/typeobj.rst:716
 msgid ""
 "An optional pointer to a static ``NULL``-terminated array of "
 ":c:type:`PyMethodDef` structures, declaring regular methods of this type."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:707
+#: ../../c-api/typeobj.rst:719
 msgid ""
 "For each entry in the array, an entry is added to the type's dictionary (see"
 " :c:member:`~PyTypeObject.tp_dict` below) containing a method descriptor."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:710
+#: ../../c-api/typeobj.rst:722
 msgid ""
 "This field is not inherited by subtypes (methods are inherited through a "
 "different mechanism)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:716
+#: ../../c-api/typeobj.rst:728
 msgid ""
 "An optional pointer to a static ``NULL``-terminated array of "
 ":c:type:`PyMemberDef` structures, declaring regular data members (fields or "
 "slots) of instances of this type."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:720
+#: ../../c-api/typeobj.rst:732
 msgid ""
 "For each entry in the array, an entry is added to the type's dictionary (see"
 " :c:member:`~PyTypeObject.tp_dict` below) containing a member descriptor."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:723
+#: ../../c-api/typeobj.rst:735
 msgid ""
 "This field is not inherited by subtypes (members are inherited through a "
 "different mechanism)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:729
+#: ../../c-api/typeobj.rst:741
 msgid ""
 "An optional pointer to a static ``NULL``-terminated array of "
 ":c:type:`PyGetSetDef` structures, declaring computed attributes of instances"
 " of this type."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:732
+#: ../../c-api/typeobj.rst:744
 msgid ""
 "For each entry in the array, an entry is added to the type's dictionary (see"
 " :c:member:`~PyTypeObject.tp_dict` below) containing a getset descriptor."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:735
+#: ../../c-api/typeobj.rst:747
 msgid ""
 "This field is not inherited by subtypes (computed attributes are inherited "
 "through a different mechanism)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:741
+#: ../../c-api/typeobj.rst:753
 msgid ""
 "An optional pointer to a base type from which type properties are inherited."
 "  At this level, only single inheritance is supported; multiple inheritance "
 "require dynamically creating a type object by calling the metatype."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:745
+#: ../../c-api/typeobj.rst:757
 msgid ""
 "This field is not inherited by subtypes (obviously), but it defaults to "
 "``&PyBaseObject_Type`` (which to Python programmers is known as the type "
 ":class:`object`)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:752
+#: ../../c-api/typeobj.rst:764
 msgid "The type's dictionary is stored here by :c:func:`PyType_Ready`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:754
+#: ../../c-api/typeobj.rst:766
 msgid ""
 "This field should normally be initialized to ``NULL`` before PyType_Ready is"
 " called; it may also be initialized to a dictionary containing initial "
@@ -1019,41 +1032,41 @@ msgid ""
 "they don't correspond to overloaded operations (like :meth:`__add__`)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:760
+#: ../../c-api/typeobj.rst:772
 msgid ""
 "This field is not inherited by subtypes (though the attributes defined in "
 "here are inherited through a different mechanism)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:765
+#: ../../c-api/typeobj.rst:777
 msgid ""
 "It is not safe to use :c:func:`PyDict_SetItem` on or otherwise modify "
 ":c:member:`~PyTypeObject.tp_dict` with the dictionary C-API."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:771
+#: ../../c-api/typeobj.rst:783
 msgid "An optional pointer to a \"descriptor get\" function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:773 ../../c-api/typeobj.rst:787
-#: ../../c-api/typeobj.rst:859 ../../c-api/typeobj.rst:881
-#: ../../c-api/typeobj.rst:912
+#: ../../c-api/typeobj.rst:785 ../../c-api/typeobj.rst:799
+#: ../../c-api/typeobj.rst:871 ../../c-api/typeobj.rst:893
+#: ../../c-api/typeobj.rst:924
 msgid "The function signature is ::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:784
+#: ../../c-api/typeobj.rst:796
 msgid ""
 "An optional pointer to a function for setting and deleting a descriptor's "
 "value."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:791
+#: ../../c-api/typeobj.rst:803
 msgid ""
 "The *value* argument is set to ``NULL`` to delete the value. This field is "
 "inherited by subtypes."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:799
+#: ../../c-api/typeobj.rst:811
 msgid ""
 "If the instances of this type have a dictionary containing instance "
 "variables, this field is non-zero and contains the offset in the instances "
@@ -1061,13 +1074,13 @@ msgid ""
 ":c:func:`PyObject_GenericGetAttr`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:804
+#: ../../c-api/typeobj.rst:816
 msgid ""
 "Do not confuse this field with :c:member:`~PyTypeObject.tp_dict`; that is "
 "the dictionary for attributes of the type object itself."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:807
+#: ../../c-api/typeobj.rst:819
 msgid ""
 "If the value of this field is greater than zero, it specifies the offset "
 "from the start of the instance structure.  If the value is less than zero, "
@@ -1083,13 +1096,13 @@ msgid ""
 "that the dictionary is at the very end of the structure."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:819
+#: ../../c-api/typeobj.rst:831
 msgid ""
 "The real dictionary offset in an instance can be computed from a negative "
 ":c:member:`~PyTypeObject.tp_dictoffset` as follows::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:826
+#: ../../c-api/typeobj.rst:838
 msgid ""
 "where :c:member:`~PyTypeObject.tp_basicsize`, "
 ":c:member:`~PyTypeObject.tp_itemsize` and "
@@ -1100,7 +1113,7 @@ msgid ""
 "for you by :c:func:`_PyObject_GetDictPtr`.)"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:832
+#: ../../c-api/typeobj.rst:844
 msgid ""
 "This field is inherited by subtypes, but see the rules listed below. A "
 "subtype may override this offset; this means that the subtype instances "
@@ -1109,7 +1122,7 @@ msgid ""
 " should not be a problem."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:837
+#: ../../c-api/typeobj.rst:849
 msgid ""
 "When a type defined by a class statement has no :attr:`~object.__slots__` "
 "declaration, and none of its base types has an instance variable dictionary,"
@@ -1117,14 +1130,14 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_dictoffset` is set to that slot's offset."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:842
+#: ../../c-api/typeobj.rst:854
 msgid ""
 "When a type defined by a class statement has a :attr:`__slots__` "
 "declaration, the type inherits its :c:member:`~PyTypeObject.tp_dictoffset` "
 "from its base type."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:845
+#: ../../c-api/typeobj.rst:857
 msgid ""
 "(Adding a slot named :attr:`~object.__dict__` to the :attr:`__slots__` "
 "declaration does not have the expected effect, it just causes confusion.  "
@@ -1132,11 +1145,11 @@ msgid ""
 "though.)"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:852
+#: ../../c-api/typeobj.rst:864
 msgid "An optional pointer to an instance initialization function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:854
+#: ../../c-api/typeobj.rst:866
 msgid ""
 "This function corresponds to the :meth:`__init__` method of classes.  Like "
 ":meth:`__init__`, it is possible to create an instance without calling "
@@ -1144,14 +1157,14 @@ msgid ""
 "its :meth:`__init__` method again."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:863
+#: ../../c-api/typeobj.rst:875
 msgid ""
 "The self argument is the instance to be initialized; the *args* and *kwds* "
 "arguments represent positional and keyword arguments of the call to "
 ":meth:`__init__`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:867
+#: ../../c-api/typeobj.rst:879
 msgid ""
 "The :c:member:`~PyTypeObject.tp_init` function, if not ``NULL``, is called "
 "when an instance is created normally by calling its type, after the type's "
@@ -1163,11 +1176,11 @@ msgid ""
 "original type, the subtype's :c:member:`~PyTypeObject.tp_init` is called."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:879
+#: ../../c-api/typeobj.rst:891
 msgid "An optional pointer to an instance allocation function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:885
+#: ../../c-api/typeobj.rst:897
 msgid ""
 "The purpose of this function is to separate memory allocation from memory "
 "initialization.  It should return a pointer to a block of memory of adequate"
@@ -1181,14 +1194,14 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_basicsize`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:895
+#: ../../c-api/typeobj.rst:907
 msgid ""
 "Do not use this function to do any other instance initialization, not even "
 "to allocate additional memory; that should be done by "
 ":c:member:`~PyTypeObject.tp_new`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:898
+#: ../../c-api/typeobj.rst:910
 msgid ""
 "This field is inherited by static subtypes, but not by dynamic subtypes "
 "(subtypes created by a class statement); in the latter, this field is always"
@@ -1196,18 +1209,18 @@ msgid ""
 "strategy. That is also the recommended value for statically defined types."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:906
+#: ../../c-api/typeobj.rst:918
 msgid "An optional pointer to an instance creation function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:908
+#: ../../c-api/typeobj.rst:920
 msgid ""
 "If this function is ``NULL`` for a particular type, that type cannot be "
 "called to create new instances; presumably there is some other way to create"
 " instances, like a factory function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:916
+#: ../../c-api/typeobj.rst:928
 msgid ""
 "The subtype argument is the type of the object being created; the *args* and"
 " *kwds* arguments represent positional and keyword arguments of the call to "
@@ -1216,7 +1229,7 @@ msgid ""
 "that type (but not an unrelated type)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:922
+#: ../../c-api/typeobj.rst:934
 msgid ""
 "The :c:member:`~PyTypeObject.tp_new` function should call "
 "``subtype->tp_alloc(subtype, nitems)`` to allocate space for the object, and"
@@ -1228,26 +1241,26 @@ msgid ""
 "initialization should be deferred to :c:member:`~PyTypeObject.tp_init`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:930
+#: ../../c-api/typeobj.rst:942
 msgid ""
 "This field is inherited by subtypes, except it is not inherited by static "
 "types whose :c:member:`~PyTypeObject.tp_base` is ``NULL`` or "
 "``&PyBaseObject_Type``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:936
+#: ../../c-api/typeobj.rst:948
 msgid ""
 "An optional pointer to an instance deallocation function.  Its signature is "
 ":c:type:`freefunc`::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:941
+#: ../../c-api/typeobj.rst:953
 msgid ""
 "An initializer that is compatible with this signature is "
 ":c:func:`PyObject_Free`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:943
+#: ../../c-api/typeobj.rst:955
 msgid ""
 "This field is inherited by static subtypes, but not by dynamic subtypes "
 "(subtypes created by a class statement); in the latter, this field is set to"
@@ -1255,11 +1268,11 @@ msgid ""
 " of the :const:`Py_TPFLAGS_HAVE_GC` flag bit."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:951
+#: ../../c-api/typeobj.rst:963
 msgid "An optional pointer to a function called by the garbage collector."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:953
+#: ../../c-api/typeobj.rst:965
 msgid ""
 "The garbage collector needs to know whether a particular object is "
 "collectible or not.  Normally, it is sufficient to look at the object's "
@@ -1271,46 +1284,46 @@ msgid ""
 "collectible instance. The signature is ::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:963
+#: ../../c-api/typeobj.rst:975
 msgid ""
 "(The only example of this are types themselves.  The metatype, "
 ":c:data:`PyType_Type`, defines this function to distinguish between "
 "statically and dynamically allocated types.)"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:972
+#: ../../c-api/typeobj.rst:984
 msgid "Tuple of base types."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:974
+#: ../../c-api/typeobj.rst:986
 msgid ""
 "This is set for types created by a class statement.  It should be ``NULL`` "
 "for statically defined types."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:977
+#: ../../c-api/typeobj.rst:989
 msgid "This field is not inherited."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:982
+#: ../../c-api/typeobj.rst:994
 msgid ""
 "Tuple containing the expanded set of base types, starting with the type "
 "itself and ending with :class:`object`, in Method Resolution Order."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:985
+#: ../../c-api/typeobj.rst:997
 msgid ""
 "This field is not inherited; it is calculated fresh by "
 ":c:func:`PyType_Ready`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:990
+#: ../../c-api/typeobj.rst:1002
 msgid ""
 "An optional pointer to an instance finalization function.  Its signature is "
 ":c:type:`destructor`::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:995
+#: ../../c-api/typeobj.rst:1007
 msgid ""
 "If :c:member:`~PyTypeObject.tp_finalize` is set, the interpreter calls it "
 "once when finalizing an instance.  It is called either from the garbage "
@@ -1320,39 +1333,39 @@ msgid ""
 "object in a sane state."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1002
+#: ../../c-api/typeobj.rst:1014
 msgid ""
 ":c:member:`~PyTypeObject.tp_finalize` should not mutate the current "
 "exception status; therefore, a recommended way to write a non-trivial "
 "finalizer is::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1019
+#: ../../c-api/typeobj.rst:1031
 msgid ""
 "For this field to be taken into account (even through inheritance), you must"
 " also set the :const:`Py_TPFLAGS_HAVE_FINALIZE` flags bit."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1026
+#: ../../c-api/typeobj.rst:1038
 msgid "\"Safe object finalization\" (:pep:`442`)"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1031
+#: ../../c-api/typeobj.rst:1043
 msgid "Unused.  Not inherited.  Internal use only."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1036
+#: ../../c-api/typeobj.rst:1048
 msgid ""
 "List of weak references to subclasses.  Not inherited.  Internal use only."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1041
+#: ../../c-api/typeobj.rst:1053
 msgid ""
 "Weak reference list head, for weak references to this type object.  Not "
 "inherited.  Internal use only."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1044
+#: ../../c-api/typeobj.rst:1056
 msgid ""
 "The remaining fields are only defined if the feature test macro "
 ":const:`COUNT_ALLOCS` is defined, and are for internal use only. They are "
@@ -1360,25 +1373,25 @@ msgid ""
 "subtypes."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1052
+#: ../../c-api/typeobj.rst:1064
 msgid "Number of allocations."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1057
+#: ../../c-api/typeobj.rst:1069
 msgid "Number of frees."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1062
+#: ../../c-api/typeobj.rst:1074
 msgid "Maximum simultaneously allocated objects."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1067
+#: ../../c-api/typeobj.rst:1079
 msgid ""
 "Pointer to the next type object with a non-zero "
 ":c:member:`~PyTypeObject.tp_allocs` field."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1069
+#: ../../c-api/typeobj.rst:1081
 msgid ""
 "Also, note that, in a garbage collected Python, tp_dealloc may be called "
 "from any Python thread, not just the thread which created the object (if the"
@@ -1391,22 +1404,22 @@ msgid ""
 "will not violate any assumptions of the library."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1083
+#: ../../c-api/typeobj.rst:1095
 msgid "Number Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1090
+#: ../../c-api/typeobj.rst:1102
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the number protocol.  Each function is used by the function of "
 "similar name documented in the :ref:`number` section."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1094 ../../c-api/typeobj.rst:1381
+#: ../../c-api/typeobj.rst:1106 ../../c-api/typeobj.rst:1393
 msgid "Here is the structure definition::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1141
+#: ../../c-api/typeobj.rst:1153
 msgid ""
 "Binary and ternary functions must check the type of all their operands, and "
 "implement the necessary conversions (at least one of the operands is an "
@@ -1416,30 +1429,30 @@ msgid ""
 "and set an exception."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1150
+#: ../../c-api/typeobj.rst:1162
 msgid ""
 "The :c:data:`nb_reserved` field should always be ``NULL``.  It was "
 "previously called :c:data:`nb_long`, and was renamed in Python 3.0.1."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1158
+#: ../../c-api/typeobj.rst:1170
 msgid "Mapping Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1165
+#: ../../c-api/typeobj.rst:1177
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the mapping protocol.  It has three members:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1170
+#: ../../c-api/typeobj.rst:1182
 msgid ""
 "This function is used by :c:func:`PyMapping_Size` and "
 ":c:func:`PyObject_Size`, and has the same signature.  This slot may be set "
 "to ``NULL`` if the object has no defined length."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1176
+#: ../../c-api/typeobj.rst:1188
 msgid ""
 "This function is used by :c:func:`PyObject_GetItem` and "
 ":c:func:`PySequence_GetSlice`, and has the same signature as "
@@ -1448,7 +1461,7 @@ msgid ""
 "otherwise."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1184
+#: ../../c-api/typeobj.rst:1196
 msgid ""
 "This function is used by :c:func:`PyObject_SetItem`, "
 ":c:func:`PyObject_DelItem`, :c:func:`PyObject_SetSlice` and "
@@ -1458,17 +1471,17 @@ msgid ""
 "assignment and deletion."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1195
+#: ../../c-api/typeobj.rst:1207
 msgid "Sequence Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1202
+#: ../../c-api/typeobj.rst:1214
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the sequence protocol."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1207
+#: ../../c-api/typeobj.rst:1219
 msgid ""
 "This function is used by :c:func:`PySequence_Size` and "
 ":c:func:`PyObject_Size`, and has the same signature.  It is also used for "
@@ -1476,21 +1489,21 @@ msgid ""
 " the :c:member:`~PySequenceMethods.sq_ass_item` slots."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1214
+#: ../../c-api/typeobj.rst:1226
 msgid ""
 "This function is used by :c:func:`PySequence_Concat` and has the same "
 "signature.  It is also used by the ``+`` operator, after trying the numeric "
 "addition via the :c:member:`~PyNumberMethods.nb_add` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1220
+#: ../../c-api/typeobj.rst:1232
 msgid ""
 "This function is used by :c:func:`PySequence_Repeat` and has the same "
 "signature.  It is also used by the ``*`` operator, after trying numeric "
 "multiplication via the :c:member:`~PyNumberMethods.nb_multiply` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1226
+#: ../../c-api/typeobj.rst:1238
 msgid ""
 "This function is used by :c:func:`PySequence_GetItem` and has the same "
 "signature.  It is also used by :c:func:`PyObject_GetItem`, after trying the "
@@ -1499,7 +1512,7 @@ msgid ""
 "``1``, it can be ``NULL`` otherwise."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1232
+#: ../../c-api/typeobj.rst:1244
 msgid ""
 "Negative indexes are handled as follows: if the :attr:`sq_length` slot is "
 "filled, it is called and the sequence length is used to compute a positive "
@@ -1507,7 +1520,7 @@ msgid ""
 " the index is passed as is to the function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1239
+#: ../../c-api/typeobj.rst:1251
 msgid ""
 "This function is used by :c:func:`PySequence_SetItem` and has the same "
 "signature.  It is also used by :c:func:`PyObject_SetItem` and "
@@ -1517,7 +1530,7 @@ msgid ""
 "deletion."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1248
+#: ../../c-api/typeobj.rst:1260
 msgid ""
 "This function may be used by :c:func:`PySequence_Contains` and has the same "
 "signature.  This slot may be left to ``NULL``, in this case "
@@ -1525,7 +1538,7 @@ msgid ""
 "a match."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1255
+#: ../../c-api/typeobj.rst:1267
 msgid ""
 "This function is used by :c:func:`PySequence_InPlaceConcat` and has the same"
 " signature.  It should modify its first operand, and return it.  This slot "
@@ -1535,7 +1548,7 @@ msgid ""
 ":c:member:`~PyNumberMethods.nb_inplace_add` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1264
+#: ../../c-api/typeobj.rst:1276
 msgid ""
 "This function is used by :c:func:`PySequence_InPlaceRepeat` and has the same"
 " signature.  It should modify its first operand, and return it.  This slot "
@@ -1545,72 +1558,72 @@ msgid ""
 "via the :c:member:`~PyNumberMethods.nb_inplace_multiply` slot."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1275
+#: ../../c-api/typeobj.rst:1287
 msgid "Buffer Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1283
+#: ../../c-api/typeobj.rst:1295
 msgid ""
 "This structure holds pointers to the functions required by the :ref:`Buffer "
 "protocol <bufferobjects>`. The protocol defines how an exporter object can "
 "expose its internal data to consumer objects."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1289 ../../c-api/typeobj.rst:1338
-#: ../../c-api/typeobj.rst:1391 ../../c-api/typeobj.rst:1402
-#: ../../c-api/typeobj.rst:1413
+#: ../../c-api/typeobj.rst:1301 ../../c-api/typeobj.rst:1350
+#: ../../c-api/typeobj.rst:1403 ../../c-api/typeobj.rst:1414
+#: ../../c-api/typeobj.rst:1425
 msgid "The signature of this function is::"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1293
+#: ../../c-api/typeobj.rst:1305
 msgid ""
 "Handle a request to *exporter* to fill in *view* as specified by *flags*. "
 "Except for point (3), an implementation of this function MUST take these "
 "steps:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1297
+#: ../../c-api/typeobj.rst:1309
 msgid ""
 "Check if the request can be met. If not, raise :c:data:`PyExc_BufferError`, "
 "set :c:data:`view->obj` to ``NULL`` and return ``-1``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1300
+#: ../../c-api/typeobj.rst:1312
 msgid "Fill in the requested fields."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1302
+#: ../../c-api/typeobj.rst:1314
 msgid "Increment an internal counter for the number of exports."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1304
+#: ../../c-api/typeobj.rst:1316
 msgid ""
 "Set :c:data:`view->obj` to *exporter* and increment :c:data:`view->obj`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1306
+#: ../../c-api/typeobj.rst:1318
 msgid "Return ``0``."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1308
+#: ../../c-api/typeobj.rst:1320
 msgid ""
 "If *exporter* is part of a chain or tree of buffer providers, two main "
 "schemes can be used:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1311
+#: ../../c-api/typeobj.rst:1323
 msgid ""
 "Re-export: Each member of the tree acts as the exporting object and sets "
 ":c:data:`view->obj` to a new reference to itself."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1314
+#: ../../c-api/typeobj.rst:1326
 msgid ""
 "Redirect: The buffer request is redirected to the root object of the tree. "
 "Here, :c:data:`view->obj` will be a new reference to the root object."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1318
+#: ../../c-api/typeobj.rst:1330
 msgid ""
 "The individual fields of *view* are described in section :ref:`Buffer "
 "structure <buffer-structure>`, the rules how an exporter must react to "
@@ -1618,7 +1631,7 @@ msgid ""
 "types>`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1323
+#: ../../c-api/typeobj.rst:1335
 msgid ""
 "All memory pointed to in the :c:type:`Py_buffer` structure belongs to the "
 "exporter and must remain valid until there are no consumers left. "
@@ -1627,19 +1640,19 @@ msgid ""
 ":c:member:`~Py_buffer.internal` are read-only for the consumer."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1330
+#: ../../c-api/typeobj.rst:1342
 msgid ""
 ":c:func:`PyBuffer_FillInfo` provides an easy way of exposing a simple bytes "
 "buffer while dealing correctly with all request types."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1333
+#: ../../c-api/typeobj.rst:1345
 msgid ""
 ":c:func:`PyObject_GetBuffer` is the interface for the consumer that wraps "
 "this function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1342
+#: ../../c-api/typeobj.rst:1354
 msgid ""
 "Handle a request to release the resources of the buffer. If no resources "
 "need to be released, :c:member:`PyBufferProcs.bf_releasebuffer` may be "
@@ -1647,15 +1660,15 @@ msgid ""
 "these optional steps:"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1347
+#: ../../c-api/typeobj.rst:1359
 msgid "Decrement an internal counter for the number of exports."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1349
+#: ../../c-api/typeobj.rst:1361
 msgid "If the counter is ``0``, free all memory associated with *view*."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1351
+#: ../../c-api/typeobj.rst:1363
 msgid ""
 "The exporter MUST use the :c:member:`~Py_buffer.internal` field to keep "
 "track of buffer-specific resources. This field is guaranteed to remain "
@@ -1663,52 +1676,52 @@ msgid ""
 "*view* argument."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1357
+#: ../../c-api/typeobj.rst:1369
 msgid ""
 "This function MUST NOT decrement :c:data:`view->obj`, since that is done "
 "automatically in :c:func:`PyBuffer_Release` (this scheme is useful for "
 "breaking reference cycles)."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1362
+#: ../../c-api/typeobj.rst:1374
 msgid ""
 ":c:func:`PyBuffer_Release` is the interface for the consumer that wraps this"
 " function."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1370
+#: ../../c-api/typeobj.rst:1382
 msgid "Async Object Structures"
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1378
+#: ../../c-api/typeobj.rst:1390
 msgid ""
 "This structure holds pointers to the functions required to implement "
 ":term:`awaitable` and :term:`asynchronous iterator` objects."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1395
+#: ../../c-api/typeobj.rst:1407
 msgid ""
 "The returned object must be an iterator, i.e. :c:func:`PyIter_Check` must "
 "return ``1`` for it."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1398
+#: ../../c-api/typeobj.rst:1410
 msgid ""
 "This slot may be set to ``NULL`` if an object is not an :term:`awaitable`."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1406
+#: ../../c-api/typeobj.rst:1418
 msgid ""
 "Must return an :term:`awaitable` object.  See :meth:`__anext__` for details."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1408
+#: ../../c-api/typeobj.rst:1420
 msgid ""
 "This slot may be set to ``NULL`` if an object does not implement "
 "asynchronous iteration protocol."
 msgstr ""
 
-#: ../../c-api/typeobj.rst:1417
+#: ../../c-api/typeobj.rst:1429
 msgid ""
 "Must return an :term:`awaitable` object.  See :meth:`__anext__` for details."
 " This slot may be set to ``NULL``."
