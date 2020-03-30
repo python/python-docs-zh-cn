@@ -169,8 +169,8 @@ msgid ""
 "when called.  Defining the :meth:`__set__` method with an exception raising "
 "placeholder is enough to make it a data descriptor."
 msgstr ""
-"为了使只读数据描述符，同时定义 :meth:`__get__` 和 :meth:`__set__` ，并在 :meth:`__set__` 中引发 "
-":exc:`AttributeError` 。用引发异常的占位符定义 :meth:`__set__`  方法能够使其成为数据描述符。"
+"为了使数据描述器成为只读的，应该同时定义 :meth:`__get__` 和 :meth:`__set__` ，并在 :meth:`__set__` "
+"中引发 :exc:`AttributeError` 。用引发异常的占位符定义 :meth:`__set__`  方法使其成为数据描述器。"
 
 #: ../../howto/descriptor.rst:79
 msgid "Invoking Descriptors"
@@ -190,7 +190,7 @@ msgid ""
 "then ``d.__get__(obj)`` is invoked according to the precedence rules listed "
 "below."
 msgstr ""
-"或者，更常见的是在属性访问时自动调用描述符。例如，在中 ``obj.d`` 会在 ``d`` 的字典中查找 ``obj`` 。如果 ``d`` "
+"或者，更常见的是在属性访问时自动调用描述器。例如，在中 ``obj.d`` 会在 ``d`` 的字典中查找 ``obj`` 。如果 ``d`` "
 "定义了方法 :meth:`__get__` ，则 ``d.__get__(obj)`` 根据下面列出的优先级规则进行调用。"
 
 #: ../../howto/descriptor.rst:89
@@ -209,8 +209,8 @@ msgid ""
 ":c:func:`PyObject_GenericGetAttr()` in :source:`Objects/object.c`."
 msgstr ""
 "对于对象来说，机制是 :meth:`object.__getattribute__` 中将 ``b.x`` 转换为 "
-"``type(b).__dict__['x'].__get__(b, type(b))`` 。 "
-"这个实现通过一个优先级链完成，该优先级链赋予数据描述器优先于实例变量的优先级，实例变量优先于非数据描述器的优先级，并如果 "
+"``type(b).__dict__['x'].__get__(b, type(b))`` "
+"。这个实现通过一个优先级链完成，该优先级链赋予数据描述器优先于实例变量的优先级，实例变量优先于非数据描述器的优先级，并如果 "
 ":meth:`__getattr__` 方法存在，为其分配最低的优先级。 完整的C实现可在 :source:`Objects/object.c` 中的 "
 ":c:func:`PyObject_GenericGetAttr()` 找到。"
 
@@ -221,7 +221,7 @@ msgid ""
 "Python, it looks like::"
 msgstr ""
 "对于类来说，机制是 :meth:`type.__getattribute__` 中将 ``B.x`` 转换为 "
-"``B.__dict__['x'].__get__(None, B)`` 。在纯Python中，它就像::"
+"``B.__dict__['x'].__get__(None, B)`` 。在纯 Python中 ，它就像::"
 
 #: ../../howto/descriptor.rst:110
 msgid "The important points to remember are:"
@@ -264,7 +264,7 @@ msgid ""
 msgstr ""
 " ``super()`` 返回的对象还有一个自定义的 :meth:`__getattribute__` 方法来调用描述器。属性查找 ``super(B,"
 " obj).m`` 在紧随 ``B`` 后的基类 ``A`` 中搜索 ``obj.__class__.__mro__`` ，然后返回  "
-"``A.__dict__['m'].__get__(obj, B)`` 。如果其不是描述符，则直接返回 ``m`` 。如果不在字典中， ``m`` "
+"``A.__dict__['m'].__get__(obj, B)`` 。如果其不是描述器，则直接返回 ``m`` 。如果不在字典中， ``m`` "
 "才回退使用 :meth:`object.__getattribute__` 进行搜索。 "
 
 #: ../../howto/descriptor.rst:126
@@ -274,7 +274,7 @@ msgid ""
 "in `Guido's Tutorial`_."
 msgstr ""
 "这个实现的具体细节在 :source:`Objects/typeobject.c`. 的 :c:func:`super_getattro()` "
-"中，并且你还可以在 `Guido's Tutorial`_ 中找到等价的纯Python实现。"
+"中，并且你还可以在 `Guido's Tutorial`_ 中找到等价的纯 Python 实现。"
 
 #: ../../howto/descriptor.rst:132
 msgid ""
@@ -285,10 +285,13 @@ msgid ""
 "functionality. Likewise, classes can turn-off descriptor invocation by "
 "overriding :meth:`__getattribute__()`."
 msgstr ""
+"以上展示的关于描述器机制的细节嵌入在 :class:`object` ， :class:`type` ， 和 :func:`super` 中的 "
+":meth:`__getattribute__()` 。当类派生自类 :class:`object` "
+"或有提供类似功能的元类时，它们将继承此机制。同样，类可以通过重写 :meth:`__getattribute__()` 阻止描述器调用。"
 
 #: ../../howto/descriptor.rst:141
 msgid "Descriptor Example"
-msgstr "描述符示例"
+msgstr "描述器示例"
 
 #: ../../howto/descriptor.rst:143
 msgid ""
@@ -297,6 +300,8 @@ msgid ""
 " alternate approach that could do this for every attribute.  However, this "
 "descriptor is useful for monitoring just a few chosen attributes::"
 msgstr ""
+"以下代码创建一个类，其对象是数据描述器，该描述器为每个 get 或 set 打印一条消息。  覆盖 :meth:`__getattribute__` "
+"是可以对每个属性执行此操作的替代方法。但是，此描述器对于跟踪仅几个选定的属性很有用::"
 
 #: ../../howto/descriptor.rst:181
 msgid ""
@@ -305,35 +310,36 @@ msgid ""
 "Properties, bound methods, static methods, and class methods are all based "
 "on the descriptor protocol."
 msgstr ""
+"这个协议很简单，并提供了令人兴奋的可能性。有几种用例非常普遍，以至于它们被打包到单独的函数调用中。属性、绑定方法、静态方法和类方法均基于描述器协议。"
 
 #: ../../howto/descriptor.rst:188
 msgid "Properties"
-msgstr ""
+msgstr "属性"
 
 #: ../../howto/descriptor.rst:190
 msgid ""
 "Calling :func:`property` is a succinct way of building a data descriptor "
 "that triggers function calls upon access to an attribute.  Its signature "
 "is::"
-msgstr ""
+msgstr "调用 :func:`property` 是构建数据描述器的简洁方式，该数据描述器在访问属性时触发函数调用。它的签名是::"
 
 #: ../../howto/descriptor.rst:195
 msgid ""
 "The documentation shows a typical use to define a managed attribute ``x``::"
-msgstr ""
+msgstr "该文档显示了定义托管属性 ``x`` 的典型用法::"
 
 #: ../../howto/descriptor.rst:203
 msgid ""
 "To see how :func:`property` is implemented in terms of the descriptor "
 "protocol, here is a pure Python equivalent::"
-msgstr ""
+msgstr "要了解 :func:`property` 如何根据描述器协议实现，这里是一个纯 Python 的等价实现如何"
 
 #: ../../howto/descriptor.rst:243
 msgid ""
 "The :func:`property` builtin helps whenever a user interface has granted "
 "attribute access and then subsequent changes require the intervention of a "
 "method."
-msgstr ""
+msgstr "这个内置的 :func:`property` 每当用户访问属性时生效，随后的变化需要一个方法的参与。"
 
 #: ../../howto/descriptor.rst:247
 msgid ""
@@ -344,6 +350,9 @@ msgid ""
 "solution is to wrap access to the value attribute in a property data "
 "descriptor::"
 msgstr ""
+"例如，一个电子表格类可以通过 ``Cell('b10').value`` "
+"授予对单元格值的访问权限。对程序的后续改进要求每次访问都要重新计算单元格；但是，程序员不希望影响直接访问该属性的现有客户端代码。解决方案是将对 "
+"value 属性的访问包装在属性数据描述器中::"
 
 #: ../../howto/descriptor.rst:263
 msgid "Functions and Methods"
@@ -353,7 +362,7 @@ msgstr "函数和方法"
 msgid ""
 "Python's object oriented features are built upon a function based "
 "environment. Using non-data descriptors, the two are merged seamlessly."
-msgstr ""
+msgstr "Python 的面向对象功能是在基于函数的环境构建的。通过使用非数据描述器，这两方面完成了无缝融合。"
 
 #: ../../howto/descriptor.rst:268
 msgid ""
@@ -364,6 +373,9 @@ msgid ""
 "convention, the instance reference is called *self* but may be called *this*"
 " or any other variable name."
 msgstr ""
+"类字典将方法存储为函数。在类定义中，方法是用 :keyword:`def` 或 :keyword:`lambda` "
+"这两个创建函数的常用工具编写的。方法与常规函数的不同之处仅在于第一个参数是为对象实例保留的。按照 Python 约定，实例引用称为 *self* "
+"，但也可以称为 *this* 或任何其他变量名称。"
 
 #: ../../howto/descriptor.rst:275
 msgid ""
@@ -372,12 +384,14 @@ msgid ""
 "non-data descriptors which return bound methods when they are invoked from "
 "an object.  In pure Python, it works like this::"
 msgstr ""
+"为了支持方法调用，函数包含 :meth:`__get__` "
+"方法用于在访问属性时将其绑定成方法。这意味着所有函数都是非数据描述器，当从对象调用它们时，它们返回绑定方法。在纯 Python 中，它的工作方式如下::"
 
 #: ../../howto/descriptor.rst:288
 msgid ""
 "Running the interpreter shows how the function descriptor works in "
 "practice::"
-msgstr ""
+msgstr "运行解释器显示了函数描述器在实践中的工作方式："
 
 #: ../../howto/descriptor.rst:326
 msgid "Static Methods and Class Methods"
