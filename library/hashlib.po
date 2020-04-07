@@ -646,36 +646,41 @@ msgid ""
 "(HMAC). BLAKE2 can be securely used in prefix-MAC mode thanks to the "
 "indifferentiability property inherited from BLAKE."
 msgstr ""
+"密钥哈希可被用于身份验证，作为 `基于哈希的消息验证代码 <https://en.wikipedia.org/wiki/Hash-"
+"based_message_authentication_code>`_ (HMAC) 的一种更快速更简单的替代。 BLAKE2 可在前缀 MAC "
+"模式下安全地使用，这是由于它从 BLAKE 所继承的不可区分特性。"
 
 #: ../../library/hashlib.rst:490
 msgid ""
 "This example shows how to get a (hex-encoded) 128-bit authentication code "
 "for message ``b'message data'`` with key ``b'pseudorandom key'``::"
 msgstr ""
+"这个例子演示了如何使用密钥 ``b'pseudorandom key'`` 来为 ``b'message data'`` "
+"获取一个（十六进制编码的）128 位验证代码::"
 
 #: ../../library/hashlib.rst:500
 msgid ""
 "As a practical example, a web application can symmetrically sign cookies "
 "sent to users and later verify them to make sure they weren't tampered "
 "with::"
-msgstr ""
+msgstr "作为实际的例子，一个 Web 应用可为发送给用户的 cookies 进行对称签名，并在之后对其进行验证以确保它们没有被篡改::"
 
 #: ../../library/hashlib.rst:529
 msgid ""
 "Even though there's a native keyed hashing mode, BLAKE2 can, of course, be "
 "used in HMAC construction with :mod:`hmac` module::"
-msgstr ""
+msgstr "即使存在原生的密钥哈希模式，BLAKE2 也同样可在 :mod:`hmac` 模块的 HMAC 构造过程中使用::"
 
 #: ../../library/hashlib.rst:540
 msgid "Randomized hashing"
-msgstr ""
+msgstr "随机哈希"
 
 #: ../../library/hashlib.rst:542
 msgid ""
 "By setting *salt* parameter users can introduce randomization to the hash "
 "function. Randomized hashing is useful for protecting against collision "
 "attacks on the hash function used in digital signatures."
-msgstr ""
+msgstr "用户可通过设置 *salt* 形参来为哈希函数引入随机化。 随机哈希适用于防止对数字签名中使用的哈希函数进行碰撞攻击。"
 
 #: ../../library/hashlib.rst:546
 msgid ""
@@ -697,18 +702,26 @@ msgid ""
 "hashing may reduce the amount of security provided by a digital signature "
 "when all portions of the message are prepared by the signer."
 msgstr ""
+"随机哈希被设计用来处理当一方（消息准备者）要生成由另一方（消息签名者）进行签名的全部或部分消息的情况。 "
+"如果消息准备者能够找到加密哈希函数的碰撞现象（即两条消息产生相同的哈希值），则他们就可以准备将产生相同哈希值和数字签名但却具有不同结果的有意义的消息版本（例如向某个账户转入"
+" $1,000,000 而不是 $10）。 "
+"加密哈希函数的设计都是以防碰撞性能为其主要目标之一的，但是当前针对加密哈希函数的集中攻击可能导致特定加密哈希函数所提供的防碰撞性能低于预期。 "
+"随机哈希为签名者提供了额外的保护，可以降低准备者在数字签名生成过程中使得两条或更多条消息最终产生相同哈希值的可能性 --- "
+"即使为特定哈希函数找到碰撞现象是可行的。 但是，当消息的所有部分均由签名者准备时，使用随机哈希可能降低数字签名所提供的安全性。"
 
 #: ../../library/hashlib.rst:565
 msgid ""
 "(`NIST SP-800-106 \"Randomized Hashing for Digital Signatures\" "
 "<https://csrc.nist.gov/publications/detail/sp/800-106/final>`_)"
 msgstr ""
+"(`NIST SP-800-106 \"数字签名的随机哈希\" "
+"<https://csrc.nist.gov/publications/detail/sp/800-106/final>`_)"
 
 #: ../../library/hashlib.rst:568
 msgid ""
 "In BLAKE2 the salt is processed as a one-time input to the hash function "
 "during initialization, rather than as an input to each compression function."
-msgstr ""
+msgstr "在 BLAKE2 中，盐值会在初始化期间作为对哈希函数的一次性输入而不是对每个压缩函数的输入来处理。"
 
 #: ../../library/hashlib.rst:573
 msgid ""
@@ -716,17 +729,19 @@ msgid ""
 "cryptographic hash function, such as SHA-256, is not suitable for hashing "
 "passwords.  See `BLAKE2 FAQ <https://blake2.net/#qa>`_ for more information."
 msgstr ""
+"使用 BLAKE2 或任何其他通用加密哈希函数例如 SHA-256 进行 *加盐哈希* (或纯哈希) 并不适用于哈希密码。 请参阅 `BLAKE2 "
+"FAQ <https://blake2.net/#qa>`_ 了解更多信息。"
 
 #: ../../library/hashlib.rst:596
 msgid "Personalization"
-msgstr ""
+msgstr "个性化"
 
 #: ../../library/hashlib.rst:598
 msgid ""
 "Sometimes it is useful to force hash function to produce different digests "
 "for the same input for different purposes. Quoting the authors of the Skein "
 "hash function:"
-msgstr ""
+msgstr "出于不同的目的强制让哈希函数为相同的输入生成不同的摘要有时也是有用的。 正如 Skein 哈希函数的作者所言:"
 
 #: ../../library/hashlib.rst:602
 msgid ""
@@ -737,16 +752,20 @@ msgid ""
 "force the application to make the hash inputs the same. Personalizing each "
 "hash function used in the protocol summarily stops this type of attack."
 msgstr ""
+"我们建议所有应用设计者慎重考虑这种做法；我们已看到有许多协议在协议的某一部分中计算出来的哈希值在另一个完全不同的部分中也可以被使用，因为两次哈希计算是针对类似或相关的数据进行的，这样攻击者可以强制应用为相同的输入生成哈希值。"
+" 个性化协议中所使用的每个哈希函数将有效地阻止这种类型的攻击。"
 
 #: ../../library/hashlib.rst:609
 msgid ""
 "(`The Skein Hash Function Family <http://www.skein-"
 "hash.info/sites/default/files/skein1.3.pdf>`_, p. 21)"
 msgstr ""
+"(`Skein 哈希函数族 <http://www.skein-"
+"hash.info/sites/default/files/skein1.3.pdf>`_, p. 21)"
 
 #: ../../library/hashlib.rst:613
 msgid "BLAKE2 can be personalized by passing bytes to the *person* argument::"
-msgstr ""
+msgstr "BLAKE2 可通过向 *person* 参数传入字节串来进行个性化::"
 
 #: ../../library/hashlib.rst:627
 msgid ""
