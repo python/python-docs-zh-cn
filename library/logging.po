@@ -339,7 +339,7 @@ msgid ""
 ":mod:`warnings` module."
 msgstr ""
 "第三个可选关键字参数是 *stacklevel*，默认为 ``1``。如果大于 1，则在为日志记录事件创建的 :class:`LogRecord` "
-"中计算行号和函数名时，将跳过相应数量的堆栈帧。可以在记录帮助程序时使用它，以便记录的函数名称，文件名和行号不是帮助程序的函数/方法的信息，而是其调用方的信息。此参数是"
+"中计算行号和函数名时，将跳过相应数量的堆栈帧。可以在记录帮助器时使用它，以便记录的函数名称，文件名和行号不是帮助器的函数/方法的信息，而是其调用方的信息。此参数是"
 " :mod:`warnings` 模块中的同名等效参数。"
 
 #: ../../library/logging.rst:200
@@ -486,6 +486,8 @@ msgid ""
 "line number, function name and stack information as a 4-element tuple. The "
 "stack information is returned as ``None`` unless *stack_info* is ``True``."
 msgstr ""
+"查找调用源的文件名和行号，以 文件名，行号，函数名称和堆栈信息 4元素元组的形式返回。堆栈信息将返回 ``None``除非 *stack_info* 为"
+" ``True``。"
 
 #: ../../library/logging.rst:321
 msgid ""
@@ -496,6 +498,9 @@ msgid ""
 "in the event log refers not to the helper/wrapper code, but to the code that"
 " calls it."
 msgstr ""
+"*stacklevel* 参数用于调用 :meth:`debug` 和其他 API。如果大于 "
+"1，则多余部分将用于跳过堆栈帧，然后再确定要返回的值。当从帮助器/包装器代码调用日志记录 API "
+"时，这通常很有用，以便事件日志中的信息不是来自帮助器/包装器代码，而是来自调用它的代码。"
 
 #: ../../library/logging.rst:331
 msgid ""
@@ -505,12 +510,14 @@ msgid ""
 "created locally. Logger-level filtering is applied using "
 ":meth:`~Logger.filter`."
 msgstr ""
+"通过将记录传递给与此记录器及其祖先关联的所有处理器来处理（直到某个 *propagate* 值为 "
+"false）。此方法用于从套接字接收的未序列化的以及在本地创建的记录。使用 :meth:`~Logger.filter` 进行记录程序级别过滤。"
 
 #: ../../library/logging.rst:339
 msgid ""
 "This is a factory method which can be overridden in subclasses to create "
 "specialized :class:`LogRecord` instances."
-msgstr ""
+msgstr "这是一种工厂方法，可以在子类中对其进行重写以创建专门的 :class:`LogRecord` 实例。"
 
 #: ../../library/logging.rst:344
 msgid ""
@@ -521,10 +528,13 @@ msgid ""
 "set to false is found - that will be the last logger which is checked for "
 "the existence of handlers."
 msgstr ""
+"检查此记录器是否配置了任何处理器。通过在此记录器及其记录器层次结构中的父级中查找处理器完成此操作。如果找到处理器则返回 "
+"``True``，否则返回``False``。只要找到 “propagate” 属性设置为 false的记录器，该方法就会停止搜索层次结构 —— "
+"其将是最后一个检查处理器是否存在的记录器。"
 
 #: ../../library/logging.rst:353
 msgid "Loggers can now be pickled and unpickled."
-msgstr ""
+msgstr "现在可以对处理器进行序列化和反序列化。"
 
 #: ../../library/logging.rst:359
 msgid "Logging Levels"
@@ -655,11 +665,11 @@ msgstr "将此处理器的 :class:`Formatter` 设置为 *fmt*。"
 
 #: ../../library/logging.rst:441
 msgid "Adds the specified filter *filter* to this handler."
-msgstr ""
+msgstr "将指定的过滤器 *filter* 添加到此处理器。"
 
 #: ../../library/logging.rst:446
 msgid "Removes the specified filter *filter* from this handler."
-msgstr ""
+msgstr "从此处理器中删除指定的过滤器 *filter* 。"
 
 #: ../../library/logging.rst:451
 msgid ""
@@ -669,12 +679,14 @@ msgid ""
 " be emitted. If one returns a false value, the handler will not emit the "
 "record."
 msgstr ""
+"将此处理器的过滤器应用于记录，在要处理记录时返回 ``True`` "
+"。依次查询过滤器，直到其中一个返回假值为止。如果它们都不返回假值，则将发出记录。如果返回一个假值，则处理器将不会发出记录。"
 
 #: ../../library/logging.rst:460
 msgid ""
 "Ensure all logging output has been flushed. This version does nothing and is"
 " intended to be implemented by subclasses."
-msgstr ""
+msgstr "确保所有日志记录从缓存输出。此版本不执行任何操作，并且应由子类实现。"
 
 #: ../../library/logging.rst:466
 msgid ""
@@ -683,13 +695,15 @@ msgid ""
 ":func:`shutdown` is called. Subclasses should ensure that this gets called "
 "from overridden :meth:`close` methods."
 msgstr ""
+"整理处理器使用的所有资源。此版本不输出，但从内部处理器列表中删除处理器，内部处理器在 :func:`shutdown` 被调用时关闭 "
+"。子类应确保从重写的 :meth:`close` 方法中调用此方法。"
 
 #: ../../library/logging.rst:474
 msgid ""
 "Conditionally emits the specified logging record, depending on filters which"
 " may have been added to the handler. Wraps the actual emission of the record"
 " with acquisition/release of the I/O thread lock."
-msgstr ""
+msgstr "经已添加到处理器的过滤器过滤后，有条件地发出指定的日志记录。用获取/释放 I/O 线程锁包装记录的实际发出行为。"
 
 #: ../../library/logging.rst:481
 msgid ""
