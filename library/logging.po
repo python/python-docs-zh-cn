@@ -350,10 +350,12 @@ msgid ""
 "attributes can then be used as you like. For example, they could be "
 "incorporated into logged messages. For example::"
 msgstr ""
+"第四个关键字参数是 *extra* ，传递一个字典，该字典用于填充为日志记录事件创建的、带有用户自定义属性的 :class:`LogRecord` "
+"中的__dict__ 。然后可以按照需求使用这些自定义属性。例如，可以将它们合并到已记录的消息中："
 
 #: ../../library/logging.rst:212
 msgid "would print something like"
-msgstr ""
+msgstr "输出类似于"
 
 #: ../../library/logging.rst:218 ../../library/logging.rst:997
 msgid ""
@@ -361,6 +363,8 @@ msgid ""
 "used by the logging system. (See the :class:`Formatter` documentation for "
 "more information on which keys are used by the logging system.)"
 msgstr ""
+" *extra* 中传入的字典的键不应与日志系统使用的键冲突。（有关Formatter日志系统使用哪些键的更多信息，请参见  "
+":class:`Formatter` 的文档。）"
 
 #: ../../library/logging.rst:222
 msgid ""
@@ -372,6 +376,9 @@ msgid ""
 "formatting exception will occur. So in this case, you always need to pass "
 "the *extra* dictionary with these keys."
 msgstr ""
+"如果在已记录的消息中使用这些属性，则需要格外小心。例如，在上面的示例中，:class:`Formatter` 已设置了格式字符串，其在 "
+":class:`LogRecord` 的属性字典中键值为 “clientip” 和 "
+"“user”。如果缺少这些内容，则将不会记录该消息，因为会引发字符串格式化异常。因此，在这种情况下，您始终需要使用这些键传递 *extra* 字典。"
 
 #: ../../library/logging.rst:229 ../../library/logging.rst:1008
 msgid ""
@@ -383,6 +390,8 @@ msgid ""
 " likely that specialized :class:`Formatter`\\ s would be used with "
 "particular :class:`Handler`\\ s."
 msgstr ""
+"尽管这可能很烦人，但此功能旨在用于特殊情况，例如在多个上下文中执行相同代码的多线程服务器，并且出现的有趣条件取决于此上下文（例如在上面的示例中就是远程客户端IP地址和已验证用户名）。在这种情况下，很可能将专门的"
+" :class:`Formatter` 与特定的 :class:`Handler` 一起使用。"
 
 #: ../../library/logging.rst:236 ../../library/logging.rst:1015
 msgid "The *stack_info* parameter was added."
@@ -390,7 +399,7 @@ msgstr "增加了 *stack_info* 参数。"
 
 #: ../../library/logging.rst:239
 msgid "The *exc_info* parameter can now accept exception instances."
-msgstr ""
+msgstr " *exc_info* 现在可以接受异常实例。"
 
 #: ../../library/logging.rst:242
 msgid "The *stacklevel* parameter was added."
@@ -400,13 +409,13 @@ msgstr "增加了 *stacklevel* 参数。"
 msgid ""
 "Logs a message with level :const:`INFO` on this logger. The arguments are "
 "interpreted as for :meth:`debug`."
-msgstr ""
+msgstr "在此记录器上记录 :const:`INFO` 级别的消息。参数解释同 :meth:`debug`。"
 
 #: ../../library/logging.rst:254
 msgid ""
 "Logs a message with level :const:`WARNING` on this logger. The arguments are"
 " interpreted as for :meth:`debug`."
-msgstr ""
+msgstr "在此记录器上记录 :const:`WARNING` 级别的消息。参数解释同 :meth:`debug`。"
 
 #: ../../library/logging.rst:257
 msgid ""
@@ -414,24 +423,26 @@ msgid ""
 "``warning``. As ``warn`` is deprecated, please do not use it - use "
 "``warning`` instead."
 msgstr ""
+"有一个功能上与 ``warning`` 一致的方法 ``warn``。由于 ``warn`` 已被弃用，请不要使用它 —— 改为使用 "
+"``warning``。"
 
 #: ../../library/logging.rst:263
 msgid ""
 "Logs a message with level :const:`ERROR` on this logger. The arguments are "
 "interpreted as for :meth:`debug`."
-msgstr ""
+msgstr "在此记录器上记录 :const:`ERROR` 级别的消息。参数解释同 :meth:`debug`。"
 
 #: ../../library/logging.rst:269
 msgid ""
 "Logs a message with level :const:`CRITICAL` on this logger. The arguments "
 "are interpreted as for :meth:`debug`."
-msgstr ""
+msgstr "在此记录器上记录 :const:`CRITICAL` 级别的消息。参数解释同 :meth:`debug`。"
 
 #: ../../library/logging.rst:275
 msgid ""
 "Logs a message with integer level *level* on this logger. The other "
 "arguments are interpreted as for :meth:`debug`."
-msgstr ""
+msgstr "在此记录器上记录 *level* 整数代表的级别的消息。参数解释同 :meth:`debug`。"
 
 #: ../../library/logging.rst:281
 msgid ""
@@ -439,14 +450,16 @@ msgid ""
 "interpreted as for :meth:`debug`. Exception info is added to the logging "
 "message. This method should only be called from an exception handler."
 msgstr ""
+"在此记录器上记录 :const:`ERROR` 级别的消息。参数解释同 "
+":meth:`debug`。异常信息将添加到日志消息中。仅应从异常处理程序中调用此方法。"
 
 #: ../../library/logging.rst:288
 msgid "Adds the specified filter *filter* to this logger."
-msgstr ""
+msgstr "将指定的过滤器 *filter* 添加到此记录器。"
 
 #: ../../library/logging.rst:293
 msgid "Removes the specified filter *filter* from this logger."
-msgstr ""
+msgstr "从此记录器中删除指定的过滤器 *filter*。"
 
 #: ../../library/logging.rst:298
 msgid ""
@@ -456,14 +469,16 @@ msgid ""
 " be processed (passed to handlers). If one returns a false value, no further"
 " processing of the record occurs."
 msgstr ""
+"将此记录器的过滤器应用于记录，如果记录能被处理则返回 "
+"``True``。过滤器会被依次使用，直到其中一个返回假值为止。如果它们都不返回假值，则记录将被处理（传递给处理器）。如果返回任一为假值，则不会对该记录做进一步处理。"
 
 #: ../../library/logging.rst:307
 msgid "Adds the specified handler *hdlr* to this logger."
-msgstr ""
+msgstr "将指定的处理器 *hdlr* 添加到此记录器。"
 
 #: ../../library/logging.rst:312
 msgid "Removes the specified handler *hdlr* from this logger."
-msgstr ""
+msgstr "从此记录器中删除指定的处理器 *hdlr*。"
 
 #: ../../library/logging.rst:317
 msgid ""
