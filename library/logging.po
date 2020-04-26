@@ -9,7 +9,6 @@
 # MuSheng Chen <sheng.2179@gmail.com>, 2019
 # Zombie110year <zombie110year@gmail.com>, 2019
 # 1lin24 <1lin24@sina.com>, 2019
-# Leo Li <foxleoly@hotmail.com>, 2019
 # Shengjing Zhu <zsj950618@gmail.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
 # Freesand Leo <yuqinju@163.com>, 2020
@@ -60,7 +59,7 @@ msgstr ":ref:`日志操作手册 <logging-cookbook>`"
 msgid ""
 "This module defines functions and classes which implement a flexible event "
 "logging system for applications and libraries."
-msgstr "这个模块为应用与库定义了实现灵活的事件日志系统的函数与类."
+msgstr "这个模块为应用与库实现了灵活的事件日志系统的函数与类。"
 
 #: ../../library/logging.rst:28
 msgid ""
@@ -69,7 +68,7 @@ msgid ""
 "application log can include your own messages integrated with messages from "
 "third-party modules."
 msgstr ""
-"使用标准库提提供的 logging API 最主要的好处是，所有的 Python 模块都可能参与日志输出，包括你的日志消息和第三方模块的日志消息。"
+"使用标准库提提供的 logging API 最主要的好处是，所有的 Python 模块都可能参与日志输出，包括你自己的日志消息和第三方模块的日志消息。"
 
 #: ../../library/logging.rst:33
 msgid ""
@@ -106,7 +105,7 @@ msgstr "格式器指定最终输出中日志记录的样式。"
 
 #: ../../library/logging.rst:51
 msgid "Logger Objects"
-msgstr "Logger 对象"
+msgstr "记录器对象"
 
 #: ../../library/logging.rst:53
 msgid ""
@@ -115,9 +114,8 @@ msgid ""
 "function ``logging.getLogger(name)``.  Multiple calls to :func:`getLogger` "
 "with the same name will always return a reference to the same Logger object."
 msgstr ""
-"Loggers 有以下的属性和方法。注意 *永远* 不要直接实例化 Loggers，应当通过模块级别的函数 "
-"``logging.getLogger(name)`` 。多次使用相同的名字调用 :func:`getLogger` 会一直返回相同的 Logger "
-"对象的引用。"
+"记录器有以下的属性和方法。注意 *永远* 不要直接实例化记录器，应当通过模块级别的函数 ``logging.getLogger(name)`` "
+"。多次使用相同的名字调用 :func:`getLogger` 会一直返回相同的 Logger 对象的引用。"
 
 #: ../../library/logging.rst:58
 msgid ""
@@ -132,10 +130,11 @@ msgid ""
 "``logging.getLogger(__name__)``.  That's because in a module, ``__name__`` "
 "is the module's name in the Python package namespace."
 msgstr ""
-"``name`` 是潜在的周期分割层级值, 像``foo.bar.baz`` (例如, "
-"抛出的可以只是明文的``foo``)。Loggers是进一步在子层次列表的更高loggers列表。例如，有个名叫``foo``的logger，名叫``foo.bar``，``foo.bar.baz``，和"
-" ``foo.bam`` 都是 ``foo``的衍生logger。logger的名字分级类似Python "
-"包的层级，并且相同的如果你组织你的loggers在每模块级别基本上使用推荐的结构``logging.getLogger(__name__)``。这是因为在模块里，在Python包的命名空间的模块名为``__name__``。"
+"``name`` 一般是句点分割的层级值, 像``foo.bar.baz`` (尽管也可以只是普通的 "
+"``foo``)。层次结构列表中位于下方的记录器是列表中较高位置的记录器的子级。例如，有个名叫 ``foo`` 的记录器，而名字是 "
+"``foo.bar``，``foo.bar.baz``，和 ``foo.bam`` 的记录器都是 ``foo`` 的子级。记录器的名字分级类似 "
+"Python 包的层级，如果您使用建议的结构 ``logging.getLogger(__name__)`` "
+"在每个模块的基础上组织记录器，则与之完全相同。这是因为在模块里，``__name__`` 是该模块在 Python 包命名空间中的名字。"
 
 #: ../../library/logging.rst:74
 msgid ""
@@ -145,14 +144,14 @@ msgid ""
 "ancestor loggers' handlers - neither the level nor filters of the ancestor "
 "loggers in question are considered."
 msgstr ""
-"如果这个属性为真，记录到这个记录器的事件将会传递给这个高级别处理器的记录器（原型），此外任何关联到这个记录器的处理器。消息会直接传递给原型记录器的处理器"
-" - 既不是这个原型记录器的级别也不是过滤器是在考虑的问题。"
+"如果这个属性为真，记录到这个记录器的事件除了会发送到此记录器的所有处理程序外，还会传递给更高级别（祖先）记录器的处理器，此外任何关联到这个记录器的处理器。消息会直接传递给祖先记录器的处理器"
+" —— 不考虑祖先记录器的级别和过滤器。"
 
 #: ../../library/logging.rst:80
 msgid ""
 "If this evaluates to false, logging messages are not passed to the handlers "
 "of ancestor loggers."
-msgstr "如果等于假，记录消息将不会传递给这个原型记录器的处理器。"
+msgstr "如果为假，记录消息将不会传递给当前记录器的祖先记录器的处理器。"
 
 #: ../../library/logging.rst:83
 msgid "The constructor sets this attribute to ``True``."
@@ -169,8 +168,9 @@ msgid ""
 "handlers only to the root logger, and to let propagation take care of the "
 "rest."
 msgstr ""
-"如果你关联了一个处理器*并且*到它自己的一个或多个记录器，它可能发出多次相同的记录。总体来说，你不需要关联处理器到一个或多个记录器 - "
-"如果你只是关联它到一个合适的记录器等级中的最高级别记录器，它将会看到子记录器所有记录的事件，他们的传播剩下的设置为``True``。一个常见的场景是只关联处理器到根记录器，并且让传播照顾剩下的。"
+"如果你将一个处理器附加到一个记录器 *和* 其一个或多个祖先记录器，它可能发出多次相同的记录。通常，您不需要将一个处理器附加到一个以上的记录器上 —— "
+"如果您将它附加到记录器层次结构中最高的适当记录器上，则它将看到所有后代记录器记录的所有事件，前提是它们的传播设置保留为 "
+"``True``。一种常见的方案是仅将处理程序附加到根记录器，通过传播来处理其余部分。"
 
 #: ../../library/logging.rst:96
 msgid ""
@@ -180,8 +180,8 @@ msgid ""
 "service this logger, unless a handler's level has been set to a higher "
 "severity level than *level*."
 msgstr ""
-"给 logger 设置阈值为 *level* 。日志等级小于 *level* 会被忽略。严重性为 *level* 或更高的日志消息将由该 logger "
-"的任何一个或多个 handler 发出，除非将处理器的级别设置为比 *level* 更高的级别。"
+"给记录器设置阈值为 *level* 。日志等级小于 *level* 会被忽略。严重性为 *level* "
+"或更高的日志消息将由该记录器的任何一个或多个处理器发出，除非将处理器的级别设置为比 *level* 更高的级别。"
 
 #: ../../library/logging.rst:101
 msgid ""
