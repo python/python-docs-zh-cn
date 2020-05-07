@@ -86,6 +86,8 @@ msgid ""
 " order to force spawn to return before the child process exits an "
 ":exc:`OSError` should be thrown."
 msgstr ""
+"会向 *master_read* 和 *stdin_read* 函数传入一个文件描述符供它们读取，并且它们总是应当返回一个字节串。 "
+"为了强制生成在子进程退出之前返回所以应当抛出 :exc:`OSError`。"
 
 #: ../../library/pty.rst:55
 msgid ""
@@ -95,6 +97,8 @@ msgid ""
 "child process, and *stdin_read* is passed file descriptor 0, to read from "
 "the parent process's standard input."
 msgstr ""
+"两个函数的默认实现在每次函数被调用时将读取并返回至多 1024 个字节。 会向 *master_read* "
+"回调传入伪终端的主文件描述符以从子进程读取输出，而向 *stdin_read* 传入文件描述符 0 以从父进程的标准输入读取数据。"
 
 #: ../../library/pty.rst:61
 msgid ""
@@ -105,6 +109,9 @@ msgid ""
 "process will quit without any input, *spawn* will then loop forever. If "
 "*master_read* signals EOF the same behavior results (on linux at least)."
 msgstr ""
+"从两个回调返回空字节串会被解读为文件结束 (EOF) 条件，在此之后回调将不再被调用。 如果 *stdin_read* 发出 EOF "
+"信号则控制终端就不能再与父进程或子进程进行通信。 除非子进程将不带任何输入就退出，否则随后 *spawn* 将一直循环下去。 如果 "
+"*master_read* 发出 EOF 信号则会有相同的行为结果（至少是在 Linux 上）。"
 
 #: ../../library/pty.rst:68
 msgid ""
@@ -113,12 +120,14 @@ msgid ""
 "This is a bug, documented in `issue 26228 "
 "<https://bugs.python.org/issue26228>`_."
 msgstr ""
+"如果两个回调都发出 EOF 信号则 *spawn* 可能将永不返回，除非在你的平台上当传入三个空列表时 *select* 会抛出一个错误。 "
+"这是一个程序缺陷，相关文档见 `问题 26228 <https://bugs.python.org/issue26228>`_。"
 
 #: ../../library/pty.rst:73
 msgid ""
 ":func:`spawn` now returns the status value from :func:`os.waitpid` on the "
 "child process."
-msgstr ""
+msgstr ":func:`spawn` 现在会从子进程的 :func:`os.waitpid` 返回状态值。"
 
 #: ../../library/pty.rst:78
 msgid "Example"
@@ -130,3 +139,5 @@ msgid ""
 " a pseudo-terminal to record all input and output of a terminal session in a"
 " \"typescript\". ::"
 msgstr ""
+"以下程序的作用类似于 Unix 命令 :manpage:`script(1)`，它使用一个伪终端来记录一个 \"typescript\" "
+"里终端进程的所有输入和输出::"
