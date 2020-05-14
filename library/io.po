@@ -1410,6 +1410,10 @@ msgid ""
 "terminated by the given string, and the line ending is returned to the "
 "caller untranslated."
 msgstr ""
+"当从流中读取输入时，如果 *newline* 为 ``None``，则会启用 :term:`universal newlines` 模式。 "
+"输入中的行结束符可以为 ``'\\n'``, ``'\\r'`` 或 ``'\\r\\n'``，在返回给调用者之前它们会被统一转写为 "
+"``'\\n'``。 如果参数为 ``''``，也会启用通用换行模式，但行结束符会不加转写即返回给调用者。 "
+"如果它具有任何其他合法的值，则输入行将仅由给定的字符串结束，并且行结束符会不加转写即返回给调用者。"
 
 #: ../../library/io.rst:906
 msgid ""
@@ -1427,7 +1431,7 @@ msgstr ""
 msgid ""
 "If *line_buffering* is ``True``, :meth:`flush` is implied when a call to "
 "write contains a newline character or a carriage return."
-msgstr ""
+msgstr "如果 *line_buffering* 为 ``True``，则当一个写入调用包含换行符或回车时将会应用 :meth:`flush`。"
 
 #: ../../library/io.rst:915
 msgid ""
@@ -1435,6 +1439,8 @@ msgid ""
 " be buffered: any data written on the :class:`TextIOWrapper` object is "
 "immediately handled to its underlying binary *buffer*."
 msgstr ""
+"如果 *write_through* 为 ``True``，对 :meth:`write` 的调用会确保不被缓冲：在 "
+":class:`TextIOWrapper` 对象上写入的任何数据会立即交给其下层的 *buffer* 来处理。"
 
 #: ../../library/io.rst:919
 msgid "The *write_through* argument has been added."
@@ -1447,12 +1453,15 @@ msgid ""
 "encoding using :func:`locale.setlocale`, use the current locale encoding "
 "instead of the user preferred encoding."
 msgstr ""
+"默认的 *encoding* 现在将为 ``locale.getpreferredencoding(False)`` 而非 "
+"``locale.getpreferredencoding()``。 不要使用 :func:`locale.setlocale` "
+"来临时改变区域编码格式，要使用当前区域编码格式而不是用户的首选编码格式。"
 
 #: ../../library/io.rst:928
 msgid ""
 ":class:`TextIOWrapper` provides these members in addition to those of "
 ":class:`TextIOBase` and its parents:"
-msgstr ""
+msgstr ":class:`TextIOWrapper` 在继承自 :class:`TextIOBase` 及其父类的现有成员以外还提供了下列成员:"
 
 #: ../../library/io.rst:933
 msgid "Whether line buffering is enabled."
@@ -1460,37 +1469,40 @@ msgstr "是否启用行缓冲。"
 
 #: ../../library/io.rst:937
 msgid "Whether writes are passed immediately to the underlying binary buffer."
-msgstr ""
+msgstr "写入是否要立即传给下层的二进制缓冲。"
 
 #: ../../library/io.rst:945
 msgid ""
 "Reconfigure this text stream using new settings for *encoding*, *errors*, "
 "*newline*, *line_buffering* and *write_through*."
 msgstr ""
+"使用 *encoding*, *errors*, *newline*, *line_buffering* 和 *write_through* "
+"的新设置来重新配置此文本流。"
 
 #: ../../library/io.rst:948
 msgid ""
 "Parameters not specified keep current settings, except ``errors='strict'`` "
 "is used when *encoding* is specified but *errors* is not specified."
 msgstr ""
+"未指定的形参将保留当前设定，例外情况是当指定了 *encoding* 但未指定 *errors* 时将会使用 ``errors='strict'``。"
 
 #: ../../library/io.rst:952
 msgid ""
 "It is not possible to change the encoding or newline if some data has "
 "already been read from the stream. On the other hand, changing encoding "
 "after write is possible."
-msgstr ""
+msgstr "如果已经有数据从流中被读取则将无法再改变编码格式或行结束符。 另一方面，在写入数据之后再改变编码格式则是可以的。"
 
 #: ../../library/io.rst:956
 msgid ""
 "This method does an implicit stream flush before setting the new parameters."
-msgstr ""
+msgstr "此方法会在设置新的形参之前执行隐式的流刷新。"
 
 #: ../../library/io.rst:964
 msgid ""
 "An in-memory stream for text I/O.  The text buffer is discarded when the "
 ":meth:`~IOBase.close` method is called."
-msgstr ""
+msgstr "用于文本 I/O 的内存数据流。 当调用 :meth:`~IOBase.close` 方法时将会丢弃文本缓冲区。"
 
 #: ../../library/io.rst:967
 msgid ""
@@ -1499,6 +1511,8 @@ msgid ""
 ":meth:`~TextIOBase.write`.  The stream is positioned at the start of the "
 "buffer."
 msgstr ""
+"缓冲区的初始值可通过提供 *initial_value* 来设置。 如果启用了行结束符转写，换行将以 :meth:`~TextIOBase.write`"
+" 所用的方式被编码。 数据流位置将被设为缓冲区的开头。"
 
 #: ../../library/io.rst:972
 msgid ""
@@ -1508,12 +1522,15 @@ msgid ""
 " as ``\\n`` on all platforms, but universal newline decoding is still "
 "performed when reading."
 msgstr ""
+"*newline* 参数的规则与 :class:`TextIOWrapper` 所用的一致。 默认规则是仅将 ``\\n`` "
+"字符视为行结束符并且不执行换行符转写。 如果 *newline* 设为 ``None``，在所有平台上换行符都将被写入为 "
+"``\\n``，但当读取时仍然会执行通用换行编码格式。"
 
 #: ../../library/io.rst:978
 msgid ""
 ":class:`StringIO` provides this method in addition to those from "
 ":class:`TextIOBase` and its parents:"
-msgstr ""
+msgstr ":class:`StringIO` 在继承自 :class:`TextIOBase` 及其父类的现有成员以外还提供了以下方法:"
 
 #: ../../library/io.rst:983
 msgid ""
@@ -1521,6 +1538,8 @@ msgid ""
 "decoded as if by :meth:`~TextIOBase.read`, although the stream position is "
 "not changed."
 msgstr ""
+"返回一个包含缓冲区全部内容的 ``str``。 换行符会以与 :meth:`~TextIOBase.read` "
+"相同的方式被编码，但是流的位置不会被改变。"
 
 #: ../../library/io.rst:987
 msgid "Example usage::"
@@ -1531,6 +1550,8 @@ msgid ""
 "A helper codec that decodes newlines for :term:`universal newlines` mode. It"
 " inherits :class:`codecs.IncrementalDecoder`."
 msgstr ""
+"用于在 :term:`universal newlines` 模式下解码换行符的辅助编解码器。 它继承自 "
+":class:`codecs.IncrementalDecoder`。"
 
 #: ../../library/io.rst:1014
 msgid "Performance"
