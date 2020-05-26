@@ -1878,6 +1878,12 @@ msgid ""
 "receiving socket is unconnected, *address* is the address of the sending "
 "socket, if available; otherwise, its value is unspecified."
 msgstr ""
+"返回值是一个四元组： ``(data, ancdata, msg_flags, address)``。*data* 项是一个 "
+":class:`bytes` 对象，用于保存接收到的非辅助数据。*ancdata* 项是零个或多个元组 ``(cmsg_level, "
+"cmsg_type, cmsg_data)`` 组成的列表，表示接收到的辅助数据（控制消息）：*cmsg_level* 和 *cmsg_type* "
+"是分别表示协议级别和协议类型的整数，而 *cmsg_data* 是保存相关数据的 :class:`bytes` 对象。*msg_flags* "
+"项由各种标志按位或组成，表示接收消息的情况，详细信息请参阅系统文档。如果接收端套接字断开连接，则 *address* "
+"是发送端套接字的地址（如果有），否则该值无指定。"
 
 #: ../../library/socket.rst:1369
 msgid ""
@@ -1891,6 +1897,11 @@ msgid ""
 "exception after the system call returns, it will first attempt to close any "
 "file descriptors received via this mechanism."
 msgstr ""
+"某些系统上可以利用 :const:`AF_UNIX` 套接字通过 :meth:`sendmsg` 和 :meth:`recvmsg` "
+"在进程之间传递文件描述符。使用此功能时（通常仅限于 :const:`SOCK_STREAM` 套接字），:meth:`recvmsg` "
+"将在其辅助数据中返回以下格式的项 ``(socket.SOL_SOCKET, socket.SCM_RIGHTS, fds)``，其中 *fds* "
+"是一个 :class:`bytes` 对象，是新文件描述符表示为原生 C :c:type:`int` 类型的二进制数组。如果 "
+":meth:`recvmsg` 在系统调用返回后抛出异常，它将首先关闭此机制接收到的所有文件描述符。"
 
 #: ../../library/socket.rst:1380
 msgid ""
@@ -1901,6 +1912,8 @@ msgid ""
 "buffer provided it has not been truncated before the start of its associated"
 " data."
 msgstr ""
+"对于仅接收到一部分的辅助数据项，一些系统没有指示其截断长度。如果某个项目可能超出了缓冲区的末尾，:meth:`recvmsg` 将发出 "
+":exc:`RuntimeWarning`，并返回其在缓冲区内的部分，前提是该对象被截断于关联数据开始后。"
 
 #: ../../library/socket.rst:1387
 msgid ""
