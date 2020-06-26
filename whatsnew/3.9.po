@@ -1760,12 +1760,16 @@ msgid ""
 ":c:func:`PyFrame_GetBack` function: get the frame next outer frame. "
 "(Contributed by Victor Stinner in :issue:`40421`.)"
 msgstr ""
+"增加了 :c:func:`PyFrame_GetCode` 函数：获取帧代码。 增加了 :c:func:`PyFrame_GetBack` "
+"函数：获取帧的下一个外部帧。 （由 Victor Stinner 在 :issue:`40421` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1028
 msgid ""
 "Add :c:func:`PyFrame_GetLineNumber` to the limited C API. (Contributed by "
 "Victor Stinner in :issue:`40421`.)"
 msgstr ""
+"将 :c:func:`PyFrame_GetLineNumber` 添加到受限的 C API。 （由 Victor Stinner 在 "
+":issue:`40421` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1031
 msgid ""
@@ -1776,6 +1780,11 @@ msgid ""
 "unique identifier of a Python thread state. (Contributed by Victor Stinner "
 "in :issue:`39947`.)"
 msgstr ""
+"增加了 :c:func:`PyThreadState_GetInterpreter` 和 "
+":c:func:`PyInterpreterState_Get` 函数用于获取解释器。 增加了 "
+":c:func:`PyThreadState_GetFrame` 函数用于获取 Python 线程状态的当前帧。 增加了 "
+":c:func:`PyThreadState_GetID` 函数：获取 Python 线程状态的唯一标识符。 （由 Victor Stinner 在 "
+":issue:`39947` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1039
 msgid ""
@@ -1784,10 +1793,12 @@ msgid ""
 "efficient way to call a callable Python object without any argument. "
 "(Contributed by Victor Stinner in :issue:`37194`.)"
 msgstr ""
+"将新的公有 :c:func:`PyObject_CallNoArgs` 函数添加到 C API，该函数可不带任何参数调用一个 Python 可调用对象。"
+" 它是不带参数调用 Python 可调用对象最有效率的方式。 （由 Victor Stinner 在 :issue:`37194` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1044 ../../whatsnew/3.9.rst:1124
 msgid "Changes in the limited C API (if ``Py_LIMITED_API`` macro is defined):"
-msgstr ""
+msgstr "受限 C API 中的改变（如果定义了 ``Py_LIMITED_API`` 宏）:"
 
 #: ../../whatsnew/3.9.rst:1046
 msgid ""
@@ -1797,22 +1808,27 @@ msgid ""
 "access ``PyThreadState.recursion_depth`` field (the structure is opaque in "
 "the limited C API)."
 msgstr ""
+"提供 :c:func:`Py_EnterRecursiveCall` 和 :c:func:`Py_LeaveRecursiveCall` "
+"作为常规函数用于受限 API。 在之前版本中是使用宏定义，但这些宏不能与无法访问 ``PyThreadState.recursion_depth`` "
+"字段的受限 C API 一同编译（该结构体在受限 C API 中是不透明的）。"
 
 #: ../../whatsnew/3.9.rst:1052
 msgid ""
 "``PyObject_INIT()`` and ``PyObject_INIT_VAR()`` become regular \"opaque\" "
 "function to hide implementation details."
-msgstr ""
+msgstr "``PyObject_INIT()`` 和 ``PyObject_INIT_VAR()`` 已成为常规“不透明”函数以隐藏实现细节。"
 
 #: ../../whatsnew/3.9.rst:1055 ../../whatsnew/3.9.rst:1151
 msgid "(Contributed by Victor Stinner in :issue:`38644` and :issue:`39542`.)"
-msgstr ""
+msgstr "（由 Victor Stinner 在 :issue:`38644` 和 :issue:`39542` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1057
 msgid ""
 "The :c:func:`PyModule_AddType` function is added to help adding a type to a "
 "module. (Contributed by Dong-hee Na in :issue:`40024`.)"
 msgstr ""
+"增加了 :c:func:`PyModule_AddType` 函数以协助将类型加入到模块中。 （由 Dong-hee Na 在 "
+":issue:`40024` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1061
 msgid ""
@@ -1822,6 +1838,9 @@ msgid ""
 " the garbage collector respectively. (Contributed by Pablo Galindo in "
 ":issue:`40241`.)"
 msgstr ""
+"将 :c:func:`PyObject_GC_IsTracked` 和 :c:func:`PyObject_GC_IsFinalized` "
+"函数添加到公有 API 以允许分别查询 Python 对象当前是正在被追踪还是已经被垃圾回收器所终结。 （由 Pablo Galindo 在 "
+":issue:`40241` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1071
 msgid ""
@@ -1829,6 +1848,8 @@ msgid ""
 "*tstate* parameter (``PyThreadState*``). (Contributed by Victor Stinner in "
 ":issue:`38500`.)"
 msgstr ""
+"``PyInterpreterState.eval_frame`` (:pep:`523`) 现在需要有新的强制性形参 *tstate* "
+"(``PyThreadState*``)。 （由 Victor Stinner 在 :issue:`38500` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1075
 msgid ""
@@ -1841,11 +1862,16 @@ msgid ""
 "called if :c:member:`~PyModuleDef.m_size` is greater than 0 and the module "
 "state (as returned by :c:func:`PyModule_GetState`) is ``NULL``."
 msgstr ""
+"扩展模块: :c:type:`PyModuleDef` 的 :c:member:`~PyModuleDef.m_traverse`, "
+":c:member:`~PyModuleDef.m_clear` 和 :c:member:`~PyModuleDef.m_free` "
+"等函数在模块状态被请求但尚未被分配时将不会再被调用。 这种情况出现在模块被创建之后且模块被执行 (:c:data:`Py_mod_exec` 函数) "
+"之前的时刻。 更准确地说，这些函数在 :c:member:`~PyModuleDef.m_size` 大于 0 并且模块状态（即 "
+":c:func:`PyModule_GetState` 的返回值）为 ``NULL`` 时将不会被调用。"
 
 #: ../../whatsnew/3.9.rst:1084
 msgid ""
 "Extension modules without module state (``m_size <= 0``) are not affected."
-msgstr ""
+msgstr "没有模块状态的扩展模块 (``m_size <= 0``) 不会受到影响。"
 
 #: ../../whatsnew/3.9.rst:1086
 msgid ""
@@ -1854,6 +1880,8 @@ msgid ""
 "called from the main interpreter. Each subinterpreter now has its own list "
 "of scheduled calls. (Contributed by Victor Stinner in :issue:`39984`.)"
 msgstr ""
+"现在如果 :c:func:`Py_AddPendingCall` 是在子解释器内部被调用，该函数会被排入子解释器的调用日程，而不是由主解释器调用。 "
+"每个子解释器现在都拥有它们自己的调用日程列表。 （由 Victor Stinner 在 :issue:`39984` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1092
 msgid ""
@@ -1862,6 +1890,9 @@ msgid ""
 " ``0``). This is significant when embedding Python on Windows. (Contributed "
 "by Zackery Spytz in :issue:`8901`.)"
 msgstr ""
+"当 ``-E`` 选项被使用 (如果 :c:member:`PyConfig.use_environment` 设为 ``0``) 时将不再使用 "
+"Windows 注册表来初始化 :data:`sys.path`。 这会影响在 Windows 上嵌入 Python 的操作。 （由 Zackery "
+"Spytz 在 :issue:`8901` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1097
 msgid ""
@@ -1869,6 +1900,8 @@ msgid ""
 "constant and refers to a constant string. (Contributed by Serhiy Storchaka "
 "in :issue:`38650`.)"
 msgstr ""
+"全局变量 :c:data:`PyStructSequence_UnnamedField` 现在为常量并且指向一个字符串常量。 （由 Serhiy "
+"Storchaka 在 :issue:`38650` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1101
 msgid ""
@@ -1876,6 +1909,8 @@ msgid ""
 "internal C API (``pycore_gc.h``). (Contributed by Victor Stinner in "
 ":issue:`40241`.)"
 msgstr ""
+"现在 :c:type:`PyGC_Head` 结构是不透明的。 它只在内部 C API (``pycore_gc.h``) 中定义。 （由 Victor"
+" Stinner 在 :issue:`40241` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1105
 msgid ""
