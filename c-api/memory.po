@@ -59,6 +59,9 @@ msgid ""
 "manager thus delegates some of the work to the object-specific allocators, "
 "but ensures that the latter operate within the bounds of the private heap."
 msgstr ""
+"在最底层，一个原始内存分配器通过与操作系统的内存管理器交互，确保私有堆中有足够的空间来存储所有与 Python "
+"相关的数据。在原始内存分配器的基础上，几个对象特定的分配器在同一堆上运行，并根据每种对象类型的特点实现不同的内存管理策略。例如，整数对象在堆内的管理方式不同于字符串、元组或字典，因为整数需要不同的存储需求和速度与空间的权衡。因此，Python"
+" 内存管理器将一些工作分配给对象特定分配器，但确保后者在私有堆的范围内运行。"
 
 #: ../../c-api/memory.rst:36
 msgid ""
@@ -69,6 +72,8 @@ msgid ""
 " internal buffers is performed on demand by the Python memory manager "
 "through the Python/C API functions listed in this document."
 msgstr ""
+"Python 堆内存的管理是由解释器来执行，用户对它没有控制权，即使他们经常操作指向堆内内存块的对象指针，理解这一点十分重要。Python "
+"对象和其他内部缓冲区的堆空间分配是由 Python 内存管理器按需通过本文档中列出的 Python/C API 函数进行的。"
 
 #: ../../c-api/memory.rst:49
 msgid ""
@@ -81,6 +86,10 @@ msgid ""
 " and release memory blocks with the C library allocator for individual "
 "purposes, as shown in the following example::"
 msgstr ""
+"为了避免内存破坏，扩展的作者永远不应该试图用 C 库函数导出的函数来对 Python 对象进行操作，这些函数包括： :c:func:`malloc`, "
+":c:func:`calloc`, :c:func:`realloc` 和 :c:func:`free`。这将导致 C 分配器和 Python "
+"内存管理器之间的混用，引发严重后果，这是由于它们实现了不同的算法，并在不同的堆上操作。但是，我们可以安全地使用 C "
+"库分配器为单独的目的分配和释放内存块，如下例所示："
 
 #: ../../c-api/memory.rst:68
 msgid ""
