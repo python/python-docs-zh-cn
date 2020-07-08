@@ -8,8 +8,8 @@
 # Shengjing Zhu <zsj950618@gmail.com>, 2019
 # ww song <sww4718168@gmail.com>, 2019
 # eric R <trencyclopedia@gmail.com>, 2019
-# Freesand Leo <yuqinju@163.com>, 2019
 # Harry Liu. <harry.python@gmail.com>, 2020
+# Freesand Leo <yuqinju@163.com>, 2020
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-10 22:51+0000\n"
 "PO-Revision-Date: 2019-09-01 03:36+0000\n"
-"Last-Translator: Harry Liu. <harry.python@gmail.com>, 2020\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -212,6 +212,11 @@ msgid ""
 "Python Library Reference).  It is important to know about them to understand"
 " how errors are passed around."
 msgstr ""
+"在 Python 解释器中有一个重要的惯例：当一个函数出错时，它应当设置异常条件并返回错误值（通常为 ``NULL`` 指针）。 "
+"异常存储于解释器内部的静态全局变量中；如此变量为 ``NULL`` 表示未发生异常。 还有第二个全局变量用于保存异常的“关联值”（即 "
+":keyword:`raise` 的第二个参数）。 第三个变量包含 Python 代码产生错误情况下的栈回溯信息。 这三个变量是 Python 中 "
+":meth:`sys.exc_info` 的结果在 C 中的对应物（请参阅 Python 库参考的 :mod:`sys` 模块部分）。 "
+"了解它们对于理解错误的传递方式是非常重要的。"
 
 #: ../../extending/extending.rst:139
 msgid ""
@@ -252,6 +257,8 @@ msgid ""
 ":c:func:`PyErr_Occurred` to see whether an error occurred in a function "
 "call, since you should be able to tell from the return value."
 msgstr ""
+"你可以通过 :c:func:`PyErr_Occurred` 在不造成破坏的情况下检测是否设置了异常。 这将返回当前异常对象，或者如果未发生异常则返回 "
+"``NULL``。 你通常不需要调用 :c:func:`PyErr_Occurred` 来查看函数调用中是否发生了错误，因为你应该能从返回值中看出来。"
 
 #: ../../extending/extending.rst:160
 msgid ""
@@ -266,6 +273,11 @@ msgid ""
 "executing Python code and tries to find an exception handler specified by "
 "the Python programmer."
 msgstr ""
+"当一个函数 *f* 调用另一个函数 *g* 时检测到后者出错了，*f* 应当自己返回一个错误值 (通常为 ``NULL`` 或 ``-1``)。 它 "
+"*不应该* 调用某个 :c:func:`PyErr_\\*` 函数 --- 这类函数已经被 *g* 调用过了。 *f* "
+"的调用者随后也应当返回一个错误来提示 *它的* 调用者，同样 *不应该* 调用 :c:func:`PyErr_\\*`，依此类推 --- "
+"错误的最详细原因已经由首先检测到它的函数报告了。 一旦这个错误到达 Python 解释器的主循环，它会中止当前执行的 Python 代码并尝试找出由 "
+"Python 程序员所指定的异常处理程序。"
 
 #: ../../extending/extending.rst:170
 msgid ""
@@ -410,6 +422,10 @@ msgid ""
 "which it points (so in Standard C, the variable :c:data:`command` should "
 "properly be declared as ``const char *command``)."
 msgstr ""
+"如果在参数列表中检测到错误，它将返回 ``NULL`` (该值是返回对象指针的函数所使用的错误提示)，这取决于 "
+":c:func:`PyArg_ParseTuple` 设置的异常。 在其他情况下参数的字符串值会被拷贝到局部变量 :c:data:`command`。 "
+"这是一个指针赋值并且你不应该修改它所指向的字符串 (因此在标准 C 中，变量 :c:data:`command` 应当被正确地声明为 ``const "
+"char *command``)。"
 
 #: ../../extending/extending.rst:289
 msgid ""
@@ -450,6 +466,8 @@ msgid ""
 "is a genuine Python object rather than a ``NULL`` pointer, which means "
 "\"error\" in most contexts, as we have seen."
 msgstr ""
+":c:data:`Py_None` 是特殊 Python 对象 ``None`` 所对应的 C 名称。 它是一个真正的 Python 对象而不是 "
+"``NULL`` 指针，如我们所见，后者在大多数上下文中都意味着“错误”。"
 
 #: ../../extending/extending.rst:318
 msgid "The Module's Method Table and Initialization Function"
