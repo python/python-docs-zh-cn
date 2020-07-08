@@ -276,6 +276,11 @@ msgid ""
 "executing Python code and tries to find an exception handler specified by "
 "the Python programmer."
 msgstr ""
+"当一个函数 *f* 调用另一个函数 *g* 时检测到后者出错了，*f* 应当自己返回一个错误值 (通常为 ``NULL`` 或 ``-1``)。 它 "
+"*不应该* 调用某个 :c:func:`PyErr_\\*` 函数 --- 这类函数已经被 *g* 调用过了。 *f* "
+"的调用者随后也应当返回一个错误来提示 *它的* 调用者，同样 *不应该* 调用 :c:func:`PyErr_\\*`，依此类推 --- "
+"错误的最详细原因已经由首先检测到它的函数报告了。 一旦这个错误到达 Python 解释器的主循环，它会中止当前执行的 Python 代码并尝试找出由 "
+"Python 程序员所指定的异常处理程序。"
 
 #: ../../extending/extending.rst:170
 msgid ""
@@ -420,6 +425,10 @@ msgid ""
 "which it points (so in Standard C, the variable :c:data:`command` should "
 "properly be declared as ``const char *command``)."
 msgstr ""
+"如果在参数列表中检测到错误，它将返回 ``NULL`` (该值是返回对象指针的函数所使用的错误提示)，这取决于 "
+":c:func:`PyArg_ParseTuple` 设置的异常。 在其他情况下参数的字符串值会被拷贝到局部变量 :c:data:`command`。 "
+"这是一个指针赋值并且你不应该修改它所指向的字符串 (因此在标准 C 中，变量 :c:data:`command` 应当被正确地声明为 ``const "
+"char *command``)。"
 
 #: ../../extending/extending.rst:289
 msgid ""
@@ -460,6 +469,8 @@ msgid ""
 "is a genuine Python object rather than a ``NULL`` pointer, which means "
 "\"error\" in most contexts, as we have seen."
 msgstr ""
+":c:data:`Py_None` 是特殊 Python 对象 ``None`` 所对应的 C 名称。 它是一个真正的 Python 对象而不是 "
+"``NULL`` 指针，如我们所见，后者在大多数上下文中都意味着“错误”。"
 
 #: ../../extending/extending.rst:318
 msgid "The Module's Method Table and Initialization Function"
