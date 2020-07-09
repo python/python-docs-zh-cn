@@ -554,6 +554,12 @@ msgid ""
 "satisfactorily. The init function must return the module object to its "
 "caller, so that it then gets inserted into ``sys.modules``."
 msgstr ""
+"当 Python 程序首次导入 :mod:`spam` 模块时， :c:func:`PyInit_spam` 会被调用。 （有关嵌入 Python "
+"的注释参见下文。） 它将调用 "
+":c:func:`PyModule_Create`，该函数会返回一个模块对象，并基于在模块定义中找到的表将内置函数对象插入到新创建的模块中（该表是一个 "
+":c:type:`PyMethodDef` 结构体的数组）。 :c:func:`PyModule_Create` 返回一个指向它所创建的模块对象的指针。"
+" 它可能会因程度严重的特定错误而中止，或者在模块无法成功初始化时返回 ``NULL``。 初始化函数必须返回模块对象给其调用者，这样它就可以被插入到 "
+"``sys.modules`` 中。"
 
 #: ../../extending/extending.rst:383
 msgid ""
@@ -703,6 +709,9 @@ msgid ""
 "pointers (but note that *temp* will not be  ``NULL`` in this context).  More"
 " info on them in section :ref:`refcounts`."
 msgstr ""
+":c:func:`Py_XINCREF` 和 :c:func:`Py_XDECREF` 这两个宏可增加/减少一个对象的引用计数，并且当存在 "
+"``NULL`` 指针时仍可保证安全 (但请注意在这个上下文中 *temp* 将不为  ``NULL``)。 更多相关信息请参考 "
+":ref:`refcounts` 章节。"
 
 #: ../../extending/extending.rst:543
 msgid ""
@@ -715,6 +724,10 @@ msgid ""
 " tuple. :c:func:`Py_BuildValue` returns a tuple when its format string "
 "consists of zero or more format codes between parentheses.  For example::"
 msgstr ""
+"随后，当要调用此函数时，你将调用 C 函数 :c:func:`PyObject_CallObject`。 该函数有两个参数，它们都属于指针，指向任意 "
+"Python 对象：即 Python 函数，及其参数列表。 参数列表必须总是一个元组对象，其长度即参数的个数量。 要不带参数地调用 Python "
+"函数，则传入 ``NULL`` 或一个空元组；要带一个参数调用它，则传入一个单元组。 :c:func:`Py_BuildValue` "
+"会在其格式字符串包含一对圆括号内的零个或多个格式代码时返回一个元组。 例如::"
 
 #: ../../extending/extending.rst:563
 msgid ""
