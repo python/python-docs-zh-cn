@@ -761,6 +761,10 @@ msgid ""
 "handle the exception. If this is not possible or desirable, the exception "
 "should be cleared by calling :c:func:`PyErr_Clear`.  For example::"
 msgstr ""
+"但是在你这么做之前，很重要的一点是检查返回值不是 ``NULL``。 如果是的话，Python 函数会终止并引发异常。 如果调用 "
+":c:func:`PyObject_CallObject` 的 C 代码是在 Python 中发起调用的，它应当立即返回一个错误来告知其 Python "
+"调用者，以便解释器能打印栈回溯信息，或者让调用方 Python 代码能处理该异常。 如果这无法做到或不合本意，则应当通过调用 "
+":c:func:`PyErr_Clear` 来清除异常。 例如::"
 
 #: ../../extending/extending.rst:589
 msgid ""
@@ -856,6 +860,10 @@ msgid ""
 ":c:func:`PyArg_ParseTupleAndKeywords` returns true, otherwise it returns "
 "false and raises an appropriate exception."
 msgstr ""
+"*arg* 与 *format* 形参与 :c:func:`PyArg_ParseTuple` 函数所定义的一致。 *kwdict* "
+"形参是作为第三个参数从 Python 运行时接收的关键字字典。 *kwlist* 形参是以 ``NULL`` "
+"结尾的字符串列表，它被用来标识形参；名称从左至右与来自 *format* 的类型信息相匹配。 "
+"如果执行成功，:c:func:`PyArg_ParseTupleAndKeywords` 会返回真值，否则返回假值并引发一个适当的异常。"
 
 #: ../../extending/extending.rst:741
 msgid ""
@@ -1283,6 +1291,9 @@ msgid ""
 "``NULL``, there would be a lot of redundant tests and the code would run "
 "more slowly."
 msgstr ""
+"通常，接受对象引用作为参数的函数不希望你传给它们 ``NULL`` 指针，并且当你这样做时将会转储核心（或在以后导致核心转储）。 "
+"返回对象引用的函数通常只在要指明发生了异常时才返回 ``NULL``。 不检测 ``NULL`` "
+"参数的原因在于这些函数经常要将它们所接收的对象传给其他函数 --- 如果每个函数都检测 ``NULL``，将会导致大量的冗余检测而使代码运行得更缓慢。"
 
 #: ../../extending/extending.rst:1102
 msgid ""
