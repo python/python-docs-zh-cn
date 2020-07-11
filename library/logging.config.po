@@ -282,10 +282,16 @@ msgid ""
 "``verify`` argument to :func:`listen` to prevent unrecognised configurations"
 " from being applied."
 msgstr ""
+"因为配置的各部分是通过 :func:`eval` 传递的，使用此函数可能让用户面临安全风险。 虽然此函数仅绑定到 ``localhost`` "
+"上的套接字，因此并不接受来自远端机器的连接，但在某些场景中不受信任的代码可以在调用 :func:`listen` 的进程的账户下运行。 "
+"具体来说，如果如果调用 :func:`listen` 的进程在用户无法彼此信任的多用户机器上运行，则恶意用户就能简单地通过连接到受害者的 "
+":func:`listen` 套接字并发送运行攻击者想在受害者的进程上执行的任何代码的配置的方式，安排运行几乎任意的代码。 "
+"如果是使用默认端口这会特别容易做到，即便使用了不同端口也不难做到。 要避免发生这种情况的风险，请在 :func:`listen` 中使用 "
+"``verify`` 参数来防止未经认可的配置被应用。"
 
 #: ../../library/logging.config.rst:168
 msgid "The ``verify`` argument was added."
-msgstr ""
+msgstr "添加了 ``verify`` 参数。"
 
 #: ../../library/logging.config.rst:173
 msgid ""
@@ -295,6 +301,8 @@ msgid ""
 "to specify ``disable_existing_loggers`` as ``False`` in the configuration "
 "you send."
 msgstr ""
+"如果你希望将配置发送给未禁用现有日志记录器的监听器，你将需要使用 JSON 格式的配置，该格式将使用 :func:`dictConfig` 进行配置。 "
+"此方法允许你在你发送的配置中将 ``disable_existing_loggers`` 指定为 ``False``。"
 
 #: ../../library/logging.config.rst:182
 msgid ""
@@ -302,10 +310,12 @@ msgid ""
 "This is typically called before calling :meth:`join` on the return value "
 "from :func:`listen`."
 msgstr ""
+"停止通过对 :func:`listen` 的调用所创建的监听服务器。 此函数的调用通常会先于在 :func:`listen` 的返回值上调用 "
+":meth:`join`。"
 
 #: ../../library/logging.config.rst:190
 msgid "Configuration dictionary schema"
-msgstr ""
+msgstr "配置字典架构"
 
 #: ../../library/logging.config.rst:192
 msgid ""
@@ -319,6 +329,10 @@ msgid ""
 "describing these objects and connections is defined in :ref:`logging-config-"
 "dict-connections` below."
 msgstr ""
+"描述日志记录配置需要列出要创建的不同对象及它们之间的连接；例如，你可以创建一个名为 'console' 的处理程序，然后名为 'startup' "
+"的日志记录器将可以把它的消息发送给 'console' 处理程序。 这些对象并不仅限于 :mod:`logging` "
+"模块所提供的对象，因为你还可以编写你自己的格式化或处理程序类。 这些类的形参可能还需要包括 ``sys.stderr`` 这样的外部对象。 "
+"描述这些对象和连接的语法会在下面的 :ref:`logging-config-dict-connections` 中定义。"
 
 #: ../../library/logging.config.rst:204
 msgid "Dictionary Schema Details"
