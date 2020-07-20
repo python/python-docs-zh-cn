@@ -126,6 +126,9 @@ msgid ""
 "object files in the libraries; if it finds it, it will include all the code "
 "from that object file."
 msgstr ""
+"在 Unix 中，只存在一种库文件 (:file:`.a`)，它包含来自多个对象文件 (:file:`.o`) 的代码。 在创建共享对象文件 "
+"(:file:`.so`) 的链接阶段，链接器可能会发现它不知道某个标识符是在哪里定义的。 "
+"链接器将在各个库的对象文件中查找它；如果找到了它，链接器将会包括来自该对象文件的所有代码。"
 
 #: ../../extending/windows.rst:76
 msgid ""
@@ -140,6 +143,10 @@ msgid ""
 "which will need to be used for all future DLLs that depend on the symbols in"
 " the application or DLL."
 msgstr ""
+"在 Windows 中，存在两种库类型，静态库和导入库 (扩展名都是 :file:`.lib`)。 静态库类似于 Unix 的 :file:`.a` "
+"文件；它包含在必要时可被包括的代码。 导入库基本上仅用于让链接器能确保特定标识符是合法的，并且将在 DLL 被加载时出现于程序中。 "
+"这样链接器可使用来自导入库的信息构建查找表以便使用未包括在 DLL 中的标识符。 当一个应用程序或  DLL "
+"被链接时，可能会生成一个导入库，它将需要被用于应用程序或 DLL 中未来所有依赖于这些符号的 DLL。"
 
 #: ../../extending/windows.rst:86
 msgid ""
@@ -152,6 +159,10 @@ msgid ""
 "code; it just contains information which will be used at runtime to access "
 "A's code."
 msgstr ""
+"假设你正在编译两个动态加载模块 B 和 C，它们应当共享另一个代码块 A。 在 Unix 上，你 *不应* 将 :file:`A.a` 传给链接器作为 "
+":file:`B.so` 和 :file:`C.so`；那会导致它被包括两次，这样 B 和 C 将分别拥有它们自己的副本。 在 Windows 上，编译"
+" :file:`A.dll` 将同时编译 :file:`A.lib`。 你 *应当* 将 :file:`A.lib` 传给链接器用于 B 和 C。 "
+":file:`A.lib` 并不包含代码；它只包含将在运行时被用于访问 A 的代码的信息。"
 
 #: ../../extending/windows.rst:94
 msgid ""
@@ -160,6 +171,8 @@ msgid ""
 "On Unix, linking with a library is more like ``from spam import *``; it does"
 " create a separate copy."
 msgstr ""
+"在 Windows 上，使用导入库有点像是使用 ``import spam``；它让你可以访问 spam 中的名称，但并不会创建一个单独副本。 在 "
+"Unix 上，链接到一个库更像是 ``from spam import *``；它会创建一个单独副本。"
 
 #: ../../extending/windows.rst:103
 msgid "Using DLLs in Practice"
@@ -171,6 +184,8 @@ msgid ""
 "or may not work (though Borland seems to).  The rest of this section is "
 "MSVC++ specific."
 msgstr ""
+"Windows 版 Python 是用 Microsoft Visual C++ 编译的；使用其他编译器可能行也可能不行（但 Borland "
+"看来是可以的）。 这一节的剩余部分只适用于 MSVC++。"
 
 #: ../../extending/windows.rst:112
 msgid ""
@@ -178,6 +193,8 @@ msgid ""
 "linker. To build two DLLs, spam and ni (which uses C functions found in "
 "spam), you could use these commands::"
 msgstr ""
+"当在 Windows 中创建 DLL 时，你必须将 :file:`pythonXY.lib` 传给链接器。 要编译两个 DLL，spam 和 ni "
+"(会使用 spam 中找到的 C 函数)，你应当使用以下命令::"
 
 #: ../../extending/windows.rst:119
 msgid ""
@@ -186,6 +203,9 @@ msgid ""
 "functions (such as :c:func:`PyArg_ParseTuple`), but it does know how to find"
 " the Python code thanks to :file:`pythonXY.lib`."
 msgstr ""
+"第一个命令创建了三个文件: :file:`spam.obj`, :file:`spam.dll` 和 :file:`spam.lib`。 "
+":file:`Spam.dll` 不包含任何 Python 函数 (例如 :c:func:`PyArg_ParseTuple`)，但它通过 "
+":file:`pythonXY.lib` 可以知道如何找到所需的 Python 代码。"
 
 #: ../../extending/windows.rst:124
 msgid ""
@@ -193,6 +213,8 @@ msgid ""
 ":file:`.lib`), which knows how to find the necessary functions from spam, "
 "and also from the Python executable."
 msgstr ""
+"第二条命令创建了 :file:`ni.dll` (以及 :file:`.obj` 和 :file:`.lib`)，它知道如何从 spam 以及 "
+"Python 可执行文件中找到所需的函数。"
 
 #: ../../extending/windows.rst:128
 msgid ""
@@ -201,6 +223,9 @@ msgid ""
 "say ``_declspec(dllexport)``, as in ``void _declspec(dllexport) "
 "initspam(void)`` or ``PyObject _declspec(dllexport) *NiGetSpamData(void)``."
 msgstr ""
+"不是每个标识符都会被导出到查找表。 如果你想要任何其他模块（包括 Python）都能看到你的标识符，你必须写上 "
+"``_declspec(dllexport)``，就如在 ``void _declspec(dllexport) initspam(void)`` 或 "
+"``PyObject _declspec(dllexport) *NiGetSpamData(void)`` 中一样。"
 
 #: ../../extending/windows.rst:133
 msgid ""
@@ -209,3 +234,5 @@ msgid ""
 "the Project Settings dialog, Link tab, to specify *ignore default "
 "libraries*.  Add the correct :file:`msvcrtxx.lib` to the list of libraries."
 msgstr ""
+"Developer Studio 将加入大量你并不真正需要的导入库，使你的可执行文件大小增加 100K。 "
+"要摆脱它们，请使用项目设置对话框的链接选项卡指定 *忽略默认库*。 将正确的 :file:`msvcrtxx.lib` 添加到库列表中。"
