@@ -650,6 +650,10 @@ msgid ""
 "object. This is signalled by an absolute import path to the factory being "
 "made available under the special key ``'()'``.  Here's a concrete example:"
 msgstr ""
+"要配置的对象是由字典描述的，其中包含它们的配置详情。 "
+"在某些地方，日志记录系统将能够从上下文中推断出如何实例化一个对象，但是当要实例化一个用户自定义对象时，系统将不知道要如何做。 "
+"为了提供用户自定义对象实例化的完全灵活性，用户需要提供一个‘工厂’函数 —— 即在调用时传入配置字典并返回实例化对象的可调用对象。 这是用一个通过特殊键"
+" ``'()'`` 来访问的工厂函数的绝对导入路径来标示的。 下面是一个实际的例子:"
 
 #: ../../library/logging.config.rst:446
 msgid ""
@@ -661,6 +665,11 @@ msgid ""
 " in Python source form, the ``brief`` and ``default`` formatters have "
 "configuration sub-dictionaries::"
 msgstr ""
+"上面的 YAML 代码片段定义了三个格式化器。 第一个的 ID 为 ``brief``，是带有特殊格式字符串的标准 "
+":class:`logging.Formatter` 实例。 第二个的 ID 为 "
+"``default``，具有更长的格式同时还显式地定义了时间格式，并将最终实例化一个带有这两个格式字符串的 "
+":class:`logging.Formatter`。 以 Python 源代码形式显示的 ``brief`` 和 ``default`` "
+"格式化器分别具有下列配置子字典::"
 
 #: ../../library/logging.config.rst:458
 msgid "and::"
@@ -674,6 +683,8 @@ msgid ""
 "configuration sub-dictionary for the third formatter, with id ``custom``, "
 "is::"
 msgstr ""
+"并且由于这些字典不包含特殊键 ``'()'``，实例化方式是从上下文中推断出来的：结果会创建标准的 :class:`logging.Formatter`"
+" 实例。 第三个格式器的 ID 为 ``custom``，对应配置子字典为::"
 
 #: ../../library/logging.config.rst:478
 msgid ""
@@ -686,6 +697,9 @@ msgid ""
 "arguments.  In the above example, the formatter with id ``custom`` will be "
 "assumed to be returned by the call::"
 msgstr ""
+"并且它包含特殊键 ``'()'``，这意味着需要用户自定义实例化方式。 在此情况下，将使用指定的工厂可调用对象。 "
+"如果它本身就是一个可调用对象则将被直接使用 —— 否则如果你指定了一个字符串（如这个例子所示）则将使用正常的导入机制来定位实例的可调用对象。 "
+"调用该可调用对象将传入配置子字典中 **剩余的** 条目作为关键字参数。 在上面的例子中，调用将预期返回 ID 为 ``custom`` 的格式化器::"
 
 #: ../../library/logging.config.rst:490
 msgid ""
@@ -694,6 +708,8 @@ msgid ""
 "arguments used in the call.  The ``'()'`` also serves as a mnemonic that the"
 " corresponding value is a callable."
 msgstr ""
+"将 ``'()'`` 用作特殊键是因为它不是一个有效的关键字形参名称，这样就不会与调用中使用的关键字参数发生冲突。 ``'()'`` "
+"还被用作表明对应值为可调用对象的助记符。"
 
 #: ../../library/logging.config.rst:499
 msgid "Access to external objects"
