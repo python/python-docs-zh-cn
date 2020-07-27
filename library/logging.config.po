@@ -782,6 +782,11 @@ msgid ""
 "handler.  To cater for this, a generic resolution system allows the user to "
 "specify:"
 msgstr ""
+"但是，对于 :mod:`logging` 模块所不了解的用户自定义对象则需要一种更通用的机制。 例如，考虑 "
+":class:`logging.handlers.MemoryHandler`，它接受一个 ``target`` 参数即其所委托的另一个处理程序。 "
+"由于系统已经知道存在该类，因而在配置中，给定的 ``target`` 只需为相应目标处理程序的的对象 ID 即可，而系统将根据该 ID 解析出处理程序。"
+" 但是，如果用户定义了一个具有 ``alternate`` 处理程序的 ``my.package.MyHandler``，则配置程序将不知道 "
+"``alternate`` 指向的是一个处理程序。 为了应对这种情况，通用解析系统允许用户指定:"
 
 #: ../../library/logging.config.rst:558
 msgid ""
@@ -791,6 +796,9 @@ msgid ""
 " access by dot or by index, in a similar way to that provided by "
 "``str.format``.  Thus, given the following snippet:"
 msgstr ""
+"字符串字面值 ``'cfg://handlers.file'`` 将按照与 ``ext://`` "
+"前缀类似的方式被解析为结果字符串，但查找操作是在配置自身而不是在导入命名空间中进行。 该机制允许按点号或按索引来访问，与 ``str.format`` "
+"所提供的方式类似。 这样，给定以下代码段:"
 
 #: ../../library/logging.config.rst:576
 msgid ""
@@ -807,6 +815,13 @@ msgid ""
 "value consists only of decimal digits, access will be attempted using the "
 "corresponding integer value, falling back to the string value if needed."
 msgstr ""
+"在该配置中，字符串 ``'cfg://handlers'`` 将解析为带有 ``handlers`` 键的字典，字符串 "
+"``'cfg://handlers.email`` 将解析为 ``handlers`` 字典中带有 ``email`` 键的字典，依此类推。 字符串 "
+"``'cfg://handlers.email.toaddrs[1]`` 将解析为 ``'dev_team.domain.tld'`` 而字符串 "
+"``'cfg://handlers.email.toaddrs[0]'`` 将解析为值 ``'support_team@domain.tld'``。 "
+"``subject`` 值可以使用 ``'cfg://handlers.email.subject'`` 或者等价的 "
+"``'cfg://handlers.email[subject]'`` 来访问。 后一种形式仅在键包含空格或非字母数字类字符的情况下才需要使用。 "
+"如果一个索引仅由十进制数码构成，则将尝试使用相应的整数值来访问，如果有必要则将回退为字符串值。"
 
 #: ../../library/logging.config.rst:590
 msgid ""
@@ -817,10 +832,15 @@ msgid ""
 "``config_dict['handlers']['myhandler']['mykey'][123]``, and fall back to "
 "``config_dict['handlers']['myhandler']['mykey']['123']`` if that fails."
 msgstr ""
+"给定字符串 ``cfg://handlers.myhandler.mykey.123``，这将解析为 "
+"``config_dict['handlers']['myhandler']['mykey']['123']``。 如果字符串被指定为 "
+"``cfg://handlers.myhandler.mykey[123]``，系统将尝试从 "
+"``config_dict['handlers']['myhandler']['mykey'][123]`` 中提取值，并在尝试失败时回退为 "
+"``config_dict['handlers']['myhandler']['mykey']['123']``。"
 
 #: ../../library/logging.config.rst:602
 msgid "Import resolution and custom importers"
-msgstr ""
+msgstr "导入解析与定制导入器"
 
 #: ../../library/logging.config.rst:604
 msgid ""
