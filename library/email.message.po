@@ -59,7 +59,7 @@ msgid ""
 "having a MIME type such as :mimetype:`multipart/\\*` or "
 ":mimetype:`message/rfc822`."
 msgstr ""
-"一份电子邮件信息由*头*和*负载*（又被称为*内容*）组成。头遵循 :rfc:`5322` 或者 :rfc:`6532` "
+"一份电子邮件信息由 *头* 和 *负载* （又被称为 *内容* ）组成。头遵循 :rfc:`5322` 或者 :rfc:`6532` "
 "风格的字段名和值，字段名和字段值之间由一个冒号隔开。这个冒号既不属于字段名，也不属于字段值。信息的负载可能是一段简单的文字消息，也可能是一个二进制的对象，更可能是由多个拥有各自头和负载的子信息组成的结构化子信息序列。对于后者类型的负载，信息的"
 " MIME 类型将会被指明为诸如 :mimetype:`multipart/\\*` 或 :mimetype:`message/rfc822` 的类型。"
 
@@ -74,6 +74,10 @@ msgid ""
 "type), for operating on the payload, for generating a serialized version of "
 "the message, and for recursively walking over the object tree."
 msgstr ""
+":class:`EmailMessage` 对象所提供的抽象概念模型是一个头字段组成的有序字典加一个代表 :rfc:`5322` 标准的信息体的 "
+"*负载* 。负载有可能是一系列子 ``EmailMessage`` "
+"对象的列表。你除了可以通过一般的字典方法来访问头字段名和值，还可以使用特制方法来访问头的特定字段（比如说 MIME "
+"内容类型字段）、操纵负载、生成信息的序列化版本、递归遍历对象树。"
 
 #: ../../library/email.message.rst:40
 msgid ""
@@ -85,6 +89,8 @@ msgid ""
 "keys.  Additional methods are provided for working with headers that have "
 "duplicate keys."
 msgstr ""
+":class:`EmailMessage` "
+"的类字典接口的字典索引是头字段名，头字段名必须是ASCII值。字典值是带有一些附加方法的字符串。虽然头字段的存储和获取都是保留其原始大小写的，但是字段名的匹配是大小写不敏感的。与真正的字典不同，键与键之间不但存在顺序关系，还可以重复。我们提供了额外的方法来处理含有重复键的头。"
 
 #: ../../library/email.message.rst:47
 msgid ""
@@ -93,6 +99,8 @@ msgid ""
 "container documents such as :mimetype:`multipart/\\*` and "
 ":mimetype:`message/rfc822` message objects."
 msgstr ""
+"*负载* 是多样的。对于简单的信息对象，它是字符串或字节对象；对于诸如 :mimetype:`multipart/\\*` 和 "
+":mimetype:`message/rfc822` 信息对象的 MIME 容器文档，它是一个 :class:`EmailMessage` 对象列表。"
 
 #: ../../library/email.message.rst:55
 msgid ""
@@ -103,6 +111,9 @@ msgid ""
 "uses the Python standard ``\\n`` line endings).  For more information see "
 "the :mod:`~email.policy` documentation."
 msgstr ""
+"如果指定了 *policy* ，消息将由这个 *policy* 所指定的规则来更新和序列化信息的表达。如果没有指定 *policy* ，其将默认使用 "
+":class:`~email.policy.default` 策略。这个策略遵循电子邮件的RFC标准，除了行终止符号（RFC要求使用 "
+"``\\r\\n`` ，此策略使用Python标准的 ``\\n`` 行终止符）。请前往 :mod:`~email.policy` 的文档获取更多信息。"
 
 #: ../../library/email.message.rst:64
 msgid ""
@@ -117,6 +128,12 @@ msgid ""
 " formatting produced by the method, since the specified *policy* will be "
 "passed to the :class:`~email.generator.Generator`."
 msgstr ""
+"以一段扁平的字符串的形式返回整个信息对象。若可选的 *unixform* 参数为真，返回的字符串会包含信封头。 *unixform* 的默认值是 "
+"``False`` 。为了保持与基类 :class:`~email.message.Message` 的兼容性， *maxheaderlen* "
+"是被接受的，但是其默认值是 ``None`` 。这个默认值表示行长度由策略的 "
+":attr:`~email.policy.EmailPolicy.max_line_length` 属性所控制。从信息实例所获取到的策略可以通过 "
+"*policy* 参数重写。这样可以对该方法所产生的输出进行略微的控制，因为指定的 *policy* 会被传递到 "
+":class:`~email.generator.Generator` 当中。"
 
 #: ../../library/email.message.rst:76 ../../library/email.message.rst:114
 msgid ""
@@ -124,6 +141,8 @@ msgid ""
 "defaults need to be filled in to complete the transformation to a string "
 "(for example, MIME boundaries may be generated or modified)."
 msgstr ""
+"扁平化信息可能会对 :class:`EmailMessage` 做出修改。这是因为为了完成向字符串的转换，一些内容需要使用默认值填入（举个例子，MIME"
+" 边界字段可能会被生成或被修改）。"
 
 #: ../../library/email.message.rst:80
 msgid ""
@@ -134,13 +153,17 @@ msgid ""
 " restricted to producing messages serialized as \"7 bit clean\" when "
 ":attr:`~email.policy.EmailPolicy.utf8` is ``False``, which is the default."
 msgstr ""
+"请注意，这个方法是为了便利而提供，不一定是适合你的应用程序的最理想的序列化信息的方法。这在你处理多封信息的时候尤甚。如果你需要使用更加灵活的API来序列化信息，请参见"
+" :class:`email.generator.Generator` 。同时请注意，当 "
+":attr:`~email.policy.EmailPolicy.utf8` 属性为其默认值 ``False`` 的时候，本方法将限制其行为为生成以“7"
+" bit clean”方式序列化的信息。"
 
 #: ../../library/email.message.rst:88
 msgid ""
 "the default behavior when *maxheaderlen* is not specified was changed from "
 "defaulting to 0 to defaulting to the value of *max_line_length* from the "
 "policy."
-msgstr ""
+msgstr "*maxheaderlen* 没有被指定时的默认行为从默认为0修改为默认为策略的 *max_line_length* 值。"
 
 #: ../../library/email.message.rst:95
 msgid ""
@@ -148,6 +171,8 @@ msgid ""
 "``str(msg)`` to produce a string containing the serialized message in a "
 "readable format."
 msgstr ""
+"与 ``as_string(policy=self.policy.clone(utf8=True))`` 等价。这将让 ``str(msg)`` "
+"产生的字符串包含人类可读的的序列化信息内容。"
 
 #: ../../library/email.message.rst:99
 msgid ""
@@ -155,6 +180,8 @@ msgid ""
 ":rfc:`6531`-like message representation, instead of being a direct alias for"
 " :meth:`as_string`."
 msgstr ""
+"本方法开始使用 ``utf8=True`` ，而非 :meth:`as_string` 的直接替身。使用 ``utf8=True`` 会产生类似于 "
+":rfc:`6531` 的信息表达。"
 
 #: ../../library/email.message.rst:106
 msgid ""
@@ -166,6 +193,9 @@ msgid ""
 "specified *policy* will be passed to the "
 ":class:`~email.generator.BytesGenerator`."
 msgstr ""
+"以一段扁平的字节序列对象返回整个信息。若可选的 *unixform* 参数为真，返回的字符串会包含信封头。 *unixform* 的默认值是 "
+"``False`` 。从信息实例所获取到的策略可以通过 *policy* 参数重写。这样可以对该方法所产生的输出进行略微的控制，因为指定的 "
+"*policy* 会被传递到 :class:`~email.generator.BytesGenerator` 当中。"
 
 #: ../../library/email.message.rst:118
 msgid ""
@@ -174,12 +204,14 @@ msgid ""
 "dealing with multiple messages.  See :class:`email.generator.BytesGenerator`"
 " for a more flexible API for serializing messages."
 msgstr ""
+"请注意，这个方法是为了便利而提供，不一定是适合你的应用程序的最理想的序列化信息的方法。这在你处理多封信息的时候尤甚。如果你需要使用更加灵活的API来序列化信息，请参见"
+" :class:`email.generator.BytesGenerator` 。"
 
 #: ../../library/email.message.rst:127
 msgid ""
 "Equivalent to :meth:`.as_bytes()`.  Allows ``bytes(msg)`` to produce a bytes"
 " object containing the serialized message."
-msgstr ""
+msgstr "与 :meth:`.as_bytes()` 等价。这将让 ``bytes(msg)`` 产生一个包含序列化信息内容的字节序列对象。"
 
 #: ../../library/email.message.rst:133
 msgid ""
