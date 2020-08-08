@@ -229,6 +229,9 @@ msgid ""
 "changed.) If the file has changed, the old file stream is closed, and the "
 "file opened to get a new stream."
 msgstr ""
+"发生文件更改可能是由于使用了执行文件轮换的程序例如 *newsyslog* 和 *logrotate*。 这个处理程序在 Unix/Linux "
+"下使用，它会监视文件来查看自上次发出数据后是否有更改。 （如果文件的设备或 inode 发生变化就认为已被更改。） "
+"如果文件被更改，则会关闭旧文件流，并再打开文件以获得新文件流。"
 
 #: ../../library/logging.handlers.rst:164
 msgid ""
@@ -238,6 +241,8 @@ msgid ""
 "*ST_INO* is not supported under Windows; :func:`~os.stat` always returns "
 "zero for this value."
 msgstr ""
+"这个处理程序不适合在 Windows 下使用，因为在 Windows 下打开的日志文件无法被移动或改名 —— 日志记录会使用排他的锁来打开文件 —— "
+"因此这样的处理程序是没有必要的。 此外，*ST_INO* 在 Windows 下不受支持；:func:`~os.stat` 将总是为该值返回零。"
 
 #: ../../library/logging.handlers.rst:173
 msgid ""
@@ -254,17 +259,17 @@ msgid ""
 "Checks to see if the file has changed.  If it has, the existing stream is "
 "flushed and closed and the file opened again, typically as a precursor to "
 "outputting the record to the file."
-msgstr ""
+msgstr "检查文件是否已更改。 如果已更改，则会刷新并关闭现有流然后重新打开文件，这通常是将记录输出到文件的先导操作。"
 
 #: ../../library/logging.handlers.rst:194
 msgid ""
 "Outputs the record to the file, but first calls :meth:`reopenIfNeeded` to "
 "reopen the file if it has changed."
-msgstr ""
+msgstr "将记录输出到文件，但如果文件已更改则会先调用 :meth:`reopenIfNeeded` 来重新打开它。"
 
 #: ../../library/logging.handlers.rst:200
 msgid "BaseRotatingHandler"
-msgstr ""
+msgstr "BaseRotatingHandler"
 
 #: ../../library/logging.handlers.rst:202
 msgid ""
@@ -274,10 +279,13 @@ msgid ""
 ":class:`TimedRotatingFileHandler`. You should not need to instantiate this "
 "class, but it has attributes and methods you may need to override."
 msgstr ""
+":class:`BaseRotatingHandler` 类位于 :mod:`logging.handlers` 模块中，它是轮换文件处理程序类 "
+":class:`RotatingFileHandler` 和 :class:`TimedRotatingFileHandler` 的基类。 "
+"你不需要实例化此类，但它具有你可能需要重载的属性和方法。"
 
 #: ../../library/logging.handlers.rst:210
 msgid "The parameters are as for :class:`FileHandler`. The attributes are:"
-msgstr ""
+msgstr "类的形参与 :class:`FileHandler` 的相同。 其属性有:"
 
 #: ../../library/logging.handlers.rst:214
 msgid ""
@@ -285,6 +293,8 @@ msgid ""
 " delegates to this callable. The parameters passed to the callable are those"
 " passed to :meth:`rotation_filename`."
 msgstr ""
+"如果此属性被设为一个可调用对象，则 :meth:`rotation_filename` 方法会委托给该可调用对象。 传给该可调用对象的形参与传给 "
+":meth:`rotation_filename` 的相同。"
 
 #: ../../library/logging.handlers.rst:218
 msgid ""
@@ -293,6 +303,7 @@ msgid ""
 " every time for a given input, otherwise the rollover behaviour may not work"
 " as expected."
 msgstr ""
+"namer 函数会在轮换期间被多次调用，因此它应当尽可能的简单快速。 它还应当对给定的输入每次都返回相同的输出，否则轮换行为可能无法按预期工作。"
 
 #: ../../library/logging.handlers.rst:228
 msgid ""
@@ -300,14 +311,16 @@ msgid ""
 "to this callable.  The parameters passed to the callable are those passed to"
 " :meth:`rotate`."
 msgstr ""
+"如果此属性被设为一个可调用对象，则 :meth:`rotate` 方法会委托给该可调用对象。 传给该可调用对象的形参与传给 :meth:`rotate`"
+" 的相同。"
 
 #: ../../library/logging.handlers.rst:236
 msgid "Modify the filename of a log file when rotating."
-msgstr ""
+msgstr "当轮换时修改日志文件的文件名。"
 
 #: ../../library/logging.handlers.rst:238
 msgid "This is provided so that a custom filename can be provided."
-msgstr ""
+msgstr "提供该属性以便可以提供自定义文件名。"
 
 #: ../../library/logging.handlers.rst:240
 msgid ""
@@ -315,14 +328,16 @@ msgid ""
 "it's callable, passing the default name to it. If the attribute isn't "
 "callable (the default is ``None``), the name is returned unchanged."
 msgstr ""
+"默认实现会调用处理程序的 'namer' 属性，如果它是可调用对象的话，并传给它默认的名称。 如果该属性不是可调用对象 (默认值为 "
+"``None``)，则将名称原样返回。"
 
 #: ../../library/logging.handlers.rst:244
 msgid "The default name for the log file."
-msgstr ""
+msgstr "日志文件的默认名称。"
 
 #: ../../library/logging.handlers.rst:251
 msgid "When rotating, rotate the current log."
-msgstr ""
+msgstr "当执行轮换时，轮换当前日志。"
 
 #: ../../library/logging.handlers.rst:253
 msgid ""
@@ -331,17 +346,19 @@ msgid ""
 " isn't callable (the default is ``None``), the source is simply renamed to "
 "the destination."
 msgstr ""
+"默认实现会调用处理程序的 'rotator' 属性，如果它是可调用对象的话，并传给它 source 和 dest 参数。 如果该属性不是可调用对象 "
+"(默认值为 ``None``)，则将源简单地重命名为目标。"
 
 #: ../../library/logging.handlers.rst:258
 msgid ""
 "The source filename. This is normally the base filename, e.g. 'test.log'."
-msgstr ""
+msgstr "源文件名。 这通常为基本文件名，例如 'test.log'。"
 
 #: ../../library/logging.handlers.rst:260
 msgid ""
 "The destination filename. This is normally what the source is rotated to, "
 "e.g. 'test.log.1'."
-msgstr ""
+msgstr "目标文件名。 这通常是源被轮换后的名称，例如 'test.log.1'。"
 
 #: ../../library/logging.handlers.rst:265
 msgid ""
@@ -352,26 +369,31 @@ msgid ""
 "exception during an :meth:`emit` call, i.e. via the :meth:`handleError` "
 "method of the handler."
 msgstr ""
+"该属性存在的理由是让你不必进行子类化 —— 你可以使用与 :class:`RotatingFileHandler` 和 "
+":class:`TimedRotatingFileHandler` 的实例相同的可调用对象。 如果 namer 或 rotator "
+"可调用对象引发了异常，将会按照与 :meth:`emit` 调用期间的任何其他异常相同的方式来处理，例如通过处理程序的 "
+":meth:`handleError` 方法。"
 
 #: ../../library/logging.handlers.rst:272
 msgid ""
 "If you need to make more significant changes to rotation processing, you can"
 " override the methods."
-msgstr ""
+msgstr "如果你需要对轮换进程执行更多的修改，你可以重载这些方法。"
 
 #: ../../library/logging.handlers.rst:275
 msgid "For an example, see :ref:`cookbook-rotator-namer`."
-msgstr ""
+msgstr "请参阅 :ref:`cookbook-rotator-namer` 获取具体示例。"
 
 #: ../../library/logging.handlers.rst:281
 msgid "RotatingFileHandler"
-msgstr ""
+msgstr "RotatingFileHandler"
 
 #: ../../library/logging.handlers.rst:283
 msgid ""
 "The :class:`RotatingFileHandler` class, located in the "
 ":mod:`logging.handlers` module, supports rotation of disk log files."
 msgstr ""
+":class:`RotatingFileHandler` 类位于 :mod:`logging.handlers` 模块，它支持磁盘日志文件的轮换。"
 
 #: ../../library/logging.handlers.rst:289
 msgid ""
@@ -401,21 +423,30 @@ msgid ""
 "etc. exist, then they are renamed to :file:`app.log.2`, :file:`app.log.3` "
 "etc. respectively."
 msgstr ""
+"你可以使用 *maxBytes* 和 *backupCount* 值来允许文件以预定的大小执行 :dfn:`rollover`。 "
+"当即将超出预定大小时，将关闭旧文件并打开一个新文件用于输出。 只要当前日志文件长度接近 *maxBytes* 就会发生轮换；但是如果 "
+"*maxBytes* 或 *backupCount* 两者之一的值为零，就不会发生轮换，因此你通常要设置 *backupCount* 至少为 1，而 "
+"*maxBytes* 不能为零。 当 *backupCount* 为非零值时，系统将通过为原文件名添加扩展名 '.1', '.2' 等来保存旧日志文件。"
+" 例如，当 *backupCount* 为 5 而基本文件名为 :file:`app.log` 时，你将得到 :file:`app.log`, "
+":file:`app.log.1`, :file:`app.log.2` 直至 :file:`app.log.5`。 当前被写入的文件总是 "
+":file:`app.log`。 当此文件写满时，它会被关闭并重户名为 :file:`app.log.1`，而如果文件 "
+":file:`app.log.1`, :file:`app.log.2` 等存在，则它们会被分别重命名为 :file:`app.log.2`, "
+":file:`app.log.3` 等等。"
 
 #: ../../library/logging.handlers.rst:316
 #: ../../library/logging.handlers.rst:416
 msgid "Does a rollover, as described above."
-msgstr ""
+msgstr "执行上文所描述的轮换。"
 
 #: ../../library/logging.handlers.rst:321
 msgid ""
 "Outputs the record to the file, catering for rollover as described "
 "previously."
-msgstr ""
+msgstr "将记录输出到文件，以适应上文所描述的轮换。"
 
 #: ../../library/logging.handlers.rst:327
 msgid "TimedRotatingFileHandler"
-msgstr ""
+msgstr "TimedRotatingFileHandler"
 
 #: ../../library/logging.handlers.rst:329
 msgid ""
@@ -423,6 +454,8 @@ msgid ""
 ":mod:`logging.handlers` module, supports rotation of disk log files at "
 "certain timed intervals."
 msgstr ""
+":class:`TimedRotatingFileHandler` 类位于 :mod:`logging.handlers` "
+"模块，它支持基于特定时间间隔的磁盘日志文件轮换。"
 
 #: ../../library/logging.handlers.rst:336
 msgid ""
@@ -431,12 +464,14 @@ msgid ""
 "also sets the filename suffix. Rotating happens based on the product of "
 "*when* and *interval*."
 msgstr ""
+"返回一个新的 :class:`TimedRotatingFileHandler` 类实例。 指定的文件会被打开并用作日志记录的流。 "
+"对于轮换操作它还会设置文件名前缀。 轮换的发生是基于 *when* 和 *interval* 的积。"
 
 #: ../../library/logging.handlers.rst:341
 msgid ""
 "You can use the *when* to specify the type of *interval*. The list of "
 "possible values is below.  Note that they are not case sensitive."
-msgstr ""
+msgstr "你可以使用 *when* 来指定 *interval* 的类型。 可能的值列表如下。 请注意它们不是大小写敏感的。"
 
 #: ../../library/logging.handlers.rst:345
 msgid "Value"
@@ -500,7 +535,7 @@ msgstr "工作日(0=星期一)"
 #: ../../library/logging.handlers.rst:355
 #: ../../library/logging.handlers.rst:358
 msgid "Used to compute initial rollover time"
-msgstr ""
+msgstr "用于计算初始轮换时间"
 
 #: ../../library/logging.handlers.rst:358
 msgid "``'midnight'``"
@@ -509,7 +544,7 @@ msgstr "``'midnight'``"
 #: ../../library/logging.handlers.rst:358
 msgid ""
 "Roll over at midnight, if *atTime* not specified, else at time *atTime*"
-msgstr ""
+msgstr "如果未指定 *atTime* 则在午夜执行轮换，否则将使用 *atTime*。"
 
 #: ../../library/logging.handlers.rst:363
 msgid ""
@@ -517,6 +552,8 @@ msgid ""
 "Tuesday, and so on up to 'W6' for Sunday. In this case, the value passed for"
 " *interval* isn't used."
 msgstr ""
+"当使用基于星期的轮换时，星期一为 'W0'，星期二为 'W1'，以此类推直至星期日为 'W6'。 在这种情况下，传入的 *interval* "
+"值不会被使用。"
 
 #: ../../library/logging.handlers.rst:367
 msgid ""
@@ -525,19 +562,21 @@ msgid ""
 "``%Y-%m-%d_%H-%M-%S`` or a leading portion thereof, depending on the "
 "rollover interval."
 msgstr ""
+"系统将通过为文件名添加扩展名来保存旧日志文件。 扩展名是基于日期和时间的，根据轮换间隔的长短使用 strftime 格式 "
+"``%Y-%m-%d_%H-%M-%S`` 或是其中有变动的部分。"
 
 #: ../../library/logging.handlers.rst:372
 msgid ""
 "When computing the next rollover time for the first time (when the handler "
 "is created), the last modification time of an existing log file, or else the"
 " current time, is used to compute when the next rotation will occur."
-msgstr ""
+msgstr "当首次计算下次轮换的时间时（即当处理程序被创建时），现有日志文件的上次被修改时间或者当前时间会被用来计算下次轮换的发生时间。"
 
 #: ../../library/logging.handlers.rst:376
 msgid ""
 "If the *utc* argument is true, times in UTC will be used; otherwise local "
 "time is used."
-msgstr ""
+msgstr "如果 *utc* 参数为真值，将使用 UTC 时间；否则会使用本地时间。"
 
 #: ../../library/logging.handlers.rst:379
 msgid ""
@@ -546,12 +585,14 @@ msgid ""
 "The deletion logic uses the interval to determine which files to delete, so "
 "changing the interval may leave old files lying around."
 msgstr ""
+"如果 *backupCount* 不为零，则最多将保留 *backupCount* 个文件，而如果当轮换发生时创建了更多的文件，则最旧的文件会被删除。 "
+"删除逻辑使用间隔时间来确定要删除的文件，因此改变间隔时间可能导致旧文件被继续保留。"
 
 #: ../../library/logging.handlers.rst:384
 msgid ""
 "If *delay* is true, then file opening is deferred until the first call to "
 ":meth:`emit`."
-msgstr ""
+msgstr "如果 *delay* 为真值，则会将文件打开延迟到首次调用 :meth:`emit` 的时候。"
 
 #: ../../library/logging.handlers.rst:387
 msgid ""
@@ -562,6 +603,9 @@ msgid ""
 "*initial* rollover, and subsequent rollovers would be calculated via the "
 "normal interval calculation."
 msgstr ""
+"如果 *atTime* 不为 ``None``，则它必须是一个 ``datetime.time`` "
+"的实例，该实例指定轮换在一天内的发生时间，用于轮换被设为“在午夜”或“在每星期的某一天”之类的情况。 请注意在这些情况下，*atTime* "
+"值实际上会被用于计算 *初始* 轮换，而后续轮换将会通过正常的间隔时间计算来得出。"
 
 #: ../../library/logging.handlers.rst:394
 msgid ""
@@ -577,15 +621,20 @@ msgid ""
 "five minutes (say), then there will be gaps in the file times corresponding "
 "to the minutes where no output (and hence no rollover) occurred."
 msgstr ""
+"初始轮换时间的计算是在处理程序被初始化时执行的。 后续轮换时间的计算则仅在轮换发生时执行，而只有当提交输出时轮换才会发生。 "
+"如果不记住这一点，你就可能会感到困惑。 "
+"例如，如果设置时间间隔为“每分钟”，那并不意味着你总会看到（文件名中）带有间隔一分钟时间的日志文件；如果在应用程序执行期间，日志记录输出的生成频率高于每分钟一次，*那么*"
+" 你可以预期看到间隔一分钟时间的日志文件。 "
+"另一方面，如果（假设）日志记录消息每五分钟才输出一次，那么文件时间将会存在对应于没有输出（因而没有轮换）的缺失。"
 
 #: ../../library/logging.handlers.rst:407
 msgid "*atTime* parameter was added."
-msgstr ""
+msgstr "添加了 *atTime* 形参。"
 
 #: ../../library/logging.handlers.rst:420
 msgid ""
 "Outputs the record to the file, catering for rollover as described above."
-msgstr ""
+msgstr "将记录输出到文件，以适应上文所描述的轮换。"
 
 #: ../../library/logging.handlers.rst:426
 msgid "SocketHandler"
