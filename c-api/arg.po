@@ -480,6 +480,10 @@ msgid ""
 "The third argument must be a pointer to an integer; the referenced integer "
 "will be set to the number of bytes in the output buffer."
 msgstr ""
+"它需要三个参数。 第一个仅用作输入，并且必须为 :c:type:`const char*`，它指向一个编码格式名称，形式为以 NUL 结束的字符串或 "
+"``NULL``，在后一种情况下将使用 ``'utf-8'`` 编码格式。 如果编码格式名称无法被 Python 识别则会引发异常。 第二个参数必须为 "
+":c:type:`char**`；它所引用的指针值将被设为带有参数文本内容的缓冲区。 文本将以第一个参数所指定的编码格式进行编码。 "
+"第三个参数必须为指向一个整数的指针；被引用的整数将被设为输出缓冲区中的字节数。"
 
 #: ../../c-api/arg.rst:231
 msgid "There are two modes of operation:"
@@ -714,6 +718,9 @@ msgid ""
 "which the object pointer is stored.  If the Python object does not have the "
 "required type, :exc:`TypeError` is raised."
 msgstr ""
+"将一个 Python 对象存入一个 C 对象指针。 这类似于 ``O``，但是接受两个 C 参数：第一个是 Python "
+"类型对象的地址，第二个是存储对象指针的 C 变量 (类型为 :c:type:`PyObject*`) 的地址。 如果 Python "
+"对象不具有所要求的类型，则会引发 :exc:`TypeError`。"
 
 #: ../../c-api/arg.rst:352 ../../c-api/arg.rst:657
 msgid "``O&`` (object) [*converter*, *anything*]"
@@ -726,6 +733,8 @@ msgid ""
 " of a C variable (of arbitrary type), converted to :c:type:`void *`.  The "
 "*converter* function in turn is called as follows::"
 msgstr ""
+"通过一个 *converter* 函数将一个 Python 对象转换为一个 C 变量。 此函数接受两个参数：第一个是函数，第二个是 C 变量 "
+"(类型任意) 的地址，转换为 :c:type:`void *` 类型。 *converter* 函数将以如下方式被调用::"
 
 #: ../../c-api/arg.rst:339
 msgid ""
@@ -736,6 +745,9 @@ msgid ""
 "*converter* function should raise an exception and leave the content of "
 "*address* unmodified."
 msgstr ""
+"其中 *object* 是待转换的 Python 对象而 *address* 为传给 :c:func:`PyArg_Parse\\*` 函数的 "
+":c:type:`void*` 参数。 返回的 *status* 应当以 ``1`` 代表转换成功而以 ``0`` 代表转换失败。 "
+"当转换失败时，*converter* 函数应当引发异常并且会让 *address* 的内容保持未修改状态。"
 
 #: ../../c-api/arg.rst:345
 msgid ""
@@ -965,6 +977,12 @@ msgid ""
 "returns true on success and false if *args* is not a tuple or contains the "
 "wrong number of elements; an exception will be set if there was a failure."
 msgstr ""
+"一个更简单的参数提取方式，它不使用格式字符串来指定参数类型。 使用这种方法来提取参数的函数应当在函数或方法表中被声明为 "
+":const:`METH_VARARGS`。 包含实际参数的元组应当作为 *args* 传入；它必须确实是一个元组。 元组的长度必须至少为 *min* "
+"并且不超过 *max*；*min* 和 *max* 可能相等。 额外的参数必须被传入函数，每个参数必须是一个指向 :c:type:`PyObject*`"
+" 变量的指针；它们将以来自 *args* 的值填充；它们将包含暂借的引用。 对应于可选参数的变量不会由 *args* "
+"给出的值填充；它们将由调用者来初始化。 此函数执行成功时返回真值，如果 *args* "
+"不是元组或者包含错误数量的元素则返回假值；如果执行失败则将设置一个异常。"
 
 #: ../../c-api/arg.rst:493
 msgid ""
@@ -1261,6 +1279,8 @@ msgid ""
 ":c:type:`void*`) as its argument and should return a \"new\" Python object, "
 "or ``NULL`` if an error occurred."
 msgstr ""
+"通过 *converter* 函数将 *anything* 转换为 Python 对象。 该函数调用时会传入 *anything* (应与 "
+":c:type:`void*` 兼容) 作为参数并且应当返回一个“新的”Python 对象，或者当发生错误时返回 ``NULL``。"
 
 #: ../../c-api/arg.rst:660
 msgid ""
