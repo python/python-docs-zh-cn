@@ -4,7 +4,6 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Jian Aijun <jianaijun@gmail.com>, 2020
 # walkinrain <walkinrain2008@163.com>, 2020
 # MuSheng Chen <sheng.2179@gmail.com>, 2020
 # Freesand Leo <yuqinju@163.com>, 2020
@@ -128,8 +127,8 @@ msgid ""
 ":meth:`Executor.submit` and :meth:`Executor.map` made after shutdown will "
 "raise :exc:`RuntimeError`."
 msgstr ""
-"当待执行的期程完成执行后向执行者发送信号，它就会释放正在使用的任何资源。在关闭后调用 :meth:`Executor.submit` 和 "
-":meth:`Executor.submit` 会触发 :exc:`RuntimeError`。"
+"当待执行的 future 对象完成执行后向执行者发送信号，它就会释放正在使用的任何资源。 在关闭后调用 :meth:`Executor.submit` "
+"和 :meth:`Executor.submit` 会触发 :exc:`RuntimeError`。"
 
 #: ../../library/concurrent.futures.rst:77
 msgid ""
@@ -141,9 +140,9 @@ msgid ""
 "*wait*, the entire Python program will not exit until all pending futures "
 "are done executing."
 msgstr ""
-"如果 *wait* 为 ``True`` 则此方法只有在所有待执行的期程完成执行且释放已分配的资源后才会返回。 如果 *wait* 为 "
-"``False``，方法立即返回，所有待执行的期程完成执行后会释放已分配的资源。 不管 *wait* 的值是什么，整个 Python "
-"程序将等到所有待执行的期程完成执行后才退出。"
+"如果 *wait* 为 ``True`` 则此方法只有在所有待执行的 future 对象完成执行且释放已分配的资源后才会返回。 如果 *wait* 为 "
+"``False``，方法立即返回，所有待执行的 future 对象完成执行后会释放已分配的资源。 不管 *wait* 的值是什么，整个 Python "
+"程序将等到所有待执行的 future 对象完成执行后才退出。"
 
 #: ../../library/concurrent.futures.rst:85
 msgid ""
@@ -313,8 +312,8 @@ msgid ""
 "undefined but operations on the executor or its futures would often freeze "
 "or deadlock."
 msgstr ""
-"如果其中一个工作进程被突然终止，:exc:`BrokenProcessPool` "
-"就会马上触发。可预计的行为没有定义，但执行器上的操作或它的期程会被冻结或死锁。"
+"如果其中一个工作进程被突然终止，:exc:`BrokenProcessPool` 就会马上触发。 可预计的行为没有定义，但执行器上的操作或它的 "
+"future 对象会被冻结或死锁。"
 
 #: ../../library/concurrent.futures.rst:249
 msgid ""
@@ -388,7 +387,7 @@ msgstr ""
 msgid ""
 "If the future is cancelled before completing then :exc:`.CancelledError` "
 "will be raised."
-msgstr "如果期程在完成前被取消， :exc:`.CancelledError` 将被触发。"
+msgstr "如果 futrue 在完成前被取消则 :exc:`.CancelledError` 将被触发。"
 
 #: ../../library/concurrent.futures.rst:341
 msgid "If the call raised, this method will raise the same exception."
@@ -416,7 +415,9 @@ msgid ""
 "Attaches the callable *fn* to the future.  *fn* will be called, with the "
 "future as its only argument, when the future is cancelled or finishes "
 "running."
-msgstr "附加可调用 *fn* 到期程。当期程被取消或完成运行时，将会调用 *fn*，而这个期程将作为它唯一的参数。"
+msgstr ""
+"附加可调用 *fn* 到 future 对象。当 future 对象被取消或完成运行时，将会调用 *fn*，而这个 future "
+"对象将作为它唯一的参数。"
 
 #: ../../library/concurrent.futures.rst:363
 msgid ""
@@ -433,7 +434,7 @@ msgstr ""
 msgid ""
 "If the future has already completed or been cancelled, *fn* will be called "
 "immediately."
-msgstr "如果期程已经完成或已取消，*fn* 会被立即调用。"
+msgstr "如果 future 对象已经完成或已取消，*fn* 会被立即调用。"
 
 #: ../../library/concurrent.futures.rst:372
 msgid ""
@@ -516,8 +517,8 @@ msgid ""
 "(pending or running futures)."
 msgstr ""
 "等待 *fs* 指定的 :class:`Future` 实例（可能由不同的 :class:`Executor` 实例创建）完成。 "
-"返回一个由集合构成的具名  2 元组。 第一个集合名称为 ``done``，包含在等待完成之前已完成的期程（包括正常结束或被取消的期程）。 "
-"第二个集合名称为 ``not_done``，包含未完成的期程（包括挂起的或正在运行的期程）。"
+"返回一个由集合构成的具名  2 元组。 第一个集合名称为 ``done``，包含在等待完成之前已完成的期程（包括正常结束或被取消的 future "
+"对象）。 第二个集合名称为 ``not_done``，包含未完成的 future 对象（包括挂起的或正在运行的 future 对象）。"
 
 #: ../../library/concurrent.futures.rst:432
 msgid ""
@@ -583,15 +584,15 @@ msgid ""
 " no limit to the wait time."
 msgstr ""
 "返回一个包含 *fs* 所指定的 :class:`Future` 实例（可能由不同的 :class:`Executor` "
-"实例创建）的迭代器，这些实例会在完成时生成期程（包括正常结束或被取消的期程）。 任何由 *fs* 所指定的重复期程将只被返回一次。 任何在 "
-":func:`as_completed` 被调用之前完成的期程将优先被生成。 如果 :meth:`~iterator.__next__` 被调用并且在对"
-" :func:`as_completed` 的原始调用 *timeout* 秒之后结果仍不可用，则返回的迭代器将引发 "
-":exc:`concurrent.futures.TimeoutError`。 *timeout* 可以为整数或浮点数。 如果 *timeout* "
-"未指定或为 ``None``，则不限制等待时间。"
+"实例创建）的迭代器，这些实例会在完成时生成 future 对象（包括正常结束或被取消的 future 对象）。 任何由 *fs* 所指定的重复 "
+"future 对象将只被返回一次。 任何在 :func:`as_completed` 被调用之前完成的 future 对象将优先被生成。 如果 "
+":meth:`~iterator.__next__` 被调用并且在对 :func:`as_completed` 的原始调用 *timeout* "
+"秒之后结果仍不可用，则返回的迭代器将引发 :exc:`concurrent.futures.TimeoutError`。 *timeout* "
+"可以为整数或浮点数。 如果 *timeout* 未指定或为 ``None``，则不限制等待时间。"
 
 #: ../../library/concurrent.futures.rst:473
 msgid ":pep:`3148` -- futures - execute computations asynchronously"
-msgstr ":pep:`3148` -- 期程 - 异步执行指令。"
+msgstr ":pep:`3148` -- future 对象 - 异步执行指令。"
 
 #: ../../library/concurrent.futures.rst:473
 msgid ""
@@ -605,11 +606,11 @@ msgstr "Exception类"
 
 #: ../../library/concurrent.futures.rst:484
 msgid "Raised when a future is cancelled."
-msgstr "期程被取消时会触发。"
+msgstr "future 对象被取消时会触发。"
 
 #: ../../library/concurrent.futures.rst:488
 msgid "Raised when a future operation exceeds the given timeout."
-msgstr "期程运算超出给定的超时数值时引发。"
+msgstr "future 对象执行超出给定的超时数值时引发。"
 
 #: ../../library/concurrent.futures.rst:492
 msgid ""
