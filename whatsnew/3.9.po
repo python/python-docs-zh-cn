@@ -2171,6 +2171,11 @@ msgid ""
 "still be overridden with ``--with-tcltk-includes`` and ``--with-tcltk-"
 "libs``. (Contributed by Ned Deily in :issue:`34956`.)"
 msgstr ""
+"当在 macOS 上用源代码编译 Python 时，``_tkinter`` 现在会链接到非系统的 Tcl 和 Tk 框架，如果它们被安装到 "
+"``/Library/Frameworks`` 的话，就如在较旧的 macOS 发行版上的情况一样。 如果通过使用 ``--enable-"
+"universalsdk=`` 或 ``-isysroot`` 明确地配置了 macOS SDK，则只会搜索 SDK 本身。 默认行为仍然可以通过 "
+"``--with-tcltk-includes`` 和 ``--with-tcltk-libs`` 来覆盖。 （由 Ned Deily 在 "
+":issue:`34956` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1215
 msgid ""
@@ -2306,6 +2311,8 @@ msgid ""
 "representation of a function-like object. (Patch by Jeroen Demeyer in "
 ":issue:`37645`.)"
 msgstr ""
+"增加了 :c:func:`_PyObject_FunctionStr` 以获取函数类对象的用户友好的表示形式。 （由 Jeroen Demeyer 在 "
+":issue:`37645` 中修正。）"
 
 #: ../../whatsnew/3.9.rst:1296
 msgid ""
@@ -2398,21 +2405,23 @@ msgid ""
 "``Py_LIMITED_API`` macro is defined. (Contributed by Victor Stinner in "
 ":issue:`39882`.)"
 msgstr ""
+":c:func:`Py_FatalError` 函数会被一个自动记录当前函数名称的宏所替代，除非已定义了 ``Py_LIMITED_API`` 宏。 "
+"（由 Victor Stinner 在 :issue:`39882` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1342
 msgid ""
 "The vectorcall protocol now requires that the caller passes only strings as "
 "keyword names. (See :issue:`37540` for more information.)"
-msgstr ""
+msgstr "vectorcall 协议现在要求调用者只传入字符串作为键名。 （请参阅 :issue:`37540` 了解详情。）"
 
 #: ../../whatsnew/3.9.rst:1345
 msgid ""
 "Implementation details of a number of macros and functions are now hidden:"
-msgstr ""
+msgstr "多个宏和函数的实现细节现在已被隐藏:"
 
 #: ../../whatsnew/3.9.rst:1347
 msgid ":c:func:`PyObject_IS_GC` macro was converted to a function."
-msgstr ""
+msgstr ":c:func:`PyObject_IS_GC` 宏已被转换为函数。"
 
 #: ../../whatsnew/3.9.rst:1349
 msgid ""
@@ -2421,6 +2430,9 @@ msgid ""
 "becomes an alias to the :c:func:`PyObject_NewVar` macro. They no longer "
 "access directly the :c:member:`PyTypeObject.tp_basicsize` member."
 msgstr ""
+":c:func:`PyObject_NEW` 宏已成为 :c:func:`PyObject_New` 宏的别名，而 "
+":c:func:`PyObject_NEW_VAR` 宏已成为 :c:func:`PyObject_NewVar` 宏的别名。  它们将不再直接访问 "
+":c:member:`PyTypeObject.tp_basicsize` 成员。"
 
 #: ../../whatsnew/3.9.rst:1354
 msgid ""
@@ -2428,6 +2440,8 @@ msgid ""
 "Previously, it accessed directly the :c:member:`PyTypeObject.tp_flags` "
 "member when the limited C API was not used."
 msgstr ""
+":c:func:`PyType_HasFeature` 现在总是会调用 :c:func:`PyType_GetFlags`。 在之前版本中，当受限的 C"
+" API 未被使用时它会直接访问 :c:member:`PyTypeObject.tp_flags` 成员。"
 
 #: ../../whatsnew/3.9.rst:1358
 msgid ""
@@ -2435,12 +2449,16 @@ msgid ""
 "the macro accessed directly the :c:member:`PyTypeObject.tp_weaklistoffset` "
 "member."
 msgstr ""
+":c:func:`PyObject_GET_WEAKREFS_LISTPTR` 宏已被转换为函数：该宏会直接访问 "
+":c:member:`PyTypeObject.tp_weaklistoffset` 成员。"
 
 #: ../../whatsnew/3.9.rst:1362
 msgid ""
 ":c:func:`PyObject_CheckBuffer` macro was converted to a function: the macro "
 "accessed directly the :c:member:`PyTypeObject.tp_as_buffer` member."
 msgstr ""
+":c:func:`PyObject_CheckBuffer` 宏已被转换为函数：该宏会直接访问 "
+":c:member:`PyTypeObject.tp_as_buffer` 成员。"
 
 #: ../../whatsnew/3.9.rst:1365
 msgid ""
@@ -2448,6 +2466,8 @@ msgid ""
 " implementation details: removed the ``PyIndex_Check()`` macro. The macro "
 "accessed directly the :c:member:`PyTypeObject.tp_as_number` member."
 msgstr ""
+"现在 :c:func:`PyIndex_Check` 总是被声明为不透明函数以隐藏实现细节；``PyIndex_Check()`` 宏已被移除。 "
+"该宏会直接访问 :c:member:`PyTypeObject.tp_as_number` 成员。"
 
 #: ../../whatsnew/3.9.rst:1369
 msgid "(See :issue:`40170` for more details.)"
@@ -2459,6 +2479,8 @@ msgid ""
 "``pyfpe.h`` from the limited C API. (Contributed by Victor Stinner in "
 ":issue:`38835`.)"
 msgstr ""
+"``pyfpe.h`` 的 ``PyFPE_START_PROTECT()`` 和 ``PyFPE_END_PROTECT()`` 宏已从受限的 C "
+"API 中被排除。 （由 Victor Stinner 在 :issue:`38835` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1378
 msgid ""
@@ -2571,6 +2593,8 @@ msgid ""
 "explicitly to clear all free lists. (Contributed by Inada Naoki and Victor "
 "Stinner in :issue:`37340`, :issue:`38896` and :issue:`40428`.)"
 msgstr ""
+"从 C API 移除了下列函数。 请显式地调用 :c:func:`PyGC_Collect` 来清空所有自由列表。 （由 Inada Naoki 和 "
+"Victor Stinner 在 :issue:`37340`, :issue:`38896` 和 :issue:`40428` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1422
 msgid "``PyAsyncGen_ClearFreeLists()``"
@@ -2624,6 +2648,8 @@ msgid ""
 "Removed ``_PyUnicode_ClearStaticStrings()`` function. (Contributed by Victor"
 " Stinner in :issue:`39465`.)"
 msgstr ""
+"移除了 ``_PyUnicode_ClearStaticStrings()`` 函数。 （由 Victor Stinner 在 "
+":issue:`39465` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1439
 msgid ""
@@ -2646,3 +2672,10 @@ msgid ""
 "``PyNoArgsFunction``. (Contributed by Pablo Galindo Salgado in "
 ":issue:`39372`.)"
 msgstr ""
+"清除了已定义但未实现的接口的头文件。 被移除了公共 API 符号有: "
+"``_PyBytes_InsertThousandsGroupingLocale``, "
+"``_PyBytes_InsertThousandsGrouping``, ``_Py_InitializeFromArgs``, "
+"``_Py_InitializeFromWideArgs``, ``_PyFloat_Repr``, ``_PyFloat_Digits``, "
+"``_PyFloat_DigitsInit``, ``PyFrame_ExtendStack``, ``_PyAIterWrapper_Type``, "
+"``PyNullImporter_Type``, ``PyCmpWrapper_Type``, ``PySortWrapper_Type``, "
+"``PyNoArgsFunction``。 （由 Pablo Galindo Salgado 在 :issue:`39372` 中贡献。）"
