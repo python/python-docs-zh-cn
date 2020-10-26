@@ -2831,25 +2831,25 @@ msgstr "结构化数据类型"
 
 #: ../../library/ctypes.rst:2391
 msgid "Abstract base class for unions in native byte order."
-msgstr ""
+msgstr "本机字节序的联合所对应的抽象基类。"
 
 #: ../../library/ctypes.rst:2396
 msgid "Abstract base class for structures in *big endian* byte order."
-msgstr ""
+msgstr "*大端* 字节序的结构体所对应的抽象基类。"
 
 #: ../../library/ctypes.rst:2401
 msgid "Abstract base class for structures in *little endian* byte order."
-msgstr ""
+msgstr "*小端* 字节序的结构体所对应的抽象基类。"
 
 #: ../../library/ctypes.rst:2403
 msgid ""
 "Structures with non-native byte order cannot contain pointer type fields, or"
 " any other data types containing pointer type fields."
-msgstr ""
+msgstr "非本机字节序的结构体不能包含指针类型字段，或任何其他包含指针类型字段的数据类型。"
 
 #: ../../library/ctypes.rst:2409
 msgid "Abstract base class for structures in *native* byte order."
-msgstr ""
+msgstr "*本机* 字节序的结构体所对应的抽象基类。"
 
 #: ../../library/ctypes.rst:2411
 msgid ""
@@ -2858,6 +2858,8 @@ msgid ""
 ":mod:`ctypes` will create :term:`descriptor`\\s which allow reading and "
 "writing the fields by direct attribute accesses.  These are the"
 msgstr ""
+"实际的结构体和联合类型必须通过子类化这些类型之一来创建，并且至少要定义一个 :attr:`_fields_` 类变量。 :mod:`ctypes` "
+"将创建 :term:`descriptor`，它允许通过直接属性访问来读取和写入字段。 这些是"
 
 #: ../../library/ctypes.rst:2419
 msgid ""
@@ -2865,19 +2867,20 @@ msgid ""
 "3-tuples.  The first item is the name of the field, the second item "
 "specifies the type of the field; it can be any ctypes data type."
 msgstr ""
+"一个定义结构体字段的序列。 其中的条目必须为 2 元组或 3 元组。 元组的第一项是字段名称，第二项指明字段类型；它可以是任何 ctypes 数据类型。"
 
 #: ../../library/ctypes.rst:2423
 msgid ""
 "For integer type fields like :class:`c_int`, a third optional item can be "
 "given.  It must be a small positive integer defining the bit width of the "
 "field."
-msgstr ""
+msgstr "对于整数类型字段例如 :class:`c_int`，可以给定第三个可选项。 它必须是一个定义字段比特位宽度的小正整数。"
 
 #: ../../library/ctypes.rst:2427
 msgid ""
 "Field names must be unique within one structure or union.  This is not "
 "checked, only one field can be accessed when names are repeated."
-msgstr ""
+msgstr "字段名称在一个结构体或联合中必须唯一。 不会检查这个唯一性，但当名称出现重复时将只有一个字段可被访问。"
 
 #: ../../library/ctypes.rst:2430
 msgid ""
@@ -2885,6 +2888,7 @@ msgid ""
 "class statement that defines the Structure subclass, this allows creating "
 "data types that directly or indirectly reference themselves::"
 msgstr ""
+"可以在定义 Structure 子类的类语句 *之后* 再定义 :attr:`_fields_` 类变量，这将允许创建直接或间接引用其自身的数据类型::"
 
 #: ../../library/ctypes.rst:2440
 msgid ""
@@ -2893,13 +2897,15 @@ msgid ""
 "and so on).  Later assignments to the :attr:`_fields_` class variable will "
 "raise an AttributeError."
 msgstr ""
+"但是，:attr:`_fields_` 类变量必须在类型第一次被使用（创建实例，调用 :func:`sizeof` 等等）之前进行定义。 在此之后对 "
+":attr:`_fields_` 类变量赋值将会引发 AttributeError。"
 
 #: ../../library/ctypes.rst:2445
 msgid ""
 "It is possible to define sub-subclasses of structure types, they inherit the"
 " fields of the base class plus the :attr:`_fields_` defined in the sub-"
 "subclass, if any."
-msgstr ""
+msgstr "可以定义结构体类型的子类，它们会继承基类的字段再加上在子类中定义的任何 :attr:`_fields_`。"
 
 #: ../../library/ctypes.rst:2452
 msgid ""
@@ -2907,6 +2913,8 @@ msgid ""
 "fields in the instance.  :attr:`_pack_` must already be defined when "
 ":attr:`_fields_` is assigned, otherwise it will have no effect."
 msgstr ""
+"一个可选的小整数，它允许覆盖实体中结构体字段的对齐方式。 当 :attr:`_fields_` 被赋值时必须已经定义了 "
+":attr:`_pack_`，否则它将没有效果。"
 
 #: ../../library/ctypes.rst:2459
 msgid ""
@@ -2914,6 +2922,8 @@ msgid ""
 ":attr:`_anonymous_` must be already defined when :attr:`_fields_` is "
 "assigned, otherwise it will have no effect."
 msgstr ""
+"一个可选的序列，它会列出未命名（匿名）字段的名称。 当 :attr:`_fields_` 被赋值时必须已经定义了 "
+":attr:`_anonymous_`，否则它将没有效果。"
 
 #: ../../library/ctypes.rst:2463
 msgid ""
@@ -2922,10 +2932,12 @@ msgid ""
 "accessing the nested fields directly, without the need to create the "
 "structure or union field."
 msgstr ""
+"在此变量中列出的字段必须为结构体或联合类型字段。 :mod:`ctypes` "
+"将在结构体类型中创建描述器以允许直接访问嵌套字段，而无需创建结构体或联合字段。"
 
 #: ../../library/ctypes.rst:2468
 msgid "Here is an example type (Windows)::"
-msgstr ""
+msgstr "以下是一个示例类型（Windows）::"
 
 #: ../../library/ctypes.rst:2481
 msgid ""
@@ -2936,6 +2948,9 @@ msgid ""
 "equivalent, but the former is faster since it does not need to create a "
 "temporary union instance::"
 msgstr ""
+"``TYPEDESC`` 结构体描述了一个 COM 数据类型，``vt`` 字段指明哪个联合字段是有效的。 由于 ``u`` "
+"字段被定义为匿名字段，现在可以直接从 TYPEDESC 实例访问成员。 ``td.lptdesc`` 和 ``td.u.lptdesc`` "
+"是等价的，但前者速度更快，因为它不需要创建临时的联合实例::"
 
 #: ../../library/ctypes.rst:2493
 msgid ""
@@ -2944,6 +2959,7 @@ msgid ""
 ":attr:`_fields_` variable, the fields specified in this are appended to the "
 "fields of the base class."
 msgstr ""
+"可以定义结构体的子类，它们会继承基类的字段。 如果子类定义具有单独的 :attr:`_fields_` 变量，在其中指定的字段会被添加到基类的字段中。"
 
 #: ../../library/ctypes.rst:2498
 msgid ""
@@ -2954,10 +2970,13 @@ msgid ""
 "initialize :attr:`_fields_` with the same name, or create new attributes for"
 " names not present in :attr:`_fields_`."
 msgstr ""
+"结构体和联合的构造器均可接受位置和关键字参数。 位置参数用于按照 :attr:`_fields_` 中的出现顺序来初始化成员字段。 "
+"构造器中的关键字参数会被解读为属性赋值，因此它们将以相应的名称来初始化 :attr:`_fields_`，或为不存在于 :attr:`_fields_`"
+" 中的名称创建新的属性。"
 
 #: ../../library/ctypes.rst:2509
 msgid "Arrays and pointers"
-msgstr ""
+msgstr "数组与指针"
 
 #: ../../library/ctypes.rst:2513
 msgid "Abstract base class for arrays."
