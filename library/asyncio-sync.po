@@ -107,55 +107,55 @@ msgstr "*loop* 形参。"
 
 #: ../../library/asyncio-sync.rst:71
 msgid "Acquire the lock."
-msgstr ""
+msgstr "获取锁。"
 
 #: ../../library/asyncio-sync.rst:73
 msgid ""
 "This method waits until the lock is *unlocked*, sets it to *locked* and "
 "returns ``True``."
-msgstr ""
+msgstr "此方法会等待直至锁为 *unlocked*，将其设为 *locked* 并返回 ``True``。"
 
 #: ../../library/asyncio-sync.rst:76
 msgid ""
 "When more than one coroutine is blocked in :meth:`acquire` waiting for the "
 "lock to be unlocked, only one coroutine eventually proceeds."
-msgstr ""
+msgstr "当有一个以上的协程在 :meth:`acquire` 中被阻塞则会等待解锁，最终只有一个协程会被执行。"
 
 #: ../../library/asyncio-sync.rst:80
 msgid ""
 "Acquiring a lock is *fair*: the coroutine that proceeds will be the first "
 "coroutine that started waiting on the lock."
-msgstr ""
+msgstr "锁的获取是 *公平的*: 被执行的协程将是第一个开始等待锁的协程。"
 
 #: ../../library/asyncio-sync.rst:85
 msgid "Release the lock."
-msgstr ""
+msgstr "释放锁。"
 
 #: ../../library/asyncio-sync.rst:87
 msgid "When the lock is *locked*, reset it to *unlocked* and return."
-msgstr ""
+msgstr "当锁为 *locked* 时，将其设为 *unlocked* 并返回。"
 
 #: ../../library/asyncio-sync.rst:89
 msgid "If the lock is *unlocked*, a :exc:`RuntimeError` is raised."
-msgstr ""
+msgstr "如果锁为 *unlocked*，则会引发 :exc:`RuntimeError`。"
 
 #: ../../library/asyncio-sync.rst:93
 msgid "Return ``True`` if the lock is *locked*."
-msgstr ""
+msgstr "如果锁为 *locked* 则返回 ``True``。"
 
 #: ../../library/asyncio-sync.rst:97
 msgid "Event"
-msgstr ""
+msgstr "Event"
 
 #: ../../library/asyncio-sync.rst:101
 msgid "An event object.  Not thread-safe."
-msgstr ""
+msgstr "事件对象。 该对象不是线程安全的。"
 
 #: ../../library/asyncio-sync.rst:103
 msgid ""
 "An asyncio event can be used to notify multiple asyncio tasks that some "
 "event has happened."
-msgstr ""
+msgstr "asyncio 事件可被用来通知多个 asyncio 任务已经有事件发生。"
 
 #: ../../library/asyncio-sync.rst:106
 msgid ""
@@ -164,6 +164,8 @@ msgid ""
 ":meth:`wait` method blocks until the flag is set to *true*.  The flag is set"
 " to *false* initially."
 msgstr ""
+"Event 对象会管理一个内部旗标，可通过 :meth:`set` 方法将其设为 *true* 并通过 :meth:`clear` 方法将其设为 "
+"*false*。 :meth:`wait` 方法会阻塞直至该旗标被设为 *true*。 该旗标初始时将被设为 *false*。"
 
 #: ../../library/asyncio-sync.rst:117
 msgid "Example::"
@@ -171,49 +173,49 @@ msgstr "示例::"
 
 #: ../../library/asyncio-sync.rst:142
 msgid "Wait until the event is set."
-msgstr ""
+msgstr "等待直至事件被设置。"
 
 #: ../../library/asyncio-sync.rst:144
 msgid ""
 "If the event is set, return ``True`` immediately. Otherwise block until "
 "another task calls :meth:`set`."
-msgstr ""
+msgstr "如果事件已被设置，则立即返回 ``True``。 否则将阻塞直至另一个事件调用 :meth:`set`。"
 
 #: ../../library/asyncio-sync.rst:149
 msgid "Set the event."
-msgstr ""
+msgstr "设置事件。"
 
 #: ../../library/asyncio-sync.rst:151
 msgid "All tasks waiting for event to be set will be immediately awakened."
-msgstr ""
+msgstr "所有等待事件被设置的任务将被立即唤醒。"
 
 #: ../../library/asyncio-sync.rst:156
 msgid "Clear (unset) the event."
-msgstr ""
+msgstr "清空（取消设置）事件."
 
 #: ../../library/asyncio-sync.rst:158
 msgid ""
 "Tasks awaiting on :meth:`wait` will now block until the :meth:`set` method "
 "is called again."
-msgstr ""
+msgstr "通过 :meth:`wait` 进行等待的任务现在将会阻塞直至 :meth:`set` 方法再次被调用。"
 
 #: ../../library/asyncio-sync.rst:163
 msgid "Return ``True`` if the event is set."
-msgstr ""
+msgstr "如果事件已被设置则返回 ``True``。"
 
 #: ../../library/asyncio-sync.rst:167
 msgid "Condition"
-msgstr ""
+msgstr "Condition"
 
 #: ../../library/asyncio-sync.rst:171
 msgid "A Condition object.  Not thread-safe."
-msgstr ""
+msgstr "条件对象。 该对象不是线程安全的。"
 
 #: ../../library/asyncio-sync.rst:173
 msgid ""
 "An asyncio condition primitive can be used by a task to wait for some event "
 "to happen and then get exclusive access to a shared resource."
-msgstr ""
+msgstr "asyncio 条件原语可被任务用于等待某个事件发生，然后获取对共享资源的独占访问。"
 
 #: ../../library/asyncio-sync.rst:177
 msgid ""
@@ -223,33 +225,36 @@ msgid ""
 " to a shared resource between different tasks interested in particular "
 "states of that shared resource."
 msgstr ""
+"在本质上，Condition 对象合并了 :class:`Event` 和 :class:`Lock` 的功能。 多个 Condition "
+"对象有可能共享一个 Lock，这允许关注于共享资源的特定状态的不同任务实现对共享资源的协同独占访问。"
 
 #: ../../library/asyncio-sync.rst:183
 msgid ""
 "The optional *lock* argument must be a :class:`Lock` object or ``None``.  In"
 " the latter case a new Lock object is created automatically."
 msgstr ""
+"可选的 *lock* 参数必须为 :class:`Lock` 对象或 ``None``。 在后一种情况下会自动创建一个新的 Lock 对象。"
 
 #: ../../library/asyncio-sync.rst:191
 msgid ""
 "The preferred way to use a Condition is an :keyword:`async with` statement::"
-msgstr ""
+msgstr "使用 Condition 的推荐方式是通过 :keyword:`async with` 语句::"
 
 #: ../../library/asyncio-sync.rst:213
 msgid "Acquire the underlying lock."
-msgstr ""
+msgstr "获取下层的锁。"
 
 #: ../../library/asyncio-sync.rst:215
 msgid ""
 "This method waits until the underlying lock is *unlocked*, sets it to "
 "*locked* and returns ``True``."
-msgstr ""
+msgstr "此方法会等待直至下层的锁为 *unlocked*，将其设为 *locked* 并返回 returns ``True``。"
 
 #: ../../library/asyncio-sync.rst:220
 msgid ""
 "Wake up at most *n* tasks (1 by default) waiting on this condition.  The "
 "method is no-op if no tasks are waiting."
-msgstr ""
+msgstr "唤醒最多 *n* 个正在等待此条件的任务（默认为 1 个）。 如果没有任务正在等待则此方法为空操作。"
 
 #: ../../library/asyncio-sync.rst:223 ../../library/asyncio-sync.rst:238
 msgid ""
