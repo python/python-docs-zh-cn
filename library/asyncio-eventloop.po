@@ -38,6 +38,8 @@ msgid ""
 "**Source code:** :source:`Lib/asyncio/events.py`, "
 ":source:`Lib/asyncio/base_events.py`"
 msgstr ""
+"**源代码:** :source:`Lib/asyncio/events.py`, "
+":source:`Lib/asyncio/base_events.py`"
 
 #: ../../library/asyncio-eventloop.rst:14
 msgid "Preface"
@@ -83,7 +85,7 @@ msgstr "如果没有正在运行的事件循环则会引发 :exc:`RuntimeError`�
 
 #: ../../library/asyncio-eventloop.rst:41
 msgid "Get the current event loop."
-msgstr ""
+msgstr "获取当前事件循环。"
 
 #: ../../library/asyncio-eventloop.rst:43
 msgid ""
@@ -91,6 +93,8 @@ msgid ""
 "thread is main, and :func:`set_event_loop` has not yet been called, asyncio "
 "will create a new event loop and set it as the current one."
 msgstr ""
+"如果当前 OS 线程没有设置当前事件循环，该 OS 线程为主线程，并且 :func:`set_event_loop` 还没有被调用，则 asyncio "
+"将创建一个新的事件循环并将其设为当前事件循环。"
 
 #: ../../library/asyncio-eventloop.rst:48
 msgid ""
@@ -205,6 +209,8 @@ msgid ""
 "scheduled in response to I/O events (and those that were already scheduled),"
 " and then exit."
 msgstr ""
+"如果 :meth:`stop` 在调用 :meth:`run_forever()` 之前被调用，循环将轮询一次 I/O "
+"选择器并设置超时为零，再运行所有已加入计划任务的回调来响应 I/O 事件（以及已加入计划任务的事件），然后退出。"
 
 #: ../../library/asyncio-eventloop.rst:124
 msgid ""
@@ -214,6 +220,9 @@ msgid ""
 "will run the next time :meth:`run_forever` or :meth:`run_until_complete` is "
 "called."
 msgstr ""
+"如果 :meth:`stop` 在 :meth:`run_forever` 运行期间被调用，循环将运行当前批次的回调然后退出。 "
+"请注意在此情况下由回调加入计划任务的新回调将不会运行；它们将会在下次 :meth:`run_forever` 或 "
+":meth:`run_until_complete` 被调用时运行。"
 
 #: ../../library/asyncio-eventloop.rst:132
 msgid "Stop the event loop."
@@ -256,13 +265,15 @@ msgid ""
 "loop will issue a warning if a new asynchronous generator is iterated. This "
 "should be used to reliably finalize all scheduled asynchronous generators."
 msgstr ""
+"安排所有当前打开的 :term:`asynchronous generator` 对象通过 :meth:`~agen.aclose()` 调用来关闭。 "
+"在调用此方法后，如果有新的异步生成器被迭代事件循环将会发出警告。 这应当被用来可靠地完成所有已加入计划任务的异步生成器。"
 
 #: ../../library/asyncio-eventloop.rst:163
 #: ../../library/asyncio-eventloop.rst:183
 msgid ""
 "Note that there is no need to call this function when :func:`asyncio.run` is"
 " used."
-msgstr "运行请注意，当使用 :func:`asyncio.run` 时，无需调用此函数。"
+msgstr "请注意当使用 :func:`asyncio.run` 时不必调用此函数。"
 
 #: ../../library/asyncio-eventloop.rst:166
 #: ../../library/asyncio-eventloop.rst:1074
@@ -277,16 +288,18 @@ msgid ""
 " :exc:`RuntimeError` will be raised if :meth:`loop.run_in_executor` is "
 "called while using the default executor."
 msgstr ""
+"安排默认执行器的关闭并等待它合并 :class:`ThreadPoolExecutor` 中的所有线程。 在调用此方法后，如果在使用默认执行器期间调用了"
+" :meth:`loop.run_in_executor` 则将会引发 :exc:`RuntimeError`。"
 
 #: ../../library/asyncio-eventloop.rst:190
 msgid "Scheduling callbacks"
-msgstr "调度回调"
+msgstr "安排回调"
 
 #: ../../library/asyncio-eventloop.rst:194
 msgid ""
 "Schedule the *callback* :term:`callback` to be called with *args* arguments "
 "at the next iteration of the event loop."
-msgstr ""
+msgstr "安排 *callback* :term:`callback` 在事件循环的下一次迭代时附带 *args* 参数被调用。"
 
 #: ../../library/asyncio-eventloop.rst:197
 msgid ""
@@ -389,14 +402,14 @@ msgstr ""
 msgid ""
 "In Python 3.7 and earlier with the default event loop implementation, the "
 "*delay* could not exceed one day. This has been fixed in Python 3.8."
-msgstr ""
+msgstr "在 Python 3.7 和更早版本的默认事件循环实现中， *delay* 不能超过一天。 这在 Python 3.8 中已被修复。"
 
 #: ../../library/asyncio-eventloop.rst:278
 msgid ""
 "Schedule *callback* to be called at the given absolute timestamp *when* (an "
 "int or a float), using the same time reference as :meth:`loop.time`."
 msgstr ""
-"安排 *callback* 在给定的绝对时间戳的 *时间* （一个 int 或者 float）被调用，使用与 :meth:`loop.time` "
+"安排 *callback* 在给定的绝对时间戳 *when* (int 或 float) 被调用，使用与 :meth:`loop.time` "
 "同样的时间参考。"
 
 #: ../../library/asyncio-eventloop.rst:282
@@ -409,18 +422,20 @@ msgid ""
 "difference between *when* and the current time could not exceed one day.  "
 "This has been fixed in Python 3.8."
 msgstr ""
+"在 Python 3.7 和更早版本的默认事件循环实现中，*when* 和当前时间相差不能超过一天。 在这 Python 3.8 中已被修复。"
 
 #: ../../library/asyncio-eventloop.rst:298
 msgid ""
 "Return the current time, as a :class:`float` value, according to the event "
 "loop's internal monotonic clock."
-msgstr "根据时间循环内部的单调时钟，返回当前时间， :class:`float` 值。"
+msgstr "根据时间循环内部的单调时钟，返回当前时间为一个 :class:`float` 值。"
 
 #: ../../library/asyncio-eventloop.rst:302
 msgid ""
 "In Python 3.7 and earlier timeouts (relative *delay* or absolute *when*) "
 "should not exceed one day.  This has been fixed in Python 3.8."
 msgstr ""
+"在 Python 3.7 和更早版本中超时 (相对的 *delay* 或绝对的 *when*) 不能超过一天。 这在 Python 3.8 中已被修复。"
 
 #: ../../library/asyncio-eventloop.rst:308
 msgid "The :func:`asyncio.sleep` function."
@@ -428,7 +443,7 @@ msgstr ":func:`asyncio.sleep` 函数"
 
 #: ../../library/asyncio-eventloop.rst:312
 msgid "Creating Futures and Tasks"
-msgstr "创建 Futures 和 Tasks"
+msgstr "创建 Future 和 Task"
 
 #: ../../library/asyncio-eventloop.rst:316
 msgid "Create an :class:`asyncio.Future` object attached to the event loop."
@@ -459,7 +474,7 @@ msgstr ""
 msgid ""
 "If the *name* argument is provided and not ``None``, it is set as the name "
 "of the task using :meth:`Task.set_name`."
-msgstr ""
+msgstr "如果提供了 *name* 参数且不为 ``None``，它会使用 :meth:`Task.set_name` 来设为任务的名称。"
 
 #: ../../library/asyncio-eventloop.rst:336
 msgid "Added the ``name`` parameter."
@@ -467,7 +482,7 @@ msgstr "添加了 ``name`` 形参。"
 
 #: ../../library/asyncio-eventloop.rst:341
 msgid "Set a task factory that will be used by :meth:`loop.create_task`."
-msgstr "设置一个 task 工厂 ， 被用于  :meth:`loop.create_task` 。"
+msgstr "设置一个任务工厂，它将由 :meth:`loop.create_task` 来使用。"
 
 #: ../../library/asyncio-eventloop.rst:344
 msgid ""
