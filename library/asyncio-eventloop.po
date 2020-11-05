@@ -623,6 +623,9 @@ msgid ""
 "Delay\" as defined in :rfc:`8305`. A sensible default value recommended by "
 "the RFC is ``0.25`` (250 milliseconds)."
 msgstr ""
+"如果给出 *happy_eyeballs_delay*，它将为此链接启用 Happy Eyeballs。 "
+"该函数应当为一个表示在开始下一个并行尝试之前要等待连接尝试完成的秒数的浮点数。 这也就是在 :rfc:`8305` 中定义的 \"连接尝试延迟\"。 该"
+" RFC 所推荐的合理默认值为 ``0.25`` (250 毫秒)。"
 
 #: ../../library/asyncio-eventloop.rst:427
 msgid ""
@@ -634,6 +637,10 @@ msgid ""
 "Count\" as defined in :rfc:`8305`. The default is ``0`` if "
 "*happy_eyeballs_delay* is not specified, and ``1`` if it is."
 msgstr ""
+"*interleave* 控制当主机名解析为多个 IP 地址时的地址重排序。 如果该参数为 ``0`` 或未指定，则不会进行重排序，这些地址会按 "
+":meth:`getaddrinfo` 所返回的顺序进行尝试。 如果指定了一个正整数，这些地址会按地址族交错排列，而指定的整数会被解读为 "
+":rfc:`8305` 所定义的 \"首个地址族计数\"。 如果 *happy_eyeballs_delay* 未指定则默认值为 ``0``，否则为 "
+"``1``。"
 
 #: ../../library/asyncio-eventloop.rst:436
 msgid ""
@@ -642,6 +649,9 @@ msgid ""
 "given, none of *host*, *port*, *family*, *proto*, *flags*, "
 "*happy_eyeballs_delay*, *interleave* and *local_addr* should be specified."
 msgstr ""
+"如果给出 *sock*，它应当是一个已存在、已连接并将被传输所使用的 :class:`socket.socket` 对象。 如果给出了 *sock*，则"
+" *host*, *port*, *family*, *proto*, *flags*, *happy_eyeballs_delay*, "
+"*interleave* 和 *local_addr* 都不应当被指定。"
 
 #: ../../library/asyncio-eventloop.rst:442
 msgid ""
@@ -649,6 +659,8 @@ msgid ""
 " the socket to locally.  The *local_host* and *local_port* are looked up "
 "using ``getaddrinfo()``, similarly to *host* and *port*."
 msgstr ""
+"如果给出 *local_addr*，它应当是一个用来在本地绑定套接字的 ``(local_host, local_port)`` 元组。 "
+"*local_host* 和 *local_port* 会使用 ``getaddrinfo()`` 来查找，这与 *host* 和 *port* 类似。"
 
 #: ../../library/asyncio-eventloop.rst:446
 #: ../../library/asyncio-eventloop.rst:799
@@ -657,10 +669,12 @@ msgid ""
 "wait for the TLS handshake to complete before aborting the connection. "
 "``60.0`` seconds if ``None`` (default)."
 msgstr ""
+"*ssl_handshake_timeout* 是（用于 TLS 连接的）在放弃连接之前要等待 TLS 握手完成的秒数。 如果参数为 ``None`` "
+"则使用 (默认的) ``60.0``。"
 
 #: ../../library/asyncio-eventloop.rst:452
 msgid "Added the *happy_eyeballs_delay* and *interleave* parameters."
-msgstr ""
+msgstr "增加了 *happy_eyeballs_delay* 和 *interleave* 形参。"
 
 #: ../../library/asyncio-eventloop.rst:454
 msgid ""
@@ -672,10 +686,13 @@ msgid ""
 "This document specifies requirements for algorithms that reduce this user-"
 "visible delay and provides an algorithm."
 msgstr ""
+"Happy Eyeballs 算法：成功使用双栈主机。 当服务器的 IPv4 路径和协议工作正常，但服务器的 IPv6 "
+"路径和协议工作不正常时，双栈客户端应用程序相比单独 IPv4 客户端会感受到明显的连接延迟。 这是不可接受的因为它会导致双栈客户端糟糕的用户体验。 "
+"此文档指明了减少这种用户可见延迟的算法要求并提供了具体的算法。"
 
 #: ../../library/asyncio-eventloop.rst:463
 msgid "For more information: https://tools.ietf.org/html/rfc6555"
-msgstr ""
+msgstr "详情参见: https://tools.ietf.org/html/rfc6555"
 
 #: ../../library/asyncio-eventloop.rst:467
 #: ../../library/asyncio-eventloop.rst:584
@@ -688,7 +705,7 @@ msgstr "*ssl_handshake_timeout* 形参。"
 msgid ""
 "The socket option :py:data:`~socket.TCP_NODELAY` is set by default for all "
 "TCP connections."
-msgstr ""
+msgstr "套接字选项 :py:data:`~socket.TCP_NODELAY` 默认已为所有 TCP 连接进行了设置。"
 
 #: ../../library/asyncio-eventloop.rst:476
 #: ../../library/asyncio-eventloop.rst:672
@@ -701,6 +718,8 @@ msgid ""
 "returns a pair of (:class:`StreamReader`, :class:`StreamWriter`) that can be"
 " used directly in async/await code."
 msgstr ""
+":func:`open_connection` 函数是一个高层级的替代 API。 它返回一对 (:class:`StreamReader`, "
+":class:`StreamWriter`)，可在 async/await 代码中直接使用。"
 
 #: ../../library/asyncio-eventloop.rst:491
 msgid ""
@@ -717,6 +736,7 @@ msgid ""
 "UDP socket address with ``SO_REUSEADDR``, incoming packets can become "
 "randomly distributed among the sockets."
 msgstr ""
+"当具有不同 UID 的多个进程将套接字赋给具有 ``SO_REUSEADDR`` 的相同 UDP 套接字地址时，传入的数据包可能会在套接字间随机分配。"
 
 #: ../../library/asyncio-eventloop.rst:499
 msgid ""
@@ -738,6 +758,8 @@ msgid ""
 ":py:data:`~socket.AF_INET6`, or :py:data:`~socket.AF_UNIX`, depending on "
 "*host* (or the *family* argument, if provided)."
 msgstr ""
+"套接字族可以是 :py:data:`~socket.AF_INET`, :py:data:`~socket.AF_INET6` 或 "
+":py:data:`~socket.AF_UNIX`，具体取决于 *host* (或 *family* 参数，如果有提供的话)。"
 
 #: ../../library/asyncio-eventloop.rst:511
 msgid "The socket type will be :py:data:`~socket.SOCK_DGRAM`."
@@ -749,12 +771,12 @@ msgstr "socket类型将是 :py:data:`~socket.SOCK_DGRAM` 。"
 msgid ""
 "*protocol_factory* must be a callable returning a :ref:`protocol <asyncio-"
 "protocol>` implementation."
-msgstr ""
+msgstr "*protocol_factory* 必须为一个返回 :ref:`协议 <asyncio-protocol>` 实现的可调用对象。"
 
 #: ../../library/asyncio-eventloop.rst:516
 #: ../../library/asyncio-eventloop.rst:570
 msgid "A tuple of ``(transport, protocol)`` is returned on success."
-msgstr ""
+msgstr "成功时返回一个 ``(transport, protocol)`` 元组。"
 
 #: ../../library/asyncio-eventloop.rst:520
 msgid ""
