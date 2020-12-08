@@ -2670,6 +2670,9 @@ msgid ""
 " if you encrypt a message with one of the parts, you can decrypt it with the"
 " other part, and **only** with the other part."
 msgstr ""
+"总的来说证书是公钥/私钥系统的一个组成部分。 在这个系统中，每 个 *主体* (可能是一台机器、一个人或者一个组织) "
+"都会分配到唯一的包含两部分的加密密钥。 一部分密钥是公开的，称为 *公钥*；另一部分密钥是保密的，称为 *私钥*。 "
+"这两个部分是互相关联的，就是说如果你用其中一个部分来加密一条消息，你将能用并且 **只能** 用另一个部分来解密它。"
 
 #: ../../library/ssl.rst:2043
 msgid ""
@@ -2684,6 +2687,10 @@ msgid ""
 "information about the time period over which it is valid.  This is expressed"
 " as two fields, called \"notBefore\" and \"notAfter\"."
 msgstr ""
+"在一个证书中包含有两个主体的相关信息。 它包含 *目标方* 的名称和目标方的公钥。 它还包含由第二个主体 *颁发方* "
+"所发布的声明：目标方的身份与他们所宣称的一致，包含的公钥也确实是目标方的公钥。 颁发方的声明使用颁发方的私钥进行签名，该私钥的内容只有颁发方自己才知道。"
+" 但是，任何人都可以找到颁发方的公钥，用它来解密这个声明，并将其与证书中的其他信息进行比较来验证颁发方声明的真实性。 证书还包含有关其有效期限的信息。 "
+"这被表示为两个字段，即 \"notBefore\" 和 \"notAfter\"。"
 
 #: ../../library/ssl.rst:2053
 msgid ""
@@ -2697,6 +2704,9 @@ msgid ""
 "the application does usually need to provide sets of certificates to allow "
 "this process to take place."
 msgstr ""
+"在 Python 中应用证书时，客户端或服务器可以用证书来证明自己的身份。 "
+"还可以要求网络连接的另一方提供证书，提供的证书可以用于验证以满足客户端或服务器的验证要求。 如果验证失败，连接尝试可被设置为引发一个异常。 "
+"验证是由下层的 OpenSSL 框架来自动执行的；应用程序本身不必关注其内部的机制。 但是应用程序通常需要提供一组证书以允许此过程的发生。"
 
 #: ../../library/ssl.rst:2063
 msgid ""
@@ -2704,10 +2714,12 @@ msgid ""
 "\"PEM\" (see :rfc:`1422`), which is a base-64 encoded form wrapped with a "
 "header line and a footer line::"
 msgstr ""
+"Python 使用文件来包含证书。 它们应当采用 \"PEM\" 格式 (参见 :rfc:`1422`)，这是一种带有头部行和尾部行的 base-64 "
+"编码包装形式::"
 
 #: ../../library/ssl.rst:2072
 msgid "Certificate chains"
-msgstr ""
+msgstr "证书链"
 
 #: ../../library/ssl.rst:2074
 msgid ""
@@ -2724,10 +2736,14 @@ msgid ""
 "authority that signed our server certificate, to the root certificate of the"
 " agency which issued the certification authority's certificate::"
 msgstr ""
+"包含证书的 Python 文件可以包含一系列的证书，有时被称为 *证书链*。 这个证书链应当以 \"作为\" "
+"客户端或服务器的主体的专属证书打头，然后是证书颁发方的证书，然后是 *上述* 证书的颁发方的证书，证书链就这样不断上溯直到你得到一个 *自签名* "
+"的证书，即具有相同目标方和颁发方的证书，有时也称为 *根证书*。 在证书文件中这些证书应当被拼接为一体。 "
+"例如，假设我们有一个包含三个证书的证书链，以我们的服务器证书打头，然后是为我们的服务器证书签名的证书颁发机构的证书，最后是为证书颁发机构的证书颁发证书的机构的根证书::"
 
 #: ../../library/ssl.rst:2098
 msgid "CA certificates"
-msgstr ""
+msgstr "CA 证书"
 
 #: ../../library/ssl.rst:2100
 msgid ""
@@ -2740,10 +2756,14 @@ msgid ""
 ":meth:`SSLContext.load_default_certs`, this is done automatically with "
 ":func:`.create_default_context`."
 msgstr ""
+"如果你想要求对连接的另一方的证书进行验证，你必须提供一个 \"CA 证书\" 文件，其中包含了你愿意信任的每个颁发方的证书链。 "
+"同样地，这个文件的内容就是这些证书链拼接在一起的结果。 为了进行验证，Python 将使用它在文件中找到的第一个匹配的证书链。 可以通过调用 "
+":meth:`SSLContext.load_default_certs` 来使用系统平台的证书文件，这可以由 "
+":func:`.create_default_context` 自动完成。"
 
 #: ../../library/ssl.rst:2109
 msgid "Combined key and certificate"
-msgstr ""
+msgstr "合并的密钥和证书"
 
 #: ../../library/ssl.rst:2111
 msgid ""
@@ -2756,7 +2776,7 @@ msgstr ""
 
 #: ../../library/ssl.rst:2125
 msgid "Self-signed certificates"
-msgstr ""
+msgstr "自签名证书"
 
 #: ../../library/ssl.rst:2127
 msgid ""
@@ -2781,7 +2801,7 @@ msgstr "例子"
 
 #: ../../library/ssl.rst:2165
 msgid "Testing for SSL support"
-msgstr ""
+msgstr "检测 SSL 支持"
 
 #: ../../library/ssl.rst:2167
 msgid ""
@@ -2791,7 +2811,7 @@ msgstr ""
 
 #: ../../library/ssl.rst:2178
 msgid "Client-side operation"
-msgstr ""
+msgstr "客户端操作"
 
 #: ../../library/ssl.rst:2180
 msgid ""
@@ -2847,7 +2867,7 @@ msgstr ""
 
 #: ../../library/ssl.rst:2285
 msgid "Server-side operation"
-msgstr ""
+msgstr "服务器端操作"
 
 #: ../../library/ssl.rst:2287
 msgid ""
@@ -2882,7 +2902,7 @@ msgstr ""
 
 #: ../../library/ssl.rst:2337
 msgid "Notes on non-blocking sockets"
-msgstr ""
+msgstr "关于非阻塞套接字的说明"
 
 #: ../../library/ssl.rst:2339
 msgid ""
@@ -2953,7 +2973,7 @@ msgstr ""
 
 #: ../../library/ssl.rst:2400
 msgid "Memory BIO Support"
-msgstr ""
+msgstr "内存 BIO 支持"
 
 #: ../../library/ssl.rst:2404
 msgid ""
@@ -2964,11 +2984,11 @@ msgstr ""
 
 #: ../../library/ssl.rst:2407
 msgid "SSL protocol handling"
-msgstr ""
+msgstr "SSL 协议处理"
 
 #: ../../library/ssl.rst:2408
 msgid "Network IO"
-msgstr ""
+msgstr "网络 IO"
 
 #: ../../library/ssl.rst:2410
 msgid ""
