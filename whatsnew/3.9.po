@@ -2721,6 +2721,8 @@ msgid ""
 " support this change, the internally used type cache now supports "
 "differentiating types."
 msgstr ""
+"``Literal`` 比较现在会考虑类型。 例如 ``Literal[0] == Literal[False]`` 之前的结果值为 ``True``。"
+" 现在则为 ``False``。 为支持此改变，内部使用的类型缓存现在也支持区分类型。"
 
 #: ../../whatsnew/3.9.rst:1473
 msgid ""
@@ -2729,14 +2731,16 @@ msgid ""
 "Note that declaring ``Literal`` with mutable parameters will not throw an "
 "error::"
 msgstr ""
+"现在如果某个参数不为 :term:`immutable`，``Literal`` 对象在相等性比较时将引发 :exc:`TypeError`。 "
+"请注意使用可变参数声明 ``Literal`` 将不会抛出异常。::"
 
 #: ../../whatsnew/3.9.rst:1485
 msgid "(Contributed by Yurii Karabas in :issue:`42345`.)"
-msgstr ""
+msgstr "（由 Yurii Karabas 在 :issue:`42345` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1488
 msgid "macOS 11.0 (Big Sur) and Apple Silicon Mac support"
-msgstr ""
+msgstr "macOS 11.0 (Big Sur) 与 Apple Silicon Mac 支持"
 
 #: ../../whatsnew/3.9.rst:1490
 msgid ""
@@ -2749,15 +2753,19 @@ msgid ""
 "functions and options conditionally available based on the operating system "
 "version in use at runtime (\"weaklinking\")."
 msgstr ""
+"对于 3.9.1 版来说，Python 现在完全支持在 macOS 11.0 (Big Sur) 和 Apple Silicon Macs (基于 "
+"``ARM64`` 架构) 上构建和运行。 现在提供了一个新的通用构建类型 ``universal2``，用于在一组可执行文件上原生支持 "
+"``ARM64`` 和 ``Intel 64``。 二进制文件现在也可以在当前版本的 macOS 上编译以部署到多种较旧的 macOS 版本上 (已测试"
+" 10.9)，同时会基于运行时所使用的操作系统版本让某些较新的 OS 功能和选项有条件地可用 (\"弱链接\") 。"
 
 #: ../../whatsnew/3.9.rst:1499
 msgid ""
 "(Contributed by Ronald Oussoren and Lawrence D'Anna in :issue:`41100`.)"
-msgstr ""
+msgstr "（由 Ronald Oussoren 和 Lawrence D'Anna 在 :issue:`41100` 中贡献。）"
 
 #: ../../whatsnew/3.9.rst:1502
 msgid "Notable changes in Python 3.9.2"
-msgstr ""
+msgstr "Python 3.9.2 中的重要变化"
 
 #: ../../whatsnew/3.9.rst:1505
 msgid "collections.abc"
@@ -2778,3 +2786,12 @@ msgid ""
 "silently in Python 3.9.1.  This :exc:`DeprecationWarning` will become a "
 ":exc:`TypeError` in Python 3.10. (Contributed by Ken Jin in :issue:`42195`.)"
 msgstr ""
+"现在 :class:`collections.abc.Callable` 泛型会将类型形参展平，类似于 :data:`typing.Callable` "
+"当前所做的那样。 这意味着 ``collections.abc.Callable[[int, str], str]`` 的 ``__args__`` "
+"将为 ``(int, str, str)``；之前则为 ``([int, str], str)``。 "
+"为了允许这个改变，:class:`types.GenericAlias` 现在可以被子类化，并且在抽取 "
+":class:`collections.abc.Callable` 类型时将返回一个子类。 通过 :func:`typing.get_args` 或 "
+"``__args__`` 访问参数的代码需要考虑到这个改变。 对于无效的 :class:`collections.abc.Callable` "
+"参数化形式可能会发出 :exc:`DeprecationWarning`，这在 Python 3.9.1 中可能会静默地传递。 这个 "
+":exc:`DeprecationWarning` 将在 Python 3.10 中变为 :exc:`TypeError`。 （由 Ken Jin 在 "
+":issue:`42195` 中贡献。）"
