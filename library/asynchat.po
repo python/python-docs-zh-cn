@@ -55,6 +55,12 @@ msgid ""
 ":class:`asynchat.async_chat` channel objects as it receives incoming "
 "connection requests."
 msgstr ""
+"此模块在 :mod:`asyncore` 框架之上构建，简化了异步客户端和服务器并使得处理元素为以任意字符串结束或者为可变长度的协议更加容易。 "
+":mod:`asynchat` 定义了一个可以由你来子类化的抽象类 :class:`async_chat`，提供了 "
+":meth:`collect_incoming_data` 和 :meth:`found_terminator` 等方法的实现。 它使用与 "
+":mod:`asyncore` 相同的异步循环，并且可以在通道映射中自由地混合 :class:`asyncore.dispatcher` 和 "
+":class:`asynchat.async_chat` 这两种类型的通道。 一般来说 :class:`asyncore.dispatcher` "
+"服务器通道在接收到传入的连接请求时会生成新的 :class:`asynchat.async_chat` 通道对象。"
 
 #: ../../library/asynchat.rst:37
 msgid ""
@@ -64,6 +70,10 @@ msgid ""
 "methods. The :class:`asyncore.dispatcher` methods can be used, although not "
 "all make sense in a message/response context."
 msgstr ""
+"这个类是 :class:`asyncore.dispatcher` 的抽象子类。 对于实际使用的代码你必须子类化 "
+":class:`async_chat`，提供有意义的 :meth:`collect_incoming_data` 和 "
+":meth:`found_terminator` 方法。 :class:`asyncore.dispatcher` "
+"的方法也可以被使用，但它们在消息/响应上下文中并不是全都有意义。"
 
 #: ../../library/asynchat.rst:44
 msgid ""
@@ -73,20 +83,23 @@ msgid ""
 ":class:`async_chat` object's methods are called by the event-processing "
 "framework with no action on the part of the programmer."
 msgstr ""
+"与 :class:`asyncore.dispatcher` 类似，:class:`async_chat` 也定义了一组通过对 "
+":c:func:`select` 调用之后的套接字条件进行分析所生成的事件。 一旦启动轮询循环 :class:`async_chat` "
+"对象的方法就会被事件处理框架调用而无须程序员方面做任何操作。"
 
 #: ../../library/asynchat.rst:50
 msgid ""
 "Two class attributes can be modified, to improve performance, or possibly "
 "even to conserve memory."
-msgstr ""
+msgstr "两个可被修改的类属性，用以提升性能，甚至也可能会节省内存。"
 
 #: ../../library/asynchat.rst:56
 msgid "The asynchronous input buffer size (default ``4096``)."
-msgstr ""
+msgstr "异步输入缓冲区大小 (默认为 ``4096``)。"
 
 #: ../../library/asynchat.rst:61
 msgid "The asynchronous output buffer size (default ``4096``)."
-msgstr ""
+msgstr "异步输出缓冲区大小 (默认为 ``4096``)。"
 
 #: ../../library/asynchat.rst:63
 msgid ""
@@ -102,6 +115,12 @@ msgid ""
 "recognize the end of, or an important breakpoint in, an incoming "
 "transmission from the remote endpoint."
 msgstr ""
+"与 :class:`asyncore.dispatcher` 不同，:class:`async_chat` 允许你定义一个 :abbr:`FIFO "
+"(先进先出)` 队列 *producers*。 其中的生产者只需要一个方法 :meth:`more`，该方法应当返回要在通道上传输的数据。 "
+"生产者通过让其 :meth:`more` 方法返回空字节串对象来表明其处于耗尽状态 (*意即* 它已不再包含数据)。 此时 "
+":class:`async_chat` 对象会将该生产者从队列中移除并开始使用下一个生产者，如果有下一个的话。 当生产者队列为空时 "
+":meth:`handle_write` 方法将不执行任何操作。 你要使用通道对象的 :meth:`set_terminator` "
+"方法来描述如何识别来自远程端点的入站传输的结束或是重要的中断点。"
 
 #: ../../library/asynchat.rst:76
 msgid ""
