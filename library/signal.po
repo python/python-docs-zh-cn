@@ -639,6 +639,7 @@ msgid ""
 "the fd to wake up when a signal arrives, but then they differ in how they "
 "determine *which* signal or signals have arrived."
 msgstr ""
+"使用此函数有两种通常的方式。 在两种方式下，当有信号到达时你都是用 fd 来唤醒，但之后它们在确定达到的一个或多个信号 *which* 时存在差异。"
 
 #: ../../library/signal.rst:479
 msgid ""
@@ -650,6 +651,9 @@ msgid ""
 "then you should set ``warn_on_full_buffer=True``, which will at least cause "
 "a warning to be printed to stderr when signals are lost."
 msgstr ""
+"在第一种方式下，我们从 fd 的缓冲区读取数据，这些字节值会给你信号编号。 这种方式很简单，但在少数情况下会发生问题：通常 fd "
+"将有缓冲区空间大小限制，如果信号到达得太多且太快，缓冲区可能会爆满，有些信号可能丢失。 如果你使用此方式，则你应当设置 "
+"``warn_on_full_buffer=True``，当信号丢失时这至少能将警告消息打印到 stderr。"
 
 #: ../../library/signal.rst:488
 msgid ""
@@ -660,14 +664,17 @@ msgid ""
 "``warn_on_full_buffer=False``, so that your users are not confused by "
 "spurious warning messages."
 msgstr ""
+"在第二种方式下，我们 *只会* 将唤醒 fd 用于唤醒，而忽略实际的字节值。 在此情况下，我们所关心的只有 fd "
+"的缓冲区为空还是不为空；爆满的缓冲区完全不会导致问题。 如果你使用此方式，则你应当设置 "
+"``warn_on_full_buffer=False``，这样你的用户就不会被虚假的警告消息所迷惑。"
 
 #: ../../library/signal.rst:495
 msgid "On Windows, the function now also supports socket handles."
-msgstr ""
+msgstr "在 Windows 上，此函数现在也支持套接字处理。"
 
 #: ../../library/signal.rst:498
 msgid "Added ``warn_on_full_buffer`` parameter."
-msgstr ""
+msgstr "添加了 ``warn_on_full_buffer`` 形参。"
 
 #: ../../library/signal.rst:503
 msgid ""
@@ -675,12 +682,15 @@ msgid ""
 "calls will be restarted when interrupted by signal *signalnum*, otherwise "
 "system calls will be interrupted.  Returns nothing."
 msgstr ""
+"更改系统调用重启行为：如果 *flag* 为 :const:`False`，系统调用将在被信号 *signalnum* "
+"中断时重启，否则系统调用将被中断。 返回空值。"
 
 #: ../../library/signal.rst:509
 msgid ""
 ":ref:`Availability <availability>`: Unix.  See the man page "
 ":manpage:`siginterrupt(3)` for further information."
 msgstr ""
+":ref:`可用性 <availability>`: Unix。 更多信息请参见手册页面 :manpage:`siginterrupt(3)`。"
 
 #: ../../library/signal.rst:510
 msgid ""
@@ -688,6 +698,8 @@ msgid ""
 "restart behaviour to interruptible by implicitly calling "
 ":c:func:`siginterrupt` with a true *flag* value for the given signal."
 msgstr ""
+"请注意用 :func:`signal` 安装信号处理程序将重启行为重置为可通过显式调用 :c:func:`siginterrupt` 并为给定信号的 "
+"*flag* 设置真值来实现中断。"
 
 #: ../../library/signal.rst:517
 msgid ""
@@ -698,6 +710,10 @@ msgid ""
 ":func:`getsignal` above).  (See the Unix man page :manpage:`signal(2)` for "
 "further information.)"
 msgstr ""
+"将信号 *signalnum* 的处理程序设为函数 *handler*。 *handler* 可以为接受两个参数（见下）的 Python "
+"可调用对象，或者为特殊值 :const:`signal.SIG_IGN` 或 :const:`signal.SIG_DFL` 之一。 "
+"之前的信号处理程序将被返回（参见上文 :func:`getsignal` 的描述）。 （更多信息请参阅 Unix 手册页面 "
+":manpage:`signal(2)`。）"
 
 #: ../../library/signal.rst:528
 msgid ""
@@ -706,6 +722,8 @@ msgid ""
 "objects, see the :ref:`description in the type hierarchy <frame-objects>` or"
 " see the attribute descriptions in the :mod:`inspect` module)."
 msgstr ""
+"*handler* 将附带两个参数调用：信号编号和当前堆栈帧 (``None`` 或一个帧对象；有关帧对象的描述请参阅 :ref:`类型层级结构描述 "
+"<frame-objects>` 或者参阅 :mod:`inspect` 模块中的属性描述)。"
 
 #: ../../library/signal.rst:533
 msgid ""
