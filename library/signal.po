@@ -823,7 +823,7 @@ msgid ""
 "The function is now retried if interrupted by a signal not in *sigset* and "
 "the signal handler does not raise an exception (see :pep:`475` for the "
 "rationale)."
-msgstr "当被某个 不在 *sigset* 中的信号中断时本函数将结束并且信号处理程序不会引发异常 (其理由参见 :pep:`475`)。"
+msgstr "当被某个 不在 *sigset* 中的信号中断时本函数将进行重试并且信号处理程序不会引发异常（请参阅 :pep:`475` 了解其理由）。"
 
 #: ../../library/signal.rst:602
 msgid ""
@@ -851,6 +851,8 @@ msgid ""
 "a signal not in *sigset* and the signal handler does not raise an exception "
 "(see :pep:`475` for the rationale)."
 msgstr ""
+"现在当此函数被某个不在 *sigset* 中的信号中断时将以计算出的 *timeout* 进行重试并且信号处理程序不会引发异常（请参阅 "
+":pep:`475` 了解其理由）。"
 
 #: ../../library/signal.rst:622
 msgid "Example"
@@ -865,10 +867,13 @@ msgid ""
 " alarm before opening the file; if the operation takes too long, the alarm "
 "signal will be sent, and the handler raises an exception. ::"
 msgstr ""
+"这是一个最小示例程序。 它使用 :func:`alarm` "
+"函数来限制等待打开一个文件所花费的时间；这在文件为无法开启的串行设备时会很有用处，此情况通常会导致 :func:`os.open` 无限期地挂起。  "
+"解决办法是在打开文件之前设置 5 秒钟的 alarm；如果操作耗时过长，将会发送 alarm 信号，并且处理程序会引发一个异常。 ::"
 
 #: ../../library/signal.rst:647
 msgid "Note on SIGPIPE"
-msgstr ""
+msgstr "对于 SIGPIPE 的说明"
 
 #: ../../library/signal.rst:649
 msgid ""
@@ -878,6 +883,9 @@ msgid ""
 ":code:`BrokenPipeError: [Errno 32] Broken pipe`.  To handle this case, wrap "
 "your entry point to catch this exception as follows::"
 msgstr ""
+"将你的程序用管道输出到工具例如 :manpage:`head(1)` 将会导致 :const:`SIGPIPE` "
+"信号在其标准输出的接收方提前关闭时被发送到你的进程。 这将引发一个异常例如 :code:`BrokenPipeError: [Errno 32] "
+"Broken pipe`。 要处理这种情况，请对你的入口点进行包装以捕获此异常，如下所示::"
 
 #: ../../library/signal.rst:676
 msgid ""
@@ -886,3 +894,5 @@ msgid ""
 "unexpectedly also whenever any socket connection is interrupted while your "
 "program is still writing to it."
 msgstr ""
+"不要将 :const:`SIGPIPE` 的处置方式设为 :const:`SIG_DFL` 以避免 :exc:`BrokenPipeError`。 "
+"这样做还会在你的程序所写入的任何套接字连接中断时导致你的程序异常退出。"
