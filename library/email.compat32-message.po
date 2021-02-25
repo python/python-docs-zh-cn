@@ -290,6 +290,10 @@ msgid ""
 " is a string (i.e.  :meth:`is_multipart` is ``False``) and *i* is given, a "
 ":exc:`TypeError` is raised."
 msgstr ""
+"传入可选参数 *i* 时，如果 :meth:`is_multipart` 为 ``True``，:meth:`get_payload` "
+"将返回载荷从零开始计数的第 *i* 个元素。 如果 *i* 小于 0 或大于等于载荷中的条目数则将引发 :exc:`IndexError`。 "
+"如果载荷是一个字符串 (即 :meth:`is_multipart` 为 ``False``) 且给出了 *i*，则会引发 "
+":exc:`TypeError`。"
 
 #: ../../library/email.compat32-message.rst:202
 msgid ""
@@ -306,6 +310,13 @@ msgid ""
 "message's defect property (:class:`~email.errors.InvalidBase64PaddingDefect`"
 " or :class:`~email.errors.InvalidBase64CharactersDefect`, respectively)."
 msgstr ""
+"可选的 *decode* 是一个指明载荷是否应根据 :mailheader:`Content-Transfer-Encoding` 标头被解码的旗标。 "
+"当其值为 ``True`` 且消息没有多个部分时，如果此标头值为 ``quoted-printable`` 或 ``base64`` 则载荷将被解码。 "
+"如果使用了其他编码格式，或者找不到 :mailheader:`Content-Transfer-Encoding` 标头时，载荷将被原样返回（不编码）。"
+" 在所有情况下返回值都是二进制数据。 如果消息有多个部分且 *decode* 旗标为 ``True``，则将返回 ``None``。 如果载荷为 "
+"base64 但内容不完全正确（如缺少填充符、存在 base64 字母表以外的字符等），则将在消息的缺陷属性中添加适当的缺陷值 (分别为 "
+":class:`~email.errors.InvalidBase64PaddingDefect` 或 "
+":class:`~email.errors.InvalidBase64CharactersDefect`)。"
 
 #: ../../library/email.compat32-message.rst:216
 msgid ""
@@ -317,6 +328,11 @@ msgid ""
 "``charset`` is specified, or if the ``charset`` given is not recognized by "
 "the email package, the body is decoded using the default ASCII charset."
 msgstr ""
+"当 *decode* 为 ``False`` (默认值) 时消息体会作为字符串返回而不解码 :mailheader:`Content-Transfer-"
+"Encoding`。 但是，对于 :mailheader:`Content-Transfer-Encoding` 为 8bit 的情况，会尝试使用 "
+":mailheader:`Content-Type` 标头指定的 ``charset`` 来解码原始字节串，并使用 ``replace`` "
+"错误处理程序。  如果未指定 ``charset``，或者如果指定的 ``charset`` 未被 email 包所识别，则会使用默认的 ASCII "
+"字符集来解码消息体。"
 
 #: ../../library/email.compat32-message.rst:225
 msgid ""
@@ -325,6 +341,9 @@ msgid ""
 ":meth:`~email.message.EmailMessage.get_content` and "
 ":meth:`~email.message.EmailMessage.iter_parts`."
 msgstr ""
+"这是一个过时的方法。 在 :class:`~email.emailmessage.EmailMessage` 类上它的功能已被 "
+":meth:`~email.message.EmailMessage.get_content` 和 "
+":meth:`~email.message.EmailMessage.iter_parts` 方法所替代。"
 
 #: ../../library/email.compat32-message.rst:233
 msgid ""
@@ -332,6 +351,8 @@ msgid ""
 "responsibility to ensure the payload invariants.  Optional *charset* sets "
 "the message's default character set; see :meth:`set_charset` for details."
 msgstr ""
+"将整个消息对象的载荷设为 *payload*。 客户端要负责确保载荷的不变性。 可选的 *charset* 用于设置消息的默认字符集；详情请参阅 "
+":meth:`set_charset`。"
 
 #: ../../library/email.compat32-message.rst:237
 msgid ""
@@ -339,6 +360,8 @@ msgid ""
 "class its functionality is replaced by "
 ":meth:`~email.message.EmailMessage.set_content`."
 msgstr ""
+"这是一个过时的方法。 在 :class:`~email.emailmessage.EmailMessage` 类上它的功能已被 "
+":meth:`~email.message.EmailMessage.set_content` 方法所替代。"
 
 #: ../../library/email.compat32-message.rst:244
 msgid ""
@@ -493,7 +516,7 @@ msgstr ""
 
 #: ../../library/email.compat32-message.rst:373
 msgid "Here are some additional useful methods:"
-msgstr ""
+msgstr "以下是一些有用的附加方法:"
 
 #: ../../library/email.compat32-message.rst:378
 msgid ""
