@@ -104,6 +104,9 @@ msgid ""
 "are copied. In neither case is a reference to the message representation "
 "kept by the :class:`Mailbox` instance."
 msgstr ""
+":class:`Mailbox` 接口语义在某些值得注意的方面与字典语义有所不同。 每次请求消息时，都会基于邮箱的当前状态生成一个新的表示形式（通常为 "
+":class:`Message` 实例）。 类似地，当向 :class:`Mailbox` 实例添加消息时，所提供的消息表示形式的内容将被复制。 "
+"无论在哪种情况下 :class:`Mailbox` 实例都不会保留对消息表示形式的引用。"
 
 #: ../../library/mailbox.rst:59
 msgid ""
@@ -116,6 +119,9 @@ msgid ""
 ":exc:`KeyError` exception if the corresponding message is subsequently "
 "removed."
 msgstr ""
+"默认的 :class:`Mailbox` 迭代器会迭代消息表示形式，而不像默认的字典迭代器那样迭代键。 此外，在迭代期间修改邮箱是安全且有明确定义的。 "
+"在创建迭代器之后被添加到邮箱的消息将对该迭代不可见。 在迭代器产出消息之前被从邮箱移除的消息将被静默地跳过，但是使用来自迭代器的键也有可能导致 "
+":exc:`KeyError` 异常，如果对应的消息后来被移除的话。"
 
 #: ../../library/mailbox.rst:70
 msgid ""
@@ -128,6 +134,9 @@ msgid ""
 "  Failing to lock the mailbox runs the risk of losing messages or corrupting"
 " the entire mailbox."
 msgstr ""
+"在修改可能同时被其他某个进程修改的邮箱时要非常小心。 用于此种任务的最安全邮箱格式是 Maildir；请尽量避免使用 mbox "
+"之类的单文件格式进行并发写入。 如果你正在修改一个邮箱，你 *必须* 在读取文件中的任何消息或者执行添加或删除消息等修改操作 *之前* 通过调用 "
+":meth:`lock` 以及 :meth:`unlock` 方法来锁定它。 如果未锁定邮箱则可能导致丢失消息或损坏整个邮箱的风险。"
 
 #: ../../library/mailbox.rst:79
 msgid ":class:`Mailbox` instances have the following methods:"
@@ -137,7 +146,7 @@ msgstr ":class:`Mailbox` 实例具有下列方法:"
 msgid ""
 "Add *message* to the mailbox and return the key that has been assigned to "
 "it."
-msgstr ""
+msgstr "将 *message* 添加到邮箱并返回分配给它的键。"
 
 #: ../../library/mailbox.rst:87
 msgid ""
