@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-01 05:02+0000\n"
+"POT-Creation-Date: 2021-04-04 05:56+0000\n"
 "PO-Revision-Date: 2017-02-16 17:43+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2020\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -2084,14 +2084,106 @@ msgstr ""
 "这两个id属于之前创建的不同整数对象，并在执行 ``id()`` 调用后立即删除。要确保要检查其id的对象仍处于活动状态，请创建对该对象的另一个引用："
 
 #: ../../faq/programming.rst:1706
+msgid "When can I rely on identity tests with the *is* operator?"
+msgstr ""
+
+#: ../../faq/programming.rst:1708
+msgid ""
+"The ``is`` operator tests for object identity.  The test ``a is b`` is "
+"equivalent to ``id(a) == id(b)``."
+msgstr ""
+
+#: ../../faq/programming.rst:1711
+msgid ""
+"The most important property of an identity test is that an object is always "
+"identical to itself, ``a is a`` always returns ``True``.  Identity tests are"
+" usually faster than equality tests.  And unlike equality tests, identity "
+"tests are guaranteed to return a boolean ``True`` or ``False``."
+msgstr ""
+
+#: ../../faq/programming.rst:1716
+msgid ""
+"However, identity tests can *only* be substituted for equality tests when "
+"object identity is assured.  Generally, there are three circumstances where "
+"identity is guaranteed:"
+msgstr ""
+
+#: ../../faq/programming.rst:1720
+msgid ""
+"1) Assignments create new names but do not change object identity.  After "
+"the assignment ``new = old``, it is guaranteed that ``new is old``."
+msgstr ""
+
+#: ../../faq/programming.rst:1723
+msgid ""
+"2) Putting an object in a container that stores object references does not "
+"change object identity.  After the list assignment ``s[0] = x``, it is "
+"guaranteed that ``s[0] is x``."
+msgstr ""
+
+#: ../../faq/programming.rst:1727
+msgid ""
+"3) If an object is a singleton, it means that only one instance of that "
+"object can exist.  After the assignments ``a = None`` and ``b = None``, it "
+"is guaranteed that ``a is b`` because ``None`` is a singleton."
+msgstr ""
+
+#: ../../faq/programming.rst:1731
+msgid ""
+"In most other circumstances, identity tests are inadvisable and equality "
+"tests are preferred.  In particular, identity tests should not be used to "
+"check constants such as :class:`int` and :class:`str` which aren't "
+"guaranteed to be singletons::"
+msgstr ""
+
+#: ../../faq/programming.rst:1748
+msgid "Likewise, new instances of mutable containers are never identical::"
+msgstr ""
+
+#: ../../faq/programming.rst:1755
+msgid ""
+"In the standard library code, you will see several common patterns for "
+"correctly using identity tests:"
+msgstr ""
+
+#: ../../faq/programming.rst:1758
+msgid ""
+"1) As recommended by :pep:`8`, an identity test is the preferred way to "
+"check for ``None``.  This reads like plain English in code and avoids "
+"confusion with other objects that may have boolean values that evaluate to "
+"false."
+msgstr ""
+
+#: ../../faq/programming.rst:1762
+msgid ""
+"2) Detecting optional arguments can be tricky when ``None`` is a valid input"
+" value.  In those situations, you can create an singleton sentinel object "
+"guaranteed to be distinct from other objects.  For example, here is how to "
+"implement a method that behaves like :meth:`dict.pop`::"
+msgstr ""
+
+#: ../../faq/programming.rst:1778
+msgid ""
+"3) Container implementations sometimes need to augment equality tests with "
+"identity tests.  This prevents the code from being confused by objects such "
+"as ``float('NaN')`` that are not equal to themselves."
+msgstr ""
+
+#: ../../faq/programming.rst:1782
+msgid ""
+"For example, here is the implementation of "
+":meth:`collections.abc.Sequence.__contains__`::"
+msgstr ""
+
+#: ../../faq/programming.rst:1793
 msgid "Modules"
 msgstr "模块"
 
-#: ../../faq/programming.rst:1709
+#: ../../faq/programming.rst:1796
 msgid "How do I create a .pyc file?"
 msgstr "如何创建 .pyc 文件？"
 
-#: ../../faq/programming.rst:1711
+#: ../../faq/programming.rst:1798
 msgid ""
 "When a module is imported for the first time (or when the source file has "
 "changed since the current compiled file was created) a ``.pyc`` file "
@@ -2106,7 +2198,7 @@ msgstr ""
 "子目录下创建一个包含已编译代码的 ``.pyc`` 文件。 该 ``.pyc`` 文件的文件名的开头部分将与对应 ``.py`` 文件名相同，并以 "
 "``.pyc`` 为后缀，中间部门则是基于创建它的特定 ``python`` 二进制代码版本。 （详情参见 :pep:`3147`。）"
 
-#: ../../faq/programming.rst:1719
+#: ../../faq/programming.rst:1806
 msgid ""
 "One reason that a ``.pyc`` file may not be created is a permissions problem "
 "with the directory containing the source file, meaning that the "
@@ -2117,7 +2209,7 @@ msgstr ""
 "无法创建 ``.pyc`` 文件的可能原因是包含源文件的目录存在权限问题，这意味着 ``__pycache__`` 子目录无法被创建。 "
 "举例来说，如果你以某一用户来开发程序但以另一用户身份来运行程序时就可能发生问题，测试 Web 服务器就属于这种情况。"
 
-#: ../../faq/programming.rst:1724
+#: ../../faq/programming.rst:1811
 msgid ""
 "Unless the :envvar:`PYTHONDONTWRITEBYTECODE` environment variable is set, "
 "creation of a .pyc file is automatic if you're importing a module and Python"
@@ -2128,7 +2220,7 @@ msgstr ""
 "除非设置了 :envvar:`PYTHONDONTWRITEBYTECODE` 环境变量，否则当你导入模块并且 Python 具有创建 "
 "``__pycache__`` 子目录并将已编译模块写入该子目录的能力（权限、存储空间等等）时就会自动创建 .pyc 文件。"
 
-#: ../../faq/programming.rst:1729
+#: ../../faq/programming.rst:1816
 msgid ""
 "Running Python on a top level script is not considered an import and no "
 "``.pyc`` will be created.  For example, if you have a top-level module "
@@ -2142,7 +2234,7 @@ msgstr ""
 "foo.py``)，则将为 ``xyz`` 创建一个 ``.pyc``，因为 ``xyz`` 是被导入的，但不会为 ``foo`` 创建 "
 "``.pyc`` 文件，因为 ``foo.py`` 不是被导入的。"
 
-#: ../../faq/programming.rst:1736
+#: ../../faq/programming.rst:1823
 msgid ""
 "If you need to create a ``.pyc`` file for ``foo`` -- that is, to create a "
 "``.pyc`` file for a module that is not imported -- you can, using the "
@@ -2151,13 +2243,13 @@ msgstr ""
 "如果你需要为 ``foo`` 创建 ``.pyc`` 文件 —— 即为不是被导入的模块创建 ``.pyc`` 文件 —— 你可以使用 "
 ":mod:`py_compile` 和 :mod:`compileall` 模块。"
 
-#: ../../faq/programming.rst:1740
+#: ../../faq/programming.rst:1827
 msgid ""
 "The :mod:`py_compile` module can manually compile any module.  One way is to"
 " use the ``compile()`` function in that module interactively::"
 msgstr ":mod:`py_compile` 模块能够手动编译任意模块。 一种做法是交互式地使用该模块中的 ``compile()`` 函数::"
 
-#: ../../faq/programming.rst:1746
+#: ../../faq/programming.rst:1833
 msgid ""
 "This will write the ``.pyc`` to a ``__pycache__`` subdirectory in the same "
 "location as ``foo.py`` (or you can override that with the optional parameter"
@@ -2166,7 +2258,7 @@ msgstr ""
 "这将会将  ``.pyc`` 文件写入与 ``foo.py`` 相同位置下的 ``__pycache__`` 子目录（或者你也可以通过可选参数 "
 "``cfile`` 来重载该行为）。"
 
-#: ../../faq/programming.rst:1750
+#: ../../faq/programming.rst:1837
 msgid ""
 "You can also automatically compile all files in a directory or directories "
 "using the :mod:`compileall` module.  You can do it from the shell prompt by "
@@ -2176,11 +2268,11 @@ msgstr ""
 "你还可以使用 :mod:`compileall` 模块自动编译一个目录或多个目录下的所有文件。 具体做法可以是在命令行提示符中运行 "
 "``compileall.py`` 并提供包含要编译 Python 文件的目录路径::"
 
-#: ../../faq/programming.rst:1759
+#: ../../faq/programming.rst:1846
 msgid "How do I find the current module name?"
 msgstr "如何找到当前模块名称？"
 
-#: ../../faq/programming.rst:1761
+#: ../../faq/programming.rst:1848
 msgid ""
 "A module can find out its own module name by looking at the predefined "
 "global variable ``__name__``.  If this has the value ``'__main__'``, the "
@@ -2191,76 +2283,76 @@ msgstr ""
 "模块可以通过查看预定义的全局变量 ``__name__`` 找到自己的模块名称。如果它的值为 ``'__main__'`` "
 "，程序将作为脚本运行。通常，通过导入使用的许多模块也提供命令行界面或自检，并且只在检查 ``__name__`` 之后，才执行之后的代码::"
 
-#: ../../faq/programming.rst:1776
+#: ../../faq/programming.rst:1863
 msgid "How can I have modules that mutually import each other?"
 msgstr "如何让模块相互导入？"
 
-#: ../../faq/programming.rst:1778
+#: ../../faq/programming.rst:1865
 msgid "Suppose you have the following modules:"
 msgstr "假设您有以下模块："
 
-#: ../../faq/programming.rst:1780
+#: ../../faq/programming.rst:1867
 msgid "foo.py::"
 msgstr "foo.py::"
 
-#: ../../faq/programming.rst:1785
+#: ../../faq/programming.rst:1872
 msgid "bar.py::"
 msgstr "bar.py::"
 
-#: ../../faq/programming.rst:1790
+#: ../../faq/programming.rst:1877
 msgid "The problem is that the interpreter will perform the following steps:"
 msgstr "问题是解释器将执行以下步骤："
 
-#: ../../faq/programming.rst:1792
+#: ../../faq/programming.rst:1879
 msgid "main imports foo"
 msgstr "首先导入foo"
 
-#: ../../faq/programming.rst:1793
+#: ../../faq/programming.rst:1880
 msgid "Empty globals for foo are created"
 msgstr "创建用于foo的空全局变量"
 
-#: ../../faq/programming.rst:1794
+#: ../../faq/programming.rst:1881
 msgid "foo is compiled and starts executing"
 msgstr "foo被编译并开始执行"
 
-#: ../../faq/programming.rst:1795
+#: ../../faq/programming.rst:1882
 msgid "foo imports bar"
 msgstr "foo 导入 bar"
 
-#: ../../faq/programming.rst:1796
+#: ../../faq/programming.rst:1883
 msgid "Empty globals for bar are created"
 msgstr "创建了用于bar 的空全局变量"
 
-#: ../../faq/programming.rst:1797
+#: ../../faq/programming.rst:1884
 msgid "bar is compiled and starts executing"
 msgstr "bar被编译并开始执行"
 
-#: ../../faq/programming.rst:1798
+#: ../../faq/programming.rst:1885
 msgid ""
 "bar imports foo (which is a no-op since there already is a module named foo)"
 msgstr "bar导入foo（这是一个空操作（no-op ），因为已经有一个名为foo的模块）"
 
-#: ../../faq/programming.rst:1799
+#: ../../faq/programming.rst:1886
 msgid "bar.foo_var = foo.foo_var"
 msgstr "bar.foo_var = foo.foo_var"
 
-#: ../../faq/programming.rst:1801
+#: ../../faq/programming.rst:1888
 msgid ""
 "The last step fails, because Python isn't done with interpreting ``foo`` yet"
 " and the global symbol dictionary for ``foo`` is still empty."
 msgstr "最后一步失败了，因为Python还没有解释foo，而foo的全局符号字典仍然是空的。"
 
-#: ../../faq/programming.rst:1804
+#: ../../faq/programming.rst:1891
 msgid ""
 "The same thing happens when you use ``import foo``, and then try to access "
 "``foo.foo_var`` in global code."
 msgstr "当你使用 ``import foo`` ，然后尝试在全局代码中访问 ``foo.foo_var`` 时，会发生同样的事情。"
 
-#: ../../faq/programming.rst:1807
+#: ../../faq/programming.rst:1894
 msgid "There are (at least) three possible workarounds for this problem."
 msgstr "这个问题有（至少）三种可能的解决方法。"
 
-#: ../../faq/programming.rst:1809
+#: ../../faq/programming.rst:1896
 msgid ""
 "Guido van Rossum recommends avoiding all uses of ``from <module> import "
 "...``, and placing all code inside functions.  Initializations of global "
@@ -2272,59 +2364,59 @@ msgstr ""
 "，并将所有代码放在函数中。全局变量和类变量的初始化只能使用常量或内置函数。这意味着导入模块中的所有内容都被引用为 ``<module>.<name>``"
 " 。"
 
-#: ../../faq/programming.rst:1814
+#: ../../faq/programming.rst:1901
 msgid ""
 "Jim Roskind suggests performing steps in the following order in each module:"
 msgstr "Jim Roskind建议在每个模块中按以下顺序执行步骤："
 
-#: ../../faq/programming.rst:1816
+#: ../../faq/programming.rst:1903
 msgid ""
 "exports (globals, functions, and classes that don't need imported base "
 "classes)"
 msgstr "导出（全局变量，函数和不需要导入基类的类）"
 
-#: ../../faq/programming.rst:1818
+#: ../../faq/programming.rst:1905
 msgid "``import`` statements"
 msgstr "``导入`` 声明"
 
-#: ../../faq/programming.rst:1819
+#: ../../faq/programming.rst:1906
 msgid ""
 "active code (including globals that are initialized from imported values)."
 msgstr "活动代码（包括从导入值初始化的全局变量）。"
 
-#: ../../faq/programming.rst:1821
+#: ../../faq/programming.rst:1908
 msgid ""
 "van Rossum doesn't like this approach much because the imports appear in a "
 "strange place, but it does work."
 msgstr "van Rossum不喜欢这种方法，因为导入出现在一个陌生的地方，但这种方法确实有效。"
 
-#: ../../faq/programming.rst:1824
+#: ../../faq/programming.rst:1911
 msgid ""
 "Matthias Urlichs recommends restructuring your code so that the recursive "
 "import is not necessary in the first place."
 msgstr "Matthias Urlichs建议重构代码，以便首先不需要递归导入。"
 
-#: ../../faq/programming.rst:1827
+#: ../../faq/programming.rst:1914
 msgid "These solutions are not mutually exclusive."
 msgstr "这些解决方案并不相互排斥。"
 
-#: ../../faq/programming.rst:1831
+#: ../../faq/programming.rst:1918
 msgid "__import__('x.y.z') returns <module 'x'>; how do I get z?"
 msgstr "__import__('x.y.z') 返回 <module 'x'>; 如何获取z?"
 
-#: ../../faq/programming.rst:1833
+#: ../../faq/programming.rst:1920
 msgid ""
 "Consider using the convenience function :func:`~importlib.import_module` "
 "from :mod:`importlib` instead::"
 msgstr "考虑使用 :mod:`importlib` 中的函数 :func:`~importlib.import_module` ："
 
-#: ../../faq/programming.rst:1840
+#: ../../faq/programming.rst:1927
 msgid ""
 "When I edit an imported module and reimport it, the changes don't show up.  "
 "Why does this happen?"
 msgstr "当我编辑了导入过的模块并重新导入它时，这些变化没有显示出来。为什么会这样？"
 
-#: ../../faq/programming.rst:1842
+#: ../../faq/programming.rst:1929
 msgid ""
 "For reasons of efficiency as well as consistency, Python only reads the "
 "module file on the first time a module is imported.  If it didn't, in a "
@@ -2334,13 +2426,13 @@ msgid ""
 msgstr ""
 "出于效率和一致性的原因，Python仅在第一次导入模块时读取模块文件。如果不这么做，在一个由许多模块组成的程序中，每个模块都会导入相同的基本模块，那么基本模块将被解析和重新解析多次。要强制重新读取已更改的模块，请执行以下操作::"
 
-#: ../../faq/programming.rst:1852
+#: ../../faq/programming.rst:1939
 msgid ""
 "Warning: this technique is not 100% fool-proof.  In particular, modules "
 "containing statements like ::"
 msgstr "警告：这种技术不是100％万无一失。特别是包含如下语句的模块"
 
-#: ../../faq/programming.rst:1857
+#: ../../faq/programming.rst:1944
 msgid ""
 "will continue to work with the old version of the imported objects.  If the "
 "module contains class definitions, existing class instances will *not* be "
@@ -2348,7 +2440,7 @@ msgid ""
 "paradoxical behaviour::"
 msgstr "将继续使用旧版本的导入对象。如果模块包含类定义，则不会更新现有的类实例以使用新的类定义。这可能导致以下矛盾行为::"
 
-#: ../../faq/programming.rst:1870
+#: ../../faq/programming.rst:1957
 msgid ""
 "The nature of the problem is made clear if you print out the \"identity\" of"
 " the class objects::"
