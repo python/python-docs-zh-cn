@@ -162,7 +162,7 @@ msgid ""
 " the convenience of fully constructed :class:`Element` objects."
 msgstr ""
 "此模块所提供了大多数解析函数都要求在返回任何结果之前一次性读取整个文档。 可以使用 :class:`XMLParser` "
-"并以渐进方式添加数据，但这是在回调目标上调用方法的推送式 API。 有时用户真正想要的是能够以渐进方式解析 XML 而无需阻塞操作，同时享受完整的已构造"
+"并以增量方式添加数据，但这是在回调目标上调用方法的推送式 API。 有时用户真正想要的是能够以增量方式解析 XML 而无需阻塞操作，同时享受完整的已构造"
 " :class:`Element` 对象。"
 
 #: ../../library/xml.etree.elementtree.rst:142
@@ -173,7 +173,7 @@ msgid ""
 " XML elements, call :meth:`XMLPullParser.read_events`.  Here is an example::"
 msgstr ""
 "针对此需求的最强大工具是 :class:`XMLPullParser`。 它不要求通过阻塞式读取来获得 XML 数据，而是通过执行 "
-":meth:`XMLPullParser.feed` 调用来渐进式地添加数据。  要获得已解析的 XML 元素，应调用 "
+":meth:`XMLPullParser.feed` 调用来增量式地添加数据。  要获得已解析的 XML 元素，应调用 "
 ":meth:`XMLPullParser.read_events`。 下面是一个示例::"
 
 #: ../../library/xml.etree.elementtree.rst:158
@@ -182,6 +182,7 @@ msgid ""
 "where the XML data is being received from a socket or read incrementally "
 "from some storage device.  In such cases, blocking reads are unacceptable."
 msgstr ""
+"常见的用例是针对以非阻塞方式进行的应用程序，其中 XML 是从套接字接收或从某些存储设备增量式读取的。 在这些用例中，阻塞式读取是不可接受的。"
 
 #: ../../library/xml.etree.elementtree.rst:162
 msgid ""
@@ -192,6 +193,9 @@ msgid ""
 "you're reading a large XML document and don't want to hold it wholly in "
 "memory."
 msgstr ""
+"因为其非常灵活，:class:`XMLPullParser` 在更简单的用例中使用起来可能并不方便。 如果你不介意你的应用程序在读取 XML "
+"数据时造成阻塞但仍希望具有增量解析能力，可以考虑 :func:`iterparse`。 它在你读取大型 XML "
+"文档并且不希望将它完全放去内存时会很适用。"
 
 #: ../../library/xml.etree.elementtree.rst:169
 msgid "Finding interesting elements"
@@ -269,10 +273,12 @@ msgid ""
 "example first collects all matching elements with ``root.findall()``, and "
 "only then iterates over the list of matches."
 msgstr ""
+"请注意在迭代时进行并发修改可能会导致问题，就像在迭代并修改 Python 列表或字典时那样。 因此，这个示例先通过 ``root.findall()``"
+" 收集了所有匹配的元素，在此之后再对匹配项列表进行迭代。"
 
 #: ../../library/xml.etree.elementtree.rst:288
 msgid "Building XML documents"
-msgstr "构建XML文档"
+msgstr "构建 XML 文档"
 
 #: ../../library/xml.etree.elementtree.rst:290
 msgid ""
@@ -282,7 +288,7 @@ msgstr ":func:`SubElement` 函数还提供了一种便捷方法来为给定元�
 
 #: ../../library/xml.etree.elementtree.rst:301
 msgid "Parsing XML with Namespaces"
-msgstr "使用命名空间解析XML"
+msgstr "解析带有命名空间的 XML"
 
 #: ../../library/xml.etree.elementtree.rst:303
 msgid ""
@@ -293,12 +299,16 @@ msgid ""
 "`default namespace <https://www.w3.org/TR/xml-names/#defaulting>`__, that "
 "full URI gets prepended to all of the non-prefixed tags."
 msgstr ""
+"如果 XML 输入带有 `命名空间 <https://en.wikipedia.org/wiki/XML_namespace>`__，则具有前缀的 "
+"``prefix:sometag`` 形式的标记和属性将被扩展为 ``{uri}sometag``，其中 *prefix* 会被完整 *URI* "
+"所替换。 并且，如果存在 `默认命名空间 <https://www.w3.org/TR/xml-names/#defaulting>`__，则完整 "
+"URI 会被添加到所有未加前缀的标记之前。"
 
 #: ../../library/xml.etree.elementtree.rst:311
 msgid ""
 "Here is an XML example that incorporates two namespaces, one with the prefix"
 " \"fictional\" and the other serving as the default namespace:"
-msgstr ""
+msgstr "下面的 XML 示例包含两个命名空间，一个具有前缀 \"fictional\" 而另一个则作为默认命名空间:"
 
 #: ../../library/xml.etree.elementtree.rst:332
 msgid ""
