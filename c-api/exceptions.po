@@ -13,6 +13,8 @@
 # Yi Cao <1783250036@qq.com>, 2020
 # jsgang <jsgang9@gmail.com>, 2020
 # Freesand Leo <yuqinju@163.com>, 2021
+# Jiuh-star <jiuh.star@gmail.com>, 2021
+# Dacuse Dankinder <2535262279@qq.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:06+0000\n"
 "PO-Revision-Date: 2020-05-30 11:48+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
+"Last-Translator: Dacuse Dankinder <2535262279@qq.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,6 +48,11 @@ msgid ""
 ":c:func:`PyArg_\\*` functions return ``1`` for success and ``0`` for "
 "failure)."
 msgstr ""
+"本章描述的函数将让你处理和触发 Python 异常。了解一些 Python 异常处理的基本知识是很重要的。 它的工作原理有点像 POSIX 的 "
+":c:data:`errno` 变量：（每个线程）有一个全局指示器显示最近发生的错误。 大多数 C API "
+"函数不会在成功时理会它，但会在失败时设置它来指示错误的原因。 多数 C API 函数也返回一个错误指示器，如果它们应该返回一个指针，通常返回 "
+"``NULL``，如果返回一个整数，则返回 ``-1`` (例外: :c:func:`PyArg_\\*` 函数成功时返回 ``1`` 而失败时返回 "
+"``0``)。"
 
 #: ../../c-api/exceptions.rst:20
 msgid ""
@@ -55,6 +62,8 @@ msgid ""
 "forbidden, for example you can't have a non-``NULL`` traceback if the "
 "exception type is ``NULL``)."
 msgstr ""
+"具体地说，错误指示器由三个对象指针组成：异常的类型，异常的值，和回溯对象。如果没有错误被设置，这些指针都可以是 "
+"``NULL``（尽管一些组合使禁止的，例如，如果异常类型是 ``NULL``，你不能有一个非 ``NULL`` 的回溯）。"
 
 #: ../../c-api/exceptions.rst:26
 msgid ""
@@ -68,6 +77,8 @@ msgid ""
 "error is not handled or carefully propagated, additional calls into the "
 "Python/C API may not behave as intended and may fail in mysterious ways."
 msgstr ""
+"当一个函数由于它调用的某个函数失败而必须失败时，通常不会设置错误指示器；它调用的那个函数已经设置了它。而它负责处理错误和清理异常，或在清除其拥有的所有资源后返回（如对象应用或内存分配）。如果不准备处理异常，则*不*应该正常地继续。如果是由于一个错误返回，那么一定要向调用者表明已经设置了错误。如果错误没有得到处理或小心传播，对"
+" Python/C API的其它调用可能不会有预期的行为，并且可能会以某种神秘的方式失败。"
 
 #: ../../c-api/exceptions.rst:37
 msgid ""
@@ -76,16 +87,18 @@ msgid ""
 "still propagating), while the latter returns an exception after it is caught"
 " (and has therefore stopped propagating)."
 msgstr ""
+"错误指示器 **不是** :func:`sys.exc_info()` "
+"的执行结果。前者对应尚未捕获的异常（异常还在传播），而后者在捕获异常后返回这个异常（异常已经停止传播）。"
 
 #: ../../c-api/exceptions.rst:44
 msgid "Printing and clearing"
-msgstr ""
+msgstr "打印和清理"
 
 #: ../../c-api/exceptions.rst:49
 msgid ""
 "Clear the error indicator.  If the error indicator is not set, there is no "
 "effect."
-msgstr ""
+msgstr "清楚错误指示器。如果没有设置错误指示器，则不会有作用。"
 
 #: ../../c-api/exceptions.rst:55
 msgid ""
@@ -94,6 +107,8 @@ msgid ""
 "printed and the Python process will exit with the error code specified by "
 "the ``SystemExit`` instance."
 msgstr ""
+"将标准回溯打印到 ``sys.stderr`` 并清除错误指示器。**除非** 错误是 "
+"``SystemExit``，这种情况下不会打印回溯进程，且会退出 Python 进程，并显示 ``SystemExit`` 实例指定的错误代码。"
 
 #: ../../c-api/exceptions.rst:60
 msgid ""
@@ -107,6 +122,8 @@ msgid ""
 ":data:`sys.last_value` and :data:`sys.last_traceback` will be set to the "
 "type, value and traceback of the printed exception, respectively."
 msgstr ""
+"如果 *set_sys_last_vars* 非零，则变量 :data:`sys.last_type`，:data:`sys.last_value` 和"
+" :data:`sys.last_traceback` 将分别设置为打印异常的类型，值和回溯。"
 
 #: ../../c-api/exceptions.rst:70
 msgid "Alias for ``PyErr_PrintEx(1)``."
@@ -116,7 +133,7 @@ msgstr "``PyErr_PrintEx(1)`` 的别名。"
 msgid ""
 "Call :func:`sys.unraisablehook` using the current exception and *obj* "
 "argument."
-msgstr ""
+msgstr "使用当前异常和 *obj* 参数调用 :func:`sys.unraisablehook`。"
 
 #: ../../c-api/exceptions.rst:78
 msgid ""
@@ -125,17 +142,19 @@ msgid ""
 "raise the exception.  It is used, for example, when an exception occurs in "
 "an :meth:`__del__` method."
 msgstr ""
+"当设置了异常，但解释器不可能实际地触发异常时，这个实用函数向 ``sys.stderr`` 打印一个警告信息。例如，当 :meth:`__del__` "
+"方法中发生异常时使用这个函数。"
 
 #: ../../c-api/exceptions.rst:83
 msgid ""
 "The function is called with a single argument *obj* that identifies the "
 "context in which the unraisable exception occurred. If possible, the repr of"
 " *obj* will be printed in the warning message."
-msgstr ""
+msgstr "该函数使用单个参数 *obj* 进行调用，该参数标识发生不可触发异常的上下文。如果可能，*obj* 的报告将打印在警告消息中。"
 
 #: ../../c-api/exceptions.rst:87
 msgid "An exception must be set when calling this function."
-msgstr ""
+msgstr "调用此函数时必须设置一个异常。"
 
 #: ../../c-api/exceptions.rst:91
 msgid "Raising exceptions"
@@ -146,7 +165,7 @@ msgid ""
 "These functions help you set the current thread's error indicator. For "
 "convenience, some of these functions will always return a ``NULL`` pointer "
 "for use in a ``return`` statement."
-msgstr ""
+msgstr "这些函数可帮助你设置当前线程的错误指示器。为了方便起见，一些函数将始终返回 ``NULL`` 指针，以便用于 ``return`` 语句。"
 
 #: ../../c-api/exceptions.rst:100
 msgid ""
@@ -156,12 +175,14 @@ msgid ""
 "count. The second argument is an error message; it is decoded from "
 "``'utf-8``'."
 msgstr ""
+"这是设置错误指示器最常用的方法。第一个参数指定异常类型；它通常是标准异常之一，e.g. "
+":c:data:`PyExc_RuntimeError`。你不务要增加它的引用计数。第二个参数是错误信息，它解码自 ``'utf-8'``。"
 
 #: ../../c-api/exceptions.rst:108
 msgid ""
 "This function is similar to :c:func:`PyErr_SetString` but lets you specify "
 "an arbitrary Python object for the \"value\" of the exception."
-msgstr ""
+msgstr "此函数类似于 :c:func:`PyErr_SetString`，但是允许你为异常的“值”指定任意一个 Python 对象。"
 
 #: ../../c-api/exceptions.rst:114
 msgid ""
@@ -170,6 +191,9 @@ msgid ""
 "help format the error message; they have the same meaning and values as in "
 ":c:func:`PyUnicode_FromFormat`. *format* is an ASCII-encoded string."
 msgstr ""
+"这个函数设置了一个错误的指针并且返回了\"NULL\".“exception”应当是一个python中的异常类。The \"format\" "
+"和随后的参数帮助格式化这个错误的信息;他们与  :c:func:`PyUnicode_FromFormat`   "
+"有着相同的含义和值。\"format\"是一个ASCII编码的字符串"
 
 #: ../../c-api/exceptions.rst:123
 msgid ""
@@ -179,7 +203,7 @@ msgstr ""
 
 #: ../../c-api/exceptions.rst:131
 msgid "This is a shorthand for ``PyErr_SetObject(type, Py_None)``."
-msgstr ""
+msgstr "这是 ``PyErr_SetObject(type, Py_None)`` 的简写。"
 
 #: ../../c-api/exceptions.rst:136
 msgid ""
@@ -401,7 +425,7 @@ msgstr ""
 
 #: ../../c-api/exceptions.rst:367
 msgid "Querying the error indicator"
-msgstr ""
+msgstr "查询错误指示器"
 
 #: ../../c-api/exceptions.rst:371
 msgid ""
@@ -654,7 +678,7 @@ msgstr ""
 
 #: ../../c-api/exceptions.rst:622
 msgid "Unicode Exception Objects"
-msgstr ""
+msgstr "Unicode 异常对象"
 
 #: ../../c-api/exceptions.rst:624
 msgid ""
@@ -734,7 +758,7 @@ msgstr ""
 
 #: ../../c-api/exceptions.rst:698
 msgid "Return the *reason* attribute of the given exception object."
-msgstr ""
+msgstr "返回给定异常对象的 *reason* 属性"
 
 #: ../../c-api/exceptions.rst:704
 msgid ""
