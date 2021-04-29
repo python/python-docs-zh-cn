@@ -279,6 +279,11 @@ msgid ""
 "calls ``PyErr_SetObject(PyExc_WindowsError, object)``. This function always "
 "returns ``NULL``."
 msgstr ""
+"这是触发 :exc:`WindowsError` 的方便的函数。如果 *lerr* 为 :c:data:`0` ，则改用调用 "
+":c:func:`GetLastError` 返回的错误代码。它调用 Win32 函数 :c:func:`FormatMessage` 来检索 "
+"*ierr* 或 :c:func:`GetLastError` 给定的错误代码的 Windows 描述，然后构造一个元组对象，其第一项是 *ierr* "
+"值，第二项是相应的错误信息（从 :c:func:`FormatMessage` 获取），然后调用 "
+"``PyErr_SetObject(PyExc_WindowsError, object)`` 。该函数永远返回 ``NULL`` 。"
 
 #: ../../c-api/exceptions.rst:197 ../../c-api/exceptions.rst:205
 #: ../../c-api/exceptions.rst:214 ../../c-api/exceptions.rst:222
@@ -290,7 +295,7 @@ msgstr ":ref:`可用性 <availability>`: Windows。"
 msgid ""
 "Similar to :c:func:`PyErr_SetFromWindowsErr`, with an additional parameter "
 "specifying the exception type to be raised."
-msgstr ""
+msgstr "类似于 :c:func:`PyErr_SetFromWindowsErr` ，额外的参数指定要触发的异常类型。"
 
 #: ../../c-api/exceptions.rst:210
 msgid ""
@@ -298,24 +303,29 @@ msgid ""
 "filename is given as a C string.  *filename* is decoded from the filesystem "
 "encoding (:func:`os.fsdecode`)."
 msgstr ""
+"类似于 :c:func:`PyErr_SetFromWindowsErrWithFilenameObject` ，但是 filename 是以 C "
+"字符串形式给出的。 *filename* 是从文件系统编码（:func:`os.fsdecode`）解码出来的。"
 
 #: ../../c-api/exceptions.rst:219
 msgid ""
 "Similar to :c:func:`PyErr_SetFromWindowsErrWithFilenameObject`, with an "
 "additional parameter specifying the exception type to be raised."
 msgstr ""
+"类似于 :c:func:`PyErr_SetFromWindowsErrWithFilenameObject` ，额外参数指定要触发的异常类型。"
 
 #: ../../c-api/exceptions.rst:227
 msgid ""
 "Similar to :c:func:`PyErr_SetExcFromWindowsErrWithFilenameObject`, but "
 "accepts a second filename object."
 msgstr ""
+"类似于 :c:func:`PyErr_SetExcFromWindowsErrWithFilenameObject` ，但是接受第二个 filename"
+" 对象。"
 
 #: ../../c-api/exceptions.rst:237
 msgid ""
 "Similar to :c:func:`PyErr_SetFromWindowsErrWithFilename`, with an additional"
 " parameter specifying the exception type to be raised."
-msgstr ""
+msgstr "类似于 :c:func:`PyErr_SetFromWindowsErrWithFilename` ，额外参数指定要触发的异常类型。"
 
 #: ../../c-api/exceptions.rst:245
 msgid ""
@@ -324,6 +334,8 @@ msgid ""
 "be ``NULL``, will be set as the :exc:`ImportError`'s respective ``name`` and"
 " ``path`` attributes."
 msgstr ""
+"这是触发 :exc:`ImportError` 的便捷函数。 *msg* 将被设为异常的消息字符串。 *name* 和 *path* ，（都可以为 "
+"``NULL`` ），将用来被设置 :exc:`ImportError` 对应的属性 ``name`` 和 ``path``。"
 
 #: ../../c-api/exceptions.rst:255
 msgid ""
@@ -332,18 +344,22 @@ msgid ""
 "attributes, which make the exception printing subsystem think the exception "
 "is a :exc:`SyntaxError`."
 msgstr ""
+"设置当前异常的文件，行和偏移信息。如果当前异常不是 :exc:`SyntaxError` ，则它设置额外的属性，使异常打印子系统认为异常是 "
+":exc:`SyntaxError`。"
 
 #: ../../c-api/exceptions.rst:265
 msgid ""
 "Like :c:func:`PyErr_SyntaxLocationObject`, but *filename* is a byte string "
 "decoded from the filesystem encoding (:func:`os.fsdecode`)."
 msgstr ""
+"与 :c:func:`PyErr_SyntaxLocationObject` 类似，只是 *filename* 是从文件系统编码（ "
+":func:`os.fsdecode` ）解码出的一个字节字符串。"
 
 #: ../../c-api/exceptions.rst:273
 msgid ""
 "Like :c:func:`PyErr_SyntaxLocationEx`, but the col_offset parameter is "
 "omitted."
-msgstr ""
+msgstr "与 :c:func:`PyErr_SyntaxLocationEx` 类似，但省略了参数 col_offset。"
 
 #: ../../c-api/exceptions.rst:279
 msgid ""
@@ -352,6 +368,8 @@ msgid ""
 "function) was invoked with an illegal argument.  It is mostly for internal "
 "use."
 msgstr ""
+"这是 ``PyErr_SetString(PyExc_SystemError, message)`` 的缩写，其中 *message* "
+"表示使用了非法参数调用内部操作（例如，Python/C API 函数）。它主要用于内部使用。"
 
 #: ../../c-api/exceptions.rst:286
 msgid "Issuing warnings"
@@ -372,6 +390,11 @@ msgid ""
 "normal exception handling (for example, :c:func:`Py_DECREF` owned references"
 " and return an error value)."
 msgstr ""
+"这些函数可以从 C 代码中发出警告。它们仿照了由 Python 模块 :mod:`warnings` 导出的函数。它们通常向 *sys.stderr* "
+"打印一条警告信息；当然，用户也有可能已经指定将警告转换为错误，在这种情况下，它们将触发异常。也有可能由于警告机制出现问题，使得函数触发异常。如果没有触发异常，返回值为"
+" ``0`` ；如果触发异常，返回值为 "
+"``-1``。（无法确定是否实际打印了警告信息，也无法确定异常触发的原因。这是故意为之）。如果触发了异常，调用者应该进行正常的异常处理（例如，:c:func:`Py_DECREF`"
+" 持有引用并返回一个错误值）。"
 
 #: ../../c-api/exceptions.rst:303
 msgid ""
@@ -382,6 +405,9 @@ msgid ""
 "stack frame.  A *stack_level* of 1 is the function calling "
 ":c:func:`PyErr_WarnEx`, 2 is  the function above that, and so forth."
 msgstr ""
+"发出一个警告信息。参数 *category* 是一个警告类别（见下面）或 ``NULL`` ； *message* 是一个 UTF-8 编码的字符串。 "
+"*stack_level* 是一个给出栈帧数量的正数；警告将从该栈帧中当前正在执行的代码行发出。 *stack_level* 为 1 的是调用 "
+":c:func:`PyErr_WarnEx` 的函数，2 是在此之上的函数，以此类推。"
 
 #: ../../c-api/exceptions.rst:310
 msgid ""
@@ -391,6 +417,9 @@ msgid ""
 "Python warning categories are available as global variables whose names are "
 "enumerated at :ref:`standardwarningcategories`."
 msgstr ""
+"警告类别必须是 :c:data:`PyExc_Warning` 的子类， :c:data:`PyExc_Warning` 是 "
+":c:data:`PyExc_Exception` 的子类；默认警告类别是 :c:data:`PyExc_RuntimeWarning` 。标准 "
+"Python 警告类别作为全局变量可用，所有其名称见 :ref:`standardwarningcategories` 。"
 
 #: ../../c-api/exceptions.rst:316
 msgid ""
@@ -398,6 +427,7 @@ msgid ""
 ":mod:`warnings` module and the :option:`-W` option in the command line "
 "documentation.  There is no C API for warning control."
 msgstr ""
+"有关警告控制的信息，参见模块文档 :mod:`warnings` 和命令行文档中的 :option:`-W` 选项。没有用于警告控制的 C API。"
 
 #: ../../c-api/exceptions.rst:322
 msgid ""
