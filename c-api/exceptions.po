@@ -237,6 +237,12 @@ msgid ""
 "returns ``NULL``, so a wrapper function around a system call can write "
 "``return PyErr_SetFromErrno(type);`` when the system call returns an error."
 msgstr ""
+"这是个方便的函数，当 C 库函数返回错误并设置 :c:data:`errno` 时，这个函数会触发异常。它构造一个元组对象，其第一项是整数值 "
+":c:data:`errno`，第二项是相应的错误消息（从 :c:func:`strerror` 获取），然后调用 "
+"``PyErr_SetObject(type, object)``。在 Unix 上，当 :c:data:`errno` 值是 "
+":const:`EINTR` ，即中断的系统调用时，这个函数会调用 :c:func:`PyErr_CheckSignals` "
+"，如果设置了错误指示器，则将其设置为该值。该函数永远返回 ``NULL`` ，因此当系统调用返回错误时，围绕系统调用的包装函数可以写成 ``return"
+" PyErr_SetFromErrno(type);``。"
 
 #: ../../c-api/exceptions.rst:166
 msgid ""
@@ -245,6 +251,9 @@ msgid ""
 "*type* as a third parameter.  In the case of :exc:`OSError` exception, this "
 "is used to define the :attr:`filename` attribute of the exception instance."
 msgstr ""
+"类似于 :c:func:`PyErr_SetFromErrno` ，附加的行为是如果 *filenameObject* 不为 ``NULL`` "
+"，它将作为第三个参数传递给 *type* 的构造函数。举个例子，在 :exc:`OSError` 异常中，*filenameObject* "
+"将用来定义异常实例的 :attr:`filename` 属性。"
 
 #: ../../c-api/exceptions.rst:175
 msgid ""
