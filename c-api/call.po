@@ -53,6 +53,8 @@ msgid ""
 "code. *args* must be non-NULL (use an empty tuple if there are no arguments)"
 " but *kwargs* may be *NULL* if there are no keyword arguments."
 msgstr ""
+"一个调用是用一个元组表示位置参数，用一个dict表示关键字参数，类似于Python代码中的``callable(*args, "
+"**kwargs)``。*args*必须是非空的（如果没有参数，会使用一个空元组），但如果没有关键字参数，*kwargs*可以是*NULL*。"
 
 #: ../../c-api/call.rst:25
 msgid ""
@@ -60,6 +62,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_new` and :c:member:`~PyTypeObject.tp_init` also "
 "pass arguments this way."
 msgstr ""
+"这个约定不仅被*tp_call*使用： :c:member:`~PyTypeObject.tp_new` 和 "
+":c:member:`~PyTypeObject.tp_init` 也这样传递参数。"
 
 #: ../../c-api/call.rst:29
 msgid ""
@@ -88,6 +92,10 @@ msgid ""
 " achieve this is by setting :c:member:`~PyTypeObject.tp_call` to "
 ":c:func:`PyVectorcall_Call`. This bears repeating:"
 msgstr ""
+"作为经验法则，如果可调用程序支持 vectorcall，CPython 会更倾向于内联调用。 然而，这并不是一个硬性规定。 此外，一些第三方扩展直接使用"
+" *tp_call* (而不是使用 :c:func:`PyObject_Call`)。 因此，一个支持 vectorcall 的类也必须实现 "
+":c:member:`~PyTypeObject.tp_call`。 此外，无论使用哪种协议，可调对象的行为都必须是相同的。 推荐的方法是将 "
+":c:member:`~PyTypeObject.tp_call` 设置为 :c:func:`PyVectorcall_Call`。值得一提的是:"
 
 #: ../../c-api/call.rst:57
 msgid ""
@@ -103,6 +111,8 @@ msgid ""
 "args tuple and kwargs dict anyway, then there is no point in implementing "
 "vectorcall."
 msgstr ""
+"如果一个类的vectorcall比*tp_call*慢，就不应该实现vectorcall。例如，如果被调用者需要将参数转换为args 元组和kwargs"
+" dict，那么实现vectorcall就没有意义。"
 
 #: ../../c-api/call.rst:65
 msgid ""
@@ -112,6 +122,9 @@ msgid ""
 "object structure where a *vectorcallfunc* appears. This is a pointer to a "
 "function with the following signature:"
 msgstr ""
+"类可以通过启用 :const:`Py_TPFLAGS_HAVE_VECTORCALL` 标志并将 "
+":c:member:`~PyTypeObject.tp_vectorcall_offset` 设置为对象结构中的 *vectorcallfunc* 的 "
+"offset 来实现 vectorcall 协议。这是一个指向具有以下签名的函数的指针:"
 
 #: ../../c-api/call.rst:73
 msgid "*callable* is the object being called."
@@ -137,6 +150,8 @@ msgid ""
 ":const:`PY_VECTORCALL_ARGUMENTS_OFFSET` flag. To get the actual number of "
 "positional arguments from *nargsf*, use :c:func:`PyVectorcall_NARGS`."
 msgstr ""
+":const:`PY_VECTORCALL_ARGUMENTS_OFFSET` 标志。 要从 *nargsf* 获得实际的位置参数数，请使用 "
+":c:func:`PyVectorcall_NARGS`。"
 
 #: ../../c-api/call.rst:85
 msgid "*kwnames* is a tuple containing the names of the keyword arguments;"
@@ -148,6 +163,8 @@ msgid ""
 "(instances of ``str`` or a subclass) and they must be unique. If there are "
 "no keyword arguments, then *kwnames* can instead be *NULL*."
 msgstr ""
+"换句话说，就是 kwargs 字典的键。 这些名字必须是字符串 (``str`` 或其子类的实例)，并且它们必须是唯一的。 如果没有关键字参数，那么 "
+"*kwnames* 可以用 *NULL* 代替。"
 
 #: ../../c-api/call.rst:89
 msgid ""
@@ -177,6 +194,8 @@ msgid ""
 "call>` function as with any other callable. :c:func:`PyObject_Vectorcall` "
 "will usually be most efficient."
 msgstr ""
+"要调用一个实现了 vectorcall 的对象，请使用某个 :ref:`call API<capi-call>` 函数，就像其他可调对象一样。  "
+":c:func:`PyObject_Vectorcall` 通常是最有效的。"
 
 #: ../../c-api/call.rst:109
 msgid ""
@@ -218,7 +237,7 @@ msgstr "Vectorcall 支持 API"
 msgid ""
 "Given a vectorcall *nargsf* argument, return the actual number of arguments."
 " Currently equivalent to::"
-msgstr ""
+msgstr "给定一个 vectorcall *nargsf* 实参，返回参数的实际数量。 目前等同于::"
 
 #: ../../c-api/call.rst:144
 msgid ""
@@ -239,6 +258,7 @@ msgid ""
 "Otherwise, return the vectorcall function pointer stored in *op*. This "
 "function never raises an exception."
 msgstr ""
+"如果*op*不支持vectorcall协议（要么是因为类型不支持，要么是因为具体实例不支持），返回*NULL*。否则，返回存储在*op*中的vectorcall函数指针。这个函数从不触发异常。"
 
 #: ../../c-api/call.rst:158
 msgid ""
@@ -250,7 +270,7 @@ msgstr ""
 msgid ""
 "Call *callable*'s :c:type:`vectorcallfunc` with positional and keyword "
 "arguments given in a tuple and dict, respectively."
-msgstr ""
+msgstr "调用*可调对象*的 :c:type:`vectorcallfunc`，其位置参数和关键字参数分别以元组和dict形式给出。"
 
 #: ../../c-api/call.rst:170
 msgid ""

@@ -1466,19 +1466,19 @@ msgstr "打开一个新元素。 *tag* 是元素名称。 *attrs* 是包含元�
 msgid ""
 "Creates a comment with the given *text*.  If ``insert_comments`` is true, "
 "this will also add it to the tree."
-msgstr ""
+msgstr "使用给定的 *text* 创建一条注释。 如果 ``insert_comments`` 为真值，这还会将其添加到树结构中。"
 
 #: ../../library/xml.etree.elementtree.rst:1280
 msgid ""
 "Creates a comment with the given *target* name and *text*.  If "
 "``insert_pis`` is true, this will also add it to the tree."
-msgstr ""
+msgstr "使用给定的 *target* 名称和 *text* 创建一条注释。 如果 ``insert_pis`` 为真值，这还会将其添加到树结构中。"
 
 #: ../../library/xml.etree.elementtree.rst:1286
 msgid ""
 "In addition, a custom :class:`TreeBuilder` object can provide the following "
 "methods:"
-msgstr ""
+msgstr "此外，自定义的 :class:`TreeBuilder` 对象还提供了以下方法:"
 
 #: ../../library/xml.etree.elementtree.rst:1291
 msgid ""
@@ -1486,6 +1486,8 @@ msgid ""
 "public identifier.  *system* is the system identifier.  This method does not"
 " exist on the default :class:`TreeBuilder` class."
 msgstr ""
+"处理一条 doctype 声明。 *name* 为 doctype 名称。 *pubid* 为公有标识。 *system* 为系统标识。 "
+"此方法不存在于默认的 :class:`TreeBuilder` 类中。"
 
 #: ../../library/xml.etree.elementtree.rst:1299
 msgid ""
@@ -1494,13 +1496,15 @@ msgid ""
 "is ``''`` for the default namespace and the declared namespace prefix name "
 "otherwise.  *uri* is the namespace URI."
 msgstr ""
+"在定义了 ``start()`` 回调的打开元素的该回调被调用之前，当解析器遇到新的命名空间声明时都会被调用。 *prefix* 对于默认命名空间为 "
+"``''`` 或者在其他情况下为被声明的命名空间前缀名称。 *uri* 是命名空间 URI。"
 
 #: ../../library/xml.etree.elementtree.rst:1308
 msgid ""
 "Is called after the ``end()`` callback of an element that declared a "
 "namespace prefix mapping, with the name of the *prefix* that went out of "
 "scope."
-msgstr ""
+msgstr "在声明了命名空间前缀映射的元素的 ``end()`` 回调之后被调用，附带超出作用域的 *prefix* 的名称。"
 
 #: ../../library/xml.etree.elementtree.rst:1320
 msgid ""
@@ -1524,12 +1528,16 @@ msgid ""
 "If *encoding* [1]_ is given, the value overrides the encoding specified in "
 "the XML file."
 msgstr ""
+"这个类是此模块的低层级构建单元。 它使用 :mod:`xml.parsers.expat` 来实现高效、基于事件的 XML 解析。  它可以通过 "
+":meth:`feed` 方法增量式地收受 XML 数据，并且解析事件会被转换为推送式 API —— 通过在 *target* 对象上发起对回调的调用。"
+" 如果省略 *target*，则会使用标准的 :class:`TreeBuilder`。 如果给出了 *encoding* [1]_ ，该值将覆盖在 "
+"XML 文件中指定的编码格式。"
 
 #: ../../library/xml.etree.elementtree.rst:1344
 msgid ""
 "Parameters are now :ref:`keyword-only <keyword-only_parameter>`. The *html* "
 "argument no longer supported."
-msgstr ""
+msgstr "所有形参现在都是 :ref:`仅限关键字形参 <keyword-only_parameter>`。 *html* 参数不再受支持。"
 
 #: ../../library/xml.etree.elementtree.rst:1351
 msgid ""
@@ -1537,10 +1545,11 @@ msgid ""
 "``close()`` method of the *target* passed during construction; by default, "
 "this is the toplevel document element."
 msgstr ""
+"结束向解析器提供数据。 返回调用在构造期间传入的 *target* 的 ``close()`` 方法的结果；在默认情况下，这是最高层级的文档元素。"
 
 #: ../../library/xml.etree.elementtree.rst:1358
 msgid "Feeds data to the parser.  *data* is encoded data."
-msgstr ""
+msgstr "将数据送入解析器。 *data* 是编码后的数据。"
 
 #: ../../library/xml.etree.elementtree.rst:1360
 msgid ""
@@ -1552,6 +1561,10 @@ msgid ""
 " building a tree structure. This is an example of counting the maximum depth"
 " of an XML file::"
 msgstr ""
+":meth:`XMLParser.feed` 会为每个打开的标记调用 *target* 的 ``start(tag, attrs_dict)`` "
+"方法，为每个关闭的标记调用它的 ``end(tag)`` 方法，并通过 ``data(data)`` 方法来处理数据。 有关更多受支持的回调方法，请参阅"
+" :class:`TreeBuilder` 类。  :meth:`XMLParser.close` 会调用 *target* 的 ``close()``"
+" 方法。 :class:`XMLParser` 不仅仅可被用来构建树结构。 下面是一个统计 XML 文件最大深度的示例::"
 
 #: ../../library/xml.etree.elementtree.rst:1404
 msgid "XMLPullParser Objects"
@@ -1568,10 +1581,15 @@ msgid ""
 "ns\"`` (the \"ns\" events are used to get detailed namespace information).  "
 "If *events* is omitted, only ``\"end\"`` events are reported."
 msgstr ""
+"适用于非阻塞应用程序的拉取式解析器。 它的输入侧 API 与 :class:`XMLParser` "
+"的类似，但不是向回调目标推送调用，:class:`XMLPullParser` 会收集一个解析事件的内部列表并让用户来读取它。 *events* "
+"是要报告的事件序列。 受支持的事件字符串有 ``\"start\"``, ``\"end\"``, ``\"comment\"``, "
+"``\"pi\"``, ``\"start-ns\"`` 和 ``\"end-ns\"`` (\"ns\" 事件被用于获取详细的命名空间信息)。 如果 "
+"*events* 被省略，则只报告 ``\"end\"`` 事件。"
 
 #: ../../library/xml.etree.elementtree.rst:1419
 msgid "Feed the given bytes data to the parser."
-msgstr ""
+msgstr "将给定的字节数据送入解析器。"
 
 #: ../../library/xml.etree.elementtree.rst:1423
 msgid ""
@@ -1580,6 +1598,8 @@ msgid ""
 "events not yet retrieved when the parser is closed can still be read with "
 ":meth:`read_events`."
 msgstr ""
+"通知解析器数据流已终结。 不同于 :meth:`XMLParser.close`，此方法总是返回 :const:`None`。 "
+"当解析器被关闭时任何还未被获取的事件仍可通过 :meth:`read_events` 被读取。"
 
 #: ../../library/xml.etree.elementtree.rst:1430
 msgid ""
@@ -1589,24 +1609,26 @@ msgid ""
 "*elem* is the encountered :class:`Element` object, or other context value as"
 " follows."
 msgstr ""
+"返回包含在送入解析器的数据中遇到的事件的迭代器。 此迭代器会产生 ``(event, elem)`` 对，其中 *event* 是代表事件类型的字符串 "
+"(例如 ``\"end\"``) 而 *elem* 是遇到的 :class:`Element` 对象，或者以下的其他上下文值。"
 
 #: ../../library/xml.etree.elementtree.rst:1436
 msgid "``start``, ``end``: the current Element."
-msgstr ""
+msgstr "``start``, ``end``: 当前元素。"
 
 #: ../../library/xml.etree.elementtree.rst:1437
 msgid "``comment``, ``pi``: the current comment / processing instruction"
-msgstr ""
+msgstr "``comment``, ``pi``: 当前注释 / 处理指令"
 
 #: ../../library/xml.etree.elementtree.rst:1438
 msgid ""
 "``start-ns``: a tuple ``(prefix, uri)`` naming the declared namespace "
 "mapping."
-msgstr ""
+msgstr "``start-ns``: 一个指定所声明命名空间映射的元组 ``(prefix, uri)``。"
 
 #: ../../library/xml.etree.elementtree.rst:1440
 msgid "``end-ns``: :const:`None` (this may change in a future version)"
-msgstr ""
+msgstr "``end-ns``: :const:`None` (这可能在未来版本中改变)"
 
 #: ../../library/xml.etree.elementtree.rst:1442
 msgid ""
@@ -1616,6 +1638,9 @@ msgid ""
 "over iterators obtained from :meth:`read_events` will have unpredictable "
 "results."
 msgstr ""
+"在之前对 :meth:`read_events` 的调用中提供的事件将不会被再次产生。 "
+"事件仅当它们从迭代器中被取出时才会在内部队列中被消费，因此多个读取方对获取自 :meth:`read_events` "
+"的迭代器进行平行迭代将产生无法预料的结果。"
 
 #: ../../library/xml.etree.elementtree.rst:1450
 msgid ""
@@ -1625,6 +1650,8 @@ msgid ""
 "that point.  The same applies to the element children; they may or may not "
 "be present."
 msgstr ""
+":class:`XMLPullParser` 只会确保当发出 \"start\" 事件时看到了开始标记的 \">\" "
+"字符，因而在这个点上属性已被定义，但文本内容和末尾属性还未被定义。 这同样适用于元素的下级；它们可能存在也可能不存在。"
 
 #: ../../library/xml.etree.elementtree.rst:1465
 msgid "Exceptions"
@@ -1637,17 +1664,18 @@ msgid ""
 "will contain a user-friendly error message.  In addition, it will have the "
 "following attributes available:"
 msgstr ""
+"XML 解析器错误，由此模块中的多个解析方法在解析失败时引发。 此异常的实例的字符串表示将包含用户友好的错误消息。 此外，它将具有下列可用属性:"
 
 #: ../../library/xml.etree.elementtree.rst:1476
 msgid ""
 "A numeric error code from the expat parser. See the documentation of "
 ":mod:`xml.parsers.expat` for the list of error codes and their meanings."
-msgstr ""
+msgstr "来自外部解析器的数字错误代码。 请参阅 :mod:`xml.parsers.expat` 的文档查看错误代码列表及它们的含义。"
 
 #: ../../library/xml.etree.elementtree.rst:1481
 msgid ""
 "A tuple of *line*, *column* numbers, specifying where the error occurred."
-msgstr ""
+msgstr "一个包含 *line*, *column* 数值的元组，指明错误发生的位置。"
 
 #: ../../library/xml.etree.elementtree.rst:1484
 msgid "Footnotes"
