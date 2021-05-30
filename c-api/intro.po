@@ -369,6 +369,11 @@ msgid ""
 "memory (assuming ``sizeof(Py_ssize_t) >= sizeof(void*)``). Thus, the "
 "reference count increment is a simple operation."
 msgstr ""
+"总是显式操作引用计数。通常的方法是使用宏 :c:func:`Py_INCREF` 来增加一个对象的引用计数，使用宏 "
+":c:func:`Py_DECREF` 来减少一个对象的引用计数。宏 :c:func:`Py_DECREF` "
+"必须检查引用计数是否为零，然后调用对象的释放器， 因此它比 incref "
+"宏复杂得多。释放器是一个包含在对象类型结构中的函数指针。如果对象是复合对象类型（例如列表），则类型特定的释放器负责递减包含在对象中的其他对象的引用计数，并执行所需的终结。引用计数不会溢出，至少用与虚拟内存中不同内存位置一样多的位用于保存引用计数（即"
+" ``sizeof(Py_ssize_t) >= sizeof(void*)`` ）。因此，引用计数递增是一个简单的操作。"
 
 #: ../../c-api/intro.rst:271
 msgid ""
@@ -387,6 +392,10 @@ msgid ""
 "guarantees to hold a  reference to every argument for the duration of the "
 "call."
 msgstr ""
+"没有必要为每个包含指向对象的指针的局部变量增加对象的引用计数。理论上，当变量指向对象时，对象的引用计数增加 1 ，当变量超出范围时，对象的引用计数减少 "
+"1 "
+"。但是，这两者相互抵消，所以最后引用计数没有改变。使用引用计数的唯一真正原因是只要我们的变量指向它，就可以防止对象被释放。如果知道至少有一个对该对象的其他引用存活时间至少和我们的变量一样长，则没必要临时增加引用计数。一个典型的情形是，对象作为参数从"
+" Python 中传递给被调用的扩展模块中的 C 函数时，调用机制会保证在调用期间持有对所有参数的引用。"
 
 #: ../../c-api/intro.rst:285
 msgid ""
@@ -399,6 +408,8 @@ msgid ""
 "from a :c:func:`Py_DECREF`, so almost any operation is potentially "
 "dangerous."
 msgstr ""
+"但是，有一个常见的陷阱是从列表中提取一个对象，并将其持有一段时间，而不增加其引用计数。某些操作可能会从列表中删除某个对象，减少其引用计数，并有可能重新分配这个对象。真正的危险是，这个看似无害的操作可能会调用任意"
+" Python 代码——也许有一个代码路径允许控制流从 :c:func:`Py_DECREF` 回到用户，因此在复合对象上的操作都存在潜在的风险。"
 
 #: ../../c-api/intro.rst:293
 msgid ""
@@ -409,10 +420,13 @@ msgid ""
 "call :c:func:`Py_DECREF` when they are done with the result; this soon "
 "becomes second nature."
 msgstr ""
+"一个安全的方式是始终使用泛型操作（名称以 ``PyObject_`` ， ``PyNumber_`` ， ``PySequence_`` 或 "
+"``PyMapping_`` 开头的函数）。这些操作总是增加它们返回的对象的引用计数。这让调用者有责任在获得结果后调用 "
+":c:func:`Py_DECREF` 。习惯这种方式很简单。"
 
 #: ../../c-api/intro.rst:303
 msgid "Reference Count Details"
-msgstr ""
+msgstr "引用计数细节"
 
 #: ../../c-api/intro.rst:305
 msgid ""
@@ -776,7 +790,7 @@ msgstr "额外的检查将添加到解析器和编译器中。"
 msgid ""
 "Downcasts from wide types to narrow types are checked for loss of "
 "information."
-msgstr ""
+msgstr "检查从宽类型向窄类型的向下强转是否损失了信息。"
 
 #: ../../c-api/intro.rst:747
 msgid ""
