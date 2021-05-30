@@ -377,6 +377,9 @@ msgid ""
 "  (There's an obvious problem  with objects that reference each other here; "
 "for now, the solution is  \"don't do that.\")"
 msgstr ""
+"引用计数非常重要，因为现代计算机内存（通常十分）有限；它计算有多少不同的地方引用同一个对象。这样的地方可以是某个对象，或者是某个全局（或静态）C "
+"变量，亦或是某个 C 函数的局部变量。当一个对象的引用计数变为 "
+"0，释放该对象。如果这个已释放的对象包含其它对象的引用计数，则递减这些对象的引用计数。如果这些对象的引用计数减少为零，则可以依次释放这些对象，依此类推。（这里有一个很明显的问题——对象之间相互引用；目前，解决方案是“不要那样做”。）"
 
 #: ../../c-api/intro.rst:270
 msgid ""
@@ -395,6 +398,11 @@ msgid ""
 "memory (assuming ``sizeof(Py_ssize_t) >= sizeof(void*)``). Thus, the "
 "reference count increment is a simple operation."
 msgstr ""
+"总是显式操作引用计数。通常的方法是使用宏 :c:func:`Py_INCREF` 来增加一个对象的引用计数，使用宏 "
+":c:func:`Py_DECREF` 来减少一个对象的引用计数。宏 :c:func:`Py_DECREF` "
+"必须检查引用计数是否为零，然后调用对象的释放器， 因此它比 incref "
+"宏复杂得多。释放器是一个包含在对象类型结构中的函数指针。如果对象是复合对象类型（例如列表），则类型特定的释放器负责递减包含在对象中的其他对象的引用计数，并执行所需的终结。引用计数不会溢出，至少用与虚拟内存中不同内存位置一样多的位用于保存引用计数（即"
+" ``sizeof(Py_ssize_t) >= sizeof(void*)`` ）。因此，引用计数递增是一个简单的操作。"
 
 #: ../../c-api/intro.rst:284
 msgid ""
@@ -413,6 +421,10 @@ msgid ""
 "guarantees to hold a  reference to every argument for the duration of the "
 "call."
 msgstr ""
+"没有必要为每个包含指向对象的指针的局部变量增加对象的引用计数。理论上，当变量指向对象时，对象的引用计数增加 1 ，当变量超出范围时，对象的引用计数减少 "
+"1 "
+"。但是，这两者相互抵消，所以最后引用计数没有改变。使用引用计数的唯一真正原因是只要我们的变量指向它，就可以防止对象被释放。如果知道至少有一个对该对象的其他引用存活时间至少和我们的变量一样长，则没必要临时增加引用计数。一个典型的情形是，对象作为参数从"
+" Python 中传递给被调用的扩展模块中的 C 函数时，调用机制会保证在调用期间持有对所有参数的引用。"
 
 #: ../../c-api/intro.rst:298
 msgid ""
