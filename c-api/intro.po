@@ -437,6 +437,8 @@ msgid ""
 "from a :c:func:`Py_DECREF`, so almost any operation is potentially "
 "dangerous."
 msgstr ""
+"但是，有一个常见的陷阱是从列表中提取一个对象，并将其持有一段时间，而不增加其引用计数。某些操作可能会从列表中删除某个对象，减少其引用计数，并有可能重新分配这个对象。真正的危险是，这个看似无害的操作可能会调用任意"
+" Python 代码——也许有一个代码路径允许控制流从 :c:func:`Py_DECREF` 回到用户，因此在复合对象上的操作都存在潜在的风险。"
 
 #: ../../c-api/intro.rst:306
 msgid ""
@@ -447,10 +449,13 @@ msgid ""
 "call :c:func:`Py_DECREF` when they are done with the result; this soon "
 "becomes second nature."
 msgstr ""
+"一个安全的方式是始终使用泛型操作（名称以 ``PyObject_`` ， ``PyNumber_`` ， ``PySequence_`` 或 "
+"``PyMapping_`` 开头的函数）。这些操作总是增加它们返回的对象的引用计数。这让调用者有责任在获得结果后调用 "
+":c:func:`Py_DECREF` 。习惯这种方式很简单。"
 
 #: ../../c-api/intro.rst:316
 msgid "Reference Count Details"
-msgstr ""
+msgstr "引用计数细节"
 
 #: ../../c-api/intro.rst:318
 msgid ""
@@ -671,7 +676,7 @@ msgstr ""
 
 #: ../../c-api/intro.rst:591
 msgid "Here is the corresponding C code, in all its glory::"
-msgstr ""
+msgstr "下面是对应的闪耀荣光的 C 代码："
 
 #: ../../c-api/intro.rst:643
 msgid ""
@@ -814,7 +819,7 @@ msgstr "额外的检查将添加到解析器和编译器中。"
 msgid ""
 "Downcasts from wide types to narrow types are checked for loss of "
 "information."
-msgstr ""
+msgstr "检查从宽类型向窄类型的向下强转是否损失了信息。"
 
 #: ../../c-api/intro.rst:760
 msgid ""
@@ -840,7 +845,7 @@ msgstr "添加底层跟踪和额外的异常检查到虚拟机的运行时中。
 
 #: ../../c-api/intro.rst:771
 msgid "Extra checks are added to the memory arena implementation."
-msgstr ""
+msgstr "添加额外的检查到 arena 内存实现。"
 
 #: ../../c-api/intro.rst:773
 msgid "Extra debugging is added to the thread module."
