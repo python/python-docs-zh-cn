@@ -7,8 +7,8 @@
 # nick <2330458484@qq.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
 # 汪心禾 <wangxinhe06@gmail.com>, 2020
-# Freesand Leo <yuqinju@163.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
+# Freesand Leo <yuqinju@163.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:02+0000\n"
 "PO-Revision-Date: 2019-09-01 03:31+0000\n"
-"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -366,6 +366,11 @@ msgid ""
 "Firefox/2.0.0.11\"``, while :mod:`urllib`'s default user agent string is "
 "``\"Python-urllib/2.6\"`` (on Python 2.6)."
 msgstr ""
+"*headers* 应为字典对象，视同于用每个键和值作为参数去调用 :meth:`add_header`。 通常用于 ``User-Agent`` "
+"头部数据的“伪装” ，浏览器用这些头部数据标识自己——某些 HTTP 服务器只允许来自普通浏览器的请求，而不接受来自脚本的请求。例如，Mozilla "
+"Firefox 可能将自己标识为 ``\"Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 "
+"Firefox/2.0.0.11\"``，而 :mod:`urllib` 的默认用户代理字符串则是 ``\"Python-urllib/2.6\"`` "
+"(在 Python 2.6 上)。"
 
 #: ../../library/urllib.request.rst:218
 msgid ""
@@ -374,12 +379,14 @@ msgid ""
 " None, ``Content-Type: application/x-www-form-urlencoded`` will be added as "
 "a default."
 msgstr ""
+"如果给出了 *data* 参数，则应当包含合适的 ``Content-Type`` 头部信息。若未提供且 *data* 不是 None，则会把 "
+"``Content-Type: application/x-www-form-urlencoded`` 加入作为默认值。 "
 
 #: ../../library/urllib.request.rst:223
 msgid ""
 "The next two arguments are only of interest for correct handling of third-"
 "party HTTP cookies:"
-msgstr ""
+msgstr "接下来的两个参数，只对第三方 HTTP cookie 的处理才有用："
 
 #: ../../library/urllib.request.rst:226
 msgid ""
@@ -390,6 +397,9 @@ msgid ""
 "request is for an image in an HTML document, this should be the request-host"
 " of the request for the page containing the image."
 msgstr ""
+"*origin_req_host* 应为发起初始会话的请求主机，定义参见 :rfc:`2965` "
+"。默认指为``http.cookiejar.request_host(self)`` 。这是用户发起初始请求的主机名或 IP 地址。假设请求是针对 "
+"HTML 文档中的图片数据发起的，则本属性应为对包含图像的页面发起请求的主机。"
 
 #: ../../library/urllib.request.rst:234
 msgid ""
@@ -399,6 +409,9 @@ msgid ""
 "if the request is for an image in an HTML document, and the user had no "
 "option to approve the automatic fetching of the image, this should be true."
 msgstr ""
+"*unverifiable* 应该标示出请求是否无法验证，定义参见 :rfc:`2965` 。默认值为 ``False`` "
+"。所谓无法验证的请求，是指用户没有机会对请求的 URL 做验证。例如，如果请求是针对 HTML "
+"文档中的图像，用户没有机会去许可能自动读取图像，则本属性应为 True。 "
 
 #: ../../library/urllib.request.rst:241
 msgid ""
@@ -409,6 +422,10 @@ msgid ""
 "Subclasses may indicate a different default method by setting the "
 ":attr:`~Request.method` attribute in the class itself."
 msgstr ""
+"*method* 应为字符串，标示要采用的 HTTP 请求方法（例如 ``'HEAD'`` ）。如果给出本参数，其值会存储在 "
+":attr:`~Request.method` 属性中，并由 :meth:`get_method()` 使用。如果 *data* 为``None`` "
+"则默认值为 ``'GET'`` ，否则为 ``'POST'``。子类可以设置 :attr:`~Request.method` "
+"属性来标示不同的默认请求方法。"
 
 #: ../../library/urllib.request.rst:249
 msgid ""
@@ -419,6 +436,9 @@ msgid ""
 "the headers.  There is no support for a 100-continue expectation in the "
 "library."
 msgstr ""
+"如果 data 对象无法分多次传递其内容（比如文件或只能生成一次内容的可迭代对象）并且由于 HTTP "
+"重定向或身份验证而发生请求重试行为，则该请求不会正常工作。 *data* 是紧挨着头部信息发送给 HTTP 服务器的。现有库不支持 HTTP "
+"100-continue 的征询。"
 
 #: ../../library/urllib.request.rst:256
 msgid ":attr:`Request.method` argument is added to the Request class."
@@ -426,7 +446,7 @@ msgstr "Request 类增加了 :attr:`Request.method` 参数。"
 
 #: ../../library/urllib.request.rst:259
 msgid "Default :attr:`Request.method` may be indicated at the class level."
-msgstr ""
+msgstr "默认 :attr:`Request.method` 可以在类中标明。 "
 
 #: ../../library/urllib.request.rst:262
 msgid ""
@@ -434,6 +454,8 @@ msgid ""
 "*data* is neither ``None`` nor a bytes object. Fall back to use chunked "
 "transfer encoding instead."
 msgstr ""
+"如果给出了 ``Content-Length`` ，且 *data* 既不为 ``None`` "
+"也不是字节串对象，则不会触发错误。而会退而求其次采用分块传输的编码格式。"
 
 #: ../../library/urllib.request.rst:269
 msgid ""
