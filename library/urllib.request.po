@@ -496,10 +496,13 @@ msgid ""
 "and in a Mac OS X environment proxy information is retrieved from the OS X "
 "System Configuration Framework."
 msgstr ""
+"让请求转去代理服务。若给出了 *proxies*，则其必须是一个将协议名称映射为代理 URL 的字典对象。默认是从环境变量 "
+"``<protocol>_proxy`` 中读取代理服务的列表。如果没有设置代理环境变量，则 Windows 会从注册表的 Internet "
+"设置部分获取代理设置，而 Mac OS X 则会从 OS X 系统配置框架中读取代理信息。"
 
 #: ../../library/urllib.request.rst:305
 msgid "To disable autodetected proxy pass an empty dictionary."
-msgstr ""
+msgstr "若要禁用自动检测出来的代理，请传入空的字典对象。"
 
 #: ../../library/urllib.request.rst:307
 msgid ""
@@ -508,16 +511,20 @@ msgid ""
 " list of hostname suffixes, optionally with ``:port`` appended, for example "
 "``cern.ch,ncsa.uiuc.edu,some.host:8080``."
 msgstr ""
+"环境变量 :envvar:`no_proxy` 可用于指定不必通过代理访问的主机；应为逗号分隔的主机名后缀列表，可加上 ``:port`` ，例如 "
+"``cern.ch,ncsa.uiuc.edu,some.host:8080`` 。 "
 
 #: ../../library/urllib.request.rst:314
 msgid ""
 "``HTTP_PROXY`` will be ignored if a variable ``REQUEST_METHOD`` is set; see "
 "the documentation on :func:`~urllib.request.getproxies`."
 msgstr ""
+"如果设置了 ``REQUEST_METHOD`` 变量，则会忽略 ``HTTP_PROXY`` ；参阅 "
+":func:`~urllib.request.getproxies` 文档。"
 
 #: ../../library/urllib.request.rst:320
 msgid "Keep a database of  ``(realm, uri) -> (user, password)`` mappings."
-msgstr ""
+msgstr "维护 ``(realm, uri) -> (user, password)`` 映射数据库。"
 
 #: ../../library/urllib.request.rst:325
 msgid ""
@@ -525,6 +532,8 @@ msgid ""
 "of ``None`` is considered a catch-all realm, which is searched if no other "
 "realm fits."
 msgstr ""
+"维护 ``(realm, uri) -> (user, password)`` 映射数据库。realm 为 ``None`` "
+"视作全匹配，若没有其他合适的安全区域就会检索它。"
 
 #: ../../library/urllib.request.rst:332
 msgid ""
@@ -533,6 +542,9 @@ msgid ""
 "BasicAuth handler to determine when to send authentication credentials "
 "immediately instead of waiting for a ``401`` response first."
 msgstr ""
+":class:`HTTPPasswordMgrWithDefaultRealm` 的一个变体，也带有 ``uri -> "
+"is_authenticated`` 映射数据库。可被 BasicAuth 处理函数用于确定立即发送身份认证凭据的时机，而不是先等待 ``401`` "
+"响应。"
 
 #: ../../library/urllib.request.rst:342
 msgid ""
@@ -552,6 +564,14 @@ msgid ""
 "the URI, so that subsequent requests to the URI or any of its super-URIs "
 "will automatically include the authentication credentials."
 msgstr ""
+"这是一个帮助完成 HTTP 身份认证的混合类，对远程主机和代理都适用。参数 *password_mgr* 应与 "
+":class:`HTTPPasswordMgr` 兼容；关于必须支持哪些接口，请参阅 :ref:`http-password-mgr` 对象的章节。如果"
+" *password_mgr* 还提供 ``is_authenticated`` 和 ``update_authenticated`` 方法（请参阅 "
+":ref:`http-password-mgr-with-prior-auth` 对象），则 handler 将对给定 URI 用到 "
+"``is_authenticated`` 的结果，来确定是否随请求发送身份认证凭据。如果该 URI 的 ``is_authenticated``  返回"
+" ``True``，则发送凭据。如果 ``is_authenticated`` 为 ``False`` ，则不发送凭据，然后若收到 ``401`` "
+"响应，则使用身份认证凭据重新发送请求。如果身份认证成功，则调用 ``update_authenticated`` 设置该 URI 的 "
+"``is_authenticated`` 为 ``True``，这样后续对该 URI 或其所有父 URI 的请求将自动包含该身份认证凭据。"
 
 #: ../../library/urllib.request.rst:359
 msgid "Added ``is_authenticated`` support."
@@ -565,6 +585,9 @@ msgid ""
 "be supported. HTTPBasicAuthHandler will raise a :exc:`ValueError` when "
 "presented with a wrong Authentication scheme."
 msgstr ""
+"处理与远程主机的身份验证。 *password_mgr* 应与 :class:`HTTPPasswordMgr` 兼容；有关哪些接口是必须支持的，请参阅"
+" :ref:`http-password-mgr` 章节。如果给出错误的身份认证方式， HTTPBasicAuthHandler 将会触发 "
+":exc:`ValueError` 。"
 
 #: ../../library/urllib.request.rst:374 ../../library/urllib.request.rst:408
 msgid ""
@@ -573,6 +596,8 @@ msgid ""
 " :ref:`http-password-mgr` for information on the interface that must be "
 "supported."
 msgstr ""
+"处理有代理服务时的身份验证。 *password_mgr* 应与 :class:`HTTPPasswordMgr` "
+"兼容；有关哪些接口是必须支持的，请参阅 :ref:`http-password-mgr` 章节。"
 
 #: ../../library/urllib.request.rst:382
 msgid ""
@@ -582,6 +607,8 @@ msgid ""
 ":`http-password-mgr` for information on the interface that must be "
 "supported."
 msgstr ""
+"这是一个帮助完成 HTTP 身份认证的混合类，对远程主机和代理都适用。参数 *password_mgr* 应与 "
+":class:`HTTPPasswordMgr` 兼容；关于必须支持哪些接口，请参阅 :ref:`http-password-mgr` 的章节。"
 
 #: ../../library/urllib.request.rst:391
 msgid ""
@@ -595,6 +622,10 @@ msgid ""
 "raise a :exc:`ValueError` when presented with an authentication scheme other"
 " than Digest or Basic."
 msgstr ""
+"处理远程主机的身份验证。 *password_mgr* 应与 :class:`HTTPPasswordMgr` 兼容；有关哪些接口是必须支持的，请参阅 "
+":ref:`http-password-mgr` 章节。如果同时添加了 digest 身份认证 handler 和basic 身份认证 "
+"handler，则会首先尝试 digest 身份认证。如果 digest 身份认证再返回 40x 响应，会再发送到 basic 身份验证 handler"
+" 进行处理。如果给出 Digest 和 Basic 之外的身份认证方式， 本 handler 方法将会触发 :exc:`ValueError` 。"
 
 #: ../../library/urllib.request.rst:401
 msgid "Raise :exc:`ValueError` on unsupported Authentication Scheme."
