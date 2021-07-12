@@ -401,24 +401,24 @@ msgid ""
 ":meth:`~LoggerAdapter.process` to do what you need. Here is a simple "
 "example::"
 msgstr ""
-"使用 'extra' 的优点是这些键值对会被传入 :class:`LogRecord` 实例的 __dict__ 中，让你通过 "
-":class:`Formatter` 的实例直接使用定制的字符串，实例能找到这个字典类对象的键。 "
-"如果你需要一个其他的方法，比如说，想要在消息字符串前后增加上下文信息，你只需要创建一个 :class:`LoggerAdapter` 的子类，并覆盖它的"
-" :meth:`~LoggerAdapter.process` 方法来做你想做的事情，以下是一个简单的示例::"
+"使用“extra”的好处，就是字典类对象中的值会被并入 :class:`LogRecord` 实例的 __dict__ 中，这样就能利用 "
+":class:`Formatter` 实例使用自定义字符串了，Formatter "
+"知道该如何使用字典类对象的键。若要用到其他方法，比如想在信息字符串中预置或追加上下文信息，只需继承 :class:`LoggerAdapter` 并覆盖"
+" :meth:`~LoggerAdapter.process` 方法即可完成处理。下面给出一个简单的示例："
 
 #: ../../howto/logging-cookbook.rst:615
 msgid "which you can use like this::"
-msgstr "你可以这样使用::"
+msgstr "用法可如下所示："
 
 #: ../../howto/logging-cookbook.rst:620
 msgid ""
 "Then any events that you log to the adapter will have the value of "
 "``some_conn_id`` prepended to the log messages."
-msgstr "然后，你记录在适配器中的任何事件消息前将添加``some_conn_id``的值。"
+msgstr "这样，只要是该 Adapter 处理的任何日志事件，消息前都会加上``some_conn_id`` 的值。"
 
 #: ../../howto/logging-cookbook.rst:624
 msgid "Using objects other than dicts to pass contextual information"
-msgstr "使用除字典之外的其它对象传递上下文信息"
+msgstr "利用非字典对象传入上下文信息"
 
 #: ../../howto/logging-cookbook.rst:626
 msgid ""
@@ -428,12 +428,12 @@ msgid ""
 "if you want to generate values dynamically (whereas the values in a dict "
 "would be constant)."
 msgstr ""
-"你不需要将一个实际的字典传递给 :class:`LoggerAdapter`-你可以传入一个实现了``__getitem__`` "
-"和``__iter__``的类的实例，这样它就像是一个字典。这对于你想动态生成值（而字典中的值往往是常量）将很有帮助。"
+"传给 :class:`LoggerAdapter` 的不一定要是真正的字典对象，也可以传入一个实现了 ``__getitem__`` "
+"和``__iter__`` 方法的类实例，类似要写入日志的字典对象。若要动态生成值（而字典中的值应为常量），这就会很有用。"
 
 #: ../../howto/logging-cookbook.rst:635
 msgid "Using Filters to impart contextual information"
-msgstr "使用过滤器传递上下文信息"
+msgstr "利用 Filter 传递上下文信息"
 
 #: ../../howto/logging-cookbook.rst:637
 msgid ""
@@ -443,8 +443,9 @@ msgid ""
 "can then be output using a suitable format string, or if needed a custom "
 ":class:`Formatter`."
 msgstr ""
-"你也可以使用一个用户定义的类 :class:`Filter` 在日志输出中添加上下文信息。``Filter`` 的实例是被允许修改传入的 "
-"``LogRecords``，包括添加其他的属性，然后可以使用合适的格式化字符串输出，或者可以使用一个自定义的类 :class:`Formatter`。"
+"还可以利用用户定义类 :class:`Filter` 在日志输出中添加上下文信息。``Filter`` 实例可以修改传入的 "
+"``LogRecords``，包括添加额外的属性，然后可以采用合适的格式化字符串对这些属性进行输出，必要时还可采用自定义类 "
+":class:`Formatter`。"
 
 #: ../../howto/logging-cookbook.rst:642
 msgid ""
@@ -457,10 +458,10 @@ msgid ""
 " same format string can be used to get similar output to that shown above. "
 "Here's an example script::"
 msgstr ""
-"例如，在一个web应用程序中，正在处理的请求（或者至少是请求的一部分），可以存储在一个线程本地 (:class:`threading.local`) "
-"变量中，然后从``Filter`` 中去访问。请求中的信息，如IP地址和用户名将被存储在``LogRecord``中，使用上例 "
-"``LoggerAdapter`` 中的 'ip' 和 'user' "
-"属性名。在这种情况下，可以使用相同的格式化字符串来得到上例中类似的输出结果。这是一段示例代码::"
+"例如在某 web 应用程序中，正在处理的请求（或至少是当前关注的部分），可存储于线程本地 (:class:`threading.local`) "
+"变量中，然后从``Filter`` 中去访问，把请求中的一些信息添加进去，比如在 ``LogRecord`` 中写入远程 IP "
+"地址和远程用户名，可利用以上 ``LoggerAdapter`` "
+"示例中的“ip”和“user”属性名。这时可采用与上例相同的格式化字符串来得到类似的输出结果。以下是一段示例代码："
 
 #: ../../howto/logging-cookbook.rst:688
 msgid "which, when run, produces something like:"
@@ -468,7 +469,7 @@ msgstr "在运行时，产生如下内容:"
 
 #: ../../howto/logging-cookbook.rst:709
 msgid "Logging to a single file from multiple processes"
-msgstr "从多个进程记录至单个文件"
+msgstr "在单个文件中记录多个进程的日志"
 
 #: ../../howto/logging-cookbook.rst:711
 msgid ""
@@ -485,12 +486,11 @@ msgid ""
 " and includes a working socket receiver which can be used as a starting "
 "point for you to adapt in your own applications."
 msgstr ""
-"尽管 logging 是线程安全的，将单个进程中的多个线程日志记录至单个文件也 *是* 受支持的，但将 *多个进程* 中的日志记录至单个文件则 *不是*"
-" 受支持的，因为在 Python 中并没有在多个进程中实现对单个文件访问的序列化的标准方案。 "
-"如果你需要将多个进程中的日志记录至单个文件，有一个方案是让所有进程都将日志记录至一个 "
-":class:`~handlers.SocketHandler`，然后用一个实现了套接字服务器的单独进程一边从套接字中读取一边将日志记录至文件。 "
-"（如果愿意的话，你可以在一个现有进程中专门开一个线程来执行此项功能。） :ref:`这一部分 <network-logging>` "
-"文档对此方式有更详细的介绍，并包含一个可用的套接字接收器，你自己的应用可以在此基础上进行适配。"
+"尽管日志对象是线程安全的，也确实 *支持* 将一个进程中的多个线程日志记入单个文件，但 *不* 支持将 *多进程* 日志记入单个文件，因为 Python"
+" 没有标准方案来实现由多个进程串行访问单个文件。若要将多个进程的日志记入单个文件，一种方案是让所有进程都用一个 "
+":class:`~handlers.SocketHandler` "
+"处理日志，然后用一个单独的进程实现套接字服务器，一边从套接字读取数据一边向文件中写入日志。（当然可在某个现有进程中指定一个线程来执行此项功能。） "
+":ref:`此部分 <network-logging>` 更详细地介绍了这种做法，包含了一个套接字接收器，可以此为起点建立适合自己应用程序的代码。"
 
 #: ../../howto/logging-cookbook.rst:724
 msgid ""
@@ -503,11 +503,10 @@ msgid ""
 " lock functionality on all platforms (see "
 "https://bugs.python.org/issue3770)."
 msgstr ""
-"你也可以编写你自己的处理程序，让其使用 :mod:`multiprocessing` 模块中的 "
-":class:`~multiprocessing.Lock` 类来顺序访问你的多个进程中的文件。 现有的 :class:`FileHandler` "
-"及其子类目前并不使用 :mod:`multiprocessing`，尽管它们将来可能会这样做。 "
-"请注意在目前，:mod:`multiprocessing` 模块并未在所有平台上都提供可用的锁功能 (参见 "
-"https://bugs.python.org/issue3770)。"
+"编写自己的 handler 也是可以的，可利用 :mod:`multiprocessing` 模块中的 "
+":class:`~multiprocessing.Lock` 类实现多个进程串行访问文件。现有的 :class:`FileHandler` "
+"及其子类目前没有用到 :mod:`multiprocessing`，或许将来有可能会吧。请注意，目前 :mod:`multiprocessing` "
+"模块并未在所有平台上都提供可用的同步锁功能（参见 https://bugs.python.org/issue3770）。"
 
 #: ../../howto/logging-cookbook.rst:734
 msgid ""
@@ -523,16 +522,15 @@ msgid ""
 "application, and can be used as the basis for code meeting your own specific"
 " requirements::"
 msgstr ""
-"或者，你也可以使用 ``Queue`` 和 :class:`QueueHandler` 将所有的日志事件发送至你的多进程应用的一个进程中。 "
-"以下示例脚本演示了如何执行此操作。 在示例中，一个单独的监听进程负责监听其他进程的日志事件，并根据自己的配置记录。 "
-"尽管示例只演示了这种方法（例如你可能希望使用单独的监听线程而非监听进程 —— "
-"它们的实现是类似的），但你也可以在应用程序的监听进程和其他进程使用不同的配置，它可以作为满足你特定需求的一个基础::"
+"或者，还可以利用 ``Queue`` 和 :class:`QueueHandler` "
+"将所有的日志事件发送给自己的多进程应用中的某个进程。以下例程演示了这种做法，这里有一个单独的监听进程负责监听其他进程发来的日志事件，并根据自己的日志配置记入日志。尽管本例程只演示了一种实现方案（比如可能想用单独的监听线程而非进程"
+" —— 实现方式其实类似），但确实可以为应用程序的监听进程和其他进程采用不同的配置，作为满足特定需求代码的基础："
 
 #: ../../howto/logging-cookbook.rst:850
 msgid ""
 "A variant of the above script keeps the logging in the main process, in a "
 "separate thread::"
-msgstr "上面脚本的一个变种，仍然在主进程中记录日志，但使用一个单独的线程::"
+msgstr "上述代码可做个变化，在主进程中用单独的线程记录日志："
 
 #: ../../howto/logging-cookbook.rst:945
 msgid ""
@@ -543,8 +541,9 @@ msgid ""
 "events are generated in the worker processes) to direct the messages to the "
 "appropriate destinations."
 msgstr ""
-"这段变种的代码展示了如何使用特定的日志记录配置 - 例如``foo``记录器使用了特殊的处理程序，将 ``foo`` 子系统中所有的事件记录至一个文件 "
-"``mplog-foo.log``。在主进程（即使是在工作进程中产生的日志事件）的日志记录机制中将直接使用恰当的配置。"
+"这段改过的代码展示了如何为某日志对象应用指定配置 —— 比如 ``foo`` 日志对象有个特别的 handler，将 ``foo`` "
+"子系统的所有事件保存至文件 ``mplog-foo.log`` "
+"中。主进程的日志机制将会用到这段代码（即便日志事件是在其他的工作进程中产生的），将信息定向输出到指定的地方。"
 
 #: ../../howto/logging-cookbook.rst:952
 msgid "Using concurrent.futures.ProcessPoolExecutor"
@@ -556,6 +555,8 @@ msgid ""
 "your worker processes, you need to create the queue slightly differently. "
 "Instead of"
 msgstr ""
+"若要利用 :class:`concurrent.futures.ProcessPoolExecutor` "
+"启动工作进程，创建队列的方式应稍有不同。不能是："
 
 #: ../../howto/logging-cookbook.rst:962
 msgid "you should use"
@@ -563,7 +564,7 @@ msgstr ""
 
 #: ../../howto/logging-cookbook.rst:968
 msgid "and you can then replace the worker creation from this::"
-msgstr ""
+msgstr "然后就可以将以下工作进程的创建过程："
 
 #: ../../howto/logging-cookbook.rst:979
 msgid "to this (remembering to first import :mod:`concurrent.futures`)::"
@@ -571,7 +572,7 @@ msgstr ""
 
 #: ../../howto/logging-cookbook.rst:987
 msgid "Using file rotation"
-msgstr "轮换日志文件"
+msgstr "利用日志文件轮换机制"
 
 #: ../../howto/logging-cookbook.rst:992
 msgid ""
@@ -582,9 +583,8 @@ msgid ""
 "usage pattern, the logging package provides a "
 ":class:`~handlers.RotatingFileHandler`::"
 msgstr ""
-"有时，你希望当日志文件不断记录增长至一定大小时，打开一个新的文件接着记录。 "
-"你可能希望只保留一定数量的日志文件，当不断的创建文件到达该数量时，又覆盖掉最开始的文件形成循环。 对于这种使用场景，日志包提供了 "
-":class:`~handlers.RotatingFileHandler`::"
+"有时需要让日志文件增长到指定大小，然后打开一个新文件并记入日志。或许还需要只保留一定数量的日志文件，当创建了指定数量的文件后，就轮换使用这些文件，以便让文件数量和大小都维持上限。logging"
+" 包为这种使用模式提供了 :class:`~handlers.RotatingFileHandler` ："
 
 #: ../../howto/logging-cookbook.rst:1024
 msgid ""
