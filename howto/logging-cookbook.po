@@ -12,8 +12,8 @@
 # WH-2099 <wh2099@outlook.com>, 2020
 # 非法操作 <ultrahe@gmail.com>, 2020
 # 浩听 王 <wht_andrew@163.com>, 2020
-# Freesand Leo <yuqinju@163.com>, 2020
 # Dai Xu <daixu61@hotmail.com>, 2021
+# Freesand Leo <yuqinju@163.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:06+0000\n"
 "PO-Revision-Date: 2020-05-30 11:54+0000\n"
-"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -749,12 +749,16 @@ msgid ""
 "disabled). Before Python 3.2, there were only two places where this creation"
 " was done:"
 msgstr ""
+"每条日志事件都由一个  :class:`LogRecord` 实例表示。当某事件要记入日志并且没有被某级别过滤掉时，就会创建一个 "
+":class:`LogRecord` 对象，并将有关事件的信息填入，传给该日志对象的 handler（及其祖先，直至对象禁止向上传播为止）。在 "
+"Python 3.2 之前，只有两个地方会进行事件的创建："
 
 #: ../../howto/logging-cookbook.rst:1225
 msgid ""
 ":meth:`Logger.makeRecord`, which is called in the normal process of logging "
 "an event. This invoked :class:`LogRecord` directly to create an instance."
 msgstr ""
+":meth:`Logger.makeRecord`，在事件正常记入日志的过程中调用。这会直接调用 :class:`LogRecord` 来创建一个实例。"
 
 #: ../../howto/logging-cookbook.rst:1228
 msgid ""
@@ -764,12 +768,15 @@ msgid ""
 "via a :class:`~handlers.SocketHandler`, or in JSON form via an "
 ":class:`~handlers.HTTPHandler`)."
 msgstr ""
+":func:`makeLogRecord`，调用时会带上一个字典参数，其中存放着要加入 LogRecord "
+"的属性。这通常在通过网络接收到合适的字典时调用（如通过 :class:`~handlers.SocketHandler` 以 pickle 形式，或通过"
+" :class:`~handlers.HTTPHandler` 以 JSON 形式）。"
 
 #: ../../howto/logging-cookbook.rst:1234
 msgid ""
 "This has usually meant that if you need to do anything special with a "
 ":class:`LogRecord`, you've had to do one of the following."
-msgstr ""
+msgstr "于是这意味着若要对 :class:`LogRecord` 进行定制，必须进行下述某种操作。"
 
 #: ../../howto/logging-cookbook.rst:1237
 msgid ""
@@ -777,6 +784,8 @@ msgid ""
 ":meth:`Logger.makeRecord`, and set it using :func:`~logging.setLoggerClass` "
 "before any loggers that you care about are instantiated."
 msgstr ""
+"创建 :class:`Logger`  自定义子类，重写 :meth:`Logger.makeRecord`，并在实例化所需日志对象之前用 "
+":func:`~logging.setLoggerClass` 进行设置。"
 
 #: ../../howto/logging-cookbook.rst:1240
 msgid ""
@@ -784,6 +793,8 @@ msgid ""
 "special manipulation you need when its :meth:`~Filter.filter` method is "
 "called."
 msgstr ""
+"为日志对象添加 :class:`Filter` 或 handler，当其 :meth:`~Filter.filter` "
+"方法被调用时，会执行必要的定制操作。"
 
 #: ../../howto/logging-cookbook.rst:1244
 msgid ""
@@ -792,6 +803,8 @@ msgid ""
 "attempt to set its own :class:`Logger` subclass, and the one which did this "
 "last would win."
 msgstr ""
+"比如说在有多个不同库要完成不同操作的场景下，第一种方式会有点笨拙。 每次都要尝试设置自己的 :class:`Logger` "
+"子类，而起作用的是最后一次尝试。"
 
 #: ../../howto/logging-cookbook.rst:1249
 msgid ""
@@ -801,6 +814,8 @@ msgid ""
 "to remember to do this every time they introduced a new logger (which they "
 "would do simply by adding new packages or modules and doing ::"
 msgstr ""
+"第二种方式在多数情况下效果都比较良好，但不允许你使用特殊化的 :class:`LogRecord` 子类。 "
+"库开发者可以为他们的日志记录器设置合适的过滤器，但他们应当要记得每次引入新的日志记录器时都需如此（他们只需通过添加新的包或模块并执行以下操作即可）::"
 
 #: ../../howto/logging-cookbook.rst:1257
 msgid ""
@@ -811,6 +826,9 @@ msgid ""
 " so output from that handler would not reflect the intentions of the library"
 " developer."
 msgstr ""
+"或许这样要顾及太多事情。开发人员还可以将过滤器附加到其顶级日志对象的 :class:`~logging.NullHandler` "
+"中，但如果应用程序开发人员将 handler 附加到较底层库的日志对象，则不会调用该过滤器 --- 所以 handler "
+"输出的内容不会符合库开发人员的预期。 "
 
 #: ../../howto/logging-cookbook.rst:1263
 msgid ""
@@ -821,6 +839,11 @@ msgid ""
 "signature as the :class:`~logging.LogRecord` constructor, as "
 ":class:`LogRecord` is the default setting for the factory."
 msgstr ""
+"在 Python 3.2 以上版本中，:class:`~logging.LogRecord` "
+"的创建是通过工厂对象完成的，工厂对象可以指定。工厂对象只是一个可调用对象，可以用 "
+":func:`~logging.setLogRecordFactory` 进行设置，并用 "
+":func:`~logging.getLogRecordFactory` 进行查询。工厂对象的调用参数与 "
+":class:`~logging.LogRecord` 的构造函数相同，因为 :class:`LogRecord` 是工厂对象的默认设置。"
 
 #: ../../howto/logging-cookbook.rst:1270
 msgid ""
@@ -829,6 +852,7 @@ msgid ""
 "additional attributes to the record once created, using a pattern similar to"
 " this::"
 msgstr ""
+"这种方式可以让自定义工厂对象完全控制 LogRecord 的创建过程。比如可以返回一个子类，或者在创建的日志对象中加入一些额外的属性，使用方式如下所示："
 
 #: ../../howto/logging-cookbook.rst:1283
 msgid ""
@@ -839,10 +863,12 @@ msgid ""
 "time overhead to all logging operations, and the technique should only be "
 "used when the use of a :class:`Filter` does not provide the desired result."
 msgstr ""
+"这种模式允许不同的库将多个工厂对象链在一起，只要不会覆盖彼此的属性或标准属性，就不会出现意外。但应记住，工厂链中的每个节点都会增加日志操作的运行开销，本技术仅在采用"
+" :class:`Filter` 无法达到目标时才应使用。 "
 
 #: ../../howto/logging-cookbook.rst:1294
 msgid "Subclassing QueueHandler - a ZeroMQ example"
-msgstr ""
+msgstr "子类化 QueueHandler - ZeroMQ 示例 "
 
 #: ../../howto/logging-cookbook.rst:1296
 msgid ""
@@ -850,16 +876,18 @@ msgid ""
 " of queues, for example a ZeroMQ 'publish' socket. In the example below,the "
 "socket is created separately and passed to the handler (as its 'queue')::"
 msgstr ""
+"你可以使用 :class:`QueueHandler` 子类将消息发送给其他类型的队列 ，比如 ZeroMQ 'publish' 套接字。 "
+"在以下示例中，套接字将单独创建并传给处理句柄 (作为它的 'queue')::"
 
 #: ../../howto/logging-cookbook.rst:1315
 msgid ""
 "Of course there are other ways of organizing this, for example passing in "
 "the data needed by the handler to create the socket::"
-msgstr ""
+msgstr "当然还有其他方案，比如通过 hander 传入所需数据，以创建 socket："
 
 #: ../../howto/logging-cookbook.rst:1333
 msgid "Subclassing QueueListener - a ZeroMQ example"
-msgstr ""
+msgstr "子类化 QueueListener —— ZeroMQ 示例"
 
 #: ../../howto/logging-cookbook.rst:1335
 msgid ""
@@ -867,6 +895,8 @@ msgid ""
 "kinds of queues, for example a ZeroMQ 'subscribe' socket. Here's an "
 "example::"
 msgstr ""
+"你还可以子类化 :class:`QueueListener` 来从其他类型的队列中获取消息，比如从 ZeroMQ 'subscribe' 套接字。 "
+"下面是一个例子::"
 
 #: ../../howto/logging-cookbook.rst:1354
 msgid "Module :mod:`logging`"
@@ -894,15 +924,15 @@ msgstr "日志记录模块附带的有用处理器。"
 
 #: ../../howto/logging-cookbook.rst:1362
 msgid ":ref:`A basic logging tutorial <logging-basic-tutorial>`"
-msgstr ""
+msgstr ":ref:`日志操作基础教程 <logging-basic-tutorial>`"
 
 #: ../../howto/logging-cookbook.rst:1364
 msgid ":ref:`A more advanced logging tutorial <logging-advanced-tutorial>`"
-msgstr ""
+msgstr ":ref:`日志操作的高级教程 <logging-advanced-tutorial>`"
 
 #: ../../howto/logging-cookbook.rst:1368
 msgid "An example dictionary-based configuration"
-msgstr ""
+msgstr "基于字典进行日志配置的示例"
 
 #: ../../howto/logging-cookbook.rst:1370
 msgid ""
@@ -912,6 +942,9 @@ msgid ""
 "logging>`_. This dictionary is passed to :func:`~config.dictConfig` to put "
 "the configuration into effect::"
 msgstr ""
+"以下是日志配置字典的一个示例——它取自 Django "
+"项目的`文档<https://docs.djangoproject.com/en/stable/topics/logging/#configuring-"
+"logging>`_。此字典将被传给 :func:`~config.dictConfig` 以使配置生效:: "
 
 #: ../../howto/logging-cookbook.rst:1426
 msgid ""
@@ -919,27 +952,30 @@ msgid ""
 "section <https://docs.djangoproject.com/en/stable/topics/logging"
 "/#configuring-logging>`_ of the Django documentation."
 msgstr ""
+"有关本配置的更多信息，请参阅 Django 文档的  `有关章节 "
+"<https://docs.djangoproject.com/en/stable/topics/logging/#configuring-"
+"logging>`_ 。"
 
 #: ../../howto/logging-cookbook.rst:1433
 msgid "Using a rotator and namer to customize log rotation processing"
-msgstr ""
+msgstr "利用 rotator 和 namer 自定义日志轮换操作"
 
 #: ../../howto/logging-cookbook.rst:1435
 msgid ""
 "An example of how you can define a namer and rotator is given in the "
 "following snippet, which shows zlib-based compression of the log file::"
-msgstr ""
+msgstr "以下代码给出了定义 namer 和 rotator 的示例，其中演示了基于 zlib 的日志文件压缩过程："
 
 #: ../../howto/logging-cookbook.rst:1453
 msgid ""
 "These are not \"true\" .gz files, as they are bare compressed data, with no "
 "\"container\" such as you’d find in an actual gzip file. This snippet is "
 "just for illustration purposes."
-msgstr ""
+msgstr "这些不是“真正的” .gz 文件，因为他们只是纯压缩数据，缺少真正 gzip 文件中的“容器”。此段代码只是用于演示。 "
 
 #: ../../howto/logging-cookbook.rst:1458
 msgid "A more elaborate multiprocessing example"
-msgstr ""
+msgstr "更加详细的多道处理示例"
 
 #: ../../howto/logging-cookbook.rst:1460
 msgid ""
@@ -947,7 +983,7 @@ msgid ""
 "multiprocessing using configuration files. The configurations are fairly "
 "simple, but serve to illustrate how more complex ones could be implemented "
 "in a real multiprocessing scenario."
-msgstr ""
+msgstr "以下可运行的示例显示了如何利用配置文件在多进程中应用日志。这些配置相当简单，但足以说明如何在真实的多进程场景中实现较为复杂的配置。 "
 
 #: ../../howto/logging-cookbook.rst:1465
 msgid ""
@@ -961,16 +997,19 @@ msgid ""
 " purely illustrative, but you should be able to adapt this example to your "
 "own scenario."
 msgstr ""
+"上述示例中，主进程产生一个侦听器进程和一些工作进程。每个主进程、侦听器进程和工作进程都有三种独立的日志配置（工作进程共享同一套配置）。大家可以看到主进程的日志记录过程、工作线程向"
+" QueueHandler 写入日志的过程，以及侦听器实现 QueueListener 和较为复杂的日志配置，如何将由队列接收到的事件分发给配置指定的 "
+"handler。请注意，这些配置纯粹用于演示，但应该能调整代码以适用于自己的场景。"
 
 #: ../../howto/logging-cookbook.rst:1475
 msgid ""
 "Here's the script - the docstrings and the comments hopefully explain how it"
 " works::"
-msgstr ""
+msgstr "以下是代码——但愿文档字符串和注释能有助于理解其工作原理："
 
 #: ../../howto/logging-cookbook.rst:1687
 msgid "Inserting a BOM into messages sent to a SysLogHandler"
-msgstr ""
+msgstr "在发送给 SysLogHandler 的信息中插入一个  BOM。"
 
 #: ../../howto/logging-cookbook.rst:1689
 msgid ""
