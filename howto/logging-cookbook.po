@@ -12,8 +12,8 @@
 # WH-2099 <wh2099@outlook.com>, 2020
 # 非法操作 <ultrahe@gmail.com>, 2020
 # 浩听 王 <wht_andrew@163.com>, 2020
-# Dai Xu <daixu61@hotmail.com>, 2021
 # Freesand Leo <yuqinju@163.com>, 2021
+# Dai Xu <daixu61@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:06+0000\n"
 "PO-Revision-Date: 2020-05-30 11:54+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1019,6 +1019,9 @@ msgid ""
 "encoded using UTF-8. (See the :rfc:`relevant section of the specification "
 "<5424#section-6>`.)"
 msgstr ""
+":rfc:`5424` 要求，Unicode 信息应采用字节流形式发送到系统 syslog 守护程序，字节流结构如下所示：可选的纯 ASCII部分，后跟"
+" UTF-8 字节序标记（BOM），然后是采用 UTF-8 编码的 Unicode。（参见 :rfc:`相关规范<5424#section-6>` 。）"
+" "
 
 #: ../../howto/logging-cookbook.rst:1695
 msgid ""
@@ -1027,6 +1030,8 @@ msgid ""
 "incorrectly, with the BOM appearing at the beginning of the message and "
 "hence not allowing any pure-ASCII component to appear before it."
 msgstr ""
+"在 Python 3.1 的 :class:`~logging.handlers.SysLogHandler` 中，已加入了在日志信息中插入 BOM "
+"的代码，但不幸的是，代码并不正确，BOM 出现在了日志信息的开头，因此在它之前就不允许出现纯 ASCII 内容了。 "
 
 #: ../../howto/logging-cookbook.rst:1701
 msgid ""
@@ -1036,6 +1041,8 @@ msgid ""
 "an optional pure-ASCII sequence before it and arbitrary Unicode after it, "
 "encoded using UTF-8, then you need to do the following:"
 msgstr ""
+"由于无法正常工作， Python 3.2.4 以上版本已删除了出错的插入 BOM 代码。但已有版本的代码不会被替换，若要生成与 :rfc:`5424` "
+"兼容的日志信息，包括一个 BOM 符，前面有可选的纯 ASCII 字节流，后面为 UTF-8 编码的任意 Unicode，那么 需要执行以下操作： "
 
 #: ../../howto/logging-cookbook.rst:1707
 msgid ""
@@ -1043,26 +1050,28 @@ msgid ""
 ":class:`~logging.handlers.SysLogHandler` instance, with a format string such"
 " as::"
 msgstr ""
+"为 :class:`~logging.handlers.SysLogHandler` 实例串上一个 "
+":class:`~logging.Formatter` 实例，格式串可如下： "
 
 #: ../../howto/logging-cookbook.rst:1713
 msgid ""
 "The Unicode code point U+FEFF, when encoded using UTF-8, will be encoded as "
 "a UTF-8 BOM -- the byte-string ``b'\\xef\\xbb\\xbf'``."
-msgstr ""
+msgstr "用 UTF-8 编码时，Unicode 码位 U+FEFF 将会编码为 UTF-8 BOM——字节串 ``b'\\xef\\xbb\\xbf'`` 。"
 
 #: ../../howto/logging-cookbook.rst:1716
 msgid ""
 "Replace the ASCII section with whatever placeholders you like, but make sure"
 " that the data that appears in there after substitution is always ASCII "
 "(that way, it will remain unchanged after UTF-8 encoding)."
-msgstr ""
+msgstr "用任意占位符替换 ASCII 部分，但要保证替换之后的数据一定是 ASCII 码（这样在 UTF-8 编码后就会维持不变）。"
 
 #: ../../howto/logging-cookbook.rst:1720
 msgid ""
 "Replace the Unicode section with whatever placeholders you like; if the data"
 " which appears there after substitution contains characters outside the "
 "ASCII range, that's fine -- it will be encoded using UTF-8."
-msgstr ""
+msgstr "用任意占位符替换 Unicode 部分；如果替换后的数据包含超出 ASCII 范围的字符，没问题——他们将用 UTF-8 进行编码。 "
 
 #: ../../howto/logging-cookbook.rst:1724
 msgid ""
@@ -1072,6 +1081,8 @@ msgid ""
 "complain, but your messages will not be RFC 5424-compliant, and your syslog "
 "daemon may complain."
 msgstr ""
+"``SysLogHandler`` *将* 对格式化后的日志信息进行 UTF-8 编码。如果遵循上述规则，应能生成符合 :rfc:`5424` "
+"的日志信息。否则，日志记录过程可能不会有什么反馈，但日志信息将不与 RFC 5424 兼容，syslog 守护程序可能会有出错反应。"
 
 #: ../../howto/logging-cookbook.rst:1731
 msgid "Implementing structured logging"
@@ -1088,16 +1099,19 @@ msgid ""
 "following is a simple approach which uses JSON to serialise the event in a "
 "machine-parseable manner::"
 msgstr ""
+"大多数日志信息是供人阅读的，所以机器解析起来并不容易，但某些时候可能希望以结构化的格式输出，以 *能够* "
+"被程序解析（无需用到复杂的正则表达式）。这可以直接用 logging 包实现。实现方式有很多，以下是一种比较简单的方案，利用 JSON "
+"以机器可解析的方式对事件信息进行序列化："
 
 #: ../../howto/logging-cookbook.rst:1757
 msgid "If the above script is run, it prints:"
-msgstr ""
+msgstr "上述代码运行后的结果是："
 
 #: ../../howto/logging-cookbook.rst:1763 ../../howto/logging-cookbook.rst:1812
 msgid ""
 "Note that the order of items might be different according to the version of "
 "Python used."
-msgstr ""
+msgstr "请注意，根据 Python 版本的不同，各项数据的输出顺序可能会不一样。"
 
 #: ../../howto/logging-cookbook.rst:1766
 msgid ""
