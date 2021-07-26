@@ -10,8 +10,8 @@
 # 浩听 王 <wht_andrew@163.com>, 2019
 # Shengjing Zhu <zsj950618@gmail.com>, 2019
 # Meng Du <alphanow@gmail.com>, 2020
-# Freesand Leo <yuqinju@163.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
+# Freesand Leo <yuqinju@163.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 05:02+0000\n"
 "PO-Revision-Date: 2017-02-16 17:45+0000\n"
-"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1145,14 +1145,14 @@ msgid ""
 "You can then specify, in a logging configuration passed to "
 ":func:`dictConfig`, that a logging handler be created by calling this "
 "function::"
-msgstr ""
+msgstr "然后，你可以在传给 :func:`dictConfig` 的日志配置中指定通过调用此函数来创建日志处理程序::"
 
 #: ../../howto/logging-cookbook.rst:1870
 msgid ""
 "In this example I am setting the ownership using the ``pulse`` user and "
 "group, just for the purposes of illustration. Putting it together into a "
 "working script, ``chowntest.py``::"
-msgstr ""
+msgstr "出于演示目的，以下示例设置用户和用户组为 ``pulse``。代码置于一个可运行的脚本文件 ``chowntest.py`` 中："
 
 #: ../../howto/logging-cookbook.rst:1917
 msgid "To run this, you will probably need to run as ``root``:"
@@ -1166,12 +1166,15 @@ msgid ""
 "or later. With pre-3.3 versions, you would need to implement the actual "
 "ownership change using e.g. :func:`os.chown`."
 msgstr ""
+"请注意此示例用的是 Python 3.3，因为 :func:`shutil.chown` 是从此版本开始出现的。 此方式应当适用于任何支持 "
+":func:`dictConfig` 的 Python 版本 —— 例如 Python 2.7, 3.2 或更新的版本。 对于 3.3 "
+"之前的版本，你应当使用 :func:`os.chown` 之类的函数来实现实际的所有权修改。"
 
 #: ../../howto/logging-cookbook.rst:1933
 msgid ""
 "In practice, the handler-creating function may be in a utility module "
 "somewhere in your project. Instead of the line in the configuration::"
-msgstr ""
+msgstr "实际应用中，handler 的创建函数可能位于项目的工具模块中。以下配置："
 
 #: ../../howto/logging-cookbook.rst:1938
 msgid "you could use e.g.::"
@@ -1185,13 +1188,16 @@ msgid ""
 "callable is resolved by :func:`dictConfig` from the ``ext://`` "
 "specification."
 msgstr ""
+"这里的 ``project.util`` 可以换成函数所在包的实际名称。 在上述的可用脚本中，应该可以使用 "
+"``'ext://__main__.owned_file_handler'``。 在这里，实际的可调用对象是由 :func:`dictConfig` 从"
+" ``ext://`` 说明中解析出来的。"
 
 #: ../../howto/logging-cookbook.rst:1947
 msgid ""
 "This example hopefully also points the way to how you could implement other "
 "types of file change - e.g. setting specific POSIX permission bits - in the "
 "same way, using :func:`os.chmod`."
-msgstr ""
+msgstr "上述示例还指明了其他的文件修改类型的实现方案 —— 比如同样利用 :func:`os.chmod` 设置 POSIX 访问权限位。"
 
 #: ../../howto/logging-cookbook.rst:1951
 msgid ""
@@ -1199,10 +1205,12 @@ msgid ""
 "than a :class:`~logging.FileHandler` - for example, one of the rotating file"
 " handlers, or a different type of handler altogether."
 msgstr ""
+"当然，以上做法也可以扩展到 :class:`~logging.FileHandler` 之外的其他类型的 handler ——比如某个轮换文件 "
+"handler，或类型完全不同的其他 handler。"
 
 #: ../../howto/logging-cookbook.rst:1961
 msgid "Using particular formatting styles throughout your application"
-msgstr ""
+msgstr "生效于整个应用程序的格式化样式"
 
 #: ../../howto/logging-cookbook.rst:1963
 msgid ""
@@ -1214,6 +1222,10 @@ msgid ""
 "to logs, and is completely orthogonal to how an individual logging message "
 "is constructed."
 msgstr ""
+"在 Python 3.2 中，:class:`~logging.Formatter` 增加了一个 ``style`` 关键字形参，它默认为 ``%`` "
+"以便向下兼容，但是允许采用 ``{`` 或 ``{TX-PL-LABEL}#x60;`` 来支持 :meth:`str.format` 和 "
+":class:`string.Template` 所支持的格式化方式。 "
+"请注意此形参控制着用用于最终输出到日志的日志消息格式，并且与单独日志消息的构造方式完全无关。"
 
 #: ../../howto/logging-cookbook.rst:1970
 msgid ""
@@ -1230,6 +1242,11 @@ msgid ""
 "logging calls which are out there in existing code will be using %-format "
 "strings."
 msgstr ""
+"日志函数（:meth:`~Logger.debug`, :meth:`~Logger.info` "
+"等）只会读取位置参数获取日志信息本身，而关键字参数仅用于确定日志函数的工作选项（比如关键字参数 ``exc_info`` "
+"表示应将跟踪信息记入日志，关键字参数 ``extra`` 则给出了需加入日志的额外上下文信息）。所以不能直接使用 :meth:`str.format` "
+"或 :class:`string.Template` 这种语法进行日志调用，因为日志包在内部使用 %-f "
+"格式来合并格式串和可变参数。因为尚需保持向下兼容，这一点不会改变，已有代码中的所有日志调用都将采用 %-f 格式串。"
 
 #: ../../howto/logging-cookbook.rst:1982
 msgid ""
@@ -1237,7 +1254,7 @@ msgid ""
 "loggers, but that approach also runs into backward compatibility problems "
 "because any existing code could be using a given logger name and using "
 "%-formatting."
-msgstr ""
+msgstr "有人建议将格式化样式与特定的日志对象进行关联，但其实也会遇到向下兼容的问题，因为已有代码可能用到了某日志对象并采用了 %-f 格式串。"
 
 #: ../../howto/logging-cookbook.rst:1986
 msgid ""
@@ -1245,7 +1262,7 @@ msgid ""
 " code, decisions about formatting need to be made at the level of the "
 "individual logging call. This opens up a couple of ways in which alternative"
 " formatting styles can be accommodated."
-msgstr ""
+msgstr "为了让第三方库和自编代码都能够交互使用日志功能，需要决定在单次日志记录调用级别采用什么格式。于是就出现了其他几种格式化样式方案。 "
 
 #: ../../howto/logging-cookbook.rst:1993
 msgid "Using LogRecord factories"
@@ -1265,16 +1282,22 @@ msgid ""
 " code. Care should also be taken to call ``str(self.msg)``, just as the base"
 " implementation does."
 msgstr ""
+"在 Python 3.2 中，伴随着 :class:`~logging.Formatter` 的上述变化，logging 包增加了允许用户使用 "
+":func:`setLogRecordFactory` 函数来。设置自己的 :class:`LogRecord` 子类的功能。 "
+"你可以使用此功能来设置自己的 :class:`LogRecord` 子类，它会通过重载 :meth:`~LogRecord.getMessage` "
+"方法来完成适当的操作。 ``msg % args`` "
+"格式化是在此方法的基类实现中进行的，你可以在那里用你自己的格式化操作来替换；但是，你应当注意要支持全部的格式化样式并允许将 %-formatting "
+"作为默认样式，以确保与其他代码进行配合。 还应当注意调用 ``str(self.msg)``，正如基类实现所做的一样。"
 
 #: ../../howto/logging-cookbook.rst:2006
 msgid ""
 "Refer to the reference documentation on :func:`setLogRecordFactory` and "
 ":class:`LogRecord` for more information."
-msgstr ""
+msgstr "更多信息请参阅 :func:`setLogRecordFactory` 和 :class:`LogRecord` 的参考文档。"
 
 #: ../../howto/logging-cookbook.rst:2011
 msgid "Using custom message objects"
-msgstr ""
+msgstr "自定义日志信息对象的使用"
 
 #: ../../howto/logging-cookbook.rst:2013
 msgid ""
@@ -1285,6 +1308,8 @@ msgid ""
 ":func:`str` on that object to get the actual format string. Consider the "
 "following two classes::"
 msgstr ""
+"另一种方案可能更为简单，可以利用 {}- 和 $- 格式构建自己的日志消息。大家或许还记得（来自 :ref:`arbitrary-object-"
+"messages`），可以用任意对象作为日志信息的格式串，日志包将调用该对象上 :func:`str` 获取实际的格式串。看下以下两个类："
 
 #: ../../howto/logging-cookbook.rst:2038
 msgid ""
@@ -1296,16 +1321,19 @@ msgid ""
 "alias such as ``M`` or ``_`` for the message (or perhaps ``__``, if you are "
 "using ``_`` for localization)."
 msgstr ""
+"以上两个类均都可用于替代格式串，以便用 {}- 或 $-formatting 构建实际的“日志信息”部分，此部分将出现在格式化后的日志输出中，替换 "
+"%(message)s 、“{message}”或“$message”。每次要写入日志时都使用类名，如果觉得使用不便，可以采用 ``M`` 或 "
+"``_`` 之类的别名（如果将 ``_`` 用于本地化操作，则可用 ``__``）。"
 
 #: ../../howto/logging-cookbook.rst:2046
 msgid ""
 "Examples of this approach are given below. Firstly, formatting with "
 ":meth:`str.format`::"
-msgstr ""
+msgstr "下面给出示例。 首先用 :meth:`str.format` 进行格式化："
 
 #: ../../howto/logging-cookbook.rst:2060
 msgid "Secondly, formatting with :class:`string.Template`::"
-msgstr ""
+msgstr "然后，用 :class:`string.Template` 格式化："
 
 #: ../../howto/logging-cookbook.rst:2067
 msgid ""
@@ -1318,6 +1346,9 @@ msgid ""
 "sugar for a constructor call to one of the ``XXXMessage`` classes shown "
 "above."
 msgstr ""
+"值得注意的是，上述做法对性能并没什么影响：格式化过程其实不是在日志调用时发生的，而是在日志信息即将由 handler "
+"输出到日志时发生。因此，唯一可能让人困惑的稍不寻常的地方，就是包裹在格式串和参数外面的括号，而不是格式串。因为 __ 符号只是对 "
+"``XXXMessage`` 类的构造函数调用的语法糖。"
 
 #: ../../howto/logging-cookbook.rst:2081
 msgid "Configuring filters with :func:`dictConfig`"
@@ -1337,17 +1368,23 @@ msgid ""
 "provide any callable which returns a :class:`~logging.Filter` instance). "
 "Here is a complete example::"
 msgstr ""
+"用 :func:`~logging.config.dictConfig` *可以* 对日志过滤器进行设置，尽管乍一看做法并不明显（所以才需要本秘籍）。 "
+"由于 :class:`~logging.Filter` 是标准库中唯一的日志过滤器类，不太可能满足众多的要求（它只是作为基类存在），通常需要定义自己的 "
+":class:`~logging.Filter` 子类，并重写 :meth:`~logging.Filter.filter` "
+"方法。为此，请在过滤器的配置字典中设置 ``()`` "
+"键，指定要用于创建过滤器的可调用对象（最明显可用的就是给出一个类，但也可以提供任何一个可调用对象，只要能返回 "
+":class:`~logging.Filter` 实例即可）。下面是一个完整的例子："
 
 #: ../../howto/logging-cookbook.rst:2136
 msgid ""
 "This example shows how you can pass configuration data to the callable which"
 " constructs the instance, in the form of keyword parameters. When run, the "
 "above script will print:"
-msgstr ""
+msgstr "以上示例展示了将配置数据传给构造实例的可调用对象，形式是关键字参数。运行后将会输出："
 
 #: ../../howto/logging-cookbook.rst:2144
 msgid "which shows that the filter is working as configured."
-msgstr ""
+msgstr "这说明过滤器按照配置的参数生效了。"
 
 #: ../../howto/logging-cookbook.rst:2146
 msgid "A couple of extra points to note:"
@@ -1362,6 +1399,9 @@ msgid ""
 "have used the text ``'ext://__main__.MyFilter'`` instead of ``MyFilter`` in "
 "the above example."
 msgstr ""
+"如果在配置中无法直接引用可调用对象（比如位于不同的模块中，并且不能在配置字典所在的位置直接导入），则可以采用 ``ext://...`` 的形式，正如 "
+":ref:`logging-config-dict-externalobj` 所述。例如，在上述示例中可以使用文本 "
+"``'ext://__main__.MyFilter'`` 而不是 ``MyFilter`` 对象。 "
 
 #: ../../howto/logging-cookbook.rst:2155
 msgid ""
