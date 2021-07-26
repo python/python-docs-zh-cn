@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-01 05:02+0000\n"
+"POT-Creation-Date: 2021-07-26 07:02+0000\n"
 "PO-Revision-Date: 2017-02-16 17:45+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1772,4 +1772,119 @@ msgid ""
 "``PyQt5``. You should be able to adapt the approach to earlier versions of "
 "Qt. Please refer to the comments in the code snippet for more detailed "
 "information."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:2987
+msgid "Patterns to avoid"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:2989
+msgid ""
+"Although the preceding sections have described ways of doing things you "
+"might need to do or deal with, it is worth mentioning some usage patterns "
+"which are *unhelpful*, and which should therefore be avoided in most cases. "
+"The following sections are in no particular order."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:2996
+msgid "Opening the same log file multiple times"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:2998
+msgid ""
+"On Windows, you will generally not be able to open the same file multiple "
+"times as this will lead to a \"file is in use by another process\" error. "
+"However, on POSIX platforms you'll not get any errors if you open the same "
+"file multiple times. This could be done accidentally, for example by:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3003
+msgid ""
+"Adding a file handler more than once which references the same file (e.g. by"
+" a copy/paste/forget-to-change error)."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3006
+msgid ""
+"Opening two files that look different, as they have different names, but are"
+" the same because one is a symbolic link to the other."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3009
+msgid ""
+"Forking a process, following which both parent and child have a reference to"
+" the same file. This might be through use of the :mod:`multiprocessing` "
+"module, for example."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3013
+msgid ""
+"Opening a file multiple times might *appear* to work most of the time, but "
+"can lead to a number of problems in practice:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3016
+msgid ""
+"Logging output can be garbled because multiple threads or processes try to "
+"write to the same file. Although logging guards against concurrent use of "
+"the same handler instance by multiple threads, there is no such protection "
+"if concurrent writes are attempted by two different threads using two "
+"different handler instances which happen to point to the same file."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3022
+msgid ""
+"An attempt to delete a file (e.g. during file rotation) silently fails, "
+"because there is another reference pointing to it. This can lead to "
+"confusion and wasted debugging time - log entries end up in unexpected "
+"places, or are lost altogether."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3027
+msgid ""
+"Use the techniques outlined in :ref:`multiple-processes` to circumvent such "
+"issues."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3031
+msgid "Using loggers as attributes in a class or passing them as parameters"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3033
+msgid ""
+"While there might be unusual cases where you'll need to do this, in general "
+"there is no point because loggers are singletons. Code can always access a "
+"given logger instance by name using ``logging.getLogger(name)``, so passing "
+"instances around and holding them as instance attributes is pointless. Note "
+"that in other languages such as Java and C#, loggers are often static class "
+"attributes. However, this pattern doesn't make sense in Python, where the "
+"module (and not the class) is the unit of software decomposition."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3043
+msgid ""
+"Adding handlers other than :class:`NullHandler` to a logger in a library"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3045
+msgid ""
+"Configuring logging by adding handlers, formatters and filters is the "
+"responsibility of the application developer, not the library developer. If "
+"you are maintaining a library, ensure that you don't add handlers to any of "
+"your loggers other than a :class:`~logging.NullHandler` instance."
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3052
+msgid "Creating a lot of loggers"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:3054
+msgid ""
+"Loggers are singletons that are never freed during a script execution, and "
+"so creating lots of loggers will use up memory which can't then be freed. "
+"Rather than create a logger per e.g. file processed or network connection "
+"made, use the :ref:`existing mechanisms <context-info>` for passing "
+"contextual information into your logs and restrict the loggers created to "
+"those describing areas within your application (generally modules, but "
+"occasionally slightly more fine-grained than that)."
 msgstr ""
