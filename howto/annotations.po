@@ -7,6 +7,7 @@
 # Junkai Shao <skaifun.dev@gmail.com>, 2021
 # telnetning <telnetning@gmail.com>, 2021
 # Meng Du <alphanow@gmail.com>, 2021
+# Dai Xu <daixu61@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-29 12:56+0000\n"
 "PO-Revision-Date: 2021-06-28 00:52+0000\n"
-"Last-Translator: Meng Du <alphanow@gmail.com>, 2021\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +26,7 @@ msgstr ""
 
 #: ../../howto/annotations.rst:5
 msgid "Annotations Best Practices"
-msgstr ""
+msgstr "对象注解属性的最佳实践"
 
 #: ../../howto/annotations.rst:0
 msgid "author"
@@ -46,6 +47,8 @@ msgid ""
 "``__annotations__`` on Python objects, we encourage you to follow the "
 "guidelines described below."
 msgstr ""
+"本文意在汇聚对象的注解字典用法的最佳实践。 如果 Python 代码会去查看 Python 对象的 ``__annotations__`` "
+"属性，建议遵循以下准则。"
 
 #: ../../howto/annotations.rst:16
 msgid ""
@@ -55,6 +58,8 @@ msgid ""
 "and older, other best practices for ``__annotations__`` that apply to any "
 "Python version, and quirks of ``__annotations__``."
 msgstr ""
+"本文分为四个部分：在 Python 3.10 以上版本中访问对象注解的最佳实践、在Python 3.9 以上版本中访问对象注解的最佳实践、适用于任何 "
+"Python 版本的其他 ```__annotations__`` 最佳实践、``__annotations__`` 的特别之处。"
 
 #: ../../howto/annotations.rst:26
 msgid ""
@@ -63,10 +68,12 @@ msgid ""
 "information on how to use \"type hints\" in your code, please see the "
 ":mod:`typing` module."
 msgstr ""
+"请注意，本文是专门介绍 ``__annotations__`` 的，而不是介绍注解的用法。若要了解“类型提示”的使用信息，请参阅 "
+":mod:`typing` 模块。"
 
 #: ../../howto/annotations.rst:33
 msgid "Accessing The Annotations Dict Of An Object In Python 3.10 And Newer"
-msgstr ""
+msgstr "在 Python 3.10 以上版本中访问对象的注解字典"
 
 #: ../../howto/annotations.rst:35
 msgid ""
@@ -76,6 +83,8 @@ msgid ""
 "any object that supports annotations.  This function can also \"un-"
 "stringize\" stringized annotations for you."
 msgstr ""
+"Python 3.10 在标准库中加入了一个新函数：:func:`inspect.get_annotations`。在 Python 3.10 "
+"以上的版本中，调用该函数就是访问对象注解字典的最佳做法。该函数还可以“解析”字符串形式的注解。"
 
 #: ../../howto/annotations.rst:42
 msgid ""
@@ -87,6 +96,10 @@ msgid ""
 "of these three *specific* objects, you may simply use ``o.__annotations__`` "
 "to get at the object's annotations dict."
 msgstr ""
+"有时会因为某些原因看不到 :func:`inspect.get_annotations` ，也可以直接访问 ``__annotations__`` "
+"数据成员。这方面的最佳实践在 Python 3.10 中也发生了变化：从 Python 3.10 开始，Python 函数、类和模块的 "
+"``o.__annotations__`` *保证* 可用。如果确定是要查看这三种对象，只要利用 ``o.__annotations__`` "
+"读取对象的注释字典即可。"
 
 #: ../../howto/annotations.rst:52
 msgid ""
@@ -97,10 +110,13 @@ msgid ""
 ":func:`getattr` with three arguments, for example ``getattr(o, "
 "'__annotations__', None)``."
 msgstr ""
+"不过其他类型的可调用对象可能就没有定义 ``__annotations__`` 属性，比如由 :func:`functools.partial` "
+"创建的可调用对象。当访问某个未知对象的``__annotations__`` 时，Python 3.10 以上版本的最佳做法是带三个参数去调用 "
+":func:`getattr` ，比如 ``getattr(o, '__annotations__', None)``。"
 
 #: ../../howto/annotations.rst:62
 msgid "Accessing The Annotations Dict Of An Object In Python 3.9 And Older"
-msgstr ""
+msgstr "在 Python 3.9 以上版本中访问对象的注解字典"
 
 #: ../../howto/annotations.rst:64
 msgid ""
@@ -108,6 +124,7 @@ msgid ""
 " more complicated than in newer versions. The problem is a design flaw in "
 "these older versions of Python, specifically to do with class annotations."
 msgstr ""
+"在 Python 3.9 之前的版本中，访问对象的注解字典要比高版本中复杂得多。这个是 Python 低版本的一个设计缺陷，特别是访问类的注解时。"
 
 #: ../../howto/annotations.rst:69
 msgid ""
@@ -117,6 +134,9 @@ msgid ""
 "should use three-argument :func:`getattr` to access the object's "
 "``__annotations__`` attribute."
 msgstr ""
+"要访问其他对象——函数、可调用对象和模块——的注释字典，最佳做法与 3.10 版本相同，假定不想调用 "
+":func:`inspect.get_annotations`：你应该用三个参数调用 :func:`getattr` ，以访问对象的 "
+"``__annotations__`` 属性。"
 
 #: ../../howto/annotations.rst:76
 msgid ""
@@ -126,10 +146,12 @@ msgid ""
 "``__annotations__`` attribute of a class may inadvertently return the "
 "annotations dict of a *base class.* As an example::"
 msgstr ""
+"不幸的是，对于类而言，这并不是最佳做法。因为 ```__annotations__`` 是类的可选属性，并且类可以从基类继承属性，访问某个类的 "
+"``__annotations__`` 属性可能会无意间返回 *基类* 的注解数据。"
 
 #: ../../howto/annotations.rst:92
 msgid "This will print the annotations dict from ``Base``, not ``Derived``."
-msgstr ""
+msgstr "如此会打印出 ``Base`` 的注解字典，而非 ``Derived`` 的。"
 
 #: ../../howto/annotations.rst:95
 msgid ""
@@ -140,13 +162,16 @@ msgid ""
 "  Since the class may or may not have annotations defined, best practice is "
 "to call the ``get`` method on the class dict."
 msgstr ""
+"若要查看的对象是个类（``isinstance(o, type)``），代码不得不另辟蹊径。这时的最佳做法依赖于 Python 3.9 "
+"以下版本的一处细节：若某个类定义了注解，则会存放于字典 ``__dict__`` 中。由于类不一定会定义注解，最好的做法是在类的 dict 上调用 "
+"``get`` 方法。"
 
 #: ../../howto/annotations.rst:103
 msgid ""
 "To put it all together, here is some sample code that safely accesses the "
 "``__annotations__`` attribute on an arbitrary object in Python 3.9 and "
 "before::"
-msgstr ""
+msgstr "综上所述，下面给出一些示例代码，可以安全地访问 Python 3.9 以下任意对象的 ``__annotations__`` 属性："
 
 #: ../../howto/annotations.rst:112
 msgid ""
@@ -154,6 +179,8 @@ msgid ""
 "  You're encouraged to double-check the type of ``ann`` using "
 ":func:`isinstance` before further examination."
 msgstr ""
+"运行之后，``ann`` 应为一个字典对象或 ``None``。建议在继续之前，先用 :func:`isinstance` 再次检查 ``ann`` "
+"的类型。"
 
 #: ../../howto/annotations.rst:117
 msgid ""
@@ -161,10 +188,12 @@ msgid ""
 "attribute, so for extra safety you may also wish to use :func:`getattr` to "
 "access ``__dict__``."
 msgstr ""
+"请注意，有些特殊的或畸形的类型对象可能没有 ``__dict__`` 属性，为了以防万一，可能还需要用 :func:`getattr` 来访问` "
+"``__dict__``。"
 
 #: ../../howto/annotations.rst:123
 msgid "Manually Un-Stringizing Stringized Annotations"
-msgstr ""
+msgstr "解析字符串形式的注解"
 
 #: ../../howto/annotations.rst:125
 msgid ""
@@ -173,6 +202,8 @@ msgid ""
 "really is best to call :func:`inspect.get_annotations` to do this work for "
 "you."
 msgstr ""
+"有时注释可能会被“字符串化”，解析这些字符串可以求得其所代表的 Python 值，最好是调用 "
+":func:`inspect.get_annotations` 来完成这项工作。"
 
 #: ../../howto/annotations.rst:131
 msgid ""
@@ -181,18 +212,21 @@ msgid ""
 " encouraged to examine the implementation of :func:`inspect.get_annotations`"
 " in the current Python version and follow a similar approach."
 msgstr ""
+"如果是 Python 3.9 之前的版本，或者由于某种原因无法使用  :func:`inspect.get_annotations` "
+"，那就需要重现其代码逻辑。建议查看一下当前 Python 版本中 :func:`inspect.get_annotations` "
+"的实现代码，并遵照实现。"
 
 #: ../../howto/annotations.rst:137
 msgid ""
 "In a nutshell, if you wish to evaluate a stringized annotation on an "
 "arbitrary object ``o``:"
-msgstr ""
+msgstr "简而言之，假设要对任一对象解析其字符串化的注释 ``o`` ："
 
 #: ../../howto/annotations.rst:140
 msgid ""
 "If ``o`` is a module, use ``o.__dict__`` as the ``globals`` when calling "
 ":func:`eval`."
-msgstr ""
+msgstr "如果 ``o`` 是个模块，在调用 :func:`eval` 时，``o.__dict__``  可视为 ``globals`` 。"
 
 #: ../../howto/annotations.rst:142
 msgid ""
@@ -200,6 +234,8 @@ msgid ""
 "``globals``, and ``dict(vars(o))`` as the ``locals``, when calling "
 ":func:`eval`."
 msgstr ""
+"如果 ``o`` 是一个类，在调用 :func:`eval` 时，``sys.modules[o.__module__].__dict__`` 视作  "
+"``globals``，``dict(vars(o))`` 视作 ``locals`` 。"
 
 #: ../../howto/annotations.rst:145
 msgid ""
