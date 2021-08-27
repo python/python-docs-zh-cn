@@ -2782,7 +2782,7 @@ msgstr ""
 
 #: ../../whatsnew/3.10.rst:1761 ../../whatsnew/3.10.rst:2040
 msgid "Porting to Python 3.10"
-msgstr ""
+msgstr "移植到 Python 3.10"
 
 #: ../../whatsnew/3.10.rst:1763
 msgid ""
@@ -2792,7 +2792,7 @@ msgstr "本节列出了先前描述的更改以及可能需要更改代码的其
 
 #: ../../whatsnew/3.10.rst:1768
 msgid "Changes in the Python syntax"
-msgstr ""
+msgstr "Python 语法中的变化"
 
 #: ../../whatsnew/3.10.rst:1770
 msgid ""
@@ -3179,6 +3179,8 @@ msgid ""
 "immutable type objects: type attributes cannot be set nor deleted. "
 "(Contributed by Victor Stinner and Erlend E. Aasland in :issue:`43908`.)"
 msgstr ""
+"增加了新的 :c:data:`Py_TPFLAGS_IMMUTABLETYPE` 类型旗标用于创建不可变类型对象：类型属性不可被设置或删除。 （由 "
+"Victor Stinner 和 Erlend E. Aasland 在 :issue:`43908` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2042
 msgid ""
@@ -3188,6 +3190,10 @@ msgid ""
 "See :ref:`Parsing arguments and building values <arg-parsing>` and the "
 ":pep:`353`. (Contributed by Victor Stinner in :issue:`40943`.)"
 msgstr ""
+"现在必须定义 ``PY_SSIZE_T_CLEAN`` 才能使用 :c:func:`PyArg_ParseTuple` 和 "
+":c:func:`Py_BuildValue`，该格式会使用 ``#``: ``es#``, ``et#``, ``s#``, ``u#``, "
+"``y#``, ``z#``, ``U#`` 和 ``Z#``。 参见 :ref:`解析参数和构造值 <arg-parsing>` 以及 "
+":pep:`353`。 （由 Victor Stinner 在 :issue:`40943` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2049
 msgid ""
@@ -3196,10 +3202,13 @@ msgid ""
 "new_refcnt)``: see :c:func:`Py_SET_REFCNT()` (available since Python 3.9). "
 "For backward compatibility, this macro can be used::"
 msgstr ""
+"由于 :c:func:`Py_REFCNT()` 已被改为内联静态函数，``Py_REFCNT(obj) = new_refcnt`` 必须被替换为 "
+"``Py_SET_REFCNT(obj, new_refcnt)``: 参见 :c:func:`Py_SET_REFCNT()` (自 Python "
+"3.9 起可用)。 为保持向下兼容性，可使用这个宏::"
 
 #: ../../whatsnew/3.10.rst:2058
 msgid "(Contributed by Victor Stinner in :issue:`39573`.)"
-msgstr ""
+msgstr "（由 Victor Stinner 在 :issue:`39573` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2060
 msgid ""
@@ -3207,6 +3216,8 @@ msgid ""
 "for historical reason. It is no longer allowed. (Contributed by Victor "
 "Stinner in :issue:`40839`.)"
 msgstr ""
+"不带 :term:`GIL` 地调用 :c:func:`PyDict_GetItem` 曾出于历史原因被允许。 现在已不再被允许。 （由 Victor "
+"Stinner 在 :issue:`40839` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2064
 msgid ""
@@ -3215,6 +3226,9 @@ msgid ""
 "now.  Use :c:func:`PyUnicode_New` to allocate Unicode object without initial"
 " data. (Contributed by Inada Naoki in :issue:`36346`.)"
 msgstr ""
+"``PyUnicode_FromUnicode(NULL, size)`` 和 ``PyUnicode_FromStringAndSize(NULL, "
+"size)`` 现在会引发 ``DeprecationWarning``。 请使用 :c:func:`PyUnicode_New` 来分配不带初始数据的"
+" Unicode 对象。  （由 Inada Naoki 在 :issue:`36346` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2069
 msgid ""
@@ -3222,6 +3236,9 @@ msgid ""
 "``unicodedata.ucnhash_CAPI`` has been moved to the internal C API. "
 "(Contributed by Victor Stinner in :issue:`42157`.)"
 msgstr ""
+"私有的 ``_PyUnicode_Name_CAPI`` 结构体 (PyCapsule API "
+"``unicodedata.ucnhash_CAPI``) 已被移到内部 C API。 （由 Victor Stinner 在 "
+":issue:`42157` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2073
 msgid ""
@@ -3233,6 +3250,12 @@ msgid ""
 ":ref:`Python Path Configuration.  <init-path-config>`. (Contributed by "
 "Victor Stinner in :issue:`42260`.)"
 msgstr ""
+"现在 :c:func:`Py_GetPath`, :c:func:`Py_GetPrefix`, :c:func:`Py_GetExecPrefix`,"
+" :c:func:`Py_GetProgramFullPath`, :c:func:`Py_GetPythonHome` 和 "
+":c:func:`Py_GetProgramName` 当在 :c:func:`Py_Initialize` 之前被调用（在 Python "
+"被初始化之前）时将返回 ``NULL``。 请使用新的 :ref:`Python 初始化配置 API <init-config>` 来获取 "
+":ref:`Python 路径配置。 <init-path-config>`。 （由 Victor Stinner 在 :issue:`42260` "
+"中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2081
 msgid ""
@@ -3243,6 +3266,11 @@ msgid ""
 "(PyList_SET_ITEM (a, b, c) < 0) ...`` test. (Contributed by Zackery Spytz "
 "and Victor Stinner in :issue:`30459`.)"
 msgstr ""
+":c:func:`PyList_SET_ITEM`, :c:func:`PyTuple_SET_ITEM` 和 :c:func:`PyCell_SET`"
+" 宏不可再被用作 l 值或 r 值。 例如，``x = PyList_SET_ITEM(a, b, c)`` 和 "
+"``PyList_SET_ITEM(a, b, c) = x`` 现在会失败并提示编译器错误。 它可以防止 ``if (PyList_SET_ITEM "
+"(a, b, c) < 0) ...`` 检测之类的问题。 （由 Zackery Spytz 和 Victor Stinner 在 "
+":issue:`30459` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2088
 msgid ""
@@ -3254,6 +3282,11 @@ msgid ""
 "been included directly, consider including ``Python.h`` instead. "
 "(Contributed by Nicholas Sim in :issue:`35134`)"
 msgstr ""
+"非受限 API 文件 ``odictobject.h``, ``parser_interface.h``, ``picklebufobject.h``,"
+" ``pyarena.h``, ``pyctype.h``, ``pydebug.h``, ``pyfpe.h``, 和 ``pytime.h`` "
+"已被移至 ``Include/cpython`` 目录。 这些文件不可被直接包括，因为它们已经在``Python.h`` 中被包括了: "
+":ref:`Include 文件 <api-includes>`。 如果它们已被直接包括，请考虑改为包括 ``Python.h``。 （由 "
+"Nicholas Sim 在 :issue:`35134` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2096
 msgid ""
@@ -3263,6 +3296,10 @@ msgid ""
 "is set instead. (Contributed by Victor Stinner and Erlend E. Aasland in "
 ":issue:`43908`.)"
 msgstr ""
+"请使用 :c:data:`Py_TPFLAGS_IMMUTABLETYPE` 类型旗标来创建不可变对象。 不要依赖 "
+":c:data:`Py_TPFLAGS_HEAPTYPE` 来确定类型对象是否可变；请改为检查是否设置了 "
+":c:data:`Py_TPFLAGS_IMMUTABLETYPE`。 （由 Victor Stinner 和 Erlend E. Aasland 在 "
+":issue:`43908` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2102
 msgid ""
@@ -3270,6 +3307,8 @@ msgid ""
 "limited API. The function is mainly useful for custom builds of Python. "
 "(Contributed by Petr Viktorin in :issue:`26241`)"
 msgstr ""
+"未记入文档的函数 ``Py_FrozenMain`` 已从受限 API 中被移除。 此函数主要适用于 Python 的定制编译版。 （由 Petr "
+"Viktorin 在 :issue:`26241` 中贡献）"
 
 #: ../../whatsnew/3.10.rst:2109
 msgid ""
@@ -3277,50 +3316,64 @@ msgid ""
 "removed in Python 3.12: use :c:func:`PyUnicode_InternInPlace` instead. "
 "(Contributed by Victor Stinner in :issue:`41692`.)"
 msgstr ""
+"现在 ``PyUnicode_InternImmortal()`` 函数已被弃用并将在 Python 3.12 中移除：请改用 "
+":c:func:`PyUnicode_InternInPlace`。 （由 Victor Stinner 在 :issue:`41692` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2117
 msgid ""
 "Removed ``Py_UNICODE_str*`` functions manipulating ``Py_UNICODE*`` strings. "
 "(Contributed by Inada Naoki in :issue:`41123`.)"
 msgstr ""
+"移除了 ``Py_UNICODE_str*`` 函数，它被用于控制 ``Py_UNICODE*`` 字符串。 （由 Inada Naoki 在 "
+":issue:`41123` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2120
 msgid ""
 "``Py_UNICODE_strlen``: use :c:func:`PyUnicode_GetLength` or "
 ":c:macro:`PyUnicode_GET_LENGTH`"
 msgstr ""
+"``Py_UNICODE_strlen``: 使用 :c:func:`PyUnicode_GetLength` 或 "
+":c:macro:`PyUnicode_GET_LENGTH`"
 
 #: ../../whatsnew/3.10.rst:2122
 msgid ""
 "``Py_UNICODE_strcat``: use :c:func:`PyUnicode_CopyCharacters` or "
 ":c:func:`PyUnicode_FromFormat`"
 msgstr ""
+"``Py_UNICODE_strcat``: 使用 :c:func:`PyUnicode_CopyCharacters` 或 "
+":c:func:`PyUnicode_FromFormat`"
 
 #: ../../whatsnew/3.10.rst:2124
 msgid ""
 "``Py_UNICODE_strcpy``, ``Py_UNICODE_strncpy``: use "
 ":c:func:`PyUnicode_CopyCharacters` or :c:func:`PyUnicode_Substring`"
 msgstr ""
+"``Py_UNICODE_strcpy``, ``Py_UNICODE_strncpy``: 使用 "
+":c:func:`PyUnicode_CopyCharacters` 或 :c:func:`PyUnicode_Substring`"
 
 #: ../../whatsnew/3.10.rst:2126
 msgid "``Py_UNICODE_strcmp``: use :c:func:`PyUnicode_Compare`"
-msgstr ""
+msgstr "``Py_UNICODE_strcmp``: 使用 :c:func:`PyUnicode_Compare`"
 
 #: ../../whatsnew/3.10.rst:2127
 msgid "``Py_UNICODE_strncmp``: use :c:func:`PyUnicode_Tailmatch`"
-msgstr ""
+msgstr "``Py_UNICODE_strncmp``: 使用 :c:func:`PyUnicode_Tailmatch`"
 
 #: ../../whatsnew/3.10.rst:2128
 msgid ""
 "``Py_UNICODE_strchr``, ``Py_UNICODE_strrchr``: use "
 ":c:func:`PyUnicode_FindChar`"
 msgstr ""
+"``Py_UNICODE_strchr``, ``Py_UNICODE_strrchr``: 使用 "
+":c:func:`PyUnicode_FindChar`"
 
 #: ../../whatsnew/3.10.rst:2131
 msgid ""
 "Removed ``PyUnicode_GetMax()``. Please migrate to new (:pep:`393`) APIs. "
 "(Contributed by Inada Naoki in :issue:`41103`.)"
 msgstr ""
+"移除了 ``PyUnicode_GetMax()``。 请迁移到新的 (:pep:`393`) API。 （由 Inada Naoki 在 "
+":issue:`41103` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2134
 msgid ""
@@ -3328,6 +3381,8 @@ msgid ""
 ":c:func:`PyLong_FromUnicodeObject`. (Contributed by Inada Naoki in "
 ":issue:`41103`.)"
 msgstr ""
+"移除了 ``PyLong_FromUnicode()``。 请迁移到 :c:func:`PyLong_FromUnicodeObject`。 （由 "
+"Inada Naoki 在 :issue:`41103` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2137
 msgid ""
@@ -3335,6 +3390,8 @@ msgid ""
 ":c:func:`PyUnicode_AsUCS4Copy` or :c:func:`PyUnicode_AsWideCharString` "
 "(Contributed by Inada Naoki in :issue:`41103`.)"
 msgstr ""
+"移除了 ``PyUnicode_AsUnicodeCopy()``。 请使用 :c:func:`PyUnicode_AsUCS4Copy` 或 "
+":c:func:`PyUnicode_AsWideCharString` （由 Inada Naoki 在 :issue:`41103` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2141
 msgid ""
@@ -3342,6 +3399,8 @@ msgid ""
 "``ceval.recursion_limit`` of the :c:type:`PyInterpreterState` structure. "
 "(Contributed by Victor Stinner in :issue:`41834`.)"
 msgstr ""
+"移除了 ``_Py_CheckRecursionLimit`` 变量：它已被 :c:type:`PyInterpreterState` 结构体的 "
+"``ceval.recursion_limit`` 所取代。 （由 Victor Stinner 在 :issue:`41834` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2145
 msgid ""
@@ -3350,6 +3409,9 @@ msgid ""
 ":c:type:`PyInterpreterState` structure. (Contributed by Serhiy Storchaka in "
 ":issue:`41936`.)"
 msgstr ""
+"移除了未记入文档的宏 ``Py_ALLOW_RECURSION`` 和 ``Py_END_ALLOW_RECURSION`` 以及 "
+":c:type:`PyInterpreterState` 结构体的 ``recursion_critical`` 字段。 （由 Serhiy "
+"Storchaka 在 :issue:`41936` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2150
 msgid ""
@@ -3358,6 +3420,9 @@ msgid ""
 ":c:member:`PyConfig.install_signal_handlers`. (Contributed by Victor Stinner"
 " in :issue:`41713`.)"
 msgstr ""
+"移除了未记入文档的 ``PyOS_InitInterrupts()`` 函数。 初始化 Python 已经会隐式地安装信号处理句柄：参见 "
+":c:member:`PyConfig.install_signal_handlers`。 （由 Victor Stinner 在 "
+":issue:`41713` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2155
 msgid ""
