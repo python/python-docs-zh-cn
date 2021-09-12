@@ -19,8 +19,8 @@
 # Dankinder <2535262279@qq.com>, 2021
 # helloworldSB <warningfor163@foxmail.com>, 2021
 # jing li <tes286.lijing@gmail.com>, 2021
-# Freesand Leo <yuqinju@163.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
+# Freesand Leo <yuqinju@163.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-29 12:56+0000\n"
 "PO-Revision-Date: 2021-06-28 00:47+0000\n"
-"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -586,7 +586,7 @@ msgstr "所有可能的请求都由上一节中某些标志的组合完全定义
 msgid ""
 "In the following table *U* stands for undefined contiguity. The consumer "
 "would have to call :c:func:`PyBuffer_IsContiguous` to determine contiguity."
-msgstr ""
+msgstr "在下表中，*U* 代表连续性未定义。消费者程序必须调用  :c:func:`PyBuffer_IsContiguous` 以确定连续性。"
 
 #: ../../c-api/buffer.rst:321
 msgid "readonly"
@@ -626,6 +626,9 @@ msgid ""
 ":c:member:`~Py_buffer.itemsize`, :c:member:`~Py_buffer.ndim`, "
 ":c:member:`~Py_buffer.shape` and :c:member:`~Py_buffer.strides`."
 msgstr ""
+"NumPy 风格数组的逻辑结构由 :c:member:`~Py_buffer.itemsize` 、 "
+":c:member:`~Py_buffer.ndim` 、 :c:member:`~Py_buffer.shape` 和 "
+":c:member:`~Py_buffer.strides` 定义。"
 
 #: ../../c-api/buffer.rst:350
 msgid ""
@@ -635,6 +638,9 @@ msgid ""
 ":c:member:`~Py_buffer.shape` and :c:member:`~Py_buffer.strides` are "
 "``NULL``."
 msgstr ""
+"如果 ``ndim == 0`` ， :c:member:`~Py_buffer.buf` 指向的内存位置被解释为大小为 "
+":c:member:`~Py_buffer.itemsize` 的标量。这时， :c:member:`~Py_buffer.shape` 和 "
+":c:member:`~Py_buffer.strides` 都为 ``NULL``。"
 
 #: ../../c-api/buffer.rst:354
 msgid ""
@@ -642,13 +648,15 @@ msgid ""
 " standard n-dimensional C-array. Otherwise, the consumer must access an "
 "n-dimensional array as follows:"
 msgstr ""
+"如果 :c:member:`~Py_buffer.strides` 为 ``NULL``，则数组将被解释为一个标准的 n 维 C "
+"语言数组。否则，消费者程序必须按如下方式访问 n 维数组："
 
 #: ../../c-api/buffer.rst:364
 msgid ""
 "As noted above, :c:member:`~Py_buffer.buf` can point to any location within "
 "the actual memory block. An exporter can check the validity of a buffer with"
 " this function:"
-msgstr ""
+msgstr "如上所述，:c:member:`~Py_buffer.buf` 可以指向实际内存块中的任意位置。输出者程序可以用该函数检查缓冲区的有效性。"
 
 #: ../../c-api/buffer.rst:398
 msgid "PIL-style: shape, strides and suboffsets"
@@ -686,6 +694,8 @@ msgid ""
 "``1`` is returned, it doesn't guarantee that :c:func:`PyObject_GetBuffer` "
 "will succeed.  This function always succeeds."
 msgstr ""
+"如果 *obj* 支持缓冲区接口，则返回 ``1``，否则返回 ``0``。 返回 ``1`` 时不保证 "
+":c:func:`PyObject_GetBuffer` 一定成功。本函数一定调用成功。"
 
 #: ../../c-api/buffer.rst:439
 msgid ""
@@ -694,6 +704,8 @@ msgid ""
 ":c:data:`PyExc_BufferError`, set ``view->obj`` to ``NULL`` and return "
 "``-1``."
 msgstr ""
+"向 *输出器程序* 发送请求，按照 *flags* 指定的内容填充 *view*。如果 输出器程序不能提供准确类型的缓冲区，*必须* 触发 "
+":c:data:`PyExc_BufferError`，设置 ``view->obj`` 为 ``NULL`` 并返回 ``-1``。"
 
 #: ../../c-api/buffer.rst:444
 msgid ""
@@ -703,6 +715,9 @@ msgid ""
 " instead of *exporter* (See :ref:`Buffer Object Structures <buffer-"
 "structs>`)."
 msgstr ""
+"成功时，填充 *view*，将 ``view->obj`` 设为对 *exporter* 的新引用，并返回 0。 "
+"当链式缓冲区提供程序将请求重定向到一个对象时，``view->obj``  可以引用该对象而不是 *exporter* (参见 "
+":ref:`缓冲区对象结构 <buffer-structs>`)。"
 
 #: ../../c-api/buffer.rst:449
 msgid ""
@@ -711,25 +726,30 @@ msgid ""
 ":c:func:`free`. Thus, after the consumer is done with the buffer, "
 ":c:func:`PyBuffer_Release` must be called exactly once."
 msgstr ""
+":c:func:`PyObject_GetBuffer` 必须与 :c:func:`PyBuffer_Release` 同时调用成功，类似于 "
+":c:func:`malloc` 和 :c:func:`free`。因此，消费者程序用完缓冲区后， :c:func:`PyBuffer_Release`"
+" 必须保证被调用一次。"
 
 #: ../../c-api/buffer.rst:457
 msgid ""
 "Release the buffer *view* and decrement the reference count for "
 "``view->obj``. This function MUST be called when the buffer is no longer "
 "being used, otherwise reference leaks may occur."
-msgstr ""
+msgstr "释放缓冲区 *view* 并递减 ``view->obj`` 的引用计数。该函数必须在缓冲区不再使用时才能调用，否则可能会发生引用泄漏。"
 
 #: ../../c-api/buffer.rst:461
 msgid ""
 "It is an error to call this function on a buffer that was not obtained via "
 ":c:func:`PyObject_GetBuffer`."
-msgstr ""
+msgstr "若该函数针对的缓冲区不是通过 :c:func:`PyObject_GetBuffer` 获得的，将会出错。"
 
 #: ../../c-api/buffer.rst:467
 msgid ""
 "Return the implied :c:data:`~Py_buffer.itemsize` from "
 ":c:data:`~Py_buffer.format`. On error, raise an exception and return -1."
 msgstr ""
+"返回 :c:data:`~Py_buffer.itemsize` 中隐含的 :c:data:`~Py_buffer.format` "
+"。如果出错，会触发异常并返回 -1。"
 
 #: ../../c-api/buffer.rst:475
 msgid ""
@@ -738,12 +758,15 @@ msgid ""
 "one (*order* is ``'A'``).  Return ``0`` otherwise.  This function always "
 "succeeds."
 msgstr ""
+"如果 *view* 定义的内存是 C 风格（*order* 为 ``'C'``）或 Fortran 风格（*order* 为 ``'F'``） "
+":term:`contiguous` 或其中之一（*order* 是 ``'A'``），则返回 ``1``。否则返回 ``0``。该函数总会成功。"
 
 #: ../../c-api/buffer.rst:482
 msgid ""
 "Get the memory area pointed to by the *indices* inside the given *view*. "
 "*indices* must point to an array of ``view->ndim`` indices."
 msgstr ""
+"获取给定 *view* 内的 *indices* 所指向的内存区域。*indices* 必须指向一个 ``view->ndim`` 索引的数组。"
 
 #: ../../c-api/buffer.rst:488
 msgid ""
