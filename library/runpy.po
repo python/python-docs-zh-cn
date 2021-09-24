@@ -110,6 +110,8 @@ msgid ""
 ":const:`None`, to ``mod_name + '.__main__'`` if the named module is a "
 "package and to the *mod_name* argument otherwise."
 msgstr ""
+"若可选参数 ``__name__`` 不为 :const:`None` 则设为 *run_name*，若此名称的模块是一个包则设为 ``mod_name"
+" + '.__main__'``，否则设为 *mod_name* 参数。"
 
 #: ../../library/runpy.rst:62
 msgid ""
@@ -117,12 +119,16 @@ msgid ""
 "(that is, ``__spec__.name`` will always be *mod_name* or ``mod_name + "
 "'.__main__``, never *run_name*)."
 msgstr ""
+"``__spec__`` 将设为合适的 *实际* 导入模块（也就是说，``__spec__.name`` 一定是 *mod_name* 或  "
+"``mod_name + '.__main__``，而不是 *run_name*）。"
 
 #: ../../library/runpy.rst:66
 msgid ""
 "``__file__``, ``__cached__``, ``__loader__`` and ``__package__`` are "
 ":ref:`set as normal <import-mod-attrs>` based on the module spec."
 msgstr ""
+"``__file__`` 、``__cached__``、 ``__loader__`` 和 ``__package__`` 根据模块规范进行 "
+":ref:`正常设置 <import-mod-attrs>` "
 
 #: ../../library/runpy.rst:69
 msgid ""
@@ -132,6 +138,9 @@ msgid ""
 "module being executed. Both ``sys.argv[0]`` and ``sys.modules[__name__]`` "
 "are restored to their original values before the function returns."
 msgstr ""
+"如果给出了参数 *alter_sys* 并且值为 :const:`True`，那么 ``sys.argv[0]`` 将被更新为 ``__file__``"
+" 的值，``sys.modules[__name__]`` 将被更新为临时模块对象。在函数返回前， ``sys.argv[0]`` 和 "
+"``sys.modules[__name__]`` 将会复原。"
 
 #: ../../library/runpy.rst:75
 msgid ""
@@ -140,21 +149,24 @@ msgid ""
 "arguments. It is recommended that the :mod:`sys` module be left alone when "
 "invoking this function from threaded code."
 msgstr ""
+"注意，这种对 :mod:`sys` "
+"的操作不是线程安全的。其他线程可能会看到初始化不完整的模块，以及变动后的参数列表。如果从线程中的代码调用此函数，建议单实例运行 :mod:`sys` "
+"模块。"
 
 #: ../../library/runpy.rst:81
 msgid ""
 "The :option:`-m` option offering equivalent functionality from the command "
 "line."
-msgstr ""
+msgstr ":option:`-m` 选项由命令行提供相同功能。"
 
 #: ../../library/runpy.rst:84
 msgid ""
 "Added ability to execute packages by looking for a ``__main__`` submodule."
-msgstr ""
+msgstr "加入了 查找 ``__main__`` 子模块并执行软件包的能力。"
 
 #: ../../library/runpy.rst:87
 msgid "Added ``__cached__`` global variable (see :pep:`3147`)."
-msgstr ""
+msgstr "加入了 ``__cached__`` 全局变量（参见  :pep:`3147` ）。"
 
 #: ../../library/runpy.rst:90
 msgid ""
@@ -163,6 +175,8 @@ msgid ""
 "well as ensuring the real module name is always accessible as "
 "``__spec__.name``."
 msgstr ""
+"充分利用 :pep:`451` 加入的模块规格功能。使得以这种方式运行的模块能够正确设置 ``__cached__``，并确保真正的模块名称总是可以通过"
+" ``__spec__.name`` 的形式访问。"
 
 #: ../../library/runpy.rst:101
 msgid ""
@@ -172,6 +186,9 @@ msgid ""
 "compiled bytecode file or a valid sys.path entry containing a ``__main__`` "
 "module (e.g. a zipfile containing a top-level ``__main__.py`` file)."
 msgstr ""
+"执行指定位置的代码，并返回结果模块的 globals 字典。与提供给 CPython 命令行的脚本名称一样，给出的路径可以指向 Python "
+"源文件、编译过的字节码文件或包含``__main__`` 模块的有效 sys.path 项（例如一个包含顶级``__main__.py`` 文件的 "
+"zip 文件）。"
 
 #: ../../library/runpy.rst:107
 msgid ""
@@ -183,6 +200,9 @@ msgid ""
 ":mod:`__main__` entry located elsewhere on ``sys.path`` if there is no such "
 "module at the specified location."
 msgstr ""
+"对于直接的脚本而言，指定代码将直接在一个新的模块命名空间中运行。对于一个有效的 sys.path 项（通常是一个 zip 文件或目录），其首先会被添加到"
+" ``sys.path`` 的开头。然后，本函数用更新后的路径查找并执行 :mod:`__main__`  "
+"模块。请注意，即便在指定位置不存在主模块，也没有特别的保护措施来防止调用存在于 ``sys.path`` 其他地方的  :mod:`__main__`。"
 
 #: ../../library/runpy.rst:115
 msgid ""
@@ -192,12 +212,15 @@ msgid ""
 "below are defined in the supplied dictionary, those definitions are "
 "overridden by :func:`run_path`."
 msgstr ""
+"利用可选的字典参数 *init_globals* ，可在代码执行前预填模块的 globals "
+"字典。给出的字典参数不会被修改。如果给出的字典中定义了下列特殊全局变量，这些定义均会被 :func:`run_module` 覆盖。"
 
 #: ../../library/runpy.rst:127
 msgid ""
 "``__name__`` is set to *run_name* if this optional argument is not "
 ":const:`None` and to ``'<run_path>'`` otherwise."
 msgstr ""
+"如果该可选参数不为 :const:`None`，则 ``__name__`` 被设为 *run_name*，否则为 ``'<run_path>'``。"
 
 #: ../../library/runpy.rst:130
 msgid ""
@@ -206,6 +229,9 @@ msgid ""
 "path, and ``__spec__``, ``__cached__``, ``__loader__`` and ``__package__`` "
 "will all be set to :const:`None`."
 msgstr ""
+"如果提供的路径直接引用了一个脚本文件（无论是源码文件还是预编译的字节码），那么 ``__file__`` 将设为给出的路径，而 "
+"``__spec__``、``__cached__``、``__loader__`` 和 ``__package__`` 都将设为 "
+":const:`None`。"
 
 #: ../../library/runpy.rst:135
 msgid ""
@@ -215,6 +241,9 @@ msgid ""
 "``__cached__``, ``__loader__`` and ``__package__`` will be :ref:`set as "
 "normal <import-mod-attrs>` based on the module spec."
 msgstr ""
+"如果给出的路径是对有效 sys.path 项的引用，那么 ``__spec__`` 将为导入的 ``__main__`` 模块进行正确设置 "
+"(也就是说，``__spec__.name`` 将一定是 ``__main__``)。 ``__file__``, ``__cached__``, "
+"``__loader__`` 和 ``__package__`` 将依据模块规格 :ref:`进行常规设置 <import-mod-attrs>`。"
 
 #: ../../library/runpy.rst:141
 msgid ""
@@ -225,6 +254,9 @@ msgid ""
 "modifications to items in :mod:`sys` are reverted before the function "
 "returns."
 msgstr ""
+":mod:`sys` 模块也做了一些改动。 首先，如上所述，``sys.path`` 可能会被修改。 ``sys.argv[0]`` 被更新为 "
+"``file_path`` 的值，``sys.modules[__name__]`` 被更新为正在被执行的模块的临时模块对象。 在函数返回之前，对 "
+":mod:`sys` 中条目的所有修改都会被复原。"
 
 #: ../../library/runpy.rst:148
 msgid ""
@@ -234,12 +266,15 @@ msgid ""
 " still apply, use of this function in threaded code should be either "
 "serialised with the import lock or delegated to a separate process."
 msgstr ""
+"注意，与 :func:`run_module` 不同的是，本函数对 :mod:`sys` 的修改不是可有可无的，因为这些调整对于 sys.path "
+"项能够顺利执行至关重要。由于依然存在线程安全的限制，在线程代码中使用本函数时应采用导入锁进行序列运行，或者委托给一个单独的进程。"
 
 #: ../../library/runpy.rst:155
 msgid ""
 ":ref:`using-on-interface-options` for equivalent functionality on the "
 "command line (``python path/to/script``)."
 msgstr ""
+":ref:`using-on-interface-options` 用于在命令行上实现同等功能（``python path/to/script``）。"
 
 #: ../../library/runpy.rst:160
 msgid ""
@@ -248,6 +283,8 @@ msgid ""
 "``__main__`` is imported from a valid sys.path entry rather than being "
 "executed directly."
 msgstr ""
+"已作更新，以便充分利用 :pep:`451` 加入的模块规格功能。使得从有效 sys.path 项导入``__main__`` "
+"而不是直接执行的情况下，能够正确设置 ``__cached__``。"
 
 #: ../../library/runpy.rst:169
 msgid ":pep:`338` -- Executing modules as scripts"
@@ -259,20 +296,20 @@ msgstr "PEP 由 Nick Coghlan 撰写并实现。"
 
 #: ../../library/runpy.rst:172
 msgid ":pep:`366` -- Main module explicit relative imports"
-msgstr ""
+msgstr ":pep:`366` ——主模块的显式相对导入"
 
 #: ../../library/runpy.rst:175
 msgid ":pep:`451` -- A ModuleSpec Type for the Import System"
-msgstr ""
+msgstr ":pep:`451` —— 导入系统采用的 ModuleSpec 类型"
 
 #: ../../library/runpy.rst:175
 msgid "PEP written and implemented by Eric Snow"
-msgstr ""
+msgstr "PEP 由  Eric Snow 撰写并实现。"
 
 #: ../../library/runpy.rst:177
 msgid ":ref:`using-on-general` - CPython command line details"
-msgstr ""
+msgstr ":ref:`using-on-general` —— CPython 命令行详解"
 
 #: ../../library/runpy.rst:179
 msgid "The :func:`importlib.import_module` function"
-msgstr ""
+msgstr ":func:`importlib.import_module` 函数"
