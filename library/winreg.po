@@ -10,6 +10,7 @@
 # Freesand Leo <yuqinju@163.com>, 2021
 # Meng Du <alphanow@gmail.com>, 2021
 # 钢 彭 <szhairui@gmail.com>, 2021
+# Dai Xu <daixu61@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-29 12:56+0000\n"
 "PO-Revision-Date: 2021-06-28 01:17+0000\n"
-"Last-Translator: 钢 彭 <szhairui@gmail.com>, 2021\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgstr ""
 
 #: ../../library/winreg.rst:2
 msgid ":mod:`winreg` --- Windows registry access"
-msgstr ":mod:`winreg` --- Windows 注册表访问"
+msgstr ":mod:`winreg` --- 访问 Windows 注册表"
 
 #: ../../library/winreg.rst:12
 msgid ""
@@ -37,14 +38,15 @@ msgid ""
 "is used to ensure that the handles are closed correctly, even if the "
 "programmer neglects to explicitly close them."
 msgstr ""
-"这些函数将 Windows 注册表 API 暴露给 Python。为了确保即便程序员忽略了显式关闭句柄，该句柄依然能够正确关闭，它使用了一个 "
-":ref:`handle 对象 <handle-object>` 而不是整数来作为注册表句柄。"
+"这些函数将 Windows 注册表 API 暴露给 "
+"Python。为了确保即便程序员忘机显式关闭时也能够正确关闭，这里没有用整数作为注册表句柄，而是采用了 :ref:`handle 对象 <handle-"
+"object>` 。"
 
 #: ../../library/winreg.rst:19
 msgid ""
 "Several functions in this module used to raise a :exc:`WindowsError`, which "
 "is now an alias of :exc:`OSError`."
-msgstr "该模块中的几个函数被用于引发 :exc:`WindowsError`，该异常现在是 :exc:`OSError` 的别名。"
+msgstr "模块中有几个函数用于触发 :exc:`WindowsError`，此异常现在是 :exc:`OSError` 的别名。"
 
 #: ../../library/winreg.rst:26
 msgid "Functions"
@@ -365,28 +367,33 @@ msgid ""
 ":func:`FlushKey` if it requires absolute certainty that registry changes are"
 " on disk."
 msgstr ""
+"没有必要调用 :func:`FlushKey` 去改动注册表键。注册表的变动是由其延迟刷新机制更新到磁盘的。在系统关机时，也会将注册表的变动写入磁盘。与"
+"  :func:`CloseKey` 不同， :func:`FlushKey` "
+"方法只有等到所有数据都写入注册表后才会返回。只有需要绝对确认注册表变动已写入磁盘时，应用程序才应去调用 :func:`FlushKey`。"
 
 #: ../../library/winreg.rst:277
 msgid ""
 "If you don't know whether a :func:`FlushKey` call is required, it probably "
 "isn't."
-msgstr ""
+msgstr "如果不知道是否要调用 :func:`FlushKey` ，可能就是不需要。"
 
 #: ../../library/winreg.rst:283
 msgid ""
 "Creates a subkey under the specified key and stores registration information"
 " from a specified file into that subkey."
-msgstr ""
+msgstr "在指定键之下创建一个子键，并将指定文件中的注册表信息存入该子键中。"
 
 #: ../../library/winreg.rst:286
 msgid ""
 "*key* is a handle returned by :func:`ConnectRegistry` or one of the "
 "constants :const:`HKEY_USERS` or :const:`HKEY_LOCAL_MACHINE`."
 msgstr ""
+"*key* 是由 :func:`ConnectRegistry` 返回的句柄，或者是常量 :const:`HKEY_USERS` 或 "
+":const:`HKEY_LOCAL_MACHINE`。"
 
 #: ../../library/winreg.rst:289
 msgid "*sub_key* is a string that identifies the subkey to load."
-msgstr ""
+msgstr "*sub_key* 是个字符串，用于标识需要载入的子键。"
 
 #: ../../library/winreg.rst:291
 msgid ""
@@ -394,6 +401,8 @@ msgid ""
 "must have been created with the :func:`SaveKey` function. Under the file "
 "allocation table (FAT) file system, the filename may not have an extension."
 msgstr ""
+"*file_name* 是要加载注册表数据的文件名。该文件必须是用 :func:`SaveKey` "
+"函数创建的。在文件分配表（FAT）文件系统中，文件名可能不带扩展名。"
 
 #: ../../library/winreg.rst:295
 msgid ""
@@ -403,12 +412,16 @@ msgid ""
 "<https://msdn.microsoft.com/en-us/library/ms724889%28v=VS.85%29.aspx>`__ for"
 " more details."
 msgstr ""
+"如果调用 :func:`LoadKey` 的进程没有 :const:`SE_RESTORE_PRIVILEGE` "
+"权限，则调用会失败。请注意，特权与权限不同 —— 更多细节请参阅 `RegLoadKey 文档 <https://msdn.microsoft.com"
+"/en-us/library/ms724889%28v=VS.85%29.aspx>`__。"
 
 #: ../../library/winreg.rst:301
 msgid ""
 "If *key* is a handle returned by :func:`ConnectRegistry`, then the path "
 "specified in *file_name* is relative to the remote computer."
 msgstr ""
+"如果 *key* 是由 :func:`ConnectRegistry` 返回的句柄，那么 *file_name* 指定的路径是相对于远程计算机而言的。"
 
 #: ../../library/winreg.rst:304
 msgid ""
@@ -421,16 +434,16 @@ msgstr ""
 #: ../../library/winreg.rst:310
 msgid ""
 "Opens the specified key, returning a :ref:`handle object <handle-object>`."
-msgstr ""
+msgstr "打开指定的注册表键，返回 :ref:`handle对象 <handle-object>`。"
 
 #: ../../library/winreg.rst:315
 msgid "*sub_key* is a string that identifies the sub_key to open."
-msgstr ""
+msgstr "*sub_key* 是个字符串，标识了需要打开的子键。"
 
 #: ../../library/winreg.rst:317
 msgid ""
 "*reserved* is a reserved integer, and must be zero.  The default is zero."
-msgstr ""
+msgstr "*reserved* 是个保留整数，必须为零。默认值为零。"
 
 #: ../../library/winreg.rst:319
 msgid ""
@@ -438,26 +451,28 @@ msgid ""
 "desired security access for the key.  Default is :const:`KEY_READ`.  See "
 ":ref:`Access Rights <access-rights>` for other allowed values."
 msgstr ""
+"*access* 是个指定访问掩码的整数，掩码描述了注册表键所需的安全权限。 默认值为 :const:`KEY_READ`。 其他合法值参见 "
+":ref:`访问权限 <access-rights>`。"
 
 #: ../../library/winreg.rst:323
 msgid "The result is a new handle to the specified key."
-msgstr ""
+msgstr "返回结果为一个新句柄，指向指定的注册表键。"
 
 #: ../../library/winreg.rst:325
 msgid "If the function fails, :exc:`OSError` is raised."
-msgstr ""
+msgstr "如果调用失败，则会触发  :exc:`OSError` 。"
 
 #: ../../library/winreg.rst:327
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``winreg.OpenKey`` with arguments"
 " ``key``, ``sub_key``, ``access``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``winreg.OpenKey``，附带参数 ``key``, ``sub_key``, "
+"触发 :ref:`审计事件 <auditing>` ``winreg.OpenKey``，附带参数为 ``key`` 、``sub_key`` 、 "
 "``access``。"
 
 #: ../../library/winreg.rst:331
 msgid "Allow the use of named arguments."
-msgstr ""
+msgstr "允许使用命名参数。"
 
 #: ../../library/winreg.rst:340
 msgid "Returns information about a key, as a tuple."
