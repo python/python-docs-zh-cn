@@ -2005,12 +2005,16 @@ msgid ""
 "containing package (e.g. requesting ``..bacon`` from within the ``spam`` "
 "package)."
 msgstr ""
+"如果 **name** 是相对模块名称，但 **package** 为 False 值（如 ``None`` 或空字符串），则会触发 "
+":exc:`ImportError`。 如果相对名称会离开所在的包（如从 ``spam`` 包中请求 ``..bacon``），则还会触发 "
+":exc:`ImportError`。"
 
 #: ../../library/importlib.rst:1502
 msgid ""
 "To improve consistency with import statements, raise :exc:`ImportError` "
 "instead of :exc:`ValueError` for invalid relative import attempts."
 msgstr ""
+"为了改善与 import 语句的一致性，对于无效的相对导入尝试会引发 :exc:`ImportError` 而不是 :exc:`ValueError`。"
 
 #: ../../library/importlib.rst:1509
 msgid ""
@@ -2021,16 +2025,19 @@ msgid ""
 "Otherwise a search using :attr:`sys.meta_path` is done. ``None`` is returned"
 " if no spec is found."
 msgstr ""
+"查找模块的 :term:`spec <module spec>`，可选相对指定的 **包** 名。如果该模块位于 :attr:`sys.modules`"
+" 中，则会返回 ``sys.modules[name].__spec__`` （除非 spec为 ``None`` 或未作设置，这时会触发 "
+":exc:`ValueError`)。否则将用  :attr:`sys.meta_path` 进行搜索。若找不到则返回 ``None``。"
 
 #: ../../library/importlib.rst:1516
 msgid ""
 "If **name** is for a submodule (contains a dot), the parent module is "
 "automatically imported."
-msgstr ""
+msgstr "如果 **name** 为一个子模块（带有一个句点），则会自动导入父级模块。"
 
 #: ../../library/importlib.rst:1519
 msgid "**name** and **package** work the same as for :func:`import_module`."
-msgstr ""
+msgstr "**name** 和 **package** 的用法与 :func:`import_module` 相同。"
 
 #: ../../library/importlib.rst:1523
 msgid ""
@@ -2038,12 +2045,16 @@ msgid ""
 "**package** is in fact not a package (i.e. lacks a :attr:`__path__` "
 "attribute)."
 msgstr ""
+"如果 **package** 实际上不是一个包（即缺少 :attr:`__path__` 属性）则会引发 "
+":exc:`ModuleNotFoundError` 而不是 :exc:`AttributeError`。"
 
 #: ../../library/importlib.rst:1530
 msgid ""
 "Create a new module based on **spec** and :meth:`spec.loader.create_module "
 "<importlib.abc.Loader.create_module>`."
 msgstr ""
+"基于 **spec** 和 :meth:`spec.loader.create_module "
+"<importlib.abc.Loader.create_module>` 创建一个新模块。"
 
 #: ../../library/importlib.rst:1533
 msgid ""
@@ -2052,6 +2063,9 @@ msgid ""
 "reset. Also, no :exc:`AttributeError` will be raised if triggered while "
 "accessing **spec** or setting an attribute on the module."
 msgstr ""
+"如果 :meth:`spec.loader.create_module <importlib.abc.Loader.create_module>` "
+"未返回 ``None``，那么先前已存在的属性不会被重置。另外，如果 :exc:`AttributeError` 是在访问 **spec** "
+"或设置模块属性时触发的，则不会触发 。"
 
 #: ../../library/importlib.rst:1538
 msgid ""
@@ -2059,6 +2073,7 @@ msgid ""
 "new module as **spec** is used to set as many import-controlled attributes "
 "on the module as possible."
 msgstr ""
+"本函数比 :class:`types.ModuleType` 创建新模块要好，因为用到 **spec** 模块设置了尽可能多的导入控制属性。"
 
 #: ../../library/importlib.rst:1546
 msgid ""
@@ -2069,6 +2084,9 @@ msgid ""
 "module **object** to be used by the loader. Note that the decorator will not"
 " work on static methods because of the assumption of two arguments."
 msgstr ""
+":meth:`importlib.abc.Loader.load_module` 的一个 "
+":term:`decorator`，用来选取合适的模块对象以供加载。被装饰方法的签名应带有两个位置参数（如：``load_module(self, "
+"module)``），其中第二个参数将是加载器用到的模块 **对象**。请注意，由于假定有两个参数，所以装饰器对静态方法不起作用。"
 
 #: ../../library/importlib.rst:1555
 msgid ""
@@ -2080,6 +2098,10 @@ msgid ""
 " (if available). These attributes are set unconditionally to support "
 "reloading."
 msgstr ""
+"装饰的方法将接受要加载的模块的 **name**，正如 :term:`loader` 一样。如果在 :data:`sys.modules` "
+"中没有找到该模块，那么将构造一个新模块。不管模块来自哪里， :attr:`__loader__` 设置为 **self** ，并且 "
+":attr:`__package__` 是根据 :meth:`importlib.abc.InspectLoader.is_package` "
+"的返回值设置的。这些属性会无条件进行设置以便支持重载。"
 
 #: ../../library/importlib.rst:1563
 msgid ""
@@ -2088,24 +2110,27 @@ msgid ""
 "initialized module from being in left in :data:`sys.modules`. If the module "
 "was already in :data:`sys.modules` then it is left alone."
 msgstr ""
+"如果被装饰的方法触发异常，并且已有模块加入 :data:`sys.modules` 中，那么该模块将被移除，以防 :data:`sys.modules`"
+" 中残留一个部分初始化的模块。如果该模块原先已在 :data:`sys.modules` 中，则会保留。"
 
 #: ../../library/importlib.rst:1568
 msgid ""
 ":attr:`__loader__` and :attr:`__package__` are automatically set (when "
 "possible)."
-msgstr ""
+msgstr "有可能时自动设置 :attr:`__loader__` 和 :attr:`__package__` 。"
 
 #: ../../library/importlib.rst:1572
 msgid ""
 "Set :attr:`__name__`, :attr:`__loader__` :attr:`__package__` unconditionally"
 " to support reloading."
 msgstr ""
+"无条件设置 :attr:`__name__` 、 :attr:`__loader__` 、 :attr:`__package__` 以支持再次加载。"
 
 #: ../../library/importlib.rst:1576
 msgid ""
 "The import machinery now directly performs all the functionality provided by"
 " this function."
-msgstr ""
+msgstr "现在，导入机制直接执行本函数提供的所有功能。"
 
 #: ../../library/importlib.rst:1582
 msgid ""
