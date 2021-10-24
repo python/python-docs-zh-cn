@@ -5,6 +5,7 @@
 # 
 # Translators:
 # weihaipy, 2020
+# Dai Xu <daixu61@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:02+0000\n"
 "PO-Revision-Date: 2019-09-01 03:36+0000\n"
-"Last-Translator: weihaipy, 2020\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,6 +38,9 @@ msgid ""
 "writing some scripts in Python.  You can also use it yourself if some of the"
 " functionality can be written in Python more easily."
 msgstr ""
+"前几章讨论了如何对 Python 进行扩展，也就是如何用 C 函数库 扩展 Python 的功能。反过来也是可以的：将 Python 嵌入到 C/C++"
+" 应用程序中丰富其功能。这种嵌入可以让应用程序用 Python 来实现某些功能，而不是用 C 或 C++ 。用途会有很多；比如允许用户用 Python "
+"编写一些脚本，以便定制应用程序满足需求。如果某些功能用 Python 编写起来更为容易，那么开发人员自己也能这么干。"
 
 #: ../../extending/embedding.rst:20
 msgid ""
@@ -46,6 +50,8 @@ msgid ""
 "have nothing to do with Python --- instead, some parts of the application "
 "occasionally call the Python interpreter to run some Python code."
 msgstr ""
+"Python 的嵌入类似于扩展，但不完全相同。不同之处在于，扩展 Python 时应用程序的主程序仍然是 Python 解释器，而嵌入 Python "
+"时的主程序可能与 Python 完全无关——而是应用程序的某些部分偶尔会调用 Python 解释器来运行一些 Python 代码。"
 
 #: ../../extending/embedding.rst:26
 msgid ""
@@ -56,6 +62,8 @@ msgid ""
 "arguments to Python.  Then later you can call the interpreter from any part "
 "of the application."
 msgstr ""
+"因此，若要嵌入 Python，就要提供自己的主程序。此主程序要做的事情之一就是初始化 Python 解释器。至少得调用函数 "
+":c:func:`Py_Initialize`。还有些可选的调用可向 Python 传递命令行参数。之后即可从应用程序的任何地方调用解释器了。"
 
 #: ../../extending/embedding.rst:32
 msgid ""
@@ -66,20 +74,23 @@ msgid ""
 "level operations described in the previous chapters to construct and use "
 "Python objects."
 msgstr ""
+"调用解释器的方式有好几种：可向 :c:func:`PyRun_SimpleString` 传入一个包含 Python 语句的字符串，也可向 "
+":c:func:`PyRun_SimpleFile` 传入一个 stdio "
+"文件指针和一个文件名（仅在错误信息中起到识别作用）。还可以调用前面介绍过的底层操作来构造并使用 Python 对象。"
 
 #: ../../extending/embedding.rst:42
 msgid ":ref:`c-api-index`"
-msgstr ""
+msgstr ":ref:`c-api-index`"
 
 #: ../../extending/embedding.rst:42
 msgid ""
 "The details of Python's C interface are given in this manual. A great deal "
 "of necessary information can be found here."
-msgstr ""
+msgstr "本文详细介绍了 Python 的 C 接口。这里有大量必要的信息。"
 
 #: ../../extending/embedding.rst:49
 msgid "Very High Level Embedding"
-msgstr ""
+msgstr "高层次的嵌入"
 
 #: ../../extending/embedding.rst:51
 msgid ""
@@ -88,6 +99,8 @@ msgid ""
 "needing to interact with the application directly. This can for example be "
 "used to perform some operation on a file. ::"
 msgstr ""
+"最简单的 Python 嵌入形式就是采用非常高层的接口。该接口的目标是只执行一段 Python "
+"脚本，而无需与应用程序直接交互。比如以下代码可以用来对某个文件进行一些操作。"
 
 #: ../../extending/embedding.rst:78
 msgid ""
@@ -103,10 +116,15 @@ msgid ""
 ":c:func:`PyRun_SimpleFile` function, which saves you the trouble of "
 "allocating memory space and loading the file contents."
 msgstr ""
+"在 :c:func:`Py_Initialize` 之前，应该先调用 :c:func:`Py_SetProgramName` 函数，以便向解释器告知 "
+"Python运行库的路径。接下来，:c:func:`Py_Initialize`  会初始化 Python 解释器，然后执行硬编码的 Python "
+"脚本，打印出日期和时间。之后，调用 :c:func:`Py_FinalizeEx` 关闭解释器，程序结束。在真实的程序中，可能需要从其他来源获取 "
+"Python 脚本，或许是从文本编辑器例程、文件，或者某个数据库。利用 :c:func:`PyRun_SimpleFile` 函数可以更好地从文件中获取"
+" Python 代码，可省去分配内存空间和加载文件内容的麻烦。"
 
 #: ../../extending/embedding.rst:93
 msgid "Beyond Very High Level Embedding: An overview"
-msgstr ""
+msgstr "突破高层次嵌入的限制：概述"
 
 #: ../../extending/embedding.rst:95
 msgid ""
@@ -116,6 +134,8 @@ msgid ""
 "calls. At the cost of having to write more C code, you can achieve almost "
 "anything."
 msgstr ""
+"高级接口能从应用程序中执行任何 Python "
+"代码，但至少交换数据可说是相当麻烦的。如若需要交换数据，应使用较低级别的调用。几乎可以实现任何功能，代价是得写更多的 C 代码。"
 
 #: ../../extending/embedding.rst:100
 msgid ""
@@ -124,6 +144,8 @@ msgid ""
 "previous chapters are still valid. To show this, consider what the extension"
 " code from Python to C really does:"
 msgstr ""
+"应该注意，尽管意图不同，但扩展 Python 和嵌入 Python 的过程相当类似。前几章中讨论的大多数主题依然有效。为了说明这一点，不妨来看一下从  "
+"Python 到 C 的扩展代码到底做了什么："
 
 #: ../../extending/embedding.rst:105
 msgid "Convert data values from Python to C,"
@@ -131,15 +153,15 @@ msgstr "转换 Python 的数据值到 C,"
 
 #: ../../extending/embedding.rst:107
 msgid "Perform a function call to a C routine using the converted values, and"
-msgstr ""
+msgstr "用转换后的数据执行 C 程序的函数调用，以及"
 
 #: ../../extending/embedding.rst:109
 msgid "Convert the data values from the call from C to Python."
-msgstr ""
+msgstr "将调用返回的数据从 C 转换为 Python 格式。"
 
 #: ../../extending/embedding.rst:111
 msgid "When embedding Python, the interface code does:"
-msgstr ""
+msgstr "嵌入 Python 时，接口代码会这样做："
 
 #: ../../extending/embedding.rst:113
 msgid "Convert data values from C to Python,"
@@ -149,11 +171,11 @@ msgstr "转换 C 的数据值到 Python,"
 msgid ""
 "Perform a function call to a Python interface routine using the converted "
 "values, and"
-msgstr ""
+msgstr "用转换后的数据执行对 Python 接口的函数调用，"
 
 #: ../../extending/embedding.rst:118
 msgid "Convert the data values from the call from Python to C."
-msgstr ""
+msgstr "将调用返回的数据从 Python 转换为 C  格式。"
 
 #: ../../extending/embedding.rst:120
 msgid ""
@@ -162,6 +184,8 @@ msgid ""
 "is the routine that you call between both data conversions. When extending, "
 "you call a C routine, when embedding, you call a Python routine."
 msgstr ""
+"可见只是数据转换的步骤交换了一下顺序，以顺应跨语言的传输方向。唯一的区别是在两次数据转换之间调用的函数不同。在执行扩展时，调用一个 C "
+"函数，而执行嵌入时调用的是个 Python 函数。"
 
 #: ../../extending/embedding.rst:125
 msgid ""
@@ -170,6 +194,8 @@ msgid ""
 " be understood.  Since these aspects do not differ from extending the "
 "interpreter, you can refer to earlier chapters for the required information."
 msgstr ""
+"本文不会讨论如何将数据从 Python 转换到 C "
+"去，反之亦然。另外还假定读者能够正确使用引用并处理错误。由于这些地方与解释器的扩展没有区别，请参考前面的章节以获得所需的信息。"
 
 #: ../../extending/embedding.rst:134
 msgid "Pure Embedding"
@@ -182,6 +208,7 @@ msgid ""
 "not directly interact with the application (but that will change in the next"
 " section)."
 msgstr ""
+"第一个程序的目标是执行 Python 脚本中的某个函数。就像高层次接口那样，Python 解释器并不会直接与应用程序进行交互（但下一节将改变这一点）。"
 
 #: ../../extending/embedding.rst:141
 msgid "The code to run a function defined in a Python script is:"
@@ -195,6 +222,9 @@ msgid ""
 "(let's call the finished executable :program:`call`), and use it to execute "
 "a Python script, such as:"
 msgstr ""
+"上述代码先利用 ``argv[1]`` 加载 Python 脚本，再调用 ``argv[2]`` 指定的函数。函数的整数参数是 ``argv`` "
+"数组中的其余值。如果 :ref:`编译并链接<compiling>` 该程序（此处将最终的可执行程序称作 :program:`call`）, "
+"并用它执行一个 Python 脚本，例如："
 
 #: ../../extending/embedding.rst:161
 msgid "then the result should be:"
@@ -206,6 +236,7 @@ msgid ""
 "is for data conversion between Python and C, and for error reporting.  The "
 "interesting part with respect to embedding Python starts with ::"
 msgstr ""
+"尽管相对其功能而言，该程序体积相当庞大，但大部分代码是用于 Python 和 C 之间的数据转换，以及报告错误。嵌入 Python 的有趣部分从此开始："
 
 #: ../../extending/embedding.rst:178
 msgid ""
