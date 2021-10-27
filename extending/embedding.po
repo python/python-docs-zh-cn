@@ -199,7 +199,7 @@ msgstr ""
 
 #: ../../extending/embedding.rst:134
 msgid "Pure Embedding"
-msgstr "纯嵌入"
+msgstr "只做嵌入"
 
 #: ../../extending/embedding.rst:136
 msgid ""
@@ -212,7 +212,7 @@ msgstr ""
 
 #: ../../extending/embedding.rst:141
 msgid "The code to run a function defined in a Python script is:"
-msgstr ""
+msgstr "要运行 Python 脚本中定义的函数，代码如下："
 
 #: ../../extending/embedding.rst:146
 msgid ""
@@ -245,6 +245,8 @@ msgid ""
 "argument, which is constructed using the :c:func:`PyUnicode_FromString` data"
 " conversion routine. ::"
 msgstr ""
+"初始化解释器之后，则用 :c:func:`PyImport_Import` 加载脚本。此函数的参数需是个 Python 字符串，一个用 "
+":c:func:`PyUnicode_FromString` 数据转换函数构建的字符串。"
 
 #: ../../extending/embedding.rst:191
 msgid ""
@@ -254,17 +256,20 @@ msgid ""
 "program then proceeds by constructing a tuple of arguments as normal.  The "
 "call to the Python function is then made with::"
 msgstr ""
+"脚本一旦加载完毕，就会用 :c:func:`PyObject_GetAttrString` "
+"查找属性名称。如果名称存在，并且返回的是可调用对象，即可安全地视其为函数。然后程序继续执行，照常构建由参数组成的元组。然后用以下方式调用 Python "
+"函数："
 
 #: ../../extending/embedding.rst:199
 msgid ""
 "Upon return of the function, ``pValue`` is either ``NULL`` or it contains a "
 "reference to the return value of the function.  Be sure to release the "
 "reference after examining the value."
-msgstr ""
+msgstr "当函数返回时，``pValue`` 要么为 ``NULL``，要么包含对函数返回值的引用。请确保用完后释放该引用。"
 
 #: ../../extending/embedding.rst:207
 msgid "Extending Embedded Python"
-msgstr ""
+msgstr "对嵌入 Python 功能进行扩展"
 
 #: ../../extending/embedding.rst:209
 msgid ""
@@ -277,12 +282,15 @@ msgid ""
 "and write some glue code that gives Python access to those routines, just "
 "like you would write a normal Python extension.  For example::"
 msgstr ""
+"到目前为止，嵌入的 Python 解释器还不能访问应用程序本身的功能。Python API 通过扩展嵌入解释器实现了这一点。 "
+"也就是说，用应用程序提供的函数对嵌入的解释器进行扩展。虽然听起来有些复杂，但也没那么糟糕。只要暂时忘记是应用程序启动了 Python "
+"解释器。而把应用程序看作是一堆子程序，然后写一些胶水代码让 Python 访问这些子程序，就像编写普通的 Python 扩展程序一样。 例如："
 
 #: ../../extending/embedding.rst:246
 msgid ""
 "Insert the above code just above the :c:func:`main` function. Also, insert "
 "the following two statements before the call to :c:func:`Py_Initialize`::"
-msgstr ""
+msgstr "在 :c:func:`main` 函数之前插入上述代码。并在调用 :c:func:`Py_Initialize` 之前插入以下两条语句："
 
 #: ../../extending/embedding.rst:252
 msgid ""
@@ -290,12 +298,14 @@ msgid ""
 ":func:`emb.numargs` function accessible to the embedded Python interpreter. "
 "With these extensions, the Python script can do things like"
 msgstr ""
+"这两行代码初始化了 ``numargs`` 变量，并让 :func:`emb.numargs` 函数能被嵌入的 Python "
+"解释器访问到。有了这些扩展，Python 脚本可以执行类似以下功能："
 
 #: ../../extending/embedding.rst:261
 msgid ""
 "In a real application, the methods will expose an API of the application to "
 "Python."
-msgstr ""
+msgstr "在真实的应用程序中，这种方法将把应用的 API 暴露给 Python 使用。"
 
 #: ../../extending/embedding.rst:271
 msgid "Embedding Python in C++"
@@ -309,6 +319,8 @@ msgid ""
 "and link your program.  There is no need to recompile Python itself using "
 "C++."
 msgstr ""
+"还可以将 Python 嵌入到 C++ 程序中去；确切地说，实现方式将取决于 C++ 系统的实现细节；一般需用 C++ 编写主程序，并用 C++ "
+"编译器来编译和链接程序。不需要用 C++ 重新编译 Python 本身。"
 
 #: ../../extending/embedding.rst:282
 msgid "Compiling and Linking under Unix-like systems"
@@ -321,6 +333,8 @@ msgid ""
 "application, particularly because Python needs to load library modules "
 "implemented as C dynamic extensions (:file:`.so` files) linked against it."
 msgstr ""
+"为了将 Python 解释器嵌入应用程序，找到正确的编译参数传给编译器 (和链接器) 并非易事，特别是因为 Python 加载的库模块是以 C "
+"动态扩展（:file:`.so` 文件）的形式实现的。"
 
 #: ../../extending/embedding.rst:290
 msgid ""
@@ -330,18 +344,20 @@ msgid ""
 "available).  This script has several options, of which the following will be"
 " directly useful to you:"
 msgstr ""
+"为了得到所需的编译器和链接器参数，可执行 :file:`python{X.Y}-config` 脚本，它是在安装 Python 时生成的（也可能存在 "
+":file:`python3-config` 脚本）。该脚本有几个参数，其中以下几个参数会直接有用："
 
 #: ../../extending/embedding.rst:296
 msgid ""
 "``pythonX.Y-config --cflags`` will give you the recommended flags when "
 "compiling:"
-msgstr ""
+msgstr "``pythonX.Y-config --cflags`` 将给出建议的编译参数。"
 
 #: ../../extending/embedding.rst:304
 msgid ""
 "``pythonX.Y-config --ldflags`` will give you the recommended flags when "
 "linking:"
-msgstr ""
+msgstr "``pythonX.Y-config --ldflags`` 将给出建议的链接参数。"
 
 #: ../../extending/embedding.rst:313
 msgid ""
@@ -350,6 +366,8 @@ msgid ""
 "that you use the absolute path to :file:`python{X.Y}-config`, as in the "
 "above example."
 msgstr ""
+"为了避免多个 Python 安装版本引发混乱（特别是在系统安装版本和自己编译版本之间），建议用 :file:`python{X.Y}-config` "
+"指定绝对路径，如上例所述。"
 
 #: ../../extending/embedding.rst:318
 msgid ""
@@ -362,3 +380,7 @@ msgid ""
 "tool to programmatically extract the configuration values that you will want"
 " to combine together.  For example:"
 msgstr ""
+"如果上述方案不起作用（不能保证对所有 Unix 类平台都生效；欢迎提出 :ref:`bug 报告<reporting-"
+"bugs>`），就得阅读系统关于动态链接的文档，并检查 Python 的 :file:`Makefile` （用 "
+":func:`sysconfig.get_makefile_filename` 找到所在位置）和编译参数。这时 :mod:`sysconfig` "
+"模块会是个有用的工具，可用编程方式提取需组合在一起的配置值。比如："
