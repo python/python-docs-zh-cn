@@ -4,11 +4,12 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Freesand Leo <yuqinju@163.com>, 2020
 # Pandaaaa906 <ye.pandaaaa906@gmail.com>, 2020
 # nick <2330458484@qq.com>, 2020
 # ppcfish <ppcfish@gmail.com>, 2020
 # ruoyu zhang <ruoyu0088@gmail.com>, 2020
+# 文博 周 <zhouwenbonwpu@mail.nwpu.edu.cn>, 2021
+# Freesand Leo <yuqinju@163.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:06+0000\n"
 "PO-Revision-Date: 2020-05-30 11:51+0000\n"
-"Last-Translator: ruoyu zhang <ruoyu0088@gmail.com>, 2020\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -39,6 +40,9 @@ msgid ""
 "behave, so they are very important to the interpreter itself and to any "
 "extension module that implements new types."
 msgstr ""
+"也许 Python 对象系统中最重要的结构之一就是定义新类型的结构: :c:type:`PyTypeObject` 结构。 类型对象可以使用任何 "
+":c:func:`PyObject_\\*` 或 :c:func:`PyType_\\*` 函数来处理，但不能提供大多数 Python "
+"应用程序所感兴趣的内容。 这些对象是对象行为的基础，所以它们对解释器本身或任何实现新类型的扩展模块都非常重要。"
 
 #: ../../c-api/typeobj.rst:16
 msgid ""
@@ -49,6 +53,7 @@ msgid ""
 "detail in this section.  The fields will be described in the order in which "
 "they occur in the structure."
 msgstr ""
+"与大多数标准类型相比，类型对象相当大。这么大的原因是每个类型对象存储了大量的值，大部分是C函数指针，每个指针实现了类型功能的一小部分。本节将详细描述类型对象的字段。这些字段将按照它们在结构中出现的顺序进行描述。"
 
 #: ../../c-api/typeobj.rst:23
 msgid ""
@@ -56,6 +61,8 @@ msgid ""
 "section provides at-a-glance insight into the meaning and use of "
 ":c:type:`PyTypeObject`."
 msgstr ""
+"除了下面的快速参考，:ref:`typedef-examples` 小节提供了快速了解 :c:type:`PyTypeObject` "
+"的含义和用法的例子。"
 
 #: ../../c-api/typeobj.rst:29
 msgid "Quick Reference"
@@ -633,6 +640,7 @@ msgid ""
 "are for internal use only. \"<R>\" (as a prefix) means the field is required"
 " (must be non-``NULL``)."
 msgstr ""
+"小括号中的槽名表示它(实际上)已弃用。尖括号中的名称应该被视为只读的。方括号中的名称仅供内部使用。\"<R>\"(作为前缀)表示该字段是必需的(必须是非null)。"
 
 #: ../../c-api/typeobj.rst:163
 msgid "Columns:"
@@ -640,29 +648,29 @@ msgstr "列："
 
 #: ../../c-api/typeobj.rst:165
 msgid "**\"O\"**:  set on :c:type:`PyBaseObject_Type`"
-msgstr ""
+msgstr "**\"O\"**:  :c:type:`PyBaseObject_Type` 必须设置"
 
 #: ../../c-api/typeobj.rst:167
 msgid "**\"T\"**:  set on :c:type:`PyType_Type`"
-msgstr ""
+msgstr "**\"T\"**: :c:type:`PyType_Type` 必须设置"
 
 #: ../../c-api/typeobj.rst:169
 msgid "**\"D\"**:  default (if slot is set to ``NULL``)"
-msgstr ""
+msgstr "**\"D\"**: 默认设置(如果方法槽被设置为NULL)"
 
 #: ../../c-api/typeobj.rst:179
 msgid "**\"I\"**:  inheritance"
-msgstr ""
+msgstr "**\"I\"**: 继承"
 
 #: ../../c-api/typeobj.rst:188
 msgid ""
 "Note that some slots are effectively inherited through the normal attribute "
 "lookup chain."
-msgstr ""
+msgstr "注意，有些方法槽是通过普通属性查找链有效继承的。"
 
 #: ../../c-api/typeobj.rst:194
 msgid "sub-slots"
-msgstr ""
+msgstr "子方法槽（方法域）"
 
 #: ../../c-api/typeobj.rst:200
 msgid "Slot"
@@ -1179,6 +1187,8 @@ msgid ""
 ":file:`Include/object.h`.  For convenience of reference, this repeats the "
 "definition found there:"
 msgstr ""
+":c:type:`PyTypeObject` 的结构定义可以在 :file:`Include/object.h` 中找到。 "
+"为了方便参考，此处复述了其中的定义:"
 
 #: ../../c-api/typeobj.rst:481
 msgid "PyObject Slots"
@@ -1193,6 +1203,10 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_itemsize`, which means that its instances (i.e. "
 "type objects) *must* have the :attr:`ob_size` field."
 msgstr ""
+"type 对象结构扩展了 :c:type:`PyVarObject` 结构。 :attr:`ob_size` 字段用于动态类型 (由 "
+":func:`type_new` 创建，通常通过 class 语句来调用)。 注意 :c:data:`PyType_Type` (元类型) 会初始化 "
+":c:member:`~PyTypeObject.tp_itemsize`，这意味着它的实例 (即 type 对象) *必须* 具有 "
+":attr:`ob_size` 字段。"
 
 #: ../../c-api/typeobj.rst:493
 msgid ""
@@ -1250,11 +1264,13 @@ msgid ""
 "the type) do *not* count as references.  But for dynamically allocated type "
 "objects, the instances *do* count as references."
 msgstr ""
+"这是类型对象的引用计数，由 ``PyObject_HEAD_INIT`` 宏初始化为 ``1``。 请注意对于静态分配的类型对象 (对象的 "
+":attr:`ob_type` 指回该类型) *不会* 被加入引用计数。 但对于动态分配的类型对象，实例 *确实* 会被算作引用。"
 
 #: ../../c-api/typeobj.rst:517 ../../c-api/typeobj.rst:553
 #: ../../c-api/typeobj.rst:595
 msgid "This field is not inherited by subtypes."
-msgstr ""
+msgstr "子类型不继承此字段。"
 
 #: ../../c-api/typeobj.rst:522
 msgid ""
