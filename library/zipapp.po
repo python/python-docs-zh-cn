@@ -521,7 +521,7 @@ msgid ""
 "There are some limitations to the process of bundling your application into "
 "a single file.  In most, if not all, cases they can be addressed without "
 "needing major changes to your application."
-msgstr ""
+msgstr "要将应用程序打包为单个文件，存在一些限制。大多数情况下，无需对应用程序进行重大修改即可解决。"
 
 #: ../../library/zipapp.rst:393
 msgid ""
@@ -536,6 +536,10 @@ msgid ""
 "(and potentially pick the correct version to add to ``sys.path`` at runtime,"
 " based on the user's machine)."
 msgstr ""
+"如果应用程序依赖某个带有 C "
+"扩展的包，则此程序包无法由打包文件运行（这是操作系统的限制，因为可执行代码必须存在于文件系统中，操作系统才能加载）。这时可去除打包文件中的依赖关系，然后要求用户事先安装好该程序包，或者与打包文件一起发布并在"
+" ``__main__.py`` 中增加代码，将未打包模块的目录加入 ``sys.path`` "
+"中。采用增加代码方式时，一定要为目标架构提供合适的二进制文件（可能还需在运行时根据用户的机器选择正确的版本加入 ``sys.path``）。"
 
 #: ../../library/zipapp.rst:403
 msgid ""
@@ -544,6 +548,8 @@ msgid ""
 "the default behaviour of the installer) or you should bundle your "
 "application with the embedded distribution."
 msgstr ""
+"若要如上所述发布一个 Windows 可执行文件，就得确保用户在 PATH 中包含``python3.dll`` "
+"的路径（安装程序默认不会如此），或者应把应用程序与内嵌版 Python 一起打包。"
 
 #: ../../library/zipapp.rst:408
 msgid ""
@@ -555,10 +561,13 @@ msgid ""
 ":func:`multiprocessing.set_executable` to let the module know where to find "
 "the standard Python interpreter."
 msgstr ""
+"上述给出的启动程序采用了 Python 嵌入 API。 这意味着应用程序将会是 ``sys.executable`` ，而*不是*传统的 Python "
+"解释器。代码及依赖项需做好准备。例如，如果应用程序用到了 :mod:`multiprocessing` 模块，就需要调用 "
+":func:`multiprocessing.set_executable` 来让模块知道标准 Python 解释器的位置。"
 
 #: ../../library/zipapp.rst:418
 msgid "The Python Zip Application Archive Format"
-msgstr ""
+msgstr "Python 打包应用程序的格式"
 
 #: ../../library/zipapp.rst:420
 msgid ""
@@ -570,6 +579,9 @@ msgid ""
 "will be placed on :data:`sys.path` and thus further modules can be imported "
 "from the zip file."
 msgstr ""
+"自 2.6 版开始，Python 即能够执行包含  文件的打包文件了。为了能被 Python 执行，应用程序的打包文件必须为包含 "
+"``__main__.py`` 文件的标准 zip 文件，``__main__.py`` 文件将作为应用程序的入口运行。类似于常规的 Python "
+"脚本，父级（这里指打包文件）将放入 :data:`sys.path` ，因此可从打包文件中导入更多的模块。"
 
 #: ../../library/zipapp.rst:427
 msgid ""
