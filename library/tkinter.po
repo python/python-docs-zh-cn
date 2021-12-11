@@ -14,8 +14,8 @@
 # ppcfish <ppcfish@gmail.com>, 2021
 # 钢 彭 <szhairui@gmail.com>, 2021
 # Alex Ding <dxtfz@foxmail.com>, 2021
-# Dai Xu <daixu61@hotmail.com>, 2021
 # Freesand Leo <yuqinju@163.com>, 2021
+# Dai Xu <daixu61@hotmail.com>, 2021
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-12 13:42+0000\n"
 "PO-Revision-Date: 2021-06-28 01:15+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +34,7 @@ msgstr ""
 
 #: ../../library/tkinter.rst:2
 msgid ":mod:`tkinter` --- Python interface to Tcl/Tk"
-msgstr ":mod:`tkinter` --- Tcl/Tk的Python接口"
+msgstr ":mod:`tkinter` —— Tcl/Tk 的 Python 接口"
 
 #: ../../library/tkinter.rst:9
 msgid "**Source code:** :source:`Lib/tkinter/__init__.py`"
@@ -799,6 +799,8 @@ msgid ""
 "one interpreter instance, though each interpreter instance can be used only "
 "by the one thread that created it."
 msgstr ""
+"一个 Python 解释器可能会关联很多线程。在 Tcl 中，可以创建多个线程，但每个线程都关联了单独的 Tcl "
+"解释器实例。线程也可以创建一个以上的解释器实例，尽管每个解释器实例只能由创建它的那个线程使用。"
 
 #: ../../library/tkinter.rst:445
 msgid ""
@@ -809,6 +811,9 @@ msgid ""
 "object, an event is posted to the interpreter's event queue, and when "
 "executed, the result is returned to the calling Python thread."
 msgstr ""
+" :mod:`tkinter` 创建的每个 :class:`Tk` 对象均包含一个 Tcl 解释器。它还会记录解释器是由哪个线程创建的。对 "
+":mod:`tkinter` 的调用可从任何 Python 线程发起。如果发起调用的线程不是创建 :class:`Tk` "
+"对象的线程，则会自动向解释器的事件队列中发送一条事件，在执行该事件时，会向发起调用的 Python 线程返回结果。"
 
 #: ../../library/tkinter.rst:452
 msgid ""
@@ -822,6 +827,9 @@ msgid ""
 "where the GUI runs in a completely separate thread from all application code"
 " including event handlers."
 msgstr ""
+"Tcl/Tk 应用程序通常是事件驱动的，这意味着在完成初始化以后，解释器会运行一个事件循环（即 "
+":func:`Tk.mainloop`）并对事件做出响应。因为它是单线程的，所以事件处理程序必须快速响应，否则会阻塞其他事件的处理。为了避免阻塞，不应在事件处理程序中执行任何耗时很久的计算，而应利用计时器将任务分块，或者在其他线程中运行。而其他很多工具包的"
+" GUI 是在一个完全独立的线程中运行的，独立于包括事件处理程序在内的所有代码。"
 
 #: ../../library/tkinter.rst:461
 msgid ""
@@ -829,10 +837,11 @@ msgid ""
 "any :mod:`tkinter` calls made from threads other than the one running the "
 "Tcl interpreter will fail."
 msgstr ""
+"如果 Tcl 解释器没有运行事件循环并处理解释器事件，则除运行 Tcl 解释器的线程外，任何其他线程发起的 :mod:`tkinter` 调用都会失败。"
 
 #: ../../library/tkinter.rst:465
 msgid "A number of special cases exist:"
-msgstr ""
+msgstr "存在一些特殊情况："
 
 #: ../../library/tkinter.rst:467
 msgid ""
@@ -841,6 +850,8 @@ msgid ""
 " this is different than the thread that created the Tcl interpreter. A "
 "global lock ensures only one call occurs at a time."
 msgstr ""
+"Tcl/Tk 库可编译为不支持多线程的版本。这时 :mod:`tkinter` 会从初始 Python 线程调用底层库，即便那不是创建 Tcl "
+"解释器的线程。会有一个全局锁来确保每次只会发生一次调用。"
 
 #: ../../library/tkinter.rst:472
 msgid ""
@@ -851,6 +862,9 @@ msgid ""
 "Otherwise, it's best to create them in separate threads and ensure you're "
 "running a thread-aware Tcl/Tk build."
 msgstr ""
+"虽然 :mod:`tkinter` 允许创建一个以上的 :class:`Tk` "
+"实例（都带有自己的解释器），但所有属于同一线程的解释器均会共享同一个事件队列，这样很快就会一团糟。在实际编程时，一次创建的 :class:`Tk` "
+"实例不要超过一个。否则最好在不同的线程中创建，并确保运行的是支持多线程的 Tcl/Tk 版本。"
 
 #: ../../library/tkinter.rst:478
 msgid ""
@@ -859,47 +873,49 @@ msgid ""
 "event loops or abandon the event loop entirely. If you're doing anything "
 "tricky when it comes to events or threads, be aware of these possibilities."
 msgstr ""
+"为了防止 Tcl "
+"解释器重新进入事件循环，阻塞事件处理程序并不是唯一的做法。甚至可以运行多个嵌套的事件循环，或者完全放弃事件循环。如果在处理事件或线程时碰到棘手的问题，请小心这些可能的事情。"
 
 #: ../../library/tkinter.rst:483
 msgid ""
 "There are a few select :mod:`tkinter` functions that presently work only "
 "when called from the thread that created the Tcl interpreter."
-msgstr ""
+msgstr "有几个 :mod:`tkinter` 函数，目前只在创建 Tcl 解释器的线程中调用才行。"
 
 #: ../../library/tkinter.rst:488
 msgid "Handy Reference"
-msgstr ""
+msgstr "快速参考"
 
 #: ../../library/tkinter.rst:494
 msgid "Setting Options"
-msgstr ""
+msgstr "可选配置项"
 
 #: ../../library/tkinter.rst:496
 msgid ""
 "Options control things like the color and border width of a widget. Options "
 "can be set in three ways:"
-msgstr ""
+msgstr "配置参数可以控制组件颜色和边框宽度等。可通过三种方式进行设置："
 
 #: ../../library/tkinter.rst:502
 msgid "At object creation time, using keyword arguments"
-msgstr ""
+msgstr "在对象创建时，使用关键字参数"
 
 #: ../../library/tkinter.rst:508
 msgid ""
 "After object creation, treating the option name like a dictionary index"
-msgstr ""
+msgstr "在对象创建后，将参数名用作字典索引"
 
 #: ../../library/tkinter.rst:513
 msgid ""
 "Use the config() method to update multiple attrs subsequent to object "
 "creation"
-msgstr ""
+msgstr "利用 config() 方法修改对象的多个属性"
 
 #: ../../library/tkinter.rst:515
 msgid ""
 "For a complete explanation of a given option and its behavior, see the Tk "
 "man pages for the widget in question."
-msgstr ""
+msgstr "关于这些参数及其表现的完整解释，请参阅 Tk 手册中有关组件的 man 帮助页。"
 
 #: ../../library/tkinter.rst:518
 msgid ""
@@ -909,6 +925,8 @@ msgid ""
 "particular widget.  The Standard Options are documented on the "
 ":manpage:`options(3)` man page."
 msgstr ""
+"请注意，man 手册页列出了每个部件的“标准选项”和“组件特有选项”。前者是很多组件通用的选项列表，后者是该组件特有的选项。标准选项在  "
+":manpage:`options(3)` man 手册中有文档。"
 
 #: ../../library/tkinter.rst:524
 msgid ""
@@ -917,6 +935,8 @@ msgid ""
 "given widget responds to a particular option depends on the class of the "
 "widget; buttons have a ``command`` option, labels do not."
 msgstr ""
+"本文没有区分标准选项和部件特有选项。有些选项不适用于某类组件。组件是否对某选项做出响应，取决于组件的类别；按钮组件有一个 ``command`` "
+"选项，而标签组件就没有。"
 
 #: ../../library/tkinter.rst:529
 msgid ""
@@ -927,6 +947,8 @@ msgid ""
 " option as a string (for example, ``'relief'``) and whose values are "
 "5-tuples."
 msgstr ""
+"组件支持的选项在其手册中有列出，也可在运行时调用 :meth:`config` 方法（不带参数）查看，或者通过调用组件的 :meth:`keys` "
+"方法进行查询。这些调用的返回值为字典，字典的键是字符串格式的选项名（比如 ``'relief'``），字典的值为五元组。"
 
 #: ../../library/tkinter.rst:535
 msgid ""
@@ -936,6 +958,9 @@ msgid ""
 "2-tuple passed back will contain the name of the synonym and the \"real\" "
 "option (such as ``('bg', 'background')``)."
 msgstr ""
+"有些选项，比如 ``bg`` 是全名通用选项的同义词（``bg`` 是 “background”的简写）。向 ``config()`` "
+"方法传入选项的简称将返回一个二元组，而不是五元组。传回的二元组将包含同义词的全名和“真正的”选项（比如 ``('bg', "
+"'background')``）。"
 
 #: ../../library/tkinter.rst:542
 msgid "Index"
@@ -1013,7 +1038,7 @@ msgstr "示例::"
 msgid ""
 "Of course, the dictionary printed will include all the options available and"
 " their values.  This is meant only as an example."
-msgstr ""
+msgstr "当然，输出的字典将包含所有可用选项及其值。这里只是举个例子。"
 
 #: ../../library/tkinter.rst:566
 msgid "The Packer"
@@ -1029,6 +1054,8 @@ msgid ""
 "of*, *filling*, etc - and works everything out to determine the exact "
 "placement coordinates for you."
 msgstr ""
+"包装器是 Tk 的形状管理机制之一。 形状管理器用于指定部件在容器内的相对位置——彼此的 *宿主* 关系。与更为麻烦的 *定位器* "
+"相比（不太常用，这里不做介绍），包装器可接受定性的相对关系—— *上面* 、*左边* 、*填充* 等，并确定精确的位置坐标。"
 
 #: ../../library/tkinter.rst:577
 msgid ""
