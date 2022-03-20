@@ -10,6 +10,7 @@
 # df2dc1c92e792f7ae8417c51df43db8f_594d92a <0f49be28017426edb1db1a2ab6e67088_717605>, 2018
 # Alpha Du <alphanow@gmail.com>, 2019
 # ppcfish <ppcfish@gmail.com>, 2019
+# Dai Xu <daixu61@hotmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 05:02+0000\n"
 "PO-Revision-Date: 2017-02-16 17:44+0000\n"
-"Last-Translator: ppcfish <ppcfish@gmail.com>, 2019\n"
+"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +29,7 @@ msgstr ""
 
 #: ../../howto/clinic.rst:5
 msgid "Argument Clinic How-To"
-msgstr ""
+msgstr "Argument Clinic 的用法"
 
 #: ../../howto/clinic.rst:0
 msgid "author"
@@ -50,6 +51,8 @@ msgid ""
 "to work with Argument Clinic, and then introduces some advanced topics on "
 "Argument Clinic usage."
 msgstr ""
+"Argument Clinic 是 CPython 的一个 C 文件预处理器。旨在自动处理所有与“内置”参数解析有关的代码。本文展示了将 C "
+"函数转换为配合 Argument Clinic 工作的做法，还介绍了一些关于 Argument Clinic 用法的进阶内容。"
 
 #: ../../howto/clinic.rst:19
 msgid ""
@@ -61,10 +64,13 @@ msgid ""
 "Argument Clinic that ships with the next version of CPython *could* be "
 "totally incompatible and break all your code."
 msgstr ""
+"目前 Argument Clinic 视作仅供 CPython 内部使用。不支持在 CPython "
+"之外的文件中使用，也不保证未来版本会向下兼容。换句话说：如果维护的是 CPython 的外部 C 语言扩展，欢迎在自己的代码中试用 Argument "
+"Clinic。但 Argument Clinic 与新版 CPython 中的版本 *可能* 完全不兼容，且会打乱全部代码。"
 
 #: ../../howto/clinic.rst:29
 msgid "The Goals Of Argument Clinic"
-msgstr ""
+msgstr "Argument Clinic 的设计目标"
 
 #: ../../howto/clinic.rst:31
 msgid ""
@@ -76,6 +82,10 @@ msgid ""
 "gets called at the bottom, with ``PyObject *args`` (and maybe ``PyObject "
 "*kwargs``) magically converted into the C variables and types you need."
 msgstr ""
+"Argument Clinic 的主要目标，是接管 CPython 中的所有参数解析代码。这意味着，如果要把某个函数转换为配合 Argument "
+"Clinic一起工作，则该函数不应再作任何参数解析工作——Argument Clinic 生成的代码应该是个“黑盒”，CPython "
+"会在顶部发起调用，底部则调用自己的代码， ``PyObject *args`` （也许还有 ``PyObject *kwargs`` "
+"）会神奇地转换成所需的 C 变量和类型。"
 
 #: ../../howto/clinic.rst:41
 msgid ""
@@ -84,6 +94,8 @@ msgid ""
 "chore, requiring maintaining redundant information in a surprising number of"
 " places. When you use Argument Clinic, you don't have to repeat yourself."
 msgstr ""
+"Argument Clinic 为了能完成主要目标，用起来必须方便。目前，使用 CPython "
+"的参数解析库是一件苦差事，需要在很多地方维护冗余信息。如果使用 Argument Clinic，则不必再重复代码了。"
 
 #: ../../howto/clinic.rst:47
 msgid ""
@@ -97,6 +109,10 @@ msgid ""
 "argument parsing library.  That would make for the fastest argument parsing "
 "possible!)"
 msgstr ""
+"显然，除非 Argument Clinic 解决了自身的问题，且没有产生新的问题，否则没有人会愿意用它。所以，Argument Clinic "
+"最重要的事情就是生成正确的代码。如果能加速代码的运行当然更好，但至少不应引入明显的减速。（最终 Argument Clinic *应该* "
+"可以实现较大的速度提升——代码生成器可以重写一下，以产生量身定做的参数解析代码，而不是调用通用的 CPython 参数解析库。 "
+"这会让参数解析达到最佳速度！）"
 
 #: ../../howto/clinic.rst:59
 msgid ""
@@ -104,6 +120,8 @@ msgid ""
 "approach to argument parsing.  Python has some functions with some very "
 "strange parsing behaviors; Argument Clinic's goal is to support all of them."
 msgstr ""
+"此外，Argument Clinic 必须足够灵活，能够与任何参数解析的方法一起工作。Python "
+"有一些函数具备一些非常奇怪的解析行为；Argument Clinic 的目标是支持所有这些函数。"
 
 #: ../../howto/clinic.rst:64
 msgid ""
@@ -112,6 +130,8 @@ msgid ""
 "introspection query functions would throw an exception if you passed in a "
 "builtin.  With Argument Clinic, that's a thing of the past!"
 msgstr ""
+"最后，Argument Clinic 的初衷是为 CPython 内置程序提供内省“签名”。以前如果传入一个内置函数，内省查询函数会抛出异常。有了 "
+"Argument Clinic，再不会发生这种问题了！"
 
 #: ../../howto/clinic.rst:70
 msgid ""
