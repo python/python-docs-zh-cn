@@ -224,21 +224,21 @@ msgstr "注释的第一行 ``/*[clinic input]`` 是 *起始行* 。"
 msgid ""
 "The last line of the initial comment (``[clinic start generated code]*/``) "
 "is the *end line*."
-msgstr ""
+msgstr "注释（``[clinic start generated code]*/``）的最后一行是 *结束行*。"
 
 #: ../../howto/clinic.rst:133
 msgid ""
 "The last line (``/*[clinic end generated code: checksum=...]*/``) is the "
 "*checksum line*."
-msgstr ""
+msgstr "最后一行（``/*[clinic end generated code: checksum=...]*/``）是 *校验和行* 。"
 
 #: ../../howto/clinic.rst:134
 msgid "In between the start line and the end line is the *input*."
-msgstr ""
+msgstr "在起始行和结束行之间是 *输入数据*。"
 
 #: ../../howto/clinic.rst:135
 msgid "In between the end line and the checksum line is the *output*."
-msgstr ""
+msgstr "在结束行和校验和行之间是 *输出数据* 。"
 
 #: ../../howto/clinic.rst:136
 msgid ""
@@ -246,11 +246,11 @@ msgid ""
 "inclusively, is the *block*.  (A block that hasn't been successfully "
 "processed by Argument Clinic yet doesn't have output or a checksum line, but"
 " it's still considered a block.)"
-msgstr ""
+msgstr "从开始行到校验和行的所有文本，都是 *块*。（Argument Clinic 尚未处理成功的块，没有输出或校验和行，但仍视作一个块）。"
 
 #: ../../howto/clinic.rst:143
 msgid "Converting Your First Function"
-msgstr ""
+msgstr "函数的转换"
 
 #: ../../howto/clinic.rst:145
 msgid ""
@@ -262,16 +262,19 @@ msgid ""
 "in the document (like \"return converters\" and \"self converters\"). But "
 "we'll keep it simple for this walkthrough so you can learn."
 msgstr ""
+"要想了解 Argument Clinic 是如何工作的，最好的方式就是转换一个函数与之合作。下面介绍需遵循的最基本步骤。请注意，若真的准备在 "
+"CPython 中进行检查，则应进行更深入的转换，使用一些本文后续会介绍到的高级概念（比如 “返回转换” 和 "
+"“自转换”）。但以下例子将维持简单，以供学习。"
 
 #: ../../howto/clinic.rst:154
 msgid "Let's dive in!"
-msgstr ""
+msgstr "就此开始"
 
 #: ../../howto/clinic.rst:156
 msgid ""
 "Make sure you're working with a freshly updated checkout of the CPython "
 "trunk."
-msgstr ""
+msgstr "请确保 CPython 是最新的已签出版本。"
 
 #: ../../howto/clinic.rst:159
 msgid ""
@@ -280,12 +283,14 @@ msgid ""
 "with Argument Clinic yet. For my example I'm using "
 "``_pickle.Pickler.dump()``."
 msgstr ""
+"找到一个调用 :c:func:`PyArg_ParseTuple` 或 :c:func:`PyArg_ParseTupleAndKeywords` "
+"，且未被转换为采用 Argument Clinic 的 Python 内置程序。这里用了 ``_pickle.Pickler.dump()``。"
 
 #: ../../howto/clinic.rst:164
 msgid ""
 "If the call to the ``PyArg_Parse`` function uses any of the following format"
 " units:"
-msgstr ""
+msgstr "如果对 ``PyArg_Parse`` 函数的调用采用了以下格式："
 
 #: ../../howto/clinic.rst:176
 msgid ""
@@ -294,6 +299,8 @@ msgid ""
 "scenarios.  But these are advanced topics—let's do something simpler for "
 "your first function."
 msgstr ""
+"或者多次调用 :c:func:`PyArg_ParseTuple`，则应再选一个函数。Argument Clinic *确实* 支持上述这些状况。 "
+"但这些都是高阶内容——第一次使用就简单一些吧。"
 
 #: ../../howto/clinic.rst:181
 msgid ""
@@ -304,10 +311,13 @@ msgid ""
 "to Argument Clinic.  Argument Clinic doesn't support generic functions or "
 "polymorphic parameters."
 msgstr ""
+"此外，如果多次调用 :c:func:`PyArg_ParseTuple` 或 :c:func:`PyArg_ParseTupleAndKeywords`"
+" 且同一参数需支持不同的类型，或者用到 PyArg_Parse 以外的函数来解析参数，则可能不适合转换为 Argument Clinic。 "
+"Argument Clinic 不支持通用函数或多态参数。"
 
 #: ../../howto/clinic.rst:188
 msgid "Add the following boilerplate above the function, creating our block::"
-msgstr ""
+msgstr "在函数上方添加以下模板，创建块："
 
 #: ../../howto/clinic.rst:193
 msgid ""
@@ -317,6 +327,8 @@ msgid ""
 " 80 characters. (Argument Clinic will preserve indents inside the "
 "docstring.)"
 msgstr ""
+"剪下文档字符串并粘贴到 ``[clinic]`` 行之间，去除所有的无用字符，使其成为一个正确引用的 C "
+"字符串。最有应该只留下带有左侧缩进的文本，且行宽不大于 80 个字符。（参数 Clinic 将保留文档字符串中的缩进。）"
 
 #: ../../howto/clinic.rst:199
 msgid ""
@@ -325,13 +337,15 @@ msgid ""
 "``help()`` on your builtin in the future, the first line will be built "
 "automatically based on the function's signature.)"
 msgstr ""
+"如果文档字符串的第一行看起来像是函数的签名，就把这一行去掉吧。（(文档串不再需要用到它——将来对内置函数调用 ``help()`` "
+"时，第一行将根据函数的签名自动建立。）"
 
 #: ../../howto/clinic.rst:205 ../../howto/clinic.rst:226
 #: ../../howto/clinic.rst:250 ../../howto/clinic.rst:308
 #: ../../howto/clinic.rst:348 ../../howto/clinic.rst:375
 #: ../../howto/clinic.rst:481 ../../howto/clinic.rst:533
 msgid "Sample::"
-msgstr ""
+msgstr "示例："
 
 #: ../../howto/clinic.rst:211
 msgid ""
@@ -340,6 +354,8 @@ msgid ""
 "paragraph consisting of a single 80-column line at the beginning of the "
 "docstring."
 msgstr ""
+"如果文档字符串中没有“摘要”行，Argument Clinic 会报错。所以应确保带有摘要行。 "
+"“摘要”行应为在文档字符串开头的一个段落，由一个80列的单行构成。"
 
 #: ../../howto/clinic.rst:216
 msgid ""
