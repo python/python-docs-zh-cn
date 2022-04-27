@@ -10,8 +10,8 @@
 # telnetning <telnetning@gmail.com>, 2020
 # Alpha Du <alphanow@gmail.com>, 2020
 # ppcfish <ppcfish@gmail.com>, 2020
-# Freesand Leo <yuqinju@163.com>, 2022
 # Dai Xu <daixu61@hotmail.com>, 2022
+# Freesand Leo <yuqinju@163.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-01 16:06+0000\n"
 "PO-Revision-Date: 2020-05-30 11:54+0000\n"
-"Last-Translator: Dai Xu <daixu61@hotmail.com>, 2022\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1490,16 +1490,19 @@ msgid ""
 ":c:func:`PyBuffer_Release` on the provided buffer. Argument Clinic generates"
 " code that does it for you (in the parsing function)."
 msgstr ""
+"在使用 ``Py_buffer`` 转换器（或者 ``'s*'``、``'w*'``、``'*y'`` 或 ``'z*'`` 传统转换器）时，*不可* "
+"在所提供的缓冲区上调用 :c:func:`PyBuffer_Release`。 Argument Clinic "
+"生成的代码会自动完成此操作（在解析函数中）。"
 
 #: ../../howto/clinic.rst:903
 msgid "Advanced converters"
-msgstr ""
+msgstr "高级转换器"
 
 #: ../../howto/clinic.rst:905
 msgid ""
 "Remember those format units you skipped for your first time because they "
 "were advanced?  Here's how to handle those too."
-msgstr ""
+msgstr "还记得初次尝试时跳过的那些格式单元吗，因为他们是高级内容？下面就来介绍这些内容。"
 
 #: ../../howto/clinic.rst:908
 msgid ""
@@ -1511,6 +1514,10 @@ msgid ""
 "``O&``), ``subclass_of`` (for ``O!``), or ``encoding`` (for all the format "
 "units that start with ``e``)."
 msgstr ""
+"其实诀窍在于，这些格式单元都需要给出参数——要么是转换函数，要么是类型，要么是指定编码的字符串。（但 "
+"“传统转换器”不支持参数。这就是为什么第一个函数要跳过这些内容）。为格式单元指定的参数于是就成了转换器的参数；参数可以是 "
+"``converter``（对于 ``O&``）、``subclass_of``（对于 ``O!``），或者是 ``encoding`` （对于 "
+"``e`` 开头的格式单元）。"
 
 #: ../../howto/clinic.rst:916
 msgid ""
@@ -1520,6 +1527,9 @@ msgid ""
 "is a subclass of ``PyUnicode_Type``, you probably want to use the converter "
 "``object(type='PyUnicodeObject *', subclass_of='&PyUnicode_Type')``."
 msgstr ""
+"在使用 ``subclass_of`` 时，可能还需要用到 ``object()`` "
+"的另一个自定义参数：``type``，用于设置参数的实际类型。例如，为了确保对象是 ``PyUnicode_Type`` 的子类，可能想采用转换器 "
+"``object(type='PyUnicodeObject *', subclass_of='&PyUnicode_Type')``。"
 
 #: ../../howto/clinic.rst:922
 msgid ""
@@ -1533,30 +1543,34 @@ msgid ""
 "unreasonable; CPython itself always passes in static hard-coded encoding "
 "strings for parameters whose format units start with ``e``."
 msgstr ""
+"Argument Clinic 用起来可能存在一个问题：丧失了 ``e`` 开头的格式单位的一些灵活性。在手工编写 ``PyArg_Parse`` "
+"调用时，理论上可以在运行时决定传给 :c:func:`PyArg_ParseTuple` 的编码字符串。但现在这个字符串必须在 Argument-"
+"Clinic 预处理时进行硬编码。这个限制是故意设置的；以便简化对这种格式单元的支持，并允许以后进行优化。这个限制似乎并不合理；CPython "
+"本身总是为 ``e`` 开头的格式单位参数传入静态的硬编码字符串。"
 
 #: ../../howto/clinic.rst:935
 msgid "Parameter default values"
-msgstr ""
+msgstr "参数的默认值"
 
 #: ../../howto/clinic.rst:937
 msgid ""
 "Default values for parameters can be any of a number of values. At their "
 "simplest, they can be string, int, or float literals:"
-msgstr ""
+msgstr "参数的默认值可以是多个值中的一个。最简单的可以是字符串、int 或 float 字面量。"
 
 #: ../../howto/clinic.rst:946
 msgid "They can also use any of Python's built-in constants:"
-msgstr ""
+msgstr "还可以使用 Python 的任何内置常量。"
 
 #: ../../howto/clinic.rst:954
 msgid ""
 "There's also special support for a default value of ``NULL``, and for simple"
 " expressions, documented in the following sections."
-msgstr ""
+msgstr "对默认值 ``NULL`` 和简单表达式还提供特别的支持，后续章节中将会介绍。"
 
 #: ../../howto/clinic.rst:959
 msgid "The ``NULL`` default value"
-msgstr ""
+msgstr "默认值 ``NULL``"
 
 #: ../../howto/clinic.rst:961
 msgid ""
@@ -1567,10 +1581,13 @@ msgid ""
 "behaves like a default value of ``None``, but the C variable is initialized "
 "with ``NULL``."
 msgstr ""
+"对于字符串和对象参数而言，可以设为 ``None``，表示没有默认值。但这意味着会将 C 变量初始化为 "
+"``Py_None``。为了方便起见，提供了一个特殊值``NULL``，目的就是为了让 Python 认为默认值就是 ``None``，而 C "
+"变量则会初始化为 ``NULL``。"
 
 #: ../../howto/clinic.rst:969
 msgid "Expressions specified as default values"
-msgstr ""
+msgstr "设为默认值的表达式"
 
 #: ../../howto/clinic.rst:971
 msgid ""
@@ -1578,11 +1595,11 @@ msgid ""
 "can be an entire expression, using math operators and looking up attributes "
 "on objects.  However, this support isn't exactly simple, because of some "
 "non-obvious semantics."
-msgstr ""
+msgstr "参数的默认值不仅可以是字面量。还可以是一个完整的表达式，可采用数学运算符及对象的属性。但这种支持并没有那么简单，因为存在一些不明显的语义。"
 
 #: ../../howto/clinic.rst:976
 msgid "Consider the following example:"
-msgstr ""
+msgstr "请考虑以下例子："
 
 #: ../../howto/clinic.rst:982
 msgid ""
@@ -1591,6 +1608,8 @@ msgid ""
 " it in C.  So it stores the default in such a way that it will get evaluated"
 " at runtime, when the user asks for the function's signature."
 msgstr ""
+"``sys.maxsize`` 在不同的系统平台可能有不同的值。因此，Argument Clinic 不能简单地在本底环境对表达式求值并用 C "
+"语言硬编码。所以默认值将用表达式的方式存储下来，运行的时候在请求函数签名时会被求值。"
 
 #: ../../howto/clinic.rst:987
 msgid ""
