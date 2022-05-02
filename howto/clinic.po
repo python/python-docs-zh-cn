@@ -1700,6 +1700,8 @@ msgid ""
 "return some C type, then adds code to the generated (non-impl) function to "
 "handle converting that value into the appropriate ``PyObject *``."
 msgstr ""
+"这就是“返回转换器”的用途。它将植入函数修改成返回某种 C 语言类型，然后在生成的（非植入）函数中添加代码，以便将 C 语言值转换为合适的 "
+"``PyObject *``。"
 
 #: ../../howto/clinic.rst:1039
 msgid ""
@@ -1710,12 +1712,13 @@ msgid ""
 "you're not changing any of the default arguments you can omit the "
 "parentheses."
 msgstr ""
+"返回值转换器的语法与参数转换器的类似。返回值转换器的定义方式，类似于函数返回值的注解。返回值转换器的行为与参数转换器基本相同，接受参数，参数只认关键字，如果不修改默认参数则可省略括号。"
 
 #: ../../howto/clinic.rst:1045
 msgid ""
 "(If you use both ``\"as\"`` *and* a return converter for your function, the "
 "``\"as\"`` should come before the return converter.)"
-msgstr ""
+msgstr "（如果函数同时用到了 ``\"as\"`` 和返回值转换器， ``\"as\"`` 应位于返回值转换器之前。）"
 
 #: ../../howto/clinic.rst:1048
 msgid ""
@@ -1729,10 +1732,14 @@ msgid ""
 "value), then the generated code will propagate the error.  Otherwise it will"
 " encode the value you return like normal."
 msgstr ""
+"返回值转换器还存在一个复杂的问题：出错信息如何表示？通常函数在执行成功时会返回一个有效（非 ``NULL``）指针，失败则返回 "
+"``NULL``。但如果使用了整数的返回值转换器，所有整数都是有效值。Argument Clinic "
+"怎么检测错误呢？解决方案是：返回值转换器会隐含寻找一个代表错误的特殊值。如果返回该特殊值，且设置了出错标记（ ``PyErr_Occurred()`` "
+"返回 True），那么生成的代码会传递该错误。否则，会对返回值进行正常编码。"
 
 #: ../../howto/clinic.rst:1057
 msgid "Currently Argument Clinic supports only a few return converters:"
-msgstr ""
+msgstr "目前 Argument Clinic 只支持少数几种返回值转换器。"
 
 #: ../../howto/clinic.rst:1072
 msgid ""
@@ -1740,6 +1747,8 @@ msgid ""
 "error.  For ``DecodeFSDefault``, the return type is ``const char *``; return"
 " a ``NULL`` pointer to indicate an error."
 msgstr ""
+"这些转换器都不需要参数。前3个转换器如果返回 -1 则表示出错。``DecodeFSDefault`` 的返回值类型是 ``const char "
+"*``；若返回 ``NULL`` 指针则表示出错。"
 
 #: ../../howto/clinic.rst:1076
 msgid ""
@@ -1748,6 +1757,8 @@ msgid ""
 "the reference count on ``Py_None``.  I'm not sure it adds enough clarity to "
 "be worth using.)"
 msgstr ""
+"（还有一个 ``NoneType`` 转换器是实验性质的，成功时返回 ``Py_None`` ，失败则返回 ``NULL``，且不会增加 "
+"``Py_None`` 的引用计数。此转换器是否值得适用，尚不明确）。"
 
 #: ../../howto/clinic.rst:1081
 msgid ""
@@ -1755,10 +1766,12 @@ msgid ""
 "parameters (if any), just run ``Tools/clinic/clinic.py --converters`` for "
 "the full list."
 msgstr ""
+"只要运行 ``Tools/clinic/clinic.py --converters`` ，即可查看 Argument Clinic "
+"支持的所有返回值转换器，包括其参数。"
 
 #: ../../howto/clinic.rst:1087
 msgid "Cloning existing functions"
-msgstr ""
+msgstr "复制已有的函数"
 
 #: ../../howto/clinic.rst:1089
 msgid ""
