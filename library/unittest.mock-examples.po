@@ -670,6 +670,7 @@ msgid ""
 " :class:`list`), we need to configure the object returned by the call to "
 "``foo.iter()``."
 msgstr ""
+"为了配置从迭代操作（隐含在对 :class:`list` 的调用中）返回的值，我们需要配置调用 ``foo.iter()`` 所返回的对象。"
 
 #: ../../library/unittest.mock-examples.rst:651
 msgid ""
@@ -679,10 +680,14 @@ msgid ""
 "powerful they are is: `Generator Tricks for Systems Programmers "
 "<http://www.dabeaz.com/generators/>`_."
 msgstr ""
+"此外还有生成器表达式和更多的生成器 `进阶用法 "
+"<http://www.dabeaz.com/coroutines/index.html>`_，但在这里我们不去关心它们。 "
+"有关生成器及其强大功能的一个很好的介绍请参阅: `针对系统程序员的生成器妙招 "
+"<http://www.dabeaz.com/generators/>`_。"
 
 #: ../../library/unittest.mock-examples.rst:659
 msgid "Applying the same patch to every test method"
-msgstr ""
+msgstr "对每个测试方法应用相同的补丁"
 
 #: ../../library/unittest.mock-examples.rst:661
 msgid ""
@@ -693,6 +698,9 @@ msgid ""
 "the patches to all test methods on the class. A test method is identified by"
 " methods whose names start with ``test``::"
 msgstr ""
+"如果你想要为多个测试方法准备好一些补丁那么最简单的方式就是将 patch 装饰器应用到每个方法。 这在感觉上会造成不必要的重复。 对于 Python "
+"2.6 或更新的版本你可以使用 :func:`patch` (其所有不同的形式) 作为类装饰器。 这将把补丁应用于类中的所有测试方法。 "
+"测试方法是通过名称前缀为 ``test`` 来标识的::"
 
 #: ../../library/unittest.mock-examples.rst:685
 msgid ""
@@ -700,6 +708,8 @@ msgid ""
 "These allow you to move the patching into your ``setUp`` and ``tearDown`` "
 "methods. ::"
 msgstr ""
+"另一种管理补丁的方式是使用 :ref:`start-and-stop`。 它允许你将打补丁操作移至你的 ``setUp`` 和 ``tearDown``"
+" 方法中。 ::"
 
 #: ../../library/unittest.mock-examples.rst:702
 msgid ""
@@ -708,10 +718,12 @@ msgid ""
 "exception is raised in the setUp then tearDown is not called. "
 ":meth:`unittest.TestCase.addCleanup` makes this easier::"
 msgstr ""
+"如果你要使用这个技巧则你必须通过调用 ``stop`` 来确保补丁被“恢复”。 这可能要比你想像的更麻烦，因为如果在 setUp 中引发了异常那么 "
+"tearDown 将不会被调用。 :meth:`unittest.TestCase.addCleanup` 可以做到更方便::"
 
 #: ../../library/unittest.mock-examples.rst:720
 msgid "Mocking Unbound Methods"
-msgstr ""
+msgstr "模拟未绑定方法"
 
 #: ../../library/unittest.mock-examples.rst:722
 msgid ""
@@ -726,6 +738,11 @@ msgid ""
 " simple to patch out methods with a mock that having to create a real "
 "function becomes a nuisance."
 msgstr ""
+"当前在编写测试时我需要修补一个 *未绑定方法* (在类上而不是在实例上为方法打补丁)。 我需要将 self "
+"作为第一个参数传入因为我想对哪些对象在调用这个特定方法进行断言。 问题是这里你不能用 mock 来打补丁，因为如果你用 mock "
+"来替换一个未绑定方法那么当从实例中获取时它就不会成为一个已绑定方法，因而它不会获得传入的 self。 "
+"绕过此问题的办法是改用一个真正的函数来修补未绑定方法。 :func:`patch` 装饰器让使用 mock "
+"来给方法打补丁变得如此简单以至于创建一个真正的函数成为一件麻烦事。"
 
 #: ../../library/unittest.mock-examples.rst:733
 msgid ""
@@ -738,12 +755,17 @@ msgid ""
 "instance. It will have ``self`` passed in as the first argument, which is "
 "exactly what I wanted:"
 msgstr ""
+"如果将 ``autospec=True`` 传给 patch 那么它就会用一个 *真正的* 函数对象来打补丁。 "
+"这个函数对象具有与它所替换的函数相同的签名，但会在内部将操作委托给一个 mock。 你仍然可以通过与以前完全相同的方式来自动创建你的 mock。 "
+"但是这将意味着一件事，就是如果你用它来修补一个类上的非绑定方法那么如果它是从一个实例中获取则被模拟的函数将被转为已绑定方法。 传给它的第一个参数将为 "
+"``self``，而这真是我想要的:"
 
 #: ../../library/unittest.mock-examples.rst:754
 msgid ""
 "If we don't use ``autospec=True`` then the unbound method is patched out "
 "with a Mock instance instead, and isn't called with ``self``."
 msgstr ""
+"如果我们不使用 ``autospec=True`` 那么这个未绑定方法会改为通过一个 Mock 补丁来修补，而不是附带 ``self`` 来调用。"
 
 #: ../../library/unittest.mock-examples.rst:759
 msgid "Checking multiple calls with mock"
