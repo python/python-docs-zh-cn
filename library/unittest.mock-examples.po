@@ -1042,7 +1042,7 @@ msgid ""
 "One situation where mocking can be hard is where you have a local import "
 "inside a function. These are harder to mock because they aren't using an "
 "object from the module namespace that we can patch out."
-msgstr ""
+msgstr "有一种会令模拟变困难的情况是当你在函数内部有局部导入。 这更难模拟的原因是它们不是使用来自我们能打补丁的模拟命名空间中的对象。"
 
 #: ../../library/unittest.mock-examples.rst:1109
 msgid ""
@@ -1053,6 +1053,8 @@ msgid ""
 "an unconditional local import (store the module as a class or module "
 "attribute and only do the import on first use)."
 msgstr ""
+"一般来说局部导入是应当避免的。 局部导入有时是为了防止循环依赖，而这个问题 *通常* 都有更好的解决办法（重构代码）或者通过延迟导入来防止“前期成本”。"
+" 这也可以通过比无条件地局部导入更好的方式来解决（将模块保存为一个类或模块属性并且只在首次使用时执行导入）。"
 
 #: ../../library/unittest.mock-examples.rst:1116
 msgid ""
@@ -1063,6 +1065,9 @@ msgid ""
 "in `sys.modules`, so usually when you import something you get a module "
 "back. This need not be the case however."
 msgstr ""
+"除此之外还有一个办法可以使用 ``mock`` 来影响导入的结果。 导入操作会从 :data:`sys.modules` 字典提取一个 *对象*。 "
+"请注意是提取一个 *对象*，不是必须为模块。 首次导入一个模块将使一个模块对象被放入 "
+"`sys.modules`，因此通常当你执行导入时你将得到一个模块。 然而这并不是必然的。"
 
 #: ../../library/unittest.mock-examples.rst:1123
 msgid ""
@@ -1072,16 +1077,20 @@ msgid ""
 "the with statement body is complete or ``patcher.stop()`` is called) then "
 "whatever was there previously will be restored safely."
 msgstr ""
+"这意味着你可以使用 :func:`patch.dict` 来 *临时性地* 将一个 mock 放入 :data:`sys.modules`。 "
+"在补丁激活期间的任何导入操作都将得到该 mock。 当补丁完成时（被装饰的函数退出，with 语句代码块结束或者 ``patcher.stop()`` "
+"被调用）则之前存在的任何东西都将被安全地恢复。"
 
 #: ../../library/unittest.mock-examples.rst:1129
 msgid "Here's an example that mocks out the 'fooble' module."
-msgstr ""
+msgstr "下面是一个模拟 'fooble' 模拟的示例。"
 
 #: ../../library/unittest.mock-examples.rst:1141
 msgid ""
 "As you can see the ``import fooble`` succeeds, but on exit there is no "
 "'fooble' left in :data:`sys.modules`."
 msgstr ""
+"你可以看到 ``import fooble`` 成功执行，而当退出时 :data:`sys.modules` 中将不再有 'fooble'。"
 
 #: ../../library/unittest.mock-examples.rst:1144
 msgid "This also works for the ``from module import name`` form:"
