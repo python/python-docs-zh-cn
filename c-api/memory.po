@@ -9,6 +9,7 @@
 # nick <2330458484@qq.com>, 2021
 # ppcfish <ppcfish@gmail.com>, 2021
 # Sean Chao <seanchao0804@gmail.com>, 2021
+# Bryan不可思议, 2022
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-04 12:52+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: Sean Chao <seanchao0804@gmail.com>, 2021\n"
+"Last-Translator: Bryan不可思议, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -138,7 +139,7 @@ msgstr ""
 
 #: ../../c-api/memory.rst:96
 msgid "Allocator Domains"
-msgstr ""
+msgstr "分配器域"
 
 #: ../../c-api/memory.rst:98
 msgid ""
@@ -155,10 +156,16 @@ msgid ""
 "allocating Python objects or the memory returned by "
 ":c:func:`PyObject_Malloc` for allocating memory for buffers."
 msgstr ""
+"所有分配函数都属于三个不同的“分配器域”之一（见 "
+":c:type:`PyMemAllocatorDomain`）。这些域代表了不同的分配策略，并为不同目的进行了优化。每个域如何分配内存和每个域调用哪些内部函数的具体细节被认为是实现细节，但是出于调试目的，可以在"
+" :ref:`此处<default-memory-allocators>` "
+"找到一张简化的表格。没有硬性要求将属于给定域的分配函数返回的内存，仅用于该域提示的目的（虽然这是推荐的做法）。例如，你可以将 "
+":c:func:`PyMem_RawMalloc` 返回的内存用于分配 Python 对象，或者将 :c:func:`PyObject_Malloc` "
+"返回的内存用作缓存。"
 
 #: ../../c-api/memory.rst:110
 msgid "The three allocation domains are:"
-msgstr ""
+msgstr "三个分配域分别是："
 
 #: ../../c-api/memory.rst:112
 msgid ""
@@ -167,6 +174,7 @@ msgid ""
 "allocator can operate without the :term:`GIL`. The memory is requested "
 "directly to the system."
 msgstr ""
+"原始域：用于为通用内存缓冲区分配内存，分配*必须*转到系统分配器并且分配器可以在没有 :term:`GIL` 的情况下运行。内存直接请求自系统。"
 
 #: ../../c-api/memory.rst:117
 msgid ""
@@ -174,12 +182,13 @@ msgid ""
 "general-purpose memory buffers where the allocation must be performed with "
 "the :term:`GIL` held. The memory is taken from the Python private heap."
 msgstr ""
+"\"Mem\" 域：用于为 Python 缓冲区和通用内存缓冲区分配内存，分配时必须持有 :term:`GIL`。内存取自于 Python 私有堆。"
 
 #: ../../c-api/memory.rst:121
 msgid ""
 "Object domain: intended for allocating memory belonging to Python objects. "
 "The memory is taken from the Python private heap."
-msgstr ""
+msgstr "对象域：用于分配属于 Python 对象的内存。内存取自于 Python 私有堆。"
 
 #: ../../c-api/memory.rst:124
 msgid ""

@@ -46,6 +46,10 @@ msgid ""
 "versions of Python), this can eliminate the need to use the older and less "
 "efficient ``pkg_resources`` package."
 msgstr ""
+"``importlib.metadata`` 是一个提供对已安装包的元数据访问的库。这个库部分建立在 Python 的导入系统上，旨在取代 "
+"``pkg_resources`` 的 `entry point API`_ 和 `metadata API`_ 中的类似功能。 通过和 Python "
+"3.7 或更高版本中的 :mod:`importlib.resources` 一同使用（对于旧版本的 Python 则作为 "
+"`importlib_resources`_ 向后移植），这可以消除对使用较旧且较为低效的 ``pkg_resources`` 包的需要。"
 
 #: ../../library/importlib.metadata.rst:25
 msgid ""
@@ -57,6 +61,10 @@ msgid ""
 "metadata can live on the file system or in zip archives on :data:`sys.path`."
 "  Through an extension mechanism, the metadata can live almost anywhere."
 msgstr ""
+"此处所说的 “已安装的包” 通常指通过 `pip <https://pypi.org/project/pip/>`_ 等工具安装在 Python "
+"``site-packages`` 目录下的第三方包。具体来说，它指的是一个具有可发现的 ``dist-info`` 或 ``egg-info`` "
+"目录以及 :pep:`566` 或其更早的规范所定义的元数据的包。默认情况下，包的元数据可以存在于文件系统中或 :data:`sys.path` "
+"上的压缩文件中。 通过扩展机制，元数据几乎可以存在于任何地方。"
 
 #: ../../library/importlib.metadata.rst:36
 msgid "Overview"
@@ -67,11 +75,11 @@ msgid ""
 "Let's say you wanted to get the version string for a package you've "
 "installed using ``pip``.  We start by creating a virtual environment and "
 "installing something into it:"
-msgstr ""
+msgstr "假设你想得到你用``pip``安装的一个包的版本字符串。 我们首先创建一个虚拟环境，并在其中安装一些东西："
 
 #: ../../library/importlib.metadata.rst:48
 msgid "You can get the version string for ``wheel`` by running the following:"
-msgstr ""
+msgstr "你可以通过运行以下代码得到``wheel``的版本字符串："
 
 #: ../../library/importlib.metadata.rst:57
 msgid ""
@@ -79,10 +87,12 @@ msgid ""
 "``console_scripts``, ``distutils.commands`` and others.  Each group contains"
 " a sequence of :ref:`EntryPoint <entry-points>` objects."
 msgstr ""
+"你也可以获得以组名为关键字的入口点集合，比如 ``console_scripts`` 和 ``distutils.commands`` 。每个组包含一个"
+" :ref:`入口点 <entry-points>` 对象的序列。"
 
 #: ../../library/importlib.metadata.rst:61
 msgid "You can get the :ref:`metadata for a distribution <metadata>`::"
-msgstr ""
+msgstr "你可以获得 :ref:`分发的元数据 <metadata>`："
 
 #: ../../library/importlib.metadata.rst:66
 msgid ""
@@ -90,6 +100,8 @@ msgid ""
 ":ref:`constituent files <files>`, and get a list of the distribution's "
 ":ref:`requirements`."
 msgstr ""
+"你也可以获得 :ref:`分发的版本号 <version>`，列出它的 :ref:`构成文件 <files>`，并且得到分发的 "
+":ref:`requirements` 列表。"
 
 #: ../../library/importlib.metadata.rst:72
 msgid "Functional API"
@@ -101,7 +113,7 @@ msgstr "这个包通过其公共 API 提供了以下功能。"
 
 #: ../../library/importlib.metadata.rst:80
 msgid "Entry points"
-msgstr ""
+msgstr "入口点"
 
 #: ../../library/importlib.metadata.rst:82
 msgid ""
@@ -112,10 +124,13 @@ msgid ""
 "``.extras`` attributes for getting the components of the ``.value`` "
 "attribute."
 msgstr ""
+"``entry_points()`` 函数返回入口点的多项集映射。入口点由 ``EntryPoint`` 的实例体现；每个 ``EntryPoint``"
+" 对象都有 ``.name`` ，``.group`` 与 ``.value`` 属性，用于解析值的 ``.load()`` 方法，还有作为 "
+"``.value`` 属性组件的 ``.module`` ，``.attr`` 与 ``.extras`` 属性。"
 
 #: ../../library/importlib.metadata.rst:89
 msgid "Query all entry points::"
-msgstr ""
+msgstr "查询所有的入口点："
 
 #: ../../library/importlib.metadata.rst:93
 msgid ""
@@ -123,30 +138,33 @@ msgid ""
 "sequence of all ``EntryPoint`` objects with ``names`` and ``groups`` "
 "attributes for convenience::"
 msgstr ""
+"``entry_points()`` 函数返回值中的 ``EntryPoints`` 对象是一个含有``EntryPoint`` "
+"对象的序列，且具有方便的 ``names`` 与 ``groups`` 属性："
 
 #: ../../library/importlib.metadata.rst:100
 msgid ""
 "``EntryPoints`` has a ``select`` method to select entry points matching "
 "specific properties. Select entry points in the ``console_scripts`` group::"
 msgstr ""
+"``EntryPoints`` 的 ``select`` 方法用于选择匹配特性的入口点。要选择``console_scripts`` 组中的入口点："
 
 #: ../../library/importlib.metadata.rst:106
 msgid ""
 "Equivalently, since ``entry_points`` passes keyword arguments through to "
 "select::"
-msgstr ""
+msgstr "等价地，向 ``entry_points`` 传入关键字参数来选择："
 
 #: ../../library/importlib.metadata.rst:111
 msgid "Pick out a specific script named \"wheel\" (found in the wheel project)::"
-msgstr ""
+msgstr "选出命名为 “wheel” 的特定脚本（可以在 wheel 项目中找到）："
 
 #: ../../library/importlib.metadata.rst:117
 msgid "Equivalently, query for that entry point during selection::"
-msgstr ""
+msgstr "等价地，在选择过程中查询对应的入口点："
 
 #: ../../library/importlib.metadata.rst:122
 msgid "Inspect the resolved entry point::"
-msgstr ""
+msgstr "检查解析得到的入口点："
 
 #: ../../library/importlib.metadata.rst:136
 msgid ""
@@ -157,10 +175,13 @@ msgid ""
 "discovery-of-services-and-plugins>`_ for more information on entry points, "
 "their definition, and usage."
 msgstr ""
+"``group`` 和 ``name`` 是由软件包作者定义的任意值，通常客户端会希望解析某个特定组的所有入口点。阅读 `the setuptools "
+"docs <https://setuptools.readthedocs.io/en/latest/setuptools.html#dynamic-"
+"discovery-of-services-and-plugins>`_ 以了解更多关于入口点、其定义和用法的信息。"
 
 #: ../../library/importlib.metadata.rst:142
 msgid "*Compatibility Note*"
-msgstr ""
+msgstr "*兼容性说明*"
 
 #: ../../library/importlib.metadata.rst:144
 msgid ""
@@ -173,53 +194,58 @@ msgid ""
 "``EntryPoints`` object. Users should rely on the selection interface to "
 "retrieve entry points by group."
 msgstr ""
+"“可选择” 的入口点在 ``importlib_metadata`` 3.6 和 Python 3.10 中被引入。在这些改变之前， "
+"``entry_points`` 没有形参且总是返回一个以分组为键，以入口点为值的字典。为了兼容性，如果不带参数地 entry_points "
+"，便会返回一个实现了字典接口的 ``SelectableGroups`` 对象。未来，不带参数调用 ``entry_points`` 会返回 "
+"``EntryPoints`` 对象。用户只应该依靠选择接口来按照分组获得入口点。"
 
 #: ../../library/importlib.metadata.rst:157
 msgid "Distribution metadata"
-msgstr ""
+msgstr "分发的元数据"
 
 #: ../../library/importlib.metadata.rst:159
 msgid ""
 "Every distribution includes some metadata, which you can extract using the "
 "``metadata()`` function::"
-msgstr ""
+msgstr "每个分发都包含某些元数据，你可以通过 ``metadata()`` 函数提取它们："
 
 #: ../../library/importlib.metadata.rst:164
 msgid ""
 "The keys of the returned data structure, a ``PackageMetadata``, name the "
 "metadata keywords, and the values are returned unparsed from the "
 "distribution metadata::"
-msgstr ""
+msgstr "返回的数据架构 ``PackageMetadata`` 的键代表元数据的关键字，而值从分发的元数据中不被解析地返回："
 
 #: ../../library/importlib.metadata.rst:171
 msgid ""
 "``PackageMetadata`` also presents a ``json`` attribute that returns all the "
 "metadata in a JSON-compatible form per :PEP:`566`::"
 msgstr ""
+"``PackageMetadata`` 也提供了按照 :PEP:`566` 将所有元数据以 JSON 兼容的方式返回的 ``json`` 属性："
 
 #: ../../library/importlib.metadata.rst:177
 msgid ""
 "The ``Description`` is now included in the metadata when presented through "
 "the payload. Line continuation characters have been removed."
-msgstr ""
+msgstr "当有效载荷中包含时，``Description`` 以去除续行符的形式被包含于元数据中。"
 
 #: ../../library/importlib.metadata.rst:181
 msgid "The ``json`` attribute was added."
-msgstr ""
+msgstr "添加了 ``json`` 属性。"
 
 #: ../../library/importlib.metadata.rst:188
 msgid "Distribution versions"
-msgstr ""
+msgstr "分发的版本"
 
 #: ../../library/importlib.metadata.rst:190
 msgid ""
 "The ``version()`` function is the quickest way to get a distribution's "
 "version number, as a string::"
-msgstr ""
+msgstr "``version()`` 函数是以字符串形式获取分发的版本号的最快方式："
 
 #: ../../library/importlib.metadata.rst:200
 msgid "Distribution files"
-msgstr ""
+msgstr "分发的文件"
 
 #: ../../library/importlib.metadata.rst:202
 msgid ""
@@ -230,16 +256,19 @@ msgid ""
 "``dist``, ``size``, and ``hash`` properties as indicated by the metadata.  "
 "For example::"
 msgstr ""
+"你可以获得分发内包含的所有文件的集合。 ``files()`` 函数传入一个分发包的名字并返回所有这个分发安装的文件。每个返回的文件对象都是一个 "
+":class:`pathlib.PurePath` 的具有额外由元数据指定的 ``dist``， ``size`` 和 ``hash`` 属性的子类 "
+"``PackagePath`` 的实例。例如："
 
 #: ../../library/importlib.metadata.rst:218
 msgid "Once you have the file, you can also read its contents::"
-msgstr ""
+msgstr "当你获得了文件对象，你可以读取其内容："
 
 #: ../../library/importlib.metadata.rst:229
 msgid ""
 "You can also use the ``locate`` method to get a the absolute path to the "
 "file::"
-msgstr ""
+msgstr "你也可以使用 ``locate`` 方法来获得文件的绝对路径："
 
 #: ../../library/importlib.metadata.rst:235
 msgid ""
@@ -250,30 +279,34 @@ msgid ""
 " or otherwise guard against this condition if the target distribution is not"
 " known to have the metadata present."
 msgstr ""
+"当列出包含文件的元数据文件（RECORD 或 SOURCES.txt）不存在时， ``files()`` 函数将返回 ``None`` "
+"。调用者可能会想要将对 ``files()`` 的调用封装在 `always_iterable <https://more-"
+"itertools.readthedocs.io/en/stable/api.html#more_itertools.always_iterable>`_"
+" 中，或者用其他方法来应对目标分发元数据存在性未知的情况。"
 
 #: ../../library/importlib.metadata.rst:246
 msgid "Distribution requirements"
-msgstr ""
+msgstr "分发的依赖"
 
 #: ../../library/importlib.metadata.rst:248
 msgid ""
 "To get the full set of requirements for a distribution, use the "
 "``requires()`` function::"
-msgstr ""
+msgstr "使用 ``requires()`` 函数来获得分发的依赖集合："
 
 #: ../../library/importlib.metadata.rst:256
 msgid "Package distributions"
-msgstr ""
+msgstr "包的分发"
 
 #: ../../library/importlib.metadata.rst:258
 msgid ""
 "A convience method to resolve the distribution or distributions (in the case"
 " of a namespace package) for top-level Python packages or modules::"
-msgstr ""
+msgstr "一个用来解析顶级 Python 包或者模块对应的分发的方法（命名空间包可能有多个分发）"
 
 #: ../../library/importlib.metadata.rst:269
 msgid "Distributions"
-msgstr ""
+msgstr "分发"
 
 #: ../../library/importlib.metadata.rst:271
 msgid ""
@@ -282,28 +315,30 @@ msgid ""
 " an abstract object that represents the metadata for a Python package.  You "
 "can get the ``Distribution`` instance::"
 msgstr ""
+"以上的 API 是最常见而方便的用法，但是你也可以通过 ``Distribution`` 类获得以上所有信息。 ``Distribution`` "
+"是一个代表 Python 包的元数据的抽象对象。你可以这样获取 ``Distribution`` 实例："
 
 #: ../../library/importlib.metadata.rst:279
 msgid ""
 "Thus, an alternative way to get the version number is through the "
 "``Distribution`` instance::"
-msgstr ""
+msgstr "因此，可以通过 ``Distribution`` 实例获得版本号："
 
 #: ../../library/importlib.metadata.rst:285
 msgid ""
 "There are all kinds of additional metadata available on the ``Distribution``"
 " instance::"
-msgstr ""
+msgstr "``Distribution`` 实例具有所有可用的附加元数据："
 
 #: ../../library/importlib.metadata.rst:293
 msgid ""
 "The full set of available metadata is not described here.  See :pep:`566` "
 "for additional details."
-msgstr ""
+msgstr "此处并未描述全部可用的元数据集合。 请参见 :pep:`566` 以了解更多细节。"
 
 #: ../../library/importlib.metadata.rst:298
 msgid "Extending the search algorithm"
-msgstr ""
+msgstr "扩展搜索算法"
 
 #: ../../library/importlib.metadata.rst:300
 msgid ""
@@ -313,6 +348,9 @@ msgid ""
 "package's metadata, ``importlib.metadata`` queries the list of :term:`meta "
 "path finders <meta path finder>` on :data:`sys.meta_path`."
 msgstr ""
+"因为包的元数据无法通过搜索 :data:`sys.path` 或通过包加载器获得，包的元数据是通过导入系统的 :ref:`查找器 <finders-"
+"and-loaders>` 找到的。 ``importlib.metadata`` 查询在 :data:`sys.meta_path` 上的 "
+":term:`元数据查找器 <meta path finder>` 列表以获得分发包的元数据。"
 
 #: ../../library/importlib.metadata.rst:306
 msgid ""
@@ -320,6 +358,8 @@ msgid ""
 "``importlib.metadata.MetadataPathFinder`` for finding distributions loaded "
 "from typical file-system-based paths."
 msgstr ""
+"Python 默认的 ``PathFinder`` 包含一个调用 ``importlib.metadata.MetadataPathFinder`` "
+"来查找从典型的文件系统路径加载发布的钩子。"
 
 #: ../../library/importlib.metadata.rst:310
 msgid ""
@@ -330,6 +370,10 @@ msgid ""
 "and presents this extended interface as the ``DistributionFinder`` abstract "
 "base class, which defines this abstract method::"
 msgstr ""
+"抽象基类 :py:class:`importlib.abc.MetaPathFinder` 定义了 Python 导入系统期望的查找器接口。 "
+"``importlib.metadata`` 通过寻找 :data:`sys.meta_path` 上查找器可选的 "
+"``find_distributions`` 可调用的属性扩展这个协议，并将这个扩展接口作为 ``DistributionFinder`` "
+"抽象基类提供，它定义了这个抽象方法："
 
 #: ../../library/importlib.metadata.rst:324
 msgid ""
@@ -337,6 +381,8 @@ msgid ""
 "properties indicating the path to search and name to match and may supply "
 "other relevant context."
 msgstr ""
+"``DistributionFinder.Context`` 对象提供了指示搜索路径和匹配名称的属性 ``.path`` 和 ``.name`` "
+"，也可能提供其他相关的上下文。"
 
 #: ../../library/importlib.metadata.rst:328
 msgid ""
@@ -346,6 +392,8 @@ msgid ""
 "instances of this derived ``Distribution`` in the ``find_distributions()`` "
 "method."
 msgstr ""
+"这在实践中意味着要支持在文件系统外的其他位置查找分发包的元数据，你需要子类化 ``Distribution`` 并实现抽象方法，之后从一个自定义查找器的"
+" ``find_distributions()`` 方法返回这个派生的 ``Distribution`` 实例。"
 
 #: ../../library/importlib.metadata.rst:340
 msgid "Footnotes"
