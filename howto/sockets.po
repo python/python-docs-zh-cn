@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2021, Python Software Foundation
+# Copyright (C) 2001-2022, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-27 13:07+0000\n"
+"POT-Creation-Date: 2022-06-16 06:28+0000\n"
 "PO-Revision-Date: 2021-06-28 00:53+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -374,35 +374,38 @@ msgstr "二进制数据"
 msgid ""
 "It is perfectly possible to send binary data over a socket. The major "
 "problem is that not all machines use the same formats for binary data. For "
-"example, a Motorola chip will represent a 16 bit integer with the value 1 as"
-" the two hex bytes 00 01. Intel and DEC, however, are byte-reversed - that "
-"same 1 is 01 00. Socket libraries have calls for converting 16 and 32 bit "
-"integers - ``ntohl, htonl, ntohs, htons`` where \"n\" means *network* and "
-"\"h\" means *host*, \"s\" means *short* and \"l\" means *long*. Where "
-"network order is host order, these do nothing, but where the machine is "
-"byte-reversed, these swap the bytes around appropriately."
+"example, `network byte order "
+"<https://en.wikipedia.org/wiki/Endianness#Networking>`_ is big-endian, with "
+"the most significant byte first, so a 16 bit integer with the value ``1`` "
+"would be the two hex bytes ``00 01``. However, most common processors "
+"(x86/AMD64, ARM, RISC-V), are little-endian, with the least significant byte"
+" first - that same ``1`` would be ``01 00``."
 msgstr ""
-"通过套接字传送二进制数据是可行的。主要问题在于并非所有机器都用同样的二进制数据格式。比如 Motorola 芯片用两个十六进制字节 00 01 "
-"来表示一个 16 位整数值 1。而 Intel 和 DEC 则会做字节反转 —— 即用 01 00 来表示 1。套接字库要求转换 16 位和 32 "
-"位整数 —— ``ntohl, htonl, ntohs, htons`` 其中的「n」表示 *network*，「h」表示 *host*，「s」表示 "
-"*short*，「l」表示 *long*。在网络序列就是主机序列时它们什么都不做，但是如果机器是字节反转的则会适当地交换字节序。"
 
-#: ../../howto/sockets.rst:264
+#: ../../howto/sockets.rst:262
 msgid ""
-"In these days of 32 bit machines, the ascii representation of binary data is"
-" frequently smaller than the binary representation. That's because a "
-"surprising amount of the time, all those longs have the value 0, or maybe 1."
-" The string \"0\" would be two bytes, while binary is four. Of course, this "
-"doesn't fit well with fixed-length messages. Decisions, decisions."
+"Socket libraries have calls for converting 16 and 32 bit integers - ``ntohl,"
+" htonl, ntohs, htons`` where \"n\" means *network* and \"h\" means *host*, "
+"\"s\" means *short* and \"l\" means *long*. Where network order is host "
+"order, these do nothing, but where the machine is byte-reversed, these swap "
+"the bytes around appropriately."
 msgstr ""
-"在现今的 32 位机器中，二进制数据的 ascii 表示往往比二进制表示要小。这是因为在非常多的时候所有 long 的值均为 0 或者 1。字符串形式的"
-" \"0\" 为两个字节，而二进制形式则为四个。当然这不适用于固定长度的信息。自行决定，请自行决定。"
 
-#: ../../howto/sockets.rst:272
+#: ../../howto/sockets.rst:268
+msgid ""
+"In these days of 64-bit machines, the ASCII representation of binary data is"
+" frequently smaller than the binary representation. That's because a "
+"surprising amount of the time, most integers have the value 0, or maybe 1. "
+"The string ``\"0\"`` would be two bytes, while a full 64-bit integer would "
+"be 8. Of course, this doesn't fit well with fixed-length messages. "
+"Decisions, decisions."
+msgstr ""
+
+#: ../../howto/sockets.rst:277
 msgid "Disconnecting"
 msgstr "断开连接"
 
-#: ../../howto/sockets.rst:274
+#: ../../howto/sockets.rst:279
 msgid ""
 "Strictly speaking, you're supposed to use ``shutdown`` on a socket before "
 "you ``close`` it.  The ``shutdown`` is an advisory to the socket at the "
@@ -417,7 +420,7 @@ msgstr ""
 "是发送给套接字另一端的一种建议。调用时参数不同意义也不一样，它可能意味着「我不会再发送了，但我仍然会监听」，或者「我没有监听了，真棒！」。然而，大多数套接字库或者程序员都习惯了忽略使用这种礼节，因为通常情况下"
 " ``close`` 与 ``shutdown(); close()`` 是一样的。所以在大多数情况下，不需要显式的 ``shutdown`` 。"
 
-#: ../../howto/sockets.rst:282
+#: ../../howto/sockets.rst:287
 msgid ""
 "One way to use ``shutdown`` effectively is in an HTTP-like exchange. The "
 "client sends a request and then does a ``shutdown(1)``. This tells the "
@@ -430,7 +433,7 @@ msgstr ""
 "这告诉服务器“此客户端已完成发送，但仍可以接收”。服务器可以通过接收 0 字节来检测 “EOF” 。它可以假设它有完整的请求。服务器发送回复。如果 "
 "``send`` 成功完成，那么客户端仍在接收。"
 
-#: ../../howto/sockets.rst:289
+#: ../../howto/sockets.rst:294
 msgid ""
 "Python takes the automatic shutdown a step further, and says that when a "
 "socket is garbage collected, it will automatically do a ``close`` if it's "
@@ -443,11 +446,11 @@ msgstr ""
 "。但依靠这个机制是一个非常坏的习惯。如果你的套接字在没有 ``close`` "
 "的情况下就消失了，那么另一端的套接字可能会无限期地挂起，以为你只是慢了一步。完成后 *请* ``close`` 你的套接字。"
 
-#: ../../howto/sockets.rst:297
+#: ../../howto/sockets.rst:302
 msgid "When Sockets Die"
 msgstr "套接字何时销毁"
 
-#: ../../howto/sockets.rst:299
+#: ../../howto/sockets.rst:304
 msgid ""
 "Probably the worst thing about using blocking sockets is what happens when "
 "the other side comes down hard (without doing a ``close``). Your socket is "
@@ -465,11 +468,11 @@ msgstr ""
 "是一种可靠的协议，它会在放弃连接之前等待很长时间。如果你正在使用线程，那么整个线程基本上已经死了。你无能为力。只要你没有做一些愚蠢的事情，比如在进行阻塞读取时持有一个锁，那么线程并没有真正消耗掉资源。"
 " *不要* 尝试杀死线程 —— 线程比进程更有效的部分原因是它们避免了与自动回收资源相关的开销。换句话说，如果你设法杀死线程，你的整个进程很可能被搞坏。"
 
-#: ../../howto/sockets.rst:313
+#: ../../howto/sockets.rst:318
 msgid "Non-blocking Sockets"
 msgstr "非阻塞的套接字"
 
-#: ../../howto/sockets.rst:315
+#: ../../howto/sockets.rst:320
 msgid ""
 "If you've understood the preceding, you already know most of what you need "
 "to know about the mechanics of using sockets. You'll still use the same "
@@ -479,7 +482,7 @@ msgstr ""
 "如果你已理解上述内容，那么你已经了解了使用套接字的机制所需了解的大部分内容。你仍将以相同的方式使用相同的函数调用。 "
 "只是，如果你做得对，你的应用程序几乎是由内到外的。"
 
-#: ../../howto/sockets.rst:320
+#: ../../howto/sockets.rst:325
 msgid ""
 "In Python, you use ``socket.setblocking(False)`` to make it non-blocking. In"
 " C, it's more complex, (for one thing, you'll need to choose between the BSD"
@@ -492,7 +495,7 @@ msgstr ""
 " 风格的 ``O_NONBLOCK`` 和几乎无区别的 POSIX 风格的 ``O_NDELAY`` 之间作出选择，这与 ``TCP_NODELAY``"
 " 完全不一样），但其思路实际上是相同的。 你要在创建套接字之后但在使用它之前执行此操作。 （实际上，如果你是疯子的话也可以反复进行切换。）"
 
-#: ../../howto/sockets.rst:327
+#: ../../howto/sockets.rst:332
 msgid ""
 "The major mechanical difference is that ``send``, ``recv``, ``connect`` and "
 "``accept`` can return without having done anything. You have (of course) a "
@@ -505,11 +508,11 @@ msgstr ""
 "你（当然）有很多选择。你可以检查返回代码和错误代码，通常会让自己发疯。如果你不相信我，请尝试一下。你的应用程序将变得越来越大、越来越 Bug 、吸干 "
 "CPU。因此，让我们跳过脑死亡的解决方案并做正确的事。"
 
-#: ../../howto/sockets.rst:334
+#: ../../howto/sockets.rst:339
 msgid "Use ``select``."
 msgstr "使用 ``select`` 库"
 
-#: ../../howto/sockets.rst:336
+#: ../../howto/sockets.rst:341
 msgid ""
 "In C, coding ``select`` is fairly complex. In Python, it's a piece of cake, "
 "but it's close enough to the C version that if you understand ``select`` in "
@@ -518,7 +521,7 @@ msgstr ""
 "在 C 中，编码 ``select`` 相当复杂。 在 Python 中，它是很简单，但它与 C 版本足够接近，如果你在 Python 中理解 "
 "``select`` ，那么在 C 中你会几乎不会遇到麻烦::"
 
-#: ../../howto/sockets.rst:347
+#: ../../howto/sockets.rst:352
 msgid ""
 "You pass ``select`` three lists: the first contains all sockets that you "
 "might want to try reading; the second all the sockets you might want to try "
@@ -532,14 +535,14 @@ msgstr ""
 "三个列表：第一个包含你可能想要尝试读取的所有套接字；第二个是你可能想要尝试写入的所有套接字，以及要检查错误的最后一个（通常为空）。你应该注意，套接字可以进入多个列表。"
 " ``select`` 调用是阻塞的，但你可以给它一个超时。这通常是一件明智的事情 —— 给它一个很长的超时（比如一分钟），除非你有充分的理由不这样做。"
 
-#: ../../howto/sockets.rst:355
+#: ../../howto/sockets.rst:360
 msgid ""
 "In return, you will get three lists. They contain the sockets that are "
 "actually readable, writable and in error. Each of these lists is a subset "
 "(possibly empty) of the corresponding list you passed in."
 msgstr "作为返回，你将获得三个列表。它们包含实际可读、可写和有错误的套接字。 这些列表中的每一个都是你传入的相应列表的子集（可能为空）。"
 
-#: ../../howto/sockets.rst:359
+#: ../../howto/sockets.rst:364
 msgid ""
 "If a socket is in the output readable list, you can be as-close-to-certain-"
 "as-we-ever-get-in-this-business that a ``recv`` on that socket will return "
@@ -552,7 +555,7 @@ msgstr ""
 "。可写列表的也相同，你将能够发送 *一些内容* 。 也许不是你想要的全部，但 *有些东西* 比没有东西更好。 "
 "（实际上，任何合理健康的套接字都将以可写方式返回 —— 它只是意味着出站网络缓冲区空间可用。）"
 
-#: ../../howto/sockets.rst:366
+#: ../../howto/sockets.rst:371
 msgid ""
 "If you have a \"server\" socket, put it in the potential_readers list. If it"
 " comes out in the readable list, your ``accept`` will (almost certainly) "
@@ -564,7 +567,7 @@ msgstr ""
 "（几乎肯定）会起作用。如果你已经创建了一个新的套接字 ``connect`` 其他人，请将它放在 potential_writers "
 "列表中。如果它出现在可写列表中，那么它有可能已连接。"
 
-#: ../../howto/sockets.rst:372
+#: ../../howto/sockets.rst:377
 msgid ""
 "Actually, ``select`` can be handy even with blocking sockets. It's one way "
 "of determining whether you will block - the socket returns as readable when "
@@ -575,7 +578,7 @@ msgstr ""
 "实际上，即使使用阻塞套接字， ``select`` 也很方便。这是确定是否阻塞的一种方法 —— "
 "当缓冲区中存在某些内容时，套接字返回为可读。然而，这仍然无助于确定另一端是否完成或者只是忙于其他事情的问题。"
 
-#: ../../howto/sockets.rst:377
+#: ../../howto/sockets.rst:382
 msgid ""
 "**Portability alert**: On Unix, ``select`` works both with the sockets and "
 "files. Don't try this on Windows. On Windows, ``select`` works with sockets "

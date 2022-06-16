@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2021, Python Software Foundation
+# Copyright (C) 2001-2022, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-29 12:56+0000\n"
+"POT-Creation-Date: 2022-06-16 06:28+0000\n"
 "PO-Revision-Date: 2021-06-28 00:48+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -74,7 +74,24 @@ msgid ""
 "initialized, it must call :c:func:`PyObject_GC_Track`."
 msgstr "初始化了所有可能包含其他容器的引用的字段后，它必须调用 :c:func:`PyObject_GC_Track` 。"
 
-#: ../../c-api/gcsupport.rst:37
+#: ../../c-api/gcsupport.rst:36
+msgid ""
+"Similarly, the deallocator for the object must conform to a similar pair of "
+"rules:"
+msgstr "同样的，对象的释放器必须符合两个类似的规则："
+
+#: ../../c-api/gcsupport.rst:39
+msgid ""
+"Before fields which refer to other containers are invalidated, "
+":c:func:`PyObject_GC_UnTrack` must be called."
+msgstr "在引用其它容器的字段失效前，必须调用 :c:func:`PyObject_GC_UnTrack` 。"
+
+#: ../../c-api/gcsupport.rst:42
+msgid ""
+"The object's memory must be deallocated using :c:func:`PyObject_GC_Del`."
+msgstr "必须使用 :c:func:`PyObject_GC_Del` 释放对象的内存。"
+
+#: ../../c-api/gcsupport.rst:45
 msgid ""
 "If a type adds the Py_TPFLAGS_HAVE_GC, then it *must* implement at least a "
 ":c:member:`~PyTypeObject.tp_traverse` handler or explicitly use one from its"
@@ -83,7 +100,7 @@ msgstr ""
 "如果一个类型添加了 Py_TPFLAGS_HAVE_GC，则它 *必须* 实现至少一个 "
 ":c:member:`~PyTypeObject.tp_traverse` 句柄或显式地使用来自其一个或多个子类的句柄。"
 
-#: ../../c-api/gcsupport.rst:41
+#: ../../c-api/gcsupport.rst:49
 msgid ""
 "When calling :c:func:`PyType_Ready` or some of the APIs that indirectly call"
 " it like :c:func:`PyType_FromSpecWithBases` or :c:func:`PyType_FromSpec` the"
@@ -99,21 +116,21 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_clear` 字段，如果该类型是继承自实现了垃圾回收器协议的类并且该子类 *没有* 包括 "
 ":const:`Py_TPFLAGS_HAVE_GC` 旗标的话。"
 
-#: ../../c-api/gcsupport.rst:51
+#: ../../c-api/gcsupport.rst:59
 msgid ""
 "Analogous to :c:func:`PyObject_New` but for container objects with the "
 ":const:`Py_TPFLAGS_HAVE_GC` flag set."
 msgstr ""
 "类似于 :c:func:`PyObject_New` ，适用于设置了 :const:`Py_TPFLAGS_HAVE_GC` 标签的容器对象。"
 
-#: ../../c-api/gcsupport.rst:57
+#: ../../c-api/gcsupport.rst:65
 msgid ""
 "Analogous to :c:func:`PyObject_NewVar` but for container objects with the "
 ":const:`Py_TPFLAGS_HAVE_GC` flag set."
 msgstr ""
 "类似于 :c:func:`PyObject_NewVar` ，适用于设置了 :const:`Py_TPFLAGS_HAVE_GC` 标签的容器对象。"
 
-#: ../../c-api/gcsupport.rst:63
+#: ../../c-api/gcsupport.rst:71
 msgid ""
 "Resize an object allocated by :c:func:`PyObject_NewVar`.  Returns the "
 "resized object or ``NULL`` on failure.  *op* must not be tracked by the "
@@ -122,7 +139,7 @@ msgstr ""
 "为 :c:func:`PyObject_NewVar` 所分配对象重新调整大小。 返回调整大小后的对象或在失败时返回 ``NULL``。 *op* "
 "必须尚未被垃圾回收器追踪。"
 
-#: ../../c-api/gcsupport.rst:69
+#: ../../c-api/gcsupport.rst:77
 msgid ""
 "Adds the object *op* to the set of container objects tracked by the "
 "collector.  The collector can run at unexpected times so objects must be "
@@ -133,54 +150,37 @@ msgstr ""
 "把对象 *op* 加入到垃圾回收器跟踪的容器对象中。对象在被回收器跟踪时必须保持有效的，因为回收器可能在任何时候开始运行。在 "
 ":c:member:`~PyTypeObject.tp_traverse` 处理前的所有字段变为有效后，必须调用此函数，通常在靠近构造函数末尾的位置。"
 
-#: ../../c-api/gcsupport.rst:78
+#: ../../c-api/gcsupport.rst:86
 msgid ""
 "Returns non-zero if the object implements the garbage collector protocol, "
 "otherwise returns 0."
 msgstr "如果对象实现了垃圾回收器协议则返回非零值，否则返回 0。"
 
-#: ../../c-api/gcsupport.rst:81
+#: ../../c-api/gcsupport.rst:89
 msgid ""
 "The object cannot be tracked by the garbage collector if this function "
 "returns 0."
 msgstr "如果此函数返回 0 则对象无法被垃圾回收器追踪。"
 
-#: ../../c-api/gcsupport.rst:86
+#: ../../c-api/gcsupport.rst:94
 msgid ""
 "Returns 1 if the object type of *op* implements the GC protocol and *op* is "
 "being currently tracked by the garbage collector and 0 otherwise."
 msgstr "如果 *op* 对象的类型实现了 GC 协议且 *op* 目前正被垃圾回收器追踪则返回 1， 否则返回 0。"
 
-#: ../../c-api/gcsupport.rst:89
+#: ../../c-api/gcsupport.rst:97
 msgid "This is analogous to the Python function :func:`gc.is_tracked`."
 msgstr "这类似于 Python 函数 :func:`gc.is_tracked`。"
 
-#: ../../c-api/gcsupport.rst:96
+#: ../../c-api/gcsupport.rst:104
 msgid ""
 "Returns 1 if the object type of *op* implements the GC protocol and *op* has"
 " been already finalized by the garbage collector and 0 otherwise."
 msgstr "如果 *op* 对象的类型实现了 GC 协议且 *op* 已经被垃圾回收器终结则返回 1， 否则返回 0。"
 
-#: ../../c-api/gcsupport.rst:99
+#: ../../c-api/gcsupport.rst:107
 msgid "This is analogous to the Python function :func:`gc.is_finalized`."
 msgstr "这类似于 Python 函数 :func:`gc.is_finalized`。"
-
-#: ../../c-api/gcsupport.rst:103
-msgid ""
-"Similarly, the deallocator for the object must conform to a similar pair of "
-"rules:"
-msgstr "同样的，对象的释放器必须符合两个类似的规则："
-
-#: ../../c-api/gcsupport.rst:106
-msgid ""
-"Before fields which refer to other containers are invalidated, "
-":c:func:`PyObject_GC_UnTrack` must be called."
-msgstr "在引用其它容器的字段失效前，必须调用 :c:func:`PyObject_GC_UnTrack` 。"
-
-#: ../../c-api/gcsupport.rst:109
-msgid ""
-"The object's memory must be deallocated using :c:func:`PyObject_GC_Del`."
-msgstr "必须使用 :c:func:`PyObject_GC_Del` 释放对象的内存。"
 
 #: ../../c-api/gcsupport.rst:114
 msgid ""

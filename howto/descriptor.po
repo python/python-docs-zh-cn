@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2021, Python Software Foundation
+# Copyright (C) 2001-2022, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-29 12:56+0000\n"
+"POT-Creation-Date: 2022-06-16 06:28+0000\n"
 "PO-Revision-Date: 2021-06-28 00:53+0000\n"
 "Last-Translator: WH-2099 <wh2099@outlook.com>, 2021\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -576,36 +576,26 @@ msgid ""
 "is a pure Python equivalent:"
 msgstr "点运算符的查找逻辑在 :meth:`object.__getattribute__` 中。这里是一个等价的纯 Python 实现："
 
-#: ../../howto/descriptor.rst:700
+#: ../../howto/descriptor.rst:699
 msgid ""
-"Interestingly, attribute lookup doesn't call :meth:`object.__getattribute__`"
-" directly.  Instead, both the dot operator and the :func:`getattr` function "
-"perform attribute lookup by way of a helper function:"
+"Note, there is no :meth:`__getattr__` hook in the :meth:`__getattribute__` "
+"code.  That is why calling :meth:`__getattribute__` directly or with "
+"``super().__getattribute__`` will bypass :meth:`__getattr__` entirely."
 msgstr ""
-"有趣的是，属性查找不会直接调用 :meth:`object.__getattribute__` ，点运算符和 :func:`getattr` "
-"函数均通过辅助函数执行属性查找："
 
-#: ../../howto/descriptor.rst:747
+#: ../../howto/descriptor.rst:703
 msgid ""
-"So if :meth:`__getattr__` exists, it is called whenever "
-":meth:`__getattribute__` raises :exc:`AttributeError` (either directly or in"
-" one of the descriptor calls)."
+"Instead, it is the dot operator and the :func:`getattr` function that are "
+"responsible for invoking :meth:`__getattr__` whenever "
+":meth:`__getattribute__` raises an :exc:`AttributeError`.  Their logic is "
+"encapsulated in a helper function:"
 msgstr ""
-"因此，如果 :meth:`__getattr__` 存在，则只要 :meth:`__getattribute__` 引发 "
-":exc:`AttributeError` （直接引发异常或在描述符调用中引发都一样），就会调用它。"
 
-#: ../../howto/descriptor.rst:750
-msgid ""
-"Also, if a user calls :meth:`object.__getattribute__` directly, the "
-":meth:`__getattr__` hook is bypassed entirely."
-msgstr ""
-"同时，如果用户直接调用 :meth:`object.__getattribute__` ，则 :meth:`__getattr__`  的钩子将被绕开。"
-
-#: ../../howto/descriptor.rst:755
+#: ../../howto/descriptor.rst:753
 msgid "Invocation from a class"
 msgstr "通过类调用"
 
-#: ../../howto/descriptor.rst:757
+#: ../../howto/descriptor.rst:755
 msgid ""
 "The logic for a dotted lookup such as ``A.x`` is in "
 ":meth:`type.__getattribute__`.  The steps are similar to those for "
@@ -616,12 +606,12 @@ msgstr ""
 ":meth:`object.__getattribute__` 相似，但是实例字典查找改为搜索类的 :term:`method resolution "
 "order`。"
 
-#: ../../howto/descriptor.rst:762
+#: ../../howto/descriptor.rst:760
 msgid ""
 "If a descriptor is found, it is invoked with ``desc.__get__(None, A)``."
 msgstr "如果找到了一个描述器，那么将通过 ``desc.__get__(None, A)`` 调用它。"
 
-#: ../../howto/descriptor.rst:764
+#: ../../howto/descriptor.rst:762
 msgid ""
 "The full C implementation can be found in :c:func:`type_getattro()` and "
 ":c:func:`_PyType_Lookup()` in :source:`Objects/typeobject.c`."
@@ -629,18 +619,18 @@ msgstr ""
 "完整的 C 实现可在 :source:`Objects/typeobject.c` 中的 :c:func:`type_getattro()` 和 "
 ":c:func:`_PyType_Lookup()` 找到。"
 
-#: ../../howto/descriptor.rst:769
+#: ../../howto/descriptor.rst:767
 msgid "Invocation from super"
 msgstr "通过 super 调用"
 
-#: ../../howto/descriptor.rst:771
+#: ../../howto/descriptor.rst:769
 msgid ""
 "The logic for super's dotted lookup is in the :meth:`__getattribute__` "
 "method for object returned by :class:`super()`."
 msgstr ""
 "super 的点操作符查找的逻辑在 :class:`super()` 返回的对象的 :meth:`__getattribute__` 方法中。"
 
-#: ../../howto/descriptor.rst:774
+#: ../../howto/descriptor.rst:772
 msgid ""
 "A dotted lookup such as ``super(A, obj).m`` searches "
 "``obj.__class__.__mro__`` for the base class ``B`` immediately following "
@@ -650,7 +640,7 @@ msgstr ""
 "类似 ``super(A, obj).m`` 形式的点分查找将在 ``obj.__class__.__mro__`` 中搜索紧接在 ``A`` "
 "之后的基类 ``B``，然后返回 ``B.__dict__['m'].__get__(obj, A)``。如果 ``m`` 不是描述器，则直接返回其值。"
 
-#: ../../howto/descriptor.rst:779
+#: ../../howto/descriptor.rst:777
 msgid ""
 "The full C implementation can be found in :c:func:`super_getattro()` in "
 ":source:`Objects/typeobject.c`.  A pure Python equivalent can be found in "
@@ -662,11 +652,11 @@ msgstr ""
 "<https://www.python.org/download/releases/2.2.3/descrintro/#cooperation>`_ "
 "中找到。"
 
-#: ../../howto/descriptor.rst:786
+#: ../../howto/descriptor.rst:784
 msgid "Summary of invocation logic"
 msgstr "调用逻辑总结"
 
-#: ../../howto/descriptor.rst:788
+#: ../../howto/descriptor.rst:786
 msgid ""
 "The mechanism for descriptors is embedded in the :meth:`__getattribute__()` "
 "methods for :class:`object`, :class:`type`, and :func:`super`."
@@ -674,27 +664,27 @@ msgstr ""
 "描述器的机制嵌入在 :class:`object`，:class:`type` 和 :func:`super` 的 "
 ":meth:`__getattribute__()` 方法中。"
 
-#: ../../howto/descriptor.rst:791
+#: ../../howto/descriptor.rst:789
 msgid "The important points to remember are:"
 msgstr "要记住的重要点是："
 
-#: ../../howto/descriptor.rst:793
+#: ../../howto/descriptor.rst:791
 msgid "Descriptors are invoked by the :meth:`__getattribute__` method."
 msgstr "描述器由 :meth:`__getattribute__` 方法调用。"
 
-#: ../../howto/descriptor.rst:795
+#: ../../howto/descriptor.rst:793
 msgid ""
 "Classes inherit this machinery from :class:`object`, :class:`type`, or "
 ":func:`super`."
 msgstr "类从 :class:`object`，:class:`type` 或 :func:`super` 继承此机制。"
 
-#: ../../howto/descriptor.rst:798
+#: ../../howto/descriptor.rst:796
 msgid ""
 "Overriding :meth:`__getattribute__` prevents automatic descriptor calls "
 "because all the descriptor logic is in that method."
 msgstr "由于描述器的逻辑在 :meth:`__getattribute__` 中，因而重写该方法会阻止描述器的自动调用。"
 
-#: ../../howto/descriptor.rst:801
+#: ../../howto/descriptor.rst:799
 msgid ""
 ":meth:`object.__getattribute__` and :meth:`type.__getattribute__` make "
 "different calls to :meth:`__get__`.  The first includes the instance and may"
@@ -704,19 +694,19 @@ msgstr ""
 ":meth:`object.__getattribute__` 和 :meth:`type.__getattribute__` 会用不同的方式调用 "
 ":meth:`__get__`。前一个会传入实例，也可以包括类。后一个传入的实例为 ``None`` ，并且总是包括类。"
 
-#: ../../howto/descriptor.rst:806
+#: ../../howto/descriptor.rst:804
 msgid "Data descriptors always override instance dictionaries."
 msgstr "数据描述器始终会覆盖实例字典。"
 
-#: ../../howto/descriptor.rst:808
+#: ../../howto/descriptor.rst:806
 msgid "Non-data descriptors may be overridden by instance dictionaries."
 msgstr "非数据描述器会被实例字典覆盖。"
 
-#: ../../howto/descriptor.rst:812
+#: ../../howto/descriptor.rst:810
 msgid "Automatic name notification"
 msgstr "自动名称通知"
 
-#: ../../howto/descriptor.rst:814
+#: ../../howto/descriptor.rst:812
 msgid ""
 "Sometimes it is desirable for a descriptor to know what class variable name "
 "it was assigned to.  When a new class is created, the :class:`type` "
@@ -728,7 +718,7 @@ msgstr ""
 "有时，描述器想知道它分配到的具体类变量名。创建新类时，元类 :class:`type` 将扫描新类的字典。如果有描述器，并且它们定义了 "
 ":meth:`__set_name__`，则使用两个参数调用该方法。*owner* 是使用描述器的类，*name* 是分配给描述器的类变量名。"
 
-#: ../../howto/descriptor.rst:821
+#: ../../howto/descriptor.rst:819
 msgid ""
 "The implementation details are in :c:func:`type_new()` and "
 ":c:func:`set_names()` in :source:`Objects/typeobject.c`."
@@ -736,7 +726,7 @@ msgstr ""
 "实现的细节在 :source:`Objects/typeobject.c` 中的 :c:func:`type_new()` 和 "
 ":c:func:`set_names()` 。"
 
-#: ../../howto/descriptor.rst:824
+#: ../../howto/descriptor.rst:822
 msgid ""
 "Since the update logic is in :meth:`type.__new__`, notifications only take "
 "place at the time of class creation.  If descriptors are added to the class "
@@ -745,11 +735,11 @@ msgstr ""
 "由于更新逻辑在 :meth:`type.__new__` 中，因此通知仅在创建类时发生。之后如果将描述器添加到类中，则需要手动调用 "
 ":meth:`__set_name__` 。"
 
-#: ../../howto/descriptor.rst:830
+#: ../../howto/descriptor.rst:828
 msgid "ORM example"
 msgstr "ORM （对象关系映射）示例"
 
-#: ../../howto/descriptor.rst:832
+#: ../../howto/descriptor.rst:830
 msgid ""
 "The following code is simplified skeleton showing how data descriptors could"
 " be used to implement an `object relational mapping "
@@ -758,14 +748,14 @@ msgstr ""
 "以下代码展示了如何使用数据描述器来实现简单 `object relational mapping "
 "<https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping>`_ 框架。"
 
-#: ../../howto/descriptor.rst:836
+#: ../../howto/descriptor.rst:834
 msgid ""
 "The essential idea is that the data is stored in an external database.  The "
 "Python instances only hold keys to the database's tables.  Descriptors take "
 "care of lookups or updates:"
 msgstr "其核心思路是将数据存储在外部数据库中，Python 实例仅持有数据库表中对应的的键。描述器负责对值进行查找或更新："
 
-#: ../../howto/descriptor.rst:855
+#: ../../howto/descriptor.rst:853
 msgid ""
 "We can use the :class:`Field` class to define `models "
 "<https://en.wikipedia.org/wiki/Database_model>`_ that describe the schema "
@@ -774,21 +764,21 @@ msgstr ""
 "我们可以用 :class:`Field` 类来定义描述了数据库中每张表的模式的 `models "
 "<https://en.wikipedia.org/wiki/Database_model>`_。"
 
-#: ../../howto/descriptor.rst:880
+#: ../../howto/descriptor.rst:878
 msgid "To use the models, first connect to the database::"
 msgstr "要使用模型，首先要连接到数据库："
 
-#: ../../howto/descriptor.rst:885
+#: ../../howto/descriptor.rst:883
 msgid ""
 "An interactive session shows how data is retrieved from the database and how"
 " it can be updated:"
 msgstr "交互式会话显示了如何从数据库中检索数据及如何对其进行更新："
 
-#: ../../howto/descriptor.rst:930
+#: ../../howto/descriptor.rst:928
 msgid "Pure Python Equivalents"
 msgstr "纯 Python 等价实现"
 
-#: ../../howto/descriptor.rst:932
+#: ../../howto/descriptor.rst:930
 msgid ""
 "The descriptor protocol is simple and offers exciting possibilities.  "
 "Several use cases are so common that they have been prepackaged into built-"
@@ -798,36 +788,36 @@ msgstr ""
 "描述器协议很简单，但它提供了令人兴奋的可能性。有几个用例非常通用，以至于它们已预先打包到内置工具中。属性、绑定方法、静态方法、类方法和 "
 "__slots__ 均基于描述器协议。"
 
-#: ../../howto/descriptor.rst:939
+#: ../../howto/descriptor.rst:937
 msgid "Properties"
 msgstr "属性"
 
-#: ../../howto/descriptor.rst:941
+#: ../../howto/descriptor.rst:939
 msgid ""
 "Calling :func:`property` is a succinct way of building a data descriptor "
 "that triggers a function call upon access to an attribute.  Its signature "
 "is::"
 msgstr "调用 :func:`property` 是构建数据描述器的简洁方式，该数据描述器在访问属性时触发函数调用。它的签名是："
 
-#: ../../howto/descriptor.rst:946
+#: ../../howto/descriptor.rst:944
 msgid ""
 "The documentation shows a typical use to define a managed attribute ``x``:"
 msgstr "该文档显示了定义托管属性 ``x`` 的典型用法："
 
-#: ../../howto/descriptor.rst:970
+#: ../../howto/descriptor.rst:968
 msgid ""
 "To see how :func:`property` is implemented in terms of the descriptor "
 "protocol, here is a pure Python equivalent:"
 msgstr "要了解 :func:`property` 如何根据描述器协议实现，这里是一个纯 Python 的等价实现："
 
-#: ../../howto/descriptor.rst:1073
+#: ../../howto/descriptor.rst:1071
 msgid ""
 "The :func:`property` builtin helps whenever a user interface has granted "
 "attribute access and then subsequent changes require the intervention of a "
 "method."
 msgstr "这个内置的 :func:`property` 每当用户访问属性时生效，随后的变化需要一个方法的参与。"
 
-#: ../../howto/descriptor.rst:1077
+#: ../../howto/descriptor.rst:1075
 msgid ""
 "For instance, a spreadsheet class may grant access to a cell value through "
 "``Cell('b10').value``. Subsequent improvements to the program require the "
@@ -840,23 +830,23 @@ msgstr ""
 "授予对单元格值的访问权限。对程序的后续改进要求每次访问都要重新计算单元格；但是，程序员不希望影响直接访问该属性的现有客户端代码。解决方案是将对 "
 "value 属性的访问包装在属性数据描述器中:"
 
-#: ../../howto/descriptor.rst:1094
+#: ../../howto/descriptor.rst:1092
 msgid ""
 "Either the built-in :func:`property` or our :func:`Property` equivalent "
 "would work in this example."
 msgstr "在此示例中，内置的 :func:`property` 或我们实现的的 :func:`Property` 均适用。"
 
-#: ../../howto/descriptor.rst:1099
+#: ../../howto/descriptor.rst:1097
 msgid "Functions and methods"
 msgstr "函数和方法"
 
-#: ../../howto/descriptor.rst:1101
+#: ../../howto/descriptor.rst:1099
 msgid ""
 "Python's object oriented features are built upon a function based "
 "environment. Using non-data descriptors, the two are merged seamlessly."
 msgstr "Python 的面向对象功能是在基于函数的环境构建的。通过使用非数据描述器，这两方面完成了无缝融合。"
 
-#: ../../howto/descriptor.rst:1104
+#: ../../howto/descriptor.rst:1102
 msgid ""
 "Functions stored in class dictionaries get turned into methods when invoked."
 " Methods only differ from regular functions in that the object instance is "
@@ -866,13 +856,13 @@ msgstr ""
 "在调用时，存储在类词典中的函数将被转换为方法。方法与常规函数的不同之处仅在于对象实例被置于其他参数之前。方法与常规函数的不同之处仅在于第一个参数是为对象实例保留的。按照惯例，实例引用称为"
 " *self* ，但也可以称为 *this* 或任何其他变量名称。"
 
-#: ../../howto/descriptor.rst:1109
+#: ../../howto/descriptor.rst:1107
 msgid ""
 "Methods can be created manually with :class:`types.MethodType` which is "
 "roughly equivalent to:"
 msgstr "可以使用 :class:`types.MethodType` 手动创建方法，其行为基本等价于："
 
-#: ../../howto/descriptor.rst:1126
+#: ../../howto/descriptor.rst:1124
 msgid ""
 "To support automatic creation of methods, functions include the "
 ":meth:`__get__` method for binding methods during attribute access.  This "
@@ -882,59 +872,59 @@ msgstr ""
 "为了支持自动创建方法，函数包含 :meth:`__get__` "
 "方法以便在属性访问时绑定其为方法。这意味着函数其是非数据描述器，它在通过实例进行点查找时返回绑定方法，其运作方式如下："
 
-#: ../../howto/descriptor.rst:1142
+#: ../../howto/descriptor.rst:1140
 msgid ""
 "Running the following class in the interpreter shows how the function "
 "descriptor works in practice:"
 msgstr "在解释器中运行以下类，这显示了函数描述器的实际工作方式："
 
-#: ../../howto/descriptor.rst:1151
+#: ../../howto/descriptor.rst:1149
 msgid ""
 "The function has a :term:`qualified name` attribute to support "
 "introspection:"
 msgstr "该函数具有 :term:`qualified name` 属性以支持自省："
 
-#: ../../howto/descriptor.rst:1158
+#: ../../howto/descriptor.rst:1156
 msgid ""
 "Accessing the function through the class dictionary does not invoke "
 ":meth:`__get__`.  Instead, it just returns the underlying function object::"
 msgstr "通过类字典访问函数不会调用 :meth:`__get__`。相反，它只返回基础函数对象："
 
-#: ../../howto/descriptor.rst:1164
+#: ../../howto/descriptor.rst:1162
 msgid ""
 "Dotted access from a class calls :meth:`__get__` which just returns the "
 "underlying function unchanged::"
 msgstr "来自类的点运算符访问会调用 :meth:`__get__`，直接返回底层的函数。"
 
-#: ../../howto/descriptor.rst:1170
+#: ../../howto/descriptor.rst:1168
 msgid ""
 "The interesting behavior occurs during dotted access from an instance.  The "
 "dotted lookup calls :meth:`__get__` which returns a bound method object::"
 msgstr "有趣的行为发生在从实例进行点访问期间。点运算符查找调用 :meth:`__get__`，返回绑定的方法对象："
 
-#: ../../howto/descriptor.rst:1177
+#: ../../howto/descriptor.rst:1175
 msgid ""
 "Internally, the bound method stores the underlying function and the bound "
 "instance::"
 msgstr "绑定方法在内部存储了底层函数和绑定的实例："
 
-#: ../../howto/descriptor.rst:1186
+#: ../../howto/descriptor.rst:1184
 msgid ""
 "If you have ever wondered where *self* comes from in regular methods or "
 "where *cls* comes from in class methods, this is it!"
 msgstr "如果你曾好奇常规方法中的 *self* 或类方法中的 *cls* 是从什么地方来的，就是这里了！"
 
-#: ../../howto/descriptor.rst:1191
+#: ../../howto/descriptor.rst:1189
 msgid "Kinds of methods"
 msgstr "方法的种类"
 
-#: ../../howto/descriptor.rst:1193
+#: ../../howto/descriptor.rst:1191
 msgid ""
 "Non-data descriptors provide a simple mechanism for variations on the usual "
 "patterns of binding functions into methods."
 msgstr "非数据描述器为把函数绑定为方法的通常模式提供了一种简单的机制。"
 
-#: ../../howto/descriptor.rst:1196
+#: ../../howto/descriptor.rst:1194
 msgid ""
 "To recap, functions have a :meth:`__get__` method so that they can be "
 "converted to a method when accessed as attributes.  The non-data descriptor "
@@ -944,56 +934,56 @@ msgstr ""
 "概括地说，函数对象具有 :meth:`__get__` 方法，以便在作为属性访问时可以将其转换为方法。非数据描述器将 ``obj.f(*args)`` "
 "的调用会被转换为 ``f(obj, *args)`` 。调用 `klass.f(*args)`` 因而变成 ``f(*args)`` 。"
 
-#: ../../howto/descriptor.rst:1201
+#: ../../howto/descriptor.rst:1199
 msgid "This chart summarizes the binding and its two most useful variants:"
 msgstr "下表总结了绑定及其两个最有用的变体："
 
-#: ../../howto/descriptor.rst:1204
+#: ../../howto/descriptor.rst:1202
 msgid "Transformation"
 msgstr "转换形式"
 
-#: ../../howto/descriptor.rst:1204
+#: ../../howto/descriptor.rst:1202
 msgid "Called from an object"
 msgstr "通过对象调用"
 
-#: ../../howto/descriptor.rst:1204
+#: ../../howto/descriptor.rst:1202
 msgid "Called from a class"
 msgstr "通过类调用"
 
-#: ../../howto/descriptor.rst:1207
+#: ../../howto/descriptor.rst:1205
 msgid "function"
 msgstr "function -- 函数"
 
-#: ../../howto/descriptor.rst:1207
+#: ../../howto/descriptor.rst:1205
 msgid "f(obj, \\*args)"
 msgstr "f(obj, \\*args)"
 
-#: ../../howto/descriptor.rst:1207 ../../howto/descriptor.rst:1209
-#: ../../howto/descriptor.rst:1209
+#: ../../howto/descriptor.rst:1205 ../../howto/descriptor.rst:1207
+#: ../../howto/descriptor.rst:1207
 msgid "f(\\*args)"
 msgstr "f(\\*args)"
 
-#: ../../howto/descriptor.rst:1209
+#: ../../howto/descriptor.rst:1207
 msgid "staticmethod"
 msgstr "静态方法"
 
-#: ../../howto/descriptor.rst:1211
+#: ../../howto/descriptor.rst:1209
 msgid "classmethod"
 msgstr "类方法"
 
-#: ../../howto/descriptor.rst:1211
+#: ../../howto/descriptor.rst:1209
 msgid "f(type(obj), \\*args)"
 msgstr "f(type(obj), \\*args)"
 
-#: ../../howto/descriptor.rst:1211
+#: ../../howto/descriptor.rst:1209
 msgid "f(cls, \\*args)"
 msgstr "f(cls, \\*args)"
 
-#: ../../howto/descriptor.rst:1216
+#: ../../howto/descriptor.rst:1214
 msgid "Static methods"
 msgstr "静态方法"
 
-#: ../../howto/descriptor.rst:1218
+#: ../../howto/descriptor.rst:1216
 msgid ""
 "Static methods return the underlying function without changes.  Calling "
 "either ``c.f`` or ``C.f`` is the equivalent of a direct lookup into "
@@ -1004,13 +994,13 @@ msgstr ""
 "静态方法返回底层函数，不做任何更改。调用 ``c.f`` 或 ``C.f`` 等效于通过 ``object.__getattribute__(c, "
 "\"f\")`` 或 ``object.__getattribute__(C, \"f\")`` 查找。这样该函数就可以从对象或类中进行相同的访问。"
 
-#: ../../howto/descriptor.rst:1224
+#: ../../howto/descriptor.rst:1222
 msgid ""
 "Good candidates for static methods are methods that do not reference the "
 "``self`` variable."
 msgstr "适合作为静态方法的是那些不引用 ``self`` 变量的方法。"
 
-#: ../../howto/descriptor.rst:1227
+#: ../../howto/descriptor.rst:1225
 msgid ""
 "For instance, a statistics package may include a container class for "
 "experimental data.  The class provides normal methods for computing the "
@@ -1025,30 +1015,30 @@ msgstr ""
 " ``erf(x)`` 是在统计中的便捷转换，但并不直接依赖于特定的数据集。可以从对象或类中调用它： ``s.erf(1.5) --> .9332`` "
 "或 ``Sample.erf(1.5) --> .9332``。"
 
-#: ../../howto/descriptor.rst:1236
+#: ../../howto/descriptor.rst:1234
 msgid ""
 "Since static methods return the underlying function with no changes, the "
 "example calls are unexciting:"
 msgstr "由于静态方法返回的底层函数没有任何变化，因此示例调用也是意料之中："
 
-#: ../../howto/descriptor.rst:1253
+#: ../../howto/descriptor.rst:1251
 msgid ""
 "Using the non-data descriptor protocol, a pure Python version of "
 ":func:`staticmethod` would look like this:"
 msgstr "使用非数据描述器，纯 Python 版本的 :func:`staticmethod` 如下所示："
 
-#: ../../howto/descriptor.rst:1285
+#: ../../howto/descriptor.rst:1290
 msgid "Class methods"
 msgstr "类方法"
 
-#: ../../howto/descriptor.rst:1287
+#: ../../howto/descriptor.rst:1292
 msgid ""
 "Unlike static methods, class methods prepend the class reference to the "
 "argument list before calling the function.  This format is the same for "
 "whether the caller is an object or a class:"
 msgstr "与静态方法不同，类方法在调用函数之前将类引用放在参数列表的最前。无论调用方是对象还是类，此格式相同："
 
-#: ../../howto/descriptor.rst:1305
+#: ../../howto/descriptor.rst:1310
 msgid ""
 "This behavior is useful whenever the method only needs to have a class "
 "reference and does not rely on data stored in a specific instance.  One use "
@@ -1059,17 +1049,17 @@ msgstr ""
 "当方法仅需要具有类引用并且确实依赖于存储在特定实例中的数据时，此行为就很有用。类方法的一种用途是创建备用类构造函数。例如，类方法  "
 ":func:`dict.fromkeys` 从键列表创建一个新字典。纯 Python 的等价实现是："
 
-#: ../../howto/descriptor.rst:1322
+#: ../../howto/descriptor.rst:1327
 msgid "Now a new dictionary of unique keys can be constructed like this:"
 msgstr "现在可以这样构造一个新的唯一键字典："
 
-#: ../../howto/descriptor.rst:1332
+#: ../../howto/descriptor.rst:1337
 msgid ""
 "Using the non-data descriptor protocol, a pure Python version of "
 ":func:`classmethod` would look like this:"
 msgstr "使用非数据描述器协议，纯 Python 版本的 :func:`classmethod` 如下："
 
-#: ../../howto/descriptor.rst:1381
+#: ../../howto/descriptor.rst:1386
 msgid ""
 "The code path for ``hasattr(type(self.f), '__get__')`` was added in Python "
 "3.9 and makes it possible for :func:`classmethod` to support chained "
@@ -1079,30 +1069,30 @@ msgstr ""
 "``hasattr(type(self.f), '__get__')`` 的代码路径在 Python 3.9 中被加入并让 "
 ":func:`classmethod` 可以支持链式装饰器。 例如，一个类方法和特征属性可以被链接在一起:"
 
-#: ../../howto/descriptor.rst:1401
+#: ../../howto/descriptor.rst:1406
 msgid "Member objects and __slots__"
 msgstr "成员对象和 __slots__"
 
-#: ../../howto/descriptor.rst:1403
+#: ../../howto/descriptor.rst:1408
 msgid ""
 "When a class defines ``__slots__``, it replaces instance dictionaries with a"
 " fixed-length array of slot values.  From a user point of view that has "
 "several effects:"
 msgstr "当一个类定义了 ``__slots__``，它会用一个固定长度的 slot 值数组来替换实例字典。 从用户的视角看，效果是这样的："
 
-#: ../../howto/descriptor.rst:1407
+#: ../../howto/descriptor.rst:1412
 msgid ""
 "1. Provides immediate detection of bugs due to misspelled attribute "
 "assignments.  Only attribute names specified in ``__slots__`` are allowed:"
 msgstr "1. 提供对由错误拼写的属性赋值导致的程序缺陷的即时检测。只允许在 ``__slots__`` 中指定的属性名称："
 
-#: ../../howto/descriptor.rst:1423
+#: ../../howto/descriptor.rst:1428
 msgid ""
 "2. Helps create immutable objects where descriptors manage access to private"
 " attributes stored in ``__slots__``:"
 msgstr "2. 帮助创建由描述器来管理对保存在 ``__slots__`` 中的私有属性的访问的不可变对象："
 
-#: ../../howto/descriptor.rst:1458
+#: ../../howto/descriptor.rst:1463
 msgid ""
 "3. Saves memory.  On a 64-bit Linux build, an instance with two attributes "
 "takes 48 bytes with ``__slots__`` and 152 bytes without.  This `flyweight "
@@ -1113,20 +1103,20 @@ msgstr ""
 "152 个字节。 这种 `flyweight design pattern "
 "<https://en.wikipedia.org/wiki/Flyweight_pattern>`_ 通常仅在要创建大量实例时才能显示效果。"
 
-#: ../../howto/descriptor.rst:1463
+#: ../../howto/descriptor.rst:1468
 msgid ""
 "4. Improves speed.  Reading instance variables is 35% faster with "
 "``__slots__`` (as measured with Python 3.10 on an Apple M1 processor)."
 msgstr ""
 "4. 提高速度。使用 ``__slots__`` 读取实例变量的速度提高了 35%（在 Apple M1 处理器上使用 Python 3.10 测量）。"
 
-#: ../../howto/descriptor.rst:1466
+#: ../../howto/descriptor.rst:1471
 msgid ""
 "5. Blocks tools like :func:`functools.cached_property` which require an "
 "instance dictionary to function correctly:"
 msgstr "5. 阻止 :func:`functools.cached_property` 之类需要实例字典才能正常运作的工具："
 
-#: ../../howto/descriptor.rst:1488
+#: ../../howto/descriptor.rst:1493
 msgid ""
 "It is not possible to create an exact drop-in pure Python version of "
 "``__slots__`` because it requires direct access to C structures and control "
@@ -1139,37 +1129,37 @@ msgstr ""
 "但是，我们可以构建一个非常相似的模拟版，其中作为 slot 的实际 C 结构体由一个私有的 ``_slotvalues`` 列表来模拟。 "
 "对该私有结构体的读写操作将由成员描述器来管理："
 
-#: ../../howto/descriptor.rst:1531
+#: ../../howto/descriptor.rst:1536
 msgid ""
 "The :meth:`type.__new__` method takes care of adding member objects to class"
 " variables:"
 msgstr ":meth:`type.__new__` 方法负责将成员对象添加到类变量："
 
-#: ../../howto/descriptor.rst:1547
+#: ../../howto/descriptor.rst:1552
 msgid ""
 "The :meth:`object.__new__` method takes care of creating instances that have"
 " slots instead of an instance dictionary.  Here is a rough simulation in "
 "pure Python:"
 msgstr ":meth:`object.__new__` 方法负责创建具有 slot 而非实例字典的实例。 以下是一个纯 Python 的粗略模拟版："
 
-#: ../../howto/descriptor.rst:1582
+#: ../../howto/descriptor.rst:1587
 msgid ""
 "To use the simulation in a real class, just inherit from :class:`Object` and"
 " set the :term:`metaclass` to :class:`Type`:"
 msgstr ""
 "要在真实的类中使用这个模拟版，只需从 :class:`Object` 继承并将 :term:`metaclass` 设为 :class:`Type`："
 
-#: ../../howto/descriptor.rst:1596
+#: ../../howto/descriptor.rst:1601
 msgid ""
 "At this point, the metaclass has loaded member objects for *x* and *y*::"
 msgstr "这时，metaclass 已经为 *x* 和 *y* 加载了成员对象："
 
-#: ../../howto/descriptor.rst:1617
+#: ../../howto/descriptor.rst:1622
 msgid ""
 "When instances are created, they have a ``slot_values`` list where the "
 "attributes are stored:"
 msgstr "当实例被创建时，它们将拥有一个用于存放属性的 ``slot_values`` 列表："
 
-#: ../../howto/descriptor.rst:1629
+#: ../../howto/descriptor.rst:1634
 msgid "Misspelled or unassigned attributes will raise an exception:"
 msgstr "错误拼写或未赋值的属性将引发一个异常："
