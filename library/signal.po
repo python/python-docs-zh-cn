@@ -7,7 +7,7 @@
 # cdarlint <cdarling@126.com>, 2021
 # Menghua Xiao <arieshout@gmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2021
-# Freesand Leo <yuqinju@163.com>, 2021
+# Freesand Leo <yuqinju@163.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-16 06:28+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2021\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2022\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -103,6 +103,8 @@ msgid ""
 " the main thread. See the :ref:`note below <handlers-and-exceptions>` for a "
 "discussion."
 msgstr ""
+"如果处理句柄引发了异常，它将在主线程中“凭空”被引发。 请参阅 :ref:`下面的注释 <handlers-and-exceptions>` "
+"讨论相关细节。"
 
 #: ../../library/signal.rst:57
 msgid "Signals and threads"
@@ -901,10 +903,12 @@ msgid ""
 "unexpectedly whenever any socket connection is interrupted while your "
 "program is still writing to it."
 msgstr ""
+"请不要将 :const:`SIGPIPE` 的处置方式设为 :const:`SIG_DFL` 以避免 :exc:`BrokenPipeError`。 "
+"这样做还会在你的程序所写入的任何套接字连接中断时导致你的程序异常退出。"
 
 #: ../../library/signal.rst:688
 msgid "Note on Signal Handlers and Exceptions"
-msgstr ""
+msgstr "有关信号处理句柄和异常的注释"
 
 #: ../../library/signal.rst:690
 msgid ""
@@ -916,10 +920,13 @@ msgid ""
 "exception resulting from a signal handler) may on rare occasions put the "
 "program in an unexpected state."
 msgstr ""
+"如果一个信号处理句柄引发了异常，该异常将被传播到主线程并可能在任何 :term:`bytecode` 指令之后被引发，在执行期间的任何时候都可能出现 "
+":exc:`KeyboardInterrupt`。 大多数 Python 代码，包括标准库的代码都不能对此进行健壮性处理，因此 "
+":exc:`KeyboardInterrupt` (或由信号处理句柄所导致的任何其他异常) 可能会在极少数情况下使程序处于非预期的状态。"
 
 #: ../../library/signal.rst:697
 msgid "To illustrate this issue, consider the following code::"
-msgstr ""
+msgstr "为了展示这个问题，请考虑以下代码::"
 
 #: ../../library/signal.rst:714
 msgid ""
@@ -931,3 +938,7 @@ msgid ""
 "own :const:`SIGINT` handler. Below is an example of an HTTP server that "
 "avoids :exc:`KeyboardInterrupt`::"
 msgstr ""
+"对于许多程序，特别是那些在遇到 :exc:`KeyboardInterrupt` "
+"只需直接退出的程序来说，这不是个问题，但是高复杂度或要求高可靠性的应用程序则应当避免由于信号处理句柄引发异常。 他们还应当避免将捕获 "
+":exc:`KeyboardInterrupt` 作为程序关闭的优雅方式。 相反地，他们应当安装自己的 :const:`SIGINT` 处理句柄。 "
+"下面是一个避免了 :exc:`KeyboardInterrupt` 的 HTTP 服务器示例::"
