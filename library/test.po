@@ -1158,17 +1158,17 @@ msgstr "尝试对单个已存储值 (*dv*) 与所提供的值 (*v*) 进行匹配
 
 #: ../../library/test.rst:995
 msgid "Run *test* and return the result."
-msgstr ""
+msgstr "运行 *test* 并返回结果。"
 
 #: ../../library/test.rst:999
 msgid ":mod:`test.support.socket_helper` --- Utilities for socket tests"
-msgstr ""
+msgstr ":mod:`test.support.socket_helper` --- 用于套接字测试的工具"
 
 #: ../../library/test.rst:1005
 msgid ""
 "The :mod:`test.support.socket_helper` module provides support for socket "
 "tests."
-msgstr ""
+msgstr ":mod:`test.support.socket_helper` 模块提供了对套接字测试的支持。"
 
 #: ../../library/test.rst:1012
 msgid "Set to ``True`` if IPv6 is enabled on this host, ``False`` otherwise."
@@ -1184,6 +1184,9 @@ msgid ""
 "ephemeral port from the OS. The temporary socket is then closed and deleted,"
 " and the ephemeral port is returned."
 msgstr ""
+"返回一个应当适合绑定的未使用端口。 这是通过创建一个与 ``sock`` 形参相同协议族和类型的临时套接字来达成的 (默认为 "
+":const:`~socket.AF_INET`, :const:`~socket.SOCK_STREAM`)，并将其绑定到指定的主机地址 (默认为 "
+"``0.0.0.0``) 并将端口设为 0，以从 OS 引出一个未使用的瞬时端口。 这个临时套接字随后将被关闭并删除，然后返回该瞬时端口。"
 
 #: ../../library/test.rst:1026
 msgid ""
@@ -1197,6 +1200,10 @@ msgid ""
 "discouraged since it can make multiple instances of the test impossible to "
 "run simultaneously, which is a problem for buildbots."
 msgstr ""
+"这个方法或 :func:`bind_port` 应当被用于任何在测试期间需要绑定到特定端口的测试。 具体使用哪个取决于调用方代码是否会创建 Python"
+" 套接字，或者是否需要在构造器中提供或向外部程序提供未使用的端口（例如传给 openssl 的 s_server 模式的 ``-accept`` "
+"参数）。 在可能的情况下将总是优先使用 :func:`bind_port` 而非 :func:`find_unused_port`。 "
+"不建议使用硬编码的端口因为将使测试的多个实例无法同时运行，这对 buildbot 来说是个问题。"
 
 #: ../../library/test.rst:1040
 msgid ""
@@ -1211,6 +1218,11 @@ msgid ""
 "case for setting these options is testing multicasting via multiple UDP "
 "sockets."
 msgstr ""
+"将套接字绑定到一个空闲端口并返回端口号。 这依赖于瞬时端口以确保我们能使用一个未绑定端口。 这很重要因为可能会有许多测试同时运行，特别是在 "
+"buildbot 环境中。 如果 ``sock.family`` 为 :const:`~socket.AF_INET` 而 ``sock.type`` "
+"为 :const:`~socket.SOCK_STREAM`，并且套接字上设置了 :const:`~socket.SO_REUSEADDR` 或 "
+":const:`~socket.SO_REUSEPORT` 则此方法将引发异常。 测试绝不应该为 TCP/IP 套接字设置这些套接字选项。 "
+"唯一需要设置这些选项的情况是通过多个 UDP 套接字来测试组播。"
 
 #: ../../library/test.rst:1051
 msgid ""
@@ -1219,18 +1231,21 @@ msgid ""
 "prevent anyone else from binding to our host/port for the duration of the "
 "test."
 msgstr ""
+"此外，如果 :const:`~socket.SO_EXCLUSIVEADDRUSE` 套接字选项是可用的（例如在 Windows "
+"上），它将在套接字上被设置。 这将阻止其他任何人在测试期间绑定到我们的主机/端口。"
 
 #: ../../library/test.rst:1059
 msgid ""
 "Bind a unix socket, raising :exc:`unittest.SkipTest` if "
 ":exc:`PermissionError` is raised."
 msgstr ""
+"绑定一个 unix 套接字，如果 :exc:`PermissionError` 被引发则会引发 :exc:`unittest.SkipTest`。"
 
 #: ../../library/test.rst:1065
 msgid ""
 "A decorator for running tests that require a functional ``bind()`` for Unix "
 "sockets."
-msgstr ""
+msgstr "一个用于运行需要 Unix 套接字 ``bind()`` 功能的测试的装饰器。"
 
 #: ../../library/test.rst:1071
 msgid ""
@@ -1238,6 +1253,7 @@ msgid ""
 "various issues with the internet connection manifest themselves as "
 "exceptions."
 msgstr ""
+"一个在互联网连接的各种问题以异常的形式表现出来时会引发 :exc:`~test.support.ResourceDenied` 的上下文管理器。"
 
 #: ../../library/test.rst:1077
 msgid ""
