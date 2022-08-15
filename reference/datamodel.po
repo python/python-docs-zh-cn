@@ -2147,6 +2147,8 @@ msgid ""
 "insertion, O(n\\ :sup:`2`) complexity.  See "
 "http://www.ocert.org/advisories/ocert-2011-003.html for details."
 msgstr ""
+"这是为了防护通过精心选择输入来利用字典插入操作在最坏情况下的执行效率即 O(n\\ :sup:`2`) 复杂度制造的拒绝服务攻击。 请参阅 "
+"http://www.ocert.org/advisories/ocert-2011-003.html 了解详情。"
 
 #: ../../reference/datamodel.rst:1532
 msgid ""
@@ -2477,6 +2479,9 @@ msgid ""
 ":meth:`~object.__delete__`. If any of those methods are defined for an "
 "object, it is said to be a descriptor."
 msgstr ""
+"总的说来，描述器就是具有“绑定行为”的对象属性，其属性访问已被描述器协议中的方法所重载:  :meth:`~object.__get__`, "
+":meth:`~object.__set__` 和 :meth:`~object.__delete__`。 "
+"如果一个对象定义了以上方法中的任意一个，它就被称为描述器。"
 
 #: ../../reference/datamodel.rst:1764
 msgid ""
@@ -2546,6 +2551,9 @@ msgid ""
 "immediately following ``B`` and then invokes the descriptor with the call: "
 "``A.__dict__['m'].__get__(obj, obj.__class__)``."
 msgstr ""
+"如果 ``a`` 是 :class:`super` 的一个实例，则绑定 ``super(B, obj).m()`` 会在 "
+"``obj.__class__.__mro__`` 中搜索 ``B`` 的直接上级基类 ``A`` 然后通过以下调用来发起调用描述器: "
+"``A.__dict__['m'].__get__(obj, obj.__class__)``。"
 
 #: ../../reference/datamodel.rst:1795
 msgid ""
@@ -2563,6 +2571,13 @@ msgid ""
 "always override a redefinition in an instance dictionary.  In contrast, non-"
 "data descriptors can be overridden by instances."
 msgstr ""
+"对于实例绑定，发起描述器调用的优先级取决于定义了哪些描述器方法。 一个描述器可以定义 :meth:`~object.__get__`, "
+":meth:`~object.__set__` 和 :meth:`~object.__delete__` 的任意组合。 如果它没有定义 "
+":meth:`__get__`，则访问属性将返回描述器对象自身，除非对象的实例字典中有相应的属性值。 如果描述器定义了 :meth:`__set__` "
+"和/或 :meth:`__delete__`，则它是一个数据描述器；如果以上两个都未定义，则它是一个非数据描述器。 通常，数据描述器会同时定义 "
+":meth:`__get__` 和 :meth:`__set__`，而非数据描述器则只有 :meth:`__get__` 方法。 定义了 "
+":meth:`__get__` 和 :meth:`__set__` (和/或 :meth:`__delete__`) "
+"的数据描述器总是会重载实例字典中的定义。 与之相对地，非数据描述器则可被实例所重载。"
 
 #: ../../reference/datamodel.rst:1809
 msgid ""
@@ -2572,6 +2587,9 @@ msgid ""
 "methods.  This allows individual instances to acquire behaviors that differ "
 "from other instances of the same class."
 msgstr ""
+"Python 方法（包括用 :func:`@staticmethod <staticmethod>` 和 :func:`@classmethod "
+"<classmethod>` 装饰的方法）都是作为非数据描述器来实现的。 因而，实例可以重定义和重载方法。 "
+"这允许单个实例获得与相同类的其他实例不一样的行为。"
 
 #: ../../reference/datamodel.rst:1815
 msgid ""
@@ -2589,12 +2607,14 @@ msgid ""
 "and deny the creation of :attr:`~object.__dict__` and *__weakref__* (unless "
 "explicitly declared in *__slots__* or available in a parent.)"
 msgstr ""
+"*__slots__* 允许我们显式地声明数据成员（如特征属性）并禁止创建 :attr:`~object.__dict__` 和 "
+"*__weakref__* (除非是在 *__slots__* 中显式地声明或是在父类中可用。)"
 
 #: ../../reference/datamodel.rst:1828
 msgid ""
 "The space saved over using :attr:`~object.__dict__` can be significant. "
 "Attribute lookup speed can be significantly improved as well."
-msgstr ""
+msgstr "相比使用 :attr:`~object.__dict__` 可以显著节省空间。 属性查找速度也可得到显著的提升。"
 
 #: ../../reference/datamodel.rst:1833
 msgid ""
@@ -2603,6 +2623,8 @@ msgid ""
 "for the declared variables and prevents the automatic creation of "
 ":attr:`~object.__dict__` and *__weakref__* for each instance."
 msgstr ""
+"这个类变量可赋值为字符串、可迭代对象或由实例使用的变量名组成的字符串序列。 *__slots__* 会为已声明的变量保留空间并阻止自动为每个实例创建 "
+":attr:`~object.__dict__` 和 *__weakref__*。"
 
 #: ../../reference/datamodel.rst:1841
 msgid "Notes on using *__slots__*"
@@ -2614,6 +2636,8 @@ msgid ""
 ":attr:`~object.__dict__` and *__weakref__* attribute of the instances will "
 "always be accessible."
 msgstr ""
+"当继承自一个没有 *__slots__* 的类时，实例的 :attr:`~object.__dict__` 和 *__weakref__* "
+"属性将总是可访问的。"
 
 #: ../../reference/datamodel.rst:1847
 msgid ""
@@ -2623,6 +2647,9 @@ msgid ""
 "assignment of new variables is desired, then add ``'__dict__'`` to the "
 "sequence of strings in the *__slots__* declaration."
 msgstr ""
+"没有 :attr:`~object.__dict__` 变量，实例就不能给未在 *__slots__* 定义中列出的新变量赋值。 "
+"尝试给一个未列出的变量名赋值将引发 :exc:`AttributeError`。 如果需要动态地给新变量赋值，则要将 ``'__dict__'`` "
+"加入到在 *__slots__* 中声明的字符串序列中。"
 
 #: ../../reference/datamodel.rst:1854
 msgid ""
@@ -2631,6 +2658,8 @@ msgid ""
 "instances. If weak reference support is needed, then add ``'__weakref__'`` "
 "to the sequence of strings in the *__slots__* declaration."
 msgstr ""
+"如果未给每个实例设置 *__weakref__* 变量，则定义了 *__slots__* 的类就不支持对其实例的 :mod:`弱引用 "
+"<weakref>`。 如果需要支持弱引用，则要将 ``'__weakref__'`` 加入到在 *__slots__* 中声明的字符串序列中。"
 
 #: ../../reference/datamodel.rst:1860
 msgid ""
@@ -2640,6 +2669,8 @@ msgid ""
 "*__slots__*; otherwise, the class attribute would overwrite the descriptor "
 "assignment."
 msgstr ""
+"*__slots__* 是通过为每个变量名创建 :ref:`描述器 <descriptors>` 在类层级上实现的。 因此，类属性不能被用来为通过 "
+"*__slots__* 定义的实例变量设置默认值；否则，类属性将会覆盖描述器赋值。"
 
 #: ../../reference/datamodel.rst:1866
 msgid ""
