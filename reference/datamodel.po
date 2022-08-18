@@ -3272,6 +3272,10 @@ msgid ""
 "instead. ``__class_getitem__()`` should return a :ref:`GenericAlias<types-"
 "genericalias>` object if it is properly defined."
 msgstr ""
+"通常，使用方括号语法 :ref:`抽取 <subscriptions>` 一个对象将会调用在该对象的类上定义的 "
+":meth:`~object.__getitem__` 实例方法。 不过，如果被拟抽取的对象本身是一个类，则可能会调用 "
+":meth:`~object.__class_getitem__` 类方法。 ``__class_getitem__()`` "
+"如果被正确地定义，则应当返回一个 :ref:`GenericAlias<types-genericalias>` 对象。"
 
 #: ../../reference/datamodel.rst:2262
 msgid ""
@@ -3812,6 +3816,8 @@ msgid ""
 "of these methods used the conventional lookup process, they would fail when "
 "invoked on the type object itself::"
 msgstr ""
+"此行为背后的原理在于包括类型对象在内的所有对象都会实现的几个特殊方法如 :meth:`~object.__hash__` 和 "
+":meth:`~object.__repr__`。 如果这些方法的隐式查找使用了传统的查找过程，则当它们在对类型对象自身发起调用时将会失败::"
 
 #: ../../reference/datamodel.rst:2812
 msgid ""
@@ -3826,6 +3832,8 @@ msgid ""
 "correctness, implicit special method lookup generally also bypasses the "
 ":meth:`~object.__getattribute__` method even of the object's metaclass::"
 msgstr ""
+"除了出于正确性考虑而会绕过任何实例属性，隐式特殊方法查找通常还会绕过 :meth:`~object.__getattribute__` "
+"方法，甚至包括对象的元类::"
 
 #: ../../reference/datamodel.rst:2847
 msgid ""
@@ -3835,6 +3843,9 @@ msgid ""
 "special method *must* be set on the class object itself in order to be "
 "consistently invoked by the interpreter)."
 msgstr ""
+"以这种方式绕过 :meth:`~object.__getattribute__` "
+"机制为解释器内部的速度优化提供了显著的空间，其代价则是牺牲了一些处理特殊方法时的灵活性（特殊方法 *must* "
+"必须设置在类对象自身上以便始终一致地由解释器发起调用）。"
 
 #: ../../reference/datamodel.rst:2858
 msgid "Coroutines"
@@ -3850,6 +3861,8 @@ msgid ""
 ":meth:`~object.__await__` method. :term:`Coroutine objects <coroutine>` "
 "returned from :keyword:`async def` functions are awaitable."
 msgstr ""
+":term:`awaitable` 对象主要实现了 :meth:`~object.__await__` 方法。 从 :keyword:`async "
+"def` 函数返回的 :term:`协程对象 <coroutine>` 即为可等待对象。"
 
 #: ../../reference/datamodel.rst:2870
 msgid ""
@@ -3857,6 +3870,8 @@ msgid ""
 "with :func:`types.coroutine` or :func:`asyncio.coroutine` are also "
 "awaitable, but they do not implement :meth:`~object.__await__`."
 msgstr ""
+"从带有 :func:`types.coroutine` 或 :func:`asyncio.coroutine` 装饰器的生成器返回的 "
+":term:`generator iterator` 对象也属于可等待对象，但它们并未实现 :meth:`~object.__await__`。"
 
 #: ../../reference/datamodel.rst:2876
 msgid ""
@@ -3885,6 +3900,10 @@ msgid ""
 "coroutine raises an exception, it is propagated by the iterator.  Coroutines"
 " should not directly raise unhandled :exc:`StopIteration` exceptions."
 msgstr ""
+":term:`协程对象 <coroutine>` 属于 :term:`awaitable` 对象。 协程的执行可以通过调用 "
+":meth:`~object.__await__` 并迭代其结果来控制。 当协程结束执行并返回时，迭代器会引发 "
+":exc:`StopIteration`，而该异常的 :attr:`~StopIteration.value` 属性将存放返回值。 "
+"如果协程引发了异常，它会被迭代器传播出去。 协程不应当直接引发未被处理的 :exc:`StopIteration` 异常。"
 
 #: ../../reference/datamodel.rst:2898
 msgid ""
@@ -3909,6 +3928,10 @@ msgid ""
 "or other exception) is the same as when iterating over the :meth:`__await__`"
 " return value, described above."
 msgstr ""
+"开始或恢复协程的执行。 如果 *value* 为 ``None``，那么这就相当于前往 :meth:`~object.__await__` "
+"所返回迭代器的下一项。 如果 *value* 不为 ``None``，此方法将委托给导致协程挂起的迭代器的 "
+":meth:`~generator.send` 方法。 其结果（返回值，:exc:`StopIteration` 或是其他异常）将与上述对 "
+":meth:`__await__` 返回值进行迭代的结果相同。"
 
 #: ../../reference/datamodel.rst:2919
 msgid ""
@@ -3920,6 +3943,9 @@ msgid ""
 " the :meth:`~object.__await__` return value, described above.  If the "
 "exception is not caught in the coroutine, it propagates back to the caller."
 msgstr ""
+"在协程内引发指定的异常。 此方法将委托给导致该协程挂起的迭代器的 :meth:`~generator.throw` 方法，如果存在此方法的话。 "
+"否则，该异常将在挂起点被引发。 其结果（返回值，:exc:`StopIteration` 或是其他异常）将与上述对 "
+":meth:`~object.__await__` 返回值进行迭代的结果相同。 如果该异常未在协程内被捕获，则将回传给调用方。"
 
 #: ../../reference/datamodel.rst:2930
 msgid ""
