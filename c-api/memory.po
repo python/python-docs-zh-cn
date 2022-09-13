@@ -923,11 +923,11 @@ msgstr "``p[-S+1:0]``"
 
 #: ../../c-api/memory.rst:542
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch under- writes and reads."
-msgstr ""
+msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获下层的写入和读取。"
 
 #: ../../c-api/memory.rst:551
 msgid "``p[0:N]``"
-msgstr ""
+msgstr "``p[0:N]``"
 
 #: ../../c-api/memory.rst:545
 msgid ""
@@ -939,24 +939,28 @@ msgid ""
 "like function is called requesting a smaller memory block, the excess old "
 "bytes are also filled with PYMEM_DEADBYTE."
 msgstr ""
+"所请求的内存，用 PYMEM_CLEANBYTE 的副本填充，用于捕获对未初始化内存的引用。 当调用 realloc "
+"之类的函数来请求更大的内存块时，额外新增的字节也会用 PYMEM_CLEANBYTE 来填充。 当调用 free 之类的函数时，这些字节会用 "
+"PYMEM_DEADBYTE 来重写，以捕获对已释放内存的引用。 当调用 realloc 之类的函数来请求更小的内存块时，多余的旧字节也会用 "
+"PYMEM_DEADBYTE 来填充。"
 
 #: ../../c-api/memory.rst:554
 msgid "``p[N:N+S]``"
-msgstr ""
+msgstr "``p[N:N+S]``"
 
 #: ../../c-api/memory.rst:554
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch over- writes and reads."
-msgstr ""
+msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获超限的写入和读取。"
 
 #: ../../c-api/memory.rst:565
 msgid "``p[N+S:N+2*S]``"
-msgstr ""
+msgstr "``p[N+S:N+2*S]``"
 
 #: ../../c-api/memory.rst:557
 msgid ""
 "Only used if the ``PYMEM_DEBUG_SERIALNO`` macro is defined (not defined by "
 "default)."
-msgstr ""
+msgstr "仅当定义了 ``PYMEM_DEBUG_SERIALNO`` 宏时会被使用（默认情况下将不定义）。"
 
 #: ../../c-api/memory.rst:560
 msgid ""
@@ -967,6 +971,9 @@ msgid ""
 "function bumpserialno() in obmalloc.c is the only place the serial number is"
 " incremented, and exists so you can set such a breakpoint easily."
 msgstr ""
+"一个序列号，每次调用 malloc 之类或 realloc 之类的函数时自增 1。 大端序的 ``size_t``。 "
+"如果之后检测到了“被破坏的内存”，此序列号提供了一个很好的手段用来在下次运行时设置中断点，以捕获该内存块被破坏的瞬间。 obmalloc.c "
+"中的静态函数 bumpserialno() 是此序列号会发生自增的唯一地方，它的存在使你可以方便地设置这样的中断点。"
 
 #: ../../c-api/memory.rst:567
 msgid ""
@@ -980,6 +987,10 @@ msgid ""
 "memory is getting used) or PYMEM_CLEANBYTE (meaning uninitialized memory is "
 "getting used)."
 msgstr ""
+"一个 realloc 之类或 free 之类的函数会先检查两端的 PYMEM_FORBIDDENBYTE 字节是否完好。 "
+"如果它们被改变了，则会将诊断输出写入到 stderr，并且程序将通过 Py_FatalError() 中止。 "
+"另一种主要的失败模式是当程序读到某种特殊的比特模式并试图将其用作地址时触发内存错误。 如果你随即进入调试器并查看该对象，你很可能会看到它已完全被填充为 "
+"PYMEM_DEADBYTE (意味着已释放的内存被使用) 或 PYMEM_CLEANBYTE (意味着未初始货摊内存被使用)。"
 
 #: ../../c-api/memory.rst:576
 msgid ""
@@ -990,6 +1001,10 @@ msgid ""
 ":c:data:`PYMEM_DOMAIN_OBJ` and :c:data:`PYMEM_DOMAIN_MEM` domains are "
 "called."
 msgstr ""
+":c:func:`PyMem_SetupDebugHooks` 函数现在也能在使用发布模式编译的 Python 上工作。 "
+"当发生错误时，调试钩子现在会使用 :mod:`tracemalloc` 来获取已分配内存块的回溯信息。 调试钩子现在还会在 "
+":c:data:`PYMEM_DOMAIN_OBJ` 和 :c:data:`PYMEM_DOMAIN_MEM` 作用域的函数被调用时检查是否持有 "
+"GIL。"
 
 #: ../../c-api/memory.rst:584
 msgid ""
