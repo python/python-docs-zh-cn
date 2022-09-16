@@ -472,6 +472,12 @@ msgid ""
 "said to *borrow* the reference. Nothing needs to be done for a "
 ":term:`borrowed reference`."
 msgstr ""
+"Python/C API 中函数引用计数行为最好是通过 *引用所有权* 来解释。 所有权是关联到引用，而不是对象（对象没有所有权：它们总是会被共享）。 "
+"“获得引用所有权”意味着当不再需要该引用时必须在其上调用 Py_DECREF。 "
+"所有权也可以被转移，这意味着接受该引用所有权的代码当不再需要该引用时必须通过调用 :c:func:`Py_DECREF` 或 "
+":c:func:`Py_XDECREF` 来最终撤销引用 --- 或是将这个责任转移出去（通常是转给其调用方）。 "
+"当一个函数将引用所有权转给其调用方时，则称调用方收到了一个 *新的* 引用。 当所有权未被转移时，则称调用方 *借入* 该引用。 对于 "
+":term:`borrowed reference` 来说不需任何额外操作。"
 
 #: ../../c-api/intro.rst:331
 msgid ""
@@ -481,6 +487,8 @@ msgid ""
 "reference to a function, that function assumes that it now owns that "
 "reference, and you are not responsible for it any longer."
 msgstr ""
+"相反地，当调用方函数传入一个对象的引用时，存在两种可能：该函数 *窃取* 了一个对象的引用，或是没有窃取。 *窃取引用* "
+"意味着当你向一个函数传入引用时，该函数会假定它拥有该引用，而你将不再对它负有责任。"
 
 #: ../../c-api/intro.rst:341
 msgid ""
@@ -493,6 +501,10 @@ msgid ""
 "this (forgetting about error handling for the moment; a better way to code "
 "this is shown below)::"
 msgstr ""
+"很少有函数会窃取引用；两个重要的例外是 :c:func:`PyList_SetItem` 和 "
+":c:func:`PyTuple_SetItem`，它们会窃取对条目的引用（但不是条目所在的元组或列表！）。 "
+"这些函数被设计为会窃取引用是因为在使用新创建的对象来填充元组或列表时有一个通常的惯例；例如，创建元组 ``(1, 2, \"three\")`` "
+"的代码看起来可以是这样的（暂时不要管错误处理；下面会显示更好的代码编写方式）::"
 
 #: ../../c-api/intro.rst:356
 msgid ""
