@@ -482,6 +482,8 @@ msgid ""
 "reference to a function, that function assumes that it now owns that "
 "reference, and you are not responsible for it any longer."
 msgstr ""
+"相反地，当调用方函数传入一个对象的引用时，存在两种可能：该函数 *窃取* 了一个对象的引用，或是没有窃取。 *窃取引用* "
+"意味着当你向一个函数传入引用时，该函数会假定它拥有该引用，而你将不再对它负有责任。"
 
 #: ../../c-api/intro.rst:341
 msgid ""
@@ -494,6 +496,10 @@ msgid ""
 "this (forgetting about error handling for the moment; a better way to code "
 "this is shown below)::"
 msgstr ""
+"很少有函数会窃取引用；两个重要的例外是 :c:func:`PyList_SetItem` 和 "
+":c:func:`PyTuple_SetItem`，它们会窃取对条目的引用（但不是条目所在的元组或列表！）。 "
+"这些函数被设计为会窃取引用是因为在使用新创建的对象来填充元组或列表时有一个通常的惯例；例如，创建元组 ``(1, 2, \"three\")`` "
+"的代码看起来可以是这样的（暂时不要管错误处理；下面会显示更好的代码编写方式）::"
 
 #: ../../c-api/intro.rst:356
 msgid ""
@@ -502,6 +508,8 @@ msgid ""
 " although the reference to it will be stolen, use :c:func:`Py_INCREF` to "
 "grab another reference before calling the reference-stealing function."
 msgstr ""
+"在这里，:c:func:`PyLong_FromLong` 返回了一个新的引用并且它立即被 :c:func:`PyTuple_SetItem` 所窃取。"
+" 当你想要继续使用一个对象而对它的引用将被窃取时，请在调用窃取引用的函数之前使用 :c:func:`Py_INCREF` 来抓取另一个引用。"
 
 #: ../../c-api/intro.rst:361
 msgid ""
@@ -510,12 +518,15 @@ msgid ""
 " do this since tuples are an immutable data type.  You should only use "
 ":c:func:`PyTuple_SetItem` for tuples that you are creating yourself."
 msgstr ""
+"顺便提一下，:c:func:`PyTuple_SetItem` 是设置元组条目的 *唯一* "
+"方式；:c:func:`PySequence_SetItem` 和 :c:func:`PyObject_SetItem` "
+"会拒绝这样做因为元组是不可变数据类型。 你应当只对你自己创建的元组使用 :c:func:`PyTuple_SetItem`。"
 
 #: ../../c-api/intro.rst:366
 msgid ""
 "Equivalent code for populating a list can be written using "
 ":c:func:`PyList_New` and :c:func:`PyList_SetItem`."
-msgstr ""
+msgstr "等价于填充一个列表的代码可以使用 :c:func:`PyList_New` 和 :c:func:`PyList_SetItem` 来编写。"
 
 #: ../../c-api/intro.rst:369
 msgid ""
@@ -526,6 +537,8 @@ msgid ""
 "code could be replaced by the following (which also takes care of the error "
 "checking)::"
 msgstr ""
+"然而，在实践中，你很少会使用这些创建和填充元组或列表的方式。 有一个通用的函数 :c:func:`Py_BuildValue` 可以根据 C "
+"值来创建大多数常用对象，由一个 :dfn:`格式字符串` 来指明。 例如，上面的两个代码块可以用下面的代码来代替（还会负责错误检测）::"
 
 #: ../../c-api/intro.rst:380
 msgid ""
@@ -537,6 +550,9 @@ msgid ""
 "  For example, this function sets all items of a list (actually, any mutable"
 " sequence) to a given item::"
 msgstr ""
+"使用 :c:func:`PyObject_SetItem` 等来处理那些你只是借入引用的条目是更为常见的，例如传给你正在编写的函数的参数。 "
+"在这种情况下，他们对于引用计数的行为会更为理智，因为你不需要递增引用计数以便你可以将引用计数转出去（“让它被窃取”）。 "
+"例如，这个函数将一个列表（实例上是任何可变序列）中的所有项设置为一个给定的条目::"
 
 #: ../../c-api/intro.rst:410
 msgid ""
@@ -550,6 +566,10 @@ msgid ""
 "  :c:func:`PySequence_GetItem`, always return a new reference (the caller "
 "becomes the owner of the reference)."
 msgstr ""
+"对于函数返回值的情况略有不同。 虽然向大多数函数传递一个引用不会改变你对该引用的所有权责任，但许多返回一个引用的函数会给你该引用的所有权。 "
+"原因很简单：在许多情况下，返回的对象是临时创建的，而你得到的引用是对该对象的唯一引用。 因此，返回对象引用的通用函数，如 "
+":c:func:`PyObject_GetItem` 和 "
+":c:func:`PySequence_GetItem`，将总是返回一个新的引用（调用方将成为该引用的所有者）。"
 
 #: ../../c-api/intro.rst:419
 msgid ""
@@ -562,6 +582,9 @@ msgid ""
 "happens to take exactly the same arguments), you do own a reference to the "
 "returned object."
 msgstr ""
+"一个需要了解的重点在于你是否拥有一个由函数返回的引用只取决于你所调用的函数 --- *附带物* (作为参数传给函数的对象的类型) *不会带来额外影响！*"
+" 因此，如果你使用 :c:func:`PyList_GetItem` 从一个列表提取条目，你并不会拥有其引用 --- 但是如果你使用 "
+":c:func:`PySequence_GetItem` (它恰好接受完全相同的参数) 从同一个列表获取同样的条目，你就会拥有一个对所返回对象的引用。"
 
 #: ../../c-api/intro.rst:431
 msgid ""
