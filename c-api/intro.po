@@ -609,6 +609,9 @@ msgid ""
 "the value of a complex number.  These will  be discussed together with the "
 "functions that use them."
 msgstr ""
+"在 Python/C API 中扮演重要角色的其他数据类型很少；大多为简单 C 类型如 :c:type:`int`,  :c:type:`long`, "
+":c:type:`double` 和 :c:type:`char*`。 "
+"有一些结构类型被用来描述用于列出模块导出的函数或者某个新对象类型的静态表，还有一个结构类型被用来描述复数的值。 这些结构类型将与使用它们的函数一起讨论。"
 
 #: ../../c-api/intro.rst:509
 msgid "Exceptions"
@@ -638,6 +641,11 @@ msgid ""
 "for errors with :c:func:`PyErr_Occurred`.  These exceptions are always "
 "explicitly documented."
 msgstr ""
+"然而，对于 C 程序员来说，错误检查必须总是显式进行的。 Python/C API 中的所有函数都可以引发异常，除非在函数的文档中另外显式声明。 "
+"一般来说，当一个函数遇到错误时，它会设置一个异常，丢弃它所拥有的任何对象引用，并返回一个错误标示。 如果没有说明例外的文档，这个标示将为 "
+"``NULL`` 或 ``-1``，具体取决于函数的返回类型。 有少量函数会返回一个布尔真/假结果值，其中假值表示错误。 "
+"有极少的函数没有显式的错误标示或是具有不明确的返回值，并需要用 :c:func:`PyErr_Occurred` 来进行显式的检测。 "
+"这些异常总是会被明确地记入文档中。"
 
 #: ../../c-api/intro.rst:534
 msgid ""
@@ -651,6 +659,10 @@ msgid ""
 "not the most general) function to set the exception state, and "
 ":c:func:`PyErr_Clear` clears the exception state."
 msgstr ""
+"异常状态是在各个线程的存储中维护的（这相当于在一个无线程的应用中使用全局存储）。 一个线程可以处在两种状态之一：异常已经发生，或者没有发生。 函数 "
+":c:func:`PyErr_Occurred` 可以被用来检查此状态：当异常发生时它将返回一个借入的异常类型对象的引用，在其他情况下则返回 "
+"``NULL``。 有多个函数可以设置异常状态: :c:func:`PyErr_SetString` "
+"是最常见的（尽管不是最通用的）设置异常状态的函数，而 :c:func:`PyErr_Clear` 可以清除异常状态。"
 
 #: ../../c-api/intro.rst:544
 msgid ""
@@ -664,6 +676,10 @@ msgid ""
 "the Python bytecode interpreter's  main loop, which takes care of "
 "transferring it to ``sys.exc_info()`` and friends."
 msgstr ""
+"完整的异常状态由三个对象组成  (它为都可以为 ``NULL``): 异常类型、相应的异常值，以及回溯信息。 这些对象的含义与 Python 中 "
+"``sys.exc_info()`` 的结果相同；然而，它们并不是一样的：Python 对象代表由 Python  :keyword:`try` ..."
+" :keyword:`except` 语句所处理的最后一个异常，而 C 层级的异常状态只在异常被传入到 C 函数或在它们之间传递时存在直至其到达 "
+"Python 字节码解释器的主事件循环，该事件循环会负责将其转移至 ``sys.exc_info()`` 等处。"
 
 #: ../../c-api/intro.rst:556
 msgid ""
