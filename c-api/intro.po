@@ -694,6 +694,10 @@ msgid ""
 "also reduces the often unwanted lifetime extension for objects that are "
 "referenced by the stack frames in the traceback."
 msgstr ""
+"请注意自 Python 1.5 开始，从 Python 代码访问异常状态的首选的、线程安全的方式是调用函数 "
+":func:`sys.exc_info`，它将返回 Python 代码的分线程异常状态。 "
+"此外，这两种访问异常状态的方式的语义都发生了变化因而捕获到异常的函数将保存并恢复其线程的异常状态以保留其调用方的异常状态。 "
+"这将防止异常处理代码中由一个看起来很无辜的函数覆盖了正在处理的异常所造成的常见错误；它还减少了在回溯由栈帧所引用的对象的往往不被需要的生命其延长。"
 
 #: ../../c-api/intro.rst:567
 msgid ""
@@ -705,6 +709,8 @@ msgid ""
 "that was just raised, and lose important information about the exact cause "
 "of the error."
 msgstr ""
+"作为一般的原则，一个调用另一个函数来执行某些任务的函数应当检查被调用的函数是否引发了异常，并在引发异常时将异常状态传递给其调用方。 "
+"它应当丢弃它所拥有的任何对象引用，并返回一个错误标示，但它 *不应* 设置另一个异常 --- 那会覆盖刚引发的异常，并丢失有关错误确切原因的重要信息。"
 
 #: ../../c-api/intro.rst:576
 msgid ""
@@ -714,6 +720,9 @@ msgid ""
 " following example function shows some error cleanup.  First, to remind you "
 "why you like Python, we show the equivalent Python code::"
 msgstr ""
+"一个检测异常并传递它们的简单例子在上面的 :c:func:`sum_sequence` 示例中进行了演示。 "
+"这个例子恰好在检测到错误时不需要清理所拥有的任何引用。 下面的示例函数演示了一些错误清理操作。 首先，为了向你提示 Python "
+"的优势，我们展示了等效的 Python 代码::"
 
 #: ../../c-api/intro.rst:591
 msgid "Here is the corresponding C code, in all its glory::"
@@ -731,6 +740,11 @@ msgid ""
 "likewise, the proposed return value is initialized to ``-1`` (failure) and "
 "only set to success after the final call made is successful."
 msgstr ""
+"这个例子代表了 C 语言中 ``goto`` 语句一种受到认可的用法！ 它说明了如何使用 "
+":c:func:`PyErr_ExceptionMatches` 和 :c:func:`PyErr_Clear` 来处理特定的异常，以及如何使用 "
+":c:func:`Py_XDECREF` 来处理可能为 ``NULL`` 的自有引用（注意名称中的 "
+"``'X'``；:c:func:`Py_DECREF` 在遇到 ``NULL`` 引用时将会崩溃）。 重要的一点在于用来保存自有引用的变量要被初始化为 "
+"``NULL`` 才能发挥作用；类似地，建议的返回值也要被初始化为 ``-1`` (失败) 并且只有在最终执行的调用成功后才会被设置为成功。"
 
 #: ../../c-api/intro.rst:657
 msgid "Embedding Python"
@@ -744,6 +758,8 @@ msgid ""
 " the interpreter can only be used after the interpreter has been "
 "initialized."
 msgstr ""
+"只有 Python 解释器的嵌入方（相对于扩展编写者而言）才需要担心的一项重要任务是它的初始化，可能还有它的最终化。 "
+"解释器的大多数功能只有在解释器被初始化之后才能被使用。"
 
 #: ../../c-api/intro.rst:672
 msgid ""
