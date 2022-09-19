@@ -768,6 +768,8 @@ msgid ""
 " :mod:`builtins`, :mod:`__main__`, and :mod:`sys`.  It also initializes the "
 "module search path (``sys.path``)."
 msgstr ""
+"基本的初始化函数是 :c:func:`Py_Initialize`。 此函数将初始化已加载模块表，并创建基本模块 :mod:`builtins`, "
+":mod:`__main__` 和 :mod:`sys`。 它还将初始化模块搜索路径 (``sys.path``)。"
 
 #: ../../c-api/intro.rst:679
 msgid ""
@@ -777,6 +779,9 @@ msgid ""
 "``PySys_SetArgvEx(argc, argv, updatepath)`` after the call to "
 ":c:func:`Py_Initialize`."
 msgstr ""
+":c:func:`Py_Initialize` 不会设置 \"脚本参数列表\"  (``sys.argv``)。 如果随后将要执行的 Python "
+"代码需要此变量，则必须在调用 :c:func:`Py_Initialize` 之后通过调用  ``PySys_SetArgvEx(argc, argv,"
+" updatepath)`` 来显式地设置它。"
 
 #: ../../c-api/intro.rst:684
 msgid ""
@@ -789,6 +794,10 @@ msgid ""
 "to the parent directory where the executable named :file:`python` is found "
 "on the shell command search path (the environment variable :envvar:`PATH`)."
 msgstr ""
+"在大多数系统上（特别是 Unix 和 Windows，虽然在细节上有所不同），:c:func:`Py_Initialize` 将根据对标准 Python"
+" 解释器可执行文件的位置的最佳猜测来计算模块搜索路径，并设定 Python 库可在相对于 Python 解释器可执行文件的固定位置上找到。 "
+"特别地，它将相对于在 shell 命令搜索路径 (环境变量 :envvar:`PATH`) 上找到的名为 :file:`python` "
+"的可执行文件所在父目录中查找名为 :file:`lib/python{X.Y}` 的目录。"
 
 #: ../../c-api/intro.rst:693
 msgid ""
@@ -800,6 +809,10 @@ msgid ""
 "setting the environment variable :envvar:`PYTHONHOME`, or insert additional "
 "directories in front of the standard path by setting :envvar:`PYTHONPATH`."
 msgstr ""
+"举例来说，如果 Python 可执行文件位于 :file:`/usr/local/bin/python`，它将假定库位于 "
+":file:`/usr/local/lib/python{X.Y}`。 （实际上，这个特定路径还将成为“回退”位置，会在当无法在 "
+":envvar:`PATH` 中找到名为 :file:`python` 的可执行文件时被使用。） 用户可以通过设置环境变量 "
+":envvar:`PYTHONHOME`，或通过设置 :envvar:`PYTHONPATH` 在标准路径之前插入额外的目录来覆盖此行为。"
 
 #: ../../c-api/intro.rst:708
 msgid ""
@@ -811,6 +824,11 @@ msgid ""
 " :c:func:`Py_GetPrefix`, :c:func:`Py_GetExecPrefix`, and "
 ":c:func:`Py_GetProgramFullPath` (all defined in :file:`Modules/getpath.c`)."
 msgstr ""
+"嵌入的应用程序可以通过在调用 :c:func:`Py_Initialize` *之前* 调用 ``Py_SetProgramName(file)`` "
+"来改变搜索次序。 请注意 :envvar:`PYTHONHOME` 仍然会覆盖此设置并且 :envvar:`PYTHONPATH` "
+"仍然会被插入到标准路径之前。 需要完全控制权的应用程序必须提供它自己的 :c:func:`Py_GetPath`, "
+":c:func:`Py_GetPrefix`, :c:func:`Py_GetExecPrefix` 和 "
+":c:func:`Py_GetProgramFullPath` 实现（这些函数均在 :file:`Modules/getpath.c` 中定义）。"
 
 #: ../../c-api/intro.rst:718
 msgid ""
