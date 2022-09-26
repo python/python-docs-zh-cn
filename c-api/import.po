@@ -281,14 +281,14 @@ msgstr ""
 msgid ""
 "Return the dictionary used for the module administration (a.k.a. "
 "``sys.modules``).  Note that this is a per-interpreter variable."
-msgstr ""
+msgstr "返回用于模块管理的字典 (即 ``sys.modules``)。 请注意这是针对每个解释器的变量。"
 
 #: ../../c-api/import.rst:209
 msgid ""
 "Return the already imported module with the given name.  If the module has "
 "not been imported yet then returns ``NULL`` but does not set an error.  "
 "Returns ``NULL`` and sets an error if the lookup failed."
-msgstr ""
+msgstr "返回给定名称的已导入模块。 如果模块尚未导入则返回 ``NULL`` 但不会设置错误。 如果查找失败则返回 ``NULL`` 并设置错误。"
 
 #: ../../c-api/import.rst:217
 msgid ""
@@ -301,6 +301,11 @@ msgid ""
 ":data:`sys.path_importer_cache`. Return a new reference to the finder "
 "object."
 msgstr ""
+"返回针对一个 :data:`sys.path`/:attr:`pkg.__path__` 中条目 *path* 的查找器对象，可能会通过 "
+":data:`sys.path_importer_cache` 字典来获取。 如果它尚未被缓存，则会遍历 :data:`sys.path_hooks` "
+"直至找到一个能处理该 path 条目的钩子。 如果没有可用的钩子则返回 ``None``；这将告知调用方 :term:`path based "
+"finder` 无法为该 path 条目找到查找器。 结果将缓存到 :data:`sys.path_importer_cache`。 "
+"返回一个指向查找器对象的新引用。"
 
 #: ../../c-api/import.rst:228
 msgid "Initialize the import mechanism.  For internal use only."
@@ -322,16 +327,21 @@ msgid ""
 ":c:func:`PyImport_ImportModule`.  (Note the misnomer --- this function would"
 " reload the module if it was already imported.)"
 msgstr ""
+"加载名称为 *name* 的已冻结模块。 成功时返回 ``1``，如果未找到模块则返回 ``0``，如果初始化失败则返回 ``-1`` 并设置一个异常。"
+" 要在加载成功后访问被导入的模块，请使用 :c:func:`PyImport_ImportModule`。 （请注意此名称有误导性 --- "
+"如果模块已被导入此函数将重载它。）"
 
 #: ../../c-api/import.rst:251
 msgid "The ``__file__`` attribute is no longer set on the module."
-msgstr ""
+msgstr "``__file__`` 属性将不再在模块上设置。"
 
 #: ../../c-api/import.rst:257
 msgid ""
 "Similar to :c:func:`PyImport_ImportFrozenModuleObject`, but the name is a "
 "UTF-8 encoded string instead of a Unicode object."
 msgstr ""
+"类似于 :c:func:`PyImport_ImportFrozenModuleObject`，但其名称为 UTF-8 编码的字符串而不是 "
+"Unicode 对象。"
 
 #: ../../c-api/import.rst:265
 msgid ""
@@ -340,6 +350,8 @@ msgid ""
 " Python source distribution).  Its definition, found in "
 ":file:`Include/import.h`, is::"
 msgstr ""
+"这是针对已冻结模块描述器的结构类型定义，与由 :program:`freeze` 工具所生成的一致 (请参看 Python 源代码发行版中的 "
+":file:`Tools/freeze/`)。 其定义可在 :file:`Include/import.h` 中找到::"
 
 #: ../../c-api/import.rst:279
 msgid ""
@@ -361,6 +373,9 @@ msgid ""
 "function called on the first attempted import.  This should be called before"
 " :c:func:`Py_Initialize`."
 msgstr ""
+"向现有的内置模块表添加一个模块。 这是对 :c:func:`PyImport_ExtendInittab` 的便捷包装，如果无法扩展表则返回 "
+"``-1``。 新的模块可使用名称 *name* 来导入，并使用函数 *initfunc* 作为在第一次尝试导入时调用的初始化函数。 此函数应当在 "
+":c:func:`Py_Initialize` 之前调用。"
 
 #: ../../c-api/import.rst:297
 msgid ""
@@ -371,6 +386,9 @@ msgid ""
 ":c:func:`PyImport_ExtendInittab` to provide additional built-in modules. The"
 " structure is defined in :file:`Include/import.h` as::"
 msgstr ""
+"描述内置模块列表中的一个条目的结构体。 每个结构体都给出了内置在解释器中的某个模块的名称和初始化函数。 名称是一个 ASCII 编码的字符串。 嵌入了 "
+"Python 的程序可以使用该结构体的数组来与 :c:func:`PyImport_ExtendInittab` 相结合以提供额外的内置模块。 "
+"该结构体在 :file:`Include/import.h` 中被定义为::"
 
 #: ../../c-api/import.rst:312
 msgid ""
