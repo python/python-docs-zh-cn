@@ -84,6 +84,9 @@ msgid ""
 " well (on Windows, it looks in the registry which may point to a specific "
 "file)."
 msgstr ""
+"尝试找到模块 *name*。 如果 *path* 被省略或为 ``None``，则会搜索 ``sys.path`` "
+"给出的目录名列表，但在此前会先搜索几个特殊位置：该函数将尝试找到具有给定名称的内置模块 (:const:`C_BUILTIN`)，然后是冻结模块 "
+"(:const:`PY_FROZEN`)，并且在某些系统上还会查找其他几个位置（在 Windows 上，它将查看注册表，其中可能指向某一特定文件）。"
 
 #: ../../library/imp.rst:56
 msgid ""
@@ -92,12 +95,14 @@ msgid ""
 " above.  Invalid names in the list are silently ignored (but all list items "
 "must be strings)."
 msgstr ""
+"在其他情况下，*path* 必须是一个目录名列表；将在每个目录中搜索具有上述 :func:`get_suffixes` 所返回的任何后缀的文件。 "
+"列表中的无效名称将被静默地忽略（但是所有列表条目都必须为字符串）。"
 
 #: ../../library/imp.rst:61
 msgid ""
 "If search is successful, the return value is a 3-element tuple ``(file, "
 "pathname, description)``:"
-msgstr ""
+msgstr "如果搜索成功，返回值将是一个 3 元素元组 ``(file, pathname, description)``:"
 
 #: ../../library/imp.rst:64
 msgid ""
@@ -106,6 +111,8 @@ msgid ""
 "3-element tuple as contained in the list returned by :func:`get_suffixes` "
 "describing the kind of module found."
 msgstr ""
+"*file* 是一个放在最前面的已打开的 :term:`file object`，*pathname* 是打到的文件的路径名，而 "
+"*description* 是一个描述所找到的模块种类的 3 元素元组，如 :func:`get_suffixes` 所返回的列表中包含的内容。"
 
 #: ../../library/imp.rst:69
 msgid ""
@@ -115,12 +122,17 @@ msgid ""
 "the search is unsuccessful, :exc:`ImportError` is raised.  Other exceptions "
 "indicate problems with the arguments or environment."
 msgstr ""
+"如果模块为内置或冻结模块则 *file* 和 *pathname* 都将为 ``None`` 并且 *description* "
+"元组将包含空字符串来表示其后缀和模式；模块类型按上述圆括号中所给出的内容来指明。 如果搜索未成功，则会引发 :exc:`ImportError`。 "
+"其他异常被用于指示参数或环境问题。"
 
 #: ../../library/imp.rst:75
 msgid ""
 "If the module is a package, *file* is ``None``, *pathname* is the package "
 "path and the last item in the *description* tuple is :const:`PKG_DIRECTORY`."
 msgstr ""
+"如果模块是一个包，则 *file* 将为 ``None``，*pathname* 将为包路径而 *description* 元组的最后一项将为 "
+":const:`PKG_DIRECTORY`。"
 
 #: ../../library/imp.rst:78
 msgid ""
@@ -131,6 +143,10 @@ msgid ""
 "``P.__path__``. When *P* itself has a dotted name, apply this recipe "
 "recursively."
 msgstr ""
+"此函数不会处理多层级的模块名称（包含点号的名称）。 为了找到 *P.M*，也就是 *P* 包的的子模块 *M*，请使用 "
+":func:`find_module` 和 :func:`load_module` 来找到并载入 *P* 包，然后使用 "
+":func:`find_module` 并将 *path* 参数设为 ``P.__path__``。 当 *P* "
+"本身也具有带点号的名称时，请递归地应用此步骤。"
 
 #: ../../library/imp.rst:84
 msgid ""
@@ -139,6 +155,9 @@ msgid ""
 "usage of the former case, see the :ref:`importlib-examples` section of the "
 ":mod:`importlib` documentation."
 msgstr ""
+"请改用 :func:`importlib.util.find_spec` 除非需要兼容 Python 3.3，对于后一种情况请使用 "
+":func:`importlib.find_loader`。 要查看对于前一种情况的示例用法，请参阅 :mod:`importlib` 文档的 "
+":ref:`importlib-examples` 小节。"
 
 #: ../../library/imp.rst:94
 msgid ""
@@ -153,12 +172,16 @@ msgid ""
 "tuple, as would be returned by :func:`get_suffixes`, describing what kind of"
 " module must be loaded."
 msgstr ""
+"加载之前由 :func:`find_module` 所找到的模块（或由其他方式执行搜索所产生的兼容的结果）。 "
+"此函数所做的不只是导入模块：如果模块已经被导入，它将重新加载此模块！ *name* 参数指明完整的模块名称（包括包名，如果它是一个包的子模块的话）。 "
+"*file* 参数是一个打开的文件，而 *pathname* 是相应的文件名；当模块是一个包或者不是从文档加载时，它们可以分别为 ``None`` 和 "
+"``''``。 *description* 参数是一个元组，如 :func:`get_suffixes` 将返回的内容一样，描述了必须加载什么样的模块。"
 
 #: ../../library/imp.rst:105
 msgid ""
 "If the load is successful, the return value is the module object; otherwise,"
 " an exception (usually :exc:`ImportError`) is raised."
-msgstr ""
+msgstr "如果加载成功，则返回值为相应的模块对象；否则，将引发一个异常 (通常为 :exc:`ImportError`)。"
 
 #: ../../library/imp.rst:108
 msgid ""
