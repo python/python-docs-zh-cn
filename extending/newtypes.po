@@ -299,6 +299,11 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_setattro` fields ``NULL`` as well, allowing the "
 "base type to handle attributes."
 msgstr ""
+"当 :c:func:`PyType_Ready` 被调用时，它会使用由类型对象所引用的三个表来创建要放置到类型对象的字典中的 "
+":term:`descriptor`。 每个描述器控制对实例对象的一个属性的访问。 每个表都是可选的；如果三个表全都为 "
+"``NULL``，则该类型的实例将只有从它们的基础类型继承来的属性，并且还应当让 "
+":c:member:`~PyTypeObject.tp_getattro` 和 "
+":c:member:`~PyTypeObject.tp_setattro` 字段保持为 ``NULL``，以允许由基础类型处理这些属性。"
 
 #: ../../extending/newtypes.rst:253
 msgid "The tables are declared as three fields of the type object::"
@@ -310,6 +315,8 @@ msgid ""
 " array of :c:type:`PyMethodDef` structures.  Each entry in the table is an "
 "instance of this structure::"
 msgstr ""
+"如果 :c:member:`~PyTypeObject.tp_methods` 不为 ``NULL``，则它必须指向一个由 "
+":c:type:`PyMethodDef` 结构体组成的数组。 表中的每个条目都是该结构体的一个实例::"
 
 #: ../../extending/newtypes.rst:270
 msgid ""
@@ -318,6 +325,8 @@ msgid ""
 " needed at the end; it is a sentinel that marks the end of the array.  The "
 ":attr:`ml_name` field of the sentinel must be ``NULL``."
 msgstr ""
+"应当为该类型所提供的每个方法都定义一个条目；从基础类型继承来的方法不需要条目。 还需要在末尾加一个额外的条目；它是一个标记数组结束的哨兵条目。 "
+"该哨兵条目的 :attr:`ml_name` 字段必须为 ``NULL``。"
 
 #: ../../extending/newtypes.rst:275
 msgid ""
@@ -325,7 +334,7 @@ msgid ""
 "stored in the instance.  A variety of primitive C types are supported, and "
 "access may be read-only or read-write.  The structures in the table are "
 "defined as::"
-msgstr ""
+msgstr "第二个表被用来定义要直接映射到实例中的数据的属性。 各种原始 C 类型均受到支持，并且访问方式可以为只读或读写。 表中的结构体被定义为::"
 
 #: ../../extending/newtypes.rst:287
 msgid ""
@@ -337,6 +346,9 @@ msgid ""
 ":attr:`flags` field is used to store flags which control how the attribute "
 "can be accessed."
 msgstr ""
+"对于表中的每个条目，将构建一个 :term:`descriptor` 并添加到类型中使其能够从实例结构体中提取值。 :attr:`type` "
+"字段应当包含在 :file:`structmember.h` 头文件中定义的某个类型的代码；该值将被用来确定如何将 Python 值转换为 C "
+"值或者反之。 :attr:`flags` 字段将被用来储存控制属性可以如何被访问的旗标。"
 
 #: ../../extending/newtypes.rst:294
 msgid ""
