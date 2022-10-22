@@ -566,13 +566,13 @@ msgstr "此函数接受三个参数:"
 msgid ""
 "*self* is the instance of the data type which is the subject of the call. If"
 " the call is ``obj1('hello')``, then *self* is ``obj1``."
-msgstr ""
+msgstr "*self* 是作为调用目标的数据类型实例。 如果调用是 ``obj1('hello')``，则 *self* 为 ``obj1``。"
 
 #: ../../extending/newtypes.rst:477
 msgid ""
 "*args* is a tuple containing the arguments to the call.  You can use "
 ":c:func:`PyArg_ParseTuple` to extract the arguments."
-msgstr ""
+msgstr "*args* 是包含调用参数的元组。 你可以使用 :c:func:`PyArg_ParseTuple` 来提取参数。"
 
 #: ../../extending/newtypes.rst:480
 msgid ""
@@ -583,10 +583,13 @@ msgid ""
 ":exc:`TypeError` with a message saying that keyword arguments are not "
 "supported."
 msgstr ""
+"*kwds* 是由传入的关键字参数组成的字典。 如果它不为 ``NULL`` 且你支持关键字参数，则可使用 "
+":c:func:`PyArg_ParseTupleAndKeywords` 来提取参数。 如果你不想支持关键字参数而它为非 ``NULL`` "
+"值，则会引发 :exc:`TypeError` 并附带一个提示不支持关键字参数的消息。"
 
 #: ../../extending/newtypes.rst:486
 msgid "Here is a toy ``tp_call`` implementation::"
-msgstr ""
+msgstr "下面是一个演示性的 ``tp_call`` 实现::"
 
 #: ../../extending/newtypes.rst:512
 msgid ""
@@ -598,6 +601,10 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_iternext` corresponds to the Python "
 ":meth:`~iterator.__next__` method."
 msgstr ""
+"这些函数提供了对迭代器协议的支持。 两个处理句柄都只接受一个形参，即它们被调用时所使用的实例，并返回一个新的引用。 "
+"当发生错误时，它们应当设置一个异常并返回 ``NULL``。  :c:member:`~PyTypeObject.tp_iter` 对应于 Python"
+" :meth:`__iter__` 方法，而 :c:member:`~PyTypeObject.tp_iternext` 对应于 Python "
+":meth:`~iterator.__next__` 方法。"
 
 #: ../../extending/newtypes.rst:519
 msgid ""
@@ -606,6 +613,8 @@ msgid ""
 ":term:`iterator` object.  Here the same guidelines apply as for Python "
 "classes:"
 msgstr ""
+"任何 :term:`iterable` 对象都必须实现 :c:member:`~PyTypeObject.tp_iter` "
+"处理句柄，该处理句柄必须返回一个 :term:`iterator` 对象。 下面是是与 Python 类所应用的同一个指导原则:"
 
 #: ../../extending/newtypes.rst:523
 msgid ""
@@ -613,6 +622,8 @@ msgid ""
 "independent iterators, a new iterator should be created and returned by each"
 " call to :c:member:`~PyTypeObject.tp_iter`."
 msgstr ""
+"对于可以支持多个独立迭代器的多项集（如列表和元组），则应当在每次调用 :c:member:`~PyTypeObject.tp_iter` "
+"时创建并返回一个新的迭代器。"
 
 #: ../../extending/newtypes.rst:526
 msgid ""
@@ -622,6 +633,9 @@ msgid ""
 " -- and should also therefore implement the "
 ":c:member:`~PyTypeObject.tp_iternext`  handler."
 msgstr ""
+"只能被迭代一次的对象（通常是由于迭代操作的附带影响，例如文件对象）可以通过返回一个指向自身的新引用来实现 "
+":c:member:`~PyTypeObject.tp_iter` -- 并且为此还应当实现 "
+":c:member:`~PyTypeObject.tp_iternext`  处理句柄。"
 
 #: ../../extending/newtypes.rst:531
 msgid ""
