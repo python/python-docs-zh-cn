@@ -620,6 +620,8 @@ msgid ""
 ":term:`iterator` object.  Here the same guidelines apply as for Python "
 "classes:"
 msgstr ""
+"任何 :term:`iterable` 对象都必须实现 :c:member:`~PyTypeObject.tp_iter` "
+"处理句柄，该处理句柄必须返回一个 :term:`iterator` 对象。 下面是与 Python 类所应用的同一个指导原则:"
 
 #: ../../extending/newtypes.rst:540
 msgid ""
@@ -627,6 +629,8 @@ msgid ""
 "independent iterators, a new iterator should be created and returned by each"
 " call to :c:member:`~PyTypeObject.tp_iter`."
 msgstr ""
+"对于可以支持多个独立迭代器的多项集（如列表和元组），则应当在每次调用 :c:member:`~PyTypeObject.tp_iter` "
+"时创建并返回一个新的迭代器。"
 
 #: ../../extending/newtypes.rst:543
 msgid ""
@@ -636,6 +640,9 @@ msgid ""
 " -- and should also therefore implement the "
 ":c:member:`~PyTypeObject.tp_iternext`  handler."
 msgstr ""
+"只能被迭代一次的对象（通常是由于迭代操作的附带影响，例如文件对象）可以通过返回一个指向自身的新引用来实现 "
+":c:member:`~PyTypeObject.tp_iter` -- 并且为此还应当实现 "
+":c:member:`~PyTypeObject.tp_iternext`  处理句柄。"
 
 #: ../../extending/newtypes.rst:548
 msgid ""
@@ -651,10 +658,18 @@ msgid ""
 "an actual error occurs, :c:member:`~PyTypeObject.tp_iternext` should always "
 "set an exception and return ``NULL``."
 msgstr ""
+"任何 :term:`iterator` 对象都应当同时实现 :c:member:`~PyTypeObject.tp_iter` 和 "
+":c:member:`~PyTypeObject.tp_iternext`。 一个迭代器的 "
+":c:member:`~PyTypeObject.tp_iter` 处理句柄应当返回一个指向该迭代器的新引用。 它的 "
+":c:member:`~PyTypeObject.tp_iternext` "
+"处理句柄应当返回一个指向迭代操作的下一个对象的新引用，如果还有下一个对象的话。 如果迭代已到达末尾，则 "
+":c:member:`~PyTypeObject.tp_iternext` 可以返回 ``NULL`` 而不设置异常，或者也可以在返回 ``NULL``"
+" 的基础上 *额外* 设置 :exc:`StopIteration`；避免异常可以产生更好的性能。 如果发生了实际的错误，则 "
+":c:member:`~PyTypeObject.tp_iternext` 应当总是设置一个异常并返回 ``NULL``。"
 
 #: ../../extending/newtypes.rst:564
 msgid "Weak Reference Support"
-msgstr ""
+msgstr "弱引用支持"
 
 #: ../../extending/newtypes.rst:566
 msgid ""
