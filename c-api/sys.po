@@ -357,6 +357,8 @@ msgid ""
 "called until enough of the runtime has been initialized to permit the "
 "creation of Unicode objects."
 msgstr ""
+"注意：目前此函数不可在 CPython 实现之外使用，因为它必须在 :c:func:`Py_Initialize` 中的 :mod:`warnings`"
+" 显式导入之前被调用，但是要等运行时已初始化到足以允许创建 Unicode 对象时才能被调用。"
 
 #: ../../c-api/sys.rst:253
 msgid ""
@@ -364,12 +366,14 @@ msgid ""
 "be a list of paths separated with the platform's search path delimiter "
 "(``:`` on Unix, ``;`` on Windows)."
 msgstr ""
+"将 :data:`sys.path` 设为由在 *path* 中找到的路径组成的列表对象，该参数应为使用特定平台的搜索路径分隔符 (在 Unix 上为 "
+"``:``，在 Windows 上为 ``;``) 分隔的路径的列表。"
 
 #: ../../c-api/sys.rst:259
 msgid ""
 "Write the output string described by *format* to :data:`sys.stdout`.  No "
 "exceptions are raised, even if truncation occurs (see below)."
-msgstr ""
+msgstr "将以 *format* 描述的输出字符串写入到 :data:`sys.stdout`。 不会引发任何异常，即使发生了截断（见下文）。"
 
 #: ../../c-api/sys.rst:262
 msgid ""
@@ -381,12 +385,15 @@ msgid ""
 "not exceed 1000 bytes.  Also watch out for \"%f\", which can print hundreds "
 "of digits for very large numbers."
 msgstr ""
+"*format* 应当将已格式化的输出字符串的总大小限制在 1000 字节以下 -- 超过 1000 字节后，输出字符串会被截断。 "
+"特别地，这意味着不应出现不受限制的 \"%s\" 格式；它们应当使用 \"%.<N>s\" 来限制，其中 <N> 是一个经计算使得 <N> "
+"与其他已格式化文本的最大尺寸之和不会超过 1000 字节的十进制数字。 还要注意 \"%f\"，它可能为非常大的数字打印出数以百计的数位。"
 
 #: ../../c-api/sys.rst:270
 msgid ""
 "If a problem occurs, or :data:`sys.stdout` is unset, the formatted message "
 "is written to the real (C level) *stdout*."
-msgstr ""
+msgstr "如果发生了错误，:data:`sys.stdout` 会被清空，已格式化的消息将被写入到真正的 (C 层级) *stdout*。"
 
 #: ../../c-api/sys.rst:275
 msgid ""
@@ -415,6 +422,8 @@ msgid ""
 "options mapping as returned by :c:func:`PySys_GetXOptions`. This function "
 "may be called prior to :c:func:`Py_Initialize`."
 msgstr ""
+"将 *s* 解析为一个由 :option:`-X` 选项组成的集合并将它们添加到 :c:func:`PySys_GetXOptions` "
+"所返回的当前选项映射。 此函数可以在 :c:func:`Py_Initialize` 之前被调用。"
 
 #: ../../c-api/sys.rst:303
 msgid ""
@@ -422,12 +431,14 @@ msgid ""
 ":data:`sys._xoptions`.  On error, ``NULL`` is returned and an exception is "
 "set."
 msgstr ""
+"返回当前 :option:`-X` 选项的字典，类似于 :data:`sys._xoptions`。 发生错误时，将返回 ``NULL`` "
+"并设置一个异常。"
 
 #: ../../c-api/sys.rst:312
 msgid ""
 "Raise an auditing event with any active hooks. Return zero for success and "
 "non-zero with an exception set on failure."
-msgstr ""
+msgstr "引发一个审计事件并附带任何激活的钩子。 成功时返回零值或在失败时返回非零值并设置一个异常。"
 
 #: ../../c-api/sys.rst:315
 msgid ""
@@ -439,6 +450,9 @@ msgid ""
 "arguments to this function will be consumed, using it may cause reference "
 "leaks.)"
 msgstr ""
+"如果已添加了任何钩子，则将使用 *format* 和其他参数来构造一个用入传入的元组。 除 ``N`` 以外，在 "
+":c:func:`Py_BuildValue` 中使用的格式字符均可使用。 如果构建的值不是一个元组，它将被添加到一个单元素元组中。 （格式选项 "
+"``N`` 会消耗一个引用，但是由于没有办法知道此函数的参数是否将被消耗，因此使用它可能导致引用泄漏。）"
 
 #: ../../c-api/sys.rst:323
 msgid ""
