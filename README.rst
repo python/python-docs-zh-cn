@@ -12,6 +12,9 @@ Maintained versions:
    * - Version
      - Sync status
      - Translation progress
+   * - `3.11 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-311/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-311
    * - `3.10 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-310/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
