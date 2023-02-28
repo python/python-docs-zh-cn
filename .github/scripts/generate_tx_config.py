@@ -1,4 +1,5 @@
 """Please note that this script requires a Transifex API token to run."""
+import glob
 import subprocess
 from functools import partial
 from pathlib import Path
@@ -32,20 +33,33 @@ FILTER_PATTERN = re.compile(
 def name_replacer(match: re.Match[str]):
     prefix, resource = match.group("prefix", "resource")
     override_prefix = prefix.replace("file_filter", "trans.zh_CN")
-    override_resource = (
+    pattern = (
         resource.replace("trans/<lang>/", "")
-        .replace("--", "/")
         .replace("glossary_", "glossary")
-        .replace("_", ".")
+        .replace("--", "/")
+        .replace("_", "?")
     )
-    return f"{prefix}{resource}\n{override_prefix}{override_resource}"
+    matches = list(glob.glob(pattern.replace(".po", ".rst")))
+    if not matches:
+        print("missing", pattern)
+        return f"{prefix}{resource}\n{override_prefix}{pattern}"
+    elif len(matches) == 1:
+        filename = matches[0].replace(".rst", ".po").replace("\\", "/")
+    else:
+        raise ValueError("multi match", resource, pattern, matches)
+    return f"{prefix}{resource}\n{override_prefix}{filename}"
 
 
-def patch_config():
+def patch_config(path: str):
     tx_config_path = Path(".tx", "config")
 
     config_content = tx_config_path.read_text("utf-8")
+
+    cwd = os.getcwd()
+    os.chdir(path)
     config_content = FILTER_PATTERN.sub(name_replacer, config_content)
+    os.chdir(cwd)
+
     tx_config_path.write_text(config_content, "utf-8")
 
 
@@ -55,8 +69,9 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
 
-    parser.add_argument("--token")
-    parser.add_argument("--version")
+    parser.add_argument("--token", required=True)
+    parser.add_argument("--version", required=True)
+    parser.add_argument("--doc-path", required=True)
 
     params = parser.parse_args()
 
@@ -64,4 +79,4 @@ if __name__ == "__main__":
 
     init_project()
     add_files(params.version)
-    patch_config()
+    patch_config(params.doc_path)
