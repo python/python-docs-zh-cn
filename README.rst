@@ -15,11 +15,13 @@ Maintained versions:
    * - `3.11 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-311/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-311
+     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/310
+          :target: https://www.transifex.com/python-doc/python-311/
    * - `3.10 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-310/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
      - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/310
-          :target: https://www.transifex.com/python-doc/python-39/
+          :target: https://www.transifex.com/python-doc/python-310/
    * - `3.9 <https://github.com/python/python-docs-zh-cn/tree/3.9>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-39/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-39
