@@ -587,12 +587,15 @@ msgid ""
 "non-``NULL`` values, the members can be set to ``NULL`` if the attributes "
 "are deleted."
 msgstr ""
+"此方式的缺点之一是它没有提供限制可被赋值给 Python 属性的对象类型的办法。 我们预期 first 和 last "
+"的名称为字符串，但它们可以被赋值为任意 Python 对象。 此外，这些属性还可以被删除，并将 C 指针设为 ``NULL``。 "
+"即使我们可以保证这些成员被初始化为非 ``NULL`` 值，如果这些属性被删除这些成员仍可被设为 ``NULL``。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:462
 msgid ""
 "We define a single method, :meth:`Custom.name()`, that outputs the objects "
 "name as the concatenation of the first and last names. ::"
-msgstr ""
+msgstr "我们定义了一个单独的方法，:meth:`Custom.name()`，它将对象名称输出为 first 和 last 名称的拼接。 ::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:479
 msgid ""
@@ -603,6 +606,9 @@ msgid ""
 " to accept a positional argument tuple or keyword argument dictionary. This "
 "method is equivalent to the Python method:"
 msgstr ""
+"该方法的实现形式是一个接受 :class:`Custom` (或 :class:`Custom` 的子类) 实例作为第一个参数的 C 函数。 "
+"方法总是接受一个实例作为第一个参数。 方法也总是接受位置和关键字参数，但在本例中我们未接受任何参数也不需要接受位置参数元组或关键字参数字典。 "
+"该方法等价于以下 Python 方法:"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:491
 msgid ""
@@ -612,22 +618,25 @@ msgid ""
 " of these attributes and to restrict the attribute values to be strings.  "
 "We'll see how to do that in the next section."
 msgstr ""
+"请注意我们必须检查我们的 :attr:`first` 和 :attr:`last` 成员是否可能为 ``NULL``。 "
+"这是因为它们可以被删除，在此情况下它们会被设为 ``NULL``。 更好的做法是防止删除这些属性并将属性的值限制为字符串。 "
+"我们将在下一节了解如何做到这一点。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:497
 msgid ""
 "Now that we've defined the method, we need to create an array of method "
 "definitions::"
-msgstr ""
+msgstr "现在我们已经定义好了方法，我们需要创建一个方法定义数组::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:507
 msgid ""
 "(note that we used the :const:`METH_NOARGS` flag to indicate that the method"
 " is expecting no arguments other than *self*)"
-msgstr ""
+msgstr "（请注意我们使用 :const:`METH_NOARGS` 旗标来指明该方法不准备接受 *self* 以外的任何参数）"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:510
 msgid "and assign it to the :c:member:`~PyTypeObject.tp_methods` slot::"
-msgstr ""
+msgstr "并将其赋给 :c:member:`~PyTypeObject.tp_methods` 槽位::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:514
 msgid ""
@@ -636,6 +645,8 @@ msgid ""
 " about the type of the object being created or used, so all we need to do is"
 " to add the :const:`Py_TPFLAGS_BASETYPE` to our class flag definition::"
 msgstr ""
+"最后，我们将使我们的类型可被用作派生子类的基类。 我们精心地编写我们的方法以便它们不会随意假定被创建或使用的对象类型，所以我们需要做的就是将 "
+":const:`Py_TPFLAGS_BASETYPE` 添加到我们的类旗标定义中::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:521
 msgid ""
@@ -643,14 +654,16 @@ msgid ""
 "module name in the :c:type:`PyModuleDef` struct, and update the full class "
 "name in the :c:type:`PyTypeObject` struct."
 msgstr ""
+"我们将 :c:func:`PyInit_custom` 重命名为 :c:func:`PyInit_custom2`，更新 "
+":c:type:`PyModuleDef` 结构体中的模块名，并更新 :c:type:`PyTypeObject` 结构体中的完整类名。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:525
 msgid "Finally, we update our :file:`setup.py` file to build the new module:"
-msgstr ""
+msgstr "最后，我们更新我们的 :file:`setup.py` 文件来生成新的模块。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:538
 msgid "Providing finer control over data attributes"
-msgstr ""
+msgstr "提供对于数据属性的更精细控制Providing finer control over data attributes"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:540
 msgid ""
@@ -932,7 +945,7 @@ msgstr "备注"
 msgid ""
 "This is true when we know that the object is a basic type, like a string or "
 "a float."
-msgstr ""
+msgstr "当我们知道该对象属于基本类型，如字符串或浮点数时情况就是如此。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:896
 msgid ""
