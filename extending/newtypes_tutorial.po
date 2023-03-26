@@ -850,10 +850,13 @@ msgid ""
 "the attribute's destructor would call back into code that reads the "
 "attribute again (*especially* if there is a reference cycle)."
 msgstr ""
+"请注意 :c:func:`Py_CLEAR` 宏的使用。 它是清除任意类型的数据属性并减少其引用计数的推荐的且安全的方式。 如果你要选择在将属性设为 "
+"``NULL`` 之间在属性上调用 :c:func:`Py_XDECREF`，则属性的析构器有可能会回调再次读取该属性的代码 (*特别是* "
+"如果存在引用循环的话)。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:757
 msgid "You could emulate :c:func:`Py_CLEAR` by writing::"
-msgstr ""
+msgstr "你可以通过以下写法来模拟 :c:func:`Py_CLEAR`::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:764
 msgid ""
@@ -861,6 +864,8 @@ msgid ""
 ":c:func:`Py_CLEAR` when deleting an attribute.  Don't try to micro-optimize "
 "at the expense of robustness!"
 msgstr ""
+"无论如何，在删除属性时始终使用Nevertheless, it is much easier and less error-prone to "
+"always use :c:func:`Py_CLEAR` 都是更简单且更不易出错的。 请不要尝试以健壮性为代价的微小优化！"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:768
 msgid ""
@@ -871,11 +876,14 @@ msgid ""
 "members. Here is our reimplemented deallocator using "
 ":c:func:`PyObject_GC_UnTrack` and ``Custom_clear``::"
 msgstr ""
+"释放器 ``Custom_dealloc`` 可能会在清除属性时调用任意代码。 这意味着循环 GC 可以在函数内部被触发。 由于 GC "
+"预期引用计数不为零，我们需要通过调用 :c:func:`PyObject_GC_UnTrack` 来让 GC 停止追踪相关的对象。 下面是我们使用 "
+":c:func:`PyObject_GC_UnTrack` 和 ``Custom_clear`` 重新实现的释放器::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:783
 msgid ""
 "Finally, we add the :const:`Py_TPFLAGS_HAVE_GC` flag to the class flags::"
-msgstr ""
+msgstr "最后，我们将 :const:`Py_TPFLAGS_HAVE_GC` 旗标添加到类旗标中::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:787
 msgid ""
@@ -884,10 +892,12 @@ msgid ""
 "handlers, we'd need to modify them for cyclic garbage collection.  Most "
 "extensions will use the versions automatically provided."
 msgstr ""
+"这样就差不多了。 如果我们编写了自定义的 :c:member:`~PyTypeObject.tp_alloc` 或 "
+":c:member:`~PyTypeObject.tp_free` 处理句柄，则我们需要针对循环垃圾回收来修改它。 大多数扩展都将使用自动提供的版本。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:793
 msgid "Subclassing other types"
-msgstr ""
+msgstr "子类化其他类型"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:795
 msgid ""
@@ -896,6 +906,8 @@ msgid ""
 "can easily use the :c:type:`PyTypeObject` it needs. It can be difficult to "
 "share these :c:type:`PyTypeObject` structures between extension modules."
 msgstr ""
+"创建派生自现有类型的新类型是有可能的。 最容易的做法是从内置类型继承，因为扩展可以方便地使用它所需要的 :c:type:`PyTypeObject`。 "
+"在不同扩展模块之间共享这些 :c:type:`PyTypeObject` 结构体则是困难的。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:800
 msgid ""
@@ -904,6 +916,8 @@ msgid ""
 "with regular lists, but will have an additional :meth:`increment` method "
 "that increases an internal counter:"
 msgstr ""
+"在这个例子中我们将创建一个继承自内置 :class:`list` 类型的 :class:`SubList` 类型。 "
+"这个新类型将完全兼容常规列表，但将拥有一个额外的 :meth:`increment` 来增加内部计数器的值:"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/extending/newtypes_tutorial.rst:820
 msgid ""
