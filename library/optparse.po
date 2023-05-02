@@ -2168,6 +2168,8 @@ msgid ""
 "the only option attribute you must specify is ``callback``, the function to "
 "call::"
 msgstr ""
+"一般来说，定义回调选项的最简单方式是使用 :meth:`OptionParser.add_option` 方法。 在 "
+":attr:`~Option.action` 之外，你必须指定的唯一选项属性是 ``callback``，即要调用的函数::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1571
 msgid ""
@@ -2180,6 +2182,10 @@ msgid ""
 "number of command-line arguments.  This is where writing callbacks gets "
 "tricky; it's covered later in this section."
 msgstr ""
+"``callback`` 是一个函数（或其他可调用对象），因此当你创建这个回调选项时你必须已经定义了 ``my_callback()``。 "
+"在这个简单的例子中，:mod:`optparse` 甚至不知道 ``-c`` 是否接受任何参数，这通常意味着该选项不接受任何参数 --- "
+"它需要知道的就是存在命令行参数 ``-c``。 但是，在某些情况下，你可能希望你的回调接受任意数量的命令行参数。 "
+"这是编写回调的一个麻烦之处；本小节将稍后讲解这个问题。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1580
 msgid ""
@@ -2188,16 +2194,18 @@ msgid ""
 ":attr:`~Option.callback_args` and :attr:`~Option.callback_kwargs`.  Thus, "
 "the minimal callback function signature is::"
 msgstr ""
+":mod:`optparse` 总是会向你的回调传递四个特定参数，它只会在你通过 :attr:`~Option.callback_args` 和 "
+":attr:`~Option.callback_kwargs` 进行指定时才传入额外的参数。 因此，最小化的回调函数签名如下::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1587
 msgid "The four arguments to a callback are described below."
-msgstr ""
+msgstr "以下是对传给回调的四个参数的说明。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1589
 msgid ""
 "There are several other option attributes that you can supply when you "
 "define a callback option:"
-msgstr ""
+msgstr "当你定义回调选项时还可以提供一些其他的选项属性:"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1596
 msgid ":attr:`~Option.type`"
@@ -2210,6 +2218,9 @@ msgid ""
 ":attr:`~Option.type`.  Rather than storing the converted value(s) anywhere, "
 "though, :mod:`optparse` passes it to your callback function."
 msgstr ""
+"具有其通常的含义：与在 ``\"store\"`` 或 ``\"append\"`` 动作中一样，它指示 :mod:`optparse` "
+"读取一个参数并将其转换为 :attr:`~Option.type`。 但是，:mod:`optparse` "
+"并不会将所转换的值保存到某个地方，而是将其转给你的回调函数。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1602
 msgid ":attr:`~Option.nargs`"
@@ -2222,6 +2233,8 @@ msgid ""
 "to :attr:`~Option.type`.  It then passes a tuple of converted values to your"
 " callback."
 msgstr ""
+"同样具有其通常的含义：如果提供了该属性并且其值 > 1，:mod:`optparse` 将读取 :attr:`~Option.nargs` "
+"个参数，每个参数都必须可被转换为 :attr:`~Option.type`。 随后它会将被转换值的元组传给你的回调。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1605
 msgid ":attr:`~Option.callback_args`"
@@ -2229,7 +2242,7 @@ msgstr ":attr:`~Option.callback_args`"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1605
 msgid "a tuple of extra positional arguments to pass to the callback"
-msgstr ""
+msgstr "一个要传给回调的由额外位置参数组成的元组"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1609
 msgid ":attr:`~Option.callback_kwargs`"
@@ -2237,15 +2250,15 @@ msgstr ":attr:`~Option.callback_kwargs`"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1608
 msgid "a dictionary of extra keyword arguments to pass to the callback"
-msgstr ""
+msgstr "一个要传给回调的由额外关键字参数组成的字典"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1614
 msgid "How callbacks are called"
-msgstr ""
+msgstr "回调应当如何调用"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1616
 msgid "All callbacks are called as follows::"
-msgstr ""
+msgstr "所有回调都将使用以下方式调用::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1623
 msgid "``option``"
@@ -2253,7 +2266,7 @@ msgstr "``option``"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1623
 msgid "is the Option instance that's calling the callback"
-msgstr ""
+msgstr "是调用该回调的 Option 实例"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1630
 msgid "``opt_str``"
@@ -2267,6 +2280,9 @@ msgid ""
 "command-line as an abbreviation for ``--foobar``, then ``opt_str`` will be "
 "``\"--foobar\"``.)"
 msgstr ""
+"是在触发回调的命令行参数中出现的选项字符串。 （如果使用了长选项的缩写形式，则 ``opt_str`` 将为完整规范的选项字符串 --- "
+"举例来说，如果用户在命令行中将 ``--foo`` 作为 ``--foobar`` 的缩写形式，则 ``opt_str`` 将为 ``\"--"
+"foobar\"``。）"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1637
 msgid "``value``"
@@ -2281,6 +2297,10 @@ msgid ""
 "then ``value`` will be ``None``.  If :attr:`~Option.nargs` > 1, ``value`` "
 "will be a tuple of values of the appropriate type."
 msgstr ""
+"是在命令行中提供给该选项的参数。 :mod:`optparse` 将只在设置了 :attr:`~Option.type` "
+"的时候才接受参数；``value`` 将为该选项的类型所指定的类型。 如果该选项的 :attr:`~Option.type` 为 ``None`` "
+"(不接受参数)，则 ``value`` 将为 ``None``。 如果 :attr:`~Option.nargs` > 1，则 ``value`` "
+"将为由指定类型的值组成的元组。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1660
 msgid "``parser``"
@@ -2290,7 +2310,7 @@ msgstr "``parser``"
 msgid ""
 "is the OptionParser instance driving the whole thing, mainly useful because "
 "you can access some other interesting data through its instance attributes:"
-msgstr ""
+msgstr "是驱动选项解析过程的 OptionParser 实例，主要作用在于你可以通过其实例属性访问其他一些相关数据:"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1647
 msgid "``parser.largs``"
@@ -2303,6 +2323,8 @@ msgid ""
 "``parser.largs``, e.g. by adding more arguments to it.  (This list will "
 "become ``args``, the second return value of :meth:`parse_args`.)"
 msgstr ""
+"当前的剩余参数列表，即已被读取但不属于选项或选项参数的参数。 可以任意修改 ``parser.largs``，例如向其添加更多的参数。 （该列表将成为 "
+"``args``，即 :meth:`parse_args` 的第二个返回值。）"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1653
 msgid "``parser.rargs``"
@@ -2314,6 +2336,8 @@ msgid ""
 "(if applicable) removed, and only the arguments following them still there."
 "  Feel free to modify ``parser.rargs``, e.g. by consuming more arguments."
 msgstr ""
+"当前的保留参数列表，即移除了 ``opt_str`` 和 ``value`` (如果可用)，并且只有在它们之后的参数才会被保留。 可以任意修改 "
+"``parser.rargs``，例如读取更多的参数。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1660
 msgid "``parser.values``"
@@ -2327,12 +2351,14 @@ msgid ""
 "around with globals or closures.  You can also access or modify the value(s)"
 " of any options already encountered on the command-line."
 msgstr ""
+"作为选项值默认保存位置的对象（一个 optparse.OptionValues 实例）。 这使得回调能使用与 :mod:`optparse` "
+"的其他部分相同的机制来保存选项值；你不需要手动处理全局变量或闭包。 你还可以访问或修改在命令行中遇到的任何选项的值。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1663
 msgid ""
 "is a tuple of arbitrary positional arguments supplied via the "
 ":attr:`~Option.callback_args` option attribute."
-msgstr ""
+msgstr "是一个由通过 :attr:`~Option.callback_args` 选项属性提供的任意位置参数组成的元组。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1669
 msgid "``kwargs``"
@@ -2342,11 +2368,11 @@ msgstr "``kwargs``"
 msgid ""
 "is a dictionary of arbitrary keyword arguments supplied via "
 ":attr:`~Option.callback_kwargs`."
-msgstr ""
+msgstr "是一个由通过 :attr:`~Option.callback_kwargs` 提供的任意关键字参数组成的字典。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1674
 msgid "Raising errors in a callback"
-msgstr ""
+msgstr "在回调中引发错误"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1676
 msgid ""
@@ -2357,16 +2383,18 @@ msgid ""
 " fault. Otherwise, the user will have a hard time figuring out what they did"
 " wrong."
 msgstr ""
+"如果选项或其参数存在任何问题则回调函数应当引发 :exc:`OptionValueError`。 :mod:`optparse` "
+"将捕获该异常并终止程序，将你提供的错误消息打印到 stderr。 你的消息应当清晰、简洁、准确并指明出错的选项。 否则，用户将很难弄清楚自己做错了什么。"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1686
 msgid "Callback example 1: trivial callback"
-msgstr ""
+msgstr "回调示例 1：最简回调"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1688
 msgid ""
 "Here's an example of a callback option that takes no arguments, and simply "
 "records that the option was seen::"
-msgstr ""
+msgstr "下面是一个不接受任何参数，只是简单地记录所遇见的选项的回调选项示例::"
 
 #: /home/runner/work/docspush-transifex/docspush-transifex/cpython/Doc/library/optparse.rst:1696
 msgid "Of course, you could do that with the ``\"store_true\"`` action."
