@@ -4,6 +4,7 @@ import subprocess
 from functools import partial
 from pathlib import Path
 import re
+import os
 
 run = partial(subprocess.run, check=True)
 
@@ -12,7 +13,7 @@ def init_project():
     run(["tx", "init"])
 
 
-def add_files(version: str):
+def add_files(project_name: str):
     run(
         [
             "tx",
@@ -20,7 +21,7 @@ def add_files(version: str):
             "remote",
             "--file-filter",
             "trans/<lang>/<resource_slug>.<ext>",
-            f"https://www.transifex.com/python-doc/{version}/dashboard/",
+            f"https://www.transifex.com/python-doc/{project_name}/dashboard/",
         ]
     )
 
@@ -42,7 +43,7 @@ def name_replacer(match: re.Match[str]):
     matches = list(glob.glob(pattern.replace(".po", ".rst")))
     if not matches:
         print("missing", pattern)
-        return f"{prefix}{resource}\n{override_prefix}{pattern}"
+        return f"{prefix}{resource}\n{override_prefix}{pattern.replace('?', '_')}"
     elif len(matches) == 1:
         filename = matches[0].replace(".rst", ".po").replace("\\", "/")
     else:
@@ -65,18 +66,18 @@ def patch_config(path: str):
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
-    import os
 
     parser = ArgumentParser()
 
-    parser.add_argument("--token", required=True)
-    parser.add_argument("--version", required=True)
+    parser.add_argument("--token", default="")
+    parser.add_argument("--project-name", required=True)
     parser.add_argument("--doc-path", required=True)
 
     params = parser.parse_args()
 
-    os.environ["TX_TOKEN"] = params.token
+    if params.token:
+        os.environ["TX_TOKEN"] = params.token
 
     init_project()
-    add_files(params.version)
+    add_files(params.project_name)
     patch_config(params.doc_path)
