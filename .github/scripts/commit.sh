@@ -12,4 +12,4 @@ fi
 git add .
 git commit -m '[po] auto sync'
 header="$(echo -n token:"$GITHUB_TOKEN" | base64)"
-git -c http.extraheader="AUTHORIZATION: basic $header" push
+git push
