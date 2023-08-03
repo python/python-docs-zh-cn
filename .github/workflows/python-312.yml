@@ -9,30 +9,7 @@ on:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
-    env:
-      LOCALE: zh_CN
-      VERSION: "3.12"
-    steps:
-      - uses: actions/checkout@v3
-      - name: Checkout CPython
-        uses: actions/checkout@v3
-        with:
-          repository: 'python/cpython'
-          ref: ${{env.VERSION}}
-          path: cpython
-      - name: Checkout Current Branch
-        uses: actions/checkout@v3
-        with:
-          ref: ${{env.VERSION}}
-          path: docs
-      - name: prepare
-        run: .github/scripts/prepare.sh
-      - name: update
-        run: .github/scripts/update.sh
-        env:
-          TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
-      - name: build
-        run: .github/scripts/build.sh
-      - name: commit
-        run: .github/scripts/commit.sh
+    uses: ./.github/workflows/sync.yml
+    with:
+      version: "3.12"
+    secrets: inherit
