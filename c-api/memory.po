@@ -1,25 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2022, Python Software Foundation
+# Copyright (C) 2001-2023, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Alpha Du <alphanow@gmail.com>, 2021
-# nick <2330458484@qq.com>, 2021
-# ppcfish <ppcfish@gmail.com>, 2021
-# Sean Chao <seanchao0804@gmail.com>, 2021
-# Bryan不可思议, 2022
-# Freesand Leo <yuqinju@163.com>, 2022
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-04 14:28+0000\n"
-"PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2022\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"POT-Creation-Date: 2023-07-29 03:05+0000\n"
+"PO-Revision-Date: 2022-11-05 17:21+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,6 +110,11 @@ msgid ""
 "in the previous example, the allocated memory for the I/O buffer escapes "
 "completely the Python memory manager."
 msgstr ""
+"然而，在大多数情况下，都建议专门基于 Python 堆来分配内存，因为后者是由 Python 内存管理器控制的。 例如，当解释器使用 C "
+"编写的新对象类型进行扩展时就必须这样做。 使用 Python 堆的另一个理由是需要能 *通知* Python 内存管理器有关扩展模块的内存需求。 "
+"即使所请求的内存全部只用于内部的、高度特定的目的，将所有的内存请求交给 Python 内存管理器能让解释器对其内存占用的整体情况有更准确的了解。 "
+"因此，在特定情况下，Python 内存管理器可能会触发或不触发适当的操作，如垃圾回收、内存压缩或其他的预防性操作。 请注意通过使用前面例子所演示的 C "
+"库分配器，为 I/O 缓冲区分配的内存将完全不受 Python 内存管理器的控制。"
 
 #: ../../c-api/memory.rst:88
 msgid ""
@@ -222,7 +222,7 @@ msgstr ""
 msgid ""
 "Allocates *n* bytes and returns a pointer of type :c:expr:`void*` to the "
 "allocated memory, or ``NULL`` if the request fails."
-msgstr ""
+msgstr "分配 *n* 个字节并返回一个指向所分配内存的 :c:expr:`void*` 类型指针，如果请求失败则返回 ``NULL``。"
 
 #: ../../c-api/memory.rst:149
 msgid ""
@@ -239,6 +239,8 @@ msgid ""
 "a pointer of type :c:expr:`void*` to the allocated memory, or ``NULL`` if "
 "the request fails. The memory is initialized to zeros."
 msgstr ""
+"分配 *nelem* 个元素，每个元素的大小为 *elsize* 个字节，并返回指向所分配的内存的 :c:expr:`void*` "
+"类型指针，如果请求失败则返回 ``NULL``。 内存会被初始化为零。"
 
 #: ../../c-api/memory.rst:160
 msgid ""
@@ -385,6 +387,8 @@ msgid ""
 "of memory.  Returns a pointer cast to :c:expr:`TYPE*`.  The memory will not "
 "have been initialized in any way."
 msgstr ""
+"与 :c:func:`PyMem_Malloc` 相同，但会分配 ``(n * sizeof(TYPE))`` 字节的内存。 返回一个转换为 "
+":c:expr:`TYPE*` 的指针。 内存将不会以任何方式被初始化。"
 
 #: ../../c-api/memory.rst:276
 msgid ""
@@ -393,6 +397,8 @@ msgid ""
 "return, *p* will be a pointer to the new memory area, or ``NULL`` in the "
 "event of failure."
 msgstr ""
+"与 :c:func:`PyMem_Realloc` 相同，但内存块的大小被调整为 ``(n * sizeof(TYPE))`` 字节。 返回一个转换为 "
+":c:expr:`TYPE*` 的指针。 在返回时，*p* 将为一个指向新内存区域的指针，如果执行失败则为 ``NULL``。"
 
 #: ../../c-api/memory.rst:281
 msgid ""
@@ -481,7 +487,7 @@ msgid ""
 "if *n* is equal to zero, the memory block is resized but is not freed, and "
 "the returned pointer is non-``NULL``."
 msgstr ""
-"如果*p*是``NULL``，则相当于调用 ``PyObject_Malloc(n)`` ；如果 *n* 等于 "
+"如果*p*是 ``NULL``，则相当于调用 ``PyObject_Malloc(n)`` ；如果 *n* 等于 "
 "0，则内存块大小会被调整，但不会被释放，返回非 ``NULL`` 指针。"
 
 #: ../../c-api/memory.rst:355
@@ -775,7 +781,7 @@ msgstr ""
 
 #: ../../c-api/memory.rst:484
 msgid ":c:func:`PyMem_SetAllocator` does have the following contract:"
-msgstr ""
+msgstr ":c:func:`PyMem_SetAllocator` 没有以下合约:"
 
 #: ../../c-api/memory.rst:486
 msgid ""
@@ -786,6 +792,9 @@ msgid ""
 "be called without the GIL held). See :ref:`the section on allocator domains "
 "<allocator-domains>` for more information."
 msgstr ""
+"可以在 :c:func:`Py_PreInitialize` 之后 :c:func:`Py_InitializeFromConfig` "
+"之前调用它来安装自定义的内存分配器。 对于所安装的分配器除了域的规定以外没有任何其他限制（例如 Raw Domain 允许分配器在不持有 GIL "
+"的情况下被调用）。 请参阅 :ref:`有关分配器域的章节 <allocator-domains>` 来了解详情。"
 
 #: ../../c-api/memory.rst:494
 msgid ""
@@ -794,6 +803,8 @@ msgid ""
 "wrap the existing allocator. Substituting the current allocator for some "
 "other arbitrary one is **not supported**."
 msgstr ""
+"如果在 Python 已完成初始化之后（即 :c:func:`Py_InitializeFromConfig` 被调用之后）被调用则自定义分配器 "
+"**must** 必须包装现有的分配器。 将现有分配器替换为任意的其他分配器是 **不受支持的**。"
 
 #: ../../c-api/memory.rst:503
 msgid ""
@@ -840,10 +851,9 @@ msgid ""
 "bytes\" filled with the byte ``0xFD`` (``PYMEM_FORBIDDENBYTE``). Strings of "
 "these bytes are unlikely to be valid addresses, floats, or ASCII strings."
 msgstr ""
-"这些调试钩子用特殊的、可辨认的位模式填充动态分配的内存块。新分配的内存用字节 "
-"``0xCD``（``PYMEM_CLEANBYTE``）填充，释放的内存用字节 "
-"``0xDD``（``PYMEM_DEADBYTE``）填充。内存块被填充了字节 "
-"``0xFD``（``PYMEM_FORBIDDENBYTE``）的“禁止字节”包围。这些字节串不太可能是合法的地址、浮点数或ASCII字符串"
+"这些调试钩子用特殊的、可辨认的位模式填充动态分配的内存块。新分配的内存用字节 ``0xCD`` （``PYMEM_CLEANBYTE`` "
+"）填充，释放的内存用字节 ``0xDD`` （``PYMEM_DEADBYTE`` ）填充。内存块被填充了字节 ``0xFD`` "
+"（``PYMEM_FORBIDDENBYTE`` ）的“禁止字节”包围。这些字节串不太可能是合法的地址、浮点数或ASCII字符串"
 
 #: ../../c-api/memory.rst:530
 msgid "Runtime checks:"

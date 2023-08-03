@@ -1,25 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2022, Python Software Foundation
+# Copyright (C) 2001-2023, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Shengjing Zhu <zsj950618@gmail.com>, 2021
-# eric R <trencyclopedia@gmail.com>, 2021
-# taotieren <admin@taotieren.com>, 2021
-# Harry Liu. <harry.python@gmail.com>, 2021
-# Freesand Leo <yuqinju@163.com>, 2022
-# ww song <sww4718168@gmail.com>, 2022
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-04 14:28+0000\n"
-"PO-Revision-Date: 2021-06-28 00:51+0000\n"
-"Last-Translator: ww song <sww4718168@gmail.com>, 2022\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"POT-Creation-Date: 2023-07-29 03:05+0000\n"
+"PO-Revision-Date: 2022-11-05 17:21+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -268,6 +263,10 @@ msgid ""
 "interpreter's main loop, this aborts the currently executing Python code and"
 " tries to find an exception handler specified by the Python programmer."
 msgstr ""
+"当一个函数 *f* 调用另一个函数 *g* 时检测到后者出错了，*f* 应当自己返回一个错误值 (通常为 ``NULL`` 或 ``-1``)。 它 "
+"*不应* 调用某个 ``PyErr_*`` 函数 --- 这类函数已经被 *g* 调用过了。 *f* 的调用者随后也应当返回一个错误来提示 *它的* "
+"调用者，同样 *不应* 调用 ``PyErr_*``，依此类推 --- 错误的最详细原因已经由首先检测到它的函数报告了。 一旦这个错误到达 Python"
+" 解释器的主循环，它会中止当前执行的 Python 代码并尝试找出由 Python 程序员所指定的异常处理句柄。"
 
 #: ../../extending/extending.rst:168
 msgid ""
@@ -277,6 +276,8 @@ msgid ""
 "cause information about the cause of the error to be lost: most operations "
 "can fail for a variety of reasons.)"
 msgstr ""
+"（在某些情况下模块确实能够通过调用其它 ``PyErr_*`` 函数来给出更为详细的错误消息，并且在这些情况下是可以这样做的。 "
+"但是按照一般规则，这是不必要的，并可能导致有关错误的信息丢失：大多数操作会由于种种原因而失败。）"
 
 #: ../../extending/extending.rst:174
 msgid ""
@@ -445,6 +446,8 @@ msgid ""
 "``None``.   You need this idiom to do so (which is implemented by the "
 ":c:macro:`Py_RETURN_NONE` macro)::"
 msgstr ""
+"如果你有一个不返回有用参数的 C 函数（即返回 :c:expr:`void` 的函数），则对应的 Python 函数必须返回 ``None``。 "
+"你必须使用这种写法（它是通过 :c:macro:`Py_RETURN_NONE` 宏来实现的） ::"
 
 #: ../../extending/extending.rst:308
 msgid ""
@@ -1398,6 +1401,10 @@ msgid ""
 "this module, retrieve the value of this name, and then retrieve the pointer "
 "from the Capsule."
 msgstr ""
+"Python 提供了一个特别的机制用来从一个扩展模块向另一个扩展模块传递 C 层级的信息 (指针): Capsule。 一个 Capsule "
+"就是一个存储了指针 (:c:expr:`void \\*`) 的 Python 数据类型。 Capsule 只能通过其 C API "
+"来创建和访问，但它们可以像任何其他 Python 对象一样被传递。 特别地，它们可以被赋值给扩展模块命名空间中的一个名称。 "
+"其他扩展模块将可以导入这个模块，获取该名称对应的值，然后从 Capsule 中获取指针。"
 
 #: ../../extending/extending.rst:1180
 msgid ""
@@ -1420,6 +1427,9 @@ msgid ""
 "of runtime type-safety; there is no feasible way to tell one unnamed Capsule"
 " from another."
 msgstr ""
+"无论你选择哪个方法，为你的 Capsule 指定适当的名称都很重要。 函数 :c:func:`PyCapsule_New` 接受一个 name 形参 "
+"(:c:expr:`const char \\*`)；允许你传入一个 ``NULL`` 作为名称，但我们强烈推荐你指定名称。 正确地命名的 "
+"Capsule 提供了一定的运行时类型安全性；没有可行的方式能区别两个未命名的 Capsule。"
 
 #: ../../extending/extending.rst:1193
 msgid ""
@@ -1447,6 +1457,9 @@ msgid ""
 " takes care of importing the module and retrieving its C API pointers; "
 "client modules only have to call this macro before accessing the C API."
 msgstr ""
+"下面的例子演示了一种将大部分负担交给导出模块编写者的处理方式，这对于常用的库模块来说是合适的。 它会将所有 C API "
+"指针（在这个例子里只有一个！）储存到一个 :c:expr:`void` 指针数组，它将成为一个 Capsule 的值。 "
+"与模块对应的头文件提供了一个宏用来管理导入模块和获取其 C API 指针；客户端模块只需要在访问 C API 之前调用这个宏即可。"
 
 #: ../../extending/extending.rst:1211
 msgid ""
