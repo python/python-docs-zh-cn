@@ -1,76 +1,83 @@
-#!/usr/bin/env python3
+"""Please note that this script requires a Transifex API token to run."""
 import glob
-import json
-import os
+import subprocess
+from functools import partial
+from pathlib import Path
 import re
-import sys
-import urllib.request
+import os
+
+run = partial(subprocess.run, check=True)
 
 
-def list_resources(token, project):
-    auth_handler = urllib.request.HTTPBasicAuthHandler()
-    auth_handler.add_password(
-        realm="api", uri="https://api.transifex.com/", user="api", passwd=token
+def init_project():
+    run(["tx", "init"])
+
+
+def add_files(project_name: str):
+    run(
+        [
+            "tx",
+            "add",
+            "remote",
+            "--file-filter",
+            "trans/<lang>/<resource_slug>.<ext>",
+            f"https://www.transifex.com/python-doc/{project_name}/dashboard/",
+        ]
     )
-    opener = urllib.request.build_opener(auth_handler)
-    urllib.request.install_opener(opener)
-    next_ = (
-        "https://api.transifex.com/organizations/python-doc/projects/"
-        + project
-        + "/resources/"
+
+
+FILTER_PATTERN = re.compile(
+    r"^(?P<prefix>file_filter( *)=( *))(?P<resource>.+)$", re.MULTILINE
+)
+
+
+def name_replacer(match: re.Match[str]):
+    prefix, resource = match.group("prefix", "resource")
+    override_prefix = prefix.replace("file_filter", "trans.zh_CN")
+    pattern = (
+        resource.replace("trans/<lang>/", "")
+        .replace("glossary_", "glossary")
+        .replace("--", "/")
+        .replace("_", "?")
     )
-    resources = []
-    while True:
-        resp = urllib.request.urlopen(next_)
-        result = json.loads(resp.read().decode("utf-8"))
-        resources.extend([i["slug"] for i in result])
-        link = re.findall('<([^<]*)>; rel="next"', resp.getheader("Link") or "")
-        if not link:
-            break
-        next_ = link[0]
-    return resources
+    matches = list(glob.glob(pattern.replace(".po", ".rst")))
+    if not matches:
+        print("missing", pattern)
+        return f"{prefix}{resource}\n{override_prefix}{pattern.replace('?', '_')}"
+    elif len(matches) == 1:
+        filename = matches[0].replace(".rst", ".po").replace("\\", "/")
+    else:
+        raise ValueError("multi match", resource, pattern, matches)
+    return f"{prefix}{resource}\n{override_prefix}{filename}"
 
 
-def render_config(doc_dir, project, resources):
-    os.chdir(doc_dir)
-    tpl = """
+def patch_config(path: str):
+    tx_config_path = Path(".tx", "config")
 
-[{project}.{resource}]
-trans.zh_CN = {filename}
-source_lang = en
-type = PO"""
-    conf = """[main]
-host = https://www.transifex.com"""
-    for resource in sorted(resources):
-        if resource == "glossary_":
-            filename = "glossary.po"
-        elif resource == "sphinx":
-            filename = "sphinx.po"
-        else:
-            pattern = resource.replace("--", "/").replace("_", "?")
-            matches = glob.glob(pattern + ".rst")
-            if len(matches) == 0:
-                print("missing", resource, file=sys.stderr)
-                continue
-            elif len(matches) == 1:
-                filename = matches[0].replace(".rst", ".po")
-            else:
-                print("multi match", resource, pattern, matches, file=sys.stderr)
-        conf += tpl.format(project=project, resource=resource, filename=filename)
-    return conf
+    config_content = tx_config_path.read_text("utf-8")
+
+    cwd = os.getcwd()
+    os.chdir(path)
+    config_content = FILTER_PATTERN.sub(name_replacer, config_content)
+    os.chdir(cwd)
+
+    tx_config_path.write_text(config_content, "utf-8")
 
 
 if __name__ == "__main__":
-    import argparse
+    from argparse import ArgumentParser
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--token")
-    parser.add_argument("--project")
-    parser.add_argument("--doc-dir")
-    args = parser.parse_args()
+    parser = ArgumentParser()
 
-    resources = list_resources(args.token, args.project)
-    conf = render_config(args.doc_dir, args.project, resources)
-    print(conf)
+    parser.add_argument("--token", default="")
+    parser.add_argument("--project-name", required=True)
+    parser.add_argument("--doc-path", required=True)
 
-# vim: set et ts=4 sw=4 sts=4:
+    params = parser.parse_args()
+
+    if params.token:
+        os.environ["TX_TOKEN"] = params.token
+
+    init_project()
+    add_files(params.project_name)
+    patch_config(params.doc_path)
