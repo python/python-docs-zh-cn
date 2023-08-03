@@ -5,25 +5,11 @@ on:
     branches:
       - master
   schedule:
-    - cron: "53 * * * *"
+    - cron: "0 * * * *"
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
-    env:
-      LOCALE: zh_CN
-      VERSION: "3.7"
-    steps:
-      - uses: actions/checkout@v2
-      - name: prepare
-        run: .github/scripts/prepare.sh
-      - name: update
-        run: .github/scripts/update.sh
-        env:
-          TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
-      - name: build
-        run: .github/scripts/build.sh
-      - name: commit
-        run: .github/scripts/commit.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: ./.github/workflows/sync.yml
+    with:
+      version: "3.7"
+    secrets: inherit
