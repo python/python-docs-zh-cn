@@ -26,6 +26,4 @@ while(url):
             total =  total + resourse['attributes']['total_strings']
 
 p = '{:.2%}'.format(translated/total)
-
-with open(".stat.json", "w") as text_file:
-    text_file.write(json.dumps({'translation':p}))
+print(json.dumps({'translation':p}))
