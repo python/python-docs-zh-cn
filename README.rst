@@ -37,6 +37,15 @@ Maintained versions:
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-38
      - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/38
           :target: https://app.transifex.com/python-doc/python-38/
+
+EOL versions:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Version
+     - Sync status
+     - Translation progress
    * - `3.7 <https://github.com/python/python-docs-zh-cn/tree/3.7>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-37/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-37
