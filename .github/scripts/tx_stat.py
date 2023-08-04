@@ -1,6 +1,7 @@
 import json
 import os
 import urllib.request
+from datetime import datetime
 
 key = os.environ.get('TX_TOKEN')
 project = os.environ.get('TX_PROJECT')
@@ -26,4 +27,7 @@ while(url):
             total =  total + resourse['attributes']['total_strings']
 
 p = '{:.2%}'.format(translated/total)
-print(json.dumps({'translation':p}))
+print(json.dumps({
+    'translation':p,
+    'updated_at':datetime.utcnow().isoformat(timespec='seconds') + 'Z',
+    }))
