@@ -6,6 +6,9 @@ on:
       version:
         required: true
         type: string
+      tx_project:
+        required: true
+        type: string
     secrets:
       TRANSIFEX_APIKEY:
         required: true
@@ -37,5 +40,10 @@ jobs:
           TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
       - name: build
         run: .github/scripts/build.sh
+      - name: stat
+        run: python .github/scripts/tx_stat.py > ./docs/.stat.json
+        env:
+          TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
+          TX_PROJECT: ${{ inputs.tx_project }}
       - name: commit
         run: .github/scripts/commit.sh

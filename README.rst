@@ -15,27 +15,27 @@ Maintained versions:
    * - `3.12 <https://github.com/python/python-docs-zh-cn/tree/3.12>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-312/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-312
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/312
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.12%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-newest/
    * - `3.11 <https://github.com/python/python-docs-zh-cn/tree/3.11>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-311/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-311
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/311
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.11%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-311/
    * - `3.10 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-310/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/310
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.10%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-310/
    * - `3.9 <https://github.com/python/python-docs-zh-cn/tree/3.9>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-39/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-39
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/39
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.9%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-39/
    * - `3.8 <https://github.com/python/python-docs-zh-cn/tree/3.8>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-38/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-38
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/38
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.8%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-38/
 
 EOL versions:
@@ -49,7 +49,7 @@ EOL versions:
    * - `3.7 <https://github.com/python/python-docs-zh-cn/tree/3.7>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-37/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-37
-     - .. image:: https://img.shields.io/badge/dynamic/json.svg?label=zh_CN&query=%24.zh_CN&url=http://gce.zhsj.me/python/37
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.7%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-37/
 
 Documentation Contribution Agreement
