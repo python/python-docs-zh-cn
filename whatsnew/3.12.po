@@ -232,9 +232,9 @@ msgid ""
 "previously could not be part of expression components of f-strings. Now, you"
 " can define expressions like this:"
 msgstr ""
-"反斜杠和unicode字符：在Python "
-"3.12之前，f-字符串表达式不能包含任何``\\``字符。这也影响了unicode转义序列（如``\\N{snowman}``），因为这些序列包含``\\N``部分，而这些部分以前不能作为f-"
-"字符串的表达式组件的一部分。现在，你可以定义如下表达式："
+"反斜杠和unicode字符：在Python 3.12之前，f-字符串表达式不能包含任何 ``\\`` 字符。这也影响了 unicode 转义序列 (如 "
+"``\\N{snowman}``)，因为这些序列包含 ``\\N`` 部分，而这些部分以前不能作为f-"
+"字符串的表达式组件的一部分。现在，你可以定义如下表达式:"
 
 #: ../../whatsnew/3.12.rst:206
 msgid "See :pep:`701` for more details."
@@ -362,7 +362,7 @@ msgstr "本节介绍了涉及 :pep:`484` 类型提示和 :mod:`typing` 模块的
 
 #: ../../whatsnew/3.12.rst:289
 msgid "PEP 692: Using ``TypedDict`` for more precise ``**kwargs`` typing"
-msgstr "PEP 692: 使用``TypedDict``进行更精确的``**kwargs``类型标注"
+msgstr "PEP 692: 使用 ``TypedDict`` 进行更精确的 ``**kwargs`` 类型标注"
 
 #: ../../whatsnew/3.12.rst:291
 msgid ""
@@ -377,7 +377,7 @@ msgstr ""
 msgid ""
 "This PEP specifies a more precise way of typing ``**kwargs`` by relying on "
 "typed dictionaries::"
-msgstr "此PEP指定了一种更精确的``**kwargs``类型标注的方法，该方法依赖于类型化的词典 ::"
+msgstr "此 PEP 指定了一种更精确的 ``**kwargs`` 类型标注的方法，该方法依赖于类型化的词典 ::"
 
 #: ../../whatsnew/3.12.rst:306
 msgid "See :pep:`692` for more details."
@@ -2820,6 +2820,8 @@ msgid ""
 ":class:`bytes` type is accepted for bytes strings. (Contributed by Victor "
 "Stinner in :gh:`98393`.)"
 msgstr ""
+":mod:`os` 模块不再接受类似字节串的路径，如 :class:`bytearray` 和 :class:`memoryview` "
+"类型：只接受明确的 :class:`bytes` 类型字节串。 （由 Victor Stinner 在 :gh:`98393` 中贡献。）"
 
 #: ../../whatsnew/3.12.rst:1486
 msgid ""
@@ -2832,6 +2834,10 @@ msgid ""
 "process-global resources, which are best managed from the main interpreter. "
 "(Contributed by Dong-hee Na in :gh:`99127`.)"
 msgstr ""
+"现在 :func:`syslog.openlog` 和 :func:`syslog.closelog` 如果在子解释器中使用将失败。 "
+":func:`syslog.syslog` 仍可在子解释器中使用，但前提是 :func:`syslog.openlog` 已在主解释器中被调用。 "
+"这些新限制不适用于主解释器，因此只有少数用户可能会受到影响。 这一改变有助于实现解释器隔离。  此外， :mod:`syslog` "
+"是一个针对进程全局资源的包装器，而这些资源最好是通过主解释器来管理。 （由 Dong-hee Na 在 :gh:`99127` 中贡献。）"
 
 #: ../../whatsnew/3.12.rst:1495
 msgid ""
@@ -2844,6 +2850,11 @@ msgid ""
 "fine.  If synchronization is needed, implement locking within the cached "
 "property getter function or around multi-threaded access points."
 msgstr ""
+"未写入文档的 :func:`~functools.cached_property` "
+"的锁定行为已被移除，因为该行为会在类的所有实例中锁定，从而导致高锁定争用。 "
+"这意味着如果两个线程同时运行，缓存属性获取函数现在可以在单个实例中运行不止一次。 "
+"对于大多数简单的缓存属性（例如那些幂等的并且只需根据实例的其他属性计算一个值的属性）来说这是没有问题的。 "
+"如果需要同步，可在缓存属性获取函数中或多线程访问点周围实现锁定操作。"
 
 #: ../../whatsnew/3.12.rst:1508
 msgid ""
@@ -2852,6 +2863,8 @@ msgid ""
 "that may be surprising or dangerous. See :ref:`tarfile-extraction-filter` "
 "for details."
 msgstr ""
+"当使用 :mod:`tarfile` 或 :func:`shutil.unpack_archive` 提取 tar 文件时，请传入 *filter* "
+"参数来限制可能令人感到意外或危险的特性。 请参阅 :ref:`tarfile-extraction-filter` 了解详情。"
 
 #: ../../whatsnew/3.12.rst:1513
 msgid ""
@@ -2865,22 +2878,28 @@ msgid ""
 "the f-string ``f\"start {1+1} end\"`` the old version of the tokenizer "
 "emitted::"
 msgstr ""
+"由于在 :pep:`701` 中引入的更改 :func:`tokenize.tokenize` 和 "
+":func:`tokenize.generate_tokens` 函数的输出现在发生了改变。 这意味着不再为f-字符串输出 ``STRING`` "
+"词元而是改为产生 :pep:`701` 中描述的词元: "
+"``FSTRING_START``，除了适用于在表达式部分中进行分词的词元以外，``FSRING_MIDDLE`` 和 ``FSTRING_END`` "
+"现在也会被用于f-字符串的“字符串”部分。 例如对于f-字符串 ``f\"start {1+1} end\"`` 旧版本的分词会生成::"
 
 #: ../../whatsnew/3.12.rst:1524
 msgid "while the new version emits::"
-msgstr ""
+msgstr "而新版本将生成::"
 
 #: ../../whatsnew/3.12.rst:1536
 msgid ""
 "Additionally, there may be some minor behavioral changes as a consecuence of"
 " the changes required to support :pep:`701`. Some of these changes include:"
-msgstr ""
+msgstr "此外，支持 :pep:`701` 所需要的改变还可能会导致一些细微的行为改变。 这些变化包括:"
 
 #: ../../whatsnew/3.12.rst:1539
 msgid ""
 "The ``type`` attribute of the tokens emitted when tokenizing some invalid "
 "Python characters such as ``!`` has changed from ``ERRORTOKEN`` to ``OP``."
 msgstr ""
+"在对一些无效 Python 字符如 ``!`` 进行分词时相应词元的 ``type`` 属性已从 ``ERRORTOKEN`` 变为 ``OP``。"
 
 #: ../../whatsnew/3.12.rst:1542
 msgid ""
@@ -2914,6 +2933,9 @@ msgid ""
 "config`` and fall back to manual detection. (Contributed by Christian Heimes"
 " in :gh:`93939`.)"
 msgstr ""
+"Python 不再使用 ``setup.py`` 来构建共享的 C 扩展模块。 头文件和库等编译参数会在 ``configure`` 脚本中检测。 "
+"扩展将由 ``Makefile`` 来构建。 大多数扩展使用 ``pkg-config`` 并回退为手动检测。 （由 Christian Heimes "
+"在 :gh:`93939` 中贡献。）"
 
 #: ../../whatsnew/3.12.rst:1560
 msgid ""
@@ -2921,6 +2943,8 @@ msgid ""
 "required to build Python. ``va_start()`` is no longer called with a single "
 "parameter. (Contributed by Kumar Aditya in :gh:`93207`.)"
 msgstr ""
+"现在需要用带有两个形参的 ``va_start()``，如 ``va_start(args, format),`` 来构建 Python。 "
+"现在将不会再调用单个形参的 ``va_start()``。 （由 Kumar Aditya 在 :gh:`93207` 中贡献。）"
 
 #: ../../whatsnew/3.12.rst:1565
 msgid ""
