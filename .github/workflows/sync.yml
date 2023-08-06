@@ -27,11 +27,19 @@ jobs:
           repository: 'python/cpython'
           ref: ${{env.VERSION}}
           path: cpython
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            cpython/Doc/build
+            docs
+          key: cache-${{ inputs.version }}-${{ github.run_id }}
+          restore-keys: cache-${{ inputs.version }}-
       - name: Checkout Current Branch
         uses: actions/checkout@v3
         with:
           ref: ${{env.VERSION}}
           path: docs
+          clean: false
       - name: prepare
         run: .github/scripts/prepare.sh
       - name: update
@@ -47,7 +55,9 @@ jobs:
         run: .github/scripts/build.sh
       - uses: actions/cache/save@v3
         with:
-          path: cpython/Doc/build
+          path: |
+            cpython/Doc/build
+            docs
           key: cache-${{ inputs.version }}-${{ github.run_id }}
       - name: stat
         run: python .github/scripts/tx_stat.py > ./docs/.stat.json
