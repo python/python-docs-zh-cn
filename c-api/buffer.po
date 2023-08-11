@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-04 14:46+0000\n"
+"POT-Creation-Date: 2023-08-11 14:43+0000\n"
 "PO-Revision-Date: 2023-05-24 02:08+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -177,14 +177,12 @@ msgstr "对于 :term:`contiguous` ，‘邻接’数组，值指向内存块的�
 #: ../../c-api/buffer.rst:104
 msgid ""
 "A new reference to the exporting object. The reference is owned by the "
-"consumer and automatically decremented and set to ``NULL`` by "
-":c:func:`PyBuffer_Release`. The field is the equivalent of the return value "
-"of any standard C-API function."
+"consumer and automatically released (i.e. reference count decremented) and "
+"set to ``NULL`` by :c:func:`PyBuffer_Release`. The field is the equivalent "
+"of the return value of any standard C-API function."
 msgstr ""
-"对导出对象的新引用。 该引用归使用者所有，并由 :c:func:`PyBuffer_Release` 自动递减并设置为 ``NULL``。 "
-"该字段等于任何标准 C-API 函数的返回值。"
 
-#: ../../c-api/buffer.rst:109
+#: ../../c-api/buffer.rst:111
 msgid ""
 "As a special case, for *temporary* buffers that are wrapped by "
 ":c:func:`PyMemoryView_FromBuffer` or :c:func:`PyBuffer_FillInfo` this field "
@@ -193,7 +191,7 @@ msgstr ""
 "作为一种特殊情况，对于由 :c:func:`PyMemoryView_FromBuffer` 或 :c:func:`PyBuffer_FillInfo`"
 " 包装的 *temporary* 缓冲区，此字段为 ``NULL``。 通常，导出对象不得使用此方案。"
 
-#: ../../c-api/buffer.rst:116
+#: ../../c-api/buffer.rst:118
 msgid ""
 "``product(shape) * itemsize``. For contiguous arrays, this is the length of "
 "the underlying memory block. For non-contiguous arrays, it is the length "
@@ -203,7 +201,7 @@ msgstr ""
 "``product(shape) * "
 "itemsize``。对于连续数组，这是基础内存块的长度。对于非连续数组，如果逻辑结构复制到连续表示形式，则该长度将具有该长度。"
 
-#: ../../c-api/buffer.rst:121
+#: ../../c-api/buffer.rst:123
 msgid ""
 "Accessing ``((char *)buf)[0] up to ((char *)buf)[len-1]`` is only valid if "
 "the buffer has been obtained by a request that guarantees contiguity. In "
@@ -213,13 +211,13 @@ msgstr ""
 "仅当缓冲区是通过保证连续性的请求获取时，才访问 ``((char *)buf)[0] up to ((char *)buf)[len-1]`` "
 "时才有效。在大多数情况下，此类请求将为 :c:macro:`PyBUF_SIMPLE` 或 :c:macro:`PyBUF_WRITABLE`。"
 
-#: ../../c-api/buffer.rst:127
+#: ../../c-api/buffer.rst:129
 msgid ""
 "An indicator of whether the buffer is read-only. This field is controlled by"
 " the :c:macro:`PyBUF_WRITABLE` flag."
 msgstr "缓冲区是否为只读的指示器。此字段由 :c:macro:`PyBUF_WRITABLE` 标志控制。"
 
-#: ../../c-api/buffer.rst:132
+#: ../../c-api/buffer.rst:134
 msgid ""
 "Item size in bytes of a single element. Same as the value of "
 ":func:`struct.calcsize` called on non-``NULL`` :c:member:`~Py_buffer.format`"
@@ -228,7 +226,7 @@ msgstr ""
 "单个元素的项大小（以字节为单位）。与 :func:`struct.calcsize` 调用非 ``NULL`` "
 ":c:member:`~Py_buffer.format` 的值相同。"
 
-#: ../../c-api/buffer.rst:135
+#: ../../c-api/buffer.rst:137
 msgid ""
 "Important exception: If a consumer requests a buffer without the "
 ":c:macro:`PyBUF_FORMAT` flag, :c:member:`~Py_buffer.format` will be set to  "
@@ -238,7 +236,7 @@ msgstr ""
 "重要例外：如果使用者请求的缓冲区没有 :c:macro:`PyBUF_FORMAT` 标志，:c:member:`~Py_buffer.format` "
 "将设置为 ``NULL``，但 :c:member:`~Py_buffer.itemsize` 仍具有原始格式的值。"
 
-#: ../../c-api/buffer.rst:140
+#: ../../c-api/buffer.rst:142
 msgid ""
 "If :c:member:`~Py_buffer.shape` is present, the equality ``product(shape) * "
 "itemsize == len`` still holds and the consumer can use "
@@ -247,7 +245,7 @@ msgstr ""
 "如果 :c:member:`~Py_buffer.shape` 存在，则相等的 ``product(shape) * itemsize == len``"
 " 仍然存在，使用者可以使用 :c:member:`~Py_buffer.itemsize` 来导航缓冲区。"
 
-#: ../../c-api/buffer.rst:144
+#: ../../c-api/buffer.rst:146
 msgid ""
 "If :c:member:`~Py_buffer.shape` is ``NULL`` as a result of a "
 ":c:macro:`PyBUF_SIMPLE` or a :c:macro:`PyBUF_WRITABLE` request, the consumer"
@@ -258,7 +256,7 @@ msgstr ""
 ":c:macro:`PyBUF_WRITABLE` 请求，则使用者必须忽略 :c:member:`~Py_buffer.itemsize`，并假设 "
 "``itemsize == 1``。"
 
-#: ../../c-api/buffer.rst:150
+#: ../../c-api/buffer.rst:152
 msgid ""
 "A *NUL* terminated string in :mod:`struct` module style syntax describing "
 "the contents of a single item. If this is ``NULL``, ``\"B\"`` (unsigned "
@@ -267,11 +265,11 @@ msgstr ""
 "在 :mod:`struct` 模块样式语法中 *NUL* 字符串，描述单个项的内容。如果这是 ``NULL``，则假定为 ``\"B\"`` "
 "(无符号字节) 。"
 
-#: ../../c-api/buffer.rst:154
+#: ../../c-api/buffer.rst:156
 msgid "This field is controlled by the :c:macro:`PyBUF_FORMAT` flag."
 msgstr "此字段由 :c:macro:`PyBUF_FORMAT` 标志控制。"
 
-#: ../../c-api/buffer.rst:158
+#: ../../c-api/buffer.rst:160
 msgid ""
 "The number of dimensions the memory represents as an n-dimensional array. If"
 " it is ``0``, :c:member:`~Py_buffer.buf` points to a single item "
@@ -283,7 +281,7 @@ msgstr ""
 "在这种情况下，:c:member:`~Py_buffer.shape`、:c:member:`~Py_buffer.strides` 和 "
 ":c:member:`~Py_buffer.suboffsets` 必须是 ``NULL`` 。"
 
-#: ../../c-api/buffer.rst:163
+#: ../../c-api/buffer.rst:165
 msgid ""
 "The macro :c:macro:`PyBUF_MAX_NDIM` limits the maximum number of dimensions "
 "to 64. Exporters MUST respect this limit, consumers of multi-dimensional "
@@ -292,7 +290,7 @@ msgstr ""
 "宏 :c:macro:`PyBUF_MAX_NDIM` 将最大维度数限制为 64。 导出程序必须遵守这个限制，多维缓冲区的使用者应该能够处理最多 "
 ":c:macro:`PyBUF_MAX_NDIM` 维度。"
 
-#: ../../c-api/buffer.rst:169
+#: ../../c-api/buffer.rst:171
 msgid ""
 "An array of :c:type:`Py_ssize_t` of length :c:member:`~Py_buffer.ndim` "
 "indicating the shape of the memory as an n-dimensional array. Note that "
@@ -303,7 +301,7 @@ msgstr ""
 "请注意，``shape[0] * ... * shape[ndim-1] * itemsize`` 必须等于 "
 ":c:member:`~Py_buffer.len`。"
 
-#: ../../c-api/buffer.rst:174
+#: ../../c-api/buffer.rst:176
 msgid ""
 "Shape values are restricted to ``shape[n] >= 0``. The case ``shape[n] == 0``"
 " requires special attention. See `complex arrays`_ for further information."
@@ -311,11 +309,11 @@ msgstr ""
 "Shape 形状数组中的值被限定在 ``shape[n] >= 0`` 。 ``shape[n] == 0`` 这一情形需要特别注意。更多信息请参阅 "
 "`complex arrays`_ 。"
 
-#: ../../c-api/buffer.rst:178
+#: ../../c-api/buffer.rst:180
 msgid "The shape array is read-only for the consumer."
 msgstr "shape 数组对于使用者来说是只读的。"
 
-#: ../../c-api/buffer.rst:182
+#: ../../c-api/buffer.rst:184
 msgid ""
 "An array of :c:type:`Py_ssize_t` of length :c:member:`~Py_buffer.ndim` "
 "giving the number of bytes to skip to get to a new element in each "
@@ -324,7 +322,7 @@ msgstr ""
 "一个长度为 :c:type:`Py_ssize_t` 的数组 :c:member:`~Py_buffer.ndim` "
 "给出要跳过的字节数以获取每个尺寸中的新元素。"
 
-#: ../../c-api/buffer.rst:186
+#: ../../c-api/buffer.rst:188
 msgid ""
 "Stride values can be any integer. For regular arrays, strides are usually "
 "positive, but a consumer MUST be able to handle the case ``strides[n] <= "
@@ -333,11 +331,11 @@ msgstr ""
 "Stride 步幅数组中的值可以为任何整数。对于常规数组，步幅通常为正数，但是使用者必须能够处理 ``strides[n] <= 0`` "
 "的情况。更多信息请参阅 `complex arrays`_ 。"
 
-#: ../../c-api/buffer.rst:190
+#: ../../c-api/buffer.rst:192
 msgid "The strides array is read-only for the consumer."
 msgstr "strides数组对用户来说是只读的。"
 
-#: ../../c-api/buffer.rst:194
+#: ../../c-api/buffer.rst:196
 msgid ""
 "An array of :c:type:`Py_ssize_t` of length :c:member:`~Py_buffer.ndim`. If "
 "``suboffsets[n] >= 0``, the values stored along the nth dimension are "
@@ -349,13 +347,13 @@ msgstr ""
 "``suboffsets[n] >= 0``，则第 n 维存储的是指针，suboffset "
 "值决定了解除引用时要给指针增加多少字节的偏移。suboffset 为负值，则表示不应解除引用（在连续内存块中移动）。"
 
-#: ../../c-api/buffer.rst:201
+#: ../../c-api/buffer.rst:203
 msgid ""
 "If all suboffsets are negative (i.e. no de-referencing is needed), then this"
 " field must be ``NULL`` (the default value)."
 msgstr "如果所有子偏移均为负（即无需取消引用），则此字段必须为 ``NULL`` （默认值）。"
 
-#: ../../c-api/buffer.rst:204
+#: ../../c-api/buffer.rst:206
 msgid ""
 "This type of array representation is used by the Python Imaging Library "
 "(PIL). See `complex arrays`_ for further information how to access elements "
@@ -364,11 +362,11 @@ msgstr ""
 "Python Imaging Library (PIL) 中使用了这种类型的数组表达方式。请参阅 `complex arrays`_ "
 "来了解如何从这样一个数组中访问元素。"
 
-#: ../../c-api/buffer.rst:208
+#: ../../c-api/buffer.rst:210
 msgid "The suboffsets array is read-only for the consumer."
 msgstr "suboffsets 数组对于使用者来说是只读的。"
 
-#: ../../c-api/buffer.rst:212
+#: ../../c-api/buffer.rst:214
 msgid ""
 "This is for use internally by the exporting object. For example, this might "
 "be re-cast as an integer by the exporter and used to store flags about "
@@ -378,11 +376,11 @@ msgstr ""
 "供输出对象内部使用。比如可能被输出程序重组为一个整数，用于存储一个标志，标明在缓冲区释放时是否必须释放 shape、strides 和 "
 "suboffsets 数组。消费者程序 *不得* 修改该值。"
 
-#: ../../c-api/buffer.rst:221
+#: ../../c-api/buffer.rst:223
 msgid "Buffer request types"
 msgstr "缓冲区请求的类型"
 
-#: ../../c-api/buffer.rst:223
+#: ../../c-api/buffer.rst:225
 msgid ""
 "Buffers are usually obtained by sending a buffer request to an exporting "
 "object via :c:func:`PyObject_GetBuffer`. Since the complexity of the logical"
@@ -393,17 +391,17 @@ msgstr ""
 "向输出对象发送缓冲区请求，即可获得缓冲区。由于内存的逻辑结构复杂，可能会有很大差异，缓冲区使用者可用 *flags* "
 "参数指定其能够处理的缓冲区具体类型。"
 
-#: ../../c-api/buffer.rst:228
+#: ../../c-api/buffer.rst:230
 msgid ""
 "All :c:type:`Py_buffer` fields are unambiguously defined by the request "
 "type."
 msgstr "所有 :c:type:`Py_buffer` 字段均由请求类型无歧义地定义。"
 
-#: ../../c-api/buffer.rst:232
+#: ../../c-api/buffer.rst:234
 msgid "request-independent fields"
 msgstr "与请求无关的字段"
 
-#: ../../c-api/buffer.rst:233
+#: ../../c-api/buffer.rst:235
 msgid ""
 "The following fields are not influenced by *flags* and must always be filled"
 " in with the correct values: :c:member:`~Py_buffer.obj`, "
@@ -413,11 +411,11 @@ msgstr ""
 "以下字段不会被 *flags* 影响，并且必须总是用正确的值填充：:c:member:`~Py_buffer.obj`, "
 ":c:member:`~Py_buffer.buf`，:c:member:`~Py_buffer.len`，:c:member:`~Py_buffer.itemsize`，:c:member:`~Py_buffer.ndim`。"
 
-#: ../../c-api/buffer.rst:239
+#: ../../c-api/buffer.rst:241
 msgid "readonly, format"
 msgstr "只读，格式"
 
-#: ../../c-api/buffer.rst:243
+#: ../../c-api/buffer.rst:245
 msgid ""
 "Controls the :c:member:`~Py_buffer.readonly` field. If set, the exporter "
 "MUST provide a writable buffer or else report failure. Otherwise, the "
@@ -427,14 +425,14 @@ msgstr ""
 "控制 :c:member:`~Py_buffer.readonly` 字段。如果设置了，输出程序 *必须* "
 "提供一个可写的缓冲区，否则报告失败。若未设置，输出程序 *可以* 提供只读或可写的缓冲区，但对所有消费者程序 *必须* 保持一致。"
 
-#: ../../c-api/buffer.rst:250
+#: ../../c-api/buffer.rst:252
 msgid ""
 "Controls the :c:member:`~Py_buffer.format` field. If set, this field MUST be"
 " filled in correctly. Otherwise, this field MUST be ``NULL``."
 msgstr ""
 "控制 :c:member:`~Py_buffer.format` 字段。 如果设置，则必须正确填写此字段。其他情况下，此字段必须为 ``NULL``。"
 
-#: ../../c-api/buffer.rst:254
+#: ../../c-api/buffer.rst:256
 msgid ""
 ":c:macro:`PyBUF_WRITABLE` can be \\|'d to any of the flags in the next "
 "section. Since :c:macro:`PyBUF_SIMPLE` is defined as 0, "
@@ -444,7 +442,7 @@ msgstr ""
 ":c:macro:`PyBUF_WRITABLE` 可以和下一节的所有标志联用。由于 :c:macro:`PyBUF_SIMPLE` 定义为 0，所以 "
 ":c:macro:`PyBUF_WRITABLE` 可以作为一个独立的标志，用于请求一个简单的可写缓冲区。"
 
-#: ../../c-api/buffer.rst:258
+#: ../../c-api/buffer.rst:260
 msgid ""
 ":c:macro:`PyBUF_FORMAT` can be \\|'d to any of the flags except "
 ":c:macro:`PyBUF_SIMPLE`. The latter already implies format ``B`` (unsigned "
@@ -453,80 +451,80 @@ msgstr ""
 ":c:macro:`PyBUF_FORMAT` 可以被设为除了 :c:macro:`PyBUF_SIMPLE` 之外的任何标志。 后者已经按暗示了 "
 "``B`` (无符号字节串)格式。"
 
-#: ../../c-api/buffer.rst:263
+#: ../../c-api/buffer.rst:265
 msgid "shape, strides, suboffsets"
 msgstr "形状，步幅，子偏移量"
 
-#: ../../c-api/buffer.rst:265
+#: ../../c-api/buffer.rst:267
 msgid ""
 "The flags that control the logical structure of the memory are listed in "
 "decreasing order of complexity. Note that each flag contains all bits of the"
 " flags below it."
 msgstr "控制内存逻辑结构的标志按照复杂度的递减顺序列出。注意，每个标志包含它下面的所有标志。"
 
-#: ../../c-api/buffer.rst:272 ../../c-api/buffer.rst:296
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:298
+#: ../../c-api/buffer.rst:323
 msgid "Request"
 msgstr "请求"
 
-#: ../../c-api/buffer.rst:272 ../../c-api/buffer.rst:296
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:298
+#: ../../c-api/buffer.rst:323
 msgid "shape"
 msgstr "形状"
 
-#: ../../c-api/buffer.rst:272 ../../c-api/buffer.rst:296
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:298
+#: ../../c-api/buffer.rst:323
 msgid "strides"
 msgstr "步幅"
 
-#: ../../c-api/buffer.rst:272 ../../c-api/buffer.rst:296
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:298
+#: ../../c-api/buffer.rst:323
 msgid "suboffsets"
 msgstr "子偏移量"
 
-#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:274
 #: ../../c-api/buffer.rst:276 ../../c-api/buffer.rst:276
-#: ../../c-api/buffer.rst:278 ../../c-api/buffer.rst:298
-#: ../../c-api/buffer.rst:298 ../../c-api/buffer.rst:300
+#: ../../c-api/buffer.rst:278 ../../c-api/buffer.rst:278
+#: ../../c-api/buffer.rst:280 ../../c-api/buffer.rst:300
 #: ../../c-api/buffer.rst:300 ../../c-api/buffer.rst:302
 #: ../../c-api/buffer.rst:302 ../../c-api/buffer.rst:304
-#: ../../c-api/buffer.rst:323 ../../c-api/buffer.rst:323
-#: ../../c-api/buffer.rst:323 ../../c-api/buffer.rst:325
+#: ../../c-api/buffer.rst:304 ../../c-api/buffer.rst:306
 #: ../../c-api/buffer.rst:325 ../../c-api/buffer.rst:325
+#: ../../c-api/buffer.rst:325 ../../c-api/buffer.rst:327
 #: ../../c-api/buffer.rst:327 ../../c-api/buffer.rst:327
-#: ../../c-api/buffer.rst:327 ../../c-api/buffer.rst:329
 #: ../../c-api/buffer.rst:329 ../../c-api/buffer.rst:329
+#: ../../c-api/buffer.rst:329 ../../c-api/buffer.rst:331
 #: ../../c-api/buffer.rst:331 ../../c-api/buffer.rst:331
 #: ../../c-api/buffer.rst:333 ../../c-api/buffer.rst:333
-#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:337
+#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:335
+#: ../../c-api/buffer.rst:337 ../../c-api/buffer.rst:339
 msgid "yes"
 msgstr "是"
 
-#: ../../c-api/buffer.rst:274 ../../c-api/buffer.rst:323
-#: ../../c-api/buffer.rst:325
+#: ../../c-api/buffer.rst:276 ../../c-api/buffer.rst:325
+#: ../../c-api/buffer.rst:327
 msgid "if needed"
 msgstr "如果需要的话"
 
-#: ../../c-api/buffer.rst:276 ../../c-api/buffer.rst:278
 #: ../../c-api/buffer.rst:278 ../../c-api/buffer.rst:280
-#: ../../c-api/buffer.rst:280 ../../c-api/buffer.rst:280
-#: ../../c-api/buffer.rst:298 ../../c-api/buffer.rst:300
-#: ../../c-api/buffer.rst:302 ../../c-api/buffer.rst:304
-#: ../../c-api/buffer.rst:304 ../../c-api/buffer.rst:327
-#: ../../c-api/buffer.rst:329 ../../c-api/buffer.rst:331
+#: ../../c-api/buffer.rst:280 ../../c-api/buffer.rst:282
+#: ../../c-api/buffer.rst:282 ../../c-api/buffer.rst:282
+#: ../../c-api/buffer.rst:300 ../../c-api/buffer.rst:302
+#: ../../c-api/buffer.rst:304 ../../c-api/buffer.rst:306
+#: ../../c-api/buffer.rst:306 ../../c-api/buffer.rst:329
 #: ../../c-api/buffer.rst:331 ../../c-api/buffer.rst:333
 #: ../../c-api/buffer.rst:333 ../../c-api/buffer.rst:335
-#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:335
+#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:337
 #: ../../c-api/buffer.rst:337 ../../c-api/buffer.rst:337
-#: ../../c-api/buffer.rst:337
+#: ../../c-api/buffer.rst:339 ../../c-api/buffer.rst:339
+#: ../../c-api/buffer.rst:339
 msgid "NULL"
 msgstr "NULL"
 
-#: ../../c-api/buffer.rst:287
+#: ../../c-api/buffer.rst:289
 msgid "contiguity requests"
 msgstr "连续性的请求"
 
-#: ../../c-api/buffer.rst:289
+#: ../../c-api/buffer.rst:291
 msgid ""
 "C or Fortran :term:`contiguity <contiguous>` can be explicitly requested, "
 "with and without stride information. Without stride information, the buffer "
@@ -534,77 +532,77 @@ msgid ""
 msgstr ""
 "可以显式地请求C 或 Fortran :term:`连续 <contiguous>` ，不管有没有步幅信息。若没有步幅信息，则缓冲区必须是 C-连续的。"
 
-#: ../../c-api/buffer.rst:296 ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:298 ../../c-api/buffer.rst:323
 msgid "contig"
 msgstr "邻接"
 
-#: ../../c-api/buffer.rst:298 ../../c-api/buffer.rst:304
-#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:337
+#: ../../c-api/buffer.rst:300 ../../c-api/buffer.rst:306
+#: ../../c-api/buffer.rst:337 ../../c-api/buffer.rst:339
 msgid "C"
 msgstr "C"
 
-#: ../../c-api/buffer.rst:300
+#: ../../c-api/buffer.rst:302
 msgid "F"
 msgstr "F"
 
-#: ../../c-api/buffer.rst:302
+#: ../../c-api/buffer.rst:304
 msgid "C or F"
 msgstr "C 或 F"
 
-#: ../../c-api/buffer.rst:304
+#: ../../c-api/buffer.rst:306
 msgid ":c:macro:`PyBUF_ND`"
 msgstr ":c:macro:`PyBUF_ND`"
 
-#: ../../c-api/buffer.rst:309
+#: ../../c-api/buffer.rst:311
 msgid "compound requests"
 msgstr "复合请求"
 
-#: ../../c-api/buffer.rst:311
+#: ../../c-api/buffer.rst:313
 msgid ""
 "All possible requests are fully defined by some combination of the flags in "
 "the previous section. For convenience, the buffer protocol provides "
 "frequently used combinations as single flags."
 msgstr "所有可能的请求都由上一节中某些标志的组合完全定义。为方便起见，缓冲区协议提供常用的组合作为单个标志。"
 
-#: ../../c-api/buffer.rst:315
+#: ../../c-api/buffer.rst:317
 msgid ""
 "In the following table *U* stands for undefined contiguity. The consumer "
 "would have to call :c:func:`PyBuffer_IsContiguous` to determine contiguity."
 msgstr "在下表中，*U* 代表连续性未定义。消费者程序必须调用  :c:func:`PyBuffer_IsContiguous` 以确定连续性。"
 
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:323
 msgid "readonly"
 msgstr "readonly"
 
-#: ../../c-api/buffer.rst:321
+#: ../../c-api/buffer.rst:323
 msgid "format"
 msgstr "format"
 
-#: ../../c-api/buffer.rst:323 ../../c-api/buffer.rst:325
-#: ../../c-api/buffer.rst:327 ../../c-api/buffer.rst:329
-#: ../../c-api/buffer.rst:331 ../../c-api/buffer.rst:333
+#: ../../c-api/buffer.rst:325 ../../c-api/buffer.rst:327
+#: ../../c-api/buffer.rst:329 ../../c-api/buffer.rst:331
+#: ../../c-api/buffer.rst:333 ../../c-api/buffer.rst:335
 msgid "U"
 msgstr "U"
 
-#: ../../c-api/buffer.rst:323 ../../c-api/buffer.rst:327
-#: ../../c-api/buffer.rst:331 ../../c-api/buffer.rst:335
+#: ../../c-api/buffer.rst:325 ../../c-api/buffer.rst:329
+#: ../../c-api/buffer.rst:333 ../../c-api/buffer.rst:337
 msgid "0"
 msgstr "0"
 
-#: ../../c-api/buffer.rst:325 ../../c-api/buffer.rst:329
-#: ../../c-api/buffer.rst:333 ../../c-api/buffer.rst:337
+#: ../../c-api/buffer.rst:327 ../../c-api/buffer.rst:331
+#: ../../c-api/buffer.rst:335 ../../c-api/buffer.rst:339
 msgid "1 or 0"
 msgstr "1 或 0"
 
-#: ../../c-api/buffer.rst:342
+#: ../../c-api/buffer.rst:344
 msgid "Complex arrays"
 msgstr "复杂数组"
 
-#: ../../c-api/buffer.rst:345
+#: ../../c-api/buffer.rst:347
 msgid "NumPy-style: shape and strides"
 msgstr "NumPy-风格：形状和步幅"
 
-#: ../../c-api/buffer.rst:347
+#: ../../c-api/buffer.rst:349
 msgid ""
 "The logical structure of NumPy-style arrays is defined by "
 ":c:member:`~Py_buffer.itemsize`, :c:member:`~Py_buffer.ndim`, "
@@ -614,7 +612,7 @@ msgstr ""
 ":c:member:`~Py_buffer.ndim` 、 :c:member:`~Py_buffer.shape` 和 "
 ":c:member:`~Py_buffer.strides` 定义。"
 
-#: ../../c-api/buffer.rst:350
+#: ../../c-api/buffer.rst:352
 msgid ""
 "If ``ndim == 0``, the memory location pointed to by "
 ":c:member:`~Py_buffer.buf` is interpreted as a scalar of size "
@@ -626,7 +624,7 @@ msgstr ""
 ":c:member:`~Py_buffer.itemsize` 的标量。这时， :c:member:`~Py_buffer.shape` 和 "
 ":c:member:`~Py_buffer.strides` 都为 ``NULL``。"
 
-#: ../../c-api/buffer.rst:354
+#: ../../c-api/buffer.rst:356
 msgid ""
 "If :c:member:`~Py_buffer.strides` is ``NULL``, the array is interpreted as a"
 " standard n-dimensional C-array. Otherwise, the consumer must access an "
@@ -635,18 +633,18 @@ msgstr ""
 "如果 :c:member:`~Py_buffer.strides` 为 ``NULL``，则数组将被解释为一个标准的 n 维 C "
 "语言数组。否则，消费者程序必须按如下方式访问 n 维数组："
 
-#: ../../c-api/buffer.rst:364
+#: ../../c-api/buffer.rst:366
 msgid ""
 "As noted above, :c:member:`~Py_buffer.buf` can point to any location within "
 "the actual memory block. An exporter can check the validity of a buffer with"
 " this function:"
 msgstr "如上所述，:c:member:`~Py_buffer.buf` 可以指向实际内存块中的任意位置。输出者程序可以用该函数检查缓冲区的有效性。"
 
-#: ../../c-api/buffer.rst:398
+#: ../../c-api/buffer.rst:400
 msgid "PIL-style: shape, strides and suboffsets"
 msgstr "PIL-风格：形状，步幅和子偏移量"
 
-#: ../../c-api/buffer.rst:400
+#: ../../c-api/buffer.rst:402
 msgid ""
 "In addition to the regular items, PIL-style arrays can contain pointers that"
 " must be followed in order to get to the next element in a dimension. For "
@@ -661,18 +659,18 @@ msgstr ""
 "(*v[2])[2][3]``。在子偏移表示中，这两个指针可以嵌入在 :c:member:`~Py_buffer.buf` "
 "的开头，指向两个可以位于内存任何位置的 ``char x[2][3]`` 数组。"
 
-#: ../../c-api/buffer.rst:409
+#: ../../c-api/buffer.rst:411
 msgid ""
 "Here is a function that returns a pointer to the element in an N-D array "
 "pointed to by an N-dimensional index when there are both non-``NULL`` "
 "strides and suboffsets::"
 msgstr "这是一个函数，当n维索引所指向的N-D数组中有 ``NULL`` 步长和子偏移量时，它返回一个指针"
 
-#: ../../c-api/buffer.rst:428
+#: ../../c-api/buffer.rst:430
 msgid "Buffer-related functions"
 msgstr "缓冲区相关函数"
 
-#: ../../c-api/buffer.rst:432
+#: ../../c-api/buffer.rst:434
 msgid ""
 "Return ``1`` if *obj* supports the buffer interface otherwise ``0``.  When "
 "``1`` is returned, it doesn't guarantee that :c:func:`PyObject_GetBuffer` "
@@ -681,7 +679,7 @@ msgstr ""
 "如果 *obj* 支持缓冲区接口，则返回 ``1``，否则返回 ``0``。 返回 ``1`` 时不保证 "
 ":c:func:`PyObject_GetBuffer` 一定成功。本函数一定调用成功。"
 
-#: ../../c-api/buffer.rst:439
+#: ../../c-api/buffer.rst:441
 msgid ""
 "Send a request to *exporter* to fill in *view* as specified by  *flags*. If "
 "the exporter cannot provide a buffer of the exact type, it MUST raise "
@@ -691,7 +689,7 @@ msgstr ""
 "向 *输出器程序* 发送请求，按照 *flags* 指定的内容填充 *view*。如果 输出器程序不能提供准确类型的缓冲区，*必须* 触发 "
 ":c:data:`PyExc_BufferError`，设置 ``view->obj`` 为 ``NULL`` 并返回 ``-1``。"
 
-#: ../../c-api/buffer.rst:444
+#: ../../c-api/buffer.rst:446
 msgid ""
 "On success, fill in *view*, set ``view->obj`` to a new reference to "
 "*exporter* and return 0. In the case of chained buffer providers that "
@@ -703,7 +701,7 @@ msgstr ""
 "当链式缓冲区提供程序将请求重定向到一个对象时，``view->obj``  可以引用该对象而不是 *exporter* (参见 "
 ":ref:`缓冲区对象结构 <buffer-structs>`)。"
 
-#: ../../c-api/buffer.rst:449
+#: ../../c-api/buffer.rst:451
 msgid ""
 "Successful calls to :c:func:`PyObject_GetBuffer` must be paired with calls "
 "to :c:func:`PyBuffer_Release`, similar to :c:func:`malloc` and "
@@ -714,20 +712,21 @@ msgstr ""
 ":c:func:`malloc` 和 :c:func:`free`。因此，消费者程序用完缓冲区后， :c:func:`PyBuffer_Release`"
 " 必须保证被调用一次。"
 
-#: ../../c-api/buffer.rst:457
+#: ../../c-api/buffer.rst:459
 msgid ""
-"Release the buffer *view* and decrement the reference count for "
+"Release the buffer *view* and release the :term:`strong reference` (i.e. "
+"decrement the reference count) to the view's supporting object, "
 "``view->obj``. This function MUST be called when the buffer is no longer "
 "being used, otherwise reference leaks may occur."
-msgstr "释放缓冲区 *view* 并递减 ``view->obj`` 的引用计数。该函数必须在缓冲区不再使用时才能调用，否则可能会发生引用泄漏。"
+msgstr ""
 
-#: ../../c-api/buffer.rst:461
+#: ../../c-api/buffer.rst:464
 msgid ""
 "It is an error to call this function on a buffer that was not obtained via "
 ":c:func:`PyObject_GetBuffer`."
 msgstr "若该函数针对的缓冲区不是通过 :c:func:`PyObject_GetBuffer` 获得的，将会出错。"
 
-#: ../../c-api/buffer.rst:467
+#: ../../c-api/buffer.rst:470
 msgid ""
 "Return the implied :c:member:`~Py_buffer.itemsize` from "
 ":c:member:`~Py_buffer.format`. On error, raise an exception and return -1."
@@ -735,7 +734,7 @@ msgstr ""
 "从 :c:member:`~Py_buffer.format` 返回隐含的 :c:member:`~Py_buffer.itemsize`。 "
 "如果出错，则引发异常并返回 -1。"
 
-#: ../../c-api/buffer.rst:475
+#: ../../c-api/buffer.rst:478
 msgid ""
 "Return ``1`` if the memory defined by the *view* is C-style (*order* is "
 "``'C'``) or Fortran-style (*order* is ``'F'``) :term:`contiguous` or either "
@@ -745,14 +744,14 @@ msgstr ""
 "如果 *view* 定义的内存是 C 风格（*order* 为 ``'C'``）或 Fortran 风格（*order* 为 ``'F'``） "
 ":term:`contiguous` 或其中之一（*order* 是 ``'A'``），则返回 ``1``。否则返回 ``0``。该函数总会成功。"
 
-#: ../../c-api/buffer.rst:482
+#: ../../c-api/buffer.rst:485
 msgid ""
 "Get the memory area pointed to by the *indices* inside the given *view*. "
 "*indices* must point to an array of ``view->ndim`` indices."
 msgstr ""
 "获取给定 *view* 内的 *indices* 所指向的内存区域。*indices* 必须指向一个 ``view->ndim`` 索引的数组。"
 
-#: ../../c-api/buffer.rst:488
+#: ../../c-api/buffer.rst:491
 msgid ""
 "Copy contiguous *len* bytes from *buf* to *view*. *fort* can be ``'C'`` or "
 "``'F'`` (for C-style or Fortran-style ordering). ``0`` is returned on "
@@ -761,7 +760,7 @@ msgstr ""
 "从 *buf* 复制连续的 *len* 字节到 *view* 。*fort* 可以是 ``'C'`` 或 ``'F'`` （对应于 C 风格或 "
 "Fortran 风格的顺序）。成功时返回  ``0`` ，错误时返回  ``-1`` 。"
 
-#: ../../c-api/buffer.rst:495
+#: ../../c-api/buffer.rst:498
 msgid ""
 "Copy *len* bytes from *src* to its contiguous representation in *buf*. "
 "*order* can be ``'C'`` or ``'F'`` or ``'A'`` (for C-style or Fortran-style "
@@ -770,21 +769,21 @@ msgstr ""
 "从 *src* 复制 *len* 字节到 *buf* ，成为连续字节串的形式。*order* 可以是 ``'C'`` 或 ``'F'`` 或 "
 "``'A'`` （对应于 C 风格、Fortran 风格的顺序或其中任意一种）。成功时返回 ``0`` ，出错时返回 ``-1`` 。"
 
-#: ../../c-api/buffer.rst:499
+#: ../../c-api/buffer.rst:502
 msgid "This function fails if *len* != *src->len*."
 msgstr "如果 *len* != *src->len* 则此函数将报错。"
 
-#: ../../c-api/buffer.rst:504
+#: ../../c-api/buffer.rst:507
 msgid ""
 "Copy data from *src* to *dest* buffer. Can convert between C-style and or "
 "Fortran-style buffers."
 msgstr "将数据从 *src* 拷贝到 *dest* 缓冲区。 可以在 C 风格或 Fortran 风格的缓冲区之间进行转换。"
 
-#: ../../c-api/buffer.rst:507
+#: ../../c-api/buffer.rst:510
 msgid "``0`` is returned on success, ``-1`` on error."
 msgstr "成功时返回 ``0``，出错时返回 ``-1``。"
 
-#: ../../c-api/buffer.rst:511
+#: ../../c-api/buffer.rst:514
 msgid ""
 "Fill the *strides* array with byte-strides of a :term:`contiguous` (C-style "
 "if *order* is ``'C'`` or Fortran-style if *order* is ``'F'``) array of the "
@@ -793,7 +792,7 @@ msgstr ""
 "用给定形状的 :term:`contiguous` 字节串数组 (如果 *order* 为 ``'C'`` 则为 C 风格，如果 *order* 为 "
 "``'F'`` 则为 Fortran 风格) 来填充 *strides* 数组，每个元素具有给定的字节数。"
 
-#: ../../c-api/buffer.rst:518
+#: ../../c-api/buffer.rst:521
 msgid ""
 "Handle buffer requests for an exporter that wants to expose *buf* of size "
 "*len* with writability set according to *readonly*. *buf* is interpreted as "
@@ -802,7 +801,7 @@ msgstr ""
 "处理导出程序的缓冲区请求，该导出程序要公开大小为 *len* 的 *buf* ，并根据 *readonly* 设置可写性。*bug* "
 "被解释为一个无符号字节序列。"
 
-#: ../../c-api/buffer.rst:522
+#: ../../c-api/buffer.rst:525
 msgid ""
 "The *flags* argument indicates the request type. This function always fills "
 "in *view* as specified by flags, unless *buf* has been designated as read-"
@@ -811,7 +810,7 @@ msgstr ""
 "参数 *flags* 表示请求的类型。该函数总是按照 flag 指定的内容填入 *view*，除非 *buf* 设为只读，并且 *flag* 中设置了 "
 ":c:macro:`PyBUF_WRITABLE` 标志。"
 
-#: ../../c-api/buffer.rst:526
+#: ../../c-api/buffer.rst:529
 msgid ""
 "On success, set ``view->obj`` to a new reference to *exporter* and return 0."
 " Otherwise, raise :c:data:`PyExc_BufferError`, set ``view->obj`` to ``NULL``"
@@ -820,7 +819,7 @@ msgstr ""
 "成功时，将 ``view->obj`` 设为 *exporter* 的新引用，并返回 0。否则，引发 "
 ":c:data:`PyExc_BufferError` ，将 ``view->obj`` 设为 ``NULL``，并返回 ``-1``。"
 
-#: ../../c-api/buffer.rst:530
+#: ../../c-api/buffer.rst:533
 msgid ""
 "If this function is used as part of a :ref:`getbufferproc <buffer-structs>`,"
 " *exporter* MUST be set to the exporting object and *flags* must be passed "
@@ -849,14 +848,14 @@ msgstr "缓冲对象"
 msgid "PyBufferProcs"
 msgstr "PyBufferProcs"
 
-#: ../../c-api/buffer.rst:284
+#: ../../c-api/buffer.rst:286
 msgid "contiguous"
 msgstr "contiguous -- 连续"
 
-#: ../../c-api/buffer.rst:284
+#: ../../c-api/buffer.rst:286
 msgid "C-contiguous"
 msgstr "C 连续"
 
-#: ../../c-api/buffer.rst:284
+#: ../../c-api/buffer.rst:286
 msgid "Fortran contiguous"
 msgstr "Fortran 连续"

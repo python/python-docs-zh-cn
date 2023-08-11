@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-04 14:46+0000\n"
+"POT-Creation-Date: 2023-08-11 14:43+0000\n"
 "PO-Revision-Date: 2023-05-24 02:09+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -34,10 +34,9 @@ msgstr "``NotImplemented`` 单例，用于标记某个操作没有针对给定�
 #: ../../c-api/object.rst:17
 msgid ""
 "Properly handle returning :c:data:`Py_NotImplemented` from within a C "
-"function (that is, increment the reference count of NotImplemented and "
-"return it)."
+"function (that is, create a new :term:`strong reference` to NotImplemented "
+"and return it)."
 msgstr ""
-"C 函数内部应正确处理 :c:data:`Py_NotImplemented` 的返回过程（即增加 NotImplemented 的引用计数并返回之）。"
 
 #: ../../c-api/object.rst:24
 msgid ""
@@ -417,23 +416,19 @@ msgid ""
 "When *o* is non-``NULL``, returns a type object corresponding to the object "
 "type of object *o*. On failure, raises :exc:`SystemError` and returns "
 "``NULL``.  This is equivalent to the Python expression ``type(o)``. This "
-"function increments the reference count of the return value. There's really "
-"no reason to use this function instead of the :c:func:`Py_TYPE()` function, "
-"which returns a pointer of type :c:expr:`PyTypeObject*`, except when the "
-"incremented reference count is needed."
+"function creates a new :term:`strong reference` to the return value. There's"
+" really no reason to use this function instead of the :c:func:`Py_TYPE()` "
+"function, which returns a pointer of type :c:expr:`PyTypeObject*`, except "
+"when a new :term:`strong reference` is needed."
 msgstr ""
-"当 *o* 不为 ``NULL`` 时，返回一个与对象 *o* 的类型相对应的类型对象。 当失败时，将引发 :exc:`SystemError` 并返回"
-" ``NULL``。 这等同于 Python 表达式 ``type(o)``。 该函数会增加返回值的引用计数。 实际上没有理由不去用普通的 "
-":c:func:`Py_TYPE()` 函数而使用该函数，它将返回一个 :c:expr:`PyTypeObject*` "
-"类型的指针，除非是需要增加引用计数的时候。"
 
-#: ../../c-api/object.rst:332
+#: ../../c-api/object.rst:333
 msgid ""
 "Return non-zero if the object *o* is of type *type* or a subtype of *type*, "
 "and ``0`` otherwise.  Both parameters must be non-``NULL``."
 msgstr "如果对象 *o* 是 *type* 类型或其子类型，则返回非零，否则返回 ``0``。两个参数都必须非 ``NULL``。"
 
-#: ../../c-api/object.rst:341
+#: ../../c-api/object.rst:342
 msgid ""
 "Return the length of object *o*.  If the object *o* provides either the "
 "sequence and mapping protocols, the sequence length is returned.  On error, "
@@ -443,7 +438,7 @@ msgstr ""
 "返回对象 *o* 的长度。 如果对象 *o* 支持序列和映射协议，则返回序列长度。 出错时返回 ``-1``。这等同于 Python 表达式 "
 "``len(o)``。"
 
-#: ../../c-api/object.rst:348
+#: ../../c-api/object.rst:349
 msgid ""
 "Return an estimated length for the object *o*. First try to return its "
 "actual length, then an estimate using :meth:`~object.__length_hint__`, and "
@@ -455,13 +450,13 @@ msgstr ""
 "进行估计，最后返回默认值。出错时返回 ``-1``。这等同于 Python 表达式 ``operator.length_hint(o, "
 "defaultvalue)``。"
 
-#: ../../c-api/object.rst:358
+#: ../../c-api/object.rst:359
 msgid ""
 "Return element of *o* corresponding to the object *key* or ``NULL`` on "
 "failure. This is the equivalent of the Python expression ``o[key]``."
 msgstr "返回对象 *key* 对应的 *o* 元素，或在失败时返回 ``NULL``。这等同于 Python 表达式 ``o[key]``。"
 
-#: ../../c-api/object.rst:364
+#: ../../c-api/object.rst:365
 msgid ""
 "Map the object *key* to the value *v*.  Raise an exception and return ``-1``"
 " on failure; return ``0`` on success.  This is the equivalent of the Python "
@@ -471,13 +466,13 @@ msgstr ""
 "将对象 *key* 映射到值 *v*。 失败时引发异常并返回 ``-1``；成功时返回 ``0``。 这相当于 Python 语句 ``o[key] ="
 " v``。该函数 *不会* 偷取 *v* 的引用计数。"
 
-#: ../../c-api/object.rst:372
+#: ../../c-api/object.rst:373
 msgid ""
 "Remove the mapping for the object *key* from the object *o*.  Return ``-1`` "
 "on failure.  This is equivalent to the Python statement ``del o[key]``."
 msgstr "从对象 *o* 中移除对象 *key* 的映射。失败时返回 ``-1``。 这相当于 Python 语句 ``del o[key]``。"
 
-#: ../../c-api/object.rst:378
+#: ../../c-api/object.rst:379
 msgid ""
 "This is equivalent to the Python expression ``dir(o)``, returning a "
 "(possibly empty) list of strings appropriate for the object argument, or "
@@ -490,7 +485,7 @@ msgstr ""
 "``NULL``，类似 Python 的 ``dir()``，则返回当前 locals 的名字；这时如果没有活动的执行框架，则返回 ``NULL``，但"
 " :c:func:`PyErr_Occurred` 将返回 false。"
 
-#: ../../c-api/object.rst:387
+#: ../../c-api/object.rst:388
 msgid ""
 "This is equivalent to the Python expression ``iter(o)``. It returns a new "
 "iterator for the object argument, or the object  itself if the object is "
@@ -501,7 +496,7 @@ msgstr ""
 "``iter(o)``。为对象参数返回一个新的迭代器，如果该对象已经是一个迭代器，则返回对象本身。如果对象不能被迭代，会引发  "
 ":exc:`TypeError` ，并返回  ``NULL``。"
 
-#: ../../c-api/object.rst:395
+#: ../../c-api/object.rst:396
 msgid ""
 "This is the equivalent to the Python expression ``aiter(o)``. Takes an "
 ":class:`AsyncIterable` object and returns an :class:`AsyncIterator` for it. "
@@ -515,7 +510,7 @@ msgstr ""
 
 #: ../../c-api/object.rst:197 ../../c-api/object.rst:209
 #: ../../c-api/object.rst:234 ../../c-api/object.rst:285
-#: ../../c-api/object.rst:319 ../../c-api/object.rst:339
+#: ../../c-api/object.rst:319 ../../c-api/object.rst:340
 msgid "built-in function"
 msgstr "内置函数"
 
@@ -547,6 +542,6 @@ msgstr "hash"
 msgid "type"
 msgstr "type"
 
-#: ../../c-api/object.rst:339
+#: ../../c-api/object.rst:340
 msgid "len"
 msgstr "len"
