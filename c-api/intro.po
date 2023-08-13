@@ -473,6 +473,12 @@ msgid ""
 "  that are called from Python; the call mechanism guarantees to hold a  "
 "reference to every argument for the duration of the call."
 msgstr ""
+"没有必要为每个包含指向对象指针的局部变量持有 :term:`strong reference` (即增加引用计数)。 "
+"理论上说，当变量指向对象时对象的引用计数就会加一，而当变量离开其作用域时引用计数就会减一。 不过，这两种情况会相互抵消，所以最后引用计数并没有改变。 "
+"使用引用计数的唯一真正原因在于只要我们的变量指向对象就可以防止对象被释放。 "
+"只要我们知道至少还有一个指向某对象的引用与我们的变量同时存在，就没有必要临时获取一个新的 :term:`strong reference` "
+"(即增加引用计数)。 出现引用计数增加的一种重要情况是对象作为参数被传递给扩展模块中的 C 函数而这些函数又在 Python "
+"中被调用；调用机制会保证在调用期间对每个参数持有一个引用。"
 
 #: ../../c-api/intro.rst:339
 msgid ""
@@ -484,6 +490,9 @@ msgid ""
 "code path which allows control to flow back to the user from a "
 ":c:func:`Py_DECREF`, so almost any operation is potentially dangerous."
 msgstr ""
+"然而，一个常见的陷阱是从列表中提取对象并在不获取新引用的情况下将其保留一段时间。 "
+"某个其他操作可能在无意中从列表中移除该对象，释放这个引用，并可能撤销分配其资源。 真正的危险在于看似无害的操作可能会发起调用任意的 Python "
+"代码来做这件事；有一条代码路径允许控制权从 :c:func:`Py_DECREF` 流回到用户，因此几乎任何操作都有潜在的危险。"
 
 #: ../../c-api/intro.rst:347
 msgid ""
@@ -494,6 +503,9 @@ msgid ""
 "This leaves the caller with the responsibility to call :c:func:`Py_DECREF` "
 "when they are done with the result; this soon becomes second nature."
 msgstr ""
+"安全的做法是始终使用泛型操作（名称以 ``PyObject_``, ``PyNumber_``, ``PySequence_`` 或 "
+"``PyMapping_`` 开头的函数）。 这些操作总是为其返回的对象创建一个新的 :term:`strong reference` "
+"(即增加引用计数)。 这使得调用者有责任在获得结果之后调用 :c:func:`Py_DECREF`；这种做法很快就能习惯成自然。"
 
 #: ../../c-api/intro.rst:358
 msgid "Reference Count Details"
