@@ -527,6 +527,12 @@ msgid ""
 "said to *borrow* the reference. Nothing needs to be done for a "
 ":term:`borrowed reference`."
 msgstr ""
+"Python/C API 中函数的引用计数最好是使用 *引用所有权* 来解释。 所有权是关联到引用，而不是对象（对象不能被拥有：它们总是会被共享）。 "
+"“拥有一个引用”意味着当不再需要该引用时必须在其上调用 Py_DECREF。 "
+"所有权也可以被转移，这意味着接受该引用所有权的代码在不再需要它时必须通过调用 :c:func:`Py_DECREF` 或 "
+":c:func:`Py_XDECREF` 来最终释放它 --- 或是继续转移这个责任（通常是转给其调用方）。 "
+"当一个函数将引用所有权转给其调用方时，则称调用方收到一个 *新的* 引用。 当未转移所有权时，则称调用方是 *借入* 这个引用。 对于 "
+":term:`borrowed reference` 来说不需要任何额外操作。"
 
 #: ../../c-api/intro.rst:373
 msgid ""
@@ -604,6 +610,9 @@ msgid ""
 "  For example, this function sets all items of a list (actually, any mutable"
 " sequence) to a given item::"
 msgstr ""
+"在对条目使用 :c:func:`PyObject_SetItem` 等操作时更常见的做法是只借入引用，比如将参数传递给你正在编写的函数。 "
+"在这种情况下，它们在引用方面的行为更为清晰，因为你不必为了把引用转走而获取一个新的引用（“让它被偷取”）。 "
+"例如，这个函数将列表（实际上是任何可变序列）中的所有条目都设为给定的条目::"
 
 #: ../../c-api/intro.rst:452
 msgid ""
