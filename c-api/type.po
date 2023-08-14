@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-28 14:13+0000\n"
+"POT-Creation-Date: 2023-08-11 14:13+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -81,6 +81,8 @@ msgid ""
 "accessing :c:member:`~PyTypeObject.tp_dict` directly. The returned "
 "dictionary must be treated as read-only."
 msgstr ""
+"返回类型对象的内部命名空间，它在其他情况下只能通过只读代理 (``cls.__dict__``) 公开。 这可以代替直接访问 "
+":c:member:`~PyTypeObject.tp_dict` 的方式。 返回的字典必须当作是只读的。"
 
 #: ../../c-api/type.rst:60
 msgid ""
@@ -88,6 +90,8 @@ msgid ""
 "where direct access to the dict is necessary and indirect access (e.g. via "
 "the proxy or :c:func:`PyObject_GetAttr`) isn't adequate."
 msgstr ""
+"该函数用于特定的嵌入和语言绑定场景，在这些场景下需要直接访问该字典而间接访问（例如通过代理或 :c:func:`PyObject_GetAttr` "
+"访问）并不足够。"
 
 #: ../../c-api/type.rst:64
 msgid ""
@@ -118,6 +122,8 @@ msgid ""
 ":c:func:`PyType_AddWatcher`). Return ``0`` on success, ``-1`` on error (e.g."
 " if *watcher_id* was never registered.)"
 msgstr ""
+"清除由 *watcher_id* (之前从 :c:func:`PyType_AddWatcher` 返回) 所标识的 watcher。 成功时返回 "
+"``0``，出错时（例如 *watcher_id* 未被注册）返回 ``-1``。"
 
 #: ../../c-api/type.rst:93
 msgid ""
@@ -125,6 +131,8 @@ msgid ""
 "that was not returned to it by a previous call to "
 ":c:func:`PyType_AddWatcher`."
 msgstr ""
+"扩展在调用 ``PyType_ClearWatcher`` 时绝不能使用不是之前调用 :c:func:`PyType_AddWatcher` 所返回的 "
+"*watcher_id*。"
 
 #: ../../c-api/type.rst:102
 msgid ""
@@ -135,16 +143,21 @@ msgid ""
 ":c:func:`!_PyType_Lookup` is not called on *type* between the modifications;"
 " this is an implementation detail and subject to change.)"
 msgstr ""
+"将 *type* 标记为已监视。 每当 :c:func:`PyType_Modified` 报告 *type* 发生变化时 "
+":c:func:`PyType_AddWatcher` 赋予 *watcher_id* 的回调将被调用。 （如果在 *type* "
+"的一系列连续修改之间没有调用 :c:func:`!_PyType_Lookup`，则回调只能被调用一次；这是一个实现细节并可能发生变化）。"
 
 #: ../../c-api/type.rst:109
 msgid ""
 "An extension should never call ``PyType_Watch`` with a *watcher_id* that was"
 " not returned to it by a previous call to :c:func:`PyType_AddWatcher`."
 msgstr ""
+"扩展在调用 ``PyType_Watch`` 时绝不能使用不是之前调用 :c:func:`PyType_AddWatcher` 所返回的 "
+"*watcher_id*。"
 
 #: ../../c-api/type.rst:117
 msgid "Type of a type-watcher callback function."
-msgstr ""
+msgstr "类型监视器回调函数的类型。"
 
 #: ../../c-api/type.rst:119
 msgid ""
@@ -152,6 +165,8 @@ msgid ""
 " called on *type* or any type in its MRO; violating this rule could cause "
 "infinite recursion."
 msgstr ""
+"回调不可以修改 *type* 或是导致 :c:func:`PyType_Modified` 在 *type* 或其 MRO "
+"中的任何类型上被调用；违反此规则可能导致无限递归。"
 
 #: ../../c-api/type.rst:128
 msgid ""
@@ -163,7 +178,7 @@ msgstr "如果类型对象 *o* 设置了特性 *feature* 则返回非零值。 �
 msgid ""
 "Return true if the type object includes support for the cycle detector; this"
 " tests the type flag :c:macro:`Py_TPFLAGS_HAVE_GC`."
-msgstr ""
+msgstr "如果类型对象包括了对循环检测器的支持则返回真值；这将测试类型旗标 :c:macro:`Py_TPFLAGS_HAVE_GC`。"
 
 #: ../../c-api/type.rst:140
 msgid "Return true if *a* is a subtype of *b*."
@@ -217,6 +232,9 @@ msgid ""
 " protocol itself by at least implementing the "
 ":c:member:`~PyTypeObject.tp_traverse` handle."
 msgstr ""
+"如果某些基类实现了 GC 协议并且所提供的类型的旗标中未包括 :c:macro:`Py_TPFLAGS_HAVE_GC`，则将自动从其父类实现 GC "
+"协议。 相反地，如果被创建的类型的旗标中确实包含 :c:macro:`Py_TPFLAGS_HAVE_GC` 则它 **必须** 自己实现 GC "
+"协议，至少要实现 :c:member:`~PyTypeObject.tp_traverse` 句柄。"
 
 #: ../../c-api/type.rst:177
 msgid ""
