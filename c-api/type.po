@@ -292,6 +292,10 @@ msgid ""
 "defines the method. See :c:func:`PyType_GetModuleByDef` for cases when "
 ":c:type:`!PyCMethod` cannot be used."
 msgstr ""
+"此函数通常被用于获取方法定义所在的模块。 请注意在这样的方法中，``PyType_GetModule(Py_TYPE(self))`` "
+"可能不会返回预期的结果。 ``Py_TYPE(self)`` 可以是目标类的一个 *子类*，而子类并不一定是在与其超类相同的模块中定义的。 请参阅 "
+":c:type:`PyCMethod` 了解如何获取方法定义所在的类。 请参阅 :c:func:`PyType_GetModuleByDef` "
+"了解有关无法使用 :c:type:`!PyCMethod` 的情况。"
 
 #: ../../c-api/type.rst:225
 msgid ""
@@ -356,6 +360,8 @@ msgid ""
 "Create and return a :ref:`heap type <heap-types>` from the *spec* (see "
 ":c:macro:`Py_TPFLAGS_HEAPTYPE`)."
 msgstr ""
+"根据 *spec* (参见 :c:macro:`Py_TPFLAGS_HEAPTYPE`) 创建并返回一个 :ref:`堆类型 <heap-"
+"types>`。"
 
 #: ../../c-api/type.rst:273
 msgid ""
@@ -363,6 +369,8 @@ msgid ""
 "When *metaclass* is ``NULL``, the metaclass is derived from *bases* (or "
 "*Py_tp_base[s]* slots if *bases* is ``NULL``, see below)."
 msgstr ""
+"元类 *metaclass* 用于构建结果类型对象。 当 *metaclass* 为 ``NULL`` 时，元类将派生自 *bases* (或者如果 "
+"*bases* 为 ``NULL`` 则派生自 *Py_tp_base[s]* 槽位，见下文)。"
 
 #: ../../c-api/type.rst:277
 msgid ""
@@ -372,6 +380,9 @@ msgid ""
 "``tp_new``, which may result in incomplete initialization. This is "
 "deprecated and in Python 3.14+ such metaclasses will not be supported.)"
 msgstr ""
+"不支持重载 :c:member:`~PyTypeObject.tp_new` 的元类，除非 ``tp_new`` 为 ``NULL``。 "
+"（为了向下兼容，其他 ``PyType_From*`` 函数允许这样的元类。 它们将忽略 ``tp_new``，可能导致不完整的初始化。 "
+"这样的元类已被弃用并在 Python 3.14+ 中停止支持。）"
 
 #: ../../c-api/type.rst:284
 msgid ""
@@ -409,6 +420,9 @@ msgid ""
 ":py:class:`type` (or the metaclass) over ``PyType_From*`` functions. "
 "Specifically:"
 msgstr ""
+"请注意此函数 *不能* 完全匹配调用 :py:class:`type() <type>` 或使用 :keyword:`class` 语句的行为。 "
+"对于用户提供的类型或元类，推荐 :ref:`调用 <capi-call>` :py:class:`type` (或元类) 而不是 "
+"``PyType_From*`` 函数。 特别地:"
 
 #: ../../c-api/type.rst:306
 msgid ""
@@ -442,7 +456,7 @@ msgstr "此函数现在接受一个单独类作为 *bases* 参数并接受 ``NUL
 msgid ""
 "The function now finds and uses a metaclass corresponding to the provided "
 "base classes.  Previously, only :class:`type` instances were returned."
-msgstr ""
+msgstr "该函数现在可以找到并使用与所提供的基类相对应的元类。 在此之前，只会返回 :class:`type` 实例。"
 
 #: ../../c-api/type.rst:330 ../../c-api/type.rst:347 ../../c-api/type.rst:363
 msgid ""
@@ -451,14 +465,16 @@ msgid ""
 "overrides :c:member:`~PyTypeObject.tp_new` is deprecated and in Python 3.14+"
 " it will be no longer allowed."
 msgstr ""
+"元类的 :c:member:`~PyTypeObject.tp_new` 将被 *忽略*。 这可能导致不完整的初始化。 创建元类重载 "
+":c:member:`~PyTypeObject.tp_new` 的类的做法已被弃用并且在 Python 3.14+ 中将不再被允许。"
 
 #: ../../c-api/type.rst:338
 msgid "Equivalent to ``PyType_FromMetaclass(NULL, NULL, spec, bases)``."
-msgstr ""
+msgstr "等价于 ``PyType_FromMetaclass(NULL, NULL, spec, bases)``。"
 
 #: ../../c-api/type.rst:355
 msgid "Equivalent to ``PyType_FromMetaclass(NULL, NULL, spec, NULL)``."
-msgstr ""
+msgstr "等价于 ``PyType_FromMetaclass(NULL, NULL, spec, NULL)``。"
 
 #: ../../c-api/type.rst:359
 msgid ""
@@ -466,6 +482,7 @@ msgid ""
 "classes provided in *Py_tp_base[s]* slots. Previously, only :class:`type` "
 "instances were returned."
 msgstr ""
+"该函数现在可以找到并使用与 *Py_tp_base[s]* 槽位中提供的基类相对应的元类。 在此之前，只会返回 :class:`type` 实例。"
 
 #: ../../c-api/type.rst:380
 msgid "Structure defining a type's behavior."
