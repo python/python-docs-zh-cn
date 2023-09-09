@@ -5,16 +5,15 @@
 # 
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2023
-# Freesand Leo <yuqinju@163.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-11 14:43+0000\n"
+"POT-Creation-Date: 2023-09-08 14:42+0000\n"
 "PO-Revision-Date: 2023-05-24 02:09+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1208,6 +1207,10 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_itemsize`, which means that its instances (i.e. "
 "type objects) *must* have the :c:member:`~PyVarObject.ob_size` field."
 msgstr ""
+"类型对象结构体扩展了 :c:type:`PyVarObject` 结构体。 :c:member:`~PyVarObject.ob_size` "
+"字段用于动态类型（由 :c:func:`!type_new` 创建，通常由 class 语句调用）。 请注意 :c:data:`PyType_Type`"
+" （元类型）会初始化 :c:member:`~PyTypeObject.tp_itemsize`，这意味着它的实例（即类型对象） *必须* 具有 "
+":c:member:`~PyVarObject.ob_size` 字段。"
 
 #: ../../c-api/typeobj.rst:494
 msgid ""
@@ -1218,6 +1221,9 @@ msgid ""
 "references.  But for :ref:`dynamically allocated type objects <heap-types>`,"
 " the instances *do* count as references."
 msgstr ""
+"这是类型对象的引用计数，由 ``PyObject_HEAD_INIT`` 宏初始化为 ``1``。 请注意对于 :ref:`静态分配的类型对象 "
+"<static-types>`，类型的实例（其 :c:member:`~PyObject.ob_type` 指向该类型的对象） *不会被* 计入引用。 "
+"但对于 :ref:`动态分配的类型对象 <heap-types>`，实例 *会被* 计入引用。"
 
 #: ../../c-api/typeobj.rst:501 ../../c-api/typeobj.rst:524
 #: ../../c-api/typeobj.rst:546 ../../c-api/typeobj.rst:560
@@ -1281,6 +1287,9 @@ msgid ""
 "base class. :c:func:`PyType_Ready` will not change this field if it is non-"
 "zero."
 msgstr ""
+"这应当在创建类型的任何实例之前完成。 :c:func:`PyType_Ready` 会检查 :c:member:`~PyObject.ob_type` "
+"是否为 ``NULL``，如果是，则将其初始化为基类的 :c:member:`~PyObject.ob_type` 字段。 如果该字段为非零值则 "
+":c:func:`PyType_Ready` 将不会更改它。"
 
 #: ../../c-api/typeobj.rst:526 ../../c-api/typeobj.rst:708
 #: ../../c-api/typeobj.rst:825 ../../c-api/typeobj.rst:917
@@ -1350,6 +1359,9 @@ msgid ""
 ":c:data:`PyBaseObject_Type` and :c:data:`PyType_Type` effectively act as "
 "defaults.)"
 msgstr ""
+"每个槽位都有一个小节来描述继承关系。 如果 :c:func:`PyType_Ready` 可以在字段被设为 ``NULL`` "
+"时设置一个值那么还会有一个“默认”小节。 （请注意在 :c:data:`PyBaseObject_Type` 和 "
+":c:data:`PyType_Type` 上设置的许多字段实际上就是默认值。）"
 
 #: ../../c-api/typeobj.rst:575
 msgid ""
@@ -1362,6 +1374,11 @@ msgid ""
 ":mod:`!Q` in package :mod:`!P` should have the "
 ":c:member:`~PyTypeObject.tp_name` initializer ``\"P.Q.M.T\"``."
 msgstr ""
+"指向包含类型名称的以 NUL 结尾的字符串的指针。 "
+"对于可作为模块全局访问的类型，该字符串应为模块全名，后面跟一个点号，然后再加类型名称；对于内置类型，它应当只是类型名称。 "
+"如果模块是包的子模块，则包的全名将是模块的全名的一部分。 例如，在包 :mod:`!P` 的子包 :mod:`!Q` 中的模块 :mod:`!M` "
+"中定义的名为 :class:`!T` 的类型应当具有 :c:member:`~PyTypeObject.tp_name` 初始化器 "
+"``\"P.Q.M.T\"``。"
 
 #: ../../c-api/typeobj.rst:583
 msgid ""
@@ -1379,6 +1396,9 @@ msgid ""
 "accessible as the :attr:`__module__` attribute, and everything after the "
 "last dot is made accessible as the :attr:`~definition.__name__` attribute."
 msgstr ""
+"对于 :ref:`静态分配的类型对象 <static-types>`，*tp_name* 字段应当包含一个点号。 最后一个点号之前的所有内容都可作为 "
+":attr:`__module__` 属性访问，而最后一个点号之后的所有内容都可作为 :attr:`~definition.__name__` "
+"属性访问。"
 
 #: ../../c-api/typeobj.rst:594
 msgid ""
@@ -1389,6 +1409,10 @@ msgid ""
 " pickle.  Additionally, it will not be listed in module documentations "
 "created with pydoc."
 msgstr ""
+"如果不存在点号，则整个 :c:member:`~PyTypeObject.tp_name` 字段将作为 "
+":attr:`~definition.__name__` 属性访问，而 :attr:`__module__` "
+"属性则将是未定义的（除非在字典中显式地设置，如上文所述）。 这意味着你的类型将无法执行 pickle。 此外，用 pydoc "
+"创建的模块文档中也不会列出该类型。"
 
 #: ../../c-api/typeobj.rst:600
 msgid ""
@@ -1396,11 +1420,13 @@ msgid ""
 ":c:func:`PyTypeObject` (other than potentially "
 ":c:member:`~PyTypeObject.tp_itemsize`)."
 msgstr ""
+"该字段不可为 ``NULL``。 它是 :c:func:`PyTypeObject` 中唯一的必填字段（除了潜在的 "
+":c:member:`~PyTypeObject.tp_itemsize` 以外）。"
 
 #: ../../c-api/typeobj.rst:612
 msgid ""
 "These fields allow calculating the size in bytes of instances of the type."
-msgstr ""
+msgstr "通过这些字段可以计算出该类型实例以字节为单位的大小。"
 
 #: ../../c-api/typeobj.rst:614
 msgid ""
@@ -1410,6 +1436,9 @@ msgid ""
 "a type with fixed-length instances, all instances have the same size, given "
 "in :c:member:`~PyTypeObject.tp_basicsize`."
 msgstr ""
+"存在两种类型：具有固定长度实例的类型其 :c:member:`~PyTypeObject.tp_itemsize` 字段为零；具有可变长度实例的类型其 "
+":c:member:`~PyTypeObject.tp_itemsize` 字段不为零。 对于具有固定长度实例的类型，所有实例的大小都相同，具体大小由 "
+":c:member:`~PyTypeObject.tp_basicsize` 给出。"
 
 #: ../../c-api/typeobj.rst:619
 msgid ""
@@ -1426,6 +1455,14 @@ msgid ""
 "for the list type has fixed-length instances, yet those instances have a "
 "meaningful :c:member:`~PyVarObject.ob_size` field)."
 msgstr ""
+"对于具有可变长度实例的类型，实例必须有一个 :c:member:`~PyVarObject.ob_size` 字段，实例大小为 "
+":c:member:`~PyTypeObject.tp_basicsize` 加上 N 乘以 "
+":c:member:`~PyTypeObject.tp_itemsize`，其中 N 是对象的“长度”。 N 的值通常存储在实例的 "
+":c:member:`~PyVarObject.ob_size` 字段中。 但也有例外：举例来说，整数类型使用负的 "
+":c:member:`~PyVarObject.ob_size` 来表示负数，N 在这里就是 ``abs(ob_size)``。 此外，在实例布局中存在"
+" :c:member:`~PyVarObject.ob_size` "
+"字段并不意味着实例结构是可变长度的（例如，列表类型的结构体有固定长度的实例，但这些实例却包含一个有意义的 "
+":c:member:`~PyVarObject.ob_size` 字段）。"
 
 #: ../../c-api/typeobj.rst:630
 msgid ""
@@ -1438,6 +1475,11 @@ msgid ""
 "``sizeof`` operator on the struct used to declare the instance layout. The "
 "basic size does not include the GC header size."
 msgstr ""
+"基本大小包括由宏 :c:macro:`PyObject_HEAD` 或 :c:macro:`PyObject_VAR_HEAD` "
+"（以用于声明实例结构的宏为准）声明的实例中的字段，如果存在 :c:member:`~PyObject._ob_prev` 和 "
+":c:member:`~PyObject._ob_next` 字段则将相应地包括这些字段。 这意味着为 "
+":c:member:`~PyTypeObject.tp_basicsize` 获取初始化器的唯一正确方式是在用于声明实例布局的结构上使用 "
+"``sizeof`` 操作符。 基本大小不包括 GC 标头的大小。"
 
 #: ../../c-api/typeobj.rst:638
 msgid ""
@@ -1449,12 +1491,16 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_basicsize` is a multiple of ``sizeof(double)`` "
 "(assuming this is the alignment requirement for ``double``)."
 msgstr ""
+"关于对齐的说明：如果变量条目需要特定的对齐，则应通过 :c:member:`~PyTypeObject.tp_basicsize` 的值来处理。 "
+"例如：假设某个类型实现了一个 ``double`` 数组。 :c:member:`~PyTypeObject.tp_itemsize` 就是 "
+"``sizeof(double)``。 程序员有责任确保 :c:member:`~PyTypeObject.tp_basicsize` 是 "
+"``sizeof(double)`` 的倍数（假设这是 ``double`` 的对齐要求）。"
 
 #: ../../c-api/typeobj.rst:645
 msgid ""
 "For any type with variable-length instances, this field must not be "
 "``NULL``."
-msgstr "对于任何具有可变长度实例的类型，该字段必须不为 ``NULL``。"
+msgstr "对于任何具有可变长度实例的类型，该字段不可为 ``NULL``。"
 
 #: ../../c-api/typeobj.rst:649
 msgid ""
@@ -1463,6 +1509,8 @@ msgid ""
 "set :c:member:`~PyTypeObject.tp_itemsize` to a different non-zero value in a"
 " subtype (though this depends on the implementation of the base type)."
 msgstr ""
+"这些字段将由子类分别继承。 如果基本类型有一个非零的 :c:member:`~PyTypeObject.tp_itemsize`，那么在子类型中将 "
+":c:member:`~PyTypeObject.tp_itemsize` 设置为不同的非零值通常是不安全的（不过这取决于该基本类型的具体实现）。"
 
 #: ../../c-api/typeobj.rst:657
 msgid ""
@@ -1580,6 +1628,8 @@ msgid ""
 "Group: :c:member:`~PyTypeObject.tp_getattr`, "
 ":c:member:`~PyTypeObject.tp_getattro`"
 msgstr ""
+"分组: :c:member:`~PyTypeObject.tp_getattr`, "
+":c:member:`~PyTypeObject.tp_getattro`"
 
 #: ../../c-api/typeobj.rst:768
 msgid ""
@@ -1615,6 +1665,8 @@ msgid ""
 "Group: :c:member:`~PyTypeObject.tp_setattr`, "
 ":c:member:`~PyTypeObject.tp_setattro`"
 msgstr ""
+"分组: :c:member:`~PyTypeObject.tp_setattr`, "
+":c:member:`~PyTypeObject.tp_setattro`"
 
 #: ../../c-api/typeobj.rst:785
 msgid ""
@@ -1915,10 +1967,11 @@ msgid ""
 ":c:data:`PyBaseObject_Type` uses ``Py_TPFLAGS_DEFAULT | "
 "Py_TPFLAGS_BASETYPE``."
 msgstr ""
+":c:data:`PyBaseObject_Type` 使用 ``Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE``。"
 
 #: ../../c-api/typeobj.rst:1037
 msgid "**Bit Masks:**"
-msgstr ""
+msgstr "**位掩码:**"
 
 #: ../../c-api/typeobj.rst:1041
 msgid ""
@@ -1928,6 +1981,9 @@ msgid ""
 ":c:func:`PyType_HasFeature` takes a type and a flags value, *tp* and *f*, "
 "and checks whether ``tp->tp_flags & f`` is non-zero."
 msgstr ""
+"目前定义了以下位掩码；可以使用 ``|`` 运算符对它们进行 OR 运算以形成 :c:member:`~PyTypeObject.tp_flags` "
+"字段的值。 宏 :c:func:`PyType_HasFeature` 接受一个类型和一个旗标值 *tp* 和 *f*，并检查 "
+"``tp->tp_flags & f`` 是否为非零值。"
 
 #: ../../c-api/typeobj.rst:1048
 msgid ""
@@ -2125,6 +2181,8 @@ msgid ""
 "subclasses (e.g. for an :term:`abstract base class`), do not use this flag. "
 "Instead, make :c:member:`~PyTypeObject.tp_new` only succeed for subclasses."
 msgstr ""
+"要禁止直接实例化一个类但允许实例化其子类 (例如对于 :term:`abstract base class`)，请勿使用此旗标。 替代的做法是，让 "
+":c:member:`~PyTypeObject.tp_new` 只对子类可用。"
 
 #: ../../c-api/typeobj.rst:1243
 msgid ""
@@ -2486,6 +2544,8 @@ msgid ""
 "object.  Its presence normally signals that the instances of this type are "
 ":term:`iterable` (although sequences may be iterable without this function)."
 msgstr ""
+"一个可选的指向函数的指针，该函数返回对象的 :term:`iterator`。 它的存在通常表明该类型的实例为 :term:`iterable` "
+"(尽管序列在没有此函数的情况下也可能为可迭代对象)。"
 
 #: ../../c-api/typeobj.rst:1546
 msgid "This function has the same signature as :c:func:`PyObject_GetIter`::"
@@ -2495,7 +2555,7 @@ msgstr ""
 msgid ""
 "An optional pointer to a function that returns the next item in an "
 ":term:`iterator`. The signature is::"
-msgstr ""
+msgstr "一个可选的指向函数的指针，该函数返回 :term:`iterator` 中的下一项。 其签名为::"
 
 #: ../../c-api/typeobj.rst:1562
 msgid ""
@@ -2590,7 +2650,7 @@ msgstr ""
 #: ../../c-api/typeobj.rst:1636
 msgid ""
 "However, the unary '&' operator applied to a non-static variable like "
-":c:func:`PyBaseObject_Type` is not required to produce an address constant."
+":c:data:`PyBaseObject_Type` is not required to produce an address constant."
 "  Compilers may support this (gcc does), MSVC does not. Both compilers are "
 "strictly standard conforming in this particular behavior."
 msgstr ""
@@ -3238,6 +3298,8 @@ msgid ""
 ":c:func:`!PySequence_Contains` simply traverses the sequence until it finds "
 "a match."
 msgstr ""
+"该函数可供 :c:func:`PySequence_Contains` 使用并具有相同的签名。 此槽位可以保持为 ``NULL``，在此情况下 "
+":c:func:`!PySequence_Contains` 只需遍历该序列直到找到一个匹配。"
 
 #: ../../c-api/typeobj.rst:2318
 msgid ""
@@ -3285,8 +3347,8 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:2360
 msgid ""
-"Check if the request can be met. If not, raise :c:data:`PyExc_BufferError`, "
-"set :c:expr:`view->obj` to ``NULL`` and return ``-1``."
+"Check if the request can be met. If not, raise :exc:`BufferError`, set "
+":c:expr:`view->obj` to ``NULL`` and return ``-1``."
 msgstr ""
 
 #: ../../c-api/typeobj.rst:2363
@@ -3404,7 +3466,7 @@ msgstr ""
 msgid ""
 "The returned object must be an :term:`iterator`, i.e. :c:func:`PyIter_Check`"
 " must return ``1`` for it."
-msgstr ""
+msgstr "返回的对象必须为 :term:`iterator`，即对其执行 :c:func:`PyIter_Check` 必须返回 ``1``。"
 
 #: ../../c-api/typeobj.rst:2462
 msgid ""

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 14:43+0000\n"
+"POT-Creation-Date: 2023-09-08 14:42+0000\n"
 "PO-Revision-Date: 2023-05-24 02:09+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -373,8 +373,7 @@ msgstr ""
 msgid ""
 "Set by the :option:`-s` and :option:`-I` options, and the "
 ":envvar:`PYTHONNOUSERSITE` environment variable."
-msgstr ""
-"由 :option:`-s` 和 :option:`-I` 选项，以及 :envvar:`PYTHONNOUSERSITE` 环境变量设置。"
+msgstr "由 :option:`-s` 和 :option:`-I` 选项以及 :envvar:`PYTHONNOUSERSITE` 环境变量设置。"
 
 #: ../../c-api/init.rst:196
 msgid ""
@@ -399,7 +398,7 @@ msgstr "强制 stdout 和 stderr 流不带缓冲。"
 msgid ""
 "Set by the :option:`-u` option and the :envvar:`PYTHONUNBUFFERED` "
 "environment variable."
-msgstr ""
+msgstr "由 :option:`-u` 选项和 :envvar:`PYTHONUNBUFFERED` 环境变量设置。"
 
 #: ../../c-api/init.rst:216
 msgid ""
@@ -408,12 +407,14 @@ msgid ""
 "to ``2``, print a message for each file that is checked for when searching "
 "for a module. Also provides information on module cleanup at exit."
 msgstr ""
+"每次初始化模块时打印一条消息，显示加载模块的位置（文件名或内置模块）。 如果大于或等于 ``2``，则为搜索模块时检查的每个文件打印一条消息。 "
+"此外还会在退出时提供模块清理信息。"
 
 #: ../../c-api/init.rst:221
 msgid ""
 "Set by the :option:`-v` option and the :envvar:`PYTHONVERBOSE` environment "
 "variable."
-msgstr ""
+msgstr "由 :option:`-v` 选项和 :envvar:`PYTHONVERBOSE` 环境变量设置。"
 
 #: ../../c-api/init.rst:226
 msgid "Initializing and finalizing the interpreter"
@@ -425,6 +426,8 @@ msgid ""
 "this should be called before using any other Python/C API functions; see "
 ":ref:`Before Python Initialization <pre-init-safe>` for the few exceptions."
 msgstr ""
+"初始化 Python 解释器。 在嵌入 Python 的应用程序中，它应当在使用任何其他 Python/C API 函数之前被调用；请参阅 "
+":ref:`在 Python 初始化之前 <pre-init-safe>` 了解少数的例外情况。"
 
 #: ../../c-api/init.rst:248
 msgid ""
@@ -435,6 +438,10 @@ msgid ""
 "called for a second time (without calling :c:func:`Py_FinalizeEx` first).  "
 "There is no return value; it is a fatal error if the initialization fails."
 msgstr ""
+"这将初始化已加载模块表 (``sys.modules``)，并创建基本模块 :mod:`builtins`、:mod:`__main__` 和 "
+":mod:`sys`。 它还会初始化模块搜索路径 (``sys.path``)。 它不会设置 ``sys.argv``；如有需要请使用 "
+":c:func:`PySys_SetArgvEx`。 当第二次调用时 (在未事先调用 :c:func:`Py_FinalizeEx` 的情况下) "
+"将不会执行任何操作。 它没有返回值；如果初始化失败则会发生致命错误。"
 
 #: ../../c-api/init.rst:257
 msgid ""
@@ -450,6 +457,8 @@ msgid ""
 "*initsigs* is ``0``, it skips initialization registration of signal "
 "handlers, which might be useful when Python is embedded."
 msgstr ""
+"如果 *initsigs* 为 ``1`` 则该函数的工作方式与 :c:func:`Py_Initialize` 类似。 如果 *initsigs* 为"
+" ``0``，它将跳过信号处理句柄的初始化注册，这在嵌入 Python 时可能会很有用处。"
 
 #: ../../c-api/init.rst:270
 msgid ""
@@ -457,6 +466,8 @@ msgid ""
 "false (zero) if not.  After :c:func:`Py_FinalizeEx` is called, this returns "
 "false until :c:func:`Py_Initialize` is called again."
 msgstr ""
+"如果 Python 解释器已初始化，则返回真值（非零）；否则返回假值（零）。 在调用 :c:func:`Py_FinalizeEx` "
+"之后，此函数将返回假值直到 :c:func:`Py_Initialize` 再次被调用。"
 
 #: ../../c-api/init.rst:277
 msgid ""
@@ -469,6 +480,10 @@ msgid ""
 "Normally the return value is ``0``.  If there were errors during "
 "finalization (flushing buffered data), ``-1`` is returned."
 msgstr ""
+"撤销 :c:func:`Py_Initialize` 所做的所有初始化操作和后续对 Python/C API 函数的使用，并销毁自上次调用 "
+":c:func:`Py_Initialize` 以来创建但尚未销毁的所有子解释器（参见下文 :c:func:`Py_NewInterpreter` "
+"一节)。 在理想情况下，这会释放 Python 解释器分配的所有内存。 当第二次调用时（在未再次调用 :c:func:`Py_Initialize` "
+"的情况下），这将不执行任何操作。 正常情况下返回值是 ``0``。 如果在最终化（刷新缓冲数据）过程中出现错误，则返回 ``-1``。"
 
 #: ../../c-api/init.rst:286
 msgid ""
@@ -496,22 +511,28 @@ msgid ""
 " an application calls :c:func:`Py_Initialize` and :c:func:`Py_FinalizeEx` "
 "more than once."
 msgstr ""
+"**程序问题和注意事项:** 模块和模块中对象的销毁是按随机顺序进行的；这可能导致依赖于其他对象（甚至函数）或模块的析构器（即 "
+":meth:`~object.__del__` 方法）出错。 Python 所加载的动态加载扩展模块不会被卸载。 Python "
+"解释器所分配的少量内存可能不会被释放（如果发现内存泄漏，请报告问题）。 对象间循环引用所占用的内存不会被释放。 扩展模块所分配的某些内存可能不会被释放。"
+" 如果某些扩展的初始化例程被调用多次它们可能无法正常工作；如果应用程序多次调用了 :c:func:`Py_Initialize` 和 "
+":c:func:`Py_FinalizeEx` 就可能发生这种情况。"
 
 #: ../../c-api/init.rst:305
 msgid ""
 "Raises an :ref:`auditing event <auditing>` "
 "``cpython._PySys_ClearAuditHooks`` with no arguments."
 msgstr ""
+"引发一个 :ref:`审计事件 <auditing>` ``cpython._PySys_ClearAuditHooks``，不附带任何参数。"
 
 #: ../../c-api/init.rst:311
 msgid ""
 "This is a backwards-compatible version of :c:func:`Py_FinalizeEx` that "
 "disregards the return value."
-msgstr ""
+msgstr "这是一个不考虑返回值的 :c:func:`Py_FinalizeEx` 的向下兼容版本。"
 
 #: ../../c-api/init.rst:316
 msgid "Process-wide parameters"
-msgstr ""
+msgstr "进程级参数"
 
 #: ../../c-api/init.rst:326
 msgid ""
@@ -520,6 +541,8 @@ msgid ""
 "should be used instead, see :ref:`Python Initialization Configuration <init-"
 "config>`."
 msgstr ""
+"此 API 被保留用于向下兼容：应当改为设置 :c:member:`PyConfig.stdio_encoding` 和 "
+":c:member:`PyConfig.stdio_errors`，参见 :ref:`Python 初始化配置 <init-config>`。"
 
 #: ../../c-api/init.rst:331
 msgid ""
@@ -527,24 +550,28 @@ msgid ""
 "called at all. It specifies which encoding and error handling to use with "
 "standard IO, with the same meanings as in :func:`str.encode`."
 msgstr ""
+"如果要调用该函数，应当在 :c:func:`Py_Initialize` 之前调用。 它指定了标准 IO 使用的编码格式和错误处理方式，其含义与 "
+":func:`str.encode` 中的相同。"
 
 #: ../../c-api/init.rst:335
 msgid ""
 "It overrides :envvar:`PYTHONIOENCODING` values, and allows embedding code to"
 " control IO encoding when the environment variable does not work."
-msgstr ""
+msgstr "它覆盖了 :envvar:`PYTHONIOENCODING` 的值，并允许嵌入代码以便在环境变量不起作用时控制 IO 编码格式。"
 
 #: ../../c-api/init.rst:338
 msgid ""
 "*encoding* and/or *errors* may be ``NULL`` to use :envvar:`PYTHONIOENCODING`"
 " and/or default values (depending on other settings)."
 msgstr ""
+"*encoding* 和/或 *errors* 可以为 ``NULL`` 以使用 :envvar:`PYTHONIOENCODING` "
+"和/或默认值（取决于其他设置）。"
 
 #: ../../c-api/init.rst:342
 msgid ""
 "Note that :data:`sys.stderr` always uses the \"backslashreplace\" error "
 "handler, regardless of this (or any other) setting."
-msgstr ""
+msgstr "请注意无论是否有此设置（或任何其他设置），:data:`sys.stderr` 都会使用 \"backslashreplace\" 错误处理句柄。"
 
 #: ../../c-api/init.rst:345
 msgid ""
