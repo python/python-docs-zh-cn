@@ -403,6 +403,9 @@ msgid ""
 "and will hold a reference to the module or object instance.  In all cases "
 "the second parameter will be ``NULL``."
 msgstr ""
+"如果通过 :c:macro:`METH_NOARGS` 旗标列出了参数则没有形参的方法无需检查是否给出了参数。 它们必须为 "
+":c:type:`PyCFunction` 类型。 第一个形参通常被命名为 *self* 并将持有对模块或对象实例的引用。 在所有情况下第二个形参都将为"
+" ``NULL``。"
 
 #: ../../c-api/structures.rst:350
 msgid ""
@@ -418,6 +421,9 @@ msgid ""
 "*self* parameter, and a :c:expr:`PyObject*` parameter representing the "
 "single argument."
 msgstr ""
+"具有一个单独对象参数的方法可使用 :c:macro:`METH_O` 旗标列出，而不必发起调用 :c:func:`PyArg_ParseTuple` "
+"并附带 ``\"O\"`` 参数。 它们的类型为 :c:type:`PyCFunction`，带有 *self* 形参，以及代表该单独参数的 "
+":c:expr:`PyObject*` 形参。"
 
 #: ../../c-api/structures.rst:362
 msgid ""
@@ -464,6 +470,10 @@ msgid ""
 "This is helpful because calls to PyCFunctions are optimized more than "
 "wrapper object calls."
 msgstr ""
+"该方法将被加载以替代现有的定义。 如果没有 *METH_COEXIST*，默认将跳过重复的定义。 由于槽位包装器会在方法表之前被加载，例如 当存在 "
+"*sq_contains* 槽位时，将会生成一个名为 :meth:`~object.__contains__` 的已包装方法并阻止加载同名的相应 "
+"PyCFunction。 如果定义了此旗标，PyCFunction 将被加载以替代此包装器对象并与槽位共存。 因为对 PyCFunction "
+"的调用相比对包装器对象调用更为优化所以这是很有帮助的。"
 
 #: ../../c-api/structures.rst:404
 msgid "Accessing attributes of extension types"
@@ -504,7 +514,7 @@ msgstr "零个或多个 :ref:`PyMemberDef-flags`，使用按位或运算进行�
 msgid ""
 "The docstring, or NULL. The string should be static, no copy is made of it. "
 "Typically, it is defined using :c:macro:`PyDoc_STR`."
-msgstr ""
+msgstr "文档字符串，或者为空。 该字符串应当是静态的，它不会被拷贝。 通常，它是使用 :c:macro:`PyDoc_STR` 来定义的。"
 
 #: ../../c-api/structures.rst:437
 msgid ""
@@ -514,6 +524,10 @@ msgid ""
 ":c:macro:`Py_READONLY`. Only :c:macro:`Py_T_OBJECT_EX` (and legacy "
 ":c:macro:`T_OBJECT`) members can be deleted."
 msgstr ""
+"默认情况下 (当 :c:member:`~PyMemberDef.flags` 为 ``0`` 时)，成员同时允许读取和写入访问。 使用 "
+":c:macro:`Py_READONLY` 旗标表示只读访问。 某些类型，如 :c:macro:`Py_T_STRING`，隐含要求 "
+":c:macro:`Py_READONLY`。 只有 :c:macro:`Py_T_OBJECT_EX` (以及旧式的 "
+":c:macro:`T_OBJECT`) 成员可以删除。"
 
 #: ../../c-api/structures.rst:446
 msgid ""
@@ -523,10 +537,14 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_vectorcall_offset` in type objects. These must "
 "be defined with ``Py_T_PYSSIZET`` and ``Py_READONLY``, for example::"
 msgstr ""
+"对于堆分配类型（使用 :c:func:`PyType_FromSpec` 或类似函数创建），``PyMemberDef`` 可能包含特殊成员 "
+"``\"__vectorcalloffset__\"`` 的定义，与类型对象中的 "
+":c:member:`~PyTypeObject.tp_vectorcall_offset` 相对应。 它们必须用 ``Py_T_PYSSIZET`` "
+"和 ``Py_READONLY`` 来定义，例如::"
 
 #: ../../c-api/structures.rst:458
 msgid "(You may need to ``#include <stddef.h>`` for :c:func:`!offsetof`.)"
-msgstr ""
+msgstr "（您可能需要为 :c:func:`!offsetof` 添加 ``#include <stddef.h>``。）"
 
 #: ../../c-api/structures.rst:460
 msgid ""
@@ -536,12 +554,16 @@ msgid ""
 "extensions are strongly encouraged to use :c:macro:`Py_TPFLAGS_MANAGED_DICT`"
 " and :c:macro:`Py_TPFLAGS_MANAGED_WEAKREF` instead."
 msgstr ""
+"旧式的偏移量 :c:member:`~PyTypeObject.tp_dictoffset` 和 "
+":c:member:`~PyTypeObject.tp_weaklistoffset` 可使用 ``\"__dictoffset__\"`` 和 "
+"``\"__weaklistoffset__\"`` 成员进行类似的定义，但强烈建议扩展程序改用 "
+":c:macro:`Py_TPFLAGS_MANAGED_DICT` 和 :c:macro:`Py_TPFLAGS_MANAGED_WEAKREF`。"
 
 #: ../../c-api/structures.rst:468
 msgid ""
 "``PyMemberDef`` is always available. Previously, it required including "
 "``\"structmember.h\"``."
-msgstr ""
+msgstr "``PyMemberDef`` 将始终可用。在之前版本中，它需要包括 ``\"structmember.h\"``。"
 
 #: ../../c-api/structures.rst:473
 msgid ""
@@ -588,7 +610,7 @@ msgstr "不可写入。"
 msgid ""
 "Emit an ``object.__getattr__`` :ref:`audit event <audit-events>` before "
 "reading."
-msgstr ""
+msgstr "在读取之前发出一个 ``object.__getattr__`` :ref:`审计事件 <audit-events>`。"
 
 #: ../../c-api/structures.rst:511
 msgid ""
@@ -596,6 +618,8 @@ msgid ""
 "entry indicates an offset from the subclass-specific data, rather than from "
 "``PyObject``."
 msgstr ""
+"表示该 ``PyMemberDef`` 条目的 :c:member:`~PyMemberDef.offset` "
+"是指明来自子类专属数据的偏移量，而不是来自 ``PyObject`` 的偏移量。"
 
 #: ../../c-api/structures.rst:515
 msgid ""
