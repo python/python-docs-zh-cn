@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-08 14:13+0000\n"
+"POT-Creation-Date: 2023-09-15 14:13+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1616,6 +1616,9 @@ msgid ""
 "behaves as if :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` was not set: calling the"
 " instance falls back to :c:member:`~PyTypeObject.tp_call`."
 msgstr ""
+"*vectorcallfunc* 指针可能为 ``NULL``，在这种情况下实例的行为就像 "
+":c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 没有被设置一样：调用实例操作会回退至 "
+":c:member:`~PyTypeObject.tp_call`。"
 
 #: ../../c-api/typeobj.rst:728
 msgid ""
@@ -1624,12 +1627,17 @@ msgid ""
 "with the *vectorcallfunc* function. This can be done by setting *tp_call* to"
 " :c:func:`PyVectorcall_Call`."
 msgstr ""
+"任何设置了 ``Py_TPFLAGS_HAVE_VECTORCALL`` 的类也必须设置 "
+":c:member:`~PyTypeObject.tp_call` 并确保其行为与 *vectorcallfunc* 函数一致。 这可以通过将 "
+"*tp_call* 设为 :c:func:`PyVectorcall_Call` 来实现。"
 
 #: ../../c-api/typeobj.rst:735
 msgid ""
 "Before version 3.8, this slot was named ``tp_print``. In Python 2.x, it was "
 "used for printing to a file. In Python 3.0 to 3.7, it was unused."
 msgstr ""
+"在 3.8 版之前，这个槽位被命名为 ``tp_print``。 在 Python 2.x 中，它被用于打印到文件。 在 Python 3.0 至 "
+"3.7 中，它没有被使用。"
 
 #: ../../c-api/typeobj.rst:741
 msgid ""
@@ -1640,6 +1648,10 @@ msgid ""
 "``__call__`` will disable vectorcall optimization by clearing the "
 ":c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` flag."
 msgstr ""
+"在 3.12 版之前，不推荐 :ref:`可变堆类型 <heap-types>` 实现 vectorcall 协议。 当用户在 Python 代码中设置"
+" :attr:`~object.__call__` 时，只有 *tp_call* 会被更新，很可能使它与 vectorcall 函数不一致。 自 "
+"3.12 起，设置 ``__call__`` 将通过清除 :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标来禁用 "
+"vectorcall 优化。"
 
 #: ../../c-api/typeobj.rst:751
 msgid ""
@@ -1648,6 +1660,9 @@ msgid ""
 "not set, then the subclass won't use :ref:`vectorcall <vectorcall>`, except "
 "when :c:func:`PyVectorcall_Call` is explicitly called."
 msgstr ""
+"该字段总是会被继承。 但是，:c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标并不总是会被继承。 "
+"如果它未被设置，则子类不会使用 :ref:`vectorcall <vectorcall>`，除非显式地调用了 "
+":c:func:`PyVectorcall_Call`。"
 
 #: ../../c-api/typeobj.rst:760
 msgid "An optional pointer to the get-attribute-string function."
@@ -1780,32 +1795,34 @@ msgid ""
 "returned, where ``%s`` is replaced by the type name, and ``%p`` by the "
 "object's memory address."
 msgstr ""
+"如果未设置该字段，则返回 ``<%s object at %p>`` 形式的字符串，其中 ``%s`` 将替换为类型名称，``%p`` "
+"将替换为对象的内存地址。"
 
 #: ../../c-api/typeobj.rst:838
 msgid ""
 "Pointer to an additional structure that contains fields relevant only to "
 "objects which implement the number protocol.  These fields are documented in"
 " :ref:`number-structs`."
-msgstr ""
+msgstr "指向一个附加结构体的指针，其中包含只与执行数字协议的对象相关的字段。 这些字段的文档参见 :ref:`number-structs`。"
 
 #: ../../c-api/typeobj.rst:844
 msgid ""
 "The :c:member:`~PyTypeObject.tp_as_number` field is not inherited, but the "
 "contained fields are inherited individually."
-msgstr ""
+msgstr ":c:member:`~PyTypeObject.tp_as_number` 字段不会被继承，但所包含的字段会被单独继承。"
 
 #: ../../c-api/typeobj.rst:850
 msgid ""
 "Pointer to an additional structure that contains fields relevant only to "
 "objects which implement the sequence protocol.  These fields are documented "
 "in :ref:`sequence-structs`."
-msgstr ""
+msgstr "指向一个附加结构体的指针，其中包含只与执行序列协议的对象相关的字段。 这些字段的文档见 :ref:`sequence-structs`。"
 
 #: ../../c-api/typeobj.rst:856
 msgid ""
 "The :c:member:`~PyTypeObject.tp_as_sequence` field is not inherited, but the"
 " contained fields are inherited individually."
-msgstr ""
+msgstr ":c:member:`~PyTypeObject.tp_as_sequence` 字段不会被继承，但所包含的字段会被单独继承。"
 
 #: ../../c-api/typeobj.rst:862
 msgid ""
