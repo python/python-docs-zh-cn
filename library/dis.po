@@ -498,7 +498,7 @@ msgstr "连续移除堆栈顶部的两个值。 等价于 ``POP_TOP``; ``POP_TOP
 msgid ""
 "Push the i-th item to the top of the stack without removing it from its "
 "original location::"
-msgstr ""
+msgstr "将第 *i* 项推入栈顶，并不移除原项："
 
 #: ../../library/dis.rst:444
 msgid "Swap the top of the stack with the i-th element::"
@@ -897,7 +897,7 @@ msgstr ""
 msgid ""
 "Unpacks ``STACK[-1]`` into *count* individual values, which are put onto the"
 " stack right-to-left. Require there to be exactly *count* values.::"
-msgstr "将 ``STACK[-1]`` 解包为 *count* 个单独的值，然后自左向右放入栈中。要求有确切的 *count* 值："
+msgstr "将 ``STACK[-1]`` 解包为 *count* 个单独的值，然后自右向左放入栈中。要求有确切的 *count* 值："
 
 #: ../../library/dis.rst:875
 msgid ""
@@ -912,7 +912,7 @@ msgstr ""
 #: ../../library/dis.rst:880
 msgid ""
 "The number of values before and after the list value is limited to 255."
-msgstr "不论是否有此列表，值的数量都被限制在255。"
+msgstr "在列表前后的值的数量被限制在255。"
 
 #: ../../library/dis.rst:882
 msgid ""
@@ -922,24 +922,28 @@ msgid ""
 "values where the low byte of *counts* is the number of values before the "
 "list value, the high byte of *counts* the number of values after it."
 msgstr ""
+"列表前的值的数量被编码在操作码的参数之中。 如果列表后有值，则其数量会被用 ``EXTENDED_ARG`` 编码。 "
+"因此参数可以被认为是一个双字节值，其中低位字节代表列表前的值的数量，高位字节代表其后的值的数量。"
 
 #: ../../library/dis.rst:888
 msgid ""
 "The extracted values are put onto the stack right-to-left, i.e. ``a, *b, c ="
 " d`` will be stored after execution as ``STACK.extend((a, b, c))``."
 msgstr ""
+"提取出来的值被自右向左放入栈中，也就是说 ``a, *b, c = d`` 在执行完成之后会被这样储存： ``STACK.extend((a, b, "
+"c))`` 。"
 
 #: ../../library/dis.rst:900
 msgid ""
 "where *namei* is the index of name in :attr:`!co_names` of the :ref:`code "
 "object <code-objects>`."
-msgstr ""
+msgstr "其中 *namei* 是名称在 :ref:`代码对象 <code-objects>` 的 :attr:`!co_names` 中的索引。"
 
 #: ../../library/dis.rst:910
 msgid ""
 "where *namei* is the index of name into :attr:`!co_names` of the :ref:`code "
 "object <code-objects>`."
-msgstr ""
+msgstr "其中 *namei* 是名称在 :ref:`代码对象 <code-objects>` 的 :attr:`!co_names` 中的索引。"
 
 #: ../../library/dis.rst:916
 msgid "Works as :opcode:`STORE_NAME`, but stores the name as a global."
@@ -957,7 +961,7 @@ msgstr "将 ``co_consts[consti]`` 推入栈顶。"
 msgid ""
 "Pushes the value associated with ``co_names[namei]`` onto the stack. The "
 "name is looked up within the locals, then the globals, then the builtins."
-msgstr ""
+msgstr "将 ``co_names[namei]`` 关联的值压入栈中。 名称的查找范围包括局部变量，然后是全局变量，然后是内置量。"
 
 #: ../../library/dis.rst:937
 msgid ""
@@ -965,6 +969,8 @@ msgid ""
 " prepare namespace dictionaries for :opcode:`LOAD_FROM_DICT_OR_DEREF` and "
 ":opcode:`LOAD_FROM_DICT_OR_GLOBALS`."
 msgstr ""
+"将一个局部变量字典的引用压入栈中。 被用于为 :opcode:`LOAD_FROM_DICT_OR_DEREF` 和 "
+":opcode:`LOAD_FROM_DICT_OR_GLOBALS` 准备命名空间字典。"
 
 #: ../../library/dis.rst:946
 msgid ""
@@ -974,12 +980,14 @@ msgid ""
 "variables in :ref:`annotation scopes <annotation-scopes>` within class "
 "bodies."
 msgstr ""
+"从栈中弹出一个映射，在其中查找 ``co_names[namei]``。 如果在此没有找到相应的名称，则在全局变量和内置量中查找，类似 "
+":opcode:`LOAD_GLOBAL` 。 被用于在类定义中的 :ref:`标注作用域 <annotation-scopes>` 中加载全局变量。"
 
 #: ../../library/dis.rst:957
 msgid ""
 "Creates a tuple consuming *count* items from the stack, and pushes the "
 "resulting tuple onto the stack.::"
-msgstr ""
+msgstr "创建一个使用了来自栈的 *count* 个项的元组，并将结果元组推入栈顶："
 
 #: ../../library/dis.rst:967
 msgid "Works as :opcode:`BUILD_TUPLE`, but creates a list."
@@ -1420,7 +1428,7 @@ msgstr "旗标值 ``0x04`` 是一个字符串元组而非字典。"
 
 #: ../../library/dis.rst:1400
 msgid "Qualified name at ``STACK[-1]`` was removed."
-msgstr ""
+msgstr "位于 ``STACK[-1]`` 的限定名称已被移除。"
 
 #: ../../library/dis.rst:1408
 msgid ""
@@ -1727,7 +1735,7 @@ msgstr "``INTRINSIC_TYPEVAR_WITH_BOUND``"
 
 #: ../../library/dis.rst:1594
 msgid "Creates a :class:`typing.TypeVar` with a bound."
-msgstr "创建一个带范围的 :class:`typing.TypeVar` "
+msgstr "创建一个带范围的 :class:`typing.TypeVar` 。"
 
 #: ../../library/dis.rst:1597
 msgid "``INTRINSIC_TYPEVAR_WITH_CONSTRAINTS``"
@@ -1743,7 +1751,7 @@ msgstr "``INTRINSIC_SET_FUNCTION_TYPE_PARAMS``"
 
 #: ../../library/dis.rst:1601
 msgid "Sets the ``__type_params__`` attribute of a function."
-msgstr ""
+msgstr "为一个函数设置 ``__type_params__`` 属性。"
 
 #: ../../library/dis.rst:1608
 msgid "**Pseudo-instructions**"
