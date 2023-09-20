@@ -1082,12 +1082,16 @@ msgid ""
 "class within which the current method was defined), and the global "
 "``super``."
 msgstr ""
+"该操作码实现了 :func:`super` (例如 ``super().method()`` 和 ``super().attr``)。 它的作用方式与 "
+":opcode:`LOAD_ATTR` 相同，区别在于 ``namei`` 左移了 2 位而不是 1 "
+"位，而且它不再需要栈上的单个接收器，而是需要三个对象 (从栈顶向下): ``self`` (当前方法的第一个参数)、``cls`` (定义当前方法的类)"
+" 和全局 ``super``。"
 
 #: ../../library/dis.rst:1073
 msgid ""
 "The low bit of ``namei`` signals to attempt a method load, as with "
 ":opcode:`LOAD_ATTR`."
-msgstr ""
+msgstr "``namei`` 的低位指示要尝试进行方法加载，就像使用 :opcode:`LOAD_ATTR` 那样。"
 
 #: ../../library/dis.rst:1076
 msgid ""
@@ -1154,6 +1158,8 @@ msgid ""
 "opcode is a pseudo-instruction, replaced in final bytecode by the directed "
 "versions (forward/backward)."
 msgstr ""
+"操作符的参数现在是一个相对的差值而不是一个绝对的目标量。 此操作码是一个伪指令，在最终的字节码里被定向的版本（ forward/backward "
+"）取代。"
 
 #: ../../library/dis.rst:1146 ../../library/dis.rst:1159
 #: ../../library/dis.rst:1172 ../../library/dis.rst:1186
@@ -1176,7 +1182,7 @@ msgstr "如果 ``STACK[-1]`` 不为 ``None`` ，则将字节码计数器增加 *
 msgid ""
 "This opcode is a pseudo-instruction, replaced in final bytecode by the "
 "directed versions (forward/backward)."
-msgstr ""
+msgstr "此操作码是一个伪指令，在最终的字节码里被定向的版本（ forward/backward ）取代。"
 
 #: ../../library/dis.rst:1178
 msgid ""
@@ -1191,10 +1197,12 @@ msgid ""
 "iterator below it).  If the iterator indicates it is exhausted then the byte"
 " code counter is incremented by *delta*."
 msgstr ""
+"``STACK[-1]`` 是一个 :term:`iterator`。 调用其 :meth:`~iterator.__next__` 方法。 "
+"如果产生一个新的值则压入栈中 （把迭代器压下去）。 如果迭代器已耗尽，则将字节码计数器增加 *delta* 。"
 
 #: ../../library/dis.rst:1196
 msgid "Up until 3.11 the iterator was popped when it was exhausted."
-msgstr ""
+msgstr "直到 3.11 ，当迭代器耗尽时，它会被从栈中弹出。"
 
 #: ../../library/dis.rst:1201
 msgid "Loads the global named ``co_names[namei>>1]`` onto the stack."
@@ -1223,6 +1231,8 @@ msgid ""
 "raising an :exc:`UnboundLocalError` if the local variable has not been "
 "initialized."
 msgstr ""
+"将一个指向局部变量 ``co_varnames[var_num]`` 的引用推入栈中，如果该局部变量未被初始化，引发一个 "
+":exc:`UnboundLocalError` 。"
 
 #: ../../library/dis.rst:1225
 msgid ""
@@ -1230,6 +1240,8 @@ msgid ""
 "pushes ``NULL`` onto the stack if the local variable has not been "
 "initialized) and sets ``co_varnames[var_num]`` to ``NULL``."
 msgstr ""
+"将一个指向局部变量 ``co_varnames[var_num]`` 的引用推入栈中（如果该局部变量未被初始化，则推入一个 ``NULL`` ）然后将 "
+"``co_varnames[var_num]`` 设为 ``NULL`` 。"
 
 #: ../../library/dis.rst:1233
 msgid "Stores ``STACK.pop()`` into the local ``co_varnames[var_num]``."
@@ -1284,7 +1296,7 @@ msgstr ""
 msgid ""
 "Stores ``STACK.pop()`` into the cell contained in slot ``i`` of the \"fast "
 "locals\" storage."
-msgstr ""
+msgstr "将 ``STACK.pop()`` 存放到 \"fast locals\" 存储中包含在 ``i`` 号槽位的单元内。"
 
 #: ../../library/dis.rst:1294
 msgid ""
@@ -1530,7 +1542,7 @@ msgstr "``where`` 操作数标记 ``RESUME`` 在哪里发生:"
 msgid ""
 "``0`` The start of a function, which is neither a generator, coroutine nor "
 "an async generator"
-msgstr ""
+msgstr "``0`` 在函数的开头。 函数不能是生成器、协程或者异步生成器。"
 
 #: ../../library/dis.rst:1480
 msgid "``1`` After a ``yield`` expression"
@@ -1549,13 +1561,15 @@ msgid ""
 "Create a generator, coroutine, or async generator from the current frame. "
 "Used as first opcode of in code object for the above mentioned callables. "
 "Clear the current frame and return the newly created generator."
-msgstr ""
+msgstr "从当前帧中创建一个生成器，协程，或者异步生成器。 被用作上述可调用对象的代码对象第一个操作码。 清除当前帧，返回新创建的生成器。"
 
 #: ../../library/dis.rst:1498
 msgid ""
 "Equivalent to ``STACK[-1] = STACK[-2].send(STACK[-1])``. Used in ``yield "
 "from`` and ``await`` statements."
 msgstr ""
+"等价于 ``STACK[-1] = STACK[-2].send(STACK[-1])`` 。 被用于 ``yield from`` 和 "
+"``await`` 语句。"
 
 #: ../../library/dis.rst:1501
 msgid ""
@@ -1563,6 +1577,8 @@ msgid ""
 "exception's ``value`` attribute, and increment the bytecode counter by "
 "*delta*."
 msgstr ""
+"如果此调用引发了 :exc:`StopIteration` ，将上述两项一并从栈中弹出， 将异常的 ``value`` "
+"属性压入栈中，然后将字节码计数器增加 *delta* 。"
 
 #: ../../library/dis.rst:1510
 msgid ""
@@ -1570,12 +1586,14 @@ msgid ""
 "opcodes in the range [0,255] which don't use their argument and those that "
 "do (``< HAVE_ARGUMENT`` and ``>= HAVE_ARGUMENT``, respectively)."
 msgstr ""
+"这不是一个真正的操作码。 它是 [0,255] 范围内使用与不使用参数的操作码（分别是 ``< HAVE_ARGUMENT`` 和 ``>= "
+"HAVE_ARGUMENT`` ）的分界线。"
 
 #: ../../library/dis.rst:1514
 msgid ""
 "If your application uses pseudo instructions, use the :data:`hasarg` "
 "collection instead."
-msgstr ""
+msgstr "如果你的应用程序使用了伪指令，请使用 :data:`hasarg` 作为替代。"
 
 #: ../../library/dis.rst:1517
 msgid ""
@@ -1590,7 +1608,7 @@ msgid ""
 "Pseudo instructions were added to the :mod:`dis` module, and for them it is "
 "not true that comparison with ``HAVE_ARGUMENT`` indicates whether they use "
 "their arg."
-msgstr ""
+msgstr "伪指令被添加到 :mod:`dis` 模块中，对于它们来说，“比较 ``HAVE_ARGUMENT`` 以确定其是否使用参数”不再有效。"
 
 #: ../../library/dis.rst:1529
 msgid ""
@@ -1768,7 +1786,7 @@ msgid ""
 "These opcodes do not appear in Python bytecode. They are used by the "
 "compiler but are replaced by real opcodes or removed before bytecode is "
 "generated."
-msgstr ""
+msgstr "这些操作码并不出现在 Python 的字节码之中。 它们被编译器所使用，但在生成字节码之前会被替代成真正的操作码。"
 
 #: ../../library/dis.rst:1615
 msgid ""
@@ -1810,7 +1828,7 @@ msgstr ""
 msgid ""
 "Undirected relative jump instructions which are replaced by their directed "
 "(forward/backward) counterparts by the assembler."
-msgstr ""
+msgstr "非定向相对跳转指令会被汇编器转换为它们定向版本（ forward/backward ）"
 
 #: ../../library/dis.rst:1653
 msgid ""
@@ -1832,7 +1850,7 @@ msgstr "提供这些集合用于字节码指令的自动内省："
 msgid ""
 "The collections now contain pseudo instructions as well. These are opcodes "
 "with values ``>= MIN_PSEUDO_OPCODE``."
-msgstr ""
+msgstr "现在这些集合也包含伪指令。 这些操作码的值 ``>= MIN_PSEUDO_OPCODE`` 。"
 
 #: ../../library/dis.rst:1671
 msgid "Sequence of operation names, indexable using the bytecode."
@@ -1848,7 +1866,7 @@ msgstr "所有比较操作名称的序列。"
 
 #: ../../library/dis.rst:1686
 msgid "Sequence of bytecodes that use their argument."
-msgstr ""
+msgstr "所有使用参数的字节码的序列"
 
 #: ../../library/dis.rst:1693
 msgid "Sequence of bytecodes that access a constant."
@@ -1861,6 +1879,8 @@ msgid ""
 "names in outer scopes that are referenced from this scope.  It does *not* "
 "include references to global or builtin scopes."
 msgstr ""
+"访问了 free 变量的字节码的序列。 这里的 ‘free’ 指的是当前作用域中被内层作用域引用的名称或外层作用域被当前作用域引用的名称。 它 "
+"*不包括* 全局或内置作用域的引用。"
 
 #: ../../library/dis.rst:1706
 msgid "Sequence of bytecodes that access an attribute by name."
