@@ -2202,6 +2202,10 @@ msgid ""
 "with a more informative message, therefore making it impossible to call "
 "(instantiate) :class:`ssl.SSLObject`."
 msgstr ""
+":func:`!runtime_checkable` 将只检查所需方法或属性是否存在，而不检查它们的类型签名或类型。 "
+"例如，:class:`ssl.SSLObject` 是一个类，因此它通过了针对 :ref:`Callable <annotating-"
+"callables>` 的 :func:`issubclass` 检查。 但是，``ssl.SSLObject.__init__`` 方法的存在只是引发"
+" :exc:`TypeError` 并附带更具信息量的消息，因此它无法调用 (实例化) :class:`ssl.SSLObject`。"
 
 #: ../../library/typing.rst:2208
 msgid ""
@@ -2222,6 +2226,9 @@ msgid ""
 "no longer be considered instances of that protocol on Python 3.12+, and vice"
 " versa. Most users are unlikely to be affected by this change."
 msgstr ""
+"现在 :func:`isinstance` 的内部实现对于运行时可检查协议的检查会使用 :func:`inspect.getattr_static` "
+"来查找属性 (在之前版本中，会使用 :func:`hasattr`)。 因此，在 Python 3.12+ "
+"上一些以前被认为是运行时可检查协议的实例的对象可能不再被认为是该协议的实例，反之亦反。 大多数用户不太可能受到这一变化的影响。"
 
 #: ../../library/typing.rst:2225
 msgid ""
@@ -2232,6 +2239,9 @@ msgid ""
 ":ref:`\"What's new in Python 3.12\" <whatsnew-typing-py312>` for more "
 "details."
 msgstr ""
+"一旦类被创建则运行时可检查协议的成员就会被视为在运行时“已冻结”。 在运行时可检查协议上打上猴子补丁属性仍然有效，但不会影响将对象与协议进行比较的 "
+":func:`isinstance` 检查。 请参阅 :ref:`\"Python 3.12 有什么新变化 <whatsnew-typing-"
+"py312>` 了解更多细节。"
 
 #: ../../library/typing.rst:2236
 msgid ""
@@ -2339,7 +2349,7 @@ msgstr "``TypedDict`` 也可以为泛型的："
 msgid ""
 "To create a generic ``TypedDict`` that is compatible with Python 3.11 or "
 "lower, inherit from :class:`Generic` explicitly:"
-msgstr ""
+msgstr "要创建与 Python 3.11 或更低版本兼容的泛型 ``TypedDict``，请显式地从 :class:`Generic` 继承："
 
 #: ../../library/typing.rst:2374
 msgid ""
@@ -2355,7 +2365,7 @@ msgstr ""
 #: ../../library/typing.rst:2380
 msgid ""
 "``Point2D.__total__`` gives the value of the ``total`` argument. Example:"
-msgstr ""
+msgstr "``Point2D.__total__`` 给出了 ``total`` 参数的值。 例如："
 
 #: ../../library/typing.rst:2396
 msgid ""
@@ -2366,6 +2376,10 @@ msgid ""
 "``TypedDict`` with ``total=False``. Therefore, it is generally better to use"
 " :attr:`__required_keys__` and :attr:`__optional_keys__` for introspection."
 msgstr ""
+"该属性 *只是* 反映传给当前  ``TypedDict`` 类的``total`` 参数的值，而不反映这个类在语义上是否完整。 例如，一个 "
+"``__total__`` 被设为 True 的 ``TypedDict`` 可能有用 :data:`NotRequired` "
+"标记的键，或者它可能继承自另一个设置了 ``total=False`` 的 ``TypedDict``。 因此，使用 "
+":attr:`__required_keys__` 和 :attr:`__optional_keys__` 进行内省通常会更好。"
 
 #: ../../library/typing.rst:2409
 msgid ""
@@ -2393,6 +2407,9 @@ msgid ""
 "value for the ``total`` argument and then inheriting from it in another "
 "``TypedDict`` with a different value for ``total``:"
 msgstr ""
+"为了向下兼容 Python 3.10 及更老的版本，还可以使用继承机制在同一个 ``TypedDict`` 中同时声明必要和非必要的键。 "
+"这是通过声明一个具有 ``total`` 参数值的 ``TypedDict`` 然后在另一个 ``TypedDict`` 中继承它并使用不同的 "
+"``total`` 值来实现的："
 
 #: ../../library/typing.rst:2440
 msgid ""
@@ -2402,6 +2419,9 @@ msgid ""
 " ``__optional_keys__`` rely on may not work properly, and the values of the "
 "attributes may be incorrect."
 msgstr ""
+"如果使用了 ``from __future__ import annotations`` 或者如果以字符串形式给出标注，那么标注不会在定义 "
+"``TypedDict`` 时被求值。 因此，``__required_keys__`` 和 ``__optional_keys__`` "
+"所依赖的运行时内省可能无法正常工作，这些属性的值也可能不正确。"
 
 #: ../../library/typing.rst:2446
 msgid ""
@@ -2528,6 +2548,8 @@ msgid ""
 " never execute, because ``arg`` is either an :class:`int` or a :class:`str`,"
 " and both options are covered by earlier cases."
 msgstr ""
+"在这里，标注允许类型检查器推断最后一种情况永远不会执行，因为 ``arg`` 要么是 :class:`int` 要么是 "
+":class:`str`，而这两种选项都已被之前的情况覆盖了。"
 
 #: ../../library/typing.rst:2565
 msgid ""
@@ -2538,6 +2560,9 @@ msgid ""
 "``assert_never`` to pass type checking, the inferred type of the argument "
 "passed in must be the bottom type, :data:`Never`, and nothing else."
 msgstr ""
+"如果类型检查器发现对 ``assert_never()`` 的调用是可达的，它将报告一个错误。 举例来说，如果 ``arg`` 的类型标注改为 "
+"``int | str | float``，则类型检查器将报告一个错误指出 ``unreachable`` 为 :class:`float` 类型。 "
+"对于通过类型检查的 ``assert_never`` 调用，参数传入的推断类型必须为兜底类型 :data:`Never`，而不能为任何其他类型。"
 
 #: ../../library/typing.rst:2573
 msgid "At runtime, this throws an exception when called."
@@ -2594,7 +2619,7 @@ msgstr "在运行时，该函数会将其参数的运行时类型打印到 stder
 msgid ""
 "Decorator to mark an object as providing :func:`dataclass "
 "<dataclasses.dataclass>`-like behavior."
-msgstr ""
+msgstr "将一个对象标记为提供类似 :func:`dataclass <dataclasses.dataclass>` 行为的装饰器。"
 
 #: ../../library/typing.rst:2620
 msgid ""
@@ -2604,10 +2629,13 @@ msgid ""
 "object performs runtime \"magic\" that transforms a class in a similar way "
 "to :func:`@dataclasses.dataclass <dataclasses.dataclass>`."
 msgstr ""
+"``dataclass_transform`` 可被用于装饰类、元类或本身为装饰器的函数。 使用 ``@dataclass_transform()`` "
+"将让静态类型检查器知道被装饰的对象会执行以类似 :func:`@dataclasses.dataclass "
+"<dataclasses.dataclass>` 的方式来转换类的运行时“魔法”。"
 
 #: ../../library/typing.rst:2627
 msgid "Example usage with a decorator function:"
-msgstr ""
+msgstr "装饰器函数使用方式的例子："
 
 #: ../../library/typing.rst:2641
 msgid "On a base class::"
@@ -2657,13 +2685,13 @@ msgstr "参数"
 msgid ""
 "Indicates whether the ``eq`` parameter is assumed to be ``True`` or "
 "``False`` if it is omitted by the caller. Defaults to ``True``."
-msgstr ""
+msgstr "指明如果调用方省略了 ``eq`` 形参则应将其假定为 ``True`` 还是 ``False``。 默认为 ``True``。"
 
 #: ../../library/typing.rst:2684
 msgid ""
 "Indicates whether the ``order`` parameter is assumed to be ``True`` or "
 "``False`` if it is omitted by the caller. Defaults to ``False``."
-msgstr ""
+msgstr "指明如果调用方省略了 ``order`` 形参则应将其假定为 ``True`` 还是 ``False``。 默认为 ``False``。"
 
 #: ../../library/typing.rst:2689
 msgid ""
