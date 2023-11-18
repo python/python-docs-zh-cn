@@ -548,21 +548,23 @@ msgstr ""
 msgid ""
 "Unfortunately, :c:data:`Py_Version` was only added in Python 3.11. As a "
 "replacement, use:"
-msgstr ""
+msgstr "不幸的是，:c:data:`Py_Version` 直到 Python 3.11 才被加入。 作为替代，请使用："
 
 #: ../../howto/isolating-extensions.rst:369
 msgid ":c:macro:`PY_VERSION_HEX`, if not using the stable ABI, or"
-msgstr ""
+msgstr ":c:macro:`PY_VERSION_HEX`，如果不使用稳定 ABI 的话，或者"
 
 #: ../../howto/isolating-extensions.rst:370
 msgid ""
 ":py:data:`sys.version_info` (via :c:func:`PySys_GetObject` and "
 ":c:func:`PyArg_ParseTuple`)."
 msgstr ""
+":py:data:`sys.version_info` (通过 :c:func:`PySys_GetObject` 和 "
+":c:func:`PyArg_ParseTuple`)。"
 
 #: ../../howto/isolating-extensions.rst:375
 msgid "Delegating ``tp_traverse``"
-msgstr ""
+msgstr "委托 ``tp_traverse``"
 
 #: ../../howto/isolating-extensions.rst:377
 msgid ""
@@ -571,6 +573,8 @@ msgid ""
 "ensure that ``Py_TYPE(self)`` is visited only once. Note that only heap type"
 " are expected to visit the type in ``tp_traverse``."
 msgstr ""
+"如果你的遍历函数委托给了其基类（或另一个类型）的 :c:member:`~PyTypeObject.tp_traverse`，请确保 "
+"``Py_TYPE(self)`` 只被访问一次。 请注意只有堆类型会被预期访问 ``tp_traverse`` 中的类型。"
 
 #: ../../howto/isolating-extensions.rst:382
 msgid "For example, if your traverse function includes::"
@@ -585,77 +589,85 @@ msgid ""
 "It is not necessary to handle the type's reference count in "
 ":c:member:`~PyTypeObject.tp_new` and :c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
+"不需要在 :c:member:`~PyTypeObject.tp_new` 和 :c:member:`~PyTypeObject.tp_clear` "
+"中处理该类型的引用计数。"
 
 #: ../../howto/isolating-extensions.rst:401
 msgid "Defining ``tp_dealloc``"
-msgstr ""
+msgstr "定义 ``tp_dealloc``"
 
 #: ../../howto/isolating-extensions.rst:403
 msgid ""
 "If your type has a custom :c:member:`~PyTypeObject.tp_dealloc` function, it "
 "needs to:"
-msgstr ""
+msgstr "如果你的类型有自定义的 :c:member:`~PyTypeObject.tp_dealloc` 函数，则它需要："
 
 #: ../../howto/isolating-extensions.rst:406
 msgid ""
 "call :c:func:`PyObject_GC_UnTrack` before any fields are invalidated, and"
-msgstr ""
+msgstr "在任何字段失效之前调用 :c:func:`PyObject_GC_UnTrack`，并且"
 
 #: ../../howto/isolating-extensions.rst:407
 msgid "decrement the reference count of the type."
-msgstr ""
+msgstr "递减该类型的引用计数。"
 
 #: ../../howto/isolating-extensions.rst:409
 msgid ""
 "To keep the type valid while ``tp_free`` is called, the type's refcount "
 "needs to be decremented *after* the instance is deallocated. For example::"
-msgstr ""
+msgstr "要在 ``tp_free`` 被调用时保持类型有效，必须在撤销分配实例 *之后* 递减该类型的引用计数。 例如::"
 
 #: ../../howto/isolating-extensions.rst:421
 msgid ""
 "The default ``tp_dealloc`` function does this, so if your type does *not* "
 "override ``tp_dealloc`` you don't need to add it."
-msgstr ""
+msgstr "默认的 ``tp_dealloc`` 函数会执行此操作，因此如果你的类型 *没有* 重载 ``tp_dealloc`` 你就不需要添加它。"
 
 #: ../../howto/isolating-extensions.rst:427
 msgid "Not overriding ``tp_free``"
-msgstr ""
+msgstr "没有重载 ``tp_free``"
 
 #: ../../howto/isolating-extensions.rst:429
 msgid ""
 "The :c:member:`~PyTypeObject.tp_free` slot of a heap type must be set to "
 ":c:func:`PyObject_GC_Del`. This is the default; do not override it."
 msgstr ""
+"堆类型的 :c:member:`~PyTypeObject.tp_free` 槽位必须设为 :c:func:`PyObject_GC_Del`。 "
+"这是默认的设置；请不要重载它。"
 
 #: ../../howto/isolating-extensions.rst:435
 msgid "Avoiding ``PyObject_New``"
-msgstr ""
+msgstr "避免 ``PyObject_New``"
 
 #: ../../howto/isolating-extensions.rst:437
 msgid "GC-tracked objects need to be allocated using GC-aware functions."
-msgstr ""
+msgstr "带 GC 追踪的对象需要使用带 GC 感知的函数来分配。"
 
 #: ../../howto/isolating-extensions.rst:439
 msgid "If you use use :c:func:`PyObject_New` or :c:func:`PyObject_NewVar`:"
-msgstr ""
+msgstr "如果你使用 :c:func:`PyObject_New` 或 :c:func:`PyObject_NewVar`:"
 
 #: ../../howto/isolating-extensions.rst:441
 msgid ""
 "Get and call type's :c:member:`~PyTypeObject.tp_alloc` slot, if possible. "
 "That is, replace ``TYPE *o = PyObject_New(TYPE, typeobj)`` with::"
 msgstr ""
+"如有可能，请获取并调用类型的 :c:member:`~PyTypeObject.tp_alloc` 槽位。 也就是说，将 ``TYPE *o = "
+"PyObject_New(TYPE, typeobj)`` 替换为::"
 
 #: ../../howto/isolating-extensions.rst:446
 msgid ""
 "Replace ``o = PyObject_NewVar(TYPE, typeobj, size)`` with the same, but use "
 "size instead of the 0."
-msgstr ""
+msgstr "同样地替换 ``o = PyObject_NewVar(TYPE, typeobj, size)``，但要使用指定大小而不是 0。"
 
 #: ../../howto/isolating-extensions.rst:449
 msgid ""
 "If the above is not possible (e.g. inside a custom ``tp_alloc``), call "
 ":c:func:`PyObject_GC_New` or :c:func:`PyObject_GC_NewVar`::"
 msgstr ""
+"如果无法执行以上操作（例如在自定义的 ``tp_alloc`` 中），请调用 :c:func:`PyObject_GC_New` 或 "
+":c:func:`PyObject_GC_NewVar`::"
 
 #: ../../howto/isolating-extensions.rst:458
 msgid "Module State Access from Classes"
