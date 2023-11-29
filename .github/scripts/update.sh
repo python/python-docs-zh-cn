@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -u
+
 cd cpython || exit 1
 
 # Restore git timestamp for enabling build cache
