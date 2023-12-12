@@ -370,6 +370,8 @@ msgid ""
 ":keyword:`not in`, are supported by types that are :term:`iterable` or "
 "implement the :meth:`~object.__contains__` method."
 msgstr ""
+"还有两种具有相同语法优先级的运算 :keyword:`in` 和 :keyword:`not in`，它们被 :term:`iterable` 或实现了"
+" :meth:`~object.__contains__` 方法的类型所支持。"
 
 #: ../../library/stdtypes.rst:206
 msgid "Numeric Types --- :class:`int`, :class:`float`, :class:`complex`"
@@ -1085,6 +1087,14 @@ msgid ""
 "to Python as the :attr:`~sys.hash_info.modulus` attribute of "
 ":data:`sys.hash_info`."
 msgstr ""
+"对于可能为不同类型的数字 ``x`` 和 ``y``，要求当 ``x == y`` 时必定有 ``hash(x) == hash(y)`` (详情参见 "
+":meth:`~object.__hash__` 方法的文档)。 为了便于在各种数字类型 (包括 :class:`int`, "
+":class:`float`, :class:`decimal.Decimal` 和 :class:`fractions.Fraction`) "
+"上实现并保证效率，Python 对数字类型的哈希运算是基于为任意有理数定义统一的数学函数，因此该运算对 :class:`int` 和 "
+":class:`fractions.Fraction` 的全部实例，以及 :class:`float` 和 "
+":class:`decimal.Decimal` 的全部有限实例均可用。 从本质上说，此函数是通过以一个固定质数 ``P`` 进行 ``P`` "
+"降模给出的。 ``P`` 的值在 Python 中可以 :data:`sys.hash_info` 的 "
+":attr:`~sys.hash_info.modulus` 属性的形式被访问。"
 
 #: ../../library/stdtypes.rst:726
 msgid ""
@@ -1297,6 +1307,10 @@ msgid ""
 "about generators can be found in :ref:`the documentation for the yield "
 "expression <yieldexpr>`."
 msgstr ""
+"Python 的 :term:`generator` 提供了一种实现迭代器协议的便捷方式。 如果容器对象的 "
+":meth:`~iterator.__iter__` 方法以生成器形式实现，它将自动返回一个迭代器对象（从技术上说是一个生成器对象），该对象提供 "
+":meth:`!__iter__` 和 :meth:`~generator.__next__` 方法。 有关生成器的更多信息可以参阅 "
+":ref:`yield 表达式的文档 <yieldexpr>`。"
 
 #: ../../library/stdtypes.rst:921
 msgid "Sequence Types --- :class:`list`, :class:`tuple`, :class:`range`"
@@ -4600,6 +4614,7 @@ msgid ""
 "Bytes (any object that follows the :ref:`buffer protocol <bufferobjects>` or"
 " has :meth:`~object.__bytes__`)."
 msgstr ""
+"字节串（任何遵循 :ref:`缓冲区协议 <bufferobjects>` 或是具有 :meth:`~object.__bytes__` 的对象）。"
 
 #: ../../library/stdtypes.rst:3675
 msgid ""
@@ -5286,6 +5301,8 @@ msgid ""
 "searching for an equivalent frozenset, a temporary one is created from "
 "*elem*."
 msgstr ""
+"请注意，:meth:`~object.__contains__`, :meth:`remove` 和 :meth:`discard` 方法的 "
+"*elem* 参数可以是一个集合。 为支持搜索等价的冻结集合，将根据 *elem* 临时创建一个相应的对象。"
 
 #: ../../library/stdtypes.rst:4420
 msgid "Mapping Types --- :class:`dict`"
@@ -6394,6 +6411,8 @@ msgid ""
 "``X | Y``.  If a metaclass implements :meth:`!__or__`, the Union may "
 "override it:"
 msgstr ""
+"为了支持 ``X | Y`` 语法，类型对象加入了 :meth:`!__or__` 方法。 如果一个元类实现了 "
+":meth:`!__or__`，Union 可以重载它："
 
 #: ../../library/stdtypes.rst:5258
 msgid ":pep:`604` -- PEP proposing the ``X | Y`` syntax and the Union type."
@@ -6492,6 +6511,8 @@ msgid ""
 ":meth:`append` on lists) and :ref:`class instance method <instance-"
 "methods>`. Built-in methods are described with the types that support them."
 msgstr ""
+"方法是使用属性表示法来调用的函数。 存在两种形式: :ref:`内置方法 <builtin-methods>` (如列表的 "
+":meth:`append`) 和 :ref:`类实例方法 <instance-methods>`。 内置方法由支持它们的类型来描述。"
 
 #: ../../library/stdtypes.rst:5332
 msgid ""
@@ -6505,6 +6526,11 @@ msgid ""
 "is completely equivalent to calling ``m.__func__(m.__self__, arg-1, arg-2, "
 "..., arg-n)``."
 msgstr ""
+"如果你通过一个实例来访问方法（即定义在类命名空间内的函数），你会得到一个特殊对象: :dfn:`绑定方法` (或称 :ref:`实例方法 "
+"<instance-methods>`) 对象。 当被调用时，它会将 ``self`` 参数添加到参数列表。 绑定方法具有两个特殊的只读属性: "
+":attr:`m.__self__ <method.__self__>` 操作该方法的对象，而 :attr:`m.__func__ "
+"<method.__func__>` 是实现该方法的函数。 调用 ``m(arg-1, arg-2, ..., arg-n)`` 完全等价于调用 "
+"``m.__func__(m.__self__, arg-1, arg-2, ..., arg-n)``。"
 
 #: ../../library/stdtypes.rst:5343
 msgid ""
@@ -6516,10 +6542,13 @@ msgid ""
 "raised.  In order to set a method attribute, you need to explicitly set it "
 "on the underlying function object:"
 msgstr ""
+"与 :ref:`函数对象 <user-defined-funcs>` 类似，绑定方法对象也支持获取任意属性。 "
+"但是，由于方法属性实际上保存于下层的函数对象中 (:attr:`method.__func__`)，因此不允许设置绑定方法的方法属性。 "
+"尝试设置方法的属性将会导致引发 :exc:`AttributeError`。 想要设置方法属性，你必须在下层的函数对象中显式地设置它。"
 
 #: ../../library/stdtypes.rst:5366
 msgid "See :ref:`instance-methods` for more information."
-msgstr ""
+msgstr "请参阅 :ref:`instance-methods` 了解更多信息。"
 
 #: ../../library/stdtypes.rst:5374
 msgid "Code Objects"

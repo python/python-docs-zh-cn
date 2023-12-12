@@ -419,6 +419,7 @@ msgid ""
 "floating point number, or an object implementing :meth:`~object.__abs__`. If"
 " the argument is a complex number, its magnitude is returned."
 msgstr ""
+"返回一个数的绝对值。 参数可以是整数、浮点数或任何实现了 :meth:`~object.__abs__` 的对象。 如果参数是一个复数，则返回它的模。"
 
 #: ../../library/functions.rst:67
 msgid ""
@@ -645,6 +646,9 @@ msgid ""
 "Note that classes are callable (calling a class returns a new instance); "
 "instances are callable if their class has a :meth:`~object.__call__` method."
 msgstr ""
+"如果 *object* 参数是可调用的则返回 :const:`True`，否则返回 :const:`False`。 如果返回 "
+"``True``，调用仍可能失败，但如果返回 ``False``，则调用 *object* 肯定不会成功。 "
+"请注意类是可调用的（调用类将返回一个新的实例）；如果实例所属的类有 :meth:`~object.__call__` 方法则它就是可调用的。"
 
 #: ../../library/functions.rst:241
 msgid ""
@@ -969,6 +973,9 @@ msgid ""
 ":func:`~object.__getattribute__` function to customize the way :func:`dir` "
 "reports their attributes."
 msgstr ""
+"如果对象有一个名为 :meth:`~object.__dir__` 的方法，则该方法将被调用并且必须返回由属列组成的列表。 这允许实现自定义This "
+"allows objects that implement a custom :func:`~object.__getattr__` 或 "
+":func:`~object.__getattribute__` 函数的对象能够定制 :func:`dir` 报告其属性的方式。"
 
 #: ../../library/functions.rst:443
 msgid ""
@@ -978,6 +985,9 @@ msgid ""
 "necessarily complete and may be inaccurate when the object has a custom "
 ":func:`~object.__getattr__`."
 msgstr ""
+"如果对象未提供 :meth:`~object.__dir__`，该函数会尽量从对象所定义的 :attr:`~object.__dict__` "
+"属性和其类型对象中收集信息。 结果列表不一定是完整的，并且当对象具有自定义的 :func:`~object.__getattr__` "
+"时还可能是不准确的。"
 
 #: ../../library/functions.rst:449
 msgid ""
@@ -1338,6 +1348,10 @@ msgid ""
 ":mod:`object` and the *format_spec* is non-empty, or if either the "
 "*format_spec* or the return value are not strings."
 msgstr ""
+"对 ``format(value, format_spec)`` 的调用会转写为 ``type(value).__format__(value, "
+"format_spec)``，这样在搜索值的 :meth:`~object.__format__` 方法时将绕过实例字典。 如果方法搜索到达 "
+":mod:`object` 并且 *format_spec* 不为空，或者如果 *format_spec* 或返回值不为字符串则会引发 "
+":exc:`TypeError` 异常。"
 
 #: ../../library/functions.rst:739
 msgid ""
@@ -1422,6 +1436,7 @@ msgid ""
 ":func:`hash` truncates the return value based on the bit width of the host "
 "machine."
 msgstr ""
+"对于具有自定义 :meth:`~object.__hash__` 方法的对象，请注意 :func:`hash` 会根据宿主机的字长来截断返回值。"
 
 #: ../../library/functions.rst:806
 msgid ""
@@ -1681,6 +1696,12 @@ msgid ""
 "*sentinel*, :exc:`StopIteration` will be raised, otherwise the value will be"
 " returned."
 msgstr ""
+"返回一个 :term:`iterator` 对象。 根据是否存在第二个参数，对第一个参数的解读会有很大的不同。 如果没有第二个参数，*object* "
+"必须是一个支持 :term:`iterable` 协议 (有 :meth:`~object.__iter__` 方法) "
+"的多项集对象，或者必须支持序列协议 (有 :meth:`~object.__getitem__` 方法并使用从 ``0`` 开始的整数参数)。 "
+"如果它不支持这些协议，则会引发 :exc:`TypeError`。 如果给出了第二个参数 *sentinel*，则 *object* "
+"必须是一个可调用对象。 在这种情况下创建的迭代器将针对每次调用其 :meth:`~iterator.__next__` 方法不带参数地调用 "
+"*object*；如果返回的值等于 *sentinel*，则会引发 :exc:`StopIteration`，否则将返回该值。"
 
 #: ../../library/functions.rst:1000
 msgid "See also :ref:`typeiter`."
@@ -2423,6 +2444,8 @@ msgid ""
 "\"getter\" for a read-only attribute with the same name, and it sets the "
 "docstring for *voltage* to \"Get the current voltage.\""
 msgstr ""
+"``@property`` 装饰器会将 :meth:`!voltage` 方法转化为一个具有相同名称的只读属性 \"getter\"，并将 "
+"*voltage* 的文档字符串设为 \"Get the current voltage.\""
 
 #: ../../library/functions.rst:1516
 msgid ""
@@ -2431,6 +2454,8 @@ msgid ""
 "accessor function set to the decorated function.  This is best explained "
 "with an example:"
 msgstr ""
+"特征属性对象具有 ``getter``, ``setter`` 和 ``deleter`` "
+"方法，它们可用作装饰器来创建该特征属性的副本，并将相应的访问函数设为所装饰的函数。 这最好是用一个例子来说明："
 
 #: ../../library/functions.rst:1540
 msgid ""
@@ -2469,6 +2494,10 @@ msgid ""
 "method. If :func:`sys.displayhook` is not accessible, this function will "
 "raise :exc:`RuntimeError`."
 msgstr ""
+"返回包含一个对象的可打印表示形式的字符串。 对于许多类型而言，此函数会尝试返回一个具有与传给 :func:`eval` "
+"时相同的值的字符串；在其他情况下，其表示形式将为一个包含对象类型名称和通常包括对象名称和地址的额外信息的用尖括号括起来的字符串。 一个类可以通过定义 "
+":meth:`~object.__repr__` 方法来控制此函数为其实例所返回的内容。 如果 :func:`sys.displayhook` "
+"不可访问，则此函数将会引发 :exc:`RuntimeError`。"
 
 #: ../../library/functions.rst:1576
 msgid ""
@@ -2477,6 +2506,9 @@ msgid ""
 ":meth:`~object.__len__` method and the :meth:`~object.__getitem__` method "
 "with integer arguments starting at ``0``)."
 msgstr ""
+"返回一个反向的 :term:`iterator`。 *seq* 必须是一个具有 :meth:`~object.__reversed__` "
+"方法或是支持序列协议（具有 :meth:`~object.__len__` 方法和从 ``0`` 开始的整数参数的 "
+":meth:`~object.__getitem__` 方法）的对象。"
 
 #: ../../library/functions.rst:1584
 msgid ""
@@ -2577,6 +2609,8 @@ msgid ""
 "``range(start, stop, step)``.  The *start* and *step* arguments default to "
 "``None``."
 msgstr ""
+"返回一个表示由 ``range(start, stop, step)`` 指定的索引集的 :term:`slice` 对象。 *start* 和 "
+"*step* 参数默认为 ``None``。"
 
 #: ../../library/functions.rst:1656
 msgid ""
@@ -2585,6 +2619,8 @@ msgid ""
 "default).  They have no other explicit functionality; however, they are used"
 " by NumPy and other third-party packages."
 msgstr ""
+"切片对象具有只读的数据属性 :attr:`!start`, :attr:`!stop` 和 "
+":attr:`!step`，它们将简单地返回相应的参数值（或其默认值）。 它们没有其他显式的功能；但是，它们会被 NumPy 和其他第三方包所使用。"
 
 #: ../../library/functions.rst:1661
 msgid ""
@@ -2593,6 +2629,8 @@ msgid ""
 ":func:`itertools.islice` for an alternate version that returns an "
 ":term:`iterator`."
 msgstr ""
+"当使用扩展索引语法时也会生成切片对象。 例如: ``a[start:stop:step]`` 或 ``a[start:stop, i]``。 请参阅 "
+":func:`itertools.islice` 了解返回 :term:`iterator` 的替代版本。"
 
 #: ../../library/functions.rst:1666
 msgid ""
@@ -2855,6 +2893,10 @@ msgid ""
 "inheritance. Accordingly, :func:`super` is undefined for implicit lookups "
 "using statements or operators such as ``super()[name]``."
 msgstr ""
+"请注意 :func:`super` 被实现为为显式的带点号属性查找的绑定过程的组成部分，例如 "
+"``super().__getitem__(name)``。 它做到这一点是通过实现自己的 "
+":meth:`~object.__getattribute__` 方法以便能够按支持协作多重继承的可预测的顺序来搜索类。 "
+"相应地，:func:`super` 在像 ``super()[name]`` 这样使用语句或运算符进行隐式查找时则是未定义的。"
 
 #: ../../library/functions.rst:1837
 msgid ""
