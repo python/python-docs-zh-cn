@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-08 14:14+0000\n"
+"POT-Creation-Date: 2023-12-15 14:14+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -213,6 +213,7 @@ msgid ""
 " is always an approximation but more efficient than iterating over the "
 "string."
 msgstr ""
+"返回适合基于 *unicode* 创建另一个字符串的最大码位点，该参数必须为“规范”表示形式。 这始终是一种近似但比在字符串上执行迭代更高效。"
 
 #: ../../c-api/unicode.rst:189
 msgid ""
@@ -422,6 +423,8 @@ msgid ""
 "object. The return value might be a shared object, i.e. modification of the "
 "data is not allowed."
 msgstr ""
+"根据字符缓冲区 *str* 创建一个 Unicode 对象。 字节数据将按 UTF-8 编码格式来解读。 缓冲区会被拷贝到新的对象中。 "
+"返回值可以是一个共享对象，即其数据不允许修改。"
 
 #: ../../c-api/unicode.rst:376
 msgid "This function raises :exc:`SystemError` when:"
@@ -433,17 +436,17 @@ msgstr "*size* < 0,"
 
 #: ../../c-api/unicode.rst:379
 msgid "*str* is ``NULL`` and *size* > 0"
-msgstr ""
+msgstr "*str* 为 ``NULL`` 且 *size* > 0"
 
 #: ../../c-api/unicode.rst:381
 msgid "*str* == ``NULL`` with *size* > 0 is not allowed anymore."
-msgstr ""
+msgstr "*str* == ``NULL`` 且 *size* > 0 不再被允许。"
 
 #: ../../c-api/unicode.rst:387
 msgid ""
 "Create a Unicode object from a UTF-8 encoded null-terminated char buffer "
 "*str*."
-msgstr ""
+msgstr "根据 UTF-8 编码的以空值结束的字符缓冲区 *str* 创建一个 Unicode 对象。"
 
 #: ../../c-api/unicode.rst:393
 msgid ""
@@ -927,7 +930,7 @@ msgstr ""
 msgid ""
 "Return a substring of *unicode*, from character index *start* (included) to "
 "character index *end* (excluded).  Negative indices are not supported."
-msgstr ""
+msgstr "返回 *unicode* 的一个子串，从字符索引 *start* (包括) 到字符索引 *end* (不包括)。 不支持负索引号。"
 
 #: ../../c-api/unicode.rst:668
 msgid ""
@@ -936,6 +939,9 @@ msgid ""
 "particular, a :exc:`SystemError` if *buflen* is smaller than the length of "
 "*unicode*).  *buffer* is returned on success."
 msgstr ""
+"将字符串 *unicode* 拷贝到一个 UCS4 缓冲区，包括一个空字符，如果设置了 *copy_null* 的话。 出错时返回 ``NULL`` "
+"并设置一个异常（特别是当 *buflen* 小于 *unicode* 的长度时，将设置 :exc:`SystemError` 异常）。 成功时返回 "
+"*buffer*。"
 
 #: ../../c-api/unicode.rst:678
 msgid ""
@@ -944,6 +950,8 @@ msgid ""
 ":exc:`MemoryError` set.  The returned buffer always has an extra null code "
 "point appended."
 msgstr ""
+"将字符串 *unicode* 拷贝到使用 :c:func:`PyMem_Malloc` 分配的新 UCS4 缓冲区。 如果执行失败，将返回 "
+"``NULL`` 并设置 :exc:`MemoryError`。 返回的缓冲区将总是会添加一个额外的空码位。"
 
 #: ../../c-api/unicode.rst:687
 msgid "Locale Encoding"
@@ -1156,6 +1164,8 @@ msgid ""
 "itself compute the length, using :c:func:`!wcslen`. Return ``NULL`` on "
 "failure."
 msgstr ""
+"根据给定的 *size* 的 :c:type:`wchar_t` 缓冲区 *wstr* 创建一个 Unicode 对象。 传入 ``-1`` 作为 "
+"*size* 表示该函数必须使用 :c:func:`!wcslen` 自动计算缓冲区长度。 失败时将返回 ``NULL``。"
 
 #: ../../c-api/unicode.rst:861
 msgid ""
@@ -1170,6 +1180,11 @@ msgid ""
 "null characters, which would cause the string to be truncated when used with"
 " most C functions."
 msgstr ""
+"将 Unicode 对象内容拷贝到 :c:type:`wchar_t` 缓冲区 *wstr* 中。 至多拷贝 *size* 个 "
+":c:type:`wchar_t` 字符（不包括可能存在于末尾的空结束字符）。 返回拷贝的 :c:type:`wchar_t` "
+"字符数量或者在发生错误时返回 ``-1``。 请注意结果 :c:expr:`wchar_t*` 字符可能有或没有表示结束的空值。 "
+"调用方需要负责在应用程序有些要求时确保 :c:expr:`wchar_t*` 字符串是以空值结束的。 此外，还要注意 "
+":c:expr:`wchar_t*` 字符串可能包含空字符，这将导致在大多数 C 函数中使用时字符串被截断。"
 
 #: ../../c-api/unicode.rst:874
 msgid ""
@@ -1263,6 +1278,9 @@ msgid ""
 " looked up using the Python codec registry.  Return ``NULL`` if an exception"
 " was raised by the codec."
 msgstr ""
+"通过解码已编码字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 *encoding* 和 *errors* 具有与 "
+":func:`str` 内置函数中同名形参相同的含义。 要使用的编解码将使用 Python 编解码器注册表来查找。 如果编解码器引发了异常则返回 "
+"``NULL``。"
 
 #: ../../c-api/unicode.rst:938
 msgid ""
@@ -1289,6 +1307,8 @@ msgid ""
 "Create a Unicode object by decoding *size* bytes of the UTF-8 encoded string"
 " *str*. Return ``NULL`` if an exception was raised by the codec."
 msgstr ""
+"通过解码 UTF-8 编码的字节串 *str* 的的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回 "
+"``NULL``。"
 
 #: ../../c-api/unicode.rst:960
 msgid ""
@@ -1489,6 +1509,8 @@ msgid ""
 "Create a Unicode object by decoding *size* bytes of the UTF-7 encoded string"
 " *str*.  Return ``NULL`` if an exception was raised by the codec."
 msgstr ""
+"通过解码 UTF-7 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回 "
+"``NULL``。"
 
 #: ../../c-api/unicode.rst:1124
 msgid ""
@@ -1515,6 +1537,8 @@ msgid ""
 "encoded string *str*.  Return ``NULL`` if an exception was raised by the "
 "codec."
 msgstr ""
+"通过解码 Unicode-Escape 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回"
+" ``NULL``。"
 
 #: ../../c-api/unicode.rst:1145
 msgid ""
@@ -1539,6 +1563,8 @@ msgid ""
 "encoded string *str*.  Return ``NULL`` if an exception was raised by the "
 "codec."
 msgstr ""
+"通过解码 Raw-Unicode-Escape 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 "
+"如果编解码器引发了异常则返回 ``NULL``。"
 
 #: ../../c-api/unicode.rst:1165
 msgid ""
@@ -1564,6 +1590,8 @@ msgid ""
 "Create a Unicode object by decoding *size* bytes of the Latin-1 encoded "
 "string *str*.  Return ``NULL`` if an exception was raised by the codec."
 msgstr ""
+"通过解码 Latin-1 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回 "
+"``NULL``。"
 
 #: ../../c-api/unicode.rst:1185
 msgid ""
@@ -1589,6 +1617,8 @@ msgid ""
 "Create a Unicode object by decoding *size* bytes of the ASCII encoded string"
 " *str*.  Return ``NULL`` if an exception was raised by the codec."
 msgstr ""
+"通过解码 ASCII 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回 "
+"``NULL``。"
 
 #: ../../c-api/unicode.rst:1205
 msgid ""
@@ -1626,6 +1656,8 @@ msgid ""
 " using the given *mapping* object.  Return ``NULL`` if an exception was "
 "raised by the codec."
 msgstr ""
+"通过使用给定的 *mapping* 对象解码已编码字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 "
+"如果编解码器引发了异常则返回 ``NULL``。"
 
 #: ../../c-api/unicode.rst:1228
 msgid ""
@@ -1711,6 +1743,7 @@ msgid ""
 "Create a Unicode object by decoding *size* bytes of the MBCS encoded string "
 "*str*. Return ``NULL`` if an exception was raised by the codec."
 msgstr ""
+"通过解码 MBCS 编码的字节串 *str* 的 *size* 个字节创建一个 Unicode 对象。 如果编解码器引发了异常则返回 ``NULL``。"
 
 #: ../../c-api/unicode.rst:1285
 msgid ""
@@ -1781,6 +1814,8 @@ msgid ""
 "CRLF is considered to be one line break.  If *keepends* is ``0``, the Line "
 "break characters are not included in the resulting strings."
 msgstr ""
+"根据分行符来拆分 Unicode 字符串，返回一个 Unicode 字符串的列表。 CRLF 将被视为一个分行符。 如果 *keepends* 为 "
+"``0``，则行分隔符将不包括在结果字符串中。"
 
 #: ../../c-api/unicode.rst:1345
 msgid ""
