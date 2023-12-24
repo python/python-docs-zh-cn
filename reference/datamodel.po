@@ -1593,7 +1593,7 @@ msgstr ":meth:`!co_positions` 方法"
 msgid ""
 "Returns an iterable over the source code positions of each :term:`bytecode` "
 "instruction in the code object."
-msgstr ""
+msgstr "返回一个包含代码对象中每条 :term:`bytecode` 指令的源代码位置的可迭代对象。"
 
 #: ../../reference/datamodel.rst:1230
 msgid ""
@@ -1602,6 +1602,9 @@ msgid ""
 "position of the source code that compiled to the *i-th* instruction. Column "
 "information is 0-indexed utf-8 byte offsets on the given source line."
 msgstr ""
+"此迭代器返回包含 ``(start_line, end_line, start_column, end_column)`` 的 "
+":class:`tuple`。 其中第 *i* 个元组对应于编译为第 *i* 条指令的源代码位置。 列信息是给定源代码行从 0 开始索引的 utf-8 "
+"字节偏移量。"
 
 #: ../../reference/datamodel.rst:1236
 msgid ""
@@ -1656,13 +1659,13 @@ msgid ""
 "Frame objects represent execution frames.  They may occur in :ref:`traceback"
 " objects <traceback-objects>`, and are also passed to registered trace "
 "functions."
-msgstr ""
+msgstr "帧对象表示执行帧。 它们可能出现在 :ref:`回溯对象 <traceback-objects>` 中，还会被传递给已注册的跟踪函数。"
 
 #: ../../reference/datamodel.rst:1284
 msgid ""
 "Points to the previous stack frame (towards the caller), or ``None`` if this"
 " is the bottom stack frame"
-msgstr ""
+msgstr "指向前一个栈帧（对于调用方而言），或者如果这是最底部的栈帧则为 ``None``"
 
 #: ../../reference/datamodel.rst:1288
 msgid ""
@@ -1670,6 +1673,8 @@ msgid ""
 "Accessing this attribute raises an :ref:`auditing event <auditing>` "
 "``object.__getattr__`` with arguments ``obj`` and ``\"f_code\"``."
 msgstr ""
+"该帧中正在执行的 :ref:`代码对象 <code-objects>`。 访问该属性将引发一个 :ref:`审计事件 <auditing>` "
+"``object.__getattr__``，附带参数 ``obj`` 和 ``\"f_code\"``。"
 
 #: ../../reference/datamodel.rst:1293
 msgid ""
@@ -1699,12 +1704,14 @@ msgid ""
 "execution (this is used by debuggers). Normally an event is triggered for "
 "each new source line (see :attr:`~frame.f_trace_lines`)."
 msgstr ""
+"如果不为 ``None``，则是在代码执行期间调用各类事件的函数 (由调试器使用)。 通常每个新的源代码行会触发一个事件 (参见 "
+":attr:`~frame.f_trace_lines`)。"
 
 #: ../../reference/datamodel.rst:1326
 msgid ""
 "Set this attribute to :const:`False` to disable triggering a tracing event "
 "for each source line."
-msgstr ""
+msgstr "将该属性设为 :const:`False` 以禁用为每个源代码行触发跟踪事件。"
 
 #: ../../reference/datamodel.rst:1330
 msgid ""
@@ -1712,6 +1719,7 @@ msgid ""
 "requested. Note that this may lead to undefined interpreter behaviour if "
 "exceptions raised by the trace function escape to the function being traced."
 msgstr ""
+"将该属性设为 :const:`True` 以允许请求每个操作码事件。 请注意如果跟踪函数引发的异常逃逸到被跟踪的函数中这可能会导致未定义的解释器行为。"
 
 #: ../../reference/datamodel.rst:1336
 msgid ""
@@ -1720,6 +1728,8 @@ msgid ""
 "debugger can implement a Jump command (aka Set Next Statement) by writing to"
 " this attribute."
 msgstr ""
+"该帧的当前行号 -- 在这里写入从一个跟踪函数内部跳转到的给定行（仅用于最底层的帧）。 调试器可以通过写入该属性实现一个 Jump "
+"命令（即设置下一条语句）。"
 
 #: ../../reference/datamodel.rst:1342
 msgid "Frame object methods"
@@ -1737,6 +1747,9 @@ msgid ""
 "objects (for example when catching an :ref:`exception <bltin-exceptions>` "
 "and storing its :ref:`traceback <traceback-objects>` for later use)."
 msgstr ""
+"此方法将清除该帧持有的全部对 :ref:`局部变量 <naming>` 的引用。 并且，如果该帧归属于一个 "
+":term:`generator`，此生成器将被终结。 这有助于打破涉及帧对象的循环引用（例如当捕获一个 :ref:`异常 <bltin-"
+"exceptions>` 并保存其 :ref:`回溯 <traceback-objects>` 供以后使用）。"
 
 #: ../../reference/datamodel.rst:1354
 msgid ":exc:`RuntimeError` is raised if the frame is currently executing."
@@ -1752,10 +1765,12 @@ msgid ""
 "errors>`. A traceback object is implicitly created when an exception occurs,"
 " and may also be explicitly created by calling :class:`types.TracebackType`."
 msgstr ""
+"回溯对象代表一个 :ref:`异常 <tut-errors>` 的栈跟踪信息。 当异常发生时会隐式地创建一个回溯对象，也可以通过调用 "
+":class:`types.TracebackType` 显式地创建。"
 
 #: ../../reference/datamodel.rst:1380
 msgid "Traceback objects can now be explicitly instantiated from Python code."
-msgstr ""
+msgstr "现在回溯对象可以通过 Python 代码显式地实例化。"
 
 #: ../../reference/datamodel.rst:1383
 msgid ""
@@ -1767,6 +1782,9 @@ msgid ""
 ":func:`sys.exc_info`, and as the :attr:`~BaseException.__traceback__` "
 "attribute of the caught exception."
 msgstr ""
+"对于隐式地创建的回溯对象，当查找异常处理句柄使得执行栈展开时，会在每个展开层级的当前回溯之前插入一个回溯对象。 "
+"当进入一个异常处理句柄时，程序将可以使用栈跟踪。 （参见 :ref:`try` 一节。） 它可作为 :func:`sys.exc_info` "
+"所返回的元组的第三项，以及所捕获异常的 :attr:`~BaseException.__traceback__` 属性被获取。"
 
 #: ../../reference/datamodel.rst:1392
 msgid ""
@@ -1775,6 +1793,8 @@ msgid ""
 "interactive, it is also made available to the user as "
 ":data:`sys.last_traceback`."
 msgstr ""
+"当程序不包含适用的处理句柄时，栈跟踪会（以良好的格式）写入到标准错误流；如果解释器处于交互模式，它也将作为 "
+":data:`sys.last_traceback` 供用户使用。"
 
 #: ../../reference/datamodel.rst:1397
 msgid ""
@@ -2694,7 +2714,7 @@ msgstr "调用此方法以删除 *instance* 指定的所有者类的实例的属
 msgid ""
 "Instances of descriptors may also have the :attr:`!__objclass__` attribute "
 "present:"
-msgstr ""
+msgstr "描述器的实例也可能存在 :attr:`!__objclass__` 属性："
 
 #: ../../reference/datamodel.rst:2060
 msgid ""
@@ -2706,6 +2726,10 @@ msgid ""
 "argument (for example, CPython sets this attribute for unbound methods that "
 "are implemented in C)."
 msgstr ""
+"属性 :attr:`!__objclass__` 会被 :mod:`inspect` "
+"模块解读为指定此对象定义所在的类（正确设置此属性有助于动态类属性的运行时内省）。 "
+"对于可调用对象来说，它可以指明预期或要求提供一个特定类型（或子类）的实例作为第一个位置参数（例如，CPython 会为在 C "
+"中实现的未绑定方法设置此属性）。"
 
 #: ../../reference/datamodel.rst:2071
 msgid "Invoking Descriptors"
@@ -2811,6 +2835,13 @@ msgid ""
 "dictionary.  In contrast, non-data descriptors can be overridden by "
 "instances."
 msgstr ""
+"对于实例绑定，发起描述器调用的优先级取决于定义了哪些描述器方法。 一个描述器可以定义 :meth:`~object.__get__`, "
+":meth:`~object.__set__` 和 :meth:`~object.__delete__` 的任意组合。 如果它没有定义 "
+":meth:`!__get__`，则访问属性将返回描述器对象自身，除非对象的实例字典中有相应的属性值。 如果描述器定义了 "
+":meth:`!__set__` 和/或 :meth:`!__delete__`，则它是一个数据描述器；如果两者均未定义，则它是一个非数据描述器。 "
+"通常，数据描述器会同时定义 :meth:`!__get__` 和 :meth:`!__set__`，而非数据描述器则只有 "
+":meth:`!__get__` 方法。 定义了 :meth:`!__get__` 和 :meth:`!__set__` (和/或 "
+":meth:`!__delete__`) 的数据描述器总是会重载实例字典中的定义。 与之相对地，非数据描述器则可被实例所重载。"
 
 #: ../../reference/datamodel.rst:2157
 msgid ""
@@ -3699,6 +3730,10 @@ msgid ""
 ":term:`mapping` types, if *key* is missing (not in the container), "
 ":exc:`KeyError` should be raised."
 msgstr ""
+"调用此方法以实现 ``self[key]`` 的求值。 对于 :term:`sequence` 类型，接受的键应为整数。 作为可选项，它们也可能支持 "
+":class:`slice` 对象。 对负数索引的支持也是可选项。 如果 *key* 的类型不正确，则可能引发 :exc:`TypeError`。 如果"
+" *key* 为序列索引集合范围以外的值（在进行任何负数索引的特殊解读之后），则应当引发 :exc:`IndexError`。 对于 "
+":term:`mapping` 类型，如果 *key* 找不到（不在容器中），则应当引发 :exc:`KeyError`。"
 
 #: ../../reference/datamodel.rst:2817
 msgid ""
