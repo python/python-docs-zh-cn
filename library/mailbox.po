@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-15 14:14+0000\n"
+"POT-Creation-Date: 2023-12-22 14:13+0000\n"
 "PO-Revision-Date: 2021-06-28 01:09+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -42,6 +42,10 @@ msgid ""
 ":class:`~email.message.Message` class with format-specific state and "
 "behavior. Supported mailbox formats are Maildir, mbox, MH, Babyl, and MMDF."
 msgstr ""
+"本模块定义了两个类，:class:`Mailbox` 和 :class:`Message`，用于访问和操作磁盘中的邮箱及其所包含的电子邮件。 "
+":class:`!Mailbox` 提供了类似字典的从键到消息的映射。 :class:`!Message` 为 :mod:`email.message`"
+" 模块的 :class:`~email.message.Message` 类扩展了特定格式专属的状态和行为。 支持的邮箱格式有 Maildir, "
+"mbox, MH, Babyl 和 MMDF。"
 
 #: ../../library/mailbox.rst:24
 msgid "Module :mod:`email`"
@@ -65,6 +69,8 @@ msgid ""
 "instantiated.  Instead, format-specific subclasses should inherit from "
 ":class:`!Mailbox` and your code should instantiate a particular subclass."
 msgstr ""
+":class:`!Mailbox` 类定义了一个接口并且它不应被实例化。 而是应该让格式专属的子类继承 :class:`!Mailbox` "
+"并且你的代码应当实例化一个特定的子类。"
 
 #: ../../library/mailbox.rst:41
 msgid ""
@@ -75,6 +81,9 @@ msgid ""
 "the corresponding message is modified, such as by replacing it with another "
 "message."
 msgstr ""
+":class:`!Mailbox` 接口类似于字典，其中每个小键都有对应的消息。 键是由 :class:`!Mailbox` "
+"实例发出的，它们将由实例来使用并且只对该 :class:`!Mailbox` 实例有意义。 "
+"键会持续标识一条消息，即使对应的消息已被修改，例如被另一条消息所替代。"
 
 #: ../../library/mailbox.rst:47
 msgid ""
@@ -82,6 +91,8 @@ msgid ""
 "method :meth:`add` and removed using a ``del`` statement or the set-like "
 "methods :meth:`remove` and :meth:`discard`."
 msgstr ""
+"可以使用类似于集合的方法 :meth:`add` 将消息添加到 :class:`!Mailbox` 实例并使用 ``del`` 语句或类似于集合的方法 "
+":meth:`remove` 和 :meth:`discard` 将其移除。"
 
 #: ../../library/mailbox.rst:51
 msgid ""
@@ -93,6 +104,9 @@ msgid ""
 "are copied. In neither case is a reference to the message representation "
 "kept by the :class:`!Mailbox` instance."
 msgstr ""
+":class:`!Mailbox` 接口语义在某些值得注意的方面与字典语义有所不同。 每次请求消息时，都会基于邮箱的当前状态生成一个新的表示形式（通常为"
+" :class:`Message` 实例）。 类似地，当向 :class:`!Mailbox` 实例添加消息时，所提供的消息表示形式的内容将被复制。 "
+"无论在哪种情况下 :class:`!Mailbox` 实例都不会保留对消息表示形式的引用。"
 
 #: ../../library/mailbox.rst:59
 msgid ""
@@ -105,6 +119,10 @@ msgid ""
 "an iterator may result in a :exc:`KeyError` exception if the corresponding "
 "message is subsequently removed."
 msgstr ""
+"默认的 :class:`!Mailbox` :term:`iterator` 会迭代消息表示形式，而不像默认的 :class:`字典 <dict>` "
+"迭代器那样迭代键。 此外，在迭代期间修改邮箱是安全且有明确定义的。 在创建迭代器之后被添加到邮箱的消息将对该迭代不可见。 "
+"在迭代器产出消息之前从邮箱移除的消息将被静默地跳过，但是使用来自迭代器的键也有可能导致 :exc:`KeyError` "
+"异常，如果对应的消息后来被移除的话。"
 
 #: ../../library/mailbox.rst:71
 msgid ""
@@ -117,10 +135,13 @@ msgid ""
 " deleting a message.  Failing to lock the mailbox runs the risk of losing "
 "messages or corrupting the entire mailbox."
 msgstr ""
+"在修改可能同时被其他某个进程修改的邮箱时要非常小心。 用于此种任务的最安全邮箱格式是 :class:`Maildir`；请尽量避免使用 "
+":class:`mbox` 之类的单文件格式进行并发写入。 如果你正在修改一个邮箱，你 *必须* 在读取文件中的任何消息或者执行添加或删除消息等修改操作"
+" *之前* 通过调用 :meth:`lock` 和 :meth:`unlock` 方法来锁定它。 如果未锁定邮箱则将导致丢失消息或损坏整个邮箱的风险。"
 
 #: ../../library/mailbox.rst:81
 msgid ":class:`!Mailbox` instances have the following methods:"
-msgstr ""
+msgstr ":class:`!Mailbox` 实例具有下列方法："
 
 #: ../../library/mailbox.rst:86
 msgid ""
@@ -203,6 +224,8 @@ msgid ""
 ":class:`Message` subclass unless a custom message factory was specified when"
 " the :class:`!Mailbox` instance was initialized."
 msgstr ""
+"返回一个迭代所有消息的表示形式的 :term:`iterator`。 消息会被表示为适当的格式专属 :class:`Message` 子类的实例，除非当"
+" :class:`!Mailbox` 实例被初始化时指定了自定义的消息工厂函数。"
 
 #: ../../library/mailbox.rst:153
 msgid ""
@@ -214,7 +237,7 @@ msgstr ":meth:`__iter__` 的行为与字典不同，后者是对键进行迭代�
 msgid ""
 "The same as :meth:`itervalues`, except that a :class:`list` is returned "
 "rather than an :term:`iterator`"
-msgstr ""
+msgstr "与 :meth:`itervalues` 类似，不同之处是返回 :class:`list` 而不是 :term:`iterator`"
 
 #: ../../library/mailbox.rst:165
 msgid ""
