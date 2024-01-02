@@ -2056,6 +2056,13 @@ msgid ""
 " fields in the subtype exist and have ``NULL`` values. .. XXX are most flag "
 "bits *really* inherited individually?"
 msgstr ""
+"这个字段的继承很复杂。 大多数旗标位都是单独继承的，也就是说，如果基类型设置了一个旗标位，则子类型将继承该旗标位。 "
+"从属于扩展结构体的旗标位仅在扩展结构体被继承时才会被继承，也就是说，基类型的旗标位值会与指向扩展结构体的指针一起被拷贝到子类型中。 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 旗标位会与 :c:member:`~PyTypeObject.tp_traverse` 和 "
+":c:member:`~PyTypeObject.tp_clear` 字段一起被继承，也就是说，如果 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 旗标位在子类型中被清空并且子类型中的 "
+":c:member:`~PyTypeObject.tp_traverse` 和 :c:member:`~PyTypeObject.tp_clear` "
+"字段存在并具有 ``NULL`` 值。 .. XXX 那么大多数旗标位 *真的* 都是单独继承的吗？"
 
 #: ../../c-api/typeobj.rst:1035
 msgid ""
@@ -2090,6 +2097,10 @@ msgid ""
 "does not apply to instances of subtypes; only the type referenced by the "
 "instance's ob_type gets INCREF'ed or DECREF'ed)."
 msgstr ""
+"当类型对象本身在堆上被分配时会设置这个旗标位，例如，使用 :c:func:`PyType_FromSpec` 动态创建的类型。 在此情况下，其实例的 "
+":c:member:`~PyObject.ob_type` 字段会被视为指向该类型的引用，而类型对象将在一个新实例被创建时执行 "
+"INCREF，并在实例被销毁时执行 DECREF（这不会应用于子类型的实例；只有实例的 ob_type 所引用的类型会执行 INCREF 或 "
+"DECREF）。"
 
 #: ../../c-api/typeobj.rst:1059 ../../c-api/typeobj.rst:1070
 #: ../../c-api/typeobj.rst:1080 ../../c-api/typeobj.rst:1090
@@ -2126,6 +2137,10 @@ msgid ""
 "related fields :c:member:`~PyTypeObject.tp_traverse` and "
 ":c:member:`~PyTypeObject.tp_clear` are present in the type object."
 msgstr ""
+"当对象支持垃圾回收时会设置这个旗标位。 如果设置了这个位，则实例必须使用 :c:macro:`PyObject_GC_New` 来创建并使用 "
+":c:func:`PyObject_GC_Del` 来销毁。 更多信息参见 :ref:`supporting-cycle-detection`。 "
+"这个位还会假定类型对象中存在 GC 相关字段 :c:member:`~PyTypeObject.tp_traverse` 和 "
+":c:member:`~PyTypeObject.tp_clear`。"
 
 #: ../../c-api/typeobj.rst:1104 ../../c-api/typeobj.rst:1425
 #: ../../c-api/typeobj.rst:1493
@@ -2133,6 +2148,8 @@ msgid ""
 "Group: :c:macro:`Py_TPFLAGS_HAVE_GC`, :c:member:`~PyTypeObject.tp_traverse`,"
 " :c:member:`~PyTypeObject.tp_clear`"
 msgstr ""
+"分组: :c:macro:`Py_TPFLAGS_HAVE_GC`, :c:member:`~PyTypeObject.tp_traverse`, "
+":c:member:`~PyTypeObject.tp_clear`"
 
 #: ../../c-api/typeobj.rst:1106
 msgid ""
@@ -2143,6 +2160,11 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_clear` fields in the subtype exist and have "
 "``NULL`` values."
 msgstr ""
+":c:macro:`Py_TPFLAGS_HAVE_GC` 旗标位会与 :c:member:`~PyTypeObject.tp_traverse` 和 "
+":c:member:`~PyTypeObject.tp_clear` 字段一起被继承，也就是说，如果 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 旗标位在子类型中被清空并且子类型中的 "
+":c:member:`~PyTypeObject.tp_traverse` 和 :c:member:`~PyTypeObject.tp_clear` "
+"字段存在并具有 ``NULL`` 值的话。"
 
 #: ../../c-api/typeobj.rst:1116
 msgid ""
@@ -2150,33 +2172,38 @@ msgid ""
 "fields in the type object and its extension structures. Currently, it "
 "includes the following bits: :c:macro:`Py_TPFLAGS_HAVE_STACKLESS_EXTENSION`."
 msgstr ""
+"这是一个从属于类型对象及其扩展结构体的存在的所有位的位掩码。 目前，它包括以下的位: "
+":c:macro:`Py_TPFLAGS_HAVE_STACKLESS_EXTENSION`。"
 
 #: ../../c-api/typeobj.rst:1127
 msgid "This bit indicates that objects behave like unbound methods."
-msgstr ""
+msgstr "这个位指明对象的行为类似于未绑定方法。"
 
 #: ../../c-api/typeobj.rst:1129
 msgid "If this flag is set for ``type(meth)``, then:"
-msgstr ""
+msgstr "如果为 ``type(meth)`` 设置了该旗标，那么："
 
 #: ../../c-api/typeobj.rst:1131
 msgid ""
 "``meth.__get__(obj, cls)(*args, **kwds)`` (with ``obj`` not None) must be "
 "equivalent to ``meth(obj, *args, **kwds)``."
 msgstr ""
+"``meth.__get__(obj, cls)(*args, **kwds)`` (其中 ``obj`` 不为 None) 必须等价于 "
+"``meth(obj, *args, **kwds)``。"
 
 #: ../../c-api/typeobj.rst:1134
 msgid ""
 "``meth.__get__(None, cls)(*args, **kwds)`` must be equivalent to "
 "``meth(*args, **kwds)``."
 msgstr ""
+"``meth.__get__(None, cls)(*args, **kwds)`` 必须等价于 ``meth(*args, **kwds)``。"
 
 #: ../../c-api/typeobj.rst:1137
 msgid ""
 "This flag enables an optimization for typical method calls like "
 "``obj.meth()``: it avoids creating a temporary \"bound method\" object for "
 "``obj.meth``."
-msgstr ""
+msgstr "此旗标为 ``obj.meth()`` 这样的典型方法调用启用优化：它将避免为 ``obj.meth`` 创建临时的“绑定方法”对象。"
 
 #: ../../c-api/typeobj.rst:1145
 msgid ""
@@ -2184,40 +2211,42 @@ msgid ""
 ":c:macro:`Py_TPFLAGS_IMMUTABLETYPE` flag set.  For extension types, it is "
 "inherited whenever :c:member:`~PyTypeObject.tp_descr_get` is inherited."
 msgstr ""
+"此旗标绝不会被没有设置 :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` 旗标的类型所继承。 对于扩展类型，当 "
+":c:member:`~PyTypeObject.tp_descr_get` 被继承时它也会被继承。"
 
 #: ../../c-api/typeobj.rst:1151
 msgid ""
 "This bit indicates that instances of the class have a ``__dict__`` "
 "attribute, and that the space for the dictionary is managed by the VM."
-msgstr ""
+msgstr "该比特位表示类的实例具有 ``__dict__`` 属性，并且该字典的空间是由 VM 管理的。"
 
 #: ../../c-api/typeobj.rst:1154
 msgid "If this flag is set, :c:macro:`Py_TPFLAGS_HAVE_GC` should also be set."
-msgstr ""
+msgstr "如果设置了该旗标，则 :c:macro:`Py_TPFLAGS_HAVE_GC` 也应当被设置。"
 
 #: ../../c-api/typeobj.rst:1160
 msgid ""
 "This flag is inherited unless the :c:member:`~PyTypeObject.tp_dictoffset` "
 "field is set in a superclass."
-msgstr ""
+msgstr "此旗标将被继承，除非某个超类设置了 :c:member:`~PyTypeObject.tp_dictoffset` 字段。"
 
 #: ../../c-api/typeobj.rst:1166
 msgid ""
 "This bit indicates that instances of the class should be weakly "
 "referenceable."
-msgstr ""
+msgstr "该比特位表示类的实例应当是可被弱引用的。"
 
 #: ../../c-api/typeobj.rst:1173
 msgid ""
 "This flag is inherited unless the "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` field is set in a superclass."
-msgstr ""
+msgstr "此旗标将被继承，除非某个超类设置了 :c:member:`~PyTypeObject.tp_weaklistoffset` 字段。"
 
 #: ../../c-api/typeobj.rst:1179
 msgid ""
 "Only usable with variable-size types, i.e. ones with non-zero "
 ":c:member:`~PyTypeObject.tp_itemsize`."
-msgstr ""
+msgstr "仅适用于可变大小的类型，也就是说，具有非零 :c:member:`~PyTypeObject.tp_itemsize` 值的类型。"
 
 #: ../../c-api/typeobj.rst:1182
 msgid ""
@@ -2225,12 +2254,13 @@ msgid ""
 "the end of the instance's memory area, at an offset of "
 "``Py_TYPE(obj)->tp_basicsize`` (which may be different in each subclass)."
 msgstr ""
+"表示此类型的实例的可变大小部分位于该实例内存区的末尾，其偏移量为 ``Py_TYPE(obj)->tp_basicsize`` (每个子类可能不一样)。"
 
 #: ../../c-api/typeobj.rst:1187
 msgid ""
 "When setting this flag, be sure that all superclasses either use this memory"
 " layout, or are not variable-sized. Python does not check this."
-msgstr ""
+msgstr "当设置此旗标时，请确保所有子类要么使用此内存布局，要么不是可变大小。 Python 不会检查这一点。"
 
 #: ../../c-api/typeobj.rst:1195
 msgid "This flag is inherited."
