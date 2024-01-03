@@ -2264,7 +2264,7 @@ msgstr "当设置此旗标时，请确保所有子类要么使用此内存布局
 
 #: ../../c-api/typeobj.rst:1195
 msgid "This flag is inherited."
-msgstr ""
+msgstr "这个旗标会被继承。"
 
 #: ../../c-api/typeobj.rst:1209
 msgid ""
@@ -2276,6 +2276,9 @@ msgid ""
 "interacts with such types will behave differently depending on what kind of "
 "check is used."
 msgstr ""
+"这些旗标被 :c:func:`PyLong_Check` 等函数用来快速确定一个类型是否为内置类型的子类；这样的专用检测比泛用检测如 "
+":c:func:`PyObject_IsInstance` 要更快速。 继承自内置类型的自定义类型应当正确地设置其 "
+":c:member:`~PyTypeObject.tp_flags`，否则与这样的类型进行交互的代码将因所使用的检测种类而出现不同的行为。"
 
 #: ../../c-api/typeobj.rst:1220
 msgid ""
@@ -2353,6 +2356,9 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_base` is NULL or ``&PyBaseObject_Type`` and "
 ":c:member:`~PyTypeObject.tp_new` is NULL."
 msgstr ""
+"如果 :c:member:`~PyTypeObject.tp_base` 为 NULL 或者 ``&PyBaseObject_Type`` 和 "
+":c:member:`~PyTypeObject.tp_new` 为 NULL 则该旗标会在 :ref:`静态类型 <static-types>` "
+"上自动设置。"
 
 #: ../../c-api/typeobj.rst:1279
 msgid ""
@@ -2360,6 +2366,8 @@ msgid ""
 "unless they provide a non-NULL :c:member:`~PyTypeObject.tp_new` (which is "
 "only possible via the C API)."
 msgstr ""
+"这个旗标不会被继承。 但是，子类将不能被实例化，除非它们提供了不为 NULL 的 :c:member:`~PyTypeObject.tp_new` "
+"(这只能通过 C API 实现)。"
 
 #: ../../c-api/typeobj.rst:1286
 msgid ""
@@ -2377,18 +2385,23 @@ msgid ""
 "set when registering or subclassing :class:`collections.abc.Mapping`, and "
 "unset when registering :class:`collections.abc.Sequence`."
 msgstr ""
+"这个比特位指明该类的实例可以在被用作 :keyword:`match` 代码块的目标时匹配映射模式。 它会在注册或子类化 "
+":class:`collections.abc.Mapping` 时自动设置，并在注册 "
+":class:`collections.abc.Sequence` 时取消设置。"
 
 #: ../../c-api/typeobj.rst:1304 ../../c-api/typeobj.rst:1326
 msgid ""
 ":c:macro:`Py_TPFLAGS_MAPPING` and :c:macro:`Py_TPFLAGS_SEQUENCE` are "
 "mutually exclusive; it is an error to enable both flags simultaneously."
 msgstr ""
+":c:macro:`Py_TPFLAGS_MAPPING` 和 :c:macro:`Py_TPFLAGS_SEQUENCE` "
+"是互斥的；同时启用两个旗标将导致报错。"
 
 #: ../../c-api/typeobj.rst:1309
 msgid ""
 "This flag is inherited by types that do not already set "
 ":c:macro:`Py_TPFLAGS_SEQUENCE`."
-msgstr ""
+msgstr "这个旗标将被尚未设置 :c:macro:`Py_TPFLAGS_SEQUENCE` 的类型所继承。"
 
 #: ../../c-api/typeobj.rst:1312 ../../c-api/typeobj.rst:1334
 msgid ":pep:`634` -- Structural Pattern Matching: Specification"
@@ -2401,24 +2414,27 @@ msgid ""
 "set when registering or subclassing :class:`collections.abc.Sequence`, and "
 "unset when registering :class:`collections.abc.Mapping`."
 msgstr ""
+"这个比特位指明该类的实例可以在被用作 :keyword:`match` 代码块的目标时匹配序列模式。 它会在注册或子类化 "
+":class:`collections.abc.Sequence` 时自动设置，并在注册 "
+":class:`collections.abc.Mapping` 时取消设置。"
 
 #: ../../c-api/typeobj.rst:1331
 msgid ""
 "This flag is inherited by types that do not already set "
 ":c:macro:`Py_TPFLAGS_MAPPING`."
-msgstr ""
+msgstr "这个旗标将被尚未设置 :c:macro:`Py_TPFLAGS_MAPPING` 的类型所继承。"
 
 #: ../../c-api/typeobj.rst:1341
 msgid ""
 "Internal. Do not set or unset this flag. To indicate that a class has "
 "changed call :c:func:`PyType_Modified`"
-msgstr ""
+msgstr "内部使用。 请不要设置或取消设置此旗标。 用于指明一个类具有被修改的调用 :c:func:`PyType_Modified`"
 
 #: ../../c-api/typeobj.rst:1345
 msgid ""
 "This flag is present in header files, but is an internal feature and should "
 "not be used. It will be removed in a future version of CPython"
-msgstr ""
+msgstr "这个旗标存在于头文件中，但是属于内部特性而不应直接使用。 它将在未来的 CPython 版本中被移除"
 
 #: ../../c-api/typeobj.rst:1351
 msgid ""
@@ -2426,10 +2442,12 @@ msgid ""
 "this type object.  This is exposed as the :attr:`__doc__` attribute on the "
 "type and instances of the type."
 msgstr ""
+"一个可选的指向给出该类型对象的文档字符串的以 NUL 结束的 C 字符串的指针。 该指针被暴露为类型和类型实例上的 :attr:`__doc__` "
+"属性。"
 
 #: ../../c-api/typeobj.rst:1357
 msgid "This field is *not* inherited by subtypes."
-msgstr ""
+msgstr "这个字段 *不会* 被子类型继承。"
 
 #: ../../c-api/typeobj.rst:1362
 msgid ""
@@ -2437,12 +2455,14 @@ msgid ""
 " is only used if the :c:macro:`Py_TPFLAGS_HAVE_GC` flag bit is set.  The "
 "signature is::"
 msgstr ""
+"一个可选的指向针对垃圾回收器的遍历函数的指针。 该指针仅会在设置了 :c:macro:`Py_TPFLAGS_HAVE_GC` 旗标位时被使用。 "
+"函数签名为::"
 
 #: ../../c-api/typeobj.rst:1367 ../../c-api/typeobj.rst:1488
 msgid ""
 "More information about Python's garbage collection scheme can be found in "
 "section :ref:`supporting-cycle-detection`."
-msgstr ""
+msgstr "有关 Python 垃圾回收方案的更多信息可在 :ref:`supporting-cycle-detection` 一节中查看。"
 
 #: ../../c-api/typeobj.rst:1370
 msgid ""
