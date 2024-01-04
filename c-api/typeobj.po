@@ -2485,6 +2485,8 @@ msgid ""
 "member, it can only be ``NULL`` or a Python string and therefore cannot be "
 "part of a reference cycle."
 msgstr ""
+"请注意 :c:func:`Py_VISIT` 仅能在可以参加循环引用的成员上被调用。 虽然还存在一个 ``self->key`` 成员，但它只能为 "
+"``NULL`` 或 Python 字符串因而不能成为循环引用的一部分。"
 
 #: ../../c-api/typeobj.rst:1389
 msgid ""
@@ -2492,6 +2494,8 @@ msgid ""
 "as a debugging aid you may want to visit it anyway just so the :mod:`gc` "
 "module's :func:`~gc.get_referents` function will include it."
 msgstr ""
+"在另一方面，即使你知道某个成员永远不会成为循环引用的一部分，作为调试的辅助你仍然可能想要访问它因此 :mod:`gc` 模块的 "
+":func:`~gc.get_referents` 函数将会包括它。"
 
 #: ../../c-api/typeobj.rst:1394
 msgid ""
@@ -2505,6 +2509,11 @@ msgid ""
 "machinery, but the instance has no strong reference to the elements inside "
 "it, as they are allowed to be removed even if the instance is still alive)."
 msgstr ""
+"当实现 :c:member:`~PyTypeObject.tp_traverse` 时，只有实例所 *拥有* 的成员 (就是有指向它们的 "
+":term:`强引用 <strong reference>`) 才必须被访问。 举例来说，如果一个对象通过 "
+":c:member:`~PyTypeObject.tp_weaklist` 槽位支持弱引用，那么支持链表 (*tp_weaklist* 所指向的对象) "
+"的指针就 **不能** 被访问因为实例并不直接拥有指向自身的弱引用 "
+"(弱引用列表被用来支持弱引用机制，但实例没有指向其中的元素的强引用，因为即使实例还存在它们也允许被删除)。"
 
 #: ../../c-api/typeobj.rst:1405
 msgid ""
@@ -2512,6 +2521,8 @@ msgid ""
 ":c:func:`local_traverse` to have these specific names; don't name them just "
 "anything."
 msgstr ""
+"请注意 :c:func:`Py_VISIT` 要求传给 :c:func:`local_traverse` 的 *visit* 和 *arg* "
+"形参具有指定的名称；不要随意命名它们。"
 
 #: ../../c-api/typeobj.rst:1409
 msgid ""
