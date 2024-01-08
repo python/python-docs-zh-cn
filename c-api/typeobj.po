@@ -2262,6 +2262,12 @@ msgid ""
 "obvious, and there's rarely a good reason to avoid implementing "
 ":c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
+":c:member:`~PyTypeObject.tp_clear` 成员函数被用来打破垃圾回收器在循环垃圾中检测到的循环引用。 总的来说，系统中的所有"
+" :c:member:`~PyTypeObject.tp_clear` 函数必须合到一起以打破所有引用循环。 "
+"这是个微妙的问题，并且如有任何疑问都需要提供 :c:member:`~PyTypeObject.tp_clear` 函数。 例如，元组类型不会实现 "
+":c:member:`~PyTypeObject.tp_clear` 函数，因为有可能证明完全用元组是不会构成循环引用的。 因此其他类型的 "
+":c:member:`~PyTypeObject.tp_clear` 函数必须足以打破任何包含元组的循环。 这不是立即能明确的，并且很少会有避免实现 "
+":c:member:`~PyTypeObject.tp_clear` 的适当理由。"
 
 #: ../../c-api/typeobj.rst:1284
 msgid ""
@@ -2270,6 +2276,8 @@ msgid ""
 "and set its pointers to those members to ``NULL``, as in the following "
 "example::"
 msgstr ""
+":c:member:`~PyTypeObject.tp_clear` 的实现应当丢弃实例指向其成员的可能为 Python "
+"对象的引用，并将指向这些成员的指针设为 ``NULL``，如下面的例子所示::"
 
 #: ../../c-api/typeobj.rst:1298
 msgid ""
@@ -2575,7 +2583,7 @@ msgstr ""
 msgid ""
 "This field is not inherited by subtypes (members are inherited through a "
 "different mechanism)."
-msgstr ""
+msgstr "该字段不会被子类型所继承（成员是通过不同的机制来继承的）。"
 
 #: ../../c-api/typeobj.rst:1504
 msgid ""
@@ -2583,25 +2591,28 @@ msgid ""
 ":c:type:`PyGetSetDef` structures, declaring computed attributes of instances"
 " of this type."
 msgstr ""
+"一个可选的指向 :c:type:`PyGetSetDef` 结构体的以 ``NULL`` 结束的静态数组的指针，它声明了此类型的实例中被计算出的属性。"
 
 #: ../../c-api/typeobj.rst:1507
 msgid ""
 "For each entry in the array, an entry is added to the type's dictionary (see"
 " :c:member:`~PyTypeObject.tp_dict` below) containing a getset descriptor."
 msgstr ""
+"对于该数组中的每一项，都会向类型的字典 (参见下面的 :c:member:`~PyTypeObject.tp_dict`) "
+"添加一个包含读写描述器的条目。"
 
 #: ../../c-api/typeobj.rst:1512
 msgid ""
 "This field is not inherited by subtypes (computed attributes are inherited "
 "through a different mechanism)."
-msgstr ""
+msgstr "该字段不会被子类型所继承（被计算属性是通过不同的机制来继承的）。"
 
 #: ../../c-api/typeobj.rst:1518
 msgid ""
 "An optional pointer to a base type from which type properties are inherited."
 "  At this level, only single inheritance is supported; multiple inheritance "
 "require dynamically creating a type object by calling the metatype."
-msgstr ""
+msgstr "一个可选的指向类型特征属性所继承的基类型的指针。 在这个层级上，只支持单继承；多重继承需要通过调用元类型动态地创建类型对象。"
 
 #: ../../c-api/typeobj.rst:1526
 msgid ""
@@ -2610,6 +2621,8 @@ msgid ""
 " like :c:func:`PyType_GenericNew`, with implicit conversion to a pointer, "
 "are valid C99 address constants."
 msgstr ""
+"槽位初始化需要遵循初始化全局变量的规则。 C99 要求初始化器为“地址常量”。 隐式转换为指针的函数指示器如 "
+":c:func:`PyType_GenericNew` 都是有效的 C99 地址常量。"
 
 #: ../../c-api/typeobj.rst:1531
 msgid ""
@@ -2623,7 +2636,7 @@ msgstr ""
 msgid ""
 "Consequently, :c:member:`~PyTypeObject.tp_base` should be set in the "
 "extension module's init function."
-msgstr ""
+msgstr "因此，应当在扩展模块的初始化函数中设置 :c:member:`~PyTypeObject.tp_base`。"
 
 #: ../../c-api/typeobj.rst:1542
 msgid "This field is not inherited by subtypes (obviously)."
