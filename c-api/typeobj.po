@@ -2614,6 +2614,11 @@ msgid ""
 "contained object can no longer be used.  The :c:func:`Py_CLEAR` macro "
 "performs the operations in a safe order."
 msgstr ""
+"应当使用 :c:func:`Py_CLEAR` 宏，因为清除引用是很微妙的：指向被包含对象的引用必须在指向被包含对象的指针被设为 ``NULL`` "
+"之后才能被释放 (通过 :c:func:`Py_DECREF`)。 "
+"这是因为释放引用可能会导致被包含的对象变成垃圾，触发一连串的回收活动，其中可能包括发起调用任意 Python 代码 "
+"(由于关联到被包含对象的终结器或弱引用回调)。 如果这样的代码有可能再次引用 *self*，那么这时指向被包含对象的指针为 ``NULL`` "
+"就是非常重要的，这样 *self* 就知道被包含对象不可再被使用。 :c:func:`Py_CLEAR` 宏将以安全的顺序执行此操作。"
 
 #: ../../c-api/typeobj.rst:1476
 msgid ""
@@ -2622,6 +2627,9 @@ msgid ""
 "to determine that an object is no longer used, the cyclic garbage collector "
 "is not involved and :c:member:`~PyTypeObject.tp_dealloc` is called directly."
 msgstr ""
+"请注意 :c:member:`~PyTypeObject.tp_clear` 并非 *总是* 在实例被取消分配之前被调用。 "
+"例如，当引用计数足以确定对象不再被使用时，就不会涉及循环垃圾回收器而是直接调用 "
+":c:member:`~PyTypeObject.tp_dealloc`。"
 
 #: ../../c-api/typeobj.rst:1482
 msgid ""
@@ -3420,11 +3428,11 @@ msgstr "（这个字段从 3.8 起即存在，但是从 3.9 开始投入使用�
 
 #: ../../c-api/typeobj.rst:2146
 msgid "Internal. Do not use."
-msgstr ""
+msgstr "内部对象。 请勿使用。"
 
 #: ../../c-api/typeobj.rst:2154
 msgid "Static Types"
-msgstr ""
+msgstr "静态类型"
 
 #: ../../c-api/typeobj.rst:2156
 msgid ""
@@ -3432,6 +3440,8 @@ msgid ""
 ":c:type:`PyTypeObject` structure is defined directly in code and initialized"
 " using :c:func:`PyType_Ready`."
 msgstr ""
+"在传统上，在 C 代码中定义的类型都是 *静态的*，也就是说，:c:type:`PyTypeObject` 结构体在代码中直接定义并使用 "
+":c:func:`PyType_Ready` 来初始化。"
 
 #: ../../c-api/typeobj.rst:2160
 msgid ""
