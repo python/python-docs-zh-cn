@@ -2304,6 +2304,10 @@ msgid ""
 " and write the type's :c:member:`~PyTypeObject.tp_dealloc` function to "
 "invoke :c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
+"因为 :c:member:`~PyTypeObject.tp_clear` 函数的目的是打破循环引用，所以不需要清除所包含的对象如 Python "
+"字符串或 Python 整数，它们无法参与循环引用。 另一方面，清除所包含的全部 Python 对象，并编写类型的 "
+":c:member:`~PyTypeObject.tp_dealloc` 函数来发起调用 "
+":c:member:`~PyTypeObject.tp_clear` 也很方便。"
 
 #: ../../c-api/typeobj.rst:1322
 msgid ""
@@ -2317,13 +2321,13 @@ msgstr ""
 #: ../../c-api/typeobj.rst:1330
 msgid ""
 "An optional pointer to the rich comparison function, whose signature is::"
-msgstr ""
+msgstr "一个可选的指向富比较函数的指针，函数的签名为::"
 
 #: ../../c-api/typeobj.rst:1334
 msgid ""
 "The first parameter is guaranteed to be an instance of the type that is "
 "defined by :c:type:`PyTypeObject`."
-msgstr ""
+msgstr "第一个形参将保证为 :c:type:`PyTypeObject` 所定义的类型的实例。"
 
 #: ../../c-api/typeobj.rst:1337
 msgid ""
@@ -2332,6 +2336,8 @@ msgid ""
 "``Py_NotImplemented``, if another error occurred it must return ``NULL`` and"
 " set an exception condition."
 msgstr ""
+"该函数应当返回比较的结果 (通常为 ``Py_True`` 或 ``Py_False``)。 如果未定义比较运算，它必须返回 "
+"``Py_NotImplemented``，如果发生了其他错误则它必须返回 ``NULL`` 并设置一个异常条件。"
 
 #: ../../c-api/typeobj.rst:1342
 msgid ""
@@ -2633,17 +2639,17 @@ msgstr "因此，应当在扩展模块的初始化函数中设置 :c:member:`~Py
 
 #: ../../c-api/typeobj.rst:1536
 msgid "This field is not inherited by subtypes (obviously)."
-msgstr ""
+msgstr "该字段不会被子类型继承（显然）。"
 
 #: ../../c-api/typeobj.rst:1540
 msgid ""
 "This field defaults to ``&PyBaseObject_Type`` (which to Python programmers "
 "is known as the type :class:`object`)."
-msgstr ""
+msgstr "该字段默认为 ``&PyBaseObject_Type`` (对 Python 程序员来说即 :class:`object` 类型)。"
 
 #: ../../c-api/typeobj.rst:1546
 msgid "The type's dictionary is stored here by :c:func:`PyType_Ready`."
-msgstr ""
+msgstr "类型的字典将由 :c:func:`PyType_Ready` 存储到这里。"
 
 #: ../../c-api/typeobj.rst:1548
 msgid ""
@@ -2674,7 +2680,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1572
 msgid "An optional pointer to a \"descriptor get\" function."
-msgstr ""
+msgstr "一个可选的指向“描述器获取”函数的指针。"
 
 #: ../../c-api/typeobj.rst:1574 ../../c-api/typeobj.rst:1590
 #: ../../c-api/typeobj.rst:1672 ../../c-api/typeobj.rst:1702
@@ -3081,6 +3087,8 @@ msgid ""
 ":c:type:`PyTypeObject` structure is defined directly in code and initialized"
 " using :c:func:`PyType_Ready`."
 msgstr ""
+"在传统上，在 C 代码中定义的类型都是 *静态的*，也就是说，:c:type:`PyTypeObject` 结构体在代码中直接定义并使用 "
+":c:func:`PyType_Ready` 来初始化。"
 
 #: ../../c-api/typeobj.rst:1960
 msgid ""
