@@ -2640,6 +2640,10 @@ msgid ""
 " and write the type's :c:member:`~PyTypeObject.tp_dealloc` function to "
 "invoke :c:member:`~PyTypeObject.tp_clear`."
 msgstr ""
+"因为 :c:member:`~PyTypeObject.tp_clear` 函数的目的是打破循环引用，所以不需要清除所包含的对象如 Python "
+"字符串或 Python 整数，它们无法参与循环引用。 另一方面，清除所包含的全部 Python 对象，并编写类型的 "
+":c:member:`~PyTypeObject.tp_dealloc` 函数来发起调用 "
+":c:member:`~PyTypeObject.tp_clear` 也很方便。"
 
 #: ../../c-api/typeobj.rst:1495
 msgid ""
@@ -2649,17 +2653,20 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_clear` are all inherited from the base type if "
 "they are all zero in the subtype."
 msgstr ""
+"该字段会与 :c:member:`~PyTypeObject.tp_traverse` 和 :c:macro:`Py_TPFLAGS_HAVE_GC` "
+"旗标位一起被子类型所继承：如果旗标位, :c:member:`~PyTypeObject.tp_traverse` 和 "
+":c:member:`~PyTypeObject.tp_clear` 在子类型中均为零则它们都将从基类型继承。"
 
 #: ../../c-api/typeobj.rst:1503
 msgid ""
 "An optional pointer to the rich comparison function, whose signature is::"
-msgstr ""
+msgstr "一个可选的指向富比较函数的指针，函数的签名为::"
 
 #: ../../c-api/typeobj.rst:1507
 msgid ""
 "The first parameter is guaranteed to be an instance of the type that is "
 "defined by :c:type:`PyTypeObject`."
-msgstr ""
+msgstr "第一个形参将保证为 :c:type:`PyTypeObject` 所定义的类型的实例。"
 
 #: ../../c-api/typeobj.rst:1510
 msgid ""
@@ -2668,6 +2675,8 @@ msgid ""
 "``Py_NotImplemented``, if another error occurred it must return ``NULL`` and"
 " set an exception condition."
 msgstr ""
+"该函数应当返回比较的结果 (通常为 ``Py_True`` 或 ``Py_False``)。 如果未定义比较运算，它必须返回 "
+"``Py_NotImplemented``，如果发生了其他错误则它必须返回 ``NULL`` 并设置一个异常条件。"
 
 #: ../../c-api/typeobj.rst:1515
 msgid ""
