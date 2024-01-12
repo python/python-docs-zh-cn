@@ -3160,6 +3160,12 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_new` returns an instance of a subtype of the "
 "original type, the subtype's :c:member:`~PyTypeObject.tp_init` is called."
 msgstr ""
+":c:member:`~PyTypeObject.tp_init` 函数如果不为 ``NULL``，将在通过调用类型正常创建其实例时被调用，即在类型的 "
+":c:member:`~PyTypeObject.tp_new` 函数返回一个该类型的实例时。 如果 "
+":c:member:`~PyTypeObject.tp_new` 函数返回了一个不是原始类型的子类型的其他类型的实例，则 "
+":c:member:`~PyTypeObject.tp_init` 函数不会被调用；如果 "
+":c:member:`~PyTypeObject.tp_new` 返回了一个原始类型的子类型的实例，则该子类型的 "
+":c:member:`~PyTypeObject.tp_init` 将被调用。"
 
 #: ../../c-api/typeobj.rst:1855
 msgid "Returns ``0`` on success, ``-1`` and sets an exception on error."
@@ -3208,6 +3214,9 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_new` function is called; it may be a subtype of "
 "that type (but not an unrelated type)."
 msgstr ""
+"*subtype* 参数是被创建的对象的类型；*args* 和 *kwds* 参数表示调用类型时传入的位置和关键字参数。 请注意 *subtype* "
+"不是必须与被调用的 :c:member:`~PyTypeObject.tp_new` "
+"函数所属的类型相同；它可以是该类型的子类型（但不能是完全无关的类型）。"
 
 #: ../../c-api/typeobj.rst:1904
 msgid ""
@@ -3220,12 +3229,18 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_new`, while for mutable types, most "
 "initialization should be deferred to :c:member:`~PyTypeObject.tp_init`."
 msgstr ""
+":c:member:`~PyTypeObject.tp_new` 函数应当调用 ``subtype->tp_alloc(subtype, "
+"nitems)`` 来为对象分配空间，然后只执行绝对有必要的进一步初始化操作。 可以安全地忽略或重复的初始化操作应当放在 "
+":c:member:`~PyTypeObject.tp_init` 处理句柄中。 一个关键的规则是对于不可变类型来说，所有初始化操作都应当在 "
+":c:member:`~PyTypeObject.tp_new` 中发生，而对于可变类型，大部分初始化操作都应当推迟到 "
+":c:member:`~PyTypeObject.tp_init` 再执行。"
 
 #: ../../c-api/typeobj.rst:1912
 msgid ""
 "Set the :c:macro:`Py_TPFLAGS_DISALLOW_INSTANTIATION` flag to disallow "
 "creating instances of the type in Python."
 msgstr ""
+"设置 :c:macro:`Py_TPFLAGS_DISALLOW_INSTANTIATION` 旗标以禁止在 Python 中创建该类型的实例。"
 
 #: ../../c-api/typeobj.rst:1917
 msgid ""
