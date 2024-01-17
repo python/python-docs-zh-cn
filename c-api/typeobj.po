@@ -15,6 +15,7 @@
 # Bryan不可思议, 2023
 # Nyuan Zhang, 2023
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# Kevin Deng <kevindeng55+transifex@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -22,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-05 21:52+0000\n"
+"POT-Creation-Date: 2024-01-12 22:01+0000\n"
 "PO-Revision-Date: 2017-02-16 17:39+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -2600,7 +2601,7 @@ msgid ""
 ":c:type:`PyGetSetDef` structures, declaring computed attributes of instances"
 " of this type."
 msgstr ""
-"一个可选的指向 :c:type:`PyGetSetDef` 结构体的以 ``NULL`` 结束的静态数组的指针，它声明了此类型的实例中被计算出的属性。"
+"一个可选的指向 :c:type:`PyGetSetDef` 结构体的以 ``NULL`` 结束的静态数组的指针，它声明了此类型的实例中的被计算属性。"
 
 #: ../../c-api/typeobj.rst:1507
 msgid ""
@@ -2974,7 +2975,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1815
 msgid "Tuple of base types."
-msgstr ""
+msgstr "基类型的元组。"
 
 #: ../../c-api/typeobj.rst:1817
 msgid ""
@@ -3018,17 +3019,17 @@ msgstr "弱引用列表头，用于指向该类型对象的弱引用。 不会�
 msgid ""
 "This field is deprecated.  Use :c:member:`~PyTypeObject.tp_finalize` "
 "instead."
-msgstr ""
+msgstr "该字段已被弃用。 请改用 :c:member:`~PyTypeObject.tp_finalize`。"
 
 #: ../../c-api/typeobj.rst:1872
 msgid "Used to index into the method cache.  Internal use only."
-msgstr ""
+msgstr "用于索引至方法缓存。 仅限内部使用。"
 
 #: ../../c-api/typeobj.rst:1881
 msgid ""
 "An optional pointer to an instance finalization function.  Its signature "
 "is::"
-msgstr ""
+msgstr "一个可选的指向实例最终化函数的指针。 函数的签名为::"
 
 #: ../../c-api/typeobj.rst:1885
 msgid ""
@@ -3039,13 +3040,16 @@ msgid ""
 " before attempting to break reference cycles, ensuring that it finds the "
 "object in a sane state."
 msgstr ""
+"如果设置了 :c:member:`~PyTypeObject.tp_finalize`，解释器将在最终化特定实例时调用它一次。 "
+"它将由垃圾回收器调用（如果实例是单独循环引用的一部分）或是在对象被释放之前被调用。 "
+"不论是哪种方式，它都肯定会在尝试打破循环引用之前被调用，以确保它所操作的对象处于正常状态。"
 
 #: ../../c-api/typeobj.rst:1892
 msgid ""
 ":c:member:`~PyTypeObject.tp_finalize` should not mutate the current "
 "exception status; therefore, a recommended way to write a non-trivial "
 "finalizer is::"
-msgstr ""
+msgstr ":c:member:`~PyTypeObject.tp_finalize` 不应改变当前异常状态；因此，编写非关键终结器的推荐做法::"
 
 #: ../../c-api/typeobj.rst:1909
 msgid ""
@@ -3066,10 +3070,14 @@ msgid ""
 " objects on the thread which called tp_dealloc will not violate any "
 "assumptions of the library."
 msgstr ""
+"另外还需要注意，在应用垃圾回收机制的 Python 中，:c:member:`~PyTypeObject.tp_dealloc` 可以从任意 "
+"Python 线程被调用，而不仅是创建该对象的线程（如果对象成为引用计数循环的一部分，则该循环可能会被任何线程上的垃圾回收操作所回收）。 这对 "
+"Python API 调用来说不是问题，因为 tp_dealloc 调用所在的线程将持有全局解释器锁（GIL）。 但是，如果被销毁的对象又销毁了来自其他"
+" C 或 C++ 库的对象，则应当小心确保在调用 tp_dealloc 的线程上销毁这些对象不会破坏这些库的任何资源。"
 
 #: ../../c-api/typeobj.rst:1929
 msgid "\"Safe object finalization\" (:pep:`442`)"
-msgstr ""
+msgstr "\"安全的对象最终化\" (:pep:`442`)"
 
 #: ../../c-api/typeobj.rst:1934
 msgid ""
@@ -3103,19 +3111,19 @@ msgstr ""
 #: ../../c-api/typeobj.rst:1956
 msgid ""
 "This results in types that are limited relative to types defined in Python:"
-msgstr ""
+msgstr "这就导致了与在 Python 中定义的类型相关联的类型限制："
 
 #: ../../c-api/typeobj.rst:1958
 msgid ""
 "Static types are limited to one base, i.e. they cannot use multiple "
 "inheritance."
-msgstr ""
+msgstr "静态类型只能拥有一个基类；换句话说，他们不能使用多重继承。"
 
 #: ../../c-api/typeobj.rst:1960
 msgid ""
 "Static type objects (but not necessarily their instances) are immutable. It "
 "is not possible to add or modify the type object's attributes from Python."
-msgstr ""
+msgstr "静态类型对象（但并非它们的实例）是不可变对象。 不可能在 Python 中添加或修改类型对象的属性。"
 
 #: ../../c-api/typeobj.rst:1962
 msgid ""
@@ -3123,6 +3131,7 @@ msgid ""
 "interpreter-support>`, so they should not include any subinterpreter-"
 "specific state."
 msgstr ""
+"静态类型对象是跨 :ref:`子解释器 <sub-interpreter-support>` 共享的，因此它们不应包括任何子解释器专属的状态。"
 
 #: ../../c-api/typeobj.rst:1966
 msgid ""
@@ -3146,18 +3155,18 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1981
 msgid "Number Object Structures"
-msgstr ""
+msgstr "数字对象结构体Number Object Structures"
 
 #: ../../c-api/typeobj.rst:1988
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the number protocol.  Each function is used by the function of "
 "similar name documented in the :ref:`number` section."
-msgstr ""
+msgstr "该结构体持有指向被对象用来实现数字协议的函数的指针。 每个函数都被 :ref:`number` 一节中记录的对应名称的函数所使用。"
 
 #: ../../c-api/typeobj.rst:1994 ../../c-api/typeobj.rst:2318
 msgid "Here is the structure definition::"
-msgstr ""
+msgstr "结构体定义如下::"
 
 #: ../../c-api/typeobj.rst:2041
 msgid ""
@@ -3168,6 +3177,9 @@ msgid ""
 "``Py_NotImplemented``, if another error occurred they must return ``NULL`` "
 "and set an exception."
 msgstr ""
+"双目和三目函数必须检查其所有操作数的类型，并实现必要的转换（至少有一个操作数是所定义类型的实例）。 "
+"如果没有为所给出的操作数定义操作，则双目和三目函数必须返回 ``Py_NotImplemented``，如果发生了其他错误则它们必须返回 "
+"``NULL`` 并设置一个异常。"
 
 #: ../../c-api/typeobj.rst:2050
 msgid ""
@@ -3177,13 +3189,13 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:2095
 msgid "Mapping Object Structures"
-msgstr ""
+msgstr "映射对象结构体"
 
 #: ../../c-api/typeobj.rst:2102
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the mapping protocol.  It has three members:"
-msgstr ""
+msgstr "该结构体持有指向对象用于实现映射协议的函数的指针。 它有三个成员："
 
 #: ../../c-api/typeobj.rst:2107
 msgid ""
@@ -3191,6 +3203,8 @@ msgid ""
 ":c:func:`PyObject_Size`, and has the same signature.  This slot may be set "
 "to ``NULL`` if the object has no defined length."
 msgstr ""
+"该函数将被 :c:func:`PyMapping_Size` 和 :c:func:`PyObject_Size` 使用，并具有相同的签名。 "
+"如果对象没有定义长度则此槽位可被设为 ``NULL``。"
 
 #: ../../c-api/typeobj.rst:2113
 msgid ""
@@ -3200,6 +3214,9 @@ msgid ""
 ":c:func:`PyMapping_Check` function to return ``1``, it can be ``NULL`` "
 "otherwise."
 msgstr ""
+"该函数将被 :c:func:`PyObject_GetItem` 和 :c:func:`PySequence_GetSlice` 使用，并具有与 "
+":c:func:`!PyObject_GetItem` 相同的签名。 此槽位必须被填充以便 :c:func:`PyMapping_Check` 函数返回"
+" ``1``，否则它可以为 ``NULL``。"
 
 #: ../../c-api/typeobj.rst:2121
 msgid ""
@@ -3213,13 +3230,13 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:2132
 msgid "Sequence Object Structures"
-msgstr ""
+msgstr "序列对象结构体"
 
 #: ../../c-api/typeobj.rst:2139
 msgid ""
 "This structure holds pointers to the functions which an object uses to "
 "implement the sequence protocol."
-msgstr ""
+msgstr "该结构体持有指向对象用于实现序列协议的函数的指针。"
 
 #: ../../c-api/typeobj.rst:2144
 msgid ""
@@ -3429,17 +3446,18 @@ msgstr ""
 msgid ""
 ":c:func:`PyBuffer_Release` is the interface for the consumer that wraps this"
 " function."
-msgstr ""
+msgstr ":c:func:`PyBuffer_Release` 是针对包装此函数的消费方的接口。"
 
 #: ../../c-api/typeobj.rst:2307
 msgid "Async Object Structures"
-msgstr ""
+msgstr "异步对象结构体"
 
 #: ../../c-api/typeobj.rst:2315
 msgid ""
 "This structure holds pointers to the functions required to implement "
 ":term:`awaitable` and :term:`asynchronous iterator` objects."
 msgstr ""
+"此结构体将持有指向需要用来实现 :term:`awaitable` 和 :term:`asynchronous iterator` 对象的函数的指针。"
 
 #: ../../c-api/typeobj.rst:2332
 msgid ""
@@ -3472,7 +3490,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:2362
 msgid "Slot Type typedefs"
-msgstr ""
+msgstr "槽位类型 typedef"
 
 #: ../../c-api/typeobj.rst:2366
 msgid ""
