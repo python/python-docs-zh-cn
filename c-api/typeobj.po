@@ -3576,7 +3576,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:2193
 msgid "Number Object Structures"
-msgstr "数字对象结构体Number Object Structures"
+msgstr "数字对象结构体"
 
 #: ../../c-api/typeobj.rst:2200
 msgid ""
@@ -3716,6 +3716,9 @@ msgid ""
 ":c:member:`~PySequenceMethods.sq_item`.  If :c:member:`!sq_length` is "
 "``NULL``, the index is passed as is to the function."
 msgstr ""
+"负索引号是按如下方式处理的：如果 :c:member:`~PySequenceMethods.sq_length` "
+"槽位已被填充，它将被调用并使用序列长度来计算出正索引号并传给 :c:member:`~PySequenceMethods.sq_item`。 如果 "
+":c:member:`!sq_length` 为 ``NULL``，索引号将原样传给此函数。"
 
 #: ../../c-api/typeobj.rst:2388
 msgid ""
@@ -3726,6 +3729,10 @@ msgid ""
 "be left to ``NULL`` if the object does not support item assignment and "
 "deletion."
 msgstr ""
+"此函数被 :c:func:`PySequence_SetItem` 所使用并具有相同的签名。 在尝试通过 "
+":c:member:`~PyMappingMethods.mp_ass_subscript` 槽位执行条目赋值和删除操作之后它还会被用于 "
+":c:func:`PyObject_SetItem` 和 :c:func:`PyObject_DelItem`。 "
+"如果对象不支持条目和删除则该槽位可以保持为 ``NULL``。"
 
 #: ../../c-api/typeobj.rst:2397
 msgid ""
@@ -3746,6 +3753,11 @@ msgid ""
 "augmented assignment ``+=``, after trying numeric in-place addition via the "
 ":c:member:`~PyNumberMethods.nb_inplace_add` slot."
 msgstr ""
+"此函数被 :c:func:`PySequence_InPlaceConcat` 所使用并具有相同的签名。 它应当修改它的第一个操作数，并将其返回。 "
+"该槽位可以保持为 ``NULL``，在此情况下 :c:func:`!PySequence_InPlaceConcat` 将回退到 "
+":c:func:`PySequence_Concat`。 在尝试通过 "
+":c:member:`~PyNumberMethods.nb_inplace_add` 槽位执行数字原地相加之后它还会被用于增强赋值运算符 "
+"``+=``。"
 
 #: ../../c-api/typeobj.rst:2413
 msgid ""
@@ -3756,10 +3768,15 @@ msgid ""
 "augmented assignment ``*=``, after trying numeric in-place multiplication "
 "via the :c:member:`~PyNumberMethods.nb_inplace_multiply` slot."
 msgstr ""
+"此函数被 :c:func:`PySequence_InPlaceRepeat` 所使用并具有相同的签名。 它应当修改它的第一个操作数，并将其返回。 "
+"该槽位可以保持为 ``NULL``，在此情况下 :c:func:`!PySequence_InPlaceRepeat` 将回退到 "
+":c:func:`PySequence_Repeat`。 在尝试通过 "
+":c:member:`~PyNumberMethods.nb_inplace_multiply` 槽位执行数字原地相乘之后它还会被用于增强赋值运算符 "
+"``*=``。"
 
 #: ../../c-api/typeobj.rst:2424
 msgid "Buffer Object Structures"
-msgstr ""
+msgstr "缓冲区对象结构体"
 
 #: ../../c-api/typeobj.rst:2432
 msgid ""
@@ -3767,6 +3784,8 @@ msgid ""
 "protocol <bufferobjects>`. The protocol defines how an exporter object can "
 "expose its internal data to consumer objects."
 msgstr ""
+"此结构体持有指向 :ref:`缓冲区协议 <bufferobjects>` 所需要的函数的指针。 "
+"该协议定义了导出方对象要如何向消费方对象暴露其内部数据。"
 
 #: ../../c-api/typeobj.rst:2438 ../../c-api/typeobj.rst:2487
 #: ../../c-api/typeobj.rst:2541 ../../c-api/typeobj.rst:2552
