@@ -194,6 +194,14 @@ msgid ""
 "through a :class:`!SharedMemoryManager`, we avoid the need to manually track"
 " and trigger the freeing of shared memory resources."
 msgstr ""
+"在 :class:`!SharedMemoryManager` 实例上调用 "
+":meth:`~multiprocessing.managers.BaseManager.start` 方法会导致启动一个新进程。 "
+"这个新进程的唯一目的就是管理所有通过它创建的共享内存块的生命周期。 想要释放该进程所管理的全部共享内存块，可以在实例上调用 "
+":meth:`~multiprocessing.managers.BaseManager.shutdown`。 这会触发执行该进程所管理的所有 "
+":class:`SharedMemory` 对象上的 "
+":meth:`~multiprocessing.shared_memory.SharedMemory.unlink` 调用，然后停止该进程本身。 通过 "
+":class:`!SharedMemoryManager` 创建 :class:`!SharedMemory` "
+"实例，我们可以避免手动跟踪并触发共享内存资源的释放。"
 
 #: ../../library/multiprocessing.shared_memory.rst:202
 msgid ""
@@ -232,6 +240,7 @@ msgid ""
 "The following example demonstrates the basic mechanisms of a "
 ":class:`~multiprocessing.managers.SharedMemoryManager`:"
 msgstr ""
+"下面的例子展示了 :class:`~multiprocessing.managers.SharedMemoryManager` 的基本机制："
 
 #: ../../library/multiprocessing.shared_memory.rst:240
 msgid ""
@@ -240,6 +249,8 @@ msgid ""
 " :keyword:`with` statement to ensure that all shared memory blocks are "
 "released after they are no longer needed:"
 msgstr ""
+"下面的例子展示了使用 :class:`~multiprocessing.managers.SharedMemoryManager` "
+"对象的一种更方便的方式，通过 :keyword:`with` 语句来确保所有共享内存块在它们不再被需要时得到释放："
 
 #: ../../library/multiprocessing.shared_memory.rst:259
 msgid ""
@@ -248,13 +259,16 @@ msgid ""
 "manager are all released when the :keyword:`!with` statement's code block "
 "finishes execution."
 msgstr ""
+"当在 :keyword:`with` 语句中使用 "
+":class:`~multiprocessing.managers.SharedMemoryManager` 对象时，使用这个管理器创建的共享内存块会在"
+" :keyword:`!with` 语句代码块结束执行时全部被释放。"
 
 #: ../../library/multiprocessing.shared_memory.rst:267
 msgid ""
 "Provide a mutable list-like object where all values stored within are stored"
 " in a shared memory block. This constrains storable values to the following "
 "built-in data types:"
-msgstr ""
+msgstr "提供一个可变的列表型对象，其中存储的所有值都是存储在一个共享内存块中。 这会将可存储的值限制为下列内置数据类型："
 
 #: ../../library/multiprocessing.shared_memory.rst:271
 msgid ":class:`int` (signed 64-bit)"
@@ -287,6 +301,8 @@ msgid ""
 ":meth:`!insert`, etc.) and do not support the dynamic creation of new "
 ":class:`!ShareableList` instances via slicing."
 msgstr ""
+"它与内置 :class:`list` 类型的显著区别还在于这些列表无法改变其总长度（即没有 :meth:`!append`, "
+":meth:`!insert` 等）并且不支持通过切片动态地创建新的 :class:`!ShareableList`。"
 
 #: ../../library/multiprocessing.shared_memory.rst:284
 msgid ""
@@ -294,6 +310,8 @@ msgid ""
 "values. Set to ``None`` to instead attach to an already existing "
 ":class:`!ShareableList` by its unique shared memory name."
 msgstr ""
+"*sequence* 会被用来填充已有值的新 :class:`!ShareableList`。 设为 ``None`` "
+"则会基于唯一的共享内存名称联系到现有的 :class:`!ShareableList`。"
 
 #: ../../library/multiprocessing.shared_memory.rst:288
 msgid ""
@@ -302,6 +320,8 @@ msgid ""
 ":class:`!ShareableList`, specify its shared memory block's unique name while"
 " leaving *sequence* set to ``None``."
 msgstr ""
+"*name* 是所请求的共享内存的唯一名称，与 :class:`SharedMemory` 的定义中描述的一致。 当关联到现有的 "
+":class:`!ShareableList` 时，将指明其共享内存块的唯一名称并将 *sequence* 设为 ``None``。"
 
 #: ../../library/multiprocessing.shared_memory.rst:295
 msgid ""
@@ -311,6 +331,9 @@ msgid ""
 "``.rstrip(b'\\x00')`` behavior is considered a bug and may go away in the "
 "future. See :gh:`106939`."
 msgstr ""
+":class:`bytes` 和 :class:`str` 值存在一个已知问题。 如果它们以 ``\\x00`` 空字节或字符结尾，那么当按索引号从 "
+":class:`!ShareableList` 提取这些值时它们可能会被 *静默地去除*。 这种 ``.rstrip(b'\\x00')`` "
+"行为并认为是一个程序错误并可能在未来被修复。 参见 :gh:`106939`。"
 
 #: ../../library/multiprocessing.shared_memory.rst:301
 msgid ""
@@ -362,6 +385,8 @@ msgid ""
 "attached to an existing object with the same name (if the object is still "
 "alive):"
 msgstr ""
+"下面的例子显示 :class:`ShareableList` (以及下层的 :class:`SharedMemory`) 对象可以在必要时被封存和解封。"
+" 请注意，它将仍然为同一个共享对象。 出现这种情况是因为被反序列化的对象具有相同的唯一名称并会使用这个相同的名称附加到现有的对象上（如果对象仍然存活）："
 
 #: ../../library/multiprocessing.shared_memory.rst:11
 msgid "Shared Memory"
