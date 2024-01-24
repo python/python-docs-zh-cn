@@ -939,6 +939,9 @@ msgid ""
 "released around potentially blocking I/O operations like reading or writing "
 "a file, so that other Python threads can run in the meantime."
 msgstr ""
+"因此，规则要求只有获得 :term:`GIL` 的线程才能在 Python对象上执行操作或调用 Python/C API 函数。 "
+"为了模拟并发执行，解释器会定期尝试切换线程 (参见 :func:`sys.setswitchinterval`)。 锁也会在读写文件等可能造成阻塞的 "
+"I/O 操作时释放，以便其他 Python 线程可以同时运行。"
 
 #: ../../c-api/init.rst:672
 msgid ""
@@ -947,6 +950,8 @@ msgid ""
 "global variable pointing to the current :c:type:`PyThreadState`: it can be "
 "retrieved using :c:func:`PyThreadState_Get`."
 msgstr ""
+"Python 解释器会在一个名为 :c:type:`PyThreadState` 的数据结构体中保存一些线程专属的记录信息。 还有一个全局变量指向当前的"
+" :c:type:`PyThreadState`: 它可以使用 :c:func:`PyThreadState_Get` 来获取。"
 
 #: ../../c-api/init.rst:678
 msgid "Releasing the GIL from extension code"
@@ -985,6 +990,8 @@ msgid ""
 "variable). Conversely, when acquiring the lock and restoring the thread "
 "state, the lock must be acquired before storing the thread state pointer."
 msgstr ""
+"这些函数的工作原理如下：全局解释器锁被用来保护指向当前线程状态的指针。 当释放锁并保存线程状态时，必须在锁被释放之前获取当前线程状态指针 "
+"（因为另一个线程可以立即获取锁并将自己的线程状态存储到全局变量中）。 相应地，当获取锁并恢复线程状态时，必须在存储线程状态指针之前先获取锁。"
 
 #: ../../c-api/init.rst:724
 msgid ""
@@ -995,6 +1002,9 @@ msgid ""
 "standard :mod:`zlib` and :mod:`hashlib` modules release the GIL when "
 "compressing or hashing data."
 msgstr ""
+"调用系统 I/O 函数是释放 GIL 的最常见用例，但它在调用不需要访问 Python "
+"对象的长期运行计算，比如针对内存缓冲区进行操作的压缩或加密函数之前也很有用。 举例来说，在对数据执行压缩或哈希操作时标准 :mod:`zlib` 和 "
+":mod:`hashlib` 模块就会释放 GIL。"
 
 #: ../../c-api/init.rst:735
 msgid "Non-Python created threads"
@@ -1009,6 +1019,8 @@ msgid ""
 "management), they don't hold the GIL, nor is there a thread state structure "
 "for them."
 msgstr ""
+"当使用专门的 Python API（如 :mod:`threading` 模块）创建线程时，会自动关联一个线程状态因而上面显示的代码是正确的。 "
+"但是，如果线程是用 C 创建的（例如由具有自己的线程管理的第三方库创建），它们就不持有 GIL 也没有对应的线程状态结构体。"
 
 #: ../../c-api/init.rst:744
 msgid ""
