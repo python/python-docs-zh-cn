@@ -1299,6 +1299,9 @@ msgid ""
 " are done, you should reset the thread state pointer, release the GIL, and "
 "finally free the thread state data structure."
 msgstr ""
+"如果你需要从这些线程调用 Python 代码（这通常会是上述第三方库所提供的回调 API "
+"的一部分），你必须首先通过创建线程状态数据结构体向解释器注册这些线程，然后获取 GIL，最后存储它们的线程状态指针，这样你才能开始使用 Python/C"
+" API。 完成以上步骤后，你应当重置线程状态指针，释放 GIL，最后释放线程状态数据结构体。"
 
 #: ../../c-api/init.rst:945
 msgid ""
@@ -1306,6 +1309,8 @@ msgid ""
 "do all of the above automatically.  The typical idiom for calling into "
 "Python from a C thread is::"
 msgstr ""
+":c:func:`PyGILState_Ensure` 和 :c:func:`PyGILState_Release` 函数会自动完成上述的所有操作。 从"
+" C 线程调用到 Python 的典型方式如下::"
 
 #: ../../c-api/init.rst:959
 msgid ""
@@ -1315,10 +1320,13 @@ msgid ""
 ":c:func:`Py_NewInterpreter`), but mixing multiple interpreters and the "
 "``PyGILState_*`` API is unsupported."
 msgstr ""
+"请注意 ``PyGILState_*`` 函数会假定只有一个全局解释器（由 :c:func:`Py_Initialize` 自动创建）。 Python "
+"支持创建额外的解释器（使用 :c:func:`Py_NewInterpreter` 创建），但不支持混合使用多个解释器和 "
+"``PyGILState_*`` API。"
 
 #: ../../c-api/init.rst:969
 msgid "Cautions about fork()"
-msgstr ""
+msgstr "有关 fork() 的注意事项"
 
 #: ../../c-api/init.rst:971
 msgid ""
@@ -1328,6 +1336,9 @@ msgid ""
 "concrete impact both on how locks must be handled and on all stored state in"
 " CPython's runtime."
 msgstr ""
+"有关线程的另一个需要注意的重要问题是它们在面对 C :c:func:`fork` 调用时的行为。 在大多数支持 :c:func:`fork` "
+"的系统中，当一个进程执行 fork 之后将只有发出 fork 的线程存在。 这对需要如何处理锁以及CPython "
+"的运行时内所有的存储状态都会有实质性的影响。"
 
 #: ../../c-api/init.rst:977
 msgid ""
