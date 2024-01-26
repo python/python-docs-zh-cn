@@ -1099,6 +1099,11 @@ msgid ""
 "originally initialized. The only exception is if :c:func:`exec` will be "
 "called immediately after."
 msgstr ""
+"所有其他线程都将结束这一事实也意味着 CPython 的运行时状态必须妥善清理，:func:`os.fork` 就是这样做的。 "
+"这意味着最终化归属于当前解释器的所有其他 :c:type:`PyThreadState` 对象以及所有其他 "
+":c:type:`PyInterpreterState` 对象。 由于这一点以及 :ref:`\"main\" 解释器 <sub-"
+"interpreter-support>` 的特殊性质，:c:func:`fork` 应当只在该解释器 的 \"main\" 线程中被调用，而 "
+"CPython 全局运行时最初就是在该线程中初始化的。 只有当 :c:func:`exec` 将随后立即被调用的情况是唯一的例外。"
 
 #: ../../c-api/init.rst:812
 msgid "High-level API"
@@ -1116,7 +1121,7 @@ msgid ""
 "threads.  Threads belonging to the same interpreter share their module "
 "administration and a few other internal items. There are no public members "
 "in this structure."
-msgstr ""
+msgstr "该数据结构代表多个合作线程所共享的状态。 属于同一解释器的线程将共享其模块管理以及其他一些内部条目。 该结构体中不包含公有成员。"
 
 #: ../../c-api/init.rst:824
 msgid ""
@@ -1125,6 +1130,7 @@ msgid ""
 "global interpreter lock is also shared by all threads, regardless of to "
 "which interpreter they belong."
 msgstr ""
+"最初归属于不同解释器的线程不会共享任何东西，但进程状态如可用内存、打开的文件描述符等等除外。 全局解释器锁也会被所有线程共享，无论它们归属于哪个解释器。"
 
 #: ../../c-api/init.rst:832
 msgid ""
