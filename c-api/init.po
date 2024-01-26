@@ -1356,6 +1356,12 @@ msgid ""
 "defunct after the fork. :c:func:`PyOS_AfterFork_Child` tries to reset the "
 "necessary locks, but is not always able to."
 msgstr ""
+"只保留“当前”线程这一事实意味着任何由其他线程所持有的锁永远不会被释放。 Python 通过在 fork 之前获取内部使用的锁，并随后释放它们的方式为 "
+":func:`os.fork` 解决了这个问题。 此外，它还会重置子进程中的任何 :ref:`lock-objects`。 在扩展或嵌入 Python "
+"时，没有办法通知 Python 在 fork 之前或之后需要获取或重置的附加（非 Python）锁。 需要使用 OS 工具例如 "
+":c:func:`!pthread_atfork` 来完成同样的事情。 此外，在扩展或嵌入 Python 时，直接调用 :c:func:`fork` "
+"而不是通过 :func:`os.fork` (并返回到或调用至 Python 中) 调用可能会导致某个被  fork 之后失效的线程所持有的 "
+"Python 内部锁发生死锁。 :c:func:`PyOS_AfterFork_Child` 会尝试重置必要的锁，但并不总是能够做到。"
 
 #: ../../c-api/init.rst:992
 msgid ""
