@@ -1194,6 +1194,9 @@ msgid ""
 "interpreter is in process of being finalized before calling this function to"
 " avoid unwanted termination."
 msgstr ""
+"当运行时正在最终化时从某个线程调用此函数将终结该线程，即使线程不是由 Python 创建的。 你可以在调用此函数之前使用 "
+":c:func:`_Py_IsFinalizing` 或 :func:`sys.is_finalizing` "
+"来检查解释器是否还处于最终化过程中以避免不必要的终结。"
 
 #: ../../c-api/init.rst:896
 msgid ""
@@ -1488,12 +1491,14 @@ msgid ""
 "is only used to check that it represents the current thread state --- if it "
 "isn't, a fatal error is reported."
 msgstr ""
+"将当前线程状态重置为 ``NULL`` 并释放全局解释器锁。 在此之前锁必须已被创建并且必须由当前的线程所持有。 *tstate* 参数必须不为 "
+"``NULL``，该参数仅被用于检查它是否代表当前线程状态 --- 如果不是，则会报告一个致命级错误。"
 
 #: ../../c-api/init.rst:1132
 msgid ""
 ":c:func:`PyEval_SaveThread` is a higher-level function which is always "
 "available (even when threads have not been initialized)."
-msgstr ""
+msgstr ":c:func:`PyEval_SaveThread` 是一个始终可用的（即使线程尚未初始化）更高层级函数。"
 
 #: ../../c-api/init.rst:1138
 msgid ""
@@ -1513,13 +1518,15 @@ msgstr ""
 msgid ""
 "Release the global interpreter lock.  The lock must have been created "
 "earlier."
-msgstr ""
+msgstr "释放全局解释器锁。 锁必须在此之前已被创建。"
 
 #: ../../c-api/init.rst:1163
 msgid ""
 "This function does not update the current thread state.  Please use "
 ":c:func:`PyEval_SaveThread` or :c:func:`PyEval_ReleaseThread` instead."
 msgstr ""
+"此函数不会更新当前线程状态。 请改用 :c:func:`PyEval_SaveThread` 或 "
+":c:func:`PyEval_ReleaseThread`。"
 
 #: ../../c-api/init.rst:1172
 msgid "Sub-interpreter support"
@@ -1614,6 +1621,9 @@ msgid ""
 "(sub-)interpreters, which might cause unwanted behavior (see `Bugs and "
 "caveats`_ below)."
 msgstr ""
+"对于使用单阶段初始化的模块，例如 :c:func:`PyModule_Create`，当特定扩展被首次导入时，它将被正常初始化，并会保存其模块字典的一个"
+" (浅) 拷贝。 当同一扩展被另一个 (子) 解释器导入时，将初始化一个新模块并填充该拷贝的内容；扩展的 ``init`` 函数不会被调用。 "
+"因此模块字典中的对象最终会被 (子) 解释器所共享，这可能会导致预期之外的行为  (参见下文的 `Bugs and caveats`_)。"
 
 #: ../../c-api/init.rst:1244
 msgid ""
@@ -1683,7 +1693,7 @@ msgid ""
 "A mechanism is provided to make asynchronous notifications to the main "
 "interpreter thread.  These notifications take the form of a function pointer"
 " and a void pointer argument."
-msgstr ""
+msgstr "提供了一种向主解释器线程发送异步通知的机制。 这些通知将采用函数指针和空指针参数的形式。"
 
 #: ../../c-api/init.rst:1308
 msgid ""
@@ -1691,6 +1701,8 @@ msgid ""
 "success, ``0`` is returned and *func* is queued for being called in the main"
 " thread.  On failure, ``-1`` is returned without setting any exception."
 msgstr ""
+"将一个函数加入从主解释器线程调用的计划任务。 成功时，将返回 ``0`` 并将 *func* 加入要被主线程调用的等待队列。 失败时，将返回 "
+"``-1`` 但不会设置任何异常。"
 
 #: ../../c-api/init.rst:1312
 msgid ""
@@ -1699,16 +1711,18 @@ msgid ""
 "asynchronously with respect to normally running Python code, but with both "
 "these conditions met:"
 msgstr ""
+"当成功加入队列后，*func* 将 *最终* 附带参数 *arg* 被主解释器线程调用。 对于正常运行的 Python "
+"代码来说它将被异步地调用，但要同时满足以下两个条件："
 
 #: ../../c-api/init.rst:1317
 msgid "on a :term:`bytecode` boundary;"
-msgstr ""
+msgstr "位于 :term:`bytecode` 的边界上；"
 
 #: ../../c-api/init.rst:1318
 msgid ""
 "with the main thread holding the :term:`global interpreter lock` (*func* can"
 " therefore use the full C API)."
-msgstr ""
+msgstr "主线程持有 :term:`global interpreter lock` (因此 *func* 可以使用完整的 C API)。"
 
 #: ../../c-api/init.rst:1321
 msgid ""
@@ -1717,12 +1731,14 @@ msgid ""
 "notification recursively, but it can still be interrupted to switch threads "
 "if the global interpreter lock is released."
 msgstr ""
+"*func* 必须在成功时返回 ``0``，或在失败时返回 ``-1`` 并设置一个异常集合。 *func* "
+"不会被中断来递归地执行另一个异步通知，但如果全局解释器锁被释放则它仍可被中断以切换线程。"
 
 #: ../../c-api/init.rst:1326
 msgid ""
 "This function doesn't need a current thread state to run, and it doesn't "
 "need the global interpreter lock."
-msgstr ""
+msgstr "此函数的运行不需要当前线程状态，也不需要全局解释器锁。"
 
 #: ../../c-api/init.rst:1330
 msgid ""
