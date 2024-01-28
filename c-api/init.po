@@ -1634,6 +1634,9 @@ msgid ""
 "initialization, this means that only C-level static and global variables are"
 " shared between these modules."
 msgstr ""
+"请注意这不同于在调用 :c:func:`Py_FinalizeEx` 和 :c:func:`Py_Initialize` "
+"完全重新初始化解释器之后导入扩展时所发生的情况；对于那种情况，扩展的 ``initmodule`` 函数 *会被* 再次调用。 "
+"与多阶段初始化一样，这意味着只有 C 层级的静态和全局变量能在这些模块之间共享。"
 
 #: ../../c-api/init.rst:1258
 msgid ""
@@ -1662,6 +1665,10 @@ msgid ""
 "one sub-interpreter into a namespace of another (sub-)interpreter; this "
 "should be avoided if possible."
 msgstr ""
+"由于子解释器 (以及主解释器) 都是同一个进程的组成部分，它们之间的隔离状态并非完美 --- 举例来说，使用低层级的文件操作如 "
+":func:`os.close` 时它们可能 (无意或恶意地) 影响它们各自打开的文件。 由于 (子) "
+"解释器之间共享扩展的方式，某些扩展可能无法正常工作；在使用单阶段初始化或者 (静态) 全局变量时尤其如此。 "
+"在一个子解释器中创建的对象有可能被插入到另一个 (子) 解释器的命名空间中；这种情况应当尽可能地避免。"
 
 #: ../../c-api/init.rst:1280
 msgid ""
@@ -1671,6 +1678,8 @@ msgid ""
 " dictionary of loaded modules. It is equally important to avoid sharing "
 "objects from which the above are reachable."
 msgstr ""
+"应当特别注意避免在子解释器之间共享用户自定义的函数、方法、实例或类，因为由这些对象执行的导入 操作可能会影响错误的已加载模块的 (子) 解释器的字典。 "
+"同样重要的一点是应当避免共享可被上述对象访问的对象 。"
 
 #: ../../c-api/init.rst:1286
 msgid ""
@@ -1749,6 +1758,9 @@ msgid ""
 "calling Python code from arbitrary C threads.  Instead, use the "
 ":ref:`PyGILState API<gilstate>`."
 msgstr ""
+"这是一个低层级函数，只在非常特殊的情况下有用。 不能保证 *func* 会尽快被调用。 如果主线程忙于执行某个系统调用，*func* "
+"将不会在系统调用返回之前被调用。 此函数 通常 **不适合** 从任意 C 线程调用 Python 代码。 作为替代，请使用 "
+":ref:`PyGILStateAPI <gilstate>`。"
 
 #: ../../c-api/init.rst:1342
 msgid "Profiling and Tracing"
@@ -1759,7 +1771,7 @@ msgid ""
 "The Python interpreter provides some low-level support for attaching "
 "profiling and execution tracing facilities.  These are used for profiling, "
 "debugging, and coverage analysis tools."
-msgstr ""
+msgstr "Python 解释器为附加的性能分析和执行跟踪工具提供了一些低层级的支持。 它们可被用于性能分析、调试和覆盖分析工具。"
 
 #: ../../c-api/init.rst:1351
 msgid ""
