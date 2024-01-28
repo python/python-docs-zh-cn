@@ -1993,6 +1993,9 @@ msgid ""
 "Only trace functions receives these events; they are not needed by the "
 "profiler."
 msgstr ""
+"当一个异常被引发时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。 在处理完任何字节码之后将附带 *what* "
+"的值调用回调函数，在此之后该异常将会被设置在正在执行的帧中。 这样做的效果是当异常传播导致 Python "
+"栈展开时，被调用的回调函数将随异常传播返回到每个帧。 只有跟踪函数才会接收到这些事件；性能分析器并不需要它们。"
 
 #: ../../c-api/init.rst:1511
 msgid ""
@@ -2006,25 +2009,25 @@ msgstr ""
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a call is about to return."
-msgstr ""
+msgstr "当一个调用即将返回时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
 #: ../../c-api/init.rst:1524
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function is about to be called."
-msgstr ""
+msgstr "当一个 C 函数即将被调用时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
 #: ../../c-api/init.rst:1530
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has raised an exception."
-msgstr ""
+msgstr "当一个 C 函数引发异常时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
 #: ../../c-api/init.rst:1536
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has returned."
-msgstr ""
+msgstr "当一个 C 函数返回时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
 #: ../../c-api/init.rst:1542
 msgid ""
@@ -2047,7 +2050,7 @@ msgstr ""
 
 #: ../../c-api/init.rst:1557 ../../c-api/init.rst:1569
 msgid "The caller must hold the :term:`GIL`."
-msgstr ""
+msgstr "调用方必须持有 :term:`GIL`。"
 
 #: ../../c-api/init.rst:1562
 msgid ""
@@ -2116,13 +2119,14 @@ msgstr ""
 msgid ""
 "The GIL does *not* need to be held when calling these functions; they supply"
 " their own locking."
-msgstr ""
+msgstr "当调用这些函数时 *无须* 持有 GIL；它们会提供自己的锁机制。"
 
 #: ../../c-api/init.rst:1628
 msgid ""
 "Note that :file:`Python.h` does not include the declaration of the TLS APIs,"
 " you need to include :file:`pythread.h` to use thread-local storage."
 msgstr ""
+"请注意 :file:`Python.h` 并不包括 TLS API 的声明，你需要包括 :file:`pythread.h` 来使用线程本地存储。"
 
 #: ../../c-api/init.rst:1632
 msgid ""
@@ -2134,7 +2138,7 @@ msgstr ""
 
 #: ../../c-api/init.rst:1640
 msgid "Thread Specific Storage (TSS) API"
-msgstr ""
+msgstr "线程专属存储 (TSS) API"
 
 #: ../../c-api/init.rst:1642
 msgid ""
@@ -2145,7 +2149,7 @@ msgstr ""
 
 #: ../../c-api/init.rst:1648
 msgid "\"A New C-API for Thread-Local Storage in CPython\" (:pep:`539`)"
-msgstr ""
+msgstr "\"A New C-API for Thread-Local Storage in CPython\" (:pep:`539`)"
 
 #: ../../c-api/init.rst:1653
 msgid ""
@@ -2153,19 +2157,23 @@ msgid ""
 "which may depend on the underlying TLS implementation, and it has an "
 "internal field representing the key's initialization state.  There are no "
 "public members in this structure."
-msgstr ""
+msgstr "该数据结构表示线程键的状态，其定义可能依赖于下层的 TLS 实现，并且它有一个表示键初始化状态的内部字段。 该结构体中不存在公有成员。"
 
 #: ../../c-api/init.rst:1658
 msgid ""
 "When :ref:`Py_LIMITED_API <stable>` is not defined, static allocation of "
 "this type by :c:macro:`Py_tss_NEEDS_INIT` is allowed."
 msgstr ""
+"当未定义 :ref:`Py_LIMITED_API <stable>` 时，允许由 :c:macro:`Py_tss_NEEDS_INIT` "
+"执行此类型的静态分配。"
 
 #: ../../c-api/init.rst:1664
 msgid ""
 "This macro expands to the initializer for :c:type:`Py_tss_t` variables. Note"
 " that this macro won't be defined with :ref:`Py_LIMITED_API <stable>`."
 msgstr ""
+"这个宏将扩展为 :c:type:`Py_tss_t` 变量的初始化器。 请注意这个宏不会用 :ref:`Py_LIMITED_API <stable>`"
+" 来定义。"
 
 #: ../../c-api/init.rst:1669
 msgid "Dynamic Allocation"
@@ -2231,6 +2239,8 @@ msgid ""
 "repeatedly on the same key -- calling it on an already initialized key is a "
 "no-op and immediately returns success."
 msgstr ""
+"当成功初始化一个 TSS 键时将返回零值。 如果 *key* 参数所指向的值未被 :c:macro:`Py_tss_NEEDS_INIT` "
+"初始化则其行为是未定义的。 此函数可在相同的键上重复调用 -- 在已初始化的键上调用它将不执行任何操作并立即成功返回。"
 
 #: ../../c-api/init.rst:1721
 msgid ""
@@ -2240,6 +2250,8 @@ msgid ""
 ":c:func:`PyThread_tss_create`. This function can be called repeatedly on the"
 " same key -- calling it on an already destroyed key is a no-op."
 msgstr ""
+"销毁一个 TSS 键以便在所有线程中遗忘与该键相关联的值，并将该键的初始化状态改为未初始化的。 已销毁的键可以通过 "
+":c:func:`PyThread_tss_create` 再次被初始化。 此函数可以在同一个键上重复调用 -- 但在一个已被销毁的键上调用将是无效的。"
 
 #: ../../c-api/init.rst:1730
 msgid ""
@@ -2257,13 +2269,13 @@ msgstr ""
 
 #: ../../c-api/init.rst:1745
 msgid "Thread Local Storage (TLS) API"
-msgstr ""
+msgstr "线程本地存储 (TLS) API"
 
 #: ../../c-api/init.rst:1747
 msgid ""
 "This API is superseded by :ref:`Thread Specific Storage (TSS) API <thread-"
 "specific-storage-api>`."
-msgstr ""
+msgstr "此 API 已被 :ref:`线程专属存储 (TSS) API <thread-specific-storage-api>` 所取代。"
 
 #: ../../c-api/init.rst:1752
 msgid ""
@@ -2273,6 +2285,8 @@ msgid ""
 "failure status, and the other TLS functions will all be no-ops on such "
 "platforms."
 msgstr ""
+"这个 API 版本不支持原生 TLS 键采用无法被安全转换为 ``int`` 的的定义方式的平台。 "
+"在这样的平台上，:c:func:`PyThread_create_key` 将立即返回一个失败状态，并且其他 TLS 函数在这样的平台上也都无效。"
 
 #: ../../c-api/init.rst:1757
 msgid ""
