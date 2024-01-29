@@ -518,6 +518,9 @@ msgid ""
 "object representations of file system paths like :mod:`pathlib` from working"
 " with pre-existing code, including Python's standard library."
 msgstr ""
+"文件系统路径历来被表示为 :class:`str` 或 :class:`bytes` 对象。 "
+"这使得编写对文件系统路径进行操作的代码的人会假定这种对象只能是这两种类型之一（不考虑表示文件描述符的 :class:`int` 因为它不是文件路径）。 "
+"不幸的是，这种假定阻止了像 :mod:`pathlib` 这样的文件系统路径的替代对象表示形式与包括 Python 标准库在内的现有代码协同工作。"
 
 #: ../../whatsnew/3.6.rst:413
 msgid ""
@@ -532,6 +535,12 @@ msgid ""
 "to explicitly get a :class:`str` and/or :class:`bytes` representation of a "
 "path-like object."
 msgstr ""
+"为了修正这种情况，一个由 :class:`os.PathLike` 表示的新接口被定义出来。 通过实现 "
+":meth:`~os.PathLike.__fspath__` 方法，对象可以表明它代表一个路径。 这样一个对象就能以 :class:`str` 或 "
+":class:`bytes` 对象的形式提供文件系统路径的低层级表示。 这意味着如果一个对象实现了 :class:`os.PathLike` "
+"或者是表示文件系统路径的 :class:`str` 或 :class:`bytes` 对象它就会被当作是 :term:`路径型对象 <path-like"
+" object>`。 代码可以使用 :func:`os.fspath`、:func:`os.fsdecode` 或 "
+":func:`os.fsencode` 来显式地获取一个路径型对象的 :class:`str` 和/或 :class:`bytes` 表示形式。"
 
 #: ../../whatsnew/3.6.rst:426
 msgid ""
@@ -542,6 +551,9 @@ msgid ""
 "classes in :mod:`pathlib` have also been updated to implement "
 ":class:`os.PathLike`."
 msgstr ""
+"内置 :func:`open` 函数已被更新为接受 :class:`os.PathLike` 对象，就像 :mod:`os` 和 "
+":mod:`os.path` 模块中的所有相关函数和标准库中的大多数其他函数和类一样。 :class:`os.DirEntry` 类和 "
+":mod:`pathlib` 中的相关类也已被更新以实现 :class:`os.PathLike`。"
 
 #: ../../whatsnew/3.6.rst:433
 msgid ""
@@ -551,13 +563,15 @@ msgid ""
 " least very minimal ones (e.g. calling :func:`os.fspath` at the beginning of"
 " code before operating on a path-like object)."
 msgstr ""
+"希望对于针对文件系统路径操作的基本函数的更新将会使得第三方代码都能隐式地支持所有 :term:`路径型对象 <path-like object>` "
+"而无须修改任何代码，或者至少只需极少的修改（例如当对路径型对象进行操作之前在代码的开头调用 :func:`os.fspath` 即可）。"
 
 #: ../../whatsnew/3.6.rst:440
 msgid ""
 "Here are some examples of how the new interface allows for "
 ":class:`pathlib.Path` to be used more easily and transparently with pre-"
 "existing code::"
-msgstr ""
+msgstr "下面的这些示例说明了新的接口是如何让 :class:`pathlib.Path` 被更容易、更透明地用于已有代码的::"
 
 #: ../../whatsnew/3.6.rst:457
 msgid ""
