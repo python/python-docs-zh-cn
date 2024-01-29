@@ -535,6 +535,12 @@ msgid ""
 "to explicitly get a :class:`str` and/or :class:`bytes` representation of a "
 "path-like object."
 msgstr ""
+"为了修正这种情况，一个由 :class:`os.PathLike` 表示的新接口被定义出来。 通过实现 "
+":meth:`~os.PathLike.__fspath__` 方法，对象可以表明它代表一个路径。 这样一个对象就能以 :class:`str` 或 "
+":class:`bytes` 对象的形式提供文件系统路径的低层级表示。 这意味着如果一个对象实现了 :class:`os.PathLike` "
+"或者是表示文件系统路径的 :class:`str` 或 :class:`bytes` 对象它就会被当作是 :term:`路径型对象 <path-like"
+" object>`。 代码可以使用 :func:`os.fspath`、:func:`os.fsdecode` 或 "
+":func:`os.fsencode` 来显式地获取一个路径型对象的 :class:`str` 和/或 :class:`bytes` 表示形式。"
 
 #: ../../whatsnew/3.6.rst:426
 msgid ""
@@ -545,6 +551,9 @@ msgid ""
 "classes in :mod:`pathlib` have also been updated to implement "
 ":class:`os.PathLike`."
 msgstr ""
+"内置 :func:`open` 函数已被更新为接受 :class:`os.PathLike` 对象，就像 :mod:`os` 和 "
+":mod:`os.path` 模块中的所有相关函数和标准库中的大多数其他函数和类一样。 :class:`os.DirEntry` 类和 "
+":mod:`pathlib` 中的相关类也已被更新以实现 :class:`os.PathLike`。"
 
 #: ../../whatsnew/3.6.rst:433
 msgid ""
@@ -554,13 +563,15 @@ msgid ""
 " least very minimal ones (e.g. calling :func:`os.fspath` at the beginning of"
 " code before operating on a path-like object)."
 msgstr ""
+"希望对于针对文件系统路径操作的基本函数的更新将会使得第三方代码都能隐式地支持所有 :term:`路径型对象 <path-like object>` "
+"而无须修改任何代码，或者至少只需极少的修改（例如当对路径型对象进行操作之前在代码的开头调用 :func:`os.fspath` 即可）。"
 
 #: ../../whatsnew/3.6.rst:440
 msgid ""
 "Here are some examples of how the new interface allows for "
 ":class:`pathlib.Path` to be used more easily and transparently with pre-"
 "existing code::"
-msgstr ""
+msgstr "下面的这些示例说明了新的接口是如何让 :class:`pathlib.Path` 被更容易、更透明地用于已有代码的::"
 
 #: ../../whatsnew/3.6.rst:457
 msgid ""
@@ -588,6 +599,8 @@ msgid ""
 "information displayed on a local clock (or stored in a Python datetime "
 "instance) is insufficient to identify a particular moment in time."
 msgstr ""
+"在世界上大多数地方，过去和将来都会存在本地时钟后移的时候。 在这种时候，本地时钟会在同一天内两次显示相同的时间。 "
+"对于这些情况，本地时钟所显示的（或存储在 Python datetime 实例中的）信息将不足以标识某个特定的时间点。"
 
 #: ../../whatsnew/3.6.rst:476
 msgid ""
@@ -596,6 +609,8 @@ msgid ""
 "differentiate between two moments in time for which local times are the "
 "same::"
 msgstr ""
+":pep:`495` 为 :class:`datetime.datetime` 和 :class:`datetime.time` 类的实例添加了新的 "
+"*fold* 属性以在本地时间相同的两个时间点之间进行区分::"
 
 #: ../../whatsnew/3.6.rst:491
 msgid ""
@@ -603,6 +618,8 @@ msgid ""
 "value ``0`` for all instances except those that represent the second "
 "(chronologically) moment in time in an ambiguous case."
 msgstr ""
+":attr:`fold <datetime.datetime.fold>` 属性的值在大多数实例上均为 "
+"``0``，只有在代表存在歧义的时间的第二个（按发生顺序）实例上例外。"
 
 #: ../../whatsnew/3.6.rst:498
 msgid ":pep:`495` -- Local Time Disambiguation"
@@ -616,14 +633,14 @@ msgstr "PEP 由 Alexander Belopolsky 和 Tim Peters 撰写，由 Alexander Belop
 
 #: ../../whatsnew/3.6.rst:505
 msgid "PEP 529: Change Windows filesystem encoding to UTF-8"
-msgstr "PEP 529: 将Windows文件系统编码更改为UTF-8"
+msgstr "PEP 529: 将 Windows 文件系统编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:507
 msgid ""
 "Representing filesystem paths is best performed with str (Unicode) rather "
 "than bytes. However, there are some situations where using bytes is "
 "sufficient and correct."
-msgstr ""
+msgstr "在表示文件系统路径时最好是使用 str (Unicode) 而不是 bytes。 不过，在某些情况下使用 bytes 就是足够而且正确的。"
 
 #: ../../whatsnew/3.6.rst:511
 msgid ""
@@ -632,6 +649,9 @@ msgid ""
 "on Windows, provided those bytes are encoded with the encoding returned by "
 ":func:`sys.getfilesystemencoding()`, which now defaults to ``'utf-8'``."
 msgstr ""
+"在 Python 3.6 之前，在 Windows 上使用 bytes 路径值可能会导致数据丢失。 有了这一更改，现在 Windows 上将支持使用 "
+"bytes 来表示路径，前提是这些 bytes 值是用 :func:`sys.getfilesystemencoding()` "
+"所返回的编码格式来编码的，现在此编码格式默认为 ``'utf-8'``。"
 
 #: ../../whatsnew/3.6.rst:516
 msgid ""
@@ -650,7 +670,7 @@ msgstr "有关详细信息和可能需要的代码修改的讨论，请参见 :p
 
 #: ../../whatsnew/3.6.rst:529
 msgid "PEP 528: Change Windows console encoding to UTF-8"
-msgstr "PEP 528: 将Windows控制台编码更改为UTF-8"
+msgstr "PEP 528: 将 Windows 控制台编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:531
 msgid ""
@@ -668,7 +688,7 @@ msgstr ""
 
 #: ../../whatsnew/3.6.rst:541
 msgid ":pep:`528` -- Change Windows console encoding to UTF-8"
-msgstr ":pep:`528` -- 将Windows控制台编码更改为UTF-8"
+msgstr ":pep:`528` -- 将 Windows 控制台编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:542
 msgid "PEP written and implemented by Steve Dower."
