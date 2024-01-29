@@ -661,6 +661,9 @@ msgid ""
 ":envvar:`PYTHONLEGACYWINDOWSFSENCODING` or call "
 ":func:`sys._enablelegacywindowsfsencoding`."
 msgstr ""
+"不使用 str 来表示路径的应用程序应当使用 :func:`os.fsencode()` 和 :func:`os.fsdecode()` 来确保 "
+"bytes 被正确地编码。 要恢复以前的行为，请设置 :envvar:`PYTHONLEGACYWINDOWSFSENCODING` 或调用 "
+":func:`sys._enablelegacywindowsfsencoding`。"
 
 #: ../../whatsnew/3.6.rst:522
 msgid ""
@@ -678,6 +681,8 @@ msgid ""
 "provide correctly read str objects to Python code. ``sys.stdin``, "
 "``sys.stdout`` and ``sys.stderr`` now default to utf-8 encoding."
 msgstr ""
+"现在，Windows 上的默认控制台将接受所有 Unicode 字符并为 Python 代码提供正确读取的 str 对象。``sys.stdin``, "
+"``sys.stdout`` 和 ``sys.stderr`` 现在默认使用 utf-8 编码格式。"
 
 #: ../../whatsnew/3.6.rst:535
 msgid ""
@@ -685,6 +690,8 @@ msgid ""
 "redirecting files or pipes. To revert to the previous behaviour for "
 "interactive console use, set :envvar:`PYTHONLEGACYWINDOWSSTDIO`."
 msgstr ""
+"此更改仅在使用交互式控制台时适用，而不适用于重定向文件或管道。 要恢复以前使用交互式控制台时的行为，请设置 "
+":envvar:`PYTHONLEGACYWINDOWSSTDIO`。"
 
 #: ../../whatsnew/3.6.rst:541
 msgid ":pep:`528` -- Change Windows console encoding to UTF-8"
@@ -751,6 +758,11 @@ msgid ""
 "more.html>`_. The memory usage of the new :func:`dict` is between 20% and "
 "25% smaller compared to Python 3.5."
 msgstr ""
+":ref:`dict <typesmapping>` 类型现在会使用一种基于 `Raymond Hettinger 的提议 "
+"<https://mail.python.org/pipermail/python-dev/2012-December/123028.html>`_ "
+"的“紧凑”表示形式，该表示形式 `最初由 PyPy 实现 <https://morepypy.blogspot.com/2015/01/faster-"
+"more-memory-efficient-and-more.html>`_。 新的The memory usage of the new "
+":func:`dict` 的内存占用相比 Python 3.5 减少了 20% 到 25%。"
 
 #: ../../whatsnew/3.6.rst:591
 msgid ""
@@ -763,6 +775,9 @@ msgid ""
 " versions of the language where random iteration order is still in effect, "
 "e.g. Python 3.5)."
 msgstr ""
+"这个新实现对原始顺序的保留被认为是一个实现细节而不应当被依赖（这在将来可能会改变，但我们希望在改变语言规范以强制所有当前和将来的 Python "
+"实现都使用保留顺序的语义之前先在几个发布版的语言内部使用这个新的 dict 实现；这也有助于让仍在使用随机迭代顺序的旧版本语言例如 Python 3.5"
+" 保持向下兼容性）。"
 
 #: ../../whatsnew/3.6.rst:600
 msgid ""
@@ -770,10 +785,12 @@ msgid ""
 " Raymond Hettinger <https://mail.python.org/pipermail/python-"
 "dev/2012-December/123028.html>`_.)"
 msgstr ""
+"（由 INADA Naoki 在 :issue:`27350` 中贡献。 该特性 `最初由 Raymond Hettinger 提议 "
+"<https://mail.python.org/pipermail/python-dev/2012-December/123028.html>`_。）"
 
 #: ../../whatsnew/3.6.rst:608
 msgid "PEP 523: Adding a frame evaluation API to CPython"
-msgstr "PEP 523: 向CPython 添加框架评估API"
+msgstr "PEP 523: 向 CPython 添加帧求值 API"
 
 #: ../../whatsnew/3.6.rst:610
 msgid ""
@@ -783,6 +800,8 @@ msgid ""
 "any way without directly manipulating function pointers for defined "
 "functions."
 msgstr ""
+"虽然 Python 为自定义代码执行方式提供了广泛的支持，但有一个地方它没有这样做，那就是帧对象的求值。 如果您想在 Python "
+"中拦截帧的求值，那么确实没有除了直接操纵自定义函数的函数指针以外的任何办法。"
 
 #: ../../whatsnew/3.6.rst:616
 msgid ""
@@ -792,6 +811,8 @@ msgid ""
 "begins. This enables the use of alternative evaluation implementations for "
 "Python code, tracking frame evaluation, etc."
 msgstr ""
+":pep:`523` 通过提供使帧求值在 C 语言层级上可插入的 API 从而改变了这一状况。 这将允许调试器和 JIT 等工具在 Python "
+"代码开始执行之前拦截帧求值。 这样就能允许 Python 代码使用替代性求值实现，跟踪帧求值等做法。"
 
 #: ../../whatsnew/3.6.rst:623
 msgid ""
@@ -800,10 +821,12 @@ msgid ""
 "very select, low-level use-cases. Semantics of the API will change with "
 "Python as necessary."
 msgstr ""
+"这个 API 并不是受限 C API 的组成部分，它被标记为私有以表明该 API 的使用受到限制并且只适用于非常少的、低层级的用例。 这个 API "
+"的语义将根据需要随 Python 的一起发生变化。"
 
 #: ../../whatsnew/3.6.rst:630
 msgid ":pep:`523` -- Adding a frame evaluation API to CPython"
-msgstr ":pep:`523` -- 向CPython 添加框架评估API"
+msgstr ":pep:`523` -- 向 CPython 添加帧求值 API"
 
 #: ../../whatsnew/3.6.rst:631
 msgid "PEP written by Brett Cannon and Dino Viehland."
@@ -964,6 +987,8 @@ msgid ""
 "first use of the affected name in the same scope. Previously this was a "
 ":exc:`SyntaxWarning`."
 msgstr ""
+"现在 ``global`` 或 ``nonlocal`` 语句必须以文本形式出现在同一作用域中首次使用受影响的名称之前。 在之前版本中这只是 "
+":exc:`SyntaxWarning`。"
 
 #: ../../whatsnew/3.6.rst:746
 msgid ""
