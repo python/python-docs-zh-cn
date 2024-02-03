@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2023, Python Software Foundation
+# Copyright (C) 2001-2024, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2023
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-29 03:05+0000\n"
+"POT-Creation-Date: 2024-02-02 20:30+0000\n"
 "PO-Revision-Date: 2022-11-05 17:23+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2023\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -512,6 +512,9 @@ msgid ""
 "object representations of file system paths like :mod:`pathlib` from working"
 " with pre-existing code, including Python's standard library."
 msgstr ""
+"文件系统路径历来被表示为 :class:`str` 或 :class:`bytes` 对象。 "
+"这使得编写对文件系统路径进行操作的代码的人会假定这种对象只能是这两种类型之一（不考虑表示文件描述符的 :class:`int` 因为它不是文件路径）。 "
+"不幸的是，这种假定阻止了像 :mod:`pathlib` 这样的文件系统路径的替代对象表示形式与包括 Python 标准库在内的现有代码协同工作。"
 
 #: ../../whatsnew/3.6.rst:413
 msgid ""
@@ -526,6 +529,12 @@ msgid ""
 "to explicitly get a :class:`str` and/or :class:`bytes` representation of a "
 "path-like object."
 msgstr ""
+"为了修正这种情况，一个由 :class:`os.PathLike` 表示的新接口被定义出来。 通过实现 "
+":meth:`~os.PathLike.__fspath__` 方法，对象可以表明它代表一个路径。 这样一个对象就能以 :class:`str` 或 "
+":class:`bytes` 对象的形式提供文件系统路径的低层级表示。 这意味着如果一个对象实现了 :class:`os.PathLike` "
+"或者是表示文件系统路径的 :class:`str` 或 :class:`bytes` 对象它就会被当作是 :term:`路径型对象 <path-like"
+" object>`。 代码可以使用 :func:`os.fspath`、:func:`os.fsdecode` 或 "
+":func:`os.fsencode` 来显式地获取一个路径型对象的 :class:`str` 和/或 :class:`bytes` 表示形式。"
 
 #: ../../whatsnew/3.6.rst:426
 msgid ""
@@ -536,6 +545,9 @@ msgid ""
 "classes in :mod:`pathlib` have also been updated to implement "
 ":class:`os.PathLike`."
 msgstr ""
+"内置 :func:`open` 函数已被更新为接受 :class:`os.PathLike` 对象，就像 :mod:`os` 和 "
+":mod:`os.path` 模块中的所有相关函数和标准库中的大多数其他函数和类一样。 :class:`os.DirEntry` 类和 "
+":mod:`pathlib` 中的相关类也已被更新以实现 :class:`os.PathLike`。"
 
 #: ../../whatsnew/3.6.rst:433
 msgid ""
@@ -545,13 +557,15 @@ msgid ""
 " least very minimal ones (e.g. calling :func:`os.fspath` at the beginning of"
 " code before operating on a path-like object)."
 msgstr ""
+"希望对于针对文件系统路径操作的基本函数的更新将会使得第三方代码都能隐式地支持所有 :term:`路径型对象 <path-like object>` "
+"而无须修改任何代码，或者至少只需极少的修改（例如当对路径型对象进行操作之前在代码的开头调用 :func:`os.fspath` 即可）。"
 
 #: ../../whatsnew/3.6.rst:440
 msgid ""
 "Here are some examples of how the new interface allows for "
 ":class:`pathlib.Path` to be used more easily and transparently with pre-"
 "existing code::"
-msgstr ""
+msgstr "下面的这些示例说明了新的接口是如何让 :class:`pathlib.Path` 被更容易、更透明地用于已有代码的::"
 
 #: ../../whatsnew/3.6.rst:457
 msgid ""
@@ -579,6 +593,8 @@ msgid ""
 "information displayed on a local clock (or stored in a Python datetime "
 "instance) is insufficient to identify a particular moment in time."
 msgstr ""
+"在世界上大多数地方，过去和将来都会存在本地时钟后移的时候。 在这种时候，本地时钟会在同一天内两次显示相同的时间。 "
+"对于这些情况，本地时钟所显示的（或存储在 Python datetime 实例中的）信息将不足以标识某个特定的时间点。"
 
 #: ../../whatsnew/3.6.rst:476
 msgid ""
@@ -587,6 +603,8 @@ msgid ""
 "differentiate between two moments in time for which local times are the "
 "same::"
 msgstr ""
+":pep:`495` 为 :class:`datetime.datetime` 和 :class:`datetime.time` 类的实例添加了新的 "
+"*fold* 属性以在本地时间相同的两个时间点之间进行区分::"
 
 #: ../../whatsnew/3.6.rst:491
 msgid ""
@@ -594,6 +612,8 @@ msgid ""
 "value ``0`` for all instances except those that represent the second "
 "(chronologically) moment in time in an ambiguous case."
 msgstr ""
+":attr:`fold <datetime.datetime.fold>` 属性的值在大多数实例上均为 "
+"``0``，只有在代表存在歧义的时间的第二个（按发生顺序）实例上例外。"
 
 #: ../../whatsnew/3.6.rst:498
 msgid ":pep:`495` -- Local Time Disambiguation"
@@ -607,14 +627,14 @@ msgstr "PEP 由 Alexander Belopolsky 和 Tim Peters 撰写，由 Alexander Belop
 
 #: ../../whatsnew/3.6.rst:505
 msgid "PEP 529: Change Windows filesystem encoding to UTF-8"
-msgstr "PEP 529: 将Windows文件系统编码更改为UTF-8"
+msgstr "PEP 529: 将 Windows 文件系统编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:507
 msgid ""
 "Representing filesystem paths is best performed with str (Unicode) rather "
 "than bytes. However, there are some situations where using bytes is "
 "sufficient and correct."
-msgstr ""
+msgstr "在表示文件系统路径时最好是使用 str (Unicode) 而不是 bytes。 不过，在某些情况下使用 bytes 就是足够而且正确的。"
 
 #: ../../whatsnew/3.6.rst:511
 msgid ""
@@ -623,6 +643,9 @@ msgid ""
 "on Windows, provided those bytes are encoded with the encoding returned by "
 ":func:`sys.getfilesystemencoding()`, which now defaults to ``'utf-8'``."
 msgstr ""
+"在 Python 3.6 之前，在 Windows 上使用 bytes 路径值可能会导致数据丢失。 有了这一更改，现在 Windows 上将支持使用 "
+"bytes 来表示路径，前提是这些 bytes 值是用 :func:`sys.getfilesystemencoding()` "
+"所返回的编码格式来编码的，现在此编码格式默认为 ``'utf-8'``。"
 
 #: ../../whatsnew/3.6.rst:516
 msgid ""
@@ -632,6 +655,9 @@ msgid ""
 ":envvar:`PYTHONLEGACYWINDOWSFSENCODING` or call "
 ":func:`sys._enablelegacywindowsfsencoding`."
 msgstr ""
+"不使用 str 来表示路径的应用程序应当使用 :func:`os.fsencode()` 和 :func:`os.fsdecode()` 来确保 "
+"bytes 被正确地编码。 要恢复以前的行为，请设置 :envvar:`PYTHONLEGACYWINDOWSFSENCODING` 或调用 "
+":func:`sys._enablelegacywindowsfsencoding`。"
 
 #: ../../whatsnew/3.6.rst:522
 msgid ""
@@ -641,7 +667,7 @@ msgstr "有关详细信息和可能需要的代码修改的讨论，请参见 :p
 
 #: ../../whatsnew/3.6.rst:529
 msgid "PEP 528: Change Windows console encoding to UTF-8"
-msgstr "PEP 528: 将Windows控制台编码更改为UTF-8"
+msgstr "PEP 528: 将 Windows 控制台编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:531
 msgid ""
@@ -649,6 +675,8 @@ msgid ""
 "provide correctly read str objects to Python code. ``sys.stdin``, "
 "``sys.stdout`` and ``sys.stderr`` now default to utf-8 encoding."
 msgstr ""
+"现在，Windows 上的默认控制台将接受所有 Unicode 字符并为 Python 代码提供正确读取的 str 对象。``sys.stdin``, "
+"``sys.stdout`` 和 ``sys.stderr`` 现在默认使用 utf-8 编码格式。"
 
 #: ../../whatsnew/3.6.rst:535
 msgid ""
@@ -656,10 +684,12 @@ msgid ""
 "redirecting files or pipes. To revert to the previous behaviour for "
 "interactive console use, set :envvar:`PYTHONLEGACYWINDOWSSTDIO`."
 msgstr ""
+"此更改仅在使用交互式控制台时适用，而不适用于重定向文件或管道。 要恢复以前使用交互式控制台时的行为，请设置 "
+":envvar:`PYTHONLEGACYWINDOWSSTDIO`。"
 
 #: ../../whatsnew/3.6.rst:541
 msgid ":pep:`528` -- Change Windows console encoding to UTF-8"
-msgstr ":pep:`528` -- 将Windows控制台编码更改为UTF-8"
+msgstr ":pep:`528` -- 将 Windows 控制台编码格式更改为 UTF-8"
 
 #: ../../whatsnew/3.6.rst:542
 msgid "PEP written and implemented by Steve Dower."
@@ -722,6 +752,11 @@ msgid ""
 "more.html>`_. The memory usage of the new :func:`dict` is between 20% and "
 "25% smaller compared to Python 3.5."
 msgstr ""
+":ref:`dict <typesmapping>` 类型现在会使用一种基于 `Raymond Hettinger 的提议 "
+"<https://mail.python.org/pipermail/python-dev/2012-December/123028.html>`_ "
+"的“紧凑”表示形式，该表示形式 `最初由 PyPy 实现 <https://morepypy.blogspot.com/2015/01/faster-"
+"more-memory-efficient-and-more.html>`_。 新的The memory usage of the new "
+":func:`dict` 的内存占用相比 Python 3.5 减少了 20% 到 25%。"
 
 #: ../../whatsnew/3.6.rst:591
 msgid ""
@@ -734,6 +769,9 @@ msgid ""
 " versions of the language where random iteration order is still in effect, "
 "e.g. Python 3.5)."
 msgstr ""
+"这个新实现对原始顺序的保留被认为是一个实现细节而不应当被依赖（这在将来可能会改变，但我们希望在改变语言规范以强制所有当前和将来的 Python "
+"实现都使用保留顺序的语义之前先在几个发布版的语言内部使用这个新的 dict 实现；这也有助于让仍在使用随机迭代顺序的旧版本语言例如 Python 3.5"
+" 保持向下兼容性）。"
 
 #: ../../whatsnew/3.6.rst:600
 msgid ""
@@ -741,10 +779,12 @@ msgid ""
 " Raymond Hettinger <https://mail.python.org/pipermail/python-"
 "dev/2012-December/123028.html>`_.)"
 msgstr ""
+"（由 INADA Naoki 在 :issue:`27350` 中贡献。 该特性 `最初由 Raymond Hettinger 提议 "
+"<https://mail.python.org/pipermail/python-dev/2012-December/123028.html>`_。）"
 
 #: ../../whatsnew/3.6.rst:608
 msgid "PEP 523: Adding a frame evaluation API to CPython"
-msgstr "PEP 523: 向CPython 添加框架评估API"
+msgstr "PEP 523: 向 CPython 添加帧求值 API"
 
 #: ../../whatsnew/3.6.rst:610
 msgid ""
@@ -754,6 +794,8 @@ msgid ""
 "any way without directly manipulating function pointers for defined "
 "functions."
 msgstr ""
+"虽然 Python 为自定义代码执行方式提供了广泛的支持，但有一个地方它没有这样做，那就是帧对象的求值。 如果您想在 Python "
+"中拦截帧的求值，那么确实没有除了直接操纵自定义函数的函数指针以外的任何办法。"
 
 #: ../../whatsnew/3.6.rst:616
 msgid ""
@@ -763,6 +805,8 @@ msgid ""
 "begins. This enables the use of alternative evaluation implementations for "
 "Python code, tracking frame evaluation, etc."
 msgstr ""
+":pep:`523` 通过提供使帧求值在 C 语言层级上可插入的 API 从而改变了这一状况。 这将允许调试器和 JIT 等工具在 Python "
+"代码开始执行之前拦截帧求值。 这样就能允许 Python 代码使用替代性求值实现，跟踪帧求值等做法。"
 
 #: ../../whatsnew/3.6.rst:623
 msgid ""
@@ -771,10 +815,12 @@ msgid ""
 "very select, low-level use-cases. Semantics of the API will change with "
 "Python as necessary."
 msgstr ""
+"这个 API 并不是受限 C API 的组成部分，它被标记为私有以表明该 API 的使用受到限制并且只适用于非常少的、低层级的用例。 这个 API "
+"的语义将根据需要随 Python 的一起发生变化。"
 
 #: ../../whatsnew/3.6.rst:630
 msgid ":pep:`523` -- Adding a frame evaluation API to CPython"
-msgstr ":pep:`523` -- 向CPython 添加框架评估API"
+msgstr ":pep:`523` -- 向 CPython 添加帧求值 API"
 
 #: ../../whatsnew/3.6.rst:631
 msgid "PEP written by Brett Cannon and Dino Viehland."
@@ -934,6 +980,8 @@ msgid ""
 "first use of the affected name in the same scope. Previously this was a "
 ":exc:`SyntaxWarning`."
 msgstr ""
+"现在 ``global`` 或 ``nonlocal`` 语句必须以文本形式出现在同一作用域中首次使用受影响的名称之前。 在之前版本中这只是 "
+":exc:`SyntaxWarning`。"
 
 #: ../../whatsnew/3.6.rst:746
 msgid ""
@@ -942,6 +990,9 @@ msgid ""
 " if a class sets :meth:`__iter__` to ``None``, the class is not iterable. "
 "(Contributed by Andrew Barnert and Ivan Levkivskyi in :issue:`25958`.)"
 msgstr ""
+"现在可以将某个 :ref:`特殊方法 <specialnames>` 设为 ``None`` 来表示相应操作不可用。 举例来说，如果某个类将 "
+":meth:`__iter__` 设为 ``None``，则该类就将不可迭代。 （由 Andrew Barnert 和 Ivan Levkivskyi "
+"在 :issue:`25958` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:752
 msgid ""
@@ -950,6 +1001,9 @@ msgid ""
 ":ref:`whatsnew36-traceback` for an example). (Contributed by Emanuel Barry "
 "in :issue:`26823`.)"
 msgstr ""
+"由重复的回溯行组成的长序列现在将被简化为 ``\"[Previous line repeated {count} more times]\"`` "
+"（请参阅 :ref:`whatsnew36-traceback` 获取样例）。 （由 Emanuel Barry 在 :issue:`26823` "
+"中贡献。）"
 
 #: ../../whatsnew/3.6.rst:757
 msgid ""
@@ -958,6 +1012,9 @@ msgid ""
 "checks for ImportError (in try-except) will still work. (Contributed by Eric"
 " Snow in :issue:`15767`.)"
 msgstr ""
+"现在导入操作在无法找到模块时将引发新的异常 :exc:`ModuleNotFoundError` (:exc:`ImportError` 的子类)。 "
+"目前 (在 try-except 中) 检测 ImportError 的代码仍将有效。 （由 Eric Snow 在 :issue:`15767` "
+"中贡献。）"
 
 #: ../../whatsnew/3.6.rst:762
 msgid ""
@@ -965,6 +1022,8 @@ msgid ""
 "when called from metaclass methods during class creation. (Contributed by "
 "Martin Teichmann in :issue:`23722`.)"
 msgstr ""
+"现在依赖于零参数形式 ``super()`` 的类方法在类创建期间从元类方法调用时将正确地生效。 （由 Martin Teichmann 在 "
+":issue:`23722` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:768
 msgid "New Modules"
@@ -981,6 +1040,7 @@ msgid ""
 "suitable for managing secrets, such as account authentication, tokens, and "
 "similar."
 msgstr ""
+"新的 :mod:`secrets` 模块的主要目的是提供一种直观的方式来可靠地生成适用于密码管理的高加密强度的伪随机值，如账户验证、安全凭据等等。"
 
 #: ../../whatsnew/3.6.rst:781
 msgid ""
@@ -988,6 +1048,8 @@ msgid ""
 "*NOT* be used for security purposes.  Use :mod:`secrets` on Python 3.6+ and "
 ":func:`os.urandom()` on Python 3.5 and earlier."
 msgstr ""
+"注意 :mod:`random` 模块中的伪随机数发生器 *不应* 被用于安全目的。 请在 Python 3.6+ 上使用 :mod:`secrets`"
+" 而在 Python 3.5 及更早的版本上使用 :func:`os.urandom()`。"
 
 #: ../../whatsnew/3.6.rst:787
 msgid ":pep:`506` -- Adding A Secrets Module To The Standard Library"
@@ -1011,6 +1073,8 @@ msgid ""
 "the iterated array is extended.  This is consistent with the behavior of "
 "other mutable sequences."
 msgstr ""
+"现在已被耗尽的输出 :class:`array.array` 的迭代器将保持耗尽状态，即使迭代后的数组被扩展时也是如此。  "
+"这将与其他可变序列的行为保持一致。"
 
 #: ../../whatsnew/3.6.rst:801
 msgid "Contributed by Serhiy Storchaka in :issue:`26492`."
@@ -1024,7 +1088,7 @@ msgstr "ast"
 msgid ""
 "The new :class:`ast.Constant` AST node has been added.  It can be used by "
 "external AST optimizers for the purposes of constant folding."
-msgstr ""
+msgstr "新增了 :class:`ast.Constant` AST 节点。 它可被外部 AST 优化器用于常量折叠操作。"
 
 #: ../../whatsnew/3.6.rst:809
 msgid "Contributed by Victor Stinner in :issue:`26146`."
@@ -1038,13 +1102,13 @@ msgstr "asyncio"
 msgid ""
 "Starting with Python 3.6 the ``asyncio`` module is no longer provisional and"
 " its API is considered stable."
-msgstr ""
+msgstr "从 Python 3.6 开始 ``asyncio`` 模块不再处于暂定状态，其 API 被认为已经稳定。"
 
 #: ../../whatsnew/3.6.rst:818
 msgid ""
 "Notable changes in the :mod:`asyncio` module since Python 3.5.0 (all "
 "backported to 3.5.x due to the provisional status):"
-msgstr ""
+msgstr "自 Python 3.5.0 以来 :mod:`asyncio` 模块中值得注意的变化（由于暂定状态所有变化都已反向移植到 3.5.x）:"
 
 #: ../../whatsnew/3.6.rst:821
 msgid ""
@@ -1052,6 +1116,8 @@ msgid ""
 "return the currently running loop when called from coroutines and callbacks."
 " (Contributed by Yury Selivanov in :issue:`28613`.)"
 msgstr ""
+":func:`~asyncio.get_event_loop` 函数已更改为当在例程和回调中被调用时始终返回当前正在运行的循环。（由 Yury "
+"Selivanov 在 :issue:`28613` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:826
 msgid ""
@@ -1060,6 +1126,10 @@ msgid ""
 " now accept all kinds of :term:`awaitable objects <awaitable>`. (Contributed"
 " by Yury Selivanov.)"
 msgstr ""
+":func:`~asyncio.ensure_future` 函数以及所有用到它的函数，比如 "
+":meth:`loop.run_until_complete() "
+"<asyncio.loop.run_until_complete>`，现在将接受所有种类的 :term:`可等待对象 <awaitable>`。 （由 "
+"Yury Selivanov 贡献。）"
 
 #: ../../whatsnew/3.6.rst:831
 msgid ""
@@ -1094,6 +1164,10 @@ msgid ""
 "faster :class:`asyncio.Future` implementation. (Contributed by Yury "
 "Selivanov in :issue:`27041`.)"
 msgstr ""
+"新增 :meth:`loop.create_future() <asyncio.loop.create_future>` 方法用来创建 Future "
+"对象。 这允许替代性的事件循环实现，比如 `uvloop "
+"<https://github.com/MagicStack/uvloop>`_，以提供更快速的 :class:`asyncio.Future` 实现。"
+" （由 Yury Selivanov 在 :issue:`27041` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:850
 msgid ""
@@ -1101,6 +1175,8 @@ msgid ""
 "<asyncio.loop.get_exception_handler>` method to get the current exception "
 "handler. (Contributed by Yury Selivanov in :issue:`27040`.)"
 msgstr ""
+"新增 :meth:`loop.get_exception_handler() <asyncio.loop.get_exception_handler>`"
+" 方法用于获取当前异常处理句柄。 （由 Yury Selivanov 在 :issue:`27040` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:854
 msgid ""
@@ -1108,6 +1184,8 @@ msgid ""
 " to read data from the stream until a separator bytes sequence appears. "
 "(Contributed by Mark Korenberg.)"
 msgstr ""
+"新增 :meth:`StreamReader.readuntil() <asyncio.StreamReader.readuntil>` "
+"方法用于从流读取数据直到出现作为分隔符的字节序列。 （由 Mark Korenberg 贡献。）"
 
 #: ../../whatsnew/3.6.rst:859
 msgid ""
@@ -1115,6 +1193,8 @@ msgid ""
 "<asyncio.StreamReader.readexactly>` has been improved. (Contributed by Mark "
 "Korenberg in :issue:`28370`.)"
 msgstr ""
+":meth:`StreamReader.readexactly() <asyncio.StreamReader.readexactly>` "
+"的性能已获得提升。 （由 Mark Korenberg 在 :issue:`28370` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:863
 msgid ""
@@ -1122,6 +1202,8 @@ msgid ""
 "optimized to avoid calling the system ``getaddrinfo`` function if the "
 "address is already resolved. (Contributed by A. Jesse Jiryu Davis.)"
 msgstr ""
+":meth:`loop.getaddrinfo() <asyncio.loop.getaddrinfo>` 方法已获得优化已避免当地址已被解析时调用系统"
+" ``getaddrinfo`` 函数。 （由 A. Jesse Jiryu Davis 贡献。）"
 
 #: ../../whatsnew/3.6.rst:868
 msgid ""
@@ -1130,6 +1212,8 @@ msgid ""
 "scheduled as a result of the last iteration will be discarded. (Contributed "
 "by Guido van Rossum in :issue:`25593`.)"
 msgstr ""
+":meth:`loop.stop() <asyncio.loop.stop>` 方法已被更改为在当前迭代之后立即停止循环。  "
+"任何作为上次迭代的结果被加入计划任务的新回调都将被丢弃。 （由 Guido van Rossum 在 :issue:`25593` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:874
 msgid ""
@@ -1137,6 +1221,9 @@ msgid ""
 " raise :exc:`TypeError` when passed an instance of the :exc:`StopIteration` "
 "exception. (Contributed by Chris Angelico in :issue:`26221`.)"
 msgstr ""
+"现在 :meth:`Future.set_exception <asyncio.futures.Future.set_exception>` 在传入一个"
+" :exc:`StopIteration` 异常的实例时将引发 :exc:`TypeError`。 （由 Chris Angelico 在 "
+":issue:`26221` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:879
 msgid ""
@@ -1145,12 +1232,17 @@ msgid ""
 "accept connections outside of asyncio, but that use asyncio to handle them. "
 "(Contributed by Jim Fulton in :issue:`27392`.)"
 msgstr ""
+"新增 :meth:`loop.connect_accepted_socket() "
+"<asyncio.loop.connect_accepted_socket>` 方法供接受 asyncio 以外的连接，但使用 asyncio "
+"来处理它们的服务器使用。 （由 Jim Fulton 在 :issue:`27392` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:884
 msgid ""
 "``TCP_NODELAY`` flag is now set for all TCP transports by default. "
 "(Contributed by Yury Selivanov in :issue:`27456`.)"
 msgstr ""
+"现在 ``TCP_NODELAY`` 旗标将默认针对所有 TCP 传输进行设置。 （由 Yury Selivanov 在 :issue:`27456` "
+"中贡献。）"
 
 #: ../../whatsnew/3.6.rst:887
 msgid ""
@@ -1158,6 +1250,8 @@ msgid ""
 "properly close pending asynchronous generators before closing the loop. "
 "(Contributed by Yury Selivanov in :issue:`28003`.)"
 msgstr ""
+"新增 :meth:`loop.shutdown_asyncgens() <asyncio.loop.shutdown_asyncgens>` "
+"用来在结束循环之前正确地关闭现有的异步生成器。 （由 Yury Selivanov 在 :issue:`28003` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:892
 msgid ""
@@ -1166,6 +1260,9 @@ msgid ""
 "faster. (Contributed by Yury Selivanov and INADA Naoki in :issue:`26081` and"
 " :issue:`28544`.)"
 msgstr ""
+":class:`Future <asyncio.Future>` 和 :class:`Task <asyncio.Task>` 类现在已有经优化过的 C"
+" 实现使得 asyncio 代码加速至多 30%。 （由 Yury Selivanov 和 INADA Naoki 在 :issue:`26081` 和"
+" :issue:`28544` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:900
 msgid "binascii"
@@ -1177,6 +1274,8 @@ msgid ""
 "keyword argument to control whether the newline character is appended to the"
 " return value. (Contributed by Victor Stinner in :issue:`25357`.)"
 msgstr ""
+":func:`~binascii.b2a_base64` 函数现在接受可选的 *newline* 关键字参数用来控制是否要在返回值中添加换行符。 （由 "
+"Victor Stinner 在 :issue:`25357` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:909
 msgid "cmath"
@@ -1187,6 +1286,8 @@ msgid ""
 "The new :const:`cmath.tau` (*τ*) constant has been added. (Contributed by "
 "Lisa Roach in :issue:`12345`, see :pep:`628` for details.)"
 msgstr ""
+"新增 :const:`cmath.tau` (*τ*) 常量。 （由 Lisa Roach 在 :issue:`12345` 中贡献，详情见 "
+":pep:`628`。）"
 
 #: ../../whatsnew/3.6.rst:914
 msgid ""
@@ -1195,6 +1296,9 @@ msgid ""
 ":const:`cmath.nanj` to match the format used by complex repr. (Contributed "
 "by Mark Dickinson in :issue:`23229`.)"
 msgstr ""
+"新增常量: :const:`cmath.inf` 和 :const:`cmath.nan` 用于匹配 :const:`math.inf` 和 "
+":const:`math.nan`，以及 :const:`cmath.infj` 和 :const:`cmath.nanj` 用于匹配由 complex"
+" 的 repr 所使用的格式。 （由 Mark Dickinson 在 :issue:`23229` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:921
 msgid "collections"
@@ -1206,6 +1310,8 @@ msgid ""
 "added to represent sized iterable container classes. (Contributed by Ivan "
 "Levkivskyi, docs by Neil Girdhar in :issue:`27598`.)"
 msgstr ""
+"添加了新的 :class:`~collections.abc.Collection` 抽象基类用于表示有具体大小的可迭代容器类。 （由 Ivan "
+"Levkivskyi 在 :issue:`27598` 中贡献并由 Neil Girdhar 撰写文档。）"
 
 #: ../../whatsnew/3.6.rst:927
 msgid ""
@@ -1213,6 +1319,8 @@ msgid ""
 "iterable classes that also provide the :meth:`__reversed__` method. "
 "(Contributed by Ivan Levkivskyi in :issue:`25987`.)"
 msgstr ""
+"添加了新的 :class:`~collections.abc.Reversible` 抽象基类用于表示同时提供 :meth:`__reversed__`"
+" 方法的可迭代类。 （由 Ivan Levkivskyi 在 :issue:`25987` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:931
 msgid ""
@@ -1230,18 +1338,25 @@ msgid ""
 "attribute of the returned named tuple class. (Contributed by Raymond "
 "Hettinger in :issue:`17941`.)"
 msgstr ""
+":func:`~collections.namedtuple` 函数现在接受可选的关键字参数 "
+"*module*，当指定该参数时，它将被用作所返回的具名元组类的 ``__module__`` 属性。 （由 Raymond Hettinger 在 "
+":issue:`17941` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:940 ../../whatsnew/3.6.rst:2281
 msgid ""
 "The *verbose* and *rename* arguments for :func:`~collections.namedtuple` are"
 " now keyword-only. (Contributed by Raymond Hettinger in :issue:`25628`.)"
 msgstr ""
+":func:`~collections.namedtuple` 的 *verbose* 和 *rename* 参数现在是仅限关键字参数。 （由 "
+"Raymond Hettinger 在 :issue:`25628` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:944
 msgid ""
 "Recursive :class:`collections.deque` instances can now be pickled. "
 "(Contributed by Serhiy Storchaka in :issue:`26482`.)"
 msgstr ""
+"递归的 :class:`collections.deque` 实例现在可以被 pickle。 （由 Serhiy Storchaka 在 "
+":issue:`26482` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:949
 msgid "concurrent.futures"
@@ -1254,6 +1369,9 @@ msgid ""
 "make it possible to customize the names of the threads created by the pool. "
 "(Contributed by Gregory P. Smith in :issue:`27664`.)"
 msgstr ""
+":class:`ThreadPoolExecutor <concurrent.futures.ThreadPoolExecutor>` "
+"类构造器现在接受可选的 *thread_name_prefix* 参数以便能够自定义由线程池所创建的线程的名称。 （由 Gregory P. Smith"
+" 在 :issue:`27664` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:959
 msgid "contextlib"
@@ -1268,6 +1386,10 @@ msgid ""
 "to the :mod:`typing` module as :class:`typing.ContextManager`. (Contributed "
 "by Brett Cannon in :issue:`25609`.)"
 msgstr ""
+"增加了 :class:`contextlib.AbstractContextManager` 类用来提供上下文管理器的抽象基类。 它为 "
+"``__enter__()`` 提供了一个合理的默认实现，该实现将返回 ``self`` 并将 ``__exit__()`` 设为抽象方法。 在 "
+":mod:`typing` 中增加了对应的类 :class:`typing.ContextManager`。 （由 Brett Cannon 在 "
+":issue:`25609` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:971
 msgid "datetime"
@@ -1282,6 +1404,10 @@ msgid ""
 "<whatsnew36-pep495>` section for more information. (Contributed by Alexander"
 " Belopolsky in :issue:`24773`.)"
 msgstr ""
+":class:`~datetime.datetime` 和 :class:`~datetime.time` 类新增了 "
+":attr:`~time.fold` 属性用来在必要时消除本地时间的歧义。 在 :mod:`datetime` "
+"中的许多函数已被更新为支持本地时间的消除歧义。 请参阅 :ref:`本地时间消歧义 <whatsnew36-pep495>` 一节了解更多信息。 （由 "
+"Alexander Belopolsky 在 :issue:`24773` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:981
 msgid ""
@@ -1290,6 +1416,9 @@ msgid ""
 "8601 date directives ``%G``, ``%u`` and ``%V``. (Contributed by Ashley "
 "Anderson in :issue:`12006`.)"
 msgstr ""
+"现在 :meth:`datetime.strftime() <datetime.datetime.strftime>` 和 "
+":meth:`date.strftime() <datetime.date.strftime>` 方法将支持 ISO 8601 日期指令符 "
+"``%G``, ``%u`` 和 ``%V``。 （由 Ashley Anderson 在 :issue:`12006` 中贡献。）.)"
 
 #: ../../whatsnew/3.6.rst:986
 msgid ""
@@ -1298,6 +1427,9 @@ msgid ""
 "additional components of the time value to include. (Contributed by "
 "Alessandro Cucci and Alexander Belopolsky in :issue:`19475`.)"
 msgstr ""
+":func:`datetime.isoformat() <datetime.datetime.isoformat>` 函数现在接受可选的 "
+"*timespec* 参数用来指定时间值要包括的额外组件数量。 （由 Alessandro Cucci 和 Alexander Belopolsky 在"
+" :issue:`19475` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:991
 msgid ""
@@ -1305,6 +1437,8 @@ msgid ""
 "optional *tzinfo* argument. (Contributed by Alexander Belopolsky in "
 ":issue:`27661`.)"
 msgstr ""
+":meth:`datetime.combine() <datetime.datetime.combine>` 现在接受可选的 *tzinfo* 参数。 "
+"（由 Alexander Belopolsky 在 :issue:`27661` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:997
 msgid "decimal"
@@ -1317,6 +1451,8 @@ msgid ""
 ":class:`~decimal.Decimal` instance as a fraction, in lowest terms and with a"
 " positive denominator::"
 msgstr ""
+"新增 :meth:`Decimal.as_integer_ratio() <decimal.Decimal.as_integer_ratio>` "
+"方法，它返回一对整数 ``(n, d)`` 将给定的 :class:`~decimal.Decimal` 实例表示为一个最简形式且分母为正值的分数::"
 
 #: ../../whatsnew/3.6.rst:1007
 msgid "(Contributed by Stefan Krah amd Mark Dickinson in :issue:`25928`.)"
@@ -1347,12 +1483,17 @@ msgid ""
 "documentation for the legacy API.  (Contributed by R. David Murray in "
 ":issue:`24277`.)"
 msgstr ""
+"通过多个构造器的 *policy* 关键字来启用的新 email API 已不再为暂定状态。 :mod:`email` "
+"文档已被重新组织并重新撰写以聚集新 API，同时保留旧式 API 的原有文档。 （由 R. David Murray 在 :issue:`24277` "
+"中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1029
 msgid ""
 "The :mod:`email.mime` classes now all accept an optional *policy* keyword. "
 "(Contributed by Berker Peksag in :issue:`27331`.)"
 msgstr ""
+":mod:`email.mime` 中的类现在都接受可选的 *policy* 关键字参数。 （由 Berker Peksag 在 "
+":issue:`27331` 中贡献。）.)"
 
 #: ../../whatsnew/3.6.rst:1032
 msgid ""
@@ -1370,6 +1511,11 @@ msgid ""
 ":class:`~email.message.EmailMessage`. (Contributed by R. David Murray in "
 ":issue:`20476`.)"
 msgstr ""
+"新增 :mod:`~email.policy` 属性，:attr:`~email.policy.Policy.message_factory` "
+"控制当解析器新建消息对象时默认要使用的类。 对于 :attr:`email.policy.compat32` 策略来说将为 "
+":class:`~email.message.Message`，对于新策略来说将为 "
+":class:`~email.message.EmailMessage`。 （由 R. David Murray 在 :issue:`20476` "
+"中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1044
 msgid "encodings"
@@ -1381,6 +1527,8 @@ msgid ""
 "``'ansi'`` alias for the existing ``'mbcs'`` encoding, which uses the "
 "``CP_ACP`` code page. (Contributed by Steve Dower in :issue:`27959`.)"
 msgstr ""
+"在 Windows 上，增加了 ``'oem'`` 编码格式用于 ``CP_OEMCP``，以及 ``'ansi'`` 别名用于现有的 "
+"``'mbcs'`` 编码格式，它使用 ``CP_ACP`` 代码页。 （由 Steve Dower 在 :issue:`27959` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1052
 msgid "enum"
@@ -1393,18 +1541,20 @@ msgid ""
 "constants that can be combined using the bitwise operators. (Contributed by "
 "Ethan Furman in :issue:`23591`.)"
 msgstr ""
+"在 :mod:`enum` 模块中新增了两个枚举基类: :class:`~enum.Flag` 和 :class:`~enum.IntFlags`。 "
+"两者均被用于定义可使用按位运算符进行组合的常量。 （由 Ethan Furman 在 :issue:`23591` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1059
 msgid ""
 "Many standard library modules have been updated to use the "
 ":class:`~enum.IntFlags` class for their constants."
-msgstr ""
+msgstr "许多标准库模块已被更新以使用 :class:`~enum.IntFlags` 类作为其常量。"
 
 #: ../../whatsnew/3.6.rst:1062
 msgid ""
 "The new :class:`enum.auto` value can be used to assign values to enum "
 "members automatically::"
-msgstr ""
+msgstr "新增的 :class:`enum.auto` 值可被用于自动为枚举成员赋值::"
 
 #: ../../whatsnew/3.6.rst:1076
 msgid "faulthandler"
@@ -1416,6 +1566,8 @@ msgid ""
 "Windows exceptions: see :func:`faulthandler.enable`. (Contributed by Victor "
 "Stinner in :issue:`23848`.)"
 msgstr ""
+"在 Windows 上，:mod:`faulthandler` 模块现在会为 Windows 异常安装处理句柄：参见 "
+":func:`faulthandler.enable`。 （由 Victor Stinner 在 :issue:`23848` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1084
 msgid "fileinput"
@@ -1438,6 +1590,8 @@ msgid ""
 ":mod:`hashlib` supports OpenSSL 1.1.0.  The minimum recommend version is "
 "1.0.2. (Contributed by Christian Heimes in :issue:`26470`.)"
 msgstr ""
+":mod:`hashlib` 已支持 OpenSSL 1.1.0。 最低的建议版本为 1.0.2。 （由 Christian Heimes 在 "
+":issue:`26470` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1096
 msgid ""
@@ -1447,6 +1601,9 @@ msgid ""
 "code by Dmitry Chestnykh and Samuel Neves. Documentation written by Dmitry "
 "Chestnykh.)"
 msgstr ""
+"本模块增加了 BLAKE2 哈希函数。 :func:`~hashlib.blake2b` 和 :func:`~hashlib.blake2s` "
+"将始终可用并支持 BLAKE2 的完整特性集。 （由 Christian Heimes 在 :issue:`26798` 中基于 Dmitry "
+"Chestnykh 和 Samuel Neves 的代码贡献。 文档由 Dmitry Chestnykh 撰写。）"
 
 #: ../../whatsnew/3.6.rst:1102
 msgid ""
@@ -1458,6 +1615,11 @@ msgid ""
 "Guido Bertoni, Joan Daemen, Michaël Peeters, Gilles Van Assche, and Ronny "
 "Van Keer.)"
 msgstr ""
+"增加了 SHA-3 哈希函数 :func:`~hashlib.sha3_224`, :func:`~hashlib.sha3_256`, "
+":func:`~hashlib.sha3_384`, :func:`~hashlib.sha3_512`，以及 SHAKE 哈希函数 "
+":func:`~hashlib.shake_128` 和 :func:`~hashlib.shake_256`。 （由 Christian Heimes"
+" 在 :issue:`16113` 中贡献。 Keccak 代码包由 Guido Bertoni, Joan Daemen, Michaël "
+"Peeters, Gilles Van Assche 和 Ronny Van Keer 编写。）"
 
 #: ../../whatsnew/3.6.rst:1109
 msgid ""
@@ -1465,6 +1627,8 @@ msgid ""
 "available with OpenSSL 1.1.0 and newer. (Contributed by Christian Heimes in "
 ":issue:`27928`.)"
 msgstr ""
+"基于密码的密钥推导函数 :func:`~hashlib.scrypt` 现可用于 OpenSSL 1.1.0 及更新版本。 （由 Christian "
+"Heimes 在 :issue:`27928` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1114
 msgid "http.client"
@@ -1477,6 +1641,9 @@ msgid ""
 "encoding request bodies. (Contributed by Demian Brecht and Rolf Krahl in "
 ":issue:`12319`.)"
 msgstr ""
+":meth:`HTTPConnection.request() <http.client.HTTPConnection.request>` 和 "
+":meth:`~http.client.HTTPConnection.endheaders` 现在都支持分块编码格式请求体。 （由 Demian "
+"Brecht 和 Rolf Krahl 在 :issue:`12319` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1123
 msgid "idlelib and IDLE"
@@ -1491,6 +1658,9 @@ msgid ""
 "tcl/tk 8.4.  It now requires tcl/tk 8.5 or 8.6.  We recommend running the "
 "latest release of either."
 msgstr ""
+"对 idlelib 包执行现代化和重构以使 IDLE 的外观和功能更好并使代码更易于理解、测试和改进。 让 IDLE 外观更好的部分工作，尤其是在 "
+"Linux 和 Mac 上，在于使用了 ttk 部件，主要是在对话框中。 因此，IDLE 不再使用 tcl/tk 8.4。 现在它需要 tcl/tk "
+"8.5 或 8.6。 我们建议运行这两个软件的最新发布版。"
 
 #: ../../whatsnew/3.6.rst:1132
 msgid ""
@@ -1503,6 +1673,10 @@ msgid ""
 "Swiegart and Terry Reedy in :issue:`24225`.  Most idlelib patches since have"
 " been and will be part of the process.)"
 msgstr ""
+"‘现代化’包括 idlelib 模块的重命名与合并。 对具有部分大写名称的文件的重命名类似于 3.0 中将 Tkinter 和 TkFont 重命名为 "
+"tkinter 和 tkinter.font。 因此，在 3.5 中可用的 idlelib 文件导入在 3.6 中通常将不再可用。 "
+"至少需要修改模块名称（参见 idlelib/README.txt），有时还需要更多修改。 （名称更改由 Al Swiegart 和 Terry "
+"Reedy 在 :issue:`24225` 中贡献。 大多数 idlelib 补丁都是已经是或即将纳入该处理过程。）"
 
 #: ../../whatsnew/3.6.rst:1141
 msgid ""
@@ -1510,6 +1684,8 @@ msgid ""
 "be easier to use, with better APIs and docstrings explaining them.  "
 "Additional useful information will be added to idlelib when available."
 msgstr ""
+"作为补偿，最终的结果是一些 idlelib 类将更会易于使用，并有更好的 API 和文档字符串加以说明。 附加的有用信息准备好后将被添加到 "
+"idlelib 中。"
 
 #: ../../whatsnew/3.6.rst:1145
 msgid "New in 3.6.2:"
@@ -1624,6 +1800,9 @@ msgid ""
 "for ``ImportError`` (in try-except) will still work. (Contributed by Eric "
 "Snow in :issue:`15767`.)"
 msgstr ""
+"现在导入操作在无法找到模块时将引发新的异常 :exc:`ModuleNotFoundError` (:exc:`ImportError` 的子类)。 "
+"目前 (在 try-except 中) 检测 ``ImportError`` 的代码仍将有效。 （由 Eric Snow 在 "
+":issue:`15767` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1206
 msgid ""
@@ -1633,6 +1812,11 @@ msgid ""
 ":class:`importlib.machinery.ExtensionFileLoader` couldn't be used with "
 ":class:`importlib.util.LazyLoader`."
 msgstr ""
+":class:`importlib.util.LazyLoader` 现在将调用被包装的加载器上的 "
+":meth:`~importlib.abc.Loader.create_module`，移除了 "
+":class:`importlib.machinery.BuiltinImporter` 和 "
+":class:`importlib.machinery.ExtensionFileLoader` 不能用于 "
+":class:`importlib.util.LazyLoader` 的限制。"
 
 #: ../../whatsnew/3.6.rst:1212
 msgid ""
@@ -1641,6 +1825,10 @@ msgid ""
 ":func:`importlib.util.spec_from_file_location` now accept a :term:`path-like"
 " object`."
 msgstr ""
+":func:`importlib.util.cache_from_source`, "
+":func:`importlib.util.source_from_cache` 和 "
+":func:`importlib.util.spec_from_file_location` 现在将接受 :term:`path-like "
+"object`。"
 
 #: ../../whatsnew/3.6.rst:1219
 msgid "inspect"
@@ -1653,6 +1841,9 @@ msgid ""
 "generator expression scopes as if they were positional-only parameters "
 "called ``implicit0``. (Contributed by Jelle Zijlstra in :issue:`19611`.)"
 msgstr ""
+":func:`inspect.signature() <inspect.signature>` "
+"函数现在会报告编译器为推导式和生成器表达式作用域生成的隐式 ``.0`` 形参，就像它们是调用``implicit0`` 时的仅限位置形参一样。 （由 "
+"Jelle Zijlstra 在 :issue:`19611` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1226
 msgid ""
@@ -1663,6 +1854,10 @@ msgid ""
 ":func:`inspect.signature` interface remains the recommended approach for new"
 " code. (Contributed by Nick Coghlan in :issue:`27172`)"
 msgstr ""
+"为了减少从 Python 2.7 和旧式 :func:`inspect.getargspec` API 升级时的代码问题，先前被写入文档的对 "
+":func:`inspect.getfullargspec` 的弃用已被撤销。 虽然这个函数对于单/源 Python 2/3 "
+"代码库来说很方便，但对于新代码来说功能更丰富的 :func:`inspect.signature` 接口仍然是推荐的方式。 （由 Nick "
+"Coghlan 在 :issue:`27172` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:1235
 msgid "json"
@@ -3293,7 +3488,7 @@ msgstr ""
 
 #: ../../whatsnew/3.6.rst:2409
 msgid "It has been replaced by the new ``make regen-all`` target."
-msgstr ""
+msgstr "它已被新的 ``make regen-all`` 目标所替代。"
 
 #: ../../whatsnew/3.6.rst:2417
 msgid "Notable changes in Python 3.6.4"
@@ -3306,6 +3501,9 @@ msgid ""
 "during finalization of the interpreter. (Contributed by Xavier de Gaye in "
 ":issue:`22898` and :issue:`30697`.)"
 msgstr ""
+"曾经作为 API 一部分的 ``PyExc_RecursionErrorInst`` "
+"单例已被移除，因为它的成员永远不会被清理，可能在解释器的最终化过程中导致段错误。 （由 Xavier de Gaye 在 :issue:`22898` "
+"和 :issue:`30697` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2426
 msgid "Notable changes in Python 3.6.5"
@@ -3317,6 +3515,8 @@ msgid ""
 " locale to the ``LC_NUMERIC`` locale in some cases. (Contributed by Victor "
 "Stinner in :issue:`31900`.)"
 msgstr ""
+"在某些情况下 :func:`locale.localeconv` 函数现在会临时将 ``LC_CTYPE`` 语言区域设为 ``LC_NUMERIC``"
+" 语言区域。 （由 Victor Stinner 在 :issue:`31900` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2433
 msgid "Notable changes in Python 3.6.7"
@@ -3329,6 +3529,8 @@ msgid ""
 "behavior now matches what the C tokenizer does internally. (Contributed by "
 "Ammar Askar in :issue:`33899`.)"
 msgstr ""
+"在 3.6.7 中当提供不带末尾换行符的输入时 :mod:`tokenize` 模块现在会隐式地发出 ``NEWLINE`` 形符。 此行为现在已与 C"
+" 分词器的内部行为相匹配。 （由 Ammar Askar 在 :issue:`33899` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2441
 msgid "Notable changes in Python 3.6.10"
@@ -3350,7 +3552,7 @@ msgstr ""
 
 #: ../../whatsnew/3.6.rst:2451
 msgid "Notable changes in Python 3.6.13"
-msgstr ""
+msgstr "Python 3.6.13 中的重要变化"
 
 #: ../../whatsnew/3.6.rst:2453
 msgid ""
