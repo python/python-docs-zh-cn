@@ -1005,6 +1005,12 @@ msgid ""
 " the comparison is ``==`` or ``!=``. The latter cases return :const:`False` "
 "or :const:`True`, respectively."
 msgstr ""
+"换句话说，当且仅当 ``date1.toordinal() < date2.toordinal()`` 时 ``date1 < date2``。 "
+"日期比较在比较的目标不为 :class:`date` 对象时会引发 :exc:`TypeError`。 不过，如果比较的目标具有 "
+":attr:`~date.timetuple` 属性则将返回 ``NotImplemented``。 "
+"这个钩子给予其他日期对象类型实现混合类型比较的机会。 否则，当 :class:`date` 对象与不同类型的对象比较时将会引发 "
+":exc:`TypeError`，除非是 ``==`` 或 ``!=`` 比较。 后两种情况将分别返回 :const:`False` 或 "
+":const:`True`。"
 
 #: ../../library/datetime.rst:648
 msgid ""
@@ -1705,6 +1711,11 @@ msgid ""
 "or ``!=``. The latter cases return :const:`False` or :const:`True`, "
 "respectively."
 msgstr ""
+"为了防止比较操作回退为默认的对象地址比较方式，datetime 比较在比较的目标不为 :class:`.datetime` 对象时通常会引发 "
+":exc:`TypeError`。 不过，如果比较的目标具有 :attr:`~.datetime.timetuple` 属性则将返回 "
+"``NotImplemented``。 这个钩子给予其他种类的日期对象实现混合类型比较的机会。 如果未实现，则当 :class:`.datetime` "
+"对象与不同类型比较时将会引发 :exc:`TypeError`，除非是 ``==`` 或 ``!=`` 比较。 后两种情况将分别返回 "
+":const:`False` 或 :const:`True`。"
 
 #: ../../library/datetime.rst:1237
 msgid "Return :class:`date` object with same year, month and day."
@@ -1862,6 +1873,11 @@ msgid ""
 "non-zero value, :attr:`!tm_isdst` is set to ``1``; else :attr:`!tm_isdst` is"
 " set to ``0``."
 msgstr ""
+"其中 ``yday = d.toordinal() - date(d.year, 1, 1).toordinal() + 1`` "
+"是日期在当前年份中的序号，起始序号 ``1`` 表示 1月 1 日。 结果的 :attr:`~time.struct_time.tm_isdst` "
+"旗标会根据 :meth:`dst` 方法来设定：如果 :attr:`.tzinfo` 为 ``None`` 或 :meth:`dst` 返回 "
+"``None``，则 :attr:`!tm_isdst` 将设为 ``-1``；否则如果 :meth:`dst` 返回一个非零值则 "
+":attr:`!tm_isdst` 将设为 ``1``；在其他情况下 :attr:`!tm_isdst` 将设为 ``0``。"
 
 #: ../../library/datetime.rst:1365
 msgid ""
@@ -1870,6 +1886,9 @@ msgid ""
 "to 0 regardless of what ``d.dst()`` returns. DST is never in effect for a "
 "UTC time."
 msgstr ""
+"如果 :class:`.datetime` 实例 *d* 为简单型，这类似于 ``d.timetuple()``，区别是 "
+":attr:`~.time.struct_time.tm_isdst` 会强制设为 0 而不管 ``d.dst()`` 返回什么结果。 DST 对于 "
+"UTC 时间永远无效。"
 
 #: ../../library/datetime.rst:1369
 msgid ""
@@ -1879,6 +1898,9 @@ msgid ""
 ":exc:`OverflowError` may be raised if *d*.year was ``MINYEAR`` or "
 "``MAXYEAR`` and UTC adjustment spills over a year boundary."
 msgstr ""
+"如果 *d* 为感知型，*d* 会通过减去 ``d.utcoffset()`` 来标准化为 UTC 时间，并返回该标准化时间所对应的 "
+":class:`time.struct_time`。 :attr:`!tm_isdst` 将强制设为 0。 请注意如果 *d*.year 为 "
+"``MINYEAR`` 或 ``MAXYEAR`` 并且 UTC 调整超出一年的边界则可能引发 :exc:`OverflowError`。"
 
 #: ../../library/datetime.rst:1378
 msgid ""
@@ -2116,7 +2138,7 @@ msgstr "用法示例: :class:`.datetime`"
 
 #: ../../library/datetime.rst:1559
 msgid "Examples of working with :class:`.datetime` objects:"
-msgstr ""
+msgstr "使用 :class:`.datetime` 对象的例子："
 
 #: ../../library/datetime.rst:1612
 msgid ""
@@ -2140,6 +2162,7 @@ msgid ""
 "A :class:`.time` object represents a (local) time of day, independent of any"
 " particular day, and subject to adjustment via a :class:`tzinfo` object."
 msgstr ""
+"一个 :class:`.time` 对象代表某日的（本地）时间，它独立于任何特定日期，并可通过 :class:`tzinfo` 对象来调整。"
 
 #: ../../library/datetime.rst:1692
 msgid ""
@@ -2679,6 +2702,8 @@ msgid ""
 "handling arbitrary fixed offsets from UTC) and its :attr:`timezone.utc` "
 "attribute (a UTC timezone instance)."
 msgstr ""
+":mod:`!datetime` 模块有一个基本 :class:`timezone` 类（用来处理任意与 UTC 的固定时差）及其 "
+":attr:`timezone.utc` 属性（UTC 时区实例）。"
 
 #: ../../library/datetime.rst:2233
 msgid ""
@@ -2784,7 +2809,7 @@ msgstr "UTC 时区，``timezone(timedelta(0))``。"
 
 #: ../../library/datetime.rst:2323
 msgid ":meth:`~.datetime.strftime` and :meth:`~.datetime.strptime` Behavior"
-msgstr ""
+msgstr ":meth:`~.datetime.strftime` 和 :meth:`~.datetime.strptime` 的行为"
 
 #: ../../library/datetime.rst:2325
 msgid ""
@@ -2809,6 +2834,7 @@ msgid ""
 "The table below provides a high-level comparison of "
 ":meth:`~.datetime.strftime` versus :meth:`~.datetime.strptime`:"
 msgstr ""
+"下表提供了 :meth:`~.datetime.strftime` 与 :meth:`~.datetime.strptime` 的高层级比较："
 
 #: ../../library/datetime.rst:2337
 msgid "``strftime``"
@@ -2870,7 +2896,7 @@ msgstr "``strptime(date_string, format)``"
 #: ../../library/datetime.rst:2352
 msgid ""
 ":meth:`~.datetime.strftime` and :meth:`~.datetime.strptime` Format Codes"
-msgstr ""
+msgstr ":meth:`~.datetime.strftime` 和 :meth:`~.datetime.strptime` 格式码"
 
 #: ../../library/datetime.rst:2354
 msgid ""
