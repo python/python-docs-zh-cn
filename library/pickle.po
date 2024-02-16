@@ -898,6 +898,10 @@ msgid ""
 "that suitable conversions can be made by the class's "
 ":meth:`~object.__setstate__` method."
 msgstr ""
+"类似的，在封存类的实例时，类的代码和数据不会随它们一起被封存，只有实际数据会被封存。 "
+"这样设计有其目的，在将来修复类中的错误或给类增加方法之后仍然可以载入较早版本创建的对象。 "
+"如果你打算长期使用某些可能有许多版本的类的对象，那么在对象中设置一个版本号以便通过类的 :meth:`~object.__setstate__` "
+"方法进行适当的转换就是值得做的事情。"
 
 #: ../../library/pickle.rst:553
 msgid "Pickling Class Instances"
@@ -920,6 +924,9 @@ msgid ""
 "saved attributes.  The following code shows an implementation of this "
 "behaviour::"
 msgstr ""
+"在大多数情况下，使一个实例可被封存不需要任何额外的代码。 根据默认设置，pickle 将通过内省来获取实例的类及属性。 当一个类实例被解封时，它的 "
+":meth:`~object.__init__` 方法通常 *不会* 被发起调用。 默认的行为会先创建一个未初始化的实例然后恢复已保存的属性。 "
+"下面的代码展示了这种行为的具体实现::"
 
 #: ../../library/pickle.rst:575
 msgid ""
@@ -1050,6 +1057,8 @@ msgid ""
 "use the methods :meth:`~object.__getstate__` and "
 ":meth:`~object.__setstate__`."
 msgstr ""
+"请参阅 :ref:`pickle-state` 一节如何使用 :meth:`~object.__getstate__` 和 "
+":meth:`~object.__setstate__` 方法的更多信息。"
 
 #: ../../library/pickle.rst:657
 msgid ""
@@ -1060,6 +1069,10 @@ msgid ""
 "establish such an invariant, as :meth:`~object.__init__` is not called when "
 "unpickling an instance."
 msgstr ""
+"在解封时，某些方法比如 :meth:`~object.__getattr__`, :meth:`~object.__getattribute__` 或 "
+":meth:`~object.__setattr__` 可能会在实例上被调用。 对于这些方法依赖于某些内部的不变量为真值的情况，类型应当实现 "
+":meth:`~object.__new__` 以建立这样的不变量，因为当解封一个实例时 :meth:`~object.__init__` "
+"并不会被调用。"
 
 #: ../../library/pickle.rst:666
 msgid ""
@@ -1069,6 +1082,8 @@ msgid ""
 "unified interface for retrieving the data necessary for pickling and copying"
 " objects. [#]_"
 msgstr ""
+"正如我们会看到的，pickle 并不会直接使用上述的方法。 实际上，这些方法是拷贝协议的一部分，它实现了 "
+":meth:`~object.__reduce__` 特殊方法。 拷贝协议提供了统一的接口用于在封存和拷贝对象时获取所需的数据。 [#]_"
 
 #: ../../library/pickle.rst:672
 msgid ""
@@ -1079,6 +1094,10 @@ msgid ""
 "possible.  We will show, however, cases where using :meth:`!__reduce__` is "
 "the only option or leads to more efficient pickling or both."
 msgstr ""
+"在你的类中直接实现 :meth:`~object.__reduce__` 虽然功能很强但也容易出错。 因此，类的设计者应当尽可能使用高层级的接口 (即 "
+":meth:`~object.__getnewargs_ex__`, :meth:`~object.__getstate__` 和 "
+":meth:`~object.__setstate__`)。 不过，我们仍然会演示使用 :meth:`!__reduce__` "
+"是唯一选项或是更高效的封存或是两者兼有的场景。"
 
 #: ../../library/pickle.rst:681
 msgid ""
@@ -1139,6 +1158,10 @@ msgid ""
 "which pickle protocol version is used as well as the number of items to "
 "append, so both must be supported.)"
 msgstr ""
+"可选项，一个返回连续条目的迭代器（而不是序列）。 这些条目将使用 ``obj.append(item)`` 或是使用 "
+"``obj.extend(list_of_items)`` 批量地添加到对象中。 这主要用于列表的子类，但也可以用于其他类，只要它们具有使用相应签名的 "
+":ref:`append 和 extend 方法 <typesseq-common>`。 （具体是使用 :meth:`!append` 还是 "
+":meth:`!extend` 取决于所使用的 pickle 协议版本以及要插入的条目数量，所以这两个方法都必须被支持。）"
 
 #: ../../library/pickle.rst:717
 msgid ""
@@ -1253,6 +1276,8 @@ msgid ""
 "modified copy of :data:`!copyreg.dispatch_table` as a private dispatch "
 "table."
 msgstr ""
+":mod:`copyreg` 模块所管理的全局 dispatch 表可通过 :data:`!copyreg.dispatch_table` 来访问。 "
+"因此，可以选择使用经过修改的 :data:`!copyreg.dispatch_table` 副本作为私有 dispatch 表。"
 
 #: ../../library/pickle.rst:793
 msgid "For example ::"
@@ -1294,6 +1319,10 @@ msgid ""
 ":meth:`!__setstate__` and :meth:`!__getstate__` methods are used to "
 "implement this behavior. ::"
 msgstr ""
+"下面的例子展示了如何修改类的封存行为。 下面的 :class:`!TextReader` 类会打开一个文本文件，每次调用其 "
+":meth:`!readline` 方法时将返回行号和该行的内容。 如果一个 :class:`!TextReader` 实例被封存，则 *除了* "
+"文件对象以外的所有属性都会被保存。 当实际被解封时，该文件将被重新打开，并从最后的位置开始恢复读取。 实现此行为需要使用 "
+":meth:`!__setstate__` 和 :meth:`!__getstate__` 方法。 ::"
 
 #: ../../library/pickle.rst:874
 msgid "A sample usage might be something like this::"
@@ -1321,6 +1350,9 @@ msgid ""
 " alternatively return ``NotImplemented`` to fallback to the traditional "
 "behavior."
 msgstr ""
+"对于那些情况，可以子类化 :class:`Pickler` 类并实现 :meth:`~Pickler.reducer_override` 方法。 "
+"此方法可返回任意 reduction 元组 (参见 :meth:`~object.__reduce__`)。 它也可以选择返回 "
+"``NotImplemented`` 以回退至传统的行为。"
 
 #: ../../library/pickle.rst:902
 msgid ""
