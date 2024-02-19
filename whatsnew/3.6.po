@@ -3742,6 +3742,9 @@ msgid ""
 "the position of the reference. (Contributed by SilentGhost, Serhiy Storchaka"
 " in :issue:`25953`.)"
 msgstr ""
+"现在 :func:`re.sub` 即使未在字符串中找到模式也会针对替换模板中无效的数字分组引用引发错误。 "
+"针对无效分组引用的错误消息现在将包括分组索引和引用位置。 （由 SilentGhost, Serhiy Storchaka 在 "
+":issue:`25953` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2322
 msgid ""
@@ -3752,6 +3755,11 @@ msgid ""
 "ZipFile created with mode ``'r'`` will raise a :exc:`ValueError`. "
 "Previously, a :exc:`RuntimeError` was raised in those scenarios."
 msgstr ""
+"现在 :class:`zipfile.ZipFile` 对于无法识别的压缩值将引发 :exc:`NotImplementedError`。 "
+"在之前版本中是引发简单的 :exc:`RuntimeError`。 此外，在已关闭的 ZipFile 上调用 "
+":class:`~zipfile.ZipFile` 或者在使用 ``'r'`` 模式创建的 ZipFile 上调用 "
+":meth:`~zipfile.ZipFile.write` 将引发 :exc:`ValueError`。 在之前版本中，对于这些场景是引发 "
+":exc:`RuntimeError`。"
 
 #: ../../whatsnew/3.6.rst:2329
 msgid ""
@@ -3762,6 +3770,9 @@ msgid ""
 " :exc:`DeprecationWarning` in Python 3.6 and a :exc:`RuntimeError` in Python"
 " 3.8."
 msgstr ""
+"当自定义元类与零参数的 :func:`super` 或从方法到隐式的 ``__class__`` 闭包变量的直接引用相结合时，隐式的 "
+"``__classcell__`` 命名空间条目现在必须传到 ``type.__new__`` 进行初始化。 如果不这样做那么在 Python 3.6 "
+"中将会导致 :exc:`DeprecationWarning` 而在 Python 3.8 中将会导致 :exc:`RuntimeError`。"
 
 #: ../../whatsnew/3.6.rst:2336
 msgid ""
@@ -3788,12 +3799,17 @@ msgid ""
 "the :envvar:`PYTHONMALLOC` environment variable to ``debug`` to validate the"
 " usage of memory allocators in your application. See :issue:`26249`."
 msgstr ""
+"现在 :c:func:`PyMem_Malloc` 分配器族将使用 :ref:`pymalloc 分配器 <pymalloc>` 而不是系统 "
+":c:func:`malloc`。 调用 :c:func:`PyMem_Malloc` 时未持有 GIL 的应用程序现在可能发生崩溃。 请将 "
+":envvar:`PYTHONMALLOC` 环境变量设为 ``debug`` 以便在你的应用程序中验证内存分配器的使用。 参见 "
+":issue:`26249`。"
 
 #: ../../whatsnew/3.6.rst:2356
 msgid ""
 ":c:func:`Py_Exit` (and the main interpreter) now override the exit status "
 "with 120 if flushing buffered data failed.  See :issue:`5319`."
 msgstr ""
+"现在如果缓冲数据刷新失败 :c:func:`Py_Exit` (以及主解释器) 会将退出状态重写为 120。 参见 :issue:`5319`。"
 
 #: ../../whatsnew/3.6.rst:2361
 msgid "CPython bytecode changes"
@@ -3802,7 +3818,7 @@ msgstr "CPython 字节码的改变"
 #: ../../whatsnew/3.6.rst:2363
 msgid ""
 "There have been several major changes to the :term:`bytecode` in Python 3.6."
-msgstr ""
+msgstr "在 Python 3.6 中对 :term:`bytecode` 进行了一些重大修改。"
 
 #: ../../whatsnew/3.6.rst:2365
 msgid ""
@@ -3810,6 +3826,8 @@ msgid ""
 "(Contributed by Demur Rumed with input and reviews from Serhiy Storchaka and"
 " Victor Stinner in :issue:`26647` and :issue:`28050`.)"
 msgstr ""
+"Python 解释器现在使用 16 位字代码而不是字节代码。 （由 Demur Rumed 在 :issue:`26647` 和 "
+":issue:`28050` 中贡献并得到来自 Serhiy Storchaka 和 Victor Stinner 的协助和评估。）"
 
 #: ../../whatsnew/3.6.rst:2369
 msgid ""
@@ -3818,6 +3836,9 @@ msgid ""
 "(Contributed by Eric Smith in :issue:`25483` and Serhiy Storchaka in "
 ":issue:`27078`.)"
 msgstr ""
+"新增 :opcode:`FORMAT_VALUE` 和 :opcode:`BUILD_STRING` 操作码作为  :ref:`格式化字符串字面值 "
+"<whatsnew36-pep498>` 实现的组成部分。 （由 Eric Smith 在 :issue:`25483` 以及 Serhiy "
+"Storchaka 在 :issue:`27078` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2374
 msgid ""
@@ -3825,6 +3846,8 @@ msgid ""
 "dictionaries with constant keys. (Contributed by Serhiy Storchaka in "
 ":issue:`27140`.)"
 msgstr ""
+"新增的 :opcode:`BUILD_CONST_KEY_MAP` 操作码用于优化具有常量键的字典的创建。 （由 Serhiy Storchaka 在 "
+":issue:`27140` 中创建。）"
 
 #: ../../whatsnew/3.6.rst:2378
 msgid ""
@@ -3837,6 +3860,12 @@ msgid ""
 "``MAKE_CLOSURE`` opcodes have been removed. (Contributed by Demur Rumed in "
 ":issue:`27095`, and Serhiy Storchaka in :issue:`27213`, :issue:`28257`.)"
 msgstr ""
+"函数调用操作码进行了大幅改进以提升效率并简化实现。 :opcode:`MAKE_FUNCTION`, :opcode:`CALL_FUNCTION`, "
+":opcode:`CALL_FUNCTION_KW` 和 :opcode:`BUILD_MAP_UNPACK_WITH_CALL` "
+"操作码已被修改，新增了 :opcode:`CALL_FUNCTION_EX` 和 "
+":opcode:`BUILD_TUPLE_UNPACK_WITH_CALL`，并移除了 ``CALL_FUNCTION_VAR``, "
+"``CALL_FUNCTION_VAR_KW`` 和 ``MAKE_CLOSURE`` 操作码。 （由 Demur Rumed 在 "
+":issue:`27095` 中，以及 Serhiy Storchaka 在 :issue:`27213`, :issue:`28257` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2389
 msgid ""
@@ -3844,6 +3873,8 @@ msgid ""
 "have been added to support the new :term:`variable annotation` syntax. "
 "(Contributed by Ivan Levkivskyi in :issue:`27985`.)"
 msgstr ""
+"新增了 :opcode:`SETUP_ANNOTATIONS` 和 :opcode:`STORE_ANNOTATION` 操作码以支持新的 "
+":term:`variable annotation` 语法。 （由 Ivan Levkivskyi 在 :issue:`27985` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2395
 msgid "Notable changes in Python 3.6.2"
@@ -3860,6 +3891,8 @@ msgid ""
 "available, the autotools-based build system no longer attempts to implicitly"
 " recompile generated files based on file modification times."
 msgstr ""
+"为了简化交叉编译，并确保 CPython 能够可靠地编译而不需要已存在可用的 Python 版本，基于 autotools "
+"的构建系统将不再尝试根据文件修改时间隐式地重新编译已生成的文件。"
 
 #: ../../whatsnew/3.6.rst:2405
 msgid ""
@@ -3867,12 +3900,14 @@ msgid ""
 "regeneration of these files when desired (e.g. after an initial version of "
 "Python has already been built based on the pregenerated versions)."
 msgstr ""
+"取而代之的是，新增了一个 ``make regen-all`` 命令以便在需要时强制重新生成这些文件（例如在基于预生成版本构建了 Python "
+"的初始版本之后）。"
 
 #: ../../whatsnew/3.6.rst:2409
 msgid ""
 "More selective regeneration targets are also defined - see "
 ":source:`Makefile.pre.in` for details."
-msgstr ""
+msgstr "还定义了其他一些更具选择性的重生成目标 —— 详情参见 :source:`Makefile.pre.in`。"
 
 #: ../../whatsnew/3.6.rst:2412 ../../whatsnew/3.6.rst:2425
 msgid "(Contributed by Victor Stinner in :issue:`23404`.)"
@@ -3880,14 +3915,14 @@ msgstr "（由 Victor Stinner 在 :issue:`23404` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2418
 msgid "Removal of ``make touch`` build target"
-msgstr ""
+msgstr "移除了 ``make touch`` 构建目标"
 
 #: ../../whatsnew/3.6.rst:2420
 msgid ""
 "The ``make touch`` build target previously used to request implicit "
 "regeneration of generated files by updating their modification times has "
 "been removed."
-msgstr ""
+msgstr "之前用于通过更新生成文件的修改时间来请求隐式的重新生成这些文件的 ``make touch`` 构建目标已被移除。"
 
 #: ../../whatsnew/3.6.rst:2423
 msgid "It has been replaced by the new ``make regen-all`` target."
@@ -3930,6 +3965,8 @@ msgid ""
 ":mod:`xml.dom.minidom` and :mod:`xml.sax` modules no longer process external"
 " entities by default. See also :gh:`61441`."
 msgstr ""
+"在默认情况下 :mod:`xml.dom.minidom` 和 :mod:`xml.sax` 模块将不再处理外部实例。 另请参阅 "
+":gh:`61441`。"
 
 #: ../../whatsnew/3.6.rst:2453
 msgid ""
