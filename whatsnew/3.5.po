@@ -643,12 +643,15 @@ msgid ""
 "standard library, more robust.  Note that the system call is only retried if"
 " the signal handler does not raise an exception."
 msgstr ""
+":pep:`475` 实现了在 ``EINTR`` 时自动重试系统调用。 这移除了大部分场合下在用户代码中处理 ``EINTR`` 或 "
+":exc:`InterruptedError` 的负担，并使得 Python 程序，包括标准库的程序更为健壮。 "
+"请注意只有在信号处理句柄未引发异常时系统调用才会被重试。"
 
 #: ../../whatsnew/3.5.rst:512
 msgid ""
 "Below is a list of functions which are now retried when interrupted by a "
 "signal:"
-msgstr ""
+msgstr "以下是现在当被信号中断时会被重试的函数的列表："
 
 #: ../../whatsnew/3.5.rst:515
 msgid ":func:`open` and :func:`io.open`;"
@@ -685,6 +688,8 @@ msgid ""
 ":py:const:`~errno.EINTR` errors; the syscall is not retried (see the PEP for"
 " the rationale);"
 msgstr ""
+"特殊情况: :func:`os.close` 和 :func:`os.dup2` 现在会忽略 :py:const:`~errno.EINTR` "
+"错误；系统调用将不被重试（请参阅 PEP 了解相关的理由）；"
 
 #: ../../whatsnew/3.5.rst:533
 msgid ""
@@ -730,10 +735,12 @@ msgid ""
 "PEP and implementation written by Charles-François Natali and Victor "
 "Stinner, with the help of Antoine Pitrou (the French connection)."
 msgstr ""
+"PEP 和具体实现由 Charles-François Natali 和 Victor Stinner 撰写，并获得 Antoine Pitrou "
+"的协助（同为法国人）。"
 
 #: ../../whatsnew/3.5.rst:559
 msgid "PEP 479: Change StopIteration handling inside generators"
-msgstr ""
+msgstr "PEP 479：更改生成器内部的 StopIteration 处理"
 
 #: ../../whatsnew/3.5.rst:561
 msgid ""
@@ -743,6 +750,8 @@ msgid ""
 "function was interpreted as the end of the iteration by the loop construct "
 "driving the generator."
 msgstr ""
+"生成器与 :exc:`StopIteration` 的交互在 Python 3.4 及更早版本中有时会令人惊讶，并可能隐藏难以觉察的程序错误。 "
+"在之前版本中，一个生成器函数内部意外引发的 ``StopIteration`` 会被驱动该生成器的循环构造解读为迭代的结束。"
 
 #: ../../whatsnew/3.5.rst:567
 msgid ""
@@ -754,6 +763,9 @@ msgid ""
 "controlled by the generator to terminate silently. This is particularly "
 "pernicious in combination with the ``yield from`` construct."
 msgstr ""
+":pep:`479` 更改了生成器的行为：当一个 ``StopIteration`` 异常在生成器内部被引发时，它会在其退出生成器所在帧时被替换为 "
+":exc:`RuntimeError`。 这一更改的主要目的是方便在无防护的 :func:`next` 调用引发了 ``StopIteration`` "
+"并导致生成器所控制的迭代静默地终结的情况下进行调试。 此情况在与 ``yield from`` 构造相结合时会特别令人困扰。"
 
 #: ../../whatsnew/3.5.rst:575
 msgid ""
