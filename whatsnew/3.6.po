@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 16:40+0000\n"
+"POT-Creation-Date: 2024-02-23 16:44+0000\n"
 "PO-Revision-Date: 2023-05-24 02:23+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -3480,6 +3480,11 @@ msgid ""
 " :attr:`!co_lnotab` format and how to decode it, and see the :pep:`511` for "
 "the rationale."
 msgstr ""
+"代码对象的 :attr:`~codeobject.co_lnotab` 属性的格式被修改为支持负行号差值。 在默认情况下，Python "
+"不会输出具有负行号差值的字节码。 使用 :attr:`frame.f_lineno`、``PyFrame_GetLineNumber()`` 或 "
+"``PyCode_Addr2Line()`` 的函数将不受影响。 直接解码:attr:`!co_lnotab` "
+"的函数应当被更新以便为行号差值使用有符号的 8 位整数类型，但这只是对支持使用负行号差值的应用程序的要求。 有关 :attr:`!co_lnotab` "
+"格式以及如何对其进行解码的详情参见 ``Objects/lnotab_notes.txt``，相关的理由参见 :pep:`511`。"
 
 #: ../../whatsnew/3.6.rst:2187
 msgid ""
@@ -3488,6 +3493,8 @@ msgid ""
 "booleans being a subclass of integers, this should only be an issue if you "
 "were doing identity checks for ``1`` or ``0``. See :issue:`25768`."
 msgstr ""
+"现在 :mod:`compileall` 模块中的函数将返回布尔值而不是 ``1`` 或 ``0`` 来分别表示成功或失败。 "
+"由于布尔值是整数的子类，这应当只有在你对 ``1`` 或 ``0`` 执行标识号检测时才会出现问题。 参见 :issue:`25768`。"
 
 #: ../../whatsnew/3.6.rst:2192
 msgid ""
@@ -3496,6 +3503,9 @@ msgid ""
 " raises :exc:`ValueError` for out-of-range values, rather than returning "
 ":const:`None`.  See :issue:`20059`."
 msgstr ""
+"现在读取 :func:`urllib.parse.urlsplit` 和 :func:`~urllib.parse.urlparse` 结果的 "
+":attr:`~urllib.parse.SplitResult.port` 属性对于超出范围的值将引发 :exc:`ValueError`，而不是返回"
+" :const:`None`。 参见 :issue:`20059`。"
 
 #: ../../whatsnew/3.6.rst:2197
 msgid ""
@@ -3521,6 +3531,8 @@ msgid ""
 " to ``__spec__.parent`` then :exc:`ImportWarning` is raised. (Contributed by"
 " Brett Cannon in :issue:`25791`.)"
 msgstr ""
+"当执行相对导入时，如果 ``__package__`` 与 ``__spec__.parent`` 的比较结果不相等则会引发 "
+":exc:`ImportWarning`。 （由 Brett Cannon 在 :issue:`25791` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2215
 msgid ""
@@ -3528,6 +3540,8 @@ msgid ""
 ":exc:`ImportError` will be raised. Previously, :exc:`SystemError` could be "
 "raised. (Contributed by Brett Cannon in :issue:`18018`.)"
 msgstr ""
+"当执行相对导入而上级包未知时，则会引发 :exc:`ImportError`。 在之前版本中，可能会引发 :exc:`SystemError`。 （由 "
+"Brett Cannon 在 :issue:`18018` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2219
 msgid ""
@@ -3539,6 +3553,11 @@ msgid ""
 "no longer called, and the exception will stop a single-threaded server. "
 "(Contributed by Martin Panter in :issue:`23430`.)"
 msgstr ""
+"基于 :mod:`socketserver` 模块的服务器，包括在 :mod:`http.server`, :mod:`xmlrpc.server` 和"
+" :mod:`wsgiref.simple_server` 定义的服务器，现在将只捕获派生自 :exc:`Exception` 的异常。 "
+"因此如果一个请求处理句柄引发了 :exc:`SystemExit` 或 :exc:`KeyboardInterrupt` "
+"之类的异常，:meth:`~socketserver.BaseServer.handle_error` 不再会被调用，异常将会停止单线程的服务器。 （由"
+" Martin Panter 在 :issue:`23430` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2228
 msgid ""
@@ -3554,6 +3573,8 @@ msgid ""
 "(e.g. ``EBADF``) was reported by the underlying system call. (Contributed by"
 " Martin Panter in :issue:`26685`.)"
 msgstr ""
+"现在 :meth:`socket.socket.close` 方法当下层系统调用报告错误 (例如 ``EBADF``) 时将会引发一个异常。 （由 "
+"Martin Panter 在 :issue:`26685` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2235
 msgid ""
@@ -3573,6 +3594,10 @@ msgid ""
 " in the :mod:`json` module are now :ref:`keyword-only <keyword-"
 "only_parameter>`. (Contributed by Serhiy Storchaka in :issue:`18726`.)"
 msgstr ""
+"现在 :mod:`json` 模块中 :func:`~json.dump`, :func:`~json.dumps`, "
+":func:`~json.load` 和 :func:`~json.loads` 函数以及 :class:`~json.JSONEncoder` 和 "
+":class:`~json.JSONDecoder` 类构造器的所有可选参数都是 :ref:`仅限关键字参数 <keyword-"
+"only_parameter>`。 （由 Serhiy Storchaka 在 :issue:`18726` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2250
 msgid ""
@@ -3591,6 +3616,11 @@ msgid ""
 "accepting additional keyword arguments will need to adjust their calls to "
 ":meth:`type.__new__` (whether direct or via :class:`super`) accordingly."
 msgstr ""
+"作为 :pep:`487` 的一部分，对传递给 :class:`type` 的关键字参数的处理（元类提示 ``metaclass`` "
+"除外）现在统一委托给 :meth:`object.__init_subclass__`。 这意味着 :meth:`type.__new__` 和 "
+":meth:`type.__init__` 现在都接受任意的关键字参数，但 :meth:`object.__init_subclass__` （从 "
+":meth:`type.__new__` 调用）默认将拒绝它们。 接受额外关键字参数的自定义元类需要相应调整对 :meth:`type.__new__`"
+" 的调用（无论是直接调用还是通过 :class:`super` 间接调用）。"
 
 #: ../../whatsnew/3.6.rst:2262
 msgid ""
@@ -3606,7 +3636,7 @@ msgstr ""
 msgid ""
 "This behavior has also been backported to earlier Python versions by "
 "Setuptools 26.0.0."
-msgstr ""
+msgstr "此行为已通过 Setuptools 26.0.0 反向移植到更早的 Python 版本中。"
 
 #: ../../whatsnew/3.6.rst:2278
 msgid ""
@@ -3618,6 +3648,10 @@ msgid ""
 "caller. (Contributed by Demian Brecht and Rolf Krahl with tweaks from Martin"
 " Panter in :issue:`12319`.)"
 msgstr ""
+"在 :mod:`urllib.request` 模块和 :meth:`http.client.HTTPConnection.request` "
+"方法中，如果没有指定 Content-Length 标头字段并且请求体是一个文件对象，现在它将使用 HTTP 1.1 分块编码格式发送。 "
+"如果必须要将一个文件对象发送给 HTTP 1.0 服务器，那么现在必须由调用方指定 Content-Length 值。 （由 Demian Brecht"
+" 和 Rolf Krahl 在 :issue:`12319` 中贡献并由 Martin Panter 进行修改。）"
 
 #: ../../whatsnew/3.6.rst:2287
 msgid ""
@@ -3625,6 +3659,8 @@ msgid ""
 ":class:`~collections.OrderedDict`. (Contributed by Steve Holden in "
 ":issue:`27842`.)"
 msgstr ""
+"现在 :class:`~csv.DictReader` 将返回类型为 :class:`~collections.OrderedDict` 的行。 （由 "
+"Steve Holden 在 :issue:`27842` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2291
 msgid ""
@@ -3632,12 +3668,16 @@ msgid ""
 " if unsupported by the platform. (Contributed by Victor Stinner in "
 ":issue:`25287`.)"
 msgstr ""
+":const:`crypt.METHOD_CRYPT` 如果不受平台支持将不再被添加到 ``crypt.methods``。 （由 Victor "
+"Stinner 在 :issue:`25287` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2299
 msgid ""
 "On Linux, :func:`ctypes.util.find_library` now looks in ``LD_LIBRARY_PATH`` "
 "for shared libraries. (Contributed by Vinay Sajip in :issue:`9998`.)"
 msgstr ""
+"在 Linux 上，:func:`ctypes.util.find_library` 现在会到 ``LD_LIBRARY_PATH`` 中查找共享库。 "
+"（由 Vinay Sajip 在 :issue:`9998` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2303
 msgid ""
@@ -3645,6 +3685,8 @@ msgid ""
 "character in messages sent from the server to improve real-world "
 "compatibility. (Contributed by Lita Cho in :issue:`21815`.)"
 msgstr ""
+":class:`imaplib.IMAP4` 类现在可以处理服务器发送的消息中包含 ``']'`` 字符的旗标，以改善在现实世界中的兼容性。 （由 "
+"Lita Cho 在 :issue:`21815` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2308
 msgid ""
@@ -3652,6 +3694,8 @@ msgid ""
 "bytes written like other write methods. (Contributed by Jakub Stasiak in "
 ":issue:`26335`.)"
 msgstr ""
+"现在 :func:`mmap.write() <mmap.write>` 函数将像其他写入方法一样返回写入的字节数。 （由 Jakub Stasiak "
+"在 :issue:`26335` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2312
 msgid ""
@@ -3659,6 +3703,8 @@ msgid ""
 " now return :class:`~pkgutil.ModuleInfo` named tuples. (Contributed by "
 "Ramchandra Apte in :issue:`17211`.)"
 msgstr ""
+"现在 :func:`pkgutil.iter_modules` 和 :func:`pkgutil.walk_packages` 函数将返回 "
+":class:`~pkgutil.ModuleInfo` 具名元组。 （由 Ramchandra Apte 在 :issue:`17211` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2316
 msgid ""
@@ -3668,6 +3714,9 @@ msgid ""
 "the position of the reference. (Contributed by SilentGhost, Serhiy Storchaka"
 " in :issue:`25953`.)"
 msgstr ""
+"现在 :func:`re.sub` 即使未在字符串中找到模式也会针对替换模板中无效的数字分组引用引发错误。 "
+"针对无效分组引用的错误消息现在将包括分组索引和引用位置。 （由 SilentGhost, Serhiy Storchaka 在 "
+":issue:`25953` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2322
 msgid ""
@@ -3678,6 +3727,11 @@ msgid ""
 "ZipFile created with mode ``'r'`` will raise a :exc:`ValueError`. "
 "Previously, a :exc:`RuntimeError` was raised in those scenarios."
 msgstr ""
+"现在 :class:`zipfile.ZipFile` 对于无法识别的压缩值将引发 :exc:`NotImplementedError`。 "
+"在之前版本中是引发简单的 :exc:`RuntimeError`。 此外，在已关闭的 ZipFile 上调用 "
+":class:`~zipfile.ZipFile` 或者在使用 ``'r'`` 模式创建的 ZipFile 上调用 "
+":meth:`~zipfile.ZipFile.write` 将引发 :exc:`ValueError`。 在之前版本中，对于这些场景是引发 "
+":exc:`RuntimeError`。"
 
 #: ../../whatsnew/3.6.rst:2329
 msgid ""
@@ -3688,6 +3742,9 @@ msgid ""
 " :exc:`DeprecationWarning` in Python 3.6 and a :exc:`RuntimeError` in Python"
 " 3.8."
 msgstr ""
+"当自定义元类与零参数的 :func:`super` 或从方法到隐式的 ``__class__`` 闭包变量的直接引用相结合时，隐式的 "
+"``__classcell__`` 命名空间条目现在必须传到 ``type.__new__`` 进行初始化。 如果不这样做那么在 Python 3.6 "
+"中将会导致 :exc:`DeprecationWarning` 而在 Python 3.8 中将会导致 :exc:`RuntimeError`。"
 
 #: ../../whatsnew/3.6.rst:2336
 msgid ""
@@ -3701,6 +3758,11 @@ msgid ""
 "plugins to the default import system shouldn't need to make any changes, as "
 "the default import system will raise the new subclass when appropriate."
 msgstr ""
+"随着 :exc:`ModuleNotFoundError` "
+"的引入，导入系统的消费方可能会开始期望导入系统的替代品在能适当的时候引发更具体的异常，而非不够具体的 :exc:`ImportError`。 "
+"为了在未来向此类消费方提供兼容性，完全取代 :func:`__import__` "
+"的替代导入系统的实现者需要更新其实现以便在完全未找到模块时引发新的子类。 "
+"兼容默认导入系统的插件的实现者不需要做任何更改，因为默认导入系统会在适当的时候引发新的子类。"
 
 #: ../../whatsnew/3.6.rst:2348
 msgid "Changes in the C API"
@@ -3714,12 +3776,17 @@ msgid ""
 "the :envvar:`PYTHONMALLOC` environment variable to ``debug`` to validate the"
 " usage of memory allocators in your application. See :issue:`26249`."
 msgstr ""
+"现在 :c:func:`PyMem_Malloc` 分配器族将使用 :ref:`pymalloc 分配器 <pymalloc>` 而不是系统 "
+":c:func:`malloc`。 调用 :c:func:`PyMem_Malloc` 时未持有 GIL 的应用程序现在可能发生崩溃。 请将 "
+":envvar:`PYTHONMALLOC` 环境变量设为 ``debug`` 以便在你的应用程序中验证内存分配器的使用。 参见 "
+":issue:`26249`。"
 
 #: ../../whatsnew/3.6.rst:2356
 msgid ""
 ":c:func:`Py_Exit` (and the main interpreter) now override the exit status "
 "with 120 if flushing buffered data failed.  See :issue:`5319`."
 msgstr ""
+"现在如果缓冲数据刷新失败 :c:func:`Py_Exit` (以及主解释器) 会将退出状态重写为 120。 参见 :issue:`5319`。"
 
 #: ../../whatsnew/3.6.rst:2361
 msgid "CPython bytecode changes"
@@ -3728,7 +3795,7 @@ msgstr "CPython 字节码的改变"
 #: ../../whatsnew/3.6.rst:2363
 msgid ""
 "There have been several major changes to the :term:`bytecode` in Python 3.6."
-msgstr ""
+msgstr "在 Python 3.6 中对 :term:`bytecode` 进行了一些重大修改。"
 
 #: ../../whatsnew/3.6.rst:2365
 msgid ""
@@ -3736,6 +3803,8 @@ msgid ""
 "(Contributed by Demur Rumed with input and reviews from Serhiy Storchaka and"
 " Victor Stinner in :issue:`26647` and :issue:`28050`.)"
 msgstr ""
+"Python 解释器现在使用 16 位字代码而不是字节代码。 （由 Demur Rumed 在 :issue:`26647` 和 "
+":issue:`28050` 中贡献并得到来自 Serhiy Storchaka 和 Victor Stinner 的协助和评估。）"
 
 #: ../../whatsnew/3.6.rst:2369
 msgid ""
@@ -3744,6 +3813,9 @@ msgid ""
 "(Contributed by Eric Smith in :issue:`25483` and Serhiy Storchaka in "
 ":issue:`27078`.)"
 msgstr ""
+"新增 :opcode:`FORMAT_VALUE` 和 :opcode:`BUILD_STRING` 操作码作为  :ref:`格式化字符串字面值 "
+"<whatsnew36-pep498>` 实现的组成部分。 （由 Eric Smith 在 :issue:`25483` 以及 Serhiy "
+"Storchaka 在 :issue:`27078` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2374
 msgid ""
@@ -3751,6 +3823,8 @@ msgid ""
 "dictionaries with constant keys. (Contributed by Serhiy Storchaka in "
 ":issue:`27140`.)"
 msgstr ""
+"新增的 :opcode:`BUILD_CONST_KEY_MAP` 操作码用于优化具有常量键的字典的创建。 （由 Serhiy Storchaka 在 "
+":issue:`27140` 中创建。）"
 
 #: ../../whatsnew/3.6.rst:2378
 msgid ""
@@ -3763,6 +3837,12 @@ msgid ""
 "``MAKE_CLOSURE`` opcodes have been removed. (Contributed by Demur Rumed in "
 ":issue:`27095`, and Serhiy Storchaka in :issue:`27213`, :issue:`28257`.)"
 msgstr ""
+"函数调用操作码进行了大幅改进以提升效率并简化实现。 :opcode:`MAKE_FUNCTION`, :opcode:`CALL_FUNCTION`, "
+":opcode:`CALL_FUNCTION_KW` 和 :opcode:`BUILD_MAP_UNPACK_WITH_CALL` "
+"操作码已被修改，新增了 :opcode:`CALL_FUNCTION_EX` 和 "
+":opcode:`BUILD_TUPLE_UNPACK_WITH_CALL`，并移除了 ``CALL_FUNCTION_VAR``, "
+"``CALL_FUNCTION_VAR_KW`` 和 ``MAKE_CLOSURE`` 操作码。 （由 Demur Rumed 在 "
+":issue:`27095` 中，以及 Serhiy Storchaka 在 :issue:`27213`, :issue:`28257` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2389
 msgid ""
@@ -3770,6 +3850,8 @@ msgid ""
 "have been added to support the new :term:`variable annotation` syntax. "
 "(Contributed by Ivan Levkivskyi in :issue:`27985`.)"
 msgstr ""
+"新增了 :opcode:`SETUP_ANNOTATIONS` 和 :opcode:`STORE_ANNOTATION` 操作码以支持新的 "
+":term:`variable annotation` 语法。 （由 Ivan Levkivskyi 在 :issue:`27985` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2395
 msgid "Notable changes in Python 3.6.2"
@@ -3786,6 +3868,8 @@ msgid ""
 "available, the autotools-based build system no longer attempts to implicitly"
 " recompile generated files based on file modification times."
 msgstr ""
+"为了简化交叉编译，并确保 CPython 能够可靠地编译而不需要已存在可用的 Python 版本，基于 autotools "
+"的构建系统将不再尝试根据文件修改时间隐式地重新编译已生成的文件。"
 
 #: ../../whatsnew/3.6.rst:2405
 msgid ""
@@ -3793,12 +3877,14 @@ msgid ""
 "regeneration of these files when desired (e.g. after an initial version of "
 "Python has already been built based on the pregenerated versions)."
 msgstr ""
+"取而代之的是，新增了一个 ``make regen-all`` 命令以便在需要时强制重新生成这些文件（例如在基于预生成版本构建了 Python "
+"的初始版本之后）。"
 
 #: ../../whatsnew/3.6.rst:2409
 msgid ""
 "More selective regeneration targets are also defined - see "
 ":source:`Makefile.pre.in` for details."
-msgstr ""
+msgstr "还定义了其他一些更具选择性的重生成目标 —— 详情参见 :source:`Makefile.pre.in`。"
 
 #: ../../whatsnew/3.6.rst:2412 ../../whatsnew/3.6.rst:2425
 msgid "(Contributed by Victor Stinner in :issue:`23404`.)"
@@ -3806,14 +3892,14 @@ msgstr "（由 Victor Stinner 在 :issue:`23404` 中贡献。）"
 
 #: ../../whatsnew/3.6.rst:2418
 msgid "Removal of ``make touch`` build target"
-msgstr ""
+msgstr "移除了 ``make touch`` 构建目标"
 
 #: ../../whatsnew/3.6.rst:2420
 msgid ""
 "The ``make touch`` build target previously used to request implicit "
 "regeneration of generated files by updating their modification times has "
 "been removed."
-msgstr ""
+msgstr "之前用于通过更新生成文件的修改时间来请求隐式的重新生成这些文件的 ``make touch`` 构建目标已被移除。"
 
 #: ../../whatsnew/3.6.rst:2423
 msgid "It has been replaced by the new ``make regen-all`` target."
@@ -3856,6 +3942,8 @@ msgid ""
 ":mod:`xml.dom.minidom` and :mod:`xml.sax` modules no longer process external"
 " entities by default. See also :gh:`61441`."
 msgstr ""
+"在默认情况下 :mod:`xml.dom.minidom` 和 :mod:`xml.sax` 模块将不再处理外部实例。 另请参阅 "
+":gh:`61441`。"
 
 #: ../../whatsnew/3.6.rst:2453
 msgid ""
@@ -3909,7 +3997,7 @@ msgstr ""
 
 #: ../../whatsnew/3.6.rst:2482
 msgid "Notable changes in Python 3.6.14"
-msgstr ""
+msgstr "Python 3.6.14 中的重要变化"
 
 #: ../../whatsnew/3.6.rst:2484
 msgid ""

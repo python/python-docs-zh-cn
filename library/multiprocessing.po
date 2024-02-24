@@ -201,6 +201,8 @@ msgid ""
 "method should be considered unsafe as it can lead to crashes of the "
 "subprocess as macOS system libraries may start threads. See :issue:`33725`."
 msgstr ""
+"在 macOS 上，现在 *spawn* 启动方法是默认值。 由于 *fork* 启动方法可能因 macOS "
+"系统库也许会启动线程导致子进程崩溃因而应当被视为是不安全的。 参见 :issue:`33725`。"
 
 #: ../../library/multiprocessing.rst:152
 msgid ""
@@ -216,6 +218,13 @@ msgid ""
 "objects because the system allows only a limited number of named semaphores,"
 " and shared memory segments occupy some space in the main memory.)"
 msgstr ""
+"在 POSIX 上使用 *spawn* 或 *forkserver* 启动方法将同时启动一个 *资源追踪器* "
+"进程，负责追踪当前程序的进程产生的已取消连接的命名系统资源（如命名信号量或 "
+":class:`~multiprocessing.shared_memory.SharedMemory` 对象）。 "
+"当所有进程退出后资源追踪器会负责取消链接任何仍然被追踪的对象。 "
+"在通常情况下应该是没有此种对象的，但是如果一个子进程是被某个信号杀掉的则可能存在一些“泄露”的资源。 "
+"（泄露的信号量或共享的内存段不会被自动取消链接直到下一次重启。 "
+"对于这两种对象来说会有问题因为系统只允许有限数量的命名信号量，而共享的内存段在主内存中占用一些空间。）"
 
 #: ../../library/multiprocessing.rst:165
 msgid ""
@@ -515,7 +524,7 @@ msgstr "如果子类重写构造函数，它必须确保它在对进程执行任
 
 #: ../../library/multiprocessing.rst:508
 msgid "Added the *daemon* parameter."
-msgstr ""
+msgstr "增加了 *daemon* 形参。"
 
 #: ../../library/multiprocessing.rst:513
 msgid "Method representing the process's activity."
@@ -714,6 +723,8 @@ msgid ""
 "is used.  Note that exit handlers and finally clauses, etc., will not be "
 "executed."
 msgstr ""
+"终结进程。 在 POSIX 上这是使用 :py:const:`~signal.SIGTERM` 信号来完成的；在 Windows 上则会使用 "
+":c:func:`!TerminateProcess`。 请注意 exit 处理句柄和 finally 子句等将不会被执行。"
 
 #: ../../library/multiprocessing.rst:643
 msgid ""
@@ -1513,6 +1524,9 @@ msgid ""
 ":ref:`typecontextmanager`.  :meth:`~contextmanager.__enter__` returns the "
 "connection object, and :meth:`~contextmanager.__exit__` calls :meth:`close`."
 msgstr ""
+"连接对象现在支持上下文管理协议 -- 参见 :ref:`typecontextmanager`。 "
+":meth:`~contextmanager.__enter__` 返回连接对象，而 :meth:`~contextmanager.__exit__` "
+"将调用 :meth:`close`。"
 
 #: ../../library/multiprocessing.rst:1215
 msgid "For example:"
@@ -2764,7 +2778,7 @@ msgstr ""
 
 #: ../../library/multiprocessing.rst:2214
 msgid "Added the *maxtasksperchild* parameter."
-msgstr ""
+msgstr "增加了 *maxtasksperchild* 形参。"
 
 #: ../../library/multiprocessing.rst:2217
 msgid "Added the *context* parameter."
@@ -3682,7 +3696,7 @@ msgstr "*spawn* 和 *forkserver* 启动方式"
 msgid ""
 "There are a few extra restrictions which don't apply to the *fork* start "
 "method."
-msgstr ""
+msgstr "还有一些没有被应用到 *fork* 启动方法的额外限制。"
 
 #: ../../library/multiprocessing.rst:2943
 msgid "More picklability"
