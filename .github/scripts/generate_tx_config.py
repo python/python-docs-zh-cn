@@ -59,6 +59,10 @@ def patch_config(path: str):
     cwd = os.getcwd()
     os.chdir(path)
     config_content = FILTER_PATTERN.sub(name_replacer, config_content)
+    config_content = re.sub(r'replace_edited_strings.*\n','', config_content)
+    config_content = re.sub(r'keep_translations.*\n','', config_content)
+    config_content = re.sub(r'0\ntrans\.zh_CN.*\n','0\n', config_content)
+    config_content = config_content.replace('         =','=')
     os.chdir(cwd)
 
     tx_config_path.write_text(config_content, "utf-8")
