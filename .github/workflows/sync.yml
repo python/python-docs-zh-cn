@@ -20,14 +20,14 @@ jobs:
       LOCALE: zh_CN
       VERSION: ${{ inputs.version }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Checkout CPython
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'python/cpython'
           ref: ${{env.VERSION}}
           path: cpython
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         with:
           path: |
             cpython/Doc/build
@@ -35,7 +35,7 @@ jobs:
           key: cache-${{ inputs.version }}-${{ github.run_id }}
           restore-keys: cache-${{ inputs.version }}-
       - name: Checkout Current Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{env.VERSION}}
           path: docs
@@ -46,14 +46,14 @@ jobs:
         run: .github/scripts/update.sh
         env:
           TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
-      - uses: actions/cache/restore@v3
+      - uses: actions/cache/restore@v4
         with:
           path: cpython/Doc/build
           key: cache-${{ inputs.version }}-${{ github.run_id }}
           restore-keys: cache-${{ inputs.version }}-
       - name: build
         run: .github/scripts/build.sh
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@v4
         with:
           path: |
             cpython/Doc/build
