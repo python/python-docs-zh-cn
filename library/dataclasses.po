@@ -750,6 +750,7 @@ msgid ""
 "methods don't need to be called, since the derived dataclass will take care "
 "of initializing all fields of any base class that is a dataclass itself."
 msgstr ""
+"但是，请注意一般来说数据类生成的 :meth:`!__init__` 方法不需要被调用，因为派生的数据类将负责初始化任何本身为数据类的基类的所有字段。"
 
 #: ../../library/dataclasses.rst:553
 msgid ""
@@ -774,6 +775,10 @@ msgid ""
 "``ClassVar`` pseudo-fields are not returned by the module-level "
 ":func:`fields` function."
 msgstr ""
+"在 :func:`@dataclass <dataclass>` 会实际检查字段类型的少数几个地方之一是确定字段是否为如 :pep:`526` "
+"所定义的类变量。 它通过检查字段的类型是否为 ``typing.ClassVar`` 来实现这一点。 如果一个字段是 "
+"``ClassVar``，它将被排除在考虑范围之外并被数据类机制所忽略。 这样的 ``ClassVar`` 伪字段将不会被模块层级的 "
+":func:`fields` 函数返回。"
 
 #: ../../library/dataclasses.rst:569
 msgid "Init-only variables"
@@ -791,6 +796,11 @@ msgid ""
 "to the optional :meth:`__post_init__` method.  They are not otherwise used "
 "by dataclasses."
 msgstr ""
+"另一个 :func:`@dataclass <dataclass>` 会检查类型标注的地方是为了确定一个字段是否为仅限初始化的变量。 "
+"这通过检查字段的类型是否为 ``dataclasses.InitVar`` 来实现这一点。 如果一个字段是 "
+"``InitVar``，它会被当作是被称为仅限初始化字段的伪字段。 因为它不是一个真正的字段，所以它不会被模块层级的 :func:`fields` "
+"函数返回。 仅限初始化字段会作为形参被添加到所生成的 :meth:`~object.__init__` 方法中，并被传递给可选的 "
+":meth:`__post_init__` 方法。 在其他情况下它们将不会被数据类所使用。"
 
 #: ../../library/dataclasses.rst:581
 msgid ""
@@ -818,6 +828,9 @@ msgid ""
 ":meth:`~object.__setattr__` and :meth:`~object.__delattr__` methods to the "
 "class.  These methods will raise a :exc:`FrozenInstanceError` when invoked."
 msgstr ""
+"创建真正不可变的 Python 对象是不可能的。 但是，你可以通过将 ``frozen=True`` 传递给 :func:`@dataclass "
+"<dataclass>` 装饰器来模拟出不可变性。 在这种情况下，数据类将向类添加 :meth:`~object.__setattr__` 和 "
+":meth:`~object.__delattr__` 方法。 当被发起调用时这些方法将会引发 :exc:`FrozenInstanceError`。"
 
 #: ../../library/dataclasses.rst:608
 msgid ""
@@ -825,6 +838,8 @@ msgid ""
 ":meth:`~object.__init__` cannot use simple assignment to initialize fields, "
 "and must use :meth:`!__setattr__`."
 msgstr ""
+"在使用 ``frozen=True`` 时会有微小的性能损失: :meth:`~object.__init__` "
+"不能使用简单赋值来初始化字段，而必须使用 :meth:`!__setattr__`。"
 
 #: ../../library/dataclasses.rst:613
 msgid "Inheritance"
@@ -841,6 +856,9 @@ msgid ""
 "calculated ordered mapping of fields.  Because the fields are in insertion "
 "order, derived classes override base classes.  An example::"
 msgstr ""
+"当数据类由 :func:`@dataclass <dataclass>` 装饰器创建时，它会按反向 MRO 顺序（也就是说，从 "
+":class:`object` 开始）查看它的所有基类，并将找到的每个数据类的字段添加到一个有序映射中。 所有生成的方法都将使用这个有序映射。 "
+"字段会遵守它们被插入的顺序，因此派生类会重写基类。 一个例子::"
 
 #: ../../library/dataclasses.rst:635
 msgid ""
@@ -954,6 +972,10 @@ msgid ""
 "assumption is that if a value is unhashable, it is mutable.  This is a "
 "partial solution, but it does protect against many common errors."
 msgstr ""
+"这具有与使用 ``C`` 类的原始示例相同的问题。 也就是说，当创建类实例的时候如果 ``D`` 类的两个实例没有为 ``x`` 指定值则将共享同一个 "
+"``x`` 的副本。 因为数据类只是使用普通的 Python 类创建方式所以它们也会共享此行为。 数据类没有任何通用方式来检测这种情况。 "
+"相反地，:func:`@dataclass <dataclass>` 装饰器在检测到不可哈希的默认形参时将会引发 :exc:`ValueError`。 "
+"这一行为假定如果一个值是不可哈希的，则它就是可变对象。 这是一个部分解决方案，但它确实能防止许多常见错误。"
 
 #: ../../library/dataclasses.rst:744
 msgid ""
@@ -986,6 +1008,8 @@ msgid ""
 "method is passed to the descriptor's :meth:`~object.__set__` method rather "
 "than overwriting the descriptor object."
 msgstr ""
+"传递给数据类的 :meth:`~object.__init__` 方法的字段值会被传递给描述器的 :meth:`~object.__set__` "
+"方法而不会覆盖描述器对象。"
 
 #: ../../library/dataclasses.rst:769
 msgid ""
@@ -993,6 +1017,8 @@ msgid ""
 ":meth:`~object.__get__` or :meth:`!__set__` method is called rather than "
 "returning or overwriting the descriptor object."
 msgstr ""
+"类似地，当获取或设置字段值时，将调用描述器的 :meth:`~object.__get__` 或 :meth:`!__set__` "
+"方法而不是返回或重写描述器对象。"
 
 #: ../../library/dataclasses.rst:773
 msgid ""
@@ -1003,6 +1029,10 @@ msgid ""
 "default. On the other hand, if the descriptor raises :exc:`AttributeError` "
 "in this situation, no default value will be provided for the field."
 msgstr ""
+"为了确定一个字段是否包含默认值，:func:`@dataclass <dataclass>` 会使用类访问形式调用描述器的 "
+":meth:`!__get__` 方法: ``descriptor.__get__(obj=None, type=cls)``。 "
+"如果在此情况下描述器返回了一个值，它将被用作字段的默认值。 另一方面，如果在此情况下描述器引发了 "
+":exc:`AttributeError`，则不会为字段提供默认值。"
 
 #: ../../library/dataclasses.rst:808
 msgid ""
