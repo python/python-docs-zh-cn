@@ -184,6 +184,8 @@ msgid ""
 "*unsafe_hash*: If ``False`` (the default), a :meth:`~object.__hash__` method"
 " is generated according to how *eq* and *frozen* are set."
 msgstr ""
+"*unsafe_hash*: 如为 ``False`` (默认值)，则会根据 *eq* 和 *frozen* 的设置情况生成 "
+":meth:`~object.__hash__` 方法。"
 
 #: ../../library/dataclasses.rst:127
 msgid ""
@@ -194,6 +196,9 @@ msgid ""
 "intent, the existence and behavior of :meth:`!__eq__`, and the values of the"
 " *eq* and *frozen* flags in the ``@dataclass`` decorator."
 msgstr ""
+":meth:`!__hash__` 会在对象被添加到哈希多项集例如字典和集合时由内置的 :meth:`hash()` 使用。 具有 "
+":meth:`!__hash__` 就意味着类的实例是不可变的。 可变性是一个依赖于程序员的实际意图、:meth:`!__eq__` "
+"是否存在和具体行为，以及 ``@dataclass`` 装饰器中 *eq* 和 *frozen* 旗标值的复杂特征属性。"
 
 #: ../../library/dataclasses.rst:134
 msgid ""
@@ -241,6 +246,11 @@ msgid ""
 "used (if the superclass is :class:`object`, this means it will fall back to "
 "id-based hashing)."
 msgstr ""
+"如果 *eq* 和 *frozen* 均为真值，则默认 ``@dataclass`` 将为你生成 :meth:`!__hash__` 方法。 如果 "
+"*eq* 为真值而 *frozen* 为假值，则:meth:`!__hash__` 将被设为 "
+"``None``，即将其标记为不可哈希（因为它属于可变对象）。 如果 *eq* 为假值，则 :meth:`!__hash__` "
+"将保持不变，这意味着将使用超类的 :meth:`!__hash__` 方法（如果超类是 :class:`object`，这意味着它将回退为基于 id "
+"的哈希）。"
 
 #: ../../library/dataclasses.rst:160
 msgid ""
@@ -249,6 +259,9 @@ msgid ""
 ":meth:`~object.__setattr__` or :meth:`~object.__delattr__` is defined in the"
 " class, then :exc:`TypeError` is raised.  See the discussion below."
 msgstr ""
+"*frozen*: 如为真值 (默认为 ``False``)，则对字段赋值将引发异常。 这模拟了只读的冻结实例。 如果在类中定义了 "
+":meth:`~object.__setattr__` 或 :meth:`~object.__delattr__`，则将引发 "
+":exc:`TypeError`。 参见下文的讨论。"
 
 #: ../../library/dataclasses.rst:165
 msgid ""
@@ -259,6 +272,9 @@ msgid ""
 ":attr:`!__match_args__` is already defined in the class, then "
 ":attr:`!__match_args__` will not be generated."
 msgstr ""
+"*match_args*: 如为真值 (默认为 ``True``)，则将根据传给生成的 :meth:`~object.__init__` "
+"方法的形参列表来创建 :attr:`~object.__match_args__` 元组 (即使没有生成 :meth:`!__init__`，见上文)。"
+" 如为假值，或者如果 :attr:`!__match_args__` 已在类中定义，则不会生成 :attr:`!__match_args__`。"
 
 #: ../../library/dataclasses.rst:174
 msgid ""
@@ -270,6 +286,10 @@ msgid ""
 ":term:`parameter` glossary entry for details.  Also see the :const:`KW_ONLY`"
 " section."
 msgstr ""
+"*kw_only*: 如为真值 (默认值为 ``False``)，则所有字段都将被标记为仅限关键字的。 "
+"如果一个字段被标记为仅限关键字的，则唯一的影响是由仅限关键字的字段生成的 :meth:`~object.__init__` 的对应形参在 "
+":meth:`!__init__` 被调用时必须以关键字形式指定。 而数据类的任何其他行为都不会受影响。 详情参见 :term:`parameter` "
+"术语表条目。 另请参阅 :const:`KW_ONLY` 一节。"
 
 #: ../../library/dataclasses.rst:185
 msgid ""
@@ -278,6 +298,8 @@ msgid ""
 "original one. If :attr:`!__slots__` is already defined in the class, then "
 ":exc:`TypeError` is raised."
 msgstr ""
+"*slots*: 如为真值 (默认为 ``False``)，则将生成 :attr:`~object.__slots__` "
+"属性并返回一个新类而非原本的类。 如果 :attr:`!__slots__` 已在类中定义，则会引发 :exc:`TypeError`。"
 
 #: ../../library/dataclasses.rst:192
 msgid ""
@@ -288,6 +310,10 @@ msgid ""
 ":func:`fields` instead. To be able to determine inherited slots, base class "
 ":attr:`!__slots__` may be any iterable, but *not* an iterator."
 msgstr ""
+"如果某个字段名称已经包括在基类的 :attr:`!__slots__` 中，它将不会被包括在生成的 :attr:`!__slots__` 中以防止 "
+":ref:`重写它们 <datamodel-note-slots>`。 因此，请不要使用 :attr:`!__slots__` 来获取数据类的字段名称。"
+" 而应改用 :func:`fields`。 为了能够确定所继承的槽位，基类 :attr:`!__slots__` 可以是任意可迭代对象，但是 *不可以*"
+" 是迭代器。an iterator."
 
 #: ../../library/dataclasses.rst:202
 msgid ""
@@ -296,6 +322,9 @@ msgid ""
 "an error to specify ``weakref_slot=True`` without also specifying "
 "``slots=True``."
 msgstr ""
+"*weakref_slot*: 如为真值 (默认为 ``False``)，则添加一个名为 \"__weakref__\" "
+"的槽位，这是使得一个实例可以被弱引用所必需的。 指定 ``weakref_slot=True`` 而不同时指定 ``slots=True`` "
+"将会导致错误。"
 
 #: ../../library/dataclasses.rst:209
 msgid ""
@@ -308,6 +337,8 @@ msgid ""
 "In this example, both :attr:`!a` and :attr:`!b` will be included in the "
 "added :meth:`~object.__init__` method, which will be defined as::"
 msgstr ""
+"在这个例子中，:attr:`!a` 和 :attr:`!b` 都将被包括在所添加的 :meth:`~object.__init__` "
+"方法中，该方法将被定义为::"
 
 #: ../../library/dataclasses.rst:222
 msgid ""
@@ -348,6 +379,7 @@ msgid ""
 " is needed because the :func:`!field` call itself replaces the normal "
 "position of the default value."
 msgstr ""
+"*default*: 如果提供，这将为该字段的默认值。 设置此形参是因为 :func:`!field` 调用本身会替换通常的默认值所在位置。"
 
 #: ../../library/dataclasses.rst:252
 msgid ""
@@ -357,6 +389,8 @@ msgid ""
 " discussed below.  It is an error to specify both *default* and "
 "*default_factory*."
 msgstr ""
+"*default_factory*: 如果提供，它必须是一个零参数的可调用对象，它将在该字段需要一个默认值时被调用。 "
+"在其他目的以外，它还可被用于指定具有可变默认值的字段，如下所述。 同时指定 *default* 和 *default_factory* 将会导致错误。"
 
 #: ../../library/dataclasses.rst:258
 msgid ""
