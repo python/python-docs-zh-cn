@@ -1660,6 +1660,15 @@ msgid ""
 "also now un-stringize stringized annotations. (Contributed by Larry Hastings"
 " in :issue:`43817`.)"
 msgstr ""
+"增加了 :func:`inspect.get_annotations`，可以安全地计算在对象上定义的标注。 "
+"它解决了访问各种对象上的标注的问题，并且对于它所检查的对象只规定了非常少的预设。 :func:`inspect.get_annotations` "
+"也能正确地对字符串化的标注进行反字符串化。 :func:`inspect.get_annotations` 现在被认为是访问在任意 Python "
+"对象上定义的标注字典的最佳实践；有关处理标注的最佳实践的更多信息，请参阅 :ref:`annotations-howto`。 "
+"相应地，:func:`inspect.signature`, :func:`inspect.Signature.from_callable` 和 "
+":func:`!inspect.Signature.from_function` 现在会调用 "
+":func:`inspect.get_annotations` 来获取标注信息。 这意味着 :func:`inspect.signature` 和 "
+":func:`inspect.Signature.from_callable` 现在也可以对字符串化的标注进行反字符串化。 （由 Larry "
+"Hastings 在 :issue:`43817` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1234
 msgid "itertools"
@@ -2152,6 +2161,10 @@ msgid ""
 ":func:`!runtime_checkable` decorator if they want runtime protocols. "
 "(Contributed by Yurii Karabas in :issue:`38908`.)"
 msgstr ""
+"只声明了数据变量的 ``typing.Protocol`` 子类在使用 ``isinstance`` 进行检查时现在将引发 "
+"``TypeError``，除非它们是带有 :func:`~typing.runtime_checkable` 装饰器的。 "
+"在之前版本中，这些检查会静默地通过。 如果用户需要运行时协议则应当对其子类设置 :func:`!runtime_checkable` 装饰器。 （由 "
+"Yurii Karabas 在 :issue:`38908` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1493
 msgid ""
@@ -2373,6 +2386,9 @@ msgid ""
 "in :mod:`gzip` and :mod:`lzma` have always been.  (Contributed by Inada "
 "Naoki in :issue:`43785`.)"
 msgstr ""
+":class:`~bz2.BZ2File` 的性能通过移除内部 ``RLock`` 获得了提升。 这使得 :class:`!BZ2File` "
+"在面对多个同时的读取器和写入器时不再是线程安全的，就像 :mod:`gzip` 和 :mod:`lzma` 中的对应类一直以来的情况那样。 （由 "
+"Inada Naoki 在 :issue:`43785` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1606 ../../whatsnew/3.10.rst:2212
 msgid "Deprecated"
@@ -2413,6 +2429,15 @@ msgid ""
 ":exc:`DeprecationWarning` will be raised as appropriate to help identify "
 "code which needs updating during this transition."
 msgstr ""
+"从本发布版开始，将开始一次协同行动来清理为兼容 Python 2.7 而保留的旧导入语义。 "
+"具体来说，:meth:`!find_loader`/:meth:`!find_module` (被 "
+":meth:`~importlib.abc.MetaPathFinder.find_spec` 取代), "
+":meth:`~importlib.abc.Loader.load_module` (被 "
+":meth:`~importlib.abc.Loader.exec_module` 取代), :meth:`!module_repr` "
+"(由导入系统负责处理), ``__package__`` 属性 (被 ``__spec__.parent`` 取代), ``__loader__`` "
+"属性 (被 ``__spec__.loader`` 取代) 以及 ``__cached__`` 属性 (被 ``__spec__.cached`` "
+"取代) 将被逐步移除 (还包括 :mod:`importlib` 中的其他类和方法)。 :exc:`ImportWarning` 和/或 "
+":exc:`DeprecationWarning` 将相应地被引发以帮助在过渡期间识别需要更新的代码。"
 
 #: ../../whatsnew/3.10.rst:1636
 msgid ""
@@ -2450,6 +2475,9 @@ msgid ""
 "for :meth:`~zipimport.zipimporter.exec_module`. (Contributed by Brett Cannon"
 " in :issue:`26131`.)"
 msgstr ""
+":meth:`!zimport.zipimporter.load_module` 已被弃用而应改用 "
+":meth:`~zipimport.zipimporter.exec_module`。 （由 Brett Cannon 在 :issue:`26131`"
+" 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1654
 msgid ""
@@ -2678,6 +2706,10 @@ msgid ""
 "are replaced by :attr:`~ssl.SSLContext.minimum_version` and "
 ":attr:`~ssl.SSLContext.maximum_version`."
 msgstr ""
+":data:`!OP_NO_SSLv2`, :data:`!OP_NO_SSLv3`, :data:`!OP_NO_TLSv1`, "
+":data:`!OP_NO_TLSv1_1`, :data:`!OP_NO_TLSv1_2` 和:data:`!OP_NO_TLSv1_3` 被 "
+":attr:`~ssl.SSLContext.minimum_version` 和 "
+":attr:`~ssl.SSLContext.maximum_version` 代替。"
 
 #: ../../whatsnew/3.10.rst:1768
 msgid ""
@@ -2687,18 +2719,22 @@ msgid ""
 "favor of :const:`~ssl.PROTOCOL_TLS_CLIENT` and "
 ":const:`~ssl.PROTOCOL_TLS_SERVER`"
 msgstr ""
+":data:`!PROTOCOL_SSLv2`, :data:`!PROTOCOL_SSLv3`, :data:`!PROTOCOL_SSLv23`, "
+":data:`!PROTOCOL_TLSv1`, :data:`!PROTOCOL_TLSv1_1`, "
+":data:`!PROTOCOL_TLSv1_2` 和 :const:`!PROTOCOL_TLS` 已被弃用而应改用 "
+":const:`~ssl.PROTOCOL_TLS_CLIENT` 和 :const:`~ssl.PROTOCOL_TLS_SERVER`"
 
 #: ../../whatsnew/3.10.rst:1774
 msgid ":func:`!wrap_socket` is replaced by :meth:`ssl.SSLContext.wrap_socket`"
-msgstr ""
+msgstr ":func:`!wrap_socket` 被 :meth:`ssl.SSLContext.wrap_socket` 代替"
 
 #: ../../whatsnew/3.10.rst:1776
 msgid ":func:`!match_hostname`"
-msgstr ""
+msgstr ":func:`!match_hostname`"
 
 #: ../../whatsnew/3.10.rst:1778
 msgid ":func:`!RAND_pseudo_bytes`, :func:`!RAND_egd`"
-msgstr ""
+msgstr ":func:`!RAND_pseudo_bytes`, :func:`!RAND_egd`"
 
 #: ../../whatsnew/3.10.rst:1780
 msgid ""
