@@ -14,9 +14,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 14:14+0000\n"
+"POT-Creation-Date: 2024-05-10 22:05-0300\n"
 "PO-Revision-Date: 2021-06-28 01:10+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -122,52 +122,72 @@ msgstr ""
 "当创建新的共享内存块时所请求的字节数。 由于某些平台会选择根据平台的内存页大小来分配内存块，因此共享内存块的实际大小可能会大于等于所请求的大小。 "
 "当关联到已有的共享内存块时，*size* 形参将被忽略。"
 
-#: ../../library/multiprocessing.shared_memory.rst:75
+#: ../../library/multiprocessing.shared_memory.rst:73
 msgid ""
-"Close access to the shared memory from this instance.  In order to ensure "
-"proper cleanup of resources, all instances should call :meth:`close` once "
-"the instance is no longer needed.  Note that calling :meth:`!close` does not"
-" cause the shared memory block itself to be destroyed."
+"When ``True``, register the shared memory block with a resource tracker "
+"process on platforms where the OS does not do this automatically. The "
+"resource tracker ensures proper cleanup of the shared memory even if all "
+"other processes with access to the memory exit without doing so. Python "
+"processes created from a common ancestor using :mod:`multiprocessing` "
+"facilities share a single resource tracker process, and the lifetime of "
+"shared memory segments is handled automatically among these processes. "
+"Python processes created in any other way will receive their own resource "
+"tracker when accessing shared memory with *track* enabled. This will cause "
+"the shared memory to be deleted by the resource tracker of the first process"
+" that terminates. To avoid this issue, users of :mod:`subprocess` or "
+"standalone Python processes should set *track* to ``False`` when there is "
+"already another process in place that does the bookkeeping. *track* is "
+"ignored on Windows, which has its own tracking and automatically deletes "
+"shared memory when all handles to it have been closed."
 msgstr ""
-"关闭该实例对共享内存的访问。 为确保正确清理资源，所有实例都应当在实例不再被需要时调用 :meth:`close`。 请注意调用 "
-":meth:`!close` 并不会导致共享内存块本身被销毁。"
 
-#: ../../library/multiprocessing.shared_memory.rst:83
-msgid ""
-"Request that the underlying shared memory block be destroyed.  In order to "
-"ensure proper cleanup of resources, :meth:`unlink` should be called once "
-"(and only once) across all processes which have need for the shared memory "
-"block.  After requesting its destruction, a shared memory block may or may "
-"not be immediately destroyed and this behavior may differ across platforms."
-"  Attempts to access data inside the shared memory block after "
-":meth:`!unlink` has been called may result in memory access errors.  Note: "
-"the last process relinquishing its hold on a shared memory block may call "
-":meth:`!unlink` and :meth:`close` in either order."
+#: ../../library/multiprocessing.shared_memory.rst:91
+msgid "Added the *track* parameter."
 msgstr ""
-"请求销毁底层的共享内存块。 为了执行必要的清理，在所有需要使用这个共享内存块的进程中 :meth:`unlink` 应当被调用一次（且仅有一次）。 "
-"在发出此销毁请求后，共享内存块可能会也可能不会被立即销毁，并且此行为在不同系统平台上可能不同。 在 :meth:`!unlink` "
-"已被调用后再尝试访问共享内存块中的数据可能导致内存访问错误。 注意：最后一个结束持有共享内存块的进程可能以任意顺序调用 :meth:`!unlink` "
-"和 :meth:`close`。"
 
 #: ../../library/multiprocessing.shared_memory.rst:96
+msgid ""
+"Close the file descriptor/handle to the shared memory from this instance.  "
+":meth:`close` should be called once access to the shared memory block from "
+"this instance is no longer needed.  Depending on operating system, the "
+"underlying memory may or may not be freed even if all handles to it have "
+"been closed.  To ensure proper cleanup, use the :meth:`unlink` method."
+msgstr ""
+
+#: ../../library/multiprocessing.shared_memory.rst:105
+msgid ""
+"Delete the underlying shared memory block.  This should be called only once "
+"per shared memory block regardless of the number of handles to it, even in "
+"other processes. :meth:`unlink` and :meth:`close` can be called in any "
+"order, but trying to access data inside a shared memory block after "
+":meth:`unlink` may result in memory access errors, depending on platform."
+msgstr ""
+
+#: ../../library/multiprocessing.shared_memory.rst:112
+msgid ""
+"This method has no effect on Windows, where the only way to delete a shared "
+"memory block is to close all handles."
+msgstr ""
+
+#: ../../library/multiprocessing.shared_memory.rst:117
 msgid "A memoryview of contents of the shared memory block."
 msgstr "共享内存块内容的 memoryview 。"
 
-#: ../../library/multiprocessing.shared_memory.rst:100
+#: ../../library/multiprocessing.shared_memory.rst:121
 msgid "Read-only access to the unique name of the shared memory block."
 msgstr "共享内存块的唯一标识，只读属性。"
 
-#: ../../library/multiprocessing.shared_memory.rst:104
+#: ../../library/multiprocessing.shared_memory.rst:125
 msgid "Read-only access to size in bytes of the shared memory block."
 msgstr "共享内存块的字节大小，只读属性。"
 
-#: ../../library/multiprocessing.shared_memory.rst:107
+#: ../../library/multiprocessing.shared_memory.rst:128
 msgid ""
 "The following example demonstrates low-level use of :class:`SharedMemory` "
 "instances::"
 msgstr "以下示例展示了 :class:`SharedMemory` 底层的用法::"
 
-#: ../../library/multiprocessing.shared_memory.rst:133
+#: ../../library/multiprocessing.shared_memory.rst:154
 msgid ""
 "The following example demonstrates a practical use of the "
 ":class:`SharedMemory` class with `NumPy arrays <https://numpy.org/>`_, "
@@ -176,13 +196,13 @@ msgstr ""
 "下面的例子展示了 :class:`SharedMemory` 类配合 `NumPy 数组 <https://numpy.org/>`_ "
 "的实际应用，从两个独立的 Python shell 访问相同的 :class:`!numpy.ndarray`:"
 
-#: ../../library/multiprocessing.shared_memory.rst:187
+#: ../../library/multiprocessing.shared_memory.rst:208
 msgid ""
 "A subclass of :class:`multiprocessing.managers.BaseManager` which can be "
 "used for the management of shared memory blocks across processes."
 msgstr ":class:`multiprocessing.managers.BaseManager` 的子类，可被用于跨进程的共享内存块管理。"
 
-#: ../../library/multiprocessing.shared_memory.rst:190
+#: ../../library/multiprocessing.shared_memory.rst:211
 msgid ""
 "A call to :meth:`~multiprocessing.managers.BaseManager.start` on a "
 ":class:`!SharedMemoryManager` instance causes a new process to be started. "
@@ -205,7 +225,7 @@ msgstr ""
 ":class:`!SharedMemoryManager` 创建 :class:`!SharedMemory` "
 "实例，我们可以避免手动跟踪并触发共享内存资源的释放。"
 
-#: ../../library/multiprocessing.shared_memory.rst:202
+#: ../../library/multiprocessing.shared_memory.rst:223
 msgid ""
 "This class provides methods for creating and returning :class:`SharedMemory`"
 " instances and for creating a list-like object (:class:`ShareableList`) "
@@ -214,7 +234,7 @@ msgstr ""
 "这个类提供了创建和返回 :class:`SharedMemory` 实例的方法，以及以共享内存为基础创建一个列表类对象 "
 "(:class:`ShareableList`) 的方法。"
 
-#: ../../library/multiprocessing.shared_memory.rst:206
+#: ../../library/multiprocessing.shared_memory.rst:227
 msgid ""
 "Refer to :class:`~multiprocessing.managers.BaseManager` for a description of"
 " the inherited *address* and *authkey* optional input arguments and how they"
@@ -225,26 +245,26 @@ msgstr ""
 "和 *authkey* 以及如何使用它们来从其他进程连接已有的optional input arguments and how they may be "
 "used to connect to an existing :class:`!SharedMemoryManager` 服务的说明。"
 
-#: ../../library/multiprocessing.shared_memory.rst:213
+#: ../../library/multiprocessing.shared_memory.rst:234
 msgid ""
 "Create and return a new :class:`SharedMemory` object with the specified "
 "*size* in bytes."
 msgstr "新建并返回一个具有指定的 *size* 个字节的 :class:`SharedMemory` 对象。"
 
-#: ../../library/multiprocessing.shared_memory.rst:218
+#: ../../library/multiprocessing.shared_memory.rst:239
 msgid ""
 "Create and return a new :class:`ShareableList` object, initialized by the "
 "values from the input *sequence*."
 msgstr "新建并返回一个 :class:`ShareableList` 对象，使用从 *sequence* 输入的值来初始化。"
 
-#: ../../library/multiprocessing.shared_memory.rst:222
+#: ../../library/multiprocessing.shared_memory.rst:243
 msgid ""
 "The following example demonstrates the basic mechanisms of a "
 ":class:`~multiprocessing.managers.SharedMemoryManager`:"
 msgstr ""
 "下面的例子展示了 :class:`~multiprocessing.managers.SharedMemoryManager` 的基本机制："
 
-#: ../../library/multiprocessing.shared_memory.rst:240
+#: ../../library/multiprocessing.shared_memory.rst:261
 msgid ""
 "The following example depicts a potentially more convenient pattern for "
 "using :class:`~multiprocessing.managers.SharedMemoryManager` objects via the"
@@ -254,7 +274,7 @@ msgstr ""
 "下面的例子展示了使用 :class:`~multiprocessing.managers.SharedMemoryManager` "
 "对象的一种更方便的方式，通过 :keyword:`with` 语句来确保所有共享内存块在它们不再被需要时得到释放："
 
-#: ../../library/multiprocessing.shared_memory.rst:259
+#: ../../library/multiprocessing.shared_memory.rst:280
 msgid ""
 "When using a :class:`~multiprocessing.managers.SharedMemoryManager` in a "
 ":keyword:`with` statement, the shared memory blocks created using that "
@@ -265,38 +285,38 @@ msgstr ""
 ":class:`~multiprocessing.managers.SharedMemoryManager` 对象时，使用这个管理器创建的共享内存块会在"
 " :keyword:`!with` 语句代码块结束执行时全部被释放。"
 
-#: ../../library/multiprocessing.shared_memory.rst:267
+#: ../../library/multiprocessing.shared_memory.rst:288
 msgid ""
 "Provide a mutable list-like object where all values stored within are stored"
 " in a shared memory block. This constrains storable values to the following "
 "built-in data types:"
 msgstr "提供一个可变的列表型对象，其中存储的所有值都是存储在一个共享内存块中。 这会将可存储的值限制为下列内置数据类型："
 
-#: ../../library/multiprocessing.shared_memory.rst:271
+#: ../../library/multiprocessing.shared_memory.rst:292
 msgid ":class:`int` (signed 64-bit)"
 msgstr ":class:`int` (有符号 64 位)"
 
-#: ../../library/multiprocessing.shared_memory.rst:272
+#: ../../library/multiprocessing.shared_memory.rst:293
 msgid ":class:`float`"
 msgstr ":class:`float`"
 
-#: ../../library/multiprocessing.shared_memory.rst:273
+#: ../../library/multiprocessing.shared_memory.rst:294
 msgid ":class:`bool`"
 msgstr ":class:`bool`"
 
-#: ../../library/multiprocessing.shared_memory.rst:274
+#: ../../library/multiprocessing.shared_memory.rst:295
 msgid ":class:`str` (less than 10M bytes each when encoded as UTF-8)"
 msgstr ":class:`str` (当使用 UTF-8 编码时每个小于 10M 字节)"
 
-#: ../../library/multiprocessing.shared_memory.rst:275
+#: ../../library/multiprocessing.shared_memory.rst:296
 msgid ":class:`bytes` (less than 10M bytes each)"
 msgstr ":class:`bytes` (每个小于 10M 字节)"
 
-#: ../../library/multiprocessing.shared_memory.rst:276
+#: ../../library/multiprocessing.shared_memory.rst:297
 msgid "``None``"
 msgstr "``None``"
 
-#: ../../library/multiprocessing.shared_memory.rst:278
+#: ../../library/multiprocessing.shared_memory.rst:299
 msgid ""
 "It also notably differs from the built-in :class:`list` type in that these "
 "lists can not change their overall length (i.e. no :meth:`!append`, "
@@ -306,7 +326,7 @@ msgstr ""
 "它与内置 :class:`list` 类型的显著区别还在于这些列表无法改变其总长度（即没有 :meth:`!append`, "
 ":meth:`!insert` 等）并且不支持通过切片动态地创建新的 :class:`!ShareableList`。"
 
-#: ../../library/multiprocessing.shared_memory.rst:284
+#: ../../library/multiprocessing.shared_memory.rst:305
 msgid ""
 "*sequence* is used in populating a new :class:`!ShareableList` full of "
 "values. Set to ``None`` to instead attach to an already existing "
@@ -315,7 +335,7 @@ msgstr ""
 "*sequence* 会被用来填充已有值的新 :class:`!ShareableList`。 设为 ``None`` "
 "则会基于唯一的共享内存名称联系到现有的 :class:`!ShareableList`。"
 
-#: ../../library/multiprocessing.shared_memory.rst:288
+#: ../../library/multiprocessing.shared_memory.rst:309
 msgid ""
 "*name* is the unique name for the requested shared memory, as described in "
 "the definition for :class:`SharedMemory`.  When attaching to an existing "
@@ -325,7 +345,7 @@ msgstr ""
 "*name* 是所请求的共享内存的唯一名称，与 :class:`SharedMemory` 的定义中描述的一致。 当关联到现有的 "
 ":class:`!ShareableList` 时，将指明其共享内存块的唯一名称并将 *sequence* 设为 ``None``。"
 
-#: ../../library/multiprocessing.shared_memory.rst:295
+#: ../../library/multiprocessing.shared_memory.rst:316
 msgid ""
 "A known issue exists for :class:`bytes` and :class:`str` values. If they end"
 " with ``\\x00`` nul bytes or characters, those may be *silently stripped* "
@@ -337,7 +357,7 @@ msgstr ""
 ":class:`!ShareableList` 提取这些值时它们可能会被 *静默地去除*。 这种 ``.rstrip(b'\\x00')`` "
 "行为并认为是一个程序错误并可能在未来被修复。 参见 :gh:`106939`。"
 
-#: ../../library/multiprocessing.shared_memory.rst:301
+#: ../../library/multiprocessing.shared_memory.rst:322
 msgid ""
 "For applications where rstripping of trailing nulls is a problem, work "
 "around it by always unconditionally appending an extra non-0 byte to the end"
@@ -345,40 +365,40 @@ msgid ""
 msgstr ""
 "对于某些应用来说在右侧截去尾部空值会造成问题，要绕过此问题可以在存储这样的值时总是无条件地在其末尾附加一个额外的非 0 字节并在获取时无条件地移除它:"
 
-#: ../../library/multiprocessing.shared_memory.rst:324
+#: ../../library/multiprocessing.shared_memory.rst:345
 msgid "Return the number of occurrences of *value*."
 msgstr "返回 *value* 出现的次数。"
 
-#: ../../library/multiprocessing.shared_memory.rst:328
+#: ../../library/multiprocessing.shared_memory.rst:349
 msgid ""
 "Return first index position of *value*. Raise :exc:`ValueError` if *value* "
 "is not present."
 msgstr "返回 *value* 首次出现的索引位置。 如果 *value* 不存在则会引发 :exc:`ValueError`。"
 
-#: ../../library/multiprocessing.shared_memory.rst:333
+#: ../../library/multiprocessing.shared_memory.rst:354
 msgid ""
 "Read-only attribute containing the :mod:`struct` packing format used by all "
 "currently stored values."
 msgstr "包含由所有当前存储值所使用的 :mod:`struct` 打包格式的只读属性。"
 
-#: ../../library/multiprocessing.shared_memory.rst:338
+#: ../../library/multiprocessing.shared_memory.rst:359
 msgid "The :class:`SharedMemory` instance where the values are stored."
 msgstr "存储了值的 :class:`SharedMemory` 实例。"
 
-#: ../../library/multiprocessing.shared_memory.rst:341
+#: ../../library/multiprocessing.shared_memory.rst:362
 msgid ""
 "The following example demonstrates basic use of a :class:`ShareableList` "
 "instance:"
 msgstr "下面的例子演示了 :class:`ShareableList` 实例的基本用法:"
 
-#: ../../library/multiprocessing.shared_memory.rst:374
+#: ../../library/multiprocessing.shared_memory.rst:395
 msgid ""
 "The following example depicts how one, two, or many processes may access the"
 " same :class:`ShareableList` by supplying the name of the shared memory "
 "block behind it:"
 msgstr "下面的例子演示了一个、两个或多个进程如何通过提供下层的共享内存块名称来访问同一个 :class:`ShareableList`:"
 
-#: ../../library/multiprocessing.shared_memory.rst:389
+#: ../../library/multiprocessing.shared_memory.rst:410
 msgid ""
 "The following examples demonstrates that :class:`ShareableList` (and "
 "underlying :class:`SharedMemory`) objects can be pickled and unpickled if "

@@ -13,9 +13,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-10 14:14+0000\n"
+"POT-Creation-Date: 2024-05-10 22:05-0300\n"
 "PO-Revision-Date: 2021-06-28 01:07+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -128,7 +128,7 @@ msgstr "支持 *filename* 为一个文件对象，支持文本模式和 *encodin
 msgid "Added support for the ``'x'``, ``'xb'`` and ``'xt'`` modes."
 msgstr "支持 ``'x'``, ``'xb'`` 和 ``'xt'`` 三种模式。"
 
-#: ../../library/gzip.rst:59 ../../library/gzip.rst:171
+#: ../../library/gzip.rst:59 ../../library/gzip.rst:175
 msgid "Accepts a :term:`path-like object`."
 msgstr "接受一个 :term:`path-like object`。"
 
@@ -207,15 +207,18 @@ msgstr ""
 
 #: ../../library/gzip.rst:103
 msgid ""
-"The *mtime* argument is an optional numeric timestamp to be written to the "
-"last modification time field in the stream when compressing.  It should only"
-" be provided in compression mode.  If omitted or ``None``, the current time "
-"is used.  See the :attr:`mtime` attribute for more details."
+"The optional *mtime* argument is the timestamp requested by gzip. The time "
+"is in Unix format, i.e., seconds since 00:00:00 UTC, January 1, 1970. If "
+"*mtime* is omitted or ``None``, the current time is used. Use *mtime* = 0 to"
+" generate a compressed stream that does not depend on creation time."
 msgstr ""
-"*mtime* 参数是一个可选的数字时间戳用于写入流的最后修改字段，。*mtime* 只在压缩模式中使用。如果省略或者值为 "
-"``None``，则使用当前时间。更多细节，详见 :attr:`mtime` 属性。"
 
 #: ../../library/gzip.rst:108
+msgid ""
+"See below for the :attr:`mtime` attribute that is set when decompressing."
+msgstr ""
+
+#: ../../library/gzip.rst:110
 msgid ""
 "Calling a :class:`GzipFile` object's :meth:`!close` method does not close "
 "*fileobj*, since you might wish to append more material after the compressed"
@@ -228,7 +231,7 @@ msgstr ""
 " 打开，并使用 :class:`io.BytesIO` 对象的 :meth:`~io.BytesIO.getvalue` "
 "方法提取所得到的内存缓冲区数据。"
 
-#: ../../library/gzip.rst:114
+#: ../../library/gzip.rst:116
 msgid ""
 ":class:`GzipFile` supports the :class:`io.BufferedIOBase` interface, "
 "including iteration and the :keyword:`with` statement.  Only the "
@@ -237,18 +240,18 @@ msgstr ""
 ":class:`GzipFile` 支持 :class:`io.BufferedIOBase` 接口，包括迭代和 :keyword:`with` 语句。"
 " 只有 :meth:`~io.IOBase.truncate` 方法未被实现。"
 
-#: ../../library/gzip.rst:118
+#: ../../library/gzip.rst:120
 msgid ":class:`GzipFile` also provides the following method and attribute:"
 msgstr ":class:`GzipFile` 还提供了以下的方法和属性:"
 
-#: ../../library/gzip.rst:122
+#: ../../library/gzip.rst:124
 msgid ""
 "Read *n* uncompressed bytes without advancing the file position. At most one"
 " single read on the compressed stream is done to satisfy the call.  The "
 "number of bytes returned may be more or less than requested."
 msgstr "在不移动文件指针的情况下读取  *n* 个未压缩字节。最多只有一个单独的读取流来服务这个方法调用。返回的字节数不一定刚好等于要求的数量。"
 
-#: ../../library/gzip.rst:127
+#: ../../library/gzip.rst:129
 msgid ""
 "While calling :meth:`peek` does not change the file position of the "
 ":class:`GzipFile`, it may change the position of the underlying file object "
@@ -258,26 +261,23 @@ msgstr ""
 "调用 :meth:`peek` 并没有改变 :class:`GzipFile` 的文件指针，它可能改变潜在文件对象(例如： "
 ":class:`GzipFile` 使用 *fileobj* 参数进行初始化)。"
 
-#: ../../library/gzip.rst:136
-msgid ""
-"When decompressing, the value of the last modification time field in the "
-"most recently read header may be read from this attribute, as an integer.  "
-"The initial value before reading any headers is ``None``."
-msgstr "在解压的过程中，最后修改时间字段的值可能来自于这个属性，以整数的形式出现。在读取任何文件头信息前，初始值为 ``None``。"
+#: ../../library/gzip.rst:138
+msgid "``'rb'`` for reading and ``'wb'`` for writing."
+msgstr ""
 
 #: ../../library/gzip.rst:140
-msgid ""
-"All :program:`gzip` compressed streams are required to contain this "
-"timestamp field.  Some programs, such as :program:`gunzip`\\ , make use of "
-"the timestamp.  The format is the same as the return value of "
-":func:`time.time` and the :attr:`~os.stat_result.st_mtime` attribute of the "
-"object returned by :func:`os.stat`."
+msgid "In previous versions it was an integer ``1`` or ``2``."
 msgstr ""
-"所有 :program:`gzip` 东方压缩流中必须包含时间戳这个字段。以便于像 :program:`gunzip`\\ "
-"这样的程序可以使用时间戳。格式与 :func:`time.time` 的返回值和  :func:`os.stat` 对象的 "
-":attr:`~os.stat_result.st_mtime` 属性值一样。"
 
-#: ../../library/gzip.rst:148
+#: ../../library/gzip.rst:145
+msgid ""
+"When decompressing, this attribute is set to the last timestamp in the most "
+"recently read header.  It is an integer, holding the number of seconds since"
+" the Unix epoch (00:00:00 UTC, January 1, 1970). The initial value before "
+"reading any headers is ``None``."
+msgstr ""
+
+#: ../../library/gzip.rst:152
 msgid ""
 "The path to the gzip file on disk, as a :class:`str` or :class:`bytes`. "
 "Equivalent to the output of :func:`os.fspath` on the original input path, "
@@ -286,25 +286,25 @@ msgstr ""
 "指向磁盘上 gzip 文件的路径，为 :class:`str` 或 :class:`bytes` 对象。 等价于原始输入路径上 "
 ":func:`os.fspath` 的输出，不带其他标准化、解析或扩展。"
 
-#: ../../library/gzip.rst:152
+#: ../../library/gzip.rst:156
 msgid ""
 "Support for the :keyword:`with` statement was added, along with the *mtime* "
 "constructor argument and :attr:`mtime` attribute."
 msgstr "支持 :keyword:`with` 语句，构造器参数 *mtime* 和  :attr:`mtime` 属性。"
 
-#: ../../library/gzip.rst:156
+#: ../../library/gzip.rst:160
 msgid "Support for zero-padded and unseekable files was added."
 msgstr "添加了对零填充和不可搜索文件的支持。"
 
-#: ../../library/gzip.rst:159
+#: ../../library/gzip.rst:163
 msgid "The :meth:`io.BufferedIOBase.read1` method is now implemented."
 msgstr "实现 :meth:`io.BufferedIOBase.read1`  方法。"
 
-#: ../../library/gzip.rst:162
+#: ../../library/gzip.rst:166
 msgid "Added support for the ``'x'`` and ``'xb'`` modes."
 msgstr "支持 ``'x'`` and ``'xb'`` 两种模式。"
 
-#: ../../library/gzip.rst:165
+#: ../../library/gzip.rst:169
 msgid ""
 "Added support for writing arbitrary :term:`bytes-like objects <bytes-like "
 "object>`. The :meth:`~io.BufferedIOBase.read` method now accepts an argument"
@@ -313,19 +313,19 @@ msgstr ""
 "支持写入任意 :term:`bytes-like objects  <bytes-like "
 "object>`。:meth:`~io.BufferedIOBase.read` 方法可以接受 ``None`` 为参数。"
 
-#: ../../library/gzip.rst:174
-msgid ""
-"Remove the ``filename`` attribute, use the :attr:`~GzipFile.name` attribute "
-"instead."
-msgstr "移除 ``filename`` 属性，改用 :attr:`~GzipFile.name` 属性。"
-
 #: ../../library/gzip.rst:178
 msgid ""
 "Opening :class:`GzipFile` for writing without specifying the *mode* argument"
 " is deprecated."
 msgstr "打开 :class:`GzipFile` 用于写入而不指定 *mode* 参数的做法已被弃用。"
 
-#: ../../library/gzip.rst:185
+#: ../../library/gzip.rst:182
+msgid ""
+"Remove the ``filename`` attribute, use the :attr:`~GzipFile.name` attribute "
+"instead."
+msgstr "移除 ``filename`` 属性，改用 :attr:`~GzipFile.name` 属性。"
+
+#: ../../library/gzip.rst:189
 msgid ""
 "Compress the *data*, returning a :class:`bytes` object containing the "
 "compressed data.  *compresslevel* and *mtime* have the same meaning as in "
@@ -337,11 +337,11 @@ msgstr ""
 ":class:`GzipFile` 构造器的对应参数含义相同。 当 *mtime* 设为 ``0`` 时，此函数将等价于 "
 ":func:`zlib.compress` 的 *wbits* 设为 ``31``。 zlib 函数速度更快一些。"
 
-#: ../../library/gzip.rst:192
+#: ../../library/gzip.rst:196
 msgid "Added the *mtime* parameter for reproducible output."
 msgstr "添加了 *mtime* 形参用于可重复的输出。"
 
-#: ../../library/gzip.rst:194
+#: ../../library/gzip.rst:198
 msgid ""
 "Speed is improved by compressing all data at once instead of in a streamed "
 "fashion. Calls with *mtime* set to ``0`` are delegated to "
@@ -350,7 +350,7 @@ msgstr ""
 "通过一次性压缩全部数据而不是通过流方式提高了速度。 将 *mtime* 设为 ``0`` 的调用将被委托给 :func:`zlib.compress` "
 "以提高速度。"
 
-#: ../../library/gzip.rst:201
+#: ../../library/gzip.rst:205
 msgid ""
 "Decompress the *data*, returning a :class:`bytes` object containing the "
 "uncompressed data. This function is capable of decompressing multi-member "
@@ -361,82 +361,82 @@ msgstr ""
 "解压缩 *data*，返回一个包含已解压数据的 :class:`bytes` 对象。 此函数可以解压缩多成员的 gzip 数据（即多个 gzip "
 "块拼接在一起）。 当数据确定只包含一个成员时则 *wbits* 设为 31 的 :func:`zlib.decompress` 函数更快一些。"
 
-#: ../../library/gzip.rst:208
+#: ../../library/gzip.rst:212
 msgid ""
 "Speed is improved by decompressing members at once in memory instead of in a"
 " streamed fashion."
 msgstr "通过一次性解压缩全部数据而不是通过流方式提高了速度。"
 
-#: ../../library/gzip.rst:215
+#: ../../library/gzip.rst:219
 msgid "Examples of usage"
 msgstr "用法示例"
 
-#: ../../library/gzip.rst:217
+#: ../../library/gzip.rst:221
 msgid "Example of how to read a compressed file::"
 msgstr "读取压缩文件示例："
 
-#: ../../library/gzip.rst:223
+#: ../../library/gzip.rst:227
 msgid "Example of how to create a compressed GZIP file::"
 msgstr "创建GZIP 文件示例："
 
-#: ../../library/gzip.rst:230
+#: ../../library/gzip.rst:234
 msgid "Example of how to GZIP compress an existing file::"
 msgstr "使用 GZIP 压缩已有的文件示例："
 
-#: ../../library/gzip.rst:238
+#: ../../library/gzip.rst:242
 msgid "Example of how to GZIP compress a binary string::"
 msgstr "使用 GZIP 压缩二进制字符串示例："
 
-#: ../../library/gzip.rst:246
+#: ../../library/gzip.rst:250
 msgid "Module :mod:`zlib`"
 msgstr "模块 :mod:`zlib`"
 
-#: ../../library/gzip.rst:247
+#: ../../library/gzip.rst:251
 msgid ""
 "The basic data compression module needed to support the :program:`gzip` file"
 " format."
 msgstr "支持 :program:`gzip` 格式所需要的基本压缩模块。"
 
-#: ../../library/gzip.rst:256
+#: ../../library/gzip.rst:260
 msgid "Command Line Interface"
 msgstr "命令行界面"
 
-#: ../../library/gzip.rst:258
+#: ../../library/gzip.rst:262
 msgid ""
 "The :mod:`gzip` module provides a simple command line interface to compress "
 "or decompress files."
 msgstr ":mod:`gzip` 模块提供了简单的命令行界面用于压缩和解压缩文件。"
 
-#: ../../library/gzip.rst:261
+#: ../../library/gzip.rst:265
 msgid "Once executed the :mod:`gzip` module keeps the input file(s)."
 msgstr "在执行后 :mod:`gzip` 模块会保留输入文件。"
 
-#: ../../library/gzip.rst:265
+#: ../../library/gzip.rst:269
 msgid ""
 "Add a new command line interface with a usage. By default, when you will "
 "execute the CLI, the default compression level is 6."
 msgstr "添加一个带有用法说明的新命令行界面命令。 默认情况下，当你要执行 CLI 时，默认压缩等级为 6。"
 
-#: ../../library/gzip.rst:269
+#: ../../library/gzip.rst:273
 msgid "Command line options"
 msgstr "命令行选项"
 
-#: ../../library/gzip.rst:273
+#: ../../library/gzip.rst:277
 msgid "If *file* is not specified, read from :data:`sys.stdin`."
 msgstr "如果未指定 *file*，则从 :data:`sys.stdin` 读取。"
 
-#: ../../library/gzip.rst:277
+#: ../../library/gzip.rst:281
 msgid "Indicates the fastest compression method (less compression)."
 msgstr "指明最快速的压缩方法（较低压缩率）。"
 
-#: ../../library/gzip.rst:281
+#: ../../library/gzip.rst:285
 msgid "Indicates the slowest compression method (best compression)."
 msgstr "指明最慢速的压缩方法（最高压缩率）。"
 
-#: ../../library/gzip.rst:285
+#: ../../library/gzip.rst:289
 msgid "Decompress the given file."
 msgstr "解压缩给定的文件。"
 
-#: ../../library/gzip.rst:289
+#: ../../library/gzip.rst:293
 msgid "Show the help message."
 msgstr "显示帮助消息。"
