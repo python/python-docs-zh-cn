@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2023, Python Software Foundation
+# Copyright (C) 2001-2024, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Freesand Leo <yuqinju@163.com>, 2023
+# Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-17 14:14+0000\n"
+"POT-Creation-Date: 2024-05-11 18:37+0000\n"
 "PO-Revision-Date: 2023-05-24 13:07+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,3 +171,87 @@ msgid ""
 "compiled with frame pointers and therefore it may not be able to show Python"
 " functions in the output of ``perf``."
 msgstr "如果你没有看到任何输出则意味着你的解释器没有附带帧指针来编译因而它将无法在 ``perf`` 的输出中显示 Python 函数。"
+
+#: ../../howto/perf_profiling.rst:211
+msgid "How to work without frame pointers"
+msgstr "如何在不带帧指针的情况下使用"
+
+#: ../../howto/perf_profiling.rst:213
+msgid ""
+"If you are working with a Python interpreter that has been compiled without "
+"frame pointers, you can still use the ``perf`` profiler, but the overhead "
+"will be a bit higher because Python needs to generate unwinding information "
+"for every Python function call on the fly. Additionally, ``perf`` will take "
+"more time to process the data because it will need to use the DWARF "
+"debugging information to unwind the stack and this is a slow process."
+msgstr ""
+"如果你使用在不带帧指针的情况下编译的 Python 解释器，你仍然可以使用 ``perf`` 性能分析器，但会有较高的资源开销因为 Python "
+"需要为每个 Python 函数即时生成回撤信息。 此外，``perf`` 将花费更多时间来处理数据因为它需要使用 DWARF "
+"调试信息来回撤栈而这是一个缓慢的过程。"
+
+#: ../../howto/perf_profiling.rst:220
+msgid ""
+"To enable this mode, you can use the environment variable "
+":envvar:`PYTHON_PERF_JIT_SUPPORT` or the :option:`-X perf_jit <-X>` option, "
+"which will enable the JIT mode for the ``perf`` profiler."
+msgstr ""
+"要启用此模式，你可以使用环境变量 :envvar:`PYTHON_PERF_JIT_SUPPORT` 或 :option:`-X perf_jit "
+"<-X>` 选项，它将为 ``perf`` 性能分析器启用 JIT 模式。"
+
+#: ../../howto/perf_profiling.rst:226
+msgid ""
+"Due to a bug in the ``perf`` tool, only ``perf`` versions higher than v6.8 "
+"will work with the JIT mode.  The fix was also backported to the v6.7.2 "
+"version of the tool."
+msgstr ""
+"由于 ``perf`` 工具的一个程序错误，只有 ``perf`` 版本号高于 v6.8 才能使用 JIT 模式。 修复也向下移植到了此工具的 "
+"v6.7.2 版。"
+
+#: ../../howto/perf_profiling.rst:230
+msgid ""
+"Note that when checking the version of the ``perf`` tool (which can be done "
+"by running ``perf version``) you must take into account that some distros "
+"add some custom version numbers including a ``-`` character.  This means "
+"that ``perf 6.7-3`` is not necessarily ``perf 6.7.3``."
+msgstr ""
+"请注意在检测 ``perf`` 工具的版本时（这可通过运行 ``perf version`` 来完成）你必须将某些发行版添加包括了 ``-`` "
+"字符的自定义版本号纳入考虑。 这意味着 ``perf 6.7-3`` 不一定等于 ``perf 6.7.3``。"
+
+#: ../../howto/perf_profiling.rst:235
+msgid ""
+"When using the perf JIT mode, you need an extra step before you can run "
+"``perf report``. You need to call the ``perf inject`` command to inject the "
+"JIT information into the ``perf.data`` file.::"
+msgstr ""
+"当使用 perf JIT 模式时，在你运行 ``perf report`` 之前你还需要一个额外的步骤。 你需要调用 ``perf inject`` "
+"命令来将 JIT 信息注入 ``perf.data`` 文件。::"
+
+#: ../../howto/perf_profiling.rst:243
+msgid "or using the environment variable::"
+msgstr "或者使用环境变量::"
+
+#: ../../howto/perf_profiling.rst:249
+msgid ""
+"``perf inject --jit`` command will read ``perf.data``, automatically pick up"
+" the perf dump file that Python creates (in ``/tmp/perf-$PID.dump``), and "
+"then create ``perf.jit.data`` which merges all the JIT information together."
+" It should also create a lot of ``jitted-XXXX-N.so`` files in the current "
+"directory which are ELF images for all the JIT trampolines that were created"
+" by Python."
+msgstr ""
+"``perf inject --jit`` 命令将读取 ``perf.data``，自动获取 Python 创建的 perf 转储文件（在 "
+"``/tmp/perf-$PID.dump`` 中），然后创建将所有 JIT 信息合并到一起的 ``perf.jit.data`` 文件。 "
+"它还会在当前目录下创建大量 ``jitted-XXXX-N.so`` 文件，它们是 Python 所创建的所有 JIT 中间数据的 ELF 映像。"
+
+#: ../../howto/perf_profiling.rst:257
+msgid ""
+"Notice that when using ``--call-graph dwarf`` the ``perf`` tool will take "
+"snapshots of the stack of the process being profiled and save the "
+"information in the ``perf.data`` file. By default the size of the stack dump"
+" is 8192 bytes but the user can change the size by passing the size after "
+"comma like ``--call-graph dwarf,4096``. The size of the stack dump is "
+"important because if the size is too small ``perf`` will not be able to "
+"unwind the stack and the output will be incomplete. On the other hand, if "
+"the size is too big, then ``perf`` won't be able to sample the process as "
+"frequently as it would like as the overhead will be higher."
+msgstr ""
