@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:44+0000\n"
+"POT-Creation-Date: 2024-05-24 14:49+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -796,7 +796,7 @@ msgid ""
 "by the platform."
 msgstr "需要注意的是 ``Lock`` 其实是一个工厂函数，返回平台支持的具体锁类中最有效的版本的实例。"
 
-#: ../../library/threading.rst:541 ../../library/threading.rst:621
+#: ../../library/threading.rst:541 ../../library/threading.rst:632
 msgid "Acquire a lock, blocking or non-blocking."
 msgstr "可以阻塞或非阻塞地获得锁。"
 
@@ -833,8 +833,8 @@ msgid ""
 " if not (for example if the *timeout* expired)."
 msgstr "如果成功获得锁，则返回 ``True``，否则返回 ``False`` (例如发生 *超时* 的时候)。"
 
-#: ../../library/threading.rst:559 ../../library/threading.rst:643
-#: ../../library/threading.rst:890
+#: ../../library/threading.rst:559 ../../library/threading.rst:670
+#: ../../library/threading.rst:917
 msgid "The *timeout* parameter is new."
 msgstr "新的 *timeout* 形参。"
 
@@ -861,7 +861,7 @@ msgstr "当锁被锁定，将它重置为未锁定，并返回。如果其他线
 msgid "When invoked on an unlocked lock, a :exc:`RuntimeError` is raised."
 msgstr "当在未锁定的锁上发起调用时，会引发 :exc:`RuntimeError`。"
 
-#: ../../library/threading.rst:578 ../../library/threading.rst:659
+#: ../../library/threading.rst:578 ../../library/threading.rst:686
 msgid "There is no return value."
 msgstr "没有返回值。"
 
@@ -886,26 +886,36 @@ msgstr ""
 
 #: ../../library/threading.rst:597
 msgid ""
-"To lock the lock, a thread calls its :meth:`~RLock.acquire` method; this "
-"returns once the thread owns the lock.  To unlock the lock, a thread calls "
-"its :meth:`~Lock.release` method. "
-":meth:`~Lock.acquire`/:meth:`~Lock.release` call pairs may be nested; only "
-"the final :meth:`~Lock.release` (the :meth:`~Lock.release` of the outermost "
-"pair) resets the lock to unlocked and allows another thread blocked in "
-":meth:`~Lock.acquire` to proceed."
+"Threads call a lock's :meth:`~RLock.acquire` method to lock it, and its "
+":meth:`~Lock.release` method to unlock it."
 msgstr ""
-"若要锁定锁，线程调用其 :meth:`~RLock.acquire` 方法；一旦线程拥有了锁，方法将返回。若要解锁，线程调用 "
-":meth:`~Lock.release` 方法。 :meth:`~Lock.acquire`/:meth:`~Lock.release` "
-"对可以嵌套；只有最终 :meth:`~Lock.release` (最外面一对的 :meth:`~Lock.release` ) "
-"将锁解开，才能让其他线程继续处理 :meth:`~Lock.acquire` 阻塞。"
 
-#: ../../library/threading.rst:604
+#: ../../library/threading.rst:602
 msgid ""
-"Reentrant locks also support the :ref:`context management protocol <with-"
-"locks>`."
-msgstr "递归锁也支持 :ref:`上下文管理协议 <with-locks>`。"
+"Reentrant locks support the :ref:`context management protocol <with-locks>`,"
+" so it is recommended to use :keyword:`with` instead of manually calling "
+":meth:`~RLock.acquire` and :meth:`~RLock.release` to handle acquiring and "
+"releasing the lock for a block of code."
+msgstr ""
 
-#: ../../library/threading.rst:609
+#: ../../library/threading.rst:607
+msgid ""
+"RLock's :meth:`~RLock.acquire`/:meth:`~RLock.release` call pairs may be "
+"nested, unlike Lock's :meth:`~Lock.acquire`/:meth:`~Lock.release`. Only the "
+"final :meth:`~RLock.release` (the :meth:`~Lock.release` of the outermost "
+"pair) resets the lock to an unlocked state and allows another thread blocked"
+" in :meth:`~RLock.acquire` to proceed."
+msgstr ""
+
+#: ../../library/threading.rst:613
+msgid ""
+":meth:`~RLock.acquire`/:meth:`~RLock.release` must be used in pairs: each "
+"acquire must have a release in the thread that has acquired the lock. "
+"Failing to call release as many times the lock has been acquired can lead to"
+" deadlock."
+msgstr ""
+
+#: ../../library/threading.rst:620
 msgid ""
 "This class implements reentrant lock objects.  A reentrant lock must be "
 "released by the thread that acquired it.  Once a thread has acquired a "
@@ -913,54 +923,75 @@ msgid ""
 "thread must release it once for each time it has acquired it."
 msgstr "此类实现了重入锁对象。重入锁必须由获取它的线程释放。一旦线程获得了重入锁，同一个线程再次获取它将不阻塞；线程必须在每次获取它时释放一次。"
 
-#: ../../library/threading.rst:614
+#: ../../library/threading.rst:625
 msgid ""
 "Note that ``RLock`` is actually a factory function which returns an instance"
 " of the most efficient version of the concrete RLock class that is supported"
 " by the platform."
 msgstr "需要注意的是 ``RLock`` 其实是一个工厂函数，返回平台支持的具体递归锁类中最有效的版本的实例。"
 
-#: ../../library/threading.rst:623
-msgid ""
-"When invoked without arguments: if this thread already owns the lock, "
-"increment the recursion level by one, and return immediately.  Otherwise, if"
-" another thread owns the lock, block until the lock is unlocked.  Once the "
-"lock is unlocked (not owned by any thread), then grab ownership, set the "
-"recursion level to one, and return.  If more than one thread is blocked "
-"waiting until the lock is unlocked, only one at a time will be able to grab "
-"ownership of the lock. There is no return value in this case."
+#: ../../library/threading.rst:636
+msgid ":ref:`Using RLock as a context manager <with-locks>`"
 msgstr ""
-"当无参数调用时： "
-"如果这个线程已经拥有锁，递归级别增加一，并立即返回。否则，如果其他线程拥有该锁，则阻塞至该锁解锁。一旦锁被解锁(不属于任何线程)，则抢夺所有权，设置递归等级为一，并返回。如果多个线程被阻塞，等待锁被解锁，一次只有一个线程能抢到锁的所有权。在这种情况下，没有返回值。"
 
-#: ../../library/threading.rst:631
+#: ../../library/threading.rst:637
 msgid ""
-"When invoked with the *blocking* argument set to ``True``, do the same thing"
-" as when called without arguments, and return ``True``."
-msgstr "当调用时，将 *blocking* 参数设置为 ``True``，所做的事情与调用时没有参数时相同，并返回 ``True``。"
-
-#: ../../library/threading.rst:634
-msgid ""
-"When invoked with the *blocking* argument set to ``False``, do not block.  "
-"If a call without an argument would block, return ``False`` immediately; "
-"otherwise, do the same thing as when called without arguments, and return "
-"``True``."
+"Recommended over manual :meth:`!acquire` and :meth:`release` calls whenever "
+"practical."
 msgstr ""
-"当 *blocking* 参数设置为 "
-"``False``时调用，不会阻塞。如果调用时没有参数而且会阻塞，立即返回``False``；否则，做与没有参数的调用相同的事情，并返回 "
-"``True``。"
 
-#: ../../library/threading.rst:638
+#: ../../library/threading.rst:641
 msgid ""
-"When invoked with the floating-point *timeout* argument set to a positive "
-"value, block for at most the number of seconds specified by *timeout* and as"
-" long as the lock cannot be acquired.  Return ``True`` if the lock has been "
-"acquired, ``False`` if the timeout has elapsed."
+"When invoked with the *blocking* argument set to ``True`` (the default):"
 msgstr ""
-"当浮点数参数 *timeout* 设置为正值时调用，最多阻断 *timeout* 指定的秒数，如果期间锁不能被获取。 如果锁已被获取返回 "
-"``True``，如果超时已过，则返回 ``False``。"
 
-#: ../../library/threading.rst:649
+#: ../../library/threading.rst:643 ../../library/threading.rst:655
+msgid "If no thread owns the lock, acquire the lock and return immediately."
+msgstr ""
+
+#: ../../library/threading.rst:645
+msgid ""
+"If another thread owns the lock, block until we are able to acquire lock, or"
+" *timeout*, if set to a positive float value."
+msgstr ""
+
+#: ../../library/threading.rst:648
+msgid ""
+"If the same thread owns the lock, acquire the lock again, and return "
+"immediately. This is the difference between :class:`Lock` and "
+":class:`!RLock`; :class:`Lock` handles this case the same as the previous, "
+"blocking until the lock can be acquired."
+msgstr ""
+
+#: ../../library/threading.rst:653
+msgid "When invoked with the *blocking* argument set to ``False``:"
+msgstr ""
+
+#: ../../library/threading.rst:657
+msgid "If another thread owns the lock, return immediately."
+msgstr ""
+
+#: ../../library/threading.rst:659
+msgid ""
+"If the same thread owns the lock, acquire the lock again and return "
+"immediately."
+msgstr ""
+
+#: ../../library/threading.rst:662
+msgid ""
+"In all cases, if the thread was able to acquire the lock, return ``True``. "
+"If the thread was unable to acquire the lock (i.e. if not blocking or the "
+"timeout was reached) return ``False``."
+msgstr ""
+
+#: ../../library/threading.rst:666
+msgid ""
+"If called multiple times, failing to call :meth:`~RLock.release` as many "
+"times may lead to deadlock. Consider using :class:`!RLock` as a context "
+"manager rather than calling acquire/release directly."
+msgstr ""
+
+#: ../../library/threading.rst:676
 msgid ""
 "Release a lock, decrementing the recursion level.  If after the decrement it"
 " is zero, reset the lock to unlocked (not owned by any thread), and if any "
@@ -970,18 +1001,18 @@ msgid ""
 msgstr ""
 "释放锁，自减递归等级。如果减到零，则将锁重置为非锁定状态(不被任何线程拥有)，并且，如果其他线程正被阻塞着等待锁被解锁，则仅允许其中一个线程继续。如果自减后，递归等级仍然不是零，则锁保持锁定，仍由调用线程拥有。"
 
-#: ../../library/threading.rst:655
+#: ../../library/threading.rst:682
 msgid ""
 "Only call this method when the calling thread owns the lock. A "
-":exc:`RuntimeError` is raised if this method is called when the lock is "
-"unlocked."
-msgstr "只有当前线程拥有锁才能调用这个方法。如果锁被释放后调用这个方法，会引起 :exc:`RuntimeError` 异常。"
+":exc:`RuntimeError` is raised if this method is called when the lock is not "
+"acquired."
+msgstr ""
 
-#: ../../library/threading.rst:665
+#: ../../library/threading.rst:692
 msgid "Condition Objects"
 msgstr "条件对象"
 
-#: ../../library/threading.rst:667
+#: ../../library/threading.rst:694
 msgid ""
 "A condition variable is always associated with some kind of lock; this can "
 "be passed in or one will be created by default.  Passing one in is useful "
@@ -990,7 +1021,7 @@ msgid ""
 msgstr ""
 "条件变量总是与某种类型的锁对象相关联，锁对象可以通过传入获得，或者在缺省的情况下自动创建。当多个条件变量需要共享同一个锁时，传入一个锁很有用。锁是条件对象的一部分，你不必单独地跟踪它。"
 
-#: ../../library/threading.rst:672
+#: ../../library/threading.rst:699
 msgid ""
 "A condition variable obeys the :ref:`context management protocol <with-"
 "locks>`: using the ``with`` statement acquires the associated lock for the "
@@ -1001,7 +1032,7 @@ msgstr ""
 "条件变量遵循 :ref:`上下文管理协议 <with-locks>` ：使用 ``with`` 语句会在它包围的代码块内获取关联的锁。  "
 ":meth:`~Condition.acquire` 和 :meth:`~Condition.release` 方法也能调用关联锁的相关方法。"
 
-#: ../../library/threading.rst:678
+#: ../../library/threading.rst:705
 msgid ""
 "Other methods must be called with the associated lock held.  The "
 ":meth:`~Condition.wait` method releases the lock, and then blocks until "
@@ -1013,7 +1044,7 @@ msgstr ""
 ":meth:`~Condition.notify` 方法或 :meth:`~Condition.notify_all` 方法唤醒它。一旦被唤醒， "
 ":meth:`~Condition.wait` 方法重新获取锁并返回。它也可以指定超时时间。"
 
-#: ../../library/threading.rst:684
+#: ../../library/threading.rst:711
 msgid ""
 "The :meth:`~Condition.notify` method wakes up one of the threads waiting for"
 " the condition variable, if any are waiting.  The "
@@ -1023,7 +1054,7 @@ msgstr ""
 " :meth:`~Condition.notify` 方法唤醒正在等待此条件变量的线程之中的一个。 "
 ":meth:`~Condition.notify_all` 方法唤醒正在等待此条件变量的所有线程。"
 
-#: ../../library/threading.rst:688
+#: ../../library/threading.rst:715
 msgid ""
 "Note: the :meth:`~Condition.notify` and :meth:`~Condition.notify_all` "
 "methods don't release the lock; this means that the thread or threads "
@@ -1036,7 +1067,7 @@ msgstr ""
 ":meth:`~Condition.notify` 方法或 :meth:`~Condition.notify_all` "
 "方法的线程最终放弃了锁的所有权后返回。"
 
-#: ../../library/threading.rst:694
+#: ../../library/threading.rst:721
 msgid ""
 "The typical programming style using condition variables uses the lock to "
 "synchronize access to some shared state; threads that are interested in a "
@@ -1053,7 +1084,7 @@ msgstr ""
 ":meth:`~Condition.notify` 方法或者 :meth:`~Condition.notify_all` "
 "方法。例如，下面的代码是一个通用的无限缓冲区容量的生产者-消费者情形："
 
-#: ../../library/threading.rst:714
+#: ../../library/threading.rst:741
 msgid ""
 "The ``while`` loop checking for the application's condition is necessary "
 "because :meth:`~Condition.wait` can return after an arbitrary long time, and"
@@ -1067,7 +1098,7 @@ msgstr ""
 "方法调用的那个条件可能已经不再成立。这是多线程编程所固有的问题。 "
 ":meth:`~Condition.wait_for` 方法可自动化条件检查，并简化超时计算。"
 
-#: ../../library/threading.rst:726
+#: ../../library/threading.rst:753
 msgid ""
 "To choose between :meth:`~Condition.notify` and "
 ":meth:`~Condition.notify_all`, consider whether one state change can be "
@@ -1078,14 +1109,14 @@ msgstr ""
 "选择 :meth:`~Condition.notify` 还是 :meth:`~Condition.notify_all` "
 "，取决于一次状态改变是只能被一个还是能被多个等待线程所用。例如在一个典型的生产者-消费者情形中，添加一个项目到缓冲区只需唤醒一个消费者线程。"
 
-#: ../../library/threading.rst:734
+#: ../../library/threading.rst:761
 msgid ""
 "This class implements condition variable objects.  A condition variable "
 "allows one or more threads to wait until they are notified by another "
 "thread."
 msgstr "实现条件变量对象的类。一个条件变量对象允许一个或多个线程在被其它线程所通知之前进行等待。"
 
-#: ../../library/threading.rst:737
+#: ../../library/threading.rst:764
 msgid ""
 "If the *lock* argument is given and not ``None``, it must be a :class:`Lock`"
 " or :class:`RLock` object, and it is used as the underlying lock.  "
@@ -1095,32 +1126,32 @@ msgstr ""
 "如果给出了非 ``None`` 的 *lock* 参数，则它必须为 :class:`Lock` 或者 :class:`RLock` "
 "对象，并且它将被用作底层锁。否则，将会创建新的 :class:`RLock` 对象，并将其用作底层锁。"
 
-#: ../../library/threading.rst:741 ../../library/threading.rst:865
-#: ../../library/threading.rst:911 ../../library/threading.rst:963
-#: ../../library/threading.rst:1031
+#: ../../library/threading.rst:768 ../../library/threading.rst:892
+#: ../../library/threading.rst:938 ../../library/threading.rst:990
+#: ../../library/threading.rst:1058
 msgid "changed from a factory function to a class."
 msgstr "从工厂函数变为类。"
 
-#: ../../library/threading.rst:746
+#: ../../library/threading.rst:773
 msgid ""
 "Acquire the underlying lock. This method calls the corresponding method on "
 "the underlying lock; the return value is whatever that method returns."
 msgstr "请求底层锁。此方法调用底层锁的相应方法，返回值是底层锁相应方法的返回值。"
 
-#: ../../library/threading.rst:751
+#: ../../library/threading.rst:778
 msgid ""
 "Release the underlying lock. This method calls the corresponding method on "
 "the underlying lock; there is no return value."
 msgstr "释放底层锁。此方法调用底层锁的相应方法。没有返回值。"
 
-#: ../../library/threading.rst:756
+#: ../../library/threading.rst:783
 msgid ""
 "Wait until notified or until a timeout occurs. If the calling thread has not"
 " acquired the lock when this method is called, a :exc:`RuntimeError` is "
 "raised."
 msgstr "等待直到被通知或发生超时。如果线程在调用此方法时没有获得锁，将会引发 :exc:`RuntimeError` 异常。"
 
-#: ../../library/threading.rst:760
+#: ../../library/threading.rst:787
 msgid ""
 "This method releases the underlying lock, and then blocks until it is "
 "awakened by a :meth:`notify` or :meth:`notify_all` call for the same "
@@ -1130,14 +1161,14 @@ msgstr ""
 "这个方法释放底层锁，然后阻塞，直到在另外一个线程中调用同一个条件变量的 :meth:`notify` 或 :meth:`notify_all` "
 "唤醒它，或者直到可选的超时发生。一旦被唤醒或者超时，它重新获得锁并返回。"
 
-#: ../../library/threading.rst:765
+#: ../../library/threading.rst:792
 msgid ""
 "When the *timeout* argument is present and not ``None``, it should be a "
 "floating point number specifying a timeout for the operation in seconds (or "
 "fractions thereof)."
 msgstr "当提供了 *timeout* 参数且不是 ``None`` 时，它应该是一个浮点数，代表操作的超时时间，以秒为单位（可以为小数）。"
 
-#: ../../library/threading.rst:769
+#: ../../library/threading.rst:796
 msgid ""
 "When the underlying lock is an :class:`RLock`, it is not released using its "
 ":meth:`release` method, since this may not actually unlock the lock when it "
@@ -1150,17 +1181,17 @@ msgstr ""
 "方法释放锁，因为当它被递归多次获取时，实际上可能无法解锁。相反，使用了 :class:`RLock` 类的内部接口，即使多次递归获取它也能解锁它。 "
 "然后，在重新获取锁时，使用另一个内部接口来恢复递归级别。"
 
-#: ../../library/threading.rst:777
+#: ../../library/threading.rst:804
 msgid ""
 "The return value is ``True`` unless a given *timeout* expired, in which case"
 " it is ``False``."
 msgstr "返回 ``True`` ，除非提供的 *timeout* 过期，这种情况下返回 ``False``。"
 
-#: ../../library/threading.rst:780 ../../library/threading.rst:996
+#: ../../library/threading.rst:807 ../../library/threading.rst:1023
 msgid "Previously, the method always returned ``None``."
 msgstr "在此之前，方法总是返回 ``None``。"
 
-#: ../../library/threading.rst:785
+#: ../../library/threading.rst:812
 msgid ""
 "Wait until a condition evaluates to true.  *predicate* should be a callable "
 "which result will be interpreted as a boolean value. A *timeout* may be "
@@ -1169,7 +1200,7 @@ msgstr ""
 "等待，直到条件计算为真。 *predicate* 应该是一个可调用对象而且它的返回值可被解释为一个布尔值。可以提供 *timeout* "
 "参数给出最大等待时间。"
 
-#: ../../library/threading.rst:789
+#: ../../library/threading.rst:816
 msgid ""
 "This utility method may call :meth:`wait` repeatedly until the predicate is "
 "satisfied, or until a timeout occurs. The return value is the last return "
@@ -1179,33 +1210,33 @@ msgstr ""
 "这个实用方法会重复地调用 :meth:`wait` 直到满足判断式或者发生超时。返回值是判断式最后一个返回值，而且如果方法发生超时会返回 "
 "``False`` 。"
 
-#: ../../library/threading.rst:794
+#: ../../library/threading.rst:821
 msgid ""
 "Ignoring the timeout feature, calling this method is roughly equivalent to "
 "writing::"
 msgstr "忽略超时功能，调用此方法大致相当于编写::"
 
-#: ../../library/threading.rst:800
+#: ../../library/threading.rst:827
 msgid ""
 "Therefore, the same rules apply as with :meth:`wait`: The lock must be held "
 "when called and is re-acquired on return.  The predicate is evaluated with "
 "the lock held."
 msgstr "因此，规则同样适用于 :meth:`wait` ：锁必须在被调用时保持获取，并在返回时重新获取。 随着锁定执行判断式。"
 
-#: ../../library/threading.rst:808
+#: ../../library/threading.rst:835
 msgid ""
 "By default, wake up one thread waiting on this condition, if any.  If the "
 "calling thread has not acquired the lock when this method is called, a "
 ":exc:`RuntimeError` is raised."
 msgstr "默认唤醒一个等待这个条件的线程。如果调用线程在没有获得锁的情况下调用这个方法，会引发 :exc:`RuntimeError` 异常。"
 
-#: ../../library/threading.rst:812
+#: ../../library/threading.rst:839
 msgid ""
 "This method wakes up at most *n* of the threads waiting for the condition "
 "variable; it is a no-op if no threads are waiting."
 msgstr "这个方法唤醒最多 *n* 个正在等待这个条件变量的线程；如果没有线程在等待，这是一个空操作。"
 
-#: ../../library/threading.rst:815
+#: ../../library/threading.rst:842
 msgid ""
 "The current implementation wakes up exactly *n* threads, if at least *n* "
 "threads are waiting.  However, it's not safe to rely on this behavior. A "
@@ -1214,7 +1245,7 @@ msgid ""
 msgstr ""
 "当前实现中，如果至少有 *n* 个线程正在等待，准确唤醒 *n* 个线程。但是依赖这个行为并不安全。未来，优化的实现有时会唤醒超过 *n* 个线程。"
 
-#: ../../library/threading.rst:820
+#: ../../library/threading.rst:847
 msgid ""
 "Note: an awakened thread does not actually return from its :meth:`wait` call"
 " until it can reacquire the lock.  Since :meth:`notify` does not release the"
@@ -1223,7 +1254,7 @@ msgstr ""
 "注意：被唤醒的线程并没有真正恢复到它调用的 :meth:`wait` ，直到它可以重新获得锁。 因为 :meth:`notify` "
 "不释放锁，其调用者才应该这样做。"
 
-#: ../../library/threading.rst:826
+#: ../../library/threading.rst:853
 msgid ""
 "Wake up all threads waiting on this condition.  This method acts like "
 ":meth:`notify`, but wakes up all waiting threads instead of one. If the "
@@ -1233,15 +1264,15 @@ msgstr ""
 "唤醒所有正在等待这个条件的线程。这个方法行为与 :meth:`notify` "
 "相似，但并不只唤醒单一线程，而是唤醒所有等待线程。如果调用线程在调用这个方法时没有获得锁，会引发 :exc:`RuntimeError` 异常。"
 
-#: ../../library/threading.rst:831
+#: ../../library/threading.rst:858
 msgid "The method ``notifyAll`` is a deprecated alias for this method."
 msgstr "``notifyAll`` 方法是此方法的已弃用别名。"
 
-#: ../../library/threading.rst:837
+#: ../../library/threading.rst:864
 msgid "Semaphore Objects"
 msgstr "信号量对象"
 
-#: ../../library/threading.rst:839
+#: ../../library/threading.rst:866
 msgid ""
 "This is one of the oldest synchronization primitives in the history of "
 "computer science, invented by the early Dutch computer scientist Edsger W. "
@@ -1251,7 +1282,7 @@ msgstr ""
 "这是计算机科学史上最古老的同步原语之一，早期的荷兰科学家 Edsger W. Dijkstra 发明了它。（他使用名称 ``P()`` 和 "
 "``V()`` 而不是 :meth:`~Semaphore.acquire` 和 :meth:`~Semaphore.release` ）。"
 
-#: ../../library/threading.rst:844
+#: ../../library/threading.rst:871
 msgid ""
 "A semaphore manages an internal counter which is decremented by each "
 ":meth:`~Semaphore.acquire` call and incremented by each "
@@ -1264,12 +1295,12 @@ msgstr ""
 ":meth:`~Semaphore.acquire` 方法发现计数器为零时，将会阻塞，直到其它线程调用 "
 ":meth:`~Semaphore.release` 方法。"
 
-#: ../../library/threading.rst:850
+#: ../../library/threading.rst:877
 msgid ""
 "Semaphores also support the :ref:`context management protocol <with-locks>`."
 msgstr "信号量对象也支持 :ref:`上下文管理协议 <with-locks>` 。"
 
-#: ../../library/threading.rst:855
+#: ../../library/threading.rst:882
 msgid ""
 "This class implements semaphore objects.  A semaphore manages an atomic "
 "counter representing the number of :meth:`release` calls minus the number of"
@@ -1281,7 +1312,7 @@ msgstr ""
 "的调用次数再加上一个初始值。如果需要， :meth:`acquire` 方法将会阻塞直到可以返回而不会使得计数器变成负数。在没有显式给出 *value*"
 " 的值时，默认为1。"
 
-#: ../../library/threading.rst:861
+#: ../../library/threading.rst:888
 msgid ""
 "The optional argument gives the initial *value* for the internal counter; it"
 " defaults to ``1``. If the *value* given is less than 0, :exc:`ValueError` "
@@ -1290,21 +1321,21 @@ msgstr ""
 "可选参数 *value* 赋予内部计数器初始值，默认值为 ``1`` 。如果 *value* 被赋予小于0的值，将会引发 "
 ":exc:`ValueError` 异常。"
 
-#: ../../library/threading.rst:870
+#: ../../library/threading.rst:897
 msgid "Acquire a semaphore."
 msgstr "获取一个信号量。"
 
-#: ../../library/threading.rst:872
+#: ../../library/threading.rst:899
 msgid "When invoked without arguments:"
 msgstr "在不带参数的情况下调用时："
 
-#: ../../library/threading.rst:874
+#: ../../library/threading.rst:901
 msgid ""
 "If the internal counter is larger than zero on entry, decrement it by one "
 "and return ``True`` immediately."
 msgstr "如果在进入时内部计数器的值大于零，则将其减一并立即返回 ``True``。"
 
-#: ../../library/threading.rst:876
+#: ../../library/threading.rst:903
 msgid ""
 "If the internal counter is zero on entry, block until awoken by a call to "
 ":meth:`~Semaphore.release`.  Once awoken (and the counter is greater than "
@@ -1316,7 +1347,7 @@ msgstr ""
 "0），则将计数器减 1 并返回 ``True``。 每次对 :meth:`~Semaphore.release` 的调用将只唤醒一个线程。 "
 "线程被唤醒的次序是不可确定的。"
 
-#: ../../library/threading.rst:882
+#: ../../library/threading.rst:909
 msgid ""
 "When invoked with *blocking* set to ``False``, do not block.  If a call "
 "without an argument would block, return ``False`` immediately; otherwise, do"
@@ -1325,7 +1356,7 @@ msgstr ""
 "当 *blocking* 设置为 ``False`` 时调用，不会阻塞。 如果没有参数的调用会阻塞，立即返回 "
 "``False``；否则，做与无参数调用相同的事情时返回 ``True``。"
 
-#: ../../library/threading.rst:886
+#: ../../library/threading.rst:913
 msgid ""
 "When invoked with a *timeout* other than ``None``, it will block for at most"
 " *timeout* seconds.  If acquire does not complete successfully in that "
@@ -1334,18 +1365,18 @@ msgstr ""
 "当发起调用时如果 *timeout* 不为 ``None``，则它将阻塞最多 *timeout* 秒。 请求在此时段时未能成功完成获取则将返回 "
 "``False``。 在其他情况下返回 ``True``。"
 
-#: ../../library/threading.rst:895
+#: ../../library/threading.rst:922
 msgid ""
 "Release a semaphore, incrementing the internal counter by *n*.  When it was "
 "zero on entry and other threads are waiting for it to become larger than "
 "zero again, wake up *n* of those threads."
 msgstr "释放一个信号量，将内部计数器的值增加 *n*。 当进入时值为零且有其他线程正在等待它再次变为大于零时，则唤醒那 *n* 个线程。"
 
-#: ../../library/threading.rst:899
+#: ../../library/threading.rst:926
 msgid "Added the *n* parameter to release multiple waiting threads at once."
 msgstr "增加了 *n* 形参以一次性释放多个等待线程。"
 
-#: ../../library/threading.rst:905
+#: ../../library/threading.rst:932
 msgid ""
 "Class implementing bounded semaphore objects.  A bounded semaphore checks to"
 " make sure its current value doesn't exceed its initial value.  If it does, "
@@ -1356,11 +1387,11 @@ msgstr ""
 "该类实现有界信号量。有界信号量通过检查以确保它当前的值不会超过初始值。如果超过了初始值，将会引发 :exc:`ValueError` "
 "异常。在大多情况下，信号量用于保护数量有限的资源。如果信号量被释放的次数过多，则表明出现了错误。没有指定时， *value* 的值默认为1。"
 
-#: ../../library/threading.rst:918
+#: ../../library/threading.rst:945
 msgid ":class:`Semaphore` Example"
 msgstr ":class:`Semaphore` 例子"
 
-#: ../../library/threading.rst:920
+#: ../../library/threading.rst:947
 msgid ""
 "Semaphores are often used to guard resources with limited capacity, for "
 "example, a database server.  In any situation where the size of the resource"
@@ -1369,30 +1400,30 @@ msgid ""
 msgstr ""
 "信号量通常用于保护数量有限的资源，例如数据库服务器。在资源数量固定的任何情况下，都应该使用有界信号量。在生成任何工作线程前，应该在主线程中初始化信号量。"
 
-#: ../../library/threading.rst:929
+#: ../../library/threading.rst:956
 msgid ""
 "Once spawned, worker threads call the semaphore's acquire and release "
 "methods when they need to connect to the server::"
 msgstr "工作线程生成后，当需要连接服务器时，这些线程将调用信号量的 acquire 和 release 方法："
 
-#: ../../library/threading.rst:939
+#: ../../library/threading.rst:966
 msgid ""
 "The use of a bounded semaphore reduces the chance that a programming error "
 "which causes the semaphore to be released more than it's acquired will go "
 "undetected."
 msgstr "使用有界信号量能减少这种编程错误：信号量的释放次数多于其请求次数。"
 
-#: ../../library/threading.rst:946
+#: ../../library/threading.rst:973
 msgid "Event Objects"
 msgstr "事件对象"
 
-#: ../../library/threading.rst:948
+#: ../../library/threading.rst:975
 msgid ""
 "This is one of the simplest mechanisms for communication between threads: "
 "one thread signals an event and other threads wait for it."
 msgstr "这是线程之间通信的最简单机制之一：一个线程发出事件信号，而其他线程等待该信号。"
 
-#: ../../library/threading.rst:951
+#: ../../library/threading.rst:978
 msgid ""
 "An event object manages an internal flag that can be set to true with the "
 ":meth:`~Event.set` method and reset to false with the :meth:`~Event.clear` "
@@ -1401,7 +1432,7 @@ msgstr ""
 "一个事件对象管理一个内部标识，调用 :meth:`~Event.set` 方法可将其设置为 true ，调用  :meth:`~Event.clear`"
 " 方法可将其设置为 false ，调用 :meth:`~Event.wait` 方法将进入阻塞直到标识为 true 。"
 
-#: ../../library/threading.rst:958
+#: ../../library/threading.rst:985
 msgid ""
 "Class implementing event objects.  An event manages a flag that can be set "
 "to true with the :meth:`~Event.set` method and reset to false with the "
@@ -1412,15 +1443,15 @@ msgstr ""
 ":meth:`~Event.clear` 方法可将其设置为 false 。调用 :meth:`~Event.wait` "
 "方法将进入阻塞直到标识为true。这个标识初始时为 false 。"
 
-#: ../../library/threading.rst:968
+#: ../../library/threading.rst:995
 msgid "Return ``True`` if and only if the internal flag is true."
 msgstr "当且仅当内部标识为 true 时返回 ``True`` 。"
 
-#: ../../library/threading.rst:970
+#: ../../library/threading.rst:997
 msgid "The method ``isSet`` is a deprecated alias for this method."
 msgstr "``isSet`` 方法是此方法的已弃用别名。"
 
-#: ../../library/threading.rst:974
+#: ../../library/threading.rst:1001
 msgid ""
 "Set the internal flag to true. All threads waiting for it to become true are"
 " awakened. Threads that call :meth:`wait` once the flag is true will not "
@@ -1428,7 +1459,7 @@ msgid ""
 msgstr ""
 "将内部标识设置为 true 。所有正在等待这个事件的线程将被唤醒。当标识为 true 时，调用 :meth:`wait` 方法的线程不会被被阻塞。"
 
-#: ../../library/threading.rst:980
+#: ../../library/threading.rst:1007
 msgid ""
 "Reset the internal flag to false. Subsequently, threads calling :meth:`wait`"
 " will block until :meth:`.set` is called to set the internal flag to true "
@@ -1437,7 +1468,7 @@ msgstr ""
 "将内部标识设置为 false 。之后调用 :meth:`wait` 方法的线程将会被阻塞，直到调用 :meth:`.set` 方法将内部标识再次设置为 "
 "true 。"
 
-#: ../../library/threading.rst:986
+#: ../../library/threading.rst:1013
 msgid ""
 "Block as long as the internal flag is false and the timeout, if given, has "
 "not expired. The return value represents the reason that this blocking "
@@ -1448,18 +1479,18 @@ msgstr ""
 "只要内部旗标为为假值且未超出所给出的 timeout 值就保持阻塞。 返回值表示阻塞方法返回的原因；如果返回是因为内部旗标被设为真值则为 "
 "``True``，如果给出了 timeout 而内部旗标在给定的等待时间内没有变成真值则为 ``False``。"
 
-#: ../../library/threading.rst:992
+#: ../../library/threading.rst:1019
 msgid ""
 "When the timeout argument is present and not ``None``, it should be a "
 "floating point number specifying a timeout for the operation in seconds, or "
 "fractions thereof."
 msgstr "当提供了 timeout 参数且不为 ``None`` 时，它应当为一个指定操作的超时限制秒数的浮点值，也可以为分数。"
 
-#: ../../library/threading.rst:1003
+#: ../../library/threading.rst:1030
 msgid "Timer Objects"
 msgstr "定时器对象"
 
-#: ../../library/threading.rst:1005
+#: ../../library/threading.rst:1032
 msgid ""
 "This class represents an action that should be run only after a certain "
 "amount of time has passed --- a timer.  :class:`Timer` is a subclass of "
@@ -1469,7 +1500,7 @@ msgstr ""
 "此类表示一个操作应该在等待一定的时间之后运行 --- 相当于一个定时器。 :class:`Timer` 类是 :class:`Thread` "
 "类的子类，因此可以像一个自定义线程一样工作。"
 
-#: ../../library/threading.rst:1009
+#: ../../library/threading.rst:1036
 msgid ""
 "Timers are started, as with threads, by calling their :meth:`Timer.start "
 "<Thread.start>` method.  The timer can be stopped (before its action has "
@@ -1480,11 +1511,11 @@ msgstr ""
 "与线程一样，定时器也是通过调用其 :meth:`Timer.start <Thread.start>` 方法来启动的。 定时器可以通过调用 "
 ":meth:`~Timer.cancel` 方法来停止（在其动作开始之前）。 定时器在执行其行动之前要等待的时间间隔可能与用户指定的时间间隔不完全相同。"
 
-#: ../../library/threading.rst:1015
+#: ../../library/threading.rst:1042
 msgid "For example::"
 msgstr "例如："
 
-#: ../../library/threading.rst:1026
+#: ../../library/threading.rst:1053
 msgid ""
 "Create a timer that will run *function* with arguments *args* and  keyword "
 "arguments *kwargs*, after *interval* seconds have passed. If *args* is "
@@ -1494,17 +1525,17 @@ msgstr ""
 "创建一个定时器，在经过 *interval* 秒的间隔事件后，将会用参数 *args* 和关键字参数 *kwargs* 调用 *function*。如果"
 " *args* 为 ``None`` （默认值），则会使用一个空列表。如果 *kwargs* 为 ``None`` （默认值），则会使用一个空字典。"
 
-#: ../../library/threading.rst:1036
+#: ../../library/threading.rst:1063
 msgid ""
 "Stop the timer, and cancel the execution of the timer's action.  This will "
 "only work if the timer is still in its waiting stage."
 msgstr "停止定时器并取消执行计时器将要执行的操作。仅当计时器仍处于等待状态时有效。"
 
-#: ../../library/threading.rst:1041
+#: ../../library/threading.rst:1068
 msgid "Barrier Objects"
 msgstr "栅栏对象"
 
-#: ../../library/threading.rst:1045
+#: ../../library/threading.rst:1072
 msgid ""
 "This class provides a simple synchronization primitive for use by a fixed "
 "number of threads that need to wait for each other.  Each of the threads "
@@ -1515,19 +1546,19 @@ msgstr ""
 "栅栏类提供一个简单的同步原语，用于应对固定数量的线程需要彼此相互等待的情况。线程调用 :meth:`~Barrier.wait` "
 "方法后将阻塞，直到所有线程都调用了 :meth:`~Barrier.wait` 方法。此时所有线程将被同时释放。"
 
-#: ../../library/threading.rst:1051
+#: ../../library/threading.rst:1078
 msgid ""
 "The barrier can be reused any number of times for the same number of "
 "threads."
 msgstr "栅栏对象可以被多次使用，但进程的数量不能改变。"
 
-#: ../../library/threading.rst:1053
+#: ../../library/threading.rst:1080
 msgid ""
 "As an example, here is a simple way to synchronize a client and server "
 "thread::"
 msgstr "这是一个使用简便的方法实现客户端进程与服务端进程同步的例子："
 
-#: ../../library/threading.rst:1073
+#: ../../library/threading.rst:1100
 msgid ""
 "Create a barrier object for *parties* number of threads.  An *action*, when "
 "provided, is a callable to be called by one of the threads when they are "
@@ -1537,7 +1568,7 @@ msgstr ""
 "创建一个需要 *parties* 个线程的栅栏对象。如果提供了可调用的 *action* 参数，它会在所有线程被释放时在其中一个线程中自动调用。 "
 "*timeout* 是默认的超时时间，如果没有在 :meth:`wait` 方法中指定超时时间的话。"
 
-#: ../../library/threading.rst:1080
+#: ../../library/threading.rst:1107
 msgid ""
 "Pass the barrier.  When all the threads party to the barrier have called "
 "this function, they are all released simultaneously.  If a *timeout* is "
@@ -1547,7 +1578,7 @@ msgstr ""
 "冲出栅栏。当栅栏中所有线程都已经调用了这个函数，它们将同时被释放。如果提供了 *timeout* 参数，这里的 *timeout* "
 "参数优先于创建栅栏对象时提供的 *timeout* 参数。"
 
-#: ../../library/threading.rst:1085
+#: ../../library/threading.rst:1112
 msgid ""
 "The return value is an integer in the range 0 to *parties* -- 1, different "
 "for each thread.  This can be used to select a thread to do some special "
@@ -1556,37 +1587,37 @@ msgstr ""
 "函数返回值是一个整数，取值范围在0到 *parties* -- "
 "1，在每个线程中的返回值不相同。可用于从所有线程中选择唯一的一个线程执行一些特别的工作。例如："
 
-#: ../../library/threading.rst:1094
+#: ../../library/threading.rst:1121
 msgid ""
 "If an *action* was provided to the constructor, one of the threads will have"
 " called it prior to being released.  Should this call raise an error, the "
 "barrier is put into the broken state."
 msgstr "如果创建栅栏对象时在构造函数中提供了 *action* 参数，它将在其中一个线程释放前被调用。如果此调用引发了异常，栅栏对象将进入损坏态。"
 
-#: ../../library/threading.rst:1098
+#: ../../library/threading.rst:1125
 msgid "If the call times out, the barrier is put into the broken state."
 msgstr "如果发生了超时，栅栏对象将进入破损态。"
 
-#: ../../library/threading.rst:1100
+#: ../../library/threading.rst:1127
 msgid ""
 "This method may raise a :class:`BrokenBarrierError` exception if the barrier"
 " is broken or reset while a thread is waiting."
 msgstr "如果栅栏对象进入破损态，或重置栅栏时仍有线程等待释放，将会引发 :class:`BrokenBarrierError` 异常。"
 
-#: ../../library/threading.rst:1105
+#: ../../library/threading.rst:1132
 msgid ""
 "Return the barrier to the default, empty state.  Any threads waiting on it "
 "will receive the :class:`BrokenBarrierError` exception."
 msgstr "重置栅栏为默认的初始态。如果栅栏中仍有线程等待释放，这些线程将会收到 :class:`BrokenBarrierError` 异常。"
 
-#: ../../library/threading.rst:1108
+#: ../../library/threading.rst:1135
 msgid ""
 "Note that using this function may require some external synchronization if "
 "there are other threads whose state is unknown.  If a barrier is broken it "
 "may be better to just leave it and create a new one."
 msgstr "请注意使用此函数时，如果存在状态未知的其他线程，则可能需要执行外部同步。 如果栅栏已损坏则最好将其废弃并新建一个。"
 
-#: ../../library/threading.rst:1114
+#: ../../library/threading.rst:1141
 msgid ""
 "Put the barrier into a broken state.  This causes any active or future calls"
 " to :meth:`wait` to fail with the :class:`BrokenBarrierError`.  Use this for"
@@ -1596,37 +1627,37 @@ msgstr ""
 "使栅栏处于损坏状态。 这将导致任何现有和未来对 :meth:`wait` 的调用失败并引发 :class:`BrokenBarrierError`。 "
 "例如可以在需要中止某个线程时使用此方法，以避免应用程序的死锁。"
 
-#: ../../library/threading.rst:1119
+#: ../../library/threading.rst:1146
 msgid ""
 "It may be preferable to simply create the barrier with a sensible *timeout* "
 "value to automatically guard against one of the threads going awry."
 msgstr "更好的方式是：创建栅栏时提供一个合理的超时时间，来自动避免某个线程出错。"
 
-#: ../../library/threading.rst:1125
+#: ../../library/threading.rst:1152
 msgid "The number of threads required to pass the barrier."
 msgstr "冲出栅栏所需要的线程数量。"
 
-#: ../../library/threading.rst:1129
+#: ../../library/threading.rst:1156
 msgid "The number of threads currently waiting in the barrier."
 msgstr "当前时刻正在栅栏中阻塞的线程数量。"
 
-#: ../../library/threading.rst:1133
+#: ../../library/threading.rst:1160
 msgid "A boolean that is ``True`` if the barrier is in the broken state."
 msgstr "一个布尔值，值为 ``True`` 表明栅栏为破损态。"
 
-#: ../../library/threading.rst:1138
+#: ../../library/threading.rst:1165
 msgid ""
 "This exception, a subclass of :exc:`RuntimeError`, is raised when the "
 ":class:`Barrier` object is reset or broken."
 msgstr ""
 "异常类，是 :exc:`RuntimeError` 异常的子类，在 :class:`Barrier` 对象重置时仍有线程阻塞时和对象进入破损态时被引发。"
 
-#: ../../library/threading.rst:1145
+#: ../../library/threading.rst:1172
 msgid ""
 "Using locks, conditions, and semaphores in the :keyword:`!with` statement"
 msgstr "在 :keyword:`!with` 语句中使用锁、条件和信号量"
 
-#: ../../library/threading.rst:1147
+#: ../../library/threading.rst:1174
 msgid ""
 "All of the objects provided by this module that have ``acquire`` and "
 "``release`` methods can be used as context managers for a :keyword:`with` "
@@ -1637,11 +1668,11 @@ msgstr ""
 "本模块提供的所有具有 ``acquire`` 和 ``release`` 方法的对象都可用作 :keyword:`with` 语句的上下文管理器。 "
 "进入语句块时将调用 ``acquire`` 方法，退出语句块时将调用 ``release`` 方法。 因此，下面的代码段::"
 
-#: ../../library/threading.rst:1156
+#: ../../library/threading.rst:1183
 msgid "is equivalent to::"
 msgstr "相当于::"
 
-#: ../../library/threading.rst:1164
+#: ../../library/threading.rst:1191
 msgid ""
 "Currently, :class:`Lock`, :class:`RLock`, :class:`Condition`, "
 ":class:`Semaphore`, and :class:`BoundedSemaphore` objects may be used as "
