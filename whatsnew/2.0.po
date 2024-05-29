@@ -1139,6 +1139,11 @@ msgid ""
 "represented exactly in binary, so ``repr(8.1)`` is ``'8.0999999999999996'``,"
 " while str(8.1) is ``'8.1'``."
 msgstr ""
+"对浮点数执行 :func:`repr` 现在会使用不同的格式化精度，而不是 :func:`str`。 :func:`repr` 使用 ``%.17g``"
+" 格式字符串来调用 C 的 :func:`!sprintf`，而 :func:`str` 仍然使用 "
+"``%.12g``。其效果是，对于某些数字，:func:`repr` 可能比 :func:`str` 显示更多的小数位。 例如，数字 8.1 "
+"无法精确地用二进制表示，所以 ``repr(8.1)`` 是 ``'8.0999999999999996'``，而 str(8.1) 是 "
+"``'8.1'``。"
 
 #: ../../whatsnew/2.0.rst:724
 msgid ""
@@ -1148,6 +1153,8 @@ msgid ""
 "standard exceptions was translated from Python to a built-in C module, "
 "written by Barry Warsaw and Fredrik Lundh."
 msgstr ""
+"``-X`` 命令行选项已被移除，该选项会将所有标准异常转换为字符串而不是类；现在标准异常将始终是类。包含标准异常的 "
+":mod:`!exceptions` 模块已从Python翻译为内置C模块，由Barry Warsaw和Fredrik Lundh编写。"
 
 #: ../../whatsnew/2.0.rst:740
 msgid "Extending/Embedding Changes"
@@ -1160,6 +1167,8 @@ msgid ""
 "larger application.  If you aren't dealing with Python's C API, you can "
 "safely skip this section."
 msgstr ""
+"有些更改是在底层进行的，仅对编写 C 扩展模块或在更大的应用中嵌入 Python 解释器的人有价值。 如果你不处理 Python 的 C "
+"API，可以安全地跳过这一节。"
 
 #: ../../whatsnew/2.0.rst:747
 msgid ""
@@ -1169,6 +1178,9 @@ msgid ""
 "built for Python 1.5.x due to how Windows DLLs work, so Python will raise an"
 " exception and the import will fail."
 msgstr ""
+" Python C API 的版本号已增加，因此为 1.5.2 编译的 C 扩展必须重新编译才能与 2.0 一起工作。 在 Windows 上，由于 "
+"Windows DLL 的工作方式，Python 2.0 无法导入为 Python 1.5.x 构建的第三方扩展，因此 Python "
+"会引发异常并造成导入失败。"
 
 #: ../../whatsnew/2.0.rst:753
 msgid ""
@@ -1178,6 +1190,10 @@ msgid ""
 "remember to write code such as ``if type(obj) == myExtensionClass``, but can"
 " use the more natural ``if isinstance(obj, myExtensionClass)``."
 msgstr ""
+"使用 Jim Fulton 的 ExtensionClass 模块的用户将很高兴地发现，已经添加了钩子以支持 "
+"ExtensionClasses，因此现在支持 :func:`isinstance` 和 :func:`issubclass`。 "
+"这意味着你不再需要记住编写类似 ``if type(obj) == myExtensionClass`` 这样的代码，而可以使用更自然的 ``if "
+"isinstance(obj, myExtensionClass)``。"
 
 #: ../../whatsnew/2.0.rst:759
 msgid ""
@@ -1189,6 +1205,10 @@ msgid ""
 "Include/ directory that held various portability hacks; they've been merged "
 "into a single file, :file:`Include/pyport.h`."
 msgstr ""
+":file:`Python/importdl.c` 文件，它充满了用于支持在许多不同平台上动态加载的 #ifdef，已被 Greg Stein "
+"清理和重组。现在 :file:`importdl.c` 非常小，平台特定的代码已被移入一组特定的 "
+":file:`Python/dynload_\\*.c` 文件中。 另一个清理工作是：Include/ 目录中有许多包含各种可移植性修改的 "
+":file:`my\\*.h` 文件；它们已被合并到一个文件中，即 :file:`Include/pyport.h`。"
 
 #: ../../whatsnew/2.0.rst:767
 msgid ""
@@ -1199,6 +1219,10 @@ msgid ""
 "discussions during which the interface was hammered out, see the web "
 "archives of the 'patches' and 'python-dev' lists at python.org."
 msgstr ""
+"Vladimir Marangozov 期待已久的 malloc 重组已经完成，使得Python解释器可以轻松使用自定义分配器，而不是C的标准 "
+":c:func:`malloc`。 有关文档，请阅读 :file:`Include/pymem.h` 和 "
+":file:`Include/objimpl.h` 中的注释。 有关界面敲定期间的详细讨论，请参阅 python.org 上的 'patches' 和 "
+"'python-dev' 列表的网络存档。"
 
 #: ../../whatsnew/2.0.rst:774
 msgid ""
@@ -1207,6 +1231,8 @@ msgid ""
 "Macintosh.  Threading support using the user-space GNU ``pth`` library was "
 "also contributed."
 msgstr ""
+"最新版本的 MacOS GUSI 开发环境支持 POSIX 线程。 因此，现在 Python 的 POSIX 线程支持在 Macintosh "
+"上也可以使用。 还贡献了使用用户空间 GNU ``pth`` 库的线程支持。"
 
 #: ../../whatsnew/2.0.rst:779
 msgid ""
@@ -1217,6 +1243,9 @@ msgid ""
 "slow as an unthreaded version; with the 2.0 changes, the difference is only "
 "10%.  These improvements were contributed by Yakov Markovitch."
 msgstr ""
+"Windows 上的线程支持也得到了增强。 Windows "
+"支持的线程锁在发生争用时才使用内核对象；在常见的没有争用的情况下，他们使用简单得多的函数，这些函数快一个数量级。Python 1.5.2 在 NT "
+"上的线程版本比无线程版本慢两倍；有了 2.0 的改进，差异仅为 10%。 这些改进由 Yakov Markovitch 提供。"
 
 #: ../../whatsnew/2.0.rst:786
 msgid ""
@@ -1224,6 +1253,8 @@ msgid ""
 " requires an ANSI C compiler, and can no longer be done using a compiler "
 "that only supports K&R C."
 msgstr ""
+"Python 2.0 的源代码目前只用 ANSI C 原型，所以现在编译 Python 需要一个 ANSI C 的编译器，而不能通过仅使用支持 K&R "
+"C 的编译器完成。"
 
 #: ../../whatsnew/2.0.rst:790
 msgid ""
@@ -1233,6 +1264,9 @@ msgid ""
 "people who are generating Python code would run into this limit.  A patch by"
 " Charles G. Waldman raises the limit from ``2**16`` to ``2**32``."
 msgstr ""
+"之前，Python 虚拟机在其字节码中使用 16 位数字，限制了源文件的大小。 特别是，这影响了 Python "
+"源代码中字面量列表和字典的最大大小；偶尔会有人在生成 Python 代码时遇到这个限制。 Charles G. Waldman 的补丁将这个限制从 "
+"``2**16`` 提高到 ``2**32``。"
 
 #: ../../whatsnew/2.0.rst:796
 msgid ""
@@ -1244,6 +1278,11 @@ msgid ""
 "and a third argument for the value to be assigned to the name.  This third "
 "argument is, respectively, a Python object, a C long, or a C string."
 msgstr ""
+"添加了三个新的便捷函数，旨在模块初始化时将常量添加到模块的字典中: "
+":c:func:`PyModule_AddObject`、:c:func:`PyModule_AddIntConstant` 和 "
+":c:func:`PyModule_AddStringConstant`。 "
+"每个函数都接收一个模块对象、一个以空字符结尾的包含要添加的名称的C字符串，以及一个第三个参数用于指定要赋值的值。 第三个参数分别是一个 Python "
+"对象、一个 C 长整型或一个 C 字符串。"
 
 #: ../../whatsnew/2.0.rst:804
 msgid ""
@@ -1251,6 +1290,8 @@ msgid ""
 ":c:func:`PyOS_getsig` gets a signal handler and :c:func:`PyOS_setsig` will "
 "set a new handler."
 msgstr ""
+"为 Unix 风格的信号处理程序添加了一个包装API。 :c:func:`PyOS_getsig` "
+"获取信号处理程序，:c:func:`PyOS_setsig` 设置新的处理程序。"
 
 #: ../../whatsnew/2.0.rst:811
 msgid "Distutils: Making Modules Easy to Install"
@@ -1267,6 +1308,9 @@ msgid ""
 "different extension packages, which made administering a Python installation"
 " something of  a chore."
 msgstr ""
+"在 Python 2.0 之前，安装模块是一件繁琐的事情 —— 没有办法自动确定 Python 的安装位置，或者用于扩展模块的编译器选项。 "
+"软件作者不得不经历一套繁琐的程序来编辑 Makefile 和配置文件，这些只在 Unix 上真正有效，而 Windows 和 Mac OS 不受支持。 "
+"Python 用户面对不同扩展包之间大相径庭的安装说明，这使得管理 Python 成了一件麻烦事。"
 
 #: ../../whatsnew/2.0.rst:821
 msgid ""
@@ -1283,6 +1327,11 @@ msgid ""
 "separating the build from the install, building or installing in non-default"
 " directories, and more."
 msgstr ""
+"由 Greg Ward 领导的 SIG 创建了 ``distutils``，一个使包安装更加容易的系统。它们构成了 distutils 包，这是 "
+"Python 标准库的新部分。 在最佳情况下，从源代码安装 Python 模块只需要以下几个步骤：首先解压缩 tarball 或 zip "
+"归档文件，然后运行 ``python setup.py install``。 平台会自动检测，编译器会被识别，C "
+"扩展模块会被编译，并且分发包会安装到适当的目录中。 可选的命令行参数提供了对安装过程的更多控制，distutils 包提供了许多地方来覆盖默认设置 ——"
+" 将构建与安装分开，在非默认目录中构建或安装，等等。"
 
 #: ../../whatsnew/2.0.rst:833
 msgid ""
@@ -1316,12 +1365,16 @@ msgid ""
 "distribution formats such as Debian packages and Solaris :file:`.pkg` files "
 "are in various stages of development."
 msgstr ""
+"Distutils 还可以负责创建源代码和二进制分发包。运行 ``python setup.py sdist`` 的 \"sdist\" "
+"命令构建一个源代码分发包，如 :file:`foo-1.0.tar.gz`。添加新命令并不困难，已经有 \"bdist_rpm\" 和 "
+"\"bdist_wininst\" 命令，分别用于创建软件的 RPM 分发包和 Windows 安装程序。创建其他分发格式的命令，如 Debian 包和"
+" Solaris :file:`.pkg` 文件，也在开发的不同阶段。"
 
 #: ../../whatsnew/2.0.rst:873
 msgid ""
 "All this is documented in a new manual, *Distributing Python Modules*, that "
 "joins the basic set of Python documentation."
-msgstr ""
+msgstr "所有这些都记录在一个新手册中，*Distributing Python Modules*，它加入了Python文档的基本集合中。"
 
 #: ../../whatsnew/2.0.rst:880
 msgid "XML Modules"
@@ -1341,10 +1394,16 @@ msgid ""
 "documentation or the source code for complete details. The Python XML SIG is"
 " also working on improved documentation."
 msgstr ""
+"Python 1.5.2 包含了一个简单的 XML 解析器，以 :mod:`!xmllib` 模块的形式提供，由 Sjoerd Mullender "
+"贡献。自1.5.2发布以来，处理 XML 的两种不同接口已经变得常见：SAX2（Simple API for XML "
+"的第2版）提供了一个事件驱动的接口，与 :mod:`!xmllib` 有一些相似之处；而 DOM（Document Object "
+"Model）提供了一个基于树的接口，将 XML 文档转换为一个可遍历和修改的节点树。Python 2.0 包含了 SAX2 接口和简化的 DOM "
+"接口，作为 :mod:`xml` 包的一部分。下面是这些新接口的简要概述；完整的详细信息请参阅 Python 文档或源代码。Python XML SIG"
+" 也在致力于改进文档。"
 
 #: ../../whatsnew/2.0.rst:896
 msgid "SAX2 Support"
-msgstr ""
+msgstr "SAX2 支持"
 
 #: ../../whatsnew/2.0.rst:898
 msgid ""
@@ -1358,6 +1417,12 @@ msgid ""
 ":meth:`~xml.sax.handler.ContentHandler.characters` method is called for "
 "every chunk of character data, and so forth."
 msgstr ""
+"SAX 定义了一个事件驱动的接口来解析 XML。要使用 SAX，你必须编写一个 SAX 处理器类。处理器类继承自 SAX "
+"提供的各种类，并覆盖各种方法，这些方法会在 XML "
+"解析器遇到相应事件时被调用。例如，:meth:`~xml.sax.handler.ContentHandler.startElement` 和 "
+":meth:`~xml.sax.handler.ContentHandler.endElement` "
+"方法会在解析器遇到每个开始和结束标签时被调用，:meth:`~xml.sax.handler.ContentHandler.characters` "
+"方法会在解析器遇到每个字符数据块时被调用，等等。"
 
 #: ../../whatsnew/2.0.rst:906
 msgid ""
@@ -1367,19 +1432,23 @@ msgid ""
 "class can get very complicated if you're trying to modify the document "
 "structure in some elaborate way."
 msgstr ""
+"事件驱动方法的优点是整个文档不必同时驻留在内存中，这在处理非常大的文档时尤其重要。然而，如果你试图以某种复杂的方式修改文档结构，编写 SAX "
+"处理程序类可能会变得非常复杂。"
 
 #: ../../whatsnew/2.0.rst:912
 msgid ""
 "For example, this little example program defines a handler that prints a "
 "message for every starting and ending tag, and then parses the file "
 ":file:`hamlet.xml` using it::"
-msgstr ""
+msgstr "例如，这个小示例程序定义了一个处理器，它为每个开始和结束标签打印一条消息，然后使用它来解析文件 :file:`hamlet.xml`::"
 
 #: ../../whatsnew/2.0.rst:935
 msgid ""
 "For more information, consult the Python documentation, or the XML HOWTO at "
 "https://pyxml.sourceforge.net/topics/howto/xml-howto.html."
 msgstr ""
+"欲了解更多信息，请查阅 Python 文档，或 https://pyxml.sourceforge.net/topics/howto/xml-"
+"howto.html 上的 XML HOWTO。"
 
 #: ../../whatsnew/2.0.rst:940
 msgid "DOM Support"
@@ -1396,6 +1465,10 @@ msgid ""
 "access element and attribute values, insert and delete nodes, and convert "
 "the tree back into XML."
 msgstr ""
+"文档对象模型是一种基于树的表示法，用于表示 XML 文档。一个顶级 :class:`!Document` 实例是树的根节点，并且有一个子节点，它是顶级 "
+":class:`!Element`实例。这个 :class:`!Element` "
+"具有表示字符数据和任何子元素的子节点，这些子节点可以有进一步的子节点，依此类推。使用 "
+"DOM，你可以以任何方式遍历生成的树，访问元素和属性值，插入和删除节点，并将树转换回 XML。"
 
 #: ../../whatsnew/2.0.rst:950
 msgid ""
@@ -1406,6 +1479,8 @@ msgid ""
 "producing XML output than simply writing ``<tag1>``...\\ ``</tag1>`` to a "
 "file."
 msgstr ""
+"DOM 在修改 XML 文档方面非常有用，因为你可以创建一个 DOM 树，通过添加新节点或重新排列子树来修改它，然后生成一个新的 XML "
+"文档作为输出。你还可以手动构建一个 DOM 树并将其转换为 XML，这比简单地将``<tag1>``...\\``</tag1>``写入文件更灵活。"
 
 #: ../../whatsnew/2.0.rst:956
 msgid ""
@@ -1415,6 +1490,8 @@ msgid ""
 ":func:`!parseString` convenience functions are provided for generating a DOM"
 " tree::"
 msgstr ""
+"Python 附带的 DOM 实现在 :mod:`xml.dom.minidom` 模块中。它是一个轻量级的 Level 1 DOM 实现，支持 XML"
+" 命名空间。提供了 :func:`!parse` 和 :func:`!parseString` 便捷函数用于生成 DOM 树::"
 
 #: ../../whatsnew/2.0.rst:964
 msgid ""
@@ -1427,10 +1504,15 @@ msgid ""
 "and :class:`!Document` instances have a method to find all child elements "
 "with a given tag name. Continuing from the previous 2-line example::"
 msgstr ""
+"``doc`` 是一个 :class:`!Document` 实例。:class:`!Document`，和其他所有 DOM "
+"类如:class:`!Element` 和 :class:`Text`一样，都是:class:`!Node` 基类的子类。因此，DOM "
+"树中的所有节点都支持某些通用方法，例如 :meth:`!toxml` 方法，该方法返回一个包含节点及其子节点的 XML "
+"表示的字符串。每个类也有自己的特定方法；例如，:class:`!Element` 和 :class:`!Document` "
+"实例有一个方法可以找到具有给定标签名的所有子元素。继续前面 2 行代码的例子："
 
 #: ../../whatsnew/2.0.rst:977
 msgid "For the *Hamlet* XML file, the above few lines output::"
-msgstr ""
+msgstr "对于 *Hamlet* XML 文件，上面几行代码输出::"
 
 #: ../../whatsnew/2.0.rst:982
 msgid ""
@@ -1438,12 +1520,13 @@ msgid ""
 "and its children can be easily modified by deleting, adding, or removing "
 "nodes::"
 msgstr ""
+"文件的根元素可以通过 ``doc.documentElement`` 访问，并且可以通过删除、添加或一处节点来听松修改节点来轻松修改其子元素::"
 
 #: ../../whatsnew/2.0.rst:997
 msgid ""
 "Again, I will refer you to the Python documentation for a complete listing "
 "of the different :class:`!Node` classes and their various methods."
-msgstr ""
+msgstr "再次，我建议你查阅 Python 文档，以获取不同 :class:`!Node` 类及各种方法的完整列表。"
 
 #: ../../whatsnew/2.0.rst:1002
 msgid "Relationship to PyXML"
@@ -1458,6 +1541,9 @@ msgid ""
 "written programs that used PyXML, you're probably wondering about its "
 "compatibility with the 2.0 :mod:`xml` package."
 msgstr ""
+"XML 特别兴趣小组已经致力于与 XML 相关的 Python 代码有一段时间了。 其代码分发包称为 PyXML，可以从 SIG 的网页 "
+"https://www.python.org/community/sigs/current/xml-sig 获取。 PyXML 分发包也使用了 "
+"``xml`` 作为包名。 如果你编写了使用 PyXML 的程序，可能会担心它与 Python 2.0 的 :mod:`xml` 包的兼容性。"
 
 #: ../../whatsnew/2.0.rst:1010
 msgid ""
@@ -1470,6 +1556,10 @@ msgid ""
 " a strict superset of the standard package, adding a bunch of additional "
 "features.  Some of the additional features in PyXML include:"
 msgstr ""
+"答案是 Python 2.0 的 :mod:`xml` 包与 PyXML 不兼容，但可以通过安装最新版本的 PyXML 来使其兼容。 "
+"许多应用程序可以依赖 Python 2.0 中包含的 XML 支持，但更复杂的应用程序需要安装完整的 PyXML 包。 安装后，版本为 0.6.0 "
+"或更高的 PyXML 将替换随 Python 一起发布的 :mod:`xml` 包，并且将是标准包的严格超集，添加许多额外的功能。 PyXML "
+"中的一些附加功能包括："
 
 #: ../../whatsnew/2.0.rst:1019
 msgid "4DOM, a full DOM implementation from FourThought, Inc."
@@ -1482,7 +1572,7 @@ msgstr "xmlproc 验证解析器，由 Lars Marius Garshol 编写。"
 #: ../../whatsnew/2.0.rst:1023
 msgid ""
 "The :mod:`!sgmlop` parser accelerator module, written by Fredrik Lundh."
-msgstr ""
+msgstr ":mod:`!sgmlop` 解析器加速模块，由 Fredrik Lundh 编写。"
 
 #: ../../whatsnew/2.0.rst:1029
 msgid "Module changes"
@@ -1497,6 +1587,10 @@ msgid ""
 ":mod:`wave`, :mod:`random`, :mod:`shelve`, and :mod:`!nntplib`.  Consult the"
 " CVS logs for the exact patch-by-patch details."
 msgstr ""
+"对 Python 庞大的标准库进行了大量改进和错误修复；一些受影响的模块包括 :mod:`readline`, :mod:`ConfigParser "
+"<configparser>`, :mod:`!cgi`, :mod:`calendar`, :mod:`posix`, "
+":mod:`readline`, :mod:`!xmllib`, :mod:`!aifc`, :mod:`!chunk`, :mod:`wave`, "
+":mod:`random`, :mod:`shelve` 和 :mod:`!nntplib`。 请参阅 CVS 日志获取具体的逐个补丁详情。"
 
 #: ../../whatsnew/2.0.rst:1037
 msgid ""
@@ -1509,12 +1603,17 @@ msgid ""
 ":mod:`httplib <http>` and :mod:`urllib` modules were also changed to support"
 " ``https://`` URLs, though no one has implemented FTP or SMTP over SSL."
 msgstr ""
+"Brian Gallew 贡献了 :mod:`socket` 模块的 OpenSSL 支持。OpenSSL "
+"是一个安全套接字层实现，用于加密通过套接字发送的数据。在编译 Python 时，你可以编辑 :file:`Modules/Setup` 文件以包含 "
+"SSL 支持，这会为 :mod:`socket` 模块添加一个额外的函数：``socket.ssl(socket, keyfile, "
+"certfile)``，它接收一个套接字对象并返回一个 SSL 套接字。:mod:`httplib <http>` 和 :mod:`urllib` "
+"模块也进行了更改，以支持``https://`` 的URL，但目前还没有人实现通过 SSL 的 FTP 或 SMTP。"
 
 #: ../../whatsnew/2.0.rst:1046
 msgid ""
 "The :mod:`httplib <http>` module has been rewritten by Greg Stein to support"
 " HTTP/1.1."
-msgstr ""
+msgstr ":mod:`httplib <http>` 模块已由 Greg Stein 重写以支持 HTTP/1.1。"
 
 #: ../../whatsnew/2.0.rst:1048
 msgid ""
@@ -1522,6 +1621,7 @@ msgid ""
 "though using HTTP/1.1 features such as pipelining will require rewriting "
 "code to use a different set of interfaces."
 msgstr ""
+"对 1.5 版本的 :mod:`!httplib` 提供了向下兼容性，尽管使用 HTTP/1.1 特性如流水线将需要重写代码以使用不同的一组接口。"
 
 #: ../../whatsnew/2.0.rst:1052
 msgid ""
@@ -1531,6 +1631,9 @@ msgid ""
 "contributed an optimization which makes operations like ``create_line`` and "
 "``create_polygon`` much faster, especially when using lots of coordinates."
 msgstr ""
+":mod:`!Tkinter` 模块现在支持 Tcl/Tk 版本 8.1、8.2 或 8.3，并且不再支持旧的 7.x 版本。Tkinter "
+"模块现在支持在 Tk 小部件中显示 Unicode 字符串。此外，Fredrik Lundh 贡献了一项优化，使得诸如 ``create_line`` "
+"和 ``create_polygon`` 等操作速度更快，尤其是在使用大量坐标时。"
 
 #: ../../whatsnew/2.0.rst:1058
 msgid ""
@@ -1541,6 +1644,9 @@ msgid ""
 " operating systems that only have BSD curses, but there don't seem to be any"
 " currently maintained OSes that fall into this category."
 msgstr ""
+":mod:`curses` 模块在 Oliver Andrich 增强版本的基础上得到了极大的扩展，提供了许多来自 ncurses 和 SYSV "
+"curses 的附加功能，如颜色、替代字符集支持、手写板和鼠标支持等。 这意味着该模块不再兼容仅有 BSD curses "
+"的操作系统，但目前似乎没有任何属于这一类别的操作系统正在维护中。"
 
 #: ../../whatsnew/2.0.rst:1065
 msgid ""
@@ -1550,6 +1656,8 @@ msgid ""
 "written by Fredrik Lundh and partially funded by Hewlett Packard, supports "
 "matching against both 8-bit strings and Unicode strings."
 msgstr ""
+"如前面讨论的 Python 2.0 对 Unicode 的支持所提到的，:mod:`re` 模块提供的正则表达式的底层实现已经更改。 "
+"SRE，一个新的正则表达式引擎，由 Ferdrik Lundh 编写，部分由惠普资助，支持匹配 8 位字符串和 Unicode 字符串。"
 
 #: ../../whatsnew/2.0.rst:1075
 msgid "New modules"
@@ -1560,7 +1668,7 @@ msgid ""
 "A number of new modules were added.  We'll simply list them with brief "
 "descriptions; consult the 2.0 documentation for the details of a particular "
 "module."
-msgstr ""
+msgstr "添加了许多新模块，我们将简单列出它们并附上简要概述；有关特定模块的详细信息，请查阅 2.0 文档。"
 
 #: ../../whatsnew/2.0.rst:1081
 msgid ""
@@ -1570,12 +1678,16 @@ msgid ""
 ":mod:`atexit` and calling :func:`atexit.register` with  the function to be "
 "called on exit. (Contributed by Skip Montanaro.)"
 msgstr ""
+":mod:`atexit` 模块用于注册在 Python 解释器退出之前调用的函数。当前直接设置 ``sys.exitfunc`` 的代码应改为使用 "
+":mod:`atexit` 模块，导入 :mod:`atexit` 并使用 :func:`atexit.register` 调用要在退出时调用的函数。 "
+"（由 Skip Montanaro 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1087
 msgid ""
 ":mod:`codecs`, :mod:`!encodings`, :mod:`unicodedata`:  Added as part of the "
 "new Unicode support."
 msgstr ""
+":mod:`codecs`, :mod:`!encodings`, :mod:`unicodedata`: 作为新的Unicode支持的一部分添加。"
 
 #: ../../whatsnew/2.0.rst:1090
 msgid ""
@@ -1583,6 +1695,8 @@ msgid ""
 ":mod:`!dircmp` modules, which have now become deprecated. (Contributed by "
 "Gordon MacMillan and Moshe Zadka.)"
 msgstr ""
+":mod:`filecmp` 模块取代了旧的 :mod:`!cmp`, :mod:`!cmpcache`, 和 :mod:`!dircmp` "
+"模块，这些模块现在已经被废弃。（由 Gordon MacMillan 和 Moshe Zadka 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1094
 msgid ""
@@ -1592,6 +1706,9 @@ msgid ""
 "separate contributions by Martin  von Löwis, Peter Funk, and James "
 "Henstridge.)"
 msgstr ""
+":mod:`gettext`: 这个模块通过提供 GNU gettext 消息目录库的接口，为 Python "
+"程序提供国际化（I18N）和本地化（L10N）支持。 （由 Barry Warsaw 整合，来自 Martin von Löwis, Peter "
+"Funk 和 James Henstridge 的独立贡献。）"
 
 #: ../../whatsnew/2.0.rst:1099
 msgid ""
@@ -1599,6 +1716,8 @@ msgid ""
 " twin to the existing :mod:`!sunaudiodev` module. (Contributed by Peter "
 "Bosch, with fixes by Jeremy Hylton.)"
 msgstr ""
+":mod:`!linuxaudiodev`: 支持 Linux 上的 :file:`/dev/audio` 设备，与现有的 "
+":mod:`!sunaudiodev` 模块相对应。（由 Peter Bosch 贡献，Jeremy Hylton 提供修复。）"
 
 #: ../../whatsnew/2.0.rst:1103
 msgid ""
@@ -1609,12 +1728,15 @@ msgid ""
 "the :mod:`re` module. (Contributed by Sam Rushing, with some extensions by "
 "A.M. Kuchling.)"
 msgstr ""
+":mod:`mmap`: 提供对内存映射文件的接口，支持 Windows 和 "
+"Unix。文件的内容可以直接映射到内存中，此时它表现得像一个可变字符串，因此可以读取和修改其内容。它们甚至可以传递给期望普通字符串的函数，例如 "
+":mod:`re` 模块。（由 Sam Rushing 贡献，并由 A.M. Kuchling 提供一些扩展。）"
 
 #: ../../whatsnew/2.0.rst:1109
 msgid ""
 ":mod:`!pyexpat`: An interface to the Expat XML parser. (Contributed by Paul "
 "Prescod.)"
-msgstr ""
+msgstr ":mod:`!pyexpat`: Expat XML解析器的接口。 （由 Paul Prescod 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1112
 msgid ""
@@ -1624,18 +1746,21 @@ msgid ""
 "builds a set of rules from it, and can then answer questions about the "
 "fetchability of a given URL.  (Contributed by Skip Montanaro.)"
 msgstr ""
+":mod:`robotparser <urllib.robotparser>`: 解析 :file:`robots.txt` "
+"文件，这个文件用于编写礼貌地避开网站某些区域的网络爬虫。 解析器接受 :file:`robots.txt` "
+"文件的内容，从中构建一组规则，然后可以回答有关给定 URL 是否可以被抓取的问题。 （由 Skip Montanaro 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1118
 msgid ""
 ":mod:`tabnanny`: A module/script to  check Python source code for ambiguous "
 "indentation. (Contributed by Tim Peters.)"
-msgstr ""
+msgstr ":mod:`tabnanny`: 一个模块/脚本，用于检查 Python 源代码中不歧义的缩进。 （由 Tim Peters 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1121
 msgid ""
 ":mod:`!UserString`: A base class useful for deriving objects that behave "
 "like strings."
-msgstr ""
+msgstr ":mod:`!UserString`: 一个基类，用于派生行为类似于字符串的对象。"
 
 #: ../../whatsnew/2.0.rst:1124
 msgid ""
@@ -1648,6 +1773,10 @@ msgid ""
 ":file:`Tools/idle/BrowserControl.py`, and adapted for the standard library "
 "by Fred.)"
 msgstr ""
+":mod:`webbrowser` 模块提供了一种平台独立的方式来在特定 URL 上启动 web "
+"浏览器。对于每个平台，模块会按特定顺序尝试各种浏览器。用户可以通过设置 *BROWSER* 环境变量来更改启动的浏览器。（最初的灵感来自 Eric S."
+" Raymond 对 :mod:`urllib` 的补丁，该补丁增加了类似的功能，但最终的模块来自 Fred Drake 最初实现的代码 "
+":file:`Tools/idle/BrowserControl.py`，并由 Fred 适配到标准库中。）"
 
 #: ../../whatsnew/2.0.rst:1133
 msgid ""
@@ -1657,6 +1786,9 @@ msgid ""
 "enhanced to support Unicode. :mod:`!_winreg` was written by Bill Tutt and "
 "Mark Hammond."
 msgstr ""
+":mod:`_winreg <winreg>` 模块：提供了一个用于访问 Windows 注册表的接口。:mod:`!_winreg` 是对自 1995"
+" 年以来一直是 PythonWin 一部分的函数的改编，现在已被添加到核心分发版中，并增强了对 Unicode 的支持。 :mod:`!_winreg`"
+" 由 Bill Tutt 和 Mark Hammond 编写。"
 
 #: ../../whatsnew/2.0.rst:1138
 msgid ""
@@ -1665,6 +1797,9 @@ msgid ""
 "on Unix, not to be confused with :program:`gzip`\\ -format files (which are "
 "supported by the :mod:`gzip` module) (Contributed by James C. Ahlstrom.)"
 msgstr ""
+":mod:`zipfile` 模块：用于读取和写入 ZIP 格式的归档文件。 这些归档文件是由 DOS/Windows 上的 "
+":program:`PKZIP` 或 Unix 上的 :program:`zip` 生成的，不要与 :program:`gzip` 格式文件（由 "
+":mod:`gzip` 支持）混淆。 （由 James C. Ahlstrom 贡献。）"
 
 #: ../../whatsnew/2.0.rst:1143
 msgid ""
@@ -1673,6 +1808,8 @@ msgid ""
 "(Implemented by Greg Stein, with much discussion on python-dev along the "
 "way.)"
 msgstr ""
+":mod:`!imputil`模块：提供了一种比现有的 :mod:`!ihooks` 模块更简单的方式来编写自定义导入钩子。（由 Greg Stein "
+"实现，并在实现过程中在 python-dev 进行了大量讨论。）"
 
 #: ../../whatsnew/2.0.rst:1151
 msgid "IDLE Improvements"
@@ -1703,13 +1840,13 @@ msgstr "类浏览器现在将显示更多信息，例如一个模块中最高层
 msgid ""
 "Tab width is now a user settable option. When opening an existing Python "
 "file, IDLE automatically detects the indentation conventions, and adapts."
-msgstr ""
+msgstr "制表符宽度现在是一个用户可设置的选项。在打开现有的 Python 文件时，IDLE 会自动检测缩进约定并进行适应。"
 
 #: ../../whatsnew/2.0.rst:1166
 msgid ""
 "There is now support for calling browsers on various platforms, used to open"
 " the Python documentation in a browser."
-msgstr ""
+msgstr "现在支持在各种平台上调用浏览器，用于在浏览器中打开 Python 文档。"
 
 #: ../../whatsnew/2.0.rst:1169
 msgid ""
@@ -1734,6 +1871,7 @@ msgid ""
 "Three new keystroke commands: Check module (:kbd:`Alt-F5`), Import module "
 "(:kbd:`F5`) and Run script (:kbd:`Ctrl-F5`)."
 msgstr ""
+"三个新的键盘快捷键：检查模块 (:kbd:`Alt-F5`)，导入模块 (:kbd:`F5`) 和执行脚本 (:kbd:`Ctrl-F5`)。"
 
 #: ../../whatsnew/2.0.rst:1185
 msgid "Deleted and Deprecated Modules"
@@ -1746,6 +1884,8 @@ msgid ""
 "gone; it was for a platform-independent windowing toolkit that's no longer "
 "developed."
 msgstr ""
+"有几个模块因为已经过时，或者因为现在有更好的方法来实现相同的功能而被删除。 :mod:`!stdwin` "
+"模块已被移除；它是一个不再开发的跨平台窗口工具包。"
 
 #: ../../whatsnew/2.0.rst:1191
 msgid ""
@@ -1757,6 +1897,10 @@ msgid ""
 " ``sys.path``   to get them back, but you're encouraged to update any code "
 "that uses these modules."
 msgstr ""
+"许多模块已经移动到了 :file:`lib-old` 子目录: "
+":mod:`!cmp`，:mod:`!cmpcache`，:mod:`!dircmp`，:mod:`!dump`，:mod:`!find`，:mod:`!grep`，:mod:`!packmail`，:mod:`!poly`，:mod:`!util`，:mod:`!whatsound`，:mod:`!zmod`。"
+" 如果你的代码依赖于已移动到 :file:`lib-old` 的模块，你可以简单地将该目录添加到 ``sys.path`` "
+"中来找回它们，但建议你更新任何使用这些模块的代码。"
 
 #: ../../whatsnew/2.0.rst:1200
 msgid "Acknowledgements"
