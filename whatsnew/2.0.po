@@ -564,6 +564,8 @@ msgid ""
 "Perl, and PHP also support them.  The augmented assignment patch was "
 "implemented by Thomas Wouters."
 msgstr ""
+"增强赋值运算符最早在 C 编程语言中引入，大多数 C 派生语言，如 :program:`awk`，C++，Java 和 PHP 也支持它们。 "
+"增强赋值补丁由 Thomas Wouters 实现。"
 
 #: ../../whatsnew/2.0.rst:390
 msgid "String Methods"
@@ -585,7 +587,7 @@ msgid ""
 "Instead, Python 2.0 pushes the problem onto the string type, making string "
 "manipulation functionality available through methods on both 8-bit strings "
 "and Unicode strings.   ::"
-msgstr ""
+msgstr "相反，Python 2.0 将这个问题推给了字符串类型，使字符串操作功能通过 8 位字符串和 Unicode 字符串上的方法来实现。"
 
 #: ../../whatsnew/2.0.rst:411
 msgid ""
@@ -594,12 +596,13 @@ msgid ""
 "methods return new strings, and do not modify the string on which they "
 "operate."
 msgstr ""
+"有一件事没有改变，即使是值得注意的愚人节玩笑，Python 字符串仍然是不可变的。 因此，字符串方法返回的是新的字符串，而不是修改他们操作的原字符串。"
 
 #: ../../whatsnew/2.0.rst:415
 msgid ""
 "The old :mod:`string` module is still around for backwards compatibility, "
 "but it mostly acts as a front-end to the new string methods."
-msgstr ""
+msgstr "旧的 :mod:`string` 模块仍然存在以保持向向兼容，但它主要作为新字符串方法的前端。"
 
 #: ../../whatsnew/2.0.rst:418
 msgid ""
@@ -631,6 +634,8 @@ msgid ""
 "no longer accessible, since you need to have a reference to an object to "
 "access it, and if the count is zero, no references exist any longer."
 msgstr ""
+"Python 的 C 实现使用引用技术来实现垃圾回收。 每个 Python 对象维护一个指向自身的引用数量，并在引用创建或销毁时调整该计数。 "
+"一旦引用计数达到零，对象就不再可访问，因为访问对象需要一个引用，然后如果计数为零，就不再存在任何引用。"
 
 #: ../../whatsnew/2.0.rst:442
 msgid ""
@@ -641,12 +646,13 @@ msgid ""
 "doesn't realise that objects are no longer accessible, resulting in a memory"
 " leak.  This happens when there are cycles of references."
 msgstr ""
+"引用计数有一些令人愉快的特性：它易于理解和实现，结果实现是可移植的，相当快，并且与其他实现自己内存处理方案的库良好互动。引用计数的主要问题是有时它无法识别对象不再可访问，从而导致内存泄露，这发生在存在引用循环时。"
 
 #: ../../whatsnew/2.0.rst:449
 msgid ""
 "Consider the simplest possible cycle,  a class instance which has a "
 "reference to itself::"
-msgstr ""
+msgstr "考虑最简单的循环，一个类实例引用自身::"
 
 #: ../../whatsnew/2.0.rst:455
 msgid ""
@@ -654,6 +660,8 @@ msgid ""
 " ``instance`` is 2; one reference is from the variable named ``'instance'``,"
 " and the other is from the ``myself`` attribute of the instance."
 msgstr ""
+"在执行完上述两行代码后，``instance`` 的引用计数是 2；一个引用来自名为 ``'instance'`` 的变量，另一个引用来自该实例的 "
+"``myself`` 属性。"
 
 #: ../../whatsnew/2.0.rst:459
 msgid ""
@@ -664,6 +672,9 @@ msgid ""
 " objects can participate in a cycle if they have references to each other, "
 "causing all of the objects to be leaked."
 msgstr ""
+"如果下一行代码是 ``del instance``，会发生什么？ ``instance`` 的引用计数会减少 1，所以它的引用计数变为 "
+"1；``myself`` 属性中的引用仍然存在。 然而，该实例不能再通过 Python 代码访问，并且它可以被删除。 "
+"如果多个对象相互引用，它们可以参与一个循环，导致所有对象都无法被垃圾回收，从而导致内存泄漏。"
 
 #: ../../whatsnew/2.0.rst:466
 msgid ""
@@ -673,6 +684,8 @@ msgid ""
 "collection, obtain debugging statistics, and tuning the collector's "
 "parameters."
 msgstr ""
+"Python 2.0 通过周期性的执行一个循环检测算法来解决这个问题，该算法查找不可访问的循环并删除涉及的对象。 一个新的 :mod:`gc` "
+"模块提供了执行垃圾回收、获取调试统计信息和调整回收器参数的功能。"
 
 #: ../../whatsnew/2.0.rst:471
 msgid ""
@@ -687,6 +700,10 @@ msgid ""
 "buggy, by specifying the :option:`!--without-cycle-gc` switch when running "
 "the :program:`configure` script."
 msgstr ""
+"运行循环检测算法需要一些时间，因此会带来一些额外的开销，希望在使用 2.0 版本的循环收集经验之后，Python 2.1 "
+"可以通过精细调整来尽量减少开销。 目前还不清楚性能损失有多大，因为对此进行精准测试很棘手，而且关键在于程序创建和销毁对象的频率。 "
+"如果你不能接受哪怕是微小的速度损失，或者怀疑循环收集存在问题，可以在编译 Python 时禁用循环检测，通过在运行 "
+":program:`configure` 脚本时指定 :option:`!--without-cycle-gc` 开关来实现。"
 
 #: ../../whatsnew/2.0.rst:482
 msgid ""
@@ -700,6 +717,10 @@ msgid ""
 "threads titled \"Reference cycle collection for Python\" and \"Finalization "
 "again\"."
 msgstr ""
+"有几个人解决了这个问题并为解决方案做出了贡献。循环检测方法的早期实现由 Toby Kelsey 编写。 当前的算法是在 Eric Tiedemann "
+"访问 CNRI 期间提出的，Guido van Rossum 和 Neil Schemenauer 分别编写了两个不同的实现，后来由 Neil "
+"将它们整合。 许多其他人也在过程中提出了建议；python-dev 邮件列表 2000 年 3 月的存档包含了大部分相关讨论，尤其是在标题为 "
+"“Reference cycle collection for Python” 和 “Finalization again” 的帖子中。"
 
 #: ../../whatsnew/2.0.rst:495
 msgid "Other Core Changes"
@@ -710,7 +731,7 @@ msgid ""
 "Various minor changes have been made to Python's syntax and built-in "
 "functions. None of the changes are very far-reaching, but they're handy "
 "conveniences."
-msgstr ""
+msgstr "Python 的语法和内置函数进行了各种小改动。 虽然这些改动都不是非常深远，但它们都是很方便的改进。"
 
 #: ../../whatsnew/2.0.rst:502
 msgid "Minor Language Changes"
@@ -745,6 +766,8 @@ msgid ""
 "module as name`` or ``from module import name as othername``.  The patch was"
 " submitted by Thomas Wouters."
 msgstr ""
+"模块现在可以在导入时重命名，使用语法 ``import module as name`` 或 ``from module import name as "
+"othername``。这个补丁是由 Thomas Wouters 提交的。"
 
 #: ../../whatsnew/2.0.rst:532
 msgid ""
@@ -754,6 +777,9 @@ msgid ""
 "which inserts the :func:`str` of its argument.  For example, ``'%r %s' % "
 "('abc', 'abc')`` returns a string containing ``'abc' abc``."
 msgstr ""
+"当使用 ``%`` 操作符时有一种新的格式样式可用；'%r' 将插入其参数的 :func:`repr` 表示。 这也是为了对称性，这次是为了与现有的 "
+"%s 格式样式对称，后者插入其参数的 :func:`str` 表示。例如，``'%r %s' % ('abc', 'abc')`` 返回一个包含 "
+"``'abc' abc`` 的字符串。"
 
 #: ../../whatsnew/2.0.rst:538
 msgid ""
@@ -777,6 +803,9 @@ msgid ""
 " and crashed; Jeremy Hylton rewrote the code to no longer crash, producing a"
 " useful result instead.  For example, after this code::"
 msgstr ""
+"早期版本的 Python 使用递归算法来删除对象。深度嵌套的数据结构可能导致解释器填满 C 栈并崩溃。 Christian Tismer "
+"重写了删除逻辑来解决这个问题。 相关地，比较递归对象时会导致无线递归并崩溃。Jeremy Hylton 重写了代码，使其不再崩溃，而是产生有用的结果。 "
+"例如，在以下代码之后::"
 
 #: ../../whatsnew/2.0.rst:559
 msgid ""
@@ -807,6 +836,8 @@ msgid ""
 "suffix=.x\". Consult the README in the Python source distribution for more "
 "instructions."
 msgstr ""
+"另一个新的平台是 Darwin/MacOS X；Python 2.0 中提供了初步支持。如果你指定 \"configure --with-dyld "
+"--with-suffix=.x\"，动态加载是可行的。 有关更多说明，请参阅 Python 源代码分发中的 README 文件。"
 
 #: ../../whatsnew/2.0.rst:581
 msgid ""
@@ -819,6 +850,11 @@ msgid ""
 "of :exc:`NameError`, so any existing code that expects :exc:`NameError` to "
 "be raised should still work. ::"
 msgstr ""
+"已经尝试解决 Python 的一个问题，即当代码在局部变量赋值之前引用该变量时，会引发经常令人困惑的 :exc:`NameError` "
+"异常。例如，以下代码在 1.5.2 和 2.0 中都会在 ``print`` 语句上引发异常；在 1.5.2 中，会引发 "
+":exc:`NameError` 异常，而在 2.0 中，会引发一个新的 :exc:`UnboundLocalError` 异常。 "
+":exc:`UnboundLocalError` 是 :exc:`NameError` 的子类，因此任何期望引发 :exc:`NameError` "
+"的现有代码应该仍然可以正常工作。"
 
 #: ../../whatsnew/2.0.rst:595
 msgid ""
@@ -842,6 +878,10 @@ msgid ""
 "``None`` if the sequences aren't all of the same length, while :func:`zip` "
 "truncates the returned list to the length of the shortest argument sequence."
 msgstr ""
+"添加了一个新的内置函数 ``zip(seq1, seq2, ...)``。:func:`zip` "
+"返回一个包含元组的列表，每个元组包含每个参数序列的第i个元素。:func:`zip` 和 ``map(None, seq1, seq2)`` "
+"的区别在于，如果序列长度不一致，:func:`map` 会用 ``None`` 填充序列，而 :func:`zip` "
+"会将返回的列表截短到最短的参数序列的长度。"
 
 #: ../../whatsnew/2.0.rst:610
 msgid ""
@@ -860,6 +900,10 @@ msgid ""
 "``sys.version_info`` would be ``(2, 0, 1, 'beta', 1)``. *level* is a string "
 "such as ``\"alpha\"``, ``\"beta\"``, or ``\"final\"`` for a final release."
 msgstr ""
+"在 :mod:`sys` 模块中添加了一个新变量，用于保存更详细的版本信息。 ``sys.version_info`` 是一个包含五个元素的元组 "
+"``(major, minor, micro, level, serial)``。 例如，在假设的 2.0.1beta1 "
+"版本中，``sys.version_info`` 将是 ``(2, 0, 1, 'beta', 1)``。 *level* 是一个字符串，如 "
+"``\"alpha\"``、``\"beta\"`` 或代表最终发布版本的 ``\"final\"``。"
 
 #: ../../whatsnew/2.0.rst:622
 msgid ""
@@ -873,7 +917,7 @@ msgstr ""
 #: ../../whatsnew/2.0.rst:633
 msgid ""
 "can be reduced to a single ``return dict.setdefault(key, [])`` statement."
-msgstr ""
+msgstr "可以简化为单个``return dict.setdefault(key, [])``语句。"
 
 #: ../../whatsnew/2.0.rst:635
 msgid ""
@@ -885,6 +929,10 @@ msgid ""
 " value is 1000, and a rough maximum value for a given platform can be found "
 "by running a new script, :file:`Misc/find_recursionlimit.py`."
 msgstr ""
+"解释器设置了一个最大递归深度，以便在填满 C 栈并导致核心储存或 GPF 之前捕获失控递归。以前这个限制是在编译 Python 时固定的，但在 2.0 "
+"中最大递归深度可以使用 :func:`sys.getrecursionlimit` 和 :func:`sys.setrecursionlimit` "
+"读取和修改。 默认值是 1000，可以通过运行一个新脚本 :file:`Misc/find_recursionlimit.py` "
+"来找到给定平台的大致的最大值。"
 
 #: ../../whatsnew/2.0.rst:647
 msgid "Porting to 2.0"
@@ -899,6 +947,9 @@ msgid ""
 "always be avoided. This section lists the changes in Python 2.0 that may "
 "cause old Python code to break."
 msgstr ""
+"新的 Python 版本尽力与之前的版本兼容，而且兼容性记录相当不错。 "
+"然而，有些变化被认为足够有用，通常是因为他们修正了最终设计中的错误决定，因此有时无法避免打破向后兼容性。 本节列出了 Python 2.0 中可能导致旧"
+" Python 代码中断的更改。"
 
 #: ../../whatsnew/2.0.rst:656
 msgid ""
@@ -947,6 +998,8 @@ msgid ""
 "the lowest 8 bits of the result, so ``\\x123456`` was equivalent to "
 "``\\x56``."
 msgstr ""
+"字符串字面量中的 ``\\x`` 转义现在必须精确地使用2个十六进制数字。之前它会消耗 x 后面的所有十六进制数字，并取结果的最低8位，所以 "
+"``\\x123456`` 等同于 ``\\x56``。"
 
 #: ../../whatsnew/2.0.rst:688
 msgid ""
@@ -956,6 +1009,9 @@ msgid ""
 " error message was just the missing attribute name ``eggs``, and code "
 "written to take advantage of this fact will break in 2.0."
 msgstr ""
+":exc:`AttributeError` 和 :exc:`NameError` 异常现在有了更友好的错误消息，其文本内容类似于 ``'Spam' "
+"instance has no attribute 'eggs'`` 或 ``name 'eggs' is not defined``。 "
+"之前的错误消息只是缺少的属性名称，如 ``eggs``，因此利用这一事实编写的代码在 2.0 中会中断。"
 
 #: ../../whatsnew/2.0.rst:694
 msgid ""
@@ -984,6 +1040,9 @@ msgid ""
 " which does ``str(longval)[:-1]`` and assumes the 'L' is there, will now "
 "lose the final digit."
 msgstr ""
+"最微妙的长整数变化是，长整数的 :func:`str` 表示不再有尾随的 'L' 字符，尽管 :func:`repr` "
+"表示仍然包含它。许多人在打印长整数时不希望看到 'L' 字符，因为他们不得不专门去掉这个字符。在2.0中，这不再是一个问题，但那些使用 "
+"``str(longval)[:-1]`` 并假设存在 'L' 的代码，现在将丢失最后一个数字。"
 
 #: ../../whatsnew/2.0.rst:716
 msgid ""
@@ -1016,6 +1075,8 @@ msgid ""
 "larger application.  If you aren't dealing with Python's C API, you can "
 "safely skip this section."
 msgstr ""
+"有些更改是在底层进行的，仅对编写 C 扩展模块或在更大的应用中嵌入 Python 解释器的人有价值。 如果你不处理 Python 的 C "
+"API，可以安全地跳过这一节。"
 
 #: ../../whatsnew/2.0.rst:747
 msgid ""
@@ -1025,6 +1086,9 @@ msgid ""
 "built for Python 1.5.x due to how Windows DLLs work, so Python will raise an"
 " exception and the import will fail."
 msgstr ""
+" Python C API 的版本号已增加，因此为 1.5.2 编译的 C 扩展必须重新编译才能与 2.0 一起工作。 在 Windows 上，由于 "
+"Windows DLL 的工作方式，Python 2.0 无法导入为 Python 1.5.x 构建的第三方扩展，因此 Python "
+"会引发异常并造成导入失败。"
 
 #: ../../whatsnew/2.0.rst:753
 msgid ""
@@ -1034,6 +1098,10 @@ msgid ""
 "remember to write code such as ``if type(obj) == myExtensionClass``, but can"
 " use the more natural ``if isinstance(obj, myExtensionClass)``."
 msgstr ""
+"使用 Jim Fulton 的 ExtensionClass 模块的用户将很高兴地发现，已经添加了钩子以支持 "
+"ExtensionClasses，因此现在支持 :func:`isinstance` 和 :func:`issubclass`。 "
+"这意味着你不再需要记住编写类似 ``if type(obj) == myExtensionClass`` 这样的代码，而可以使用更自然的 ``if "
+"isinstance(obj, myExtensionClass)``。"
 
 #: ../../whatsnew/2.0.rst:759
 msgid ""
@@ -1045,6 +1113,10 @@ msgid ""
 "Include/ directory that held various portability hacks; they've been merged "
 "into a single file, :file:`Include/pyport.h`."
 msgstr ""
+":file:`Python/importdl.c` 文件，它充满了用于支持在许多不同平台上动态加载的 #ifdef，已被 Greg Stein "
+"清理和重组。现在 :file:`importdl.c` 非常小，平台特定的代码已被移入一组特定的 "
+":file:`Python/dynload_\\*.c` 文件中。 另一个清理工作是：Include/ 目录中有许多包含各种可移植性修改的 "
+":file:`my\\*.h` 文件；它们已被合并到一个文件中，即 :file:`Include/pyport.h`。"
 
 #: ../../whatsnew/2.0.rst:767
 msgid ""
@@ -1063,6 +1135,8 @@ msgid ""
 "Macintosh.  Threading support using the user-space GNU ``pth`` library was "
 "also contributed."
 msgstr ""
+"最新版本的 MacOS GUSI 开发环境支持 POSIX 线程。 因此，现在 Python 的 POSIX 线程支持在 Macintosh "
+"上也可以使用。 还贡献了使用用户空间 GNU ``pth`` 库的线程支持。"
 
 #: ../../whatsnew/2.0.rst:779
 msgid ""
@@ -1073,6 +1147,9 @@ msgid ""
 "slow as an unthreaded version; with the 2.0 changes, the difference is only "
 "10%.  These improvements were contributed by Yakov Markovitch."
 msgstr ""
+"Windows 上的线程支持也得到了增强。 Windows "
+"支持的线程锁在发生争用时才使用内核对象；在常见的没有争用的情况下，他们使用简单得多的函数，这些函数快一个数量级。Python 1.5.2 在 NT "
+"上的线程版本比无线程版本慢两倍；有了 2.0 的改进，差异仅为 10%。 这些改进由 Yakov Markovitch 提供。"
 
 #: ../../whatsnew/2.0.rst:786
 msgid ""
@@ -1080,6 +1157,8 @@ msgid ""
 " requires an ANSI C compiler, and can no longer be done using a compiler "
 "that only supports K&R C."
 msgstr ""
+"Python 2.0 的源代码目前只用 ANSI C 原型，所以现在编译 Python 需要一个 ANSI C 的编译器，而不能通过仅使用支持 K&R "
+"C 的编译器完成。"
 
 #: ../../whatsnew/2.0.rst:790
 msgid ""
@@ -1089,6 +1168,9 @@ msgid ""
 "people who are generating Python code would run into this limit.  A patch by"
 " Charles G. Waldman raises the limit from ``2**16`` to ``2**32``."
 msgstr ""
+"之前，Python 虚拟机在其字节码中使用 16 位数字，限制了源文件的大小。 特别是，这影响了 Python "
+"源代码中字面量列表和字典的最大大小；偶尔会有人在生成 Python 代码时遇到这个限制。 Charles G. Waldman 的补丁将这个限制从 "
+"``2**16`` 提高到 ``2**32``。"
 
 #: ../../whatsnew/2.0.rst:796
 msgid ""
@@ -1122,6 +1204,9 @@ msgid ""
 "different extension packages, which made administering a Python installation"
 " something of  a chore."
 msgstr ""
+"在 Python 2.0 之前，安装模块是一件繁琐的事情 —— 没有办法自动确定 Python 的安装位置，或者用于扩展模块的编译器选项。 "
+"软件作者不得不经历一套繁琐的程序来编辑 Makefile 和配置文件，这些只在 Unix 上真正有效，而 Windows 和 Mac OS 不受支持。 "
+"Python 用户面对不同扩展包之间大相径庭的安装说明，这使得管理 Python 成了一件麻烦事。"
 
 #: ../../whatsnew/2.0.rst:821
 msgid ""
@@ -1171,12 +1256,16 @@ msgid ""
 "distribution formats such as Debian packages and Solaris :file:`.pkg` files "
 "are in various stages of development."
 msgstr ""
+"Distutils 还可以负责创建源代码和二进制分发包。运行 ``python setup.py sdist`` 的 \"sdist\" "
+"命令构建一个源代码分发包，如 :file:`foo-1.0.tar.gz`。添加新命令并不困难，已经有 \"bdist_rpm\" 和 "
+"\"bdist_wininst\" 命令，分别用于创建软件的 RPM 分发包和 Windows 安装程序。创建其他分发格式的命令，如 Debian 包和"
+" Solaris :file:`.pkg` 文件，也在开发的不同阶段。"
 
 #: ../../whatsnew/2.0.rst:873
 msgid ""
 "All this is documented in a new manual, *Distributing Python Modules*, that "
 "joins the basic set of Python documentation."
-msgstr ""
+msgstr "所有这些都记录在一个新手册中，*Distributing Python Modules*，它加入了Python文档的基本集合中。"
 
 #: ../../whatsnew/2.0.rst:880
 msgid "XML Modules"
@@ -1199,7 +1288,7 @@ msgstr ""
 
 #: ../../whatsnew/2.0.rst:896
 msgid "SAX2 Support"
-msgstr ""
+msgstr "SAX2 支持"
 
 #: ../../whatsnew/2.0.rst:898
 msgid ""
