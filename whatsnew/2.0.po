@@ -591,6 +591,8 @@ msgid ""
 "Perl, and PHP also support them.  The augmented assignment patch was "
 "implemented by Thomas Wouters."
 msgstr ""
+"增强赋值运算符最早在 C 编程语言中引入，大多数 C 派生语言，如 :program:`awk`，C++，Java 和 PHP 也支持它们。 "
+"增强赋值补丁由 Thomas Wouters 实现。"
 
 #: ../../whatsnew/2.0.rst:390
 msgid "String Methods"
@@ -606,13 +608,16 @@ msgid ""
 ":func:`!string.replace`, which takes 3 string arguments, that means eight "
 "possible permutations, and correspondingly complicated code."
 msgstr ""
+"直到现在，字符串操作功能都在 :mod:`string` 模块中，它通常是用 C 编写的 :mod:`!strop` 模块的前端。 Unicode "
+"的添加为 :mod:`!strop` 模块带来困难，因为所有函数都需要重写，以接受 8 位或 Unicode 字符串，对于像 "
+":func:`!string.replace` 这样的函数，它需要 3 个字符串参数，这意味着有 8 种可能的排列方式，相应的代码也会变得复杂。"
 
 #: ../../whatsnew/2.0.rst:400
 msgid ""
 "Instead, Python 2.0 pushes the problem onto the string type, making string "
 "manipulation functionality available through methods on both 8-bit strings "
 "and Unicode strings.   ::"
-msgstr ""
+msgstr "相反，Python 2.0 将这个问题推给了字符串类型，使字符串操作功能通过 8 位字符串和 Unicode 字符串上的方法来实现。"
 
 #: ../../whatsnew/2.0.rst:411
 msgid ""
@@ -621,12 +626,13 @@ msgid ""
 "methods return new strings, and do not modify the string on which they "
 "operate."
 msgstr ""
+"有一件事没有改变，即使是值得注意的愚人节玩笑，Python 字符串仍然是不可变的。 因此，字符串方法返回的是新的字符串，而不是修改他们操作的原字符串。"
 
 #: ../../whatsnew/2.0.rst:415
 msgid ""
 "The old :mod:`string` module is still around for backwards compatibility, "
 "but it mostly acts as a front-end to the new string methods."
-msgstr ""
+msgstr "旧的 :mod:`string` 模块仍然存在以保持向向兼容，但它主要作为新字符串方法的前端。"
 
 #: ../../whatsnew/2.0.rst:418
 msgid ""
@@ -635,6 +641,9 @@ msgid ""
 ":meth:`!endswith`. ``s.startswith(t)`` is equivalent to ``s[:len(t)] == t``,"
 " while ``s.endswith(t)`` is equivalent to ``s[-len(t):] == t``."
 msgstr ""
+"在 2.0 之前的版本中没有对应方法的两个方法是 :meth:`!startswith` 和 :meth:`!endswith`，尽管它们在 "
+"JPython 中存在了相当长的时间。 ``s.startswith(t)`` 等同于 ``s[:len(t)] == t``，而 "
+"``s.endswith(t)`` 等同于 ``s[-len(t):] == t``。"
 
 #: ../../whatsnew/2.0.rst:423
 msgid ""
@@ -644,6 +653,9 @@ msgid ""
 " :mod:`string` module, with the arguments reversed. In other words, "
 "``s.join(seq)`` is equivalent to the old ``string.join(seq, s)``."
 msgstr ""
+"另一个值得特别提及的方法是 :meth:`!join`。 字符串的 :meth:`!join` 方法接收一个参数，即字符串序列，并且等同于来自旧的 "
+":mod:`string` 模块的 :func:`!string.join` 函数，但参数顺序相反。 换句话说，``s.join(seq)`` "
+"等同于旧的 ``string.join(seq, s)``。"
 
 #: ../../whatsnew/2.0.rst:433
 msgid "Garbage Collection of Cycles"
@@ -658,6 +670,8 @@ msgid ""
 "no longer accessible, since you need to have a reference to an object to "
 "access it, and if the count is zero, no references exist any longer."
 msgstr ""
+"Python 的 C 实现使用引用技术来实现垃圾回收。 每个 Python 对象维护一个指向自身的引用数量，并在引用创建或销毁时调整该计数。 "
+"一旦引用计数达到零，对象就不再可访问，因为访问对象需要一个引用，然后如果计数为零，就不再存在任何引用。"
 
 #: ../../whatsnew/2.0.rst:442
 msgid ""
@@ -668,12 +682,13 @@ msgid ""
 "doesn't realise that objects are no longer accessible, resulting in a memory"
 " leak.  This happens when there are cycles of references."
 msgstr ""
+"引用计数有一些令人愉快的特性：它易于理解和实现，结果实现是可移植的，相当快，并且与其他实现自己内存处理方案的库良好互动。引用计数的主要问题是有时它无法识别对象不再可访问，从而导致内存泄露，这发生在存在引用循环时。"
 
 #: ../../whatsnew/2.0.rst:449
 msgid ""
 "Consider the simplest possible cycle,  a class instance which has a "
 "reference to itself::"
-msgstr ""
+msgstr "考虑最简单的循环，一个类实例引用自身::"
 
 #: ../../whatsnew/2.0.rst:455
 msgid ""
@@ -681,6 +696,8 @@ msgid ""
 " ``instance`` is 2; one reference is from the variable named ``'instance'``,"
 " and the other is from the ``myself`` attribute of the instance."
 msgstr ""
+"在执行完上述两行代码后，``instance`` 的引用计数是 2；一个引用来自名为 ``'instance'`` 的变量，另一个引用来自该实例的 "
+"``myself`` 属性。"
 
 #: ../../whatsnew/2.0.rst:459
 msgid ""
@@ -691,6 +708,9 @@ msgid ""
 " objects can participate in a cycle if they have references to each other, "
 "causing all of the objects to be leaked."
 msgstr ""
+"如果下一行代码是 ``del instance``，会发生什么？ ``instance`` 的引用计数会减少 1，所以它的引用计数变为 "
+"1；``myself`` 属性中的引用仍然存在。 然而，该实例不能再通过 Python 代码访问，并且它可以被删除。 "
+"如果多个对象相互引用，它们可以参与一个循环，导致所有对象都无法被垃圾回收，从而导致内存泄漏。"
 
 #: ../../whatsnew/2.0.rst:466
 msgid ""
@@ -700,6 +720,8 @@ msgid ""
 "collection, obtain debugging statistics, and tuning the collector's "
 "parameters."
 msgstr ""
+"Python 2.0 通过周期性的执行一个循环检测算法来解决这个问题，该算法查找不可访问的循环并删除涉及的对象。 一个新的 :mod:`gc` "
+"模块提供了执行垃圾回收、获取调试统计信息和调整回收器参数的功能。"
 
 #: ../../whatsnew/2.0.rst:471
 msgid ""
@@ -714,6 +736,10 @@ msgid ""
 "buggy, by specifying the :option:`!--without-cycle-gc` switch when running "
 "the :program:`configure` script."
 msgstr ""
+"运行循环检测算法需要一些时间，因此会带来一些额外的开销，希望在使用 2.0 版本的循环收集经验之后，Python 2.1 "
+"可以通过精细调整来尽量减少开销。 目前还不清楚性能损失有多大，因为对此进行精准测试很棘手，而且关键在于程序创建和销毁对象的频率。 "
+"如果你不能接受哪怕是微小的速度损失，或者怀疑循环收集存在问题，可以在编译 Python 时禁用循环检测，通过在运行 "
+":program:`configure` 脚本时指定 :option:`!--without-cycle-gc` 开关来实现。"
 
 #: ../../whatsnew/2.0.rst:482
 msgid ""
@@ -727,6 +753,10 @@ msgid ""
 "threads titled \"Reference cycle collection for Python\" and \"Finalization "
 "again\"."
 msgstr ""
+"有几个人解决了这个问题并为解决方案做出了贡献。循环检测方法的早期实现由 Toby Kelsey 编写。 当前的算法是在 Eric Tiedemann "
+"访问 CNRI 期间提出的，Guido van Rossum 和 Neil Schemenauer 分别编写了两个不同的实现，后来由 Neil "
+"将它们整合。 许多其他人也在过程中提出了建议；python-dev 邮件列表 2000 年 3 月的存档包含了大部分相关讨论，尤其是在标题为 "
+"“Reference cycle collection for Python” 和 “Finalization again” 的帖子中。"
 
 #: ../../whatsnew/2.0.rst:495
 msgid "Other Core Changes"
@@ -737,7 +767,7 @@ msgid ""
 "Various minor changes have been made to Python's syntax and built-in "
 "functions. None of the changes are very far-reaching, but they're handy "
 "conveniences."
-msgstr ""
+msgstr "Python 的语法和内置函数进行了各种小改动。 虽然这些改动都不是非常深远，但它们都是很方便的改进。"
 
 #: ../../whatsnew/2.0.rst:502
 msgid "Minor Language Changes"
@@ -754,6 +784,10 @@ msgid ""
 "and clearer way to achieve the same effect.  This syntax is symmetrical with"
 " the syntax for defining functions::"
 msgstr ""
+"一种新的语法是的使用元组和/或字典作为参数来调用函数更加方便。在 Python 1.5 及更早版本中，你会使用 :func:`!apply` 内置函数:"
+" ``apply(f, args, kw)`` 调用函数 :func:`!f`，附带参数元组 *args* 和关键字参数字典 *kw*。 在 "
+"Python 2.0 中，:func:`!apply` 的使用方式是相同的。 但由于 Greg Ewing 的补丁，``f(*args, **kw)``"
+" 是一种更简洁明了的方式来实现相同的效果。 这种语法与定义函数的语法是对称的。"
 
 #: ../../whatsnew/2.0.rst:518
 msgid ""
@@ -765,6 +799,9 @@ msgid ""
 "``sys.stdout`` and then restore the old value.  For sending output to "
 "standard error, it's much easier to write this::"
 msgstr ""
+"``print`` 语句现在可以通过在 ``print`` 后面加上 ``>> file`` 来将其输出定向到文件型对象，这类似于 Unix shell"
+" 中的重定向操作符。 以前，你要么必须使用文件对象的 :meth:`!write` 方法，这缺乏 ``print`` 的方便和简单，要么你可以为 "
+"``sys.stdout`` 分配一个新值，然后恢复旧值。 为了将输出发送到标准错误，现在可以更简单地写成这样::"
 
 #: ../../whatsnew/2.0.rst:528
 msgid ""
@@ -772,6 +809,8 @@ msgid ""
 "module as name`` or ``from module import name as othername``.  The patch was"
 " submitted by Thomas Wouters."
 msgstr ""
+"模块现在可以在导入时重命名，使用语法 ``import module as name`` 或 ``from module import name as "
+"othername``。这个补丁是由 Thomas Wouters 提交的。"
 
 #: ../../whatsnew/2.0.rst:532
 msgid ""
@@ -781,6 +820,9 @@ msgid ""
 "which inserts the :func:`str` of its argument.  For example, ``'%r %s' % "
 "('abc', 'abc')`` returns a string containing ``'abc' abc``."
 msgstr ""
+"当使用 ``%`` 操作符时有一种新的格式样式可用；'%r' 将插入其参数的 :func:`repr` 表示。 这也是为了对称性，这次是为了与现有的 "
+"%s 格式样式对称，后者插入其参数的 :func:`str` 表示。例如，``'%r %s' % ('abc', 'abc')`` 返回一个包含 "
+"``'abc' abc`` 的字符串。"
 
 #: ../../whatsnew/2.0.rst:538
 msgid ""
@@ -794,6 +836,10 @@ msgid ""
 "built-in objects written in C can define what :keyword:`!in` means for them "
 "via a new slot in the sequence protocol."
 msgstr ""
+"以前没有办法实现一个类来重载 Python 的内置 :keyword:`in` 操作符并实现自定义版本。``obj in seq`` 返回真如果 "
+"*obj* 存在于序列 *seq* 之中；Python 通过简单地尝试索引来计算这个结果，直到找到 *obj* 或遇到 "
+":exc:`IndexError`。 Moshe Zadka 提供了一个补丁，增加了一个 :meth:`!__contains__` 魔术方法，用于为 "
+":keyword:`!in` 提供自定义实现。 此外，用 C 编写的新内置对象可以通过序列协议中的新槽定义 :keyword:`!in` 对它们的含义。"
 
 #: ../../whatsnew/2.0.rst:547
 msgid ""
@@ -804,6 +850,9 @@ msgid ""
 " and crashed; Jeremy Hylton rewrote the code to no longer crash, producing a"
 " useful result instead.  For example, after this code::"
 msgstr ""
+"早期版本的 Python 使用递归算法来删除对象。深度嵌套的数据结构可能导致解释器填满 C 栈并崩溃。 Christian Tismer "
+"重写了删除逻辑来解决这个问题。 相关地，比较递归对象时会导致无线递归并崩溃。Jeremy Hylton 重写了代码，使其不再崩溃，而是产生有用的结果。 "
+"例如，在以下代码之后::"
 
 #: ../../whatsnew/2.0.rst:559
 msgid ""
@@ -816,6 +865,10 @@ msgid ""
 "even if a user-defined :meth:`!__cmp__` method encountered an error, since "
 "the resulting exception would simply be silently swallowed."
 msgstr ""
+"比较 ``a==b`` 将返回真值，因为这两个递归数据结构是同构的。 请参阅 python-dev 邮件列表 2000 年 4 月的存档中的 "
+"\"trashcan and PR#7\" 帖子，以了解导致此实现的讨论和一些相关的有用链接。 请注意，现在的比较操作也可以引发异常。 在早期版本的 "
+"Python 中，即使用户定义的 :meth:`!__cmp__` 方法遇到错误，譬如 ``cmp(a,b)`` "
+"的比较操作也总会产生一个答案，因为结果异常会被静默处理掉。"
 
 #: ../../whatsnew/2.0.rst:571
 msgid ""
@@ -826,6 +879,10 @@ msgid ""
 "also supports Windows CE; see the Python CE page at "
 "https://pythonce.sourceforge.net/ for more information."
 msgstr ""
+"来自 ActiveState 的 Trent Mick 主要负责将 Python 移植到 Itanium 处理器上的 64 位 Windows 上。 "
+"（令人困惑的是，在 Win64 上，``sys.platform`` 类型仍然是 ``'win32'`` 的，因为为了便于移植，MS Visual "
+"C++ 在 Itanium 上将代码视为 32 位。） PythonWin 还支持 Windows CE；更多信息请参见 "
+"https://pythonce.sourceforge.net/ 的 Python CE 页面。"
 
 #: ../../whatsnew/2.0.rst:577
 msgid ""
@@ -834,6 +891,8 @@ msgid ""
 "suffix=.x\". Consult the README in the Python source distribution for more "
 "instructions."
 msgstr ""
+"另一个新的平台是 Darwin/MacOS X；Python 2.0 中提供了初步支持。如果你指定 \"configure --with-dyld "
+"--with-suffix=.x\"，动态加载是可行的。 有关更多说明，请参阅 Python 源代码分发中的 README 文件。"
 
 #: ../../whatsnew/2.0.rst:581
 msgid ""
@@ -846,6 +905,11 @@ msgid ""
 "of :exc:`NameError`, so any existing code that expects :exc:`NameError` to "
 "be raised should still work. ::"
 msgstr ""
+"已经尝试解决 Python 的一个问题，即当代码在局部变量赋值之前引用该变量时，会引发经常令人困惑的 :exc:`NameError` "
+"异常。例如，以下代码在 1.5.2 和 2.0 中都会在 ``print`` 语句上引发异常；在 1.5.2 中，会引发 "
+":exc:`NameError` 异常，而在 2.0 中，会引发一个新的 :exc:`UnboundLocalError` 异常。 "
+":exc:`UnboundLocalError` 是 :exc:`NameError` 的子类，因此任何期望引发 :exc:`NameError` "
+"的现有代码应该仍然可以正常工作。"
 
 #: ../../whatsnew/2.0.rst:595
 msgid ""
@@ -869,6 +933,10 @@ msgid ""
 "``None`` if the sequences aren't all of the same length, while :func:`zip` "
 "truncates the returned list to the length of the shortest argument sequence."
 msgstr ""
+"添加了一个新的内置函数 ``zip(seq1, seq2, ...)``。:func:`zip` "
+"返回一个包含元组的列表，每个元组包含每个参数序列的第i个元素。:func:`zip` 和 ``map(None, seq1, seq2)`` "
+"的区别在于，如果序列长度不一致，:func:`map` 会用 ``None`` 填充序列，而 :func:`zip` "
+"会将返回的列表截短到最短的参数序列的长度。"
 
 #: ../../whatsnew/2.0.rst:610
 msgid ""
@@ -878,6 +946,9 @@ msgid ""
 ":exc:`TypeError` exception with the message \"can't convert non-string with "
 "explicit base\"."
 msgstr ""
+":func:`int` 和 :func:`!long` 函数现在在第一个参数是字符串时接受一个可选的“base”参数。``int('123', "
+"10)`` 返回 123，而 ``int('123', 16)`` 返回 291。``int(123, 16)`` 会引发一个 "
+":exc:`TypeError` 异常，消息为 \"can't convert non-string with explicit base\"。"
 
 #: ../../whatsnew/2.0.rst:616
 msgid ""
@@ -887,6 +958,10 @@ msgid ""
 "``sys.version_info`` would be ``(2, 0, 1, 'beta', 1)``. *level* is a string "
 "such as ``\"alpha\"``, ``\"beta\"``, or ``\"final\"`` for a final release."
 msgstr ""
+"在 :mod:`sys` 模块中添加了一个新变量，用于保存更详细的版本信息。 ``sys.version_info`` 是一个包含五个元素的元组 "
+"``(major, minor, micro, level, serial)``。 例如，在假设的 2.0.1beta1 "
+"版本中，``sys.version_info`` 将是 ``(2, 0, 1, 'beta', 1)``。 *level* 是一个字符串，如 "
+"``\"alpha\"``、``\"beta\"`` 或代表最终发布版本的 ``\"final\"``。"
 
 #: ../../whatsnew/2.0.rst:622
 msgid ""
@@ -896,11 +971,14 @@ msgid ""
 ":meth:`!get` would do, and also inserts it into the dictionary as the value "
 "for *key*.  Thus, the following lines of code::"
 msgstr ""
+"字典有一个特别的新方法 ``setdefault(key, default)``，其行为与现有的 :meth:`!get` 方法类似。 "
+"但是，如果键找不到，:meth:`!setdefault` 既会像 :meth:`!get` 一样返回 *default* 的值，也会将其插入字典作为 "
+"*key* 的值。 因此，下面的代码行::"
 
 #: ../../whatsnew/2.0.rst:633
 msgid ""
 "can be reduced to a single ``return dict.setdefault(key, [])`` statement."
-msgstr ""
+msgstr "可以简化为单个``return dict.setdefault(key, [])``语句。"
 
 #: ../../whatsnew/2.0.rst:635
 msgid ""
@@ -912,6 +990,10 @@ msgid ""
 " value is 1000, and a rough maximum value for a given platform can be found "
 "by running a new script, :file:`Misc/find_recursionlimit.py`."
 msgstr ""
+"解释器设置了一个最大递归深度，以便在填满 C 栈并导致核心储存或 GPF 之前捕获失控递归。以前这个限制是在编译 Python 时固定的，但在 2.0 "
+"中最大递归深度可以使用 :func:`sys.getrecursionlimit` 和 :func:`sys.setrecursionlimit` "
+"读取和修改。 默认值是 1000，可以通过运行一个新脚本 :file:`Misc/find_recursionlimit.py` "
+"来找到给定平台的大致的最大值。"
 
 #: ../../whatsnew/2.0.rst:647
 msgid "Porting to 2.0"
@@ -926,6 +1008,9 @@ msgid ""
 "always be avoided. This section lists the changes in Python 2.0 that may "
 "cause old Python code to break."
 msgstr ""
+"新的 Python 版本尽力与之前的版本兼容，而且兼容性记录相当不错。 "
+"然而，有些变化被认为足够有用，通常是因为他们修正了最终设计中的错误决定，因此有时无法避免打破向后兼容性。 本节列出了 Python 2.0 中可能导致旧"
+" Python 代码中断的更改。"
 
 #: ../../whatsnew/2.0.rst:656
 msgid ""
@@ -939,6 +1024,11 @@ msgid ""
 " to simply add an extra set of parentheses to pass both values as a tuple:  "
 "``L.append( (1,2) )``."
 msgstr ""
+"可能会导致最多代码中断的更改是对某些方法接受的参数进行了严格限制。一些方法会接受多个参数并将它们视为一个元组，特别是各种列表方法，如 "
+":meth:`!append` 和 :meth:`!insert`。在早期版本的Python中，如果 ``L`` 是一个列表，``L.append( "
+"1,2 )`` 会将元组 ``(1,2)`` 附加到列表中。在Python 2.0中，这会引发一个 :exc:`TypeError` "
+"异常，消息为：“append requires exactly 1 argument; 2 "
+"given”。解决方法是简单地添加一组括号，将两个值作为一个元组传递：``L.append( (1,2) )``。"
 
 #: ../../whatsnew/2.0.rst:665
 msgid ""
@@ -951,6 +1041,10 @@ msgid ""
 "preprocessor symbol ``NO_STRICT_LIST_APPEND`` to preserve the old behaviour;"
 " this isn't recommended."
 msgstr ""
+"这些方法的早期版本更加宽容，因为它们使用了 Python C 接口中的一个旧函数来解析它们的参数；2.0 版本将它们现代化，使用 "
+":c:func:`PyArg_ParseTuple`，这是当前的参数解析函数，它提供了更有用的错误消息，并将多参数调用视为错误。如果你必须使用 2.0 "
+"但无法修复你的代码，可以编辑 :file:`Objects/listobject.c` 并定义预处理符号 "
+"``NO_STRICT_LIST_APPEND`` 以保留旧的行为；但这并不推荐。"
 
 #: ../../whatsnew/2.0.rst:673
 msgid ""
@@ -967,6 +1061,13 @@ msgid ""
 " marked as deprecated; it *will* be tightened up again in a future Python "
 "version."
 msgstr ""
+":mod:`socket` 模块中的某些函数仍然是宽容的。 例如，``socket.connect( ('hostname', 25) )`` "
+"是正确的形式，传递一个表示 IP 地址的元组，但 ``socket.connect('hostname', 25)`` 也可以工作。 "
+":meth:`socket.connect_ex <socket.socket.connect_ex>` 和 :meth:`socket.bind "
+"<socket.socket.bind>` 也是类似的宽松方式。 2.0alpha1 "
+"会更严格地检查这些函数，但是由于文档实际上使用了错误的多参数形式，许多人编写的代码在更严格的检查下会出错。 面对公众的反应 GvR "
+"撤销了这些理性，因此对于 :mod:`socket` 模块，文档已被修正，多参数形式只是被标记为已弃用；在未来的 Python 版本中它 *将会* "
+"再次变得严格。"
 
 #: ../../whatsnew/2.0.rst:684
 msgid ""
@@ -975,6 +1076,8 @@ msgid ""
 "the lowest 8 bits of the result, so ``\\x123456`` was equivalent to "
 "``\\x56``."
 msgstr ""
+"字符串字面量中的 ``\\x`` 转义现在必须精确地使用2个十六进制数字。之前它会消耗 x 后面的所有十六进制数字，并取结果的最低8位，所以 "
+"``\\x123456`` 等同于 ``\\x56``。"
 
 #: ../../whatsnew/2.0.rst:688
 msgid ""
@@ -984,6 +1087,9 @@ msgid ""
 " error message was just the missing attribute name ``eggs``, and code "
 "written to take advantage of this fact will break in 2.0."
 msgstr ""
+":exc:`AttributeError` 和 :exc:`NameError` 异常现在有了更友好的错误消息，其文本内容类似于 ``'Spam' "
+"instance has no attribute 'eggs'`` 或 ``name 'eggs' is not defined``。 "
+"之前的错误消息只是缺少的属性名称，如 ``eggs``，因此利用这一事实编写的代码在 2.0 中会中断。"
 
 #: ../../whatsnew/2.0.rst:694
 msgid ""
@@ -1001,6 +1107,13 @@ msgid ""
 "the ``%`` operator (``%d``, ``%i``, ``%x``, etc.).  For example, ``\"%d\" % "
 "2L**64`` will produce the string ``18446744073709551616``."
 msgstr ""
+"在 Python 2.0 中，做了一些工作使得整数和长整数更加可互换。 在 1.5.2 中，为 Solaris 添加了大文件支持，允许读取大于 2 "
+"GiB 的文件；这使得文件对象的 :meth:`!tell` 方法返回长整数而不是常规整数。 "
+"一些代码会减去两个文件偏移量，并尝试使用结果来乘以一个序列或切片一个字符串，但这会引发 :exc:`TypeError`。 在 2.0 "
+"中，长整数可以用于乘以或切片一个序列，并且会按直觉行为；例如，``3L * 'abc'``' 生成 "
+"'abcabcabc'，``(0,1,2,3)[2L:4L]`` 生成 (2,3)。 长整数也可以在以前只接受整数的各种上下文中使用，例如文件对象的 "
+":meth:`!seek` 方法，以及 ``%`` 操作符支持的格式（如 ``%d``、``%i``、``%x`` 等）。 例如，``\"%d\" % "
+"2L**64`` 将生成字符串 ``18446744073709551616``。"
 
 #: ../../whatsnew/2.0.rst:708
 msgid ""
@@ -1012,6 +1125,9 @@ msgid ""
 " which does ``str(longval)[:-1]`` and assumes the 'L' is there, will now "
 "lose the final digit."
 msgstr ""
+"最微妙的长整数变化是，长整数的 :func:`str` 表示不再有尾随的 'L' 字符，尽管 :func:`repr` "
+"表示仍然包含它。许多人在打印长整数时不希望看到 'L' 字符，因为他们不得不专门去掉这个字符。在2.0中，这不再是一个问题，但那些使用 "
+"``str(longval)[:-1]`` 并假设存在 'L' 的代码，现在将丢失最后一个数字。"
 
 #: ../../whatsnew/2.0.rst:716
 msgid ""
