@@ -529,6 +529,10 @@ msgid ""
 "strange command-line flags or libraries that are required for a specific "
 "platform."
 msgstr ""
+"不再需要编辑 :file:`Modules/Setup` 文件来启用模块，而是在 Python 源代码分发包的顶层目录运行一个 "
+":file:`setup.py` 脚本，该脚本在构建时尝试通过检查系统上的模块和头文件来发现可以启用那些模块。 如果某个模块已在 "
+":file:`Modules/Setup` 中配置，则 :file:`setup.py` 脚本不会尝试编译该模块，并会遵从 "
+":file:`Modules/Setup` 文件中的内容。 这提供了一种方式来指定特定平台所需的任何奇怪的命令行旗标或库。"
 
 #: ../../whatsnew/2.1.rst:325
 msgid ""
@@ -539,6 +543,9 @@ msgid ""
 "subdirectories.  This makes building Python faster and also makes hacking "
 "the Makefiles clearer and simpler."
 msgstr ""
+"在对构建机制的另一项重大更改中，Neil Schemenauer 对其进行了重组，现在 Python 使用单一的非递归 "
+"makefile，而不是在顶层目录和 :file:`Python/`、:file:`Parser/`、:file:`Objects/`和 "
+":file:`Modules/` 子目录中的多个 makefile。这使得构建 Python 更快，同时也使修改 Makefile 更加清晰和简单。"
 
 #: ../../whatsnew/2.1.rst:335
 msgid ":pep:`229` - Using Distutils to Build Python"
@@ -556,7 +563,7 @@ msgstr "PEP 205: 弱引用"
 msgid ""
 "Weak references, available through the :mod:`weakref` module, are a minor "
 "but useful new data type in the Python programmer's toolbox."
-msgstr ""
+msgstr "弱引用，通过 :mod:`weakref` 模块提供，是 Python 程序员工具箱中一种较小但有用的新数据类型。"
 
 #: ../../whatsnew/2.1.rst:347
 msgid ""
@@ -566,13 +573,15 @@ msgid ""
 "common one, and another being circular references in data structures such as"
 " trees."
 msgstr ""
+"存储一个指向对象的引用（例如，在字典或列表中）会导致该对象永久存活。 "
+"在某些特定情况下，这种行为是不符合需要的，最常见的是对象缓存，另一个是像树这样的数据结构中的循环引用。"
 
 #: ../../whatsnew/2.1.rst:352
 msgid ""
 "For example, consider a memoizing function that caches the results of "
 "another function ``f(x)`` by storing the function's argument and its result "
 "in a dictionary::"
-msgstr ""
+msgstr "例如，考虑一个记忆化函数，它通过将函数的参数及其结果存储在字典中来缓存另一个函数 ``f(x)`` 的结果::"
 
 #: ../../whatsnew/2.1.rst:368
 msgid ""
@@ -594,6 +603,10 @@ msgid ""
 "were a function: ``wr()``.  It will return the referenced object, or "
 "``None`` if the object no longer exists."
 msgstr ""
+"弱引用提供了一种实现缓存的方法，不会让对象在其生命周期结束后仍然存活。 "
+"如果一个对象仅通过弱引用访问，该对象将被释放，并且弱引用将指示它所引用的对象不再存在。 通过调用 ``wr = weakref.ref(obj)`` "
+"来创建对对象 *obj* 的弱引用。 通过调用弱引用，就像调用函数一样，可以返回被引用的对象: ``wr()``。 "
+"如果对象仍然存在，它将返回被引用的对象；如果对象不再存在，则返回 ``None``。"
 
 #: ../../whatsnew/2.1.rst:382
 msgid ""
@@ -642,7 +655,7 @@ msgstr ""
 msgid ""
 "Arbitrary attributes can now be set and retrieved on functions using the "
 "regular Python syntax::"
-msgstr ""
+msgstr "现在可以使用常规的 Python 语法在函数上设置和检索任意属性::"
 
 #: ../../whatsnew/2.1.rst:444
 msgid ""
@@ -673,6 +686,8 @@ msgid ""
 "distinguish the filenames ``FILE.PY`` and ``file.py``, even though they do "
 "store the file's name  in its original case (they're case-preserving, too)."
 msgstr ""
+"一些操作系统的文件系统是大小写不敏感的，MacOS 和 Windows 是主要的例子；在这些系统上，无法区分文件名 ``FILE.PY`` 和 "
+"``file.py``，尽管它们确实以原始大小写存储文件名（它们是保留大小写的）。"
 
 #: ../../whatsnew/2.1.rst:468
 msgid ""
@@ -684,6 +699,10 @@ msgid ""
 ":envvar:`PYTHONCASEOK` environment variable before starting the Python "
 "interpreter."
 msgstr ""
+"在 Python 2.1 中，:keyword:`import` 语句可以在不区分大小写的平台上模拟大小写敏感性。 现在，Python "
+"默认搜索第一个大小写敏感匹配的文件，如果找不到这样的文件，就会引发 :exc:`ImportError`，因此 ``import file`` "
+"不会导入名为 ``FILE.PY`` 的模块。 在启动 Python 解释器之前，可以通过设置 :envvar:`PYTHONCASEOK` "
+"环境变量来请求大小写不敏感匹配。"
 
 #: ../../whatsnew/2.1.rst:479
 msgid "PEP 217: Interactive Display Hook"
@@ -697,6 +716,9 @@ msgid ""
 "be called instead of :func:`repr`. For example, you can set it to a special "
 "pretty-printing function::"
 msgstr ""
+"在交互模式下使用 Python 解释器时，命令的输出是通过内置的 :func:`repr` 函数显示的。 在 Python 2.1 中，可以将变量 "
+":func:`sys.displayhook` 设置为一个可调用对象，该对象将在代替 :func:`repr` 函数被调用。 "
+"例如，你可以将其设置为一个特殊的美化打印函数::"
 
 #: ../../whatsnew/2.1.rst:502
 msgid ":pep:`217` - Display Hook for Interactive Use"
@@ -716,6 +738,7 @@ msgid ""
 "This will only affect the authors of C extensions to Python, allowing them "
 "more flexibility in writing extension types that support numeric operations."
 msgstr ""
+"在 C 级别上的数值类型转换方法进行了重大修改。 这只会影响编写 Python C 扩展的作者，使他们在编写支持数值运算的扩展类型时有更多的灵活性。"
 
 #: ../../whatsnew/2.1.rst:515
 msgid ""
@@ -734,6 +757,12 @@ msgid ""
 "not exist (perhaps raising a :exc:`TypeError`, perhaps trying another "
 "object's numeric methods)."
 msgstr ""
+"扩展类型现在可以在其 ``PyTypeObject`` 结构中设置类型标志 "
+"``Py_TPFLAGS_CHECKTYPES``，以表明它们支持新的强制模型。 "
+"在此类扩展类型中，数字槽函数不再假定它们将得到两个相同类型的参数；相反，它们可能会得到两个不同类型的参数，然后可以执行自己的内部强制。如果槽函数传递给它一个无法处理的类型，它可以通过返回一个指向"
+" ``Py_NotImplemented`` 单一值的引用来表示失败。 然后将尝试其他类型的数值函数，也许它们可以处理该操作；如果其他类型也返回 "
+"``Py_NotImplemented``，那么将引发 :exc:`TypeError`。 用 Python 写的数值方法也可以返回 "
+"``Py_NotImplemented``，导致解释器当作该方法不存在（也许会引发 :exc:`TypeError`，也许会尝试另一个对象的数值方法）。"
 
 #: ../../whatsnew/2.1.rst:534
 msgid ":pep:`208` - Reworking the Coercion Model"
@@ -745,6 +774,8 @@ msgid ""
 " by Marc-André Lemburg.  Read this to understand the fine points of how "
 "numeric operations will now be processed at the C level."
 msgstr ""
+"由 Neil Schemenauer 编写和实现，基于 Marc-André Lemburg 的早期工作。阅读这部分内容可以了解数值运算在 C "
+"级别上现在如何处理的细节。"
 
 #: ../../whatsnew/2.1.rst:541
 msgid "PEP 241: Metadata in Python Packages"
