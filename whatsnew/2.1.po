@@ -585,13 +585,15 @@ msgid ""
 "common one, and another being circular references in data structures such as"
 " trees."
 msgstr ""
+"存储一个指向对象的引用（例如，在字典或列表中）会导致该对象永久存活。 "
+"在某些特定情况下，这种行为是不符合需要的，最常见的是对象缓存，另一个是像树这样的数据结构中的循环引用。"
 
 #: ../../whatsnew/2.1.rst:352
 msgid ""
 "For example, consider a memoizing function that caches the results of "
 "another function ``f(x)`` by storing the function's argument and its result "
 "in a dictionary::"
-msgstr ""
+msgstr "例如，考虑一个记忆化函数，它通过将函数的参数及其结果存储在字典中来缓存另一个函数 ``f(x)`` 的结果::"
 
 #: ../../whatsnew/2.1.rst:368
 msgid ""
@@ -602,6 +604,8 @@ msgid ""
 "object, or a data structure that takes up a lot of memory, this can be a "
 "problem."
 msgstr ""
+"这个版本适用于诸如整数之类的简单对象，但它有一个副作用；``_cache`` 字典持有返回值的引用，因此这些值在 Python "
+"进程退出并清理之前永远不会被释放。 对于整数来说这不是很明显，但如果 :func:`!f` 返回一个对象或占用大量内存的数据结构，这可能会成为一个问题。"
 
 #: ../../whatsnew/2.1.rst:374
 msgid ""
@@ -614,12 +618,16 @@ msgid ""
 "were a function: ``wr()``.  It will return the referenced object, or "
 "``None`` if the object no longer exists."
 msgstr ""
+"弱引用提供了一种实现缓存的方法，不会让对象在其生命周期结束后仍然存活。 "
+"如果一个对象仅通过弱引用访问，该对象将被释放，并且弱引用将指示它所引用的对象不再存在。 通过调用 ``wr = weakref.ref(obj)`` "
+"来创建对对象 *obj* 的弱引用。 通过调用弱引用，就像调用函数一样，可以返回被引用的对象: ``wr()``。 "
+"如果对象仍然存在，它将返回被引用的对象；如果对象不再存在，则返回 ``None``。"
 
 #: ../../whatsnew/2.1.rst:382
 msgid ""
 "This makes it possible to write a :func:`!memoize` function whose cache "
 "doesn't keep objects alive, by storing weak references in the cache. ::"
-msgstr ""
+msgstr "这使得可以编写一个 :func:`!memoize` 函数，其缓存不会使对象保持存活状态，因为缓存中存储的是弱引用。 ::"
 
 #: ../../whatsnew/2.1.rst:400
 msgid ""
@@ -631,6 +639,9 @@ msgid ""
 "to use a proxy will cause a :exc:`!weakref.ReferenceError` exception to be "
 "raised. ::"
 msgstr ""
+":mod:`weakref` 模块还允许创建代理对象，代理对象的行为类似于弱引用 -- "
+"仅被代理对象引用的对象会被解分配，但只要对象仍然存在，代理就会透明地将所有操作转发给对象，而不需要显式调用来检索对象。 "
+"如果对象已被解分配，尝试使用代理将引发 :exc:`!weakref.ReferenceError` 异常。 ::"
 
 #: ../../whatsnew/2.1.rst:416
 msgid ":pep:`205` - Weak References"
@@ -657,12 +668,16 @@ msgid ""
 "documentation; for example, it means you can't properly document functions "
 "intended for private use in Zope."
 msgstr ""
+"在 Python 2.1 中，函数现在可以附加任意信息。人们经常使用文档字符串来保存有关函数和方法的信息，因为 "
+":attr:`~function.__doc__` 属性是唯一可以将任何信息附加到函数上的方式。例如，在 Zope "
+"网络应用服务器中，函数通过拥有文档字符串来标记为公共访问安全，在 John Aycock 的 SPARK 解析框架中，文档字符串包含要解析的 BNF "
+"语法的部分。这种过载是不幸的，因为文档字符串实际上是用来保存函数文档的；例如，这意味着你不能正确地为 Zope 中预期用于私有用途的函数编写文档。"
 
 #: ../../whatsnew/2.1.rst:436
 msgid ""
 "Arbitrary attributes can now be set and retrieved on functions using the "
 "regular Python syntax::"
-msgstr ""
+msgstr "现在可以使用常规的 Python 语法在函数上设置和检索任意属性::"
 
 #: ../../whatsnew/2.1.rst:445
 msgid ""
@@ -673,6 +688,9 @@ msgid ""
 "Python dictionary; you *can't* be tricky and set it to a :class:`!UserDict` "
 "instance, or any other random object that behaves like a mapping."
 msgstr ""
+"包含属性的字典可以作为函数的 :attr:`~object.__dict__` 访问。 与类实例的 :attr:`~object.__dict__` "
+"属性不同，在函数中，您实际上可以为 :attr:`~object.__dict__` 分配一个新的字典，尽管新值仅限于普通的 Python 字典；您 "
+"*不能* 狡猾地将其设置为 :class:`!UserDict` 实例，或任何其他行为类似映射的随机对象。"
 
 #: ../../whatsnew/2.1.rst:455
 msgid ":pep:`232` - Function Attributes"
@@ -693,6 +711,8 @@ msgid ""
 "distinguish the filenames ``FILE.PY`` and ``file.py``, even though they do "
 "store the file's name  in its original case (they're case-preserving, too)."
 msgstr ""
+"一些操作系统的文件系统是大小写不敏感的，MacOS 和 Windows 是主要的例子；在这些系统上，无法区分文件名 ``FILE.PY`` 和 "
+"``file.py``，尽管它们确实以原始大小写存储文件名（它们也是保留大小写的）。"
 
 #: ../../whatsnew/2.1.rst:469
 msgid ""
@@ -704,6 +724,10 @@ msgid ""
 ":envvar:`PYTHONCASEOK` environment variable before starting the Python "
 "interpreter."
 msgstr ""
+"在 Python 2.1 中，:keyword:`import` 语句可以在不区分大小写的平台上模拟大小写敏感性。 现在，Python "
+"默认搜索第一个大小写敏感匹配的文件，如果找不到这样的文件，就会引发 :exc:`ImportError`，因此 ``import file`` "
+"不会导入名为 ``FILE.PY`` 的模块。 在启动 Python 解释器之前，可以通过设置 :envvar:`PYTHONCASEOK` "
+"环境变量来请求大小写不敏感匹配。"
 
 #: ../../whatsnew/2.1.rst:480
 msgid "PEP 217: Interactive Display Hook"
@@ -717,6 +741,9 @@ msgid ""
 "be called instead of :func:`repr`. For example, you can set it to a special "
 "pretty-printing function::"
 msgstr ""
+"在交互模式下使用 Python 解释器时，命令的输出是通过内置的 :func:`repr` 函数显示的。 在 Python 2.1 中，可以将变量 "
+":func:`sys.displayhook` 设置为一个可调用对象，该对象将在代替 :func:`repr` 函数被调用。 "
+"例如，你可以将其设置为一个特殊的美化打印函数::"
 
 #: ../../whatsnew/2.1.rst:503
 msgid ":pep:`217` - Display Hook for Interactive Use"
@@ -736,6 +763,7 @@ msgid ""
 "This will only affect the authors of C extensions to Python, allowing them "
 "more flexibility in writing extension types that support numeric operations."
 msgstr ""
+"在 C 级别上的数值类型转换方法进行了重大修改。 这只会影响编写 Python C 扩展的作者，使他们在编写支持数值运算的扩展类型时有更多的灵活性。"
 
 #: ../../whatsnew/2.1.rst:516
 msgid ""
@@ -754,6 +782,12 @@ msgid ""
 "not exist (perhaps raising a :exc:`TypeError`, perhaps trying another "
 "object's numeric methods)."
 msgstr ""
+"扩展类型现在可以在其 ``PyTypeObject`` 结构中设置类型标志 "
+"``Py_TPFLAGS_CHECKTYPES``，以表明它们支持新的强制模型。 "
+"在此类扩展类型中，数字槽函数不再假定它们将得到两个相同类型的参数；相反，它们可能会得到两个不同类型的参数，然后可以执行自己的内部强制。如果槽函数传递给它一个无法处理的类型，它可以通过返回一个指向"
+" ``Py_NotImplemented`` 单一值的引用来表示失败。 然后将尝试其他类型的数值函数，也许它们可以处理该操作；如果其他类型也返回 "
+"``Py_NotImplemented``，那么将引发 :exc:`TypeError`。 用 Python 写的数值方法也可以返回 "
+"``Py_NotImplemented``，导致解释器当作该方法不存在（也许会引发 :exc:`TypeError`，也许会尝试另一个对象的数值方法）。"
 
 #: ../../whatsnew/2.1.rst:533
 msgid ":pep:`208` - Reworking the Coercion Model"
@@ -765,6 +799,8 @@ msgid ""
 " by Marc-André Lemburg.  Read this to understand the fine points of how "
 "numeric operations will now be processed at the C level."
 msgstr ""
+"由 Neil Schemenauer 编写和实现，基于 Marc-André Lemburg 的早期工作。阅读这部分内容可以了解数值运算在 C "
+"级别上现在如何处理的细节。"
 
 #: ../../whatsnew/2.1.rst:542
 msgid "PEP 241: Metadata in Python Packages"
@@ -780,6 +816,11 @@ msgid ""
 " was the largest catalog of Python modules, but registering software at the "
 "Vaults is optional, and many people did not bother."
 msgstr ""
+"Python 用户经常抱怨的一个问题是不存在包含所有 Python 模块的单一类目。 位于 ``www.vex.net/parnassus/`` 上 "
+"T. Middleton 的 Vaults of Parnassus (2009 年 2 月已停用，`可在 Internet Archive "
+"Wayback Machine "
+"<https://web.archive.org/web/20090130140102/http://www.vex.net/parnassus/>`_"
+" 上查阅) 是最大的 Python 模块类目，但在 Vaults 上注册软件只是个可选项，很多人都懒得这样做。"
 
 #: ../../whatsnew/2.1.rst:552
 msgid ""
@@ -796,6 +837,12 @@ msgid ""
 "and :command:`bdist_\\*` commands could support an ``upload`` option that "
 "would automatically upload your package to a catalog server."
 msgstr ""
+"作为解决这个问题的第一步，使用 Distutils :command:`sdist` 命令打包的 Python 软件将包含一个名为 "
+":file:`PKG-INFO` 的文件，其中包含有关包的信息，如名称、版本和作者（在目录编制术语中称为元数据）。:file:`PKG-INFO` "
+"文件可以包含的字段的完整列表见 :pep:`241`。随着人们开始使用 Python 2.1 "
+"打包他们的软件，越来越多的包将包含元数据，从而使得构建自动化目录系统并进行实验成为可能。通过积累经验，也许有可能设计一个真正好的目录系统，然后在 "
+"Python 2.2 中支持它。例如，Distutils 的 :command:`sdist` 和 :command:`bdist_\\*` "
+"命令可以支持一个 ``upload`` 选项，自动将你的包上传到目录服务器。"
 
 #: ../../whatsnew/2.1.rst:565
 msgid ""
