@@ -246,6 +246,8 @@ msgid ""
 "this class couldn't be passed to internal functions that expected a built-in"
 " file, something which is possible with our new :class:`!LockableFile`."
 msgstr ""
+"现在已经过时的 :mod:`!posixfile` 模块包含一个类，该类模仿了文件对象的所有方法，并添加了一个 :meth:`!lock` "
+"方法，但这个类不能传递给期望内置文件对象的内部函数，而这在我们的新 :class:`!LockableFile` 实现中是可能的。"
 
 #: ../../whatsnew/2.2.rst:153
 msgid "Descriptors"
@@ -262,6 +264,9 @@ msgid ""
 " when class inheritance or an arbitrary :meth:`!__getattr__` hook were in "
 "use this could still be inaccurate."
 msgstr ""
+"在以前的 Python 版本中，没有一致的方法来发现对象支持的属性和方法。有一些非正式的约定，例如定义 :attr:`!__members__` 和 "
+":attr:`!__methods__` 属性，这些属性是名称列表，但扩展类型或类的作者往往不会去定义它们。你可以退而求其次，检查对象的 "
+":attr:`~object.__dict__` 属性，但在使用类继承或任意的 :meth:`!__getattr__` 钩子时，这仍然可能是不准确的。"
 
 #: ../../whatsnew/2.2.rst:163
 msgid ""
@@ -320,6 +325,8 @@ msgid ""
 "methods are passed the class of the object, but not the object itself.  "
 "Static and class methods are defined like this::"
 msgstr ""
+"对于方法，:meth:`!descriptor.__get__` "
+"返回一个可调用的临时对象，它将实例和要调用的方法封装在一起。这也是为什么现在可以实现静态方法和类方法的原因；它们有描述符，可以只封装方法，或者封装方法和类。作为对这些新方法类型的简要说明，静态方法不传递实例，因此类似于常规函数。类方法传递对象的类，但不传递对象本身。静态方法和类方法的定义如下："
 
 #: ../../whatsnew/2.2.rst:207
 msgid ""
@@ -524,6 +531,8 @@ msgid ""
 " more detail about the new features while still remaining quite easy to "
 "read."
 msgstr ""
+":ref:`descriptorhowto` 是由 Guido van Rossum "
+"编写的一篇详细教程，介绍了描述符功能。如果我的描述激起了你的兴趣，请继续阅读这篇教程，因为它更加详细地介绍了这些新功能，同时仍然保持了相当的易读性。"
 
 #: ../../whatsnew/2.2.rst:403
 msgid ""
@@ -838,6 +847,9 @@ msgid ""
 "to raise an :exc:`OverflowError` will now return a long integer as their "
 "result.  For example::"
 msgstr ""
+"Python 2.2 将根据需要将数值从短整数转换为长整数。'L' 后缀不再需要用于表示长整数字面量，因为现在编译器会自动选择适当的类型。（在未来的 "
+"2.x 版本的 Python 中，使用 'L' 后缀将被不鼓励，并在 Python 2.4 中触发警告，可能在 Python 3.0 "
+"中被移除。）许多以前会引发 :exc:`OverflowError` 的操作现在会返回一个长整数作为结果。例如："
 
 #: ../../whatsnew/2.2.rst:694
 msgid ""
@@ -947,10 +959,13 @@ msgid ""
 "division without a warning; the warning will be turned on by default in "
 "Python 2.3."
 msgstr ""
+"Python 2.2 支持一些命令行参数，用于测试代码是否能在除法语义改变的情况下正常工作。运行 Python 并使用 -Q warn "
+"选项时，当对两个整数应用除法时会发出警告。你可以利用这个功能找到受影响的代码并进行修复。默认情况下，Python 2.2 "
+"会执行经典除法而不会发出警告；在 Python 2.3 中，警告将默认开启。"
 
 #: ../../whatsnew/2.2.rst:770
 msgid ":pep:`238` - Changing the Division Operator"
-msgstr ""
+msgstr ":pep:`238`：改变除法运算符"
 
 #: ../../whatsnew/2.2.rst:771
 msgid ""
@@ -1314,6 +1329,8 @@ msgid ""
 "write Python code, none of the changes described here will affect you very "
 "much."
 msgstr ""
+"有些变化只会影响那些在 C 级别处理 Python 解释器的人，因为他们正在编写 Python "
+"扩展模块、嵌入解释器或仅仅是在修改解释器本身。如果你只编写 Python 代码，这里描述的变化对你几乎没有影响。"
 
 #: ../../whatsnew/2.2.rst:1056
 msgid ""
@@ -1348,6 +1365,8 @@ msgid ""
 "collection, so updating them for 2.2 should be considered fairly high "
 "priority."
 msgstr ""
+"垃圾收集器的 C 级接口已经发生了变化，使得编写支持垃圾收集的扩展类型和调试函数误用变得更容易。各种函数的语义略有不同，因此需要重命名一系列函数。使用旧"
+" API 的扩展仍然可以编译，但不会参与垃圾收集，因此应优先考虑将它们更新为 2.2 版本。"
 
 #: ../../whatsnew/2.2.rst:1079
 msgid ""
@@ -1356,7 +1375,7 @@ msgstr "要将一个扩展模块升级至新 API，请执行下列步骤:"
 
 #: ../../whatsnew/2.2.rst:1081
 msgid "Rename :c:macro:`!Py_TPFLAGS_GC` to :c:macro:`Py_TPFLAGS_HAVE_GC`."
-msgstr ""
+msgstr "将 :c:macro:`!Py_TPFLAGS_GC` 重命名为 :c:macro:`Py_TPFLAGS_HAVE_GC`。"
 
 #: ../../whatsnew/2.2.rst:1083
 msgid ""
@@ -1375,7 +1394,7 @@ msgstr ""
 
 #: ../../whatsnew/2.2.rst:1089
 msgid "Remove :c:macro:`!PyGC_HEAD_SIZE` from object size calculations."
-msgstr ""
+msgstr "从对象大小计算中移除 :c:macro:`!PyGC_HEAD_SIZE`。"
 
 #: ../../whatsnew/2.2.rst:1091
 msgid ""
