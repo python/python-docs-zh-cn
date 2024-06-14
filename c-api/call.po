@@ -1,6 +1,636 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001-2024, Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Zxilly Chou <zhouxinyu1001@gmail.com>, 2024
+# 稀饭~~ <wangwhai@qq.com>, 2024
+# Shengjing Zhu <zsj950618@gmail.com>, 2024
+# Jiuh.star <jiuh.star@gmail.com>, 2024
+# ppcfish <ppcfish@gmail.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# helloworldSB <warningfor163@foxmail.com>, 2024
+# Yi Cao <1783250036@qq.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
+"Project-Id-Version: Python 3.13\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-17 14:15+0000\n"
+"PO-Revision-Date: 2021-06-28 00:47+0000\n"
+"Last-Translator: Yi Cao <1783250036@qq.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../c-api/call.rst:6
+msgid "Call Protocol"
+msgstr "调用协议"
+
+#: ../../c-api/call.rst:8
+msgid ""
+"CPython supports two different calling protocols: *tp_call* and vectorcall."
+msgstr "CPython 支持两种不同的调用协议：*tp_call* 和矢量调用。"
+
+#: ../../c-api/call.rst:12
+msgid "The *tp_call* Protocol"
+msgstr "*tp_call* 协议"
+
+#: ../../c-api/call.rst:14
+msgid ""
+"Instances of classes that set :c:member:`~PyTypeObject.tp_call` are "
+"callable. The signature of the slot is::"
+msgstr "设置 :c:member:`~PyTypeObject.tp_call` 的类的实例都是可调用的。 槽位的签名为::"
+
+#: ../../c-api/call.rst:19
+msgid ""
+"A call is made using a tuple for the positional arguments and a dict for the"
+" keyword arguments, similarly to ``callable(*args, **kwargs)`` in Python "
+"code. *args* must be non-NULL (use an empty tuple if there are no arguments)"
+" but *kwargs* may be *NULL* if there are no keyword arguments."
+msgstr ""
+"一个调用是用一个元组表示位置参数，用一个dict表示关键字参数，类似于Python代码中的 ``callable(*args, "
+"**kwargs)``。*args*必须是非空的（如果没有参数，会使用一个空元组），但如果没有关键字参数，*kwargs*可以是*NULL*。"
+
+#: ../../c-api/call.rst:25
+msgid ""
+"This convention is not only used by *tp_call*: "
+":c:member:`~PyTypeObject.tp_new` and :c:member:`~PyTypeObject.tp_init` also "
+"pass arguments this way."
+msgstr ""
+"这个约定不仅被*tp_call*使用： :c:member:`~PyTypeObject.tp_new` 和 "
+":c:member:`~PyTypeObject.tp_init` 也这样传递参数。"
+
+#: ../../c-api/call.rst:29
+msgid ""
+"To call an object, use :c:func:`PyObject_Call` or another :ref:`call API "
+"<capi-call>`."
+msgstr "要调用一个对象，请使用 :c:func:`PyObject_Call` 或者其他的 :ref:`调用 API <capi-call>`。"
+
+#: ../../c-api/call.rst:36
+msgid "The Vectorcall Protocol"
+msgstr "Vectorcall 协议"
+
+#: ../../c-api/call.rst:40
+msgid ""
+"The vectorcall protocol was introduced in :pep:`590` as an additional "
+"protocol for making calls more efficient."
+msgstr "vectorcall 协议是在 :pep:`590` 被引入的，它是使调用函数更加有效的附加协议。"
+
+#: ../../c-api/call.rst:43
+msgid ""
+"As rule of thumb, CPython will prefer the vectorcall for internal calls if "
+"the callable supports it. However, this is not a hard rule. Additionally, "
+"some third-party extensions use *tp_call* directly (rather than using "
+":c:func:`PyObject_Call`). Therefore, a class supporting vectorcall must also"
+" implement :c:member:`~PyTypeObject.tp_call`. Moreover, the callable must "
+"behave the same regardless of which protocol is used. The recommended way to"
+" achieve this is by setting :c:member:`~PyTypeObject.tp_call` to "
+":c:func:`PyVectorcall_Call`. This bears repeating:"
+msgstr ""
+"作为经验法则，如果可调用程序支持 vectorcall，CPython 会更倾向于内联调用。 然而，这并不是一个硬性规定。 此外，一些第三方扩展直接使用"
+" *tp_call* (而不是使用 :c:func:`PyObject_Call`)。 因此，一个支持 vectorcall 的类也必须实现 "
+":c:member:`~PyTypeObject.tp_call`。 此外，无论使用哪种协议，可调对象的行为都必须是相同的。 推荐的方法是将 "
+":c:member:`~PyTypeObject.tp_call` 设置为 :c:func:`PyVectorcall_Call`。值得一提的是:"
+
+#: ../../c-api/call.rst:57
+msgid ""
+"A class supporting vectorcall **must** also implement "
+":c:member:`~PyTypeObject.tp_call` with the same semantics."
+msgstr ""
+"一个支持 Vectorcall 的类 **必须** 也实现具有相同语义的 :c:member:`~PyTypeObject.tp_call`。"
+
+#: ../../c-api/call.rst:62
+msgid ""
+"The :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` flag is now removed from a class "
+"when the class's :py:meth:`~object.__call__` method is reassigned. (This "
+"internally sets :c:member:`~PyTypeObject.tp_call` only, and thus may make it"
+" behave differently than the vectorcall function.) In earlier Python "
+"versions, vectorcall should only be used with :c:macro:`immutable "
+"<Py_TPFLAGS_IMMUTABLETYPE>` or static types."
+msgstr ""
+"现在 :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标在类的 :py:meth:`~object.__call__` "
+"方法被重新赋值时将会从类中移除。 （这将仅在内部设置 :c:member:`~PyTypeObject.tp_call`，因此可能使其行为不同于 "
+"vectorcall 函数。） 在更早的 Python 版本中，vectorcall 应当仅被用于 :c:macro:`不可变对象 "
+"<Py_TPFLAGS_IMMUTABLETYPE>` 或静态类型。"
+
+#: ../../c-api/call.rst:69
+msgid ""
+"A class should not implement vectorcall if that would be slower than "
+"*tp_call*. For example, if the callee needs to convert the arguments to an "
+"args tuple and kwargs dict anyway, then there is no point in implementing "
+"vectorcall."
+msgstr ""
+"如果一个类的vectorcall比*tp_call*慢，就不应该实现vectorcall。例如，如果被调用者需要将参数转换为args 元组和kwargs"
+" dict，那么实现vectorcall就没有意义。"
+
+#: ../../c-api/call.rst:74
+msgid ""
+"Classes can implement the vectorcall protocol by enabling the "
+":c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` flag and setting "
+":c:member:`~PyTypeObject.tp_vectorcall_offset` to the offset inside the "
+"object structure where a *vectorcallfunc* appears. This is a pointer to a "
+"function with the following signature:"
+msgstr ""
+"类可以通过启用 :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标并将 "
+":c:member:`~PyTypeObject.tp_vectorcall_offset` 设为对象结构体中 *vectorcallfunc* "
+"出现位置偏移量来实现 vectorcall 协议。 这是一个指向具有以下签名的函数的指针:"
+
+#: ../../c-api/call.rst:82
+msgid "*callable* is the object being called."
+msgstr "*callable* 是指被调用的对象。"
+
+#: ../../c-api/call.rst:83
+msgid ""
+"*args* is a C array consisting of the positional arguments followed by the"
+msgstr "*args* 是一个C语言数组，由位置参数和后面的"
+
+#: ../../c-api/call.rst:84
+msgid ""
+"values of the keyword arguments. This can be *NULL* if there are no "
+"arguments."
+msgstr "关键字参数的值。如果没有参数，这个值可以是 *NULL* 。"
+
+#: ../../c-api/call.rst:86
+msgid "*nargsf* is the number of positional arguments plus possibly the"
+msgstr "*nargsf* 是位置参数的数量加上可能的"
+
+#: ../../c-api/call.rst:87
+msgid ""
+":c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET` flag. To get the actual number of "
+"positional arguments from *nargsf*, use :c:func:`PyVectorcall_NARGS`."
+msgstr ""
+":c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET` 旗标。 要从 *nargsf* 获得位置参数的实际数量，请使用 "
+":c:func:`PyVectorcall_NARGS`。"
+
+#: ../../c-api/call.rst:90
+msgid "*kwnames* is a tuple containing the names of the keyword arguments;"
+msgstr "*kwnames* 是一包含所有关键字名称的元组。"
+
+#: ../../c-api/call.rst:91
+msgid ""
+"in other words, the keys of the kwargs dict. These names must be strings "
+"(instances of ``str`` or a subclass) and they must be unique. If there are "
+"no keyword arguments, then *kwnames* can instead be *NULL*."
+msgstr ""
+"换句话说，就是 kwargs 字典的键。 这些名字必须是字符串 (``str`` 或其子类的实例)，并且它们必须是唯一的。 如果没有关键字参数，那么 "
+"*kwnames* 可以用 *NULL* 代替。"
+
+#: ../../c-api/call.rst:98
+msgid ""
+"If this flag is set in a vectorcall *nargsf* argument, the callee is allowed"
+" to temporarily change ``args[-1]``. In other words, *args* points to "
+"argument 1 (not 0) in the allocated vector. The callee must restore the "
+"value of ``args[-1]`` before returning."
+msgstr ""
+"如果在 vectorcall 的 *nargsf* 参数中设置了此标志，则允许被调用者临时更改 ``args[-1]`` 的值。换句话说， *args*"
+" 指向分配向量中的参数 1（不是 0 ）。被调用方必须在返回之前还原 ``args[-1]`` 的值。"
+
+#: ../../c-api/call.rst:103
+msgid ""
+"For :c:func:`PyObject_VectorcallMethod`, this flag means instead that "
+"``args[0]`` may be changed."
+msgstr "对于 :c:func:`PyObject_VectorcallMethod` ，这个标志的改变意味着 ``args[0]`` 可能改变了。"
+
+#: ../../c-api/call.rst:106
+msgid ""
+"Whenever they can do so cheaply (without additional allocation), callers are"
+" encouraged to use :c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET`. Doing so will "
+"allow callables such as bound methods to make their onward calls (which "
+"include a prepended *self* argument) very efficiently."
+msgstr ""
+"只要调用方能以低代价（不额外分配内存）这样做，就推荐使用 :c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET`。 "
+"这样做将允许诸如绑定方法之类的可调用对象非常高效地执行前向调用（这种调用将包括一个加在开头的 *self* 参数）。"
+
+#: ../../c-api/call.rst:113
+msgid ""
+"To call an object that implements vectorcall, use a :ref:`call API <capi-"
+"call>` function as with any other callable. :c:func:`PyObject_Vectorcall` "
+"will usually be most efficient."
+msgstr ""
+"要调用一个实现了 vectorcall 的对象，请使用某个 :ref:`call API<capi-call>` 函数，就像其他可调对象一样。  "
+":c:func:`PyObject_Vectorcall` 通常是最有效的。"
+
+#: ../../c-api/call.rst:119
+msgid "Recursion Control"
+msgstr "递归控制"
+
+#: ../../c-api/call.rst:121
+msgid ""
+"When using *tp_call*, callees do not need to worry about :ref:`recursion "
+"<recursion>`: CPython uses :c:func:`Py_EnterRecursiveCall` and "
+":c:func:`Py_LeaveRecursiveCall` for calls made using *tp_call*."
+msgstr ""
+"在使用 *tp_call* 时，被调用者不必担心 :ref:`递归 <recursion>`: CPython 对于使用 *tp_call* "
+"进行的调用会使用 :c:func:`Py_EnterRecursiveCall` 和 :c:func:`Py_LeaveRecursiveCall`。"
+
+#: ../../c-api/call.rst:126
+msgid ""
+"For efficiency, this is not the case for calls done using vectorcall: the "
+"callee should use *Py_EnterRecursiveCall* and *Py_LeaveRecursiveCall* if "
+"needed."
+msgstr ""
+"为保证效率，这不适用于使用 vectorcall 的调用：被调用方在需要时应当使用 *Py_EnterRecursiveCall* 和 "
+"*Py_LeaveRecursiveCall*。"
+
+#: ../../c-api/call.rst:132
+msgid "Vectorcall Support API"
+msgstr "Vectorcall 支持 API"
+
+#: ../../c-api/call.rst:136
+msgid ""
+"Given a vectorcall *nargsf* argument, return the actual number of arguments."
+" Currently equivalent to::"
+msgstr "给定一个 vectorcall *nargsf* 实参，返回参数的实际数量。 目前等同于::"
+
+#: ../../c-api/call.rst:142
+msgid ""
+"However, the function ``PyVectorcall_NARGS`` should be used to allow for "
+"future extensions."
+msgstr "然而，应使用 ``PyVectorcall_NARGS`` 函数以便将来扩展。"
+
+#: ../../c-api/call.rst:149
+msgid ""
+"If *op* does not support the vectorcall protocol (either because the type "
+"does not or because the specific instance does not), return *NULL*. "
+"Otherwise, return the vectorcall function pointer stored in *op*. This "
+"function never raises an exception."
+msgstr ""
+"如果*op*不支持vectorcall协议（要么是因为类型不支持，要么是因为具体实例不支持），返回*NULL*。否则，返回存储在*op*中的vectorcall函数指针。这个函数从不触发异常。"
+
+#: ../../c-api/call.rst:154
+msgid ""
+"This is mostly useful to check whether or not *op* supports vectorcall, "
+"which can be done by checking ``PyVectorcall_Function(op) != NULL``."
+msgstr ""
+"这在检查 *op* 是否支持 vectorcall 时最有用处，可以通过检查 ``PyVectorcall_Function(op) != NULL``"
+" 来实现。"
+
+#: ../../c-api/call.rst:161
+msgid ""
+"Call *callable*'s :c:type:`vectorcallfunc` with positional and keyword "
+"arguments given in a tuple and dict, respectively."
+msgstr "调用*可调对象*的 :c:type:`vectorcallfunc`，其位置参数和关键字参数分别以元组和dict形式给出。"
+
+#: ../../c-api/call.rst:164
+msgid ""
+"This is a specialized function, intended to be put in the "
+":c:member:`~PyTypeObject.tp_call` slot or be used in an implementation of "
+"``tp_call``. It does not check the :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` "
+"flag and it does not fall back to ``tp_call``."
+msgstr ""
+"这是一个专用函数，用于放入 :c:member:`~PyTypeObject.tp_call` 槽位或是用于 ``tp_call`` 的实现。 "
+"它不会检查 :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标并且它也不会回退到 ``tp_call``。"
+
+#: ../../c-api/call.rst:175
+msgid "Object Calling API"
+msgstr "调用对象的 API"
+
+#: ../../c-api/call.rst:177
+msgid ""
+"Various functions are available for calling a Python object. Each converts "
+"its arguments to a convention supported by the called object – either "
+"*tp_call* or vectorcall. In order to do as little conversion as possible, "
+"pick one that best fits the format of data you have available."
+msgstr ""
+"有多个函数可被用来调用 Python 对象。 各个函数会将其参数转换为被调用对象所支持的惯例 – 可以是 *tp_call* 或 vectorcall。"
+" 为了尽可能少地进行转换，请选择一个适合你所拥有的数据格式的函数。"
+
+#: ../../c-api/call.rst:183
+msgid ""
+"The following table summarizes the available functions; please see "
+"individual documentation for details."
+msgstr "下表总结了可用的功能； 请参阅各个文档以了解详细信息。"
+
+#: ../../c-api/call.rst:187
+msgid "Function"
+msgstr "函数"
+
+#: ../../c-api/call.rst:187
+msgid "callable"
+msgstr "callable -- 可调用对象"
+
+#: ../../c-api/call.rst:187
+msgid "args"
+msgstr "args"
+
+#: ../../c-api/call.rst:187
+msgid "kwargs"
+msgstr "kwargs"
+
+#: ../../c-api/call.rst:189
+msgid ":c:func:`PyObject_Call`"
+msgstr ":c:func:`PyObject_Call`"
+
+#: ../../c-api/call.rst:189 ../../c-api/call.rst:191 ../../c-api/call.rst:193
+#: ../../c-api/call.rst:195 ../../c-api/call.rst:197 ../../c-api/call.rst:201
+#: ../../c-api/call.rst:209 ../../c-api/call.rst:211
+msgid "``PyObject *``"
+msgstr "``PyObject *``"
+
+#: ../../c-api/call.rst:189
+msgid "tuple"
+msgstr "元组"
+
+#: ../../c-api/call.rst:189 ../../c-api/call.rst:211
+msgid "dict/``NULL``"
+msgstr "dict/``NULL``"
+
+#: ../../c-api/call.rst:191
+msgid ":c:func:`PyObject_CallNoArgs`"
+msgstr ":c:func:`PyObject_CallNoArgs`"
+
+#: ../../c-api/call.rst:191 ../../c-api/call.rst:193 ../../c-api/call.rst:195
+#: ../../c-api/call.rst:197 ../../c-api/call.rst:199 ../../c-api/call.rst:201
+#: ../../c-api/call.rst:203 ../../c-api/call.rst:205 ../../c-api/call.rst:207
+msgid "---"
+msgstr "---"
+
+#: ../../c-api/call.rst:193
+msgid ":c:func:`PyObject_CallOneArg`"
+msgstr ":c:func:`PyObject_CallOneArg`"
+
+#: ../../c-api/call.rst:193 ../../c-api/call.rst:207
+msgid "1 object"
+msgstr "1个对象"
+
+#: ../../c-api/call.rst:195
+msgid ":c:func:`PyObject_CallObject`"
+msgstr ":c:func:`PyObject_CallObject`"
+
+#: ../../c-api/call.rst:195
+msgid "tuple/``NULL``"
+msgstr "元组/``NULL``"
+
+#: ../../c-api/call.rst:197
+msgid ":c:func:`PyObject_CallFunction`"
+msgstr ":c:func:`PyObject_CallFunction`"
+
+#: ../../c-api/call.rst:197 ../../c-api/call.rst:199
+msgid "format"
+msgstr "format"
+
+#: ../../c-api/call.rst:199
+msgid ":c:func:`PyObject_CallMethod`"
+msgstr ":c:func:`PyObject_CallMethod`"
+
+#: ../../c-api/call.rst:199
+msgid "obj + ``char*``"
+msgstr "对象 + ``char*``"
+
+#: ../../c-api/call.rst:201
+msgid ":c:func:`PyObject_CallFunctionObjArgs`"
+msgstr ":c:func:`PyObject_CallFunctionObjArgs`"
+
+#: ../../c-api/call.rst:201 ../../c-api/call.rst:203
+msgid "variadic"
+msgstr "可变参数"
+
+#: ../../c-api/call.rst:203
+msgid ":c:func:`PyObject_CallMethodObjArgs`"
+msgstr ":c:func:`PyObject_CallMethodObjArgs`"
+
+#: ../../c-api/call.rst:203 ../../c-api/call.rst:205 ../../c-api/call.rst:207
+msgid "obj + name"
+msgstr "对象 + 名称"
+
+#: ../../c-api/call.rst:205
+msgid ":c:func:`PyObject_CallMethodNoArgs`"
+msgstr ":c:func:`PyObject_CallMethodNoArgs`"
+
+#: ../../c-api/call.rst:207
+msgid ":c:func:`PyObject_CallMethodOneArg`"
+msgstr ":c:func:`PyObject_CallMethodOneArg`"
+
+#: ../../c-api/call.rst:209
+msgid ":c:func:`PyObject_Vectorcall`"
+msgstr ":c:func:`PyObject_Vectorcall`"
+
+#: ../../c-api/call.rst:209 ../../c-api/call.rst:211 ../../c-api/call.rst:213
+msgid "vectorcall"
+msgstr "vectorcall"
+
+#: ../../c-api/call.rst:211
+msgid ":c:func:`PyObject_VectorcallDict`"
+msgstr ":c:func:`PyObject_VectorcallDict`"
+
+#: ../../c-api/call.rst:213
+msgid ":c:func:`PyObject_VectorcallMethod`"
+msgstr ":c:func:`PyObject_VectorcallMethod`"
+
+#: ../../c-api/call.rst:213
+msgid "arg + name"
+msgstr "参数 + 名称"
+
+#: ../../c-api/call.rst:219
+msgid ""
+"Call a callable Python object *callable*, with arguments given by the tuple "
+"*args*, and named arguments given by the dictionary *kwargs*."
+msgstr ""
+"调用一个可调用的 Python 对象 *callable*，附带由元组 *args* 所给出的参数，以及由字典 *kwargs* 所给出的关键字参数。"
+
+#: ../../c-api/call.rst:222
+msgid ""
+"*args* must not be *NULL*; use an empty tuple if no arguments are needed. If"
+" no named arguments are needed, *kwargs* can be *NULL*."
+msgstr "*args* 必须不为 *NULL*；如果不想要参数请使用一个空元组。 如果不想要关键字参数，则 *kwargs* 可以为 *NULL*。"
+
+#: ../../c-api/call.rst:225 ../../c-api/call.rst:237 ../../c-api/call.rst:248
+#: ../../c-api/call.rst:259 ../../c-api/call.rst:271 ../../c-api/call.rst:291
+#: ../../c-api/call.rst:310 ../../c-api/call.rst:324 ../../c-api/call.rst:333
+#: ../../c-api/call.rst:345 ../../c-api/call.rst:358 ../../c-api/call.rst:392
+msgid ""
+"Return the result of the call on success, or raise an exception and return "
+"*NULL* on failure."
+msgstr "成功时返回结果，在失败时抛出一个异常并返回 *NULL*。"
+
+#: ../../c-api/call.rst:228
+msgid ""
+"This is the equivalent of the Python expression: ``callable(*args, "
+"**kwargs)``."
+msgstr "这等价于 Python 表达式 ``callable(*args, **kwargs)``。"
+
+#: ../../c-api/call.rst:234
+msgid ""
+"Call a callable Python object *callable* without any arguments. It is the "
+"most efficient way to call a callable Python object without any argument."
+msgstr "调用一个可调用的 Python 对象 *callable* 并不附带任何参数。 这是不带参数调用 Python 可调用对象的最有效方式。"
+
+#: ../../c-api/call.rst:245
+msgid ""
+"Call a callable Python object *callable* with exactly 1 positional argument "
+"*arg* and no keyword arguments."
+msgstr "调用一个可调用的 Python 对象 *callable* 并附带恰好 1 个位置参数 *arg* 而没有关键字参数。"
+
+#: ../../c-api/call.rst:256
+msgid ""
+"Call a callable Python object *callable*, with arguments given by the tuple "
+"*args*.  If no arguments are needed, then *args* can be *NULL*."
+msgstr ""
+"调用一个可调用的 Python 对象 *callable*，附带由元组 *args* 所给出的参数。 如果不想要传入参数，则 *args* 可以为 "
+"*NULL*。"
+
+#: ../../c-api/call.rst:262 ../../c-api/call.rst:274
+msgid "This is the equivalent of the Python expression: ``callable(*args)``."
+msgstr "这等价于 Python 表达式 ``callable(*args)``。"
+
+#: ../../c-api/call.rst:267
+msgid ""
+"Call a callable Python object *callable*, with a variable number of C "
+"arguments. The C arguments are described using a :c:func:`Py_BuildValue` "
+"style format string.  The format can be *NULL*, indicating that no arguments"
+" are provided."
+msgstr ""
+"调用一个可调用的 Python 对象 *callable*，附带可变数量的 C 参数。 这些 C 参数使用 "
+":c:func:`Py_BuildValue` 风格的格式字符串来描述。 format 可以为 *NULL*，表示没有提供任何参数。"
+
+#: ../../c-api/call.rst:276
+msgid ""
+"Note that if you only pass :c:expr:`PyObject *` args, "
+":c:func:`PyObject_CallFunctionObjArgs` is a faster alternative."
+msgstr ""
+"请注意如果你只传入 :c:expr:`PyObject *` 参数，则 :c:func:`PyObject_CallFunctionObjArgs` "
+"是更快速的选择。"
+
+#: ../../c-api/call.rst:279
+msgid "The type of *format* was changed from ``char *``."
+msgstr "这个 *format* 类型已从 ``char *`` 更改。"
+
+#: ../../c-api/call.rst:285
+msgid ""
+"Call the method named *name* of object *obj* with a variable number of C "
+"arguments.  The C arguments are described by a :c:func:`Py_BuildValue` "
+"format string that should produce a tuple."
+msgstr ""
+"调用 *obj* 对象中名为 *name* 的方法并附带可变数量的 C 参数。 这些 C 参数由 :c:func:`Py_BuildValue` "
+"格式字符串来描述并应当生成一个元组。"
+
+#: ../../c-api/call.rst:289
+msgid "The format can be *NULL*, indicating that no arguments are provided."
+msgstr "格式可以为 *NULL* ，表示未提供任何参数。"
+
+#: ../../c-api/call.rst:294
+msgid ""
+"This is the equivalent of the Python expression: ``obj.name(arg1, arg2, "
+"...)``."
+msgstr "这和Python表达式 ``obj.name(arg1, arg2, ...)`` 是一样的。"
+
+#: ../../c-api/call.rst:297
+msgid ""
+"Note that if you only pass :c:expr:`PyObject *` args, "
+":c:func:`PyObject_CallMethodObjArgs` is a faster alternative."
+msgstr ""
+"请注意如果你只传入 :c:expr:`PyObject *` 参数，则 :c:func:`PyObject_CallMethodObjArgs` "
+"是更快速的选择。"
+
+#: ../../c-api/call.rst:300
+msgid "The types of *name* and *format* were changed from ``char *``."
+msgstr " *name* 和 *format* 类型已从 ``char *`` 更改。"
+
+#: ../../c-api/call.rst:306
+msgid ""
+"Call a callable Python object *callable*, with a variable number of "
+":c:expr:`PyObject *` arguments.  The arguments are provided as a variable "
+"number of parameters followed by *NULL*."
+msgstr ""
+"调用一个 Python 可调用对象 *callable*，附带可变数量的 :c:expr:`PyObject *` 参数。 这些参数是以 *NULL* "
+"之后可变数量的形参的形式提供的。"
+
+#: ../../c-api/call.rst:313
+msgid ""
+"This is the equivalent of the Python expression: ``callable(arg1, arg2, "
+"...)``."
+msgstr "这和Python表达式 ``callable(arg1, arg2, ...)`` 是一样的。"
+
+#: ../../c-api/call.rst:319
+msgid ""
+"Call a method of the Python object *obj*, where the name of the method is "
+"given as a Python string object in *name*.  It is called with a variable "
+"number of :c:expr:`PyObject *` arguments.  The arguments are provided as a "
+"variable number of parameters followed by *NULL*."
+msgstr ""
+"调用 Python 对象 *obj* 中的一个访问，其中方法名称由 *name* 中的 Python 字符串对象给出。 它将附带可变数量的 "
+":c:expr:`PyObject *` 参数被调用。 这些参数是以 *NULL* 之后可变数量的形参的形式提供的。"
+
+#: ../../c-api/call.rst:330
+msgid ""
+"Call a method of the Python object *obj* without arguments, where the name "
+"of the method is given as a Python string object in *name*."
+msgstr "调用 Python 对象 *obj* 中的一个方法并不附带任何参数，其中方法名称由 *name* 中的 Python 字符串对象给出。"
+
+#: ../../c-api/call.rst:341
+msgid ""
+"Call a method of the Python object *obj* with a single positional argument "
+"*arg*, where the name of the method is given as a Python string object in "
+"*name*."
+msgstr ""
+"调用 Python 对象 *obj* 中的一个方法并附带单个位置参数 *arg*，其中方法名称由 *name* 中的 Python 字符串对象给出。"
+
+#: ../../c-api/call.rst:353
+msgid ""
+"Call a callable Python object *callable*. The arguments are the same as for "
+":c:type:`vectorcallfunc`. If *callable* supports vectorcall_, this directly "
+"calls the vectorcall function stored in *callable*."
+msgstr ""
+"调用一个可调用的 Python 对象 *callable*。 附带的参数与 :c:type:`vectorcallfunc` 相同。 如果 "
+"*callable* 支持 vectorcall_，则它会直接调用存放在 *callable* 中的 vectorcall 函数。"
+
+#: ../../c-api/call.rst:365
+msgid ""
+"Call *callable* with positional arguments passed exactly as in the "
+"vectorcall_ protocol, but with keyword arguments passed as a dictionary "
+"*kwdict*. The *args* array contains only the positional arguments."
+msgstr ""
+"调用 *callable* 并附带与在 vectorcall_ 协议中传入的完全相同的位置参数，但会加上以字典 *kwdict* 形式传入的关键字参数。"
+" *args* 数组将只包含位置参数。"
+
+#: ../../c-api/call.rst:369
+msgid ""
+"Regardless of which protocol is used internally, a conversion of arguments "
+"needs to be done. Therefore, this function should only be used if the caller"
+" already has a dictionary ready to use for the keyword arguments, but not a "
+"tuple for the positional arguments."
+msgstr ""
+"无论在内部使用哪种协议，都需要进行参数的转换。 因此，此函数应当仅在调用方已经拥有作为关键字参数的字典，但没有作为位置参数的元组时才被使用。"
+
+#: ../../c-api/call.rst:379
+msgid ""
+"Call a method using the vectorcall calling convention. The name of the "
+"method is given as a Python string *name*. The object whose method is called"
+" is *args[0]*, and the *args* array starting at *args[1]* represents the "
+"arguments of the call. There must be at least one positional argument. "
+"*nargsf* is the number of positional arguments including *args[0]*, plus "
+":c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET` if the value of ``args[0]`` may "
+"temporarily be changed. Keyword arguments can be passed just like in "
+":c:func:`PyObject_Vectorcall`."
+msgstr ""
+"使用 vectorcall 调用惯例来调用一个方法。 方法的名称以 Python 字符串 *name* 的形式给出。 调用方法的对象为 "
+"*args[0]*，而 *args* 数组从 *args[1]* 开始的部分则代表调用的参数。 必须传入至少一个位置参数。 *nargsf* 为包括 "
+"*args[0]* 在内的位置参数的数量，如果 ``args[0]`` 的值可能被临时改变则还要加上 "
+":c:macro:`PY_VECTORCALL_ARGUMENTS_OFFSET`。 关键字参数可以像在 "
+":c:func:`PyObject_Vectorcall` 中那样传入。"
+
+#: ../../c-api/call.rst:388
+msgid ""
+"If the object has the :c:macro:`Py_TPFLAGS_METHOD_DESCRIPTOR` feature, this "
+"will call the unbound method object with the full *args* vector as "
+"arguments."
+msgstr ""
+"如果对象具有 :c:macro:`Py_TPFLAGS_METHOD_DESCRIPTOR` 特性，此函数将调用未绑定的方法对象并传入完整的 "
+"*args* vector 作为参数。"
+
+#: ../../c-api/call.rst:399
+msgid "Call Support API"
+msgstr "调用支持 API"
+
+#: ../../c-api/call.rst:403
+msgid ""
+"Determine if the object *o* is callable.  Return ``1`` if the object is "
+"callable and ``0`` otherwise.  This function always succeeds."
+msgstr "确定对象 *o* 是可调对象。如果对象是可调对象则返回 ``1`` ，其他情况返回 ``0`` 。这个函数不会调用失败。"
