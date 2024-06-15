@@ -404,6 +404,13 @@ msgid ""
 "namespace (e.g. :func:`runpy.run_path` when executing Python files from "
 "disk)."
 msgstr ""
+"在已优化的作用域中对 :func:`locals` 语义的这项修改也会影响隐式地以 ``locals()`` "
+"为目标的代码执行函数的默认行为，如果没有提供显式命名空间的话（例如 :func:`exec` 和 :func:`eval` 等）。 "
+"在之前的版本中，在调用代码执行函数后是否可以通过调用 ``locals()`` 访问更改情况取决于具体的实现。 具体到 CPython "
+"而言，此类代码通常会按预期运作，但有时可能会在基于其他代码（包括调试器和代码执行跟踪工具）的已优化作用域中失败，因为代码有可能重置该作用域中的共享快照。"
+" 现在，代码在已优化作用域中将始终针对局部变量的独立快照运行，因此在后续调用 ``locals()`` 时将永远看不到更改。 "
+"要访问在这些情况下所做的更改，现在必须将一个显式命名空间引用传递给相关的函数。 或者，也可以更新受影响的代码以使用更高级别的代码执行 API "
+"返回结果代码执行命名空间 （例如，当执行磁盘上的 Python 文件时使用 :func:`runpy.run_path` 函数）。"
 
 #: ../../whatsnew/3.13.rst:284
 msgid ""
@@ -426,6 +433,8 @@ msgid ""
 ":ref:`Python APIs <pep667-porting-notes-py>` and :ref:`C APIs "
 "<pep667-porting-notes-c>`."
 msgstr ""
+"请参阅 :pep:`667` 了解详情，包括相关的 C API 更改和弃用。 下文还针对受影响的 :ref:`Python API "
+"<pep667-porting-notes-py>` 和 :ref:`C API <pep667-porting-notes-c>` 提供了移植说明。"
 
 #: ../../whatsnew/3.13.rst:294
 msgid ""
@@ -433,6 +442,8 @@ msgid ""
 ":gh:`74929`. Documentation updates provided by Guido van Rossum and Alyssa "
 "Coghlan.)"
 msgstr ""
+"（PEP 和实现由 Mark Shannon 和 Tian Gao 在 :gh:`74929` 中贡献。 文档更新由 Guido van Rossum "
+"和 Alyssa Coghlan 提供。）"
 
 #: ../../whatsnew/3.13.rst:299
 msgid "Incremental Garbage Collection"
@@ -556,12 +567,14 @@ msgid ""
 "the JIT. To disable the JIT at runtime, pass the environment variable "
 "``PYTHON_JIT=0``."
 msgstr ""
+"``yes`` (当提供了该旗标但没有可选值时的默认值) -- 启用 JIT。 要在运行时禁用 JIT，请传入环境变量 "
+"``PYTHON_JIT=0``。"
 
 #: ../../whatsnew/3.13.rst:364
 msgid ""
 "``yes-off`` -- Build the JIT but disable it by default. To enable the JIT at"
 " runtime, pass the environment variable ``PYTHON_JIT=1``."
-msgstr ""
+msgstr "``yes-off`` -- 生成 JIT 但默认禁用它。 要在运行时启用 JIT，请传入环境变量 ``PYTHON_JIT=1``。"
 
 #: ../../whatsnew/3.13.rst:368
 msgid ""
