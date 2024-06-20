@@ -1509,8 +1509,7 @@ msgid ""
 msgstr ""
 "类型变量的种类是在其通过 :ref:`类型形参语法 <type-params>` 创建时或是在传入 ``infer_variance=True`` "
 "时由类型检查器推断得到的。 手动创建的类型变量可通过传入 ``covariant=True`` 或 ``contravariant=True`` "
-"被显式地标记为 covariant 或 contravariant。 在默认情况下，手动创建的类型变量为 invariant。 请参阅 "
-":pep:`484` 和 :pep:`695` 了解更多细节。"
+"被显式地标记为协变或逆变。 在默认情况下，手动创建的类型变量为不变。 请参阅 :pep:`484` 和 :pep:`695` 了解更多细节。"
 
 #: ../../library/typing.rst:1575
 msgid ""
@@ -2189,6 +2188,10 @@ msgid ""
 "``TypedDict`` with ``total=False``. Therefore, it is generally better to use"
 " :attr:`__required_keys__` and :attr:`__optional_keys__` for introspection."
 msgstr ""
+"该属性 *只* 反映传给当前 ``TypedDict`` 类的 ``total`` 参数的值，而不反映这个类在语义上是否完整。 例如，一个 "
+"``__total__`` 被设为 ``True`` 的 ``TypedDict`` 可能有用 :data:`NotRequired` "
+"标记的键，或者它可能继承自另一个设置了 ``total=False`` 的 ``TypedDict``。 因此，使用 "
+":attr:`__required_keys__` 和 :attr:`__optional_keys__` 进行内省通常会更好。"
 
 #: ../../library/typing.rst:2348
 msgid ""
@@ -2832,7 +2835,7 @@ msgstr "返回函数、方法、模块、类对象的类型提示的字典。"
 msgid ""
 "This is often the same as ``obj.__annotations__``, but this function makes "
 "the following changes to the annotations dictionary:"
-msgstr ""
+msgstr "该函数通常与 ``obj.__annotations__`` 相同，但会对注解字典进行以下更改："
 
 #: ../../library/typing.rst:2889
 msgid ""
@@ -2842,16 +2845,19 @@ msgid ""
 "*globalns* or *localns* is not given, appropriate namespace dictionaries are"
 " inferred from *obj*."
 msgstr ""
+"以字符串字面形式或 :class:`ForwardRef` 对象编码的前向引用会在 *globalns*, *localns* 和 (如适用) "
+"*obj* 的 :ref:`类型形参 <type-params>` 命名空间中求值。如果没有传入 *globalns* 或 *localns*，则会从 "
+"*obj* 中推断出适当的命名空间字典。"
 
 #: ../../library/typing.rst:2894
 msgid "``None`` is replaced with :class:`types.NoneType`."
-msgstr ""
+msgstr "``None`` 被替换为 :class:`types.NoneType`。"
 
 #: ../../library/typing.rst:2895
 msgid ""
 "If :func:`@no_type_check <no_type_check>` has been applied to *obj*, an "
 "empty dictionary is returned."
-msgstr ""
+msgstr "如果在 *obj* 上应用了 :func:`@no_type_check <no_type_check>`，返回一个空字典。"
 
 #: ../../library/typing.rst:2897
 msgid ""
@@ -2862,6 +2868,9 @@ msgid ""
 "in the :term:`method resolution order` always take precedence over "
 "annotations on classes appearing later in the method resolution order."
 msgstr ""
+"如果 *obj* 是一个类 ``C``，函数会返回一个合并了 ``C`` 的基类与 ``C`` 本身注解的字典。这是通过遍历 ``C.__mro__``"
+" 并反复合并 ``__annotations__`` 字典来实现的。在 :term:`method resolution order` "
+"中出现较早的类的注解总是优先于出现较晚的类的注解。"
 
 #: ../../library/typing.rst:2903
 msgid ""
@@ -2869,12 +2878,14 @@ msgid ""
 "with ``T``, unless *include_extras* is set to ``True`` (see "
 ":class:`Annotated` for more information)."
 msgstr ""
+"除非 *include_extras* 设置为 ``True``，否则函数会递归地将所有出现的 ``Annotated[T, ...]`` 替换为 "
+"``T`` (详见 :class:`Annotated`)。"
 
 #: ../../library/typing.rst:2907
 msgid ""
 "See also :func:`inspect.get_annotations`, a lower-level function that "
 "returns annotations more directly."
-msgstr ""
+msgstr "另请参阅 :func:`inspect.get_annotations`，这是一个以更直接方式返回注解的低级函数。"
 
 #: ../../library/typing.rst:2912
 msgid ""
@@ -2884,6 +2895,9 @@ msgid ""
 "aliases <type-aliases>` that include forward references, or with names "
 "imported under :data:`if TYPE_CHECKING <TYPE_CHECKING>`."
 msgstr ""
+"如果 *obj* 注解中的任何前向引用不可解析或不是有效的 Python 代码，此函数将引发 :exc:`NameError` 等异常。例如导入的 "
+":ref:`类型别名 <type-aliases>` 包含正向引用，或名称在 :data:`if TYPE_CHECKING "
+"<TYPE_CHECKING>` 下导入。"
 
 #: ../../library/typing.rst:2918
 msgid ""
@@ -3615,8 +3629,7 @@ msgid ""
 "of :class:`Generator` behaves contravariantly, not covariantly or "
 "invariantly."
 msgstr ""
-"注意，与 typing 模块里的其他泛型不同， :class:`Generator` 的 ``SendType`` "
-"属于逆变行为，不是协变行为，也是不变行为。"
+"注意，与 typing 模块里的其他泛型不同， :class:`Generator` 的 ``SendType`` 属于逆变行为，不是协变或不变行为。"
 
 #: ../../library/typing.rst:3522
 msgid ""
