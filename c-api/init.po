@@ -598,6 +598,10 @@ msgid ""
 "called for a second time (without calling :c:func:`Py_FinalizeEx` first).  "
 "There is no return value; it is a fatal error if the initialization fails."
 msgstr ""
+"这将初始化已加载模块表 (``sys.modules``)，并创建基本模块 :mod:`builtins`, :mod:`__main__` 和 "
+":mod:`sys`。 它还会初始化模块搜索路径 (``sys.path``)。 它不会设置 ``sys.argv``；要设置此项请使用 "
+":ref:`Python 初始化配置 <init-config>` 中新增的 :c:type:`PyConfig` API。 当第二次被调用时 "
+"(未事先调用 :c:func:`Py_FinalizeEx` 的情况下) 将不会执行任何操作。 它没有返回值；如果初始化失败则会发生致命错误。"
 
 #: ../../c-api/init.rst:359 ../../c-api/init.rst:373
 msgid ""
@@ -648,6 +652,10 @@ msgid ""
 "memory allocated by the Python interpreter.  This is a no-op when called for"
 " a second time (without calling :c:func:`Py_Initialize` again first)."
 msgstr ""
+"撤销 :c:func:`Py_Initialize` 所做的所有初始化和随后对 Python/C API 函数的使用，并销毁自上次调用 "
+":c:func:`Py_Initialize` 以来创建但尚未销毁的所有子解释器 (见下文 :c:func:`Py_NewInterpreter`)。 "
+"在理想情况下，这会释放 Python 解释器分配的所有内存。 当第二次调用时（在没有再次调用 :c:func:`Py_Initialize` "
+"的情况下），该函数不执行任何操作。"
 
 #: ../../c-api/init.rst:401
 msgid ""
@@ -752,6 +760,7 @@ msgid ""
 "default. The returned string points into static storage; the caller should "
 "not modify its value."
 msgstr ""
+"返回用 :c:func:`Py_SetProgramName` 设置的程序名称，或默认的名称。 返回的字符串指向静态存储；调用者不应修改其值。"
 
 #: ../../c-api/init.rst:477 ../../c-api/init.rst:499 ../../c-api/init.rst:543
 #: ../../c-api/init.rst:564 ../../c-api/init.rst:590 ../../c-api/init.rst:778
@@ -782,10 +791,16 @@ msgid ""
 "available to Python code as ``sys.prefix``. It is only useful on Unix.  See "
 "also the next function."
 msgstr ""
+"返回针对已安装的独立于平台文件的 *prefix*。 这是通过基于使用 :c:func:`Py_SetProgramName` "
+"设置的程序名称和某些环境变量所派生的一系列复杂规则获得的；举例来说，如果程序名称为 ``'/usr/local/bin/python'``，则 "
+"prefix 为 ``'/usr/local'``。 返回的字符串将指向静态存储；调用方不应修改其值。 这对应于最高层级 "
+":file:`Makefile` 中的 :makevar:`prefix` 变量以及在编译时传给 :program:`configure` 脚本的 "
+":option:`--prefix` 参数。 该值将以 ``sys.prefix`` 的名称供 Python 代码使用。 它仅适用于 Unix。 "
+"另请参见下一个函数。"
 
 #: ../../c-api/init.rst:506
 msgid "Get :data:`sys.prefix` instead."
-msgstr ""
+msgstr "改为获取 :data:`sys.prefix`。"
 
 #: ../../c-api/init.rst:511
 msgid ""
