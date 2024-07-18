@@ -434,6 +434,9 @@ msgid ""
 "group will process its exceptions, and then the outer task group will "
 "receive another cancellation and process its own exceptions."
 msgstr ""
+"对于任务组应当注意不要将用于“唤醒”其 :meth:`~object.__aexit__` 的内部取消请求与其他地方对其运行的任务提出的取消请求相混淆。"
+" "
+"具体来说，当一个任务组在语法上嵌套于另一个任务组中，而两个任务组的某个子任务同时发生异常时，内层的任务组将处理其异常，然后外层的任务组将收到另一个取消请求并处理它自己的异常。"
 
 #: ../../library/asyncio-task.rst:403
 msgid ""
@@ -443,18 +446,21 @@ msgid ""
 ":exc:`asyncio.CancelledError` will be raised at the next :keyword:`await`, "
 "so the cancellation is not lost."
 msgstr ""
+"对于任务组在外部被取消同时必须引发 :exc:`ExceptionGroup` 的情况，它将调用父任务的 "
+":meth:`~asyncio.Task.cancel` 方法。 这样可以确保 :exc:`asyncio.CancelledError` 会在下一次 "
+":keyword:`await` 时被引发，因此取消操作不会丢失。"
 
 #: ../../library/asyncio-task.rst:409
 msgid ""
 "Task groups preserve the cancellation count reported by "
 ":meth:`asyncio.Task.cancelling`."
-msgstr ""
+msgstr "任务组将保留 :meth:`asyncio.Task.cancelling` 所报告的取消次数。"
 
 #: ../../library/asyncio-task.rst:414
 msgid ""
 "Improved handling of simultaneous internal and external cancellations and "
 "correct preservation of cancellation counts."
-msgstr ""
+msgstr "改进了同时处理内部和外部取消操作以及正确保留取消计数的功能。"
 
 #: ../../library/asyncio-task.rst:418
 msgid "Sleeping"
@@ -1504,7 +1510,7 @@ msgstr ""
 
 #: ../../library/asyncio-task.rst:1399
 msgid "Changed to rescind pending cancellation requests upon reaching zero."
-msgstr ""
+msgstr "更改为在到达零值时撤回待处理的取消请求。"
 
 #: ../../library/asyncio-task.rst:1404
 msgid ""
