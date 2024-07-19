@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 14:16+0000\n"
+"POT-Creation-Date: 2024-07-19 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -2027,23 +2027,58 @@ msgid ""
 ":c:expr:`*p_unicode`, it sets :c:expr:`*p_unicode` to it (releasing the "
 "reference to the old string object and creating a new :term:`strong "
 "reference` to the interned string object), otherwise it leaves "
-":c:expr:`*p_unicode` alone and interns it (creating a new :term:`strong "
-"reference`). (Clarification: even though there is a lot of talk about "
-"references, think of this function as reference-neutral; you own the object "
-"after the call if and only if you owned it before the call.)"
+":c:expr:`*p_unicode` alone and interns it."
 msgstr ""
-"原地内部化参数 :c:expr:`*p_unicode`。 该参数必须是一个指向 Python Unicode 字符串对象的指针变量的地址。 "
-"如果已存在与 :c:expr:`*p_unicode` 相同的内部化字符串，则将其设为 :c:expr:`*p_unicode` "
-"(释放对旧字符串的引用并新建一个指向内部化字符串对象的 :term:`strong reference`)，否则将保持 "
-":c:expr:`*p_unicode` 不变并将其内部化 (新建一个 :term:`strong reference`)。 "
-"(澄清说明：虽然这里大量提及了引用，但请将此函数视为引用无关的；当且仅当你在调用之前就已拥有该对象时你才会在调用之后也拥有它。)"
 
-#: ../../c-api/unicode.rst:1501
+#: ../../c-api/unicode.rst:1495
+msgid ""
+"(Clarification: even though there is a lot of talk about references, think "
+"of this function as reference-neutral. You must own the object you pass in; "
+"after the call you no longer own the passed-in reference, but you newly own "
+"the result.)"
+msgstr ""
+
+#: ../../c-api/unicode.rst:1500
+msgid ""
+"This function never raises an exception. On error, it leaves its argument "
+"unchanged without interning it."
+msgstr ""
+
+#: ../../c-api/unicode.rst:1503
+msgid ""
+"Instances of subclasses of :py:class:`str` may not be interned, that is, "
+":c:expr:`PyUnicode_CheckExact(*p_unicode)` must be true. If it is not, then "
+"-- as with any other error -- the argument is left unchanged."
+msgstr ""
+
+#: ../../c-api/unicode.rst:1507
+msgid ""
+"Note that interned strings are not “immortal”. You must keep a reference to "
+"the result to benefit from interning."
+msgstr ""
+
+#: ../../c-api/unicode.rst:1513
 msgid ""
 "A combination of :c:func:`PyUnicode_FromString` and "
-":c:func:`PyUnicode_InternInPlace`, returning either a new Unicode string "
-"object that has been interned, or a new (\"owned\") reference to an earlier "
-"interned string object with the same value."
+":c:func:`PyUnicode_InternInPlace`, meant for statically allocated strings."
 msgstr ""
-":c:func:`PyUnicode_FromString` 和 :c:func:`PyUnicode_InternInPlace` "
-"的组合操作，返回一个已内部化的新 Unicode 字符串对象，或一个指向具有相同值的原有内部化字符串对象的新的（“拥有的”）引用。"
+
+#: ../../c-api/unicode.rst:1516
+msgid ""
+"Return a new (\"owned\") reference to either a new Unicode string object "
+"that has been interned, or an earlier interned string object with the same "
+"value."
+msgstr ""
+
+#: ../../c-api/unicode.rst:1520
+msgid ""
+"Python may keep a reference to the result, or make it :term:`immortal`, "
+"preventing it from being garbage-collected promptly. For interning an "
+"unbounded number of different strings, such as ones coming from user input, "
+"prefer calling :c:func:`PyUnicode_FromString` and "
+":c:func:`PyUnicode_InternInPlace` directly."
+msgstr ""
+
+#: ../../c-api/unicode.rst:1528
+msgid "Strings interned this way are made :term:`immortal`."
+msgstr ""
