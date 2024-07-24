@@ -524,7 +524,7 @@ msgstr "将 *n_bytes=0* 传给此函数不是确定值所需比特位长度的�
 msgid ""
 "To get at the entire Python value of an unknown size, the function can be "
 "called twice: first to determine the buffer size, then to fill it::"
-msgstr ""
+msgstr "要获取一个大小未知的完整 Python 值，可以调用此函数两次：首先确定缓冲区大小，然后填充它::"
 
 #: ../../c-api/long.rst:447
 msgid ""
@@ -532,12 +532,16 @@ msgid ""
 "that behave most like a C cast, or a combintation of the other flags in the "
 "table below. Note that ``-1`` cannot be combined with other flags."
 msgstr ""
+"*flags* 可以是 ``-1`` (``Py_ASNATIVEBYTES_DEFAULTS``) 表示选择最接近 C "
+"强制转换类型的行为，或是下表中其他旗标的组合。 请注意 ``-1`` 不能与其他旗标组合使用。"
 
 #: ../../c-api/long.rst:452
 msgid ""
 "Currently, ``-1`` corresponds to ``Py_ASNATIVEBYTES_NATIVE_ENDIAN | "
 "Py_ASNATIVEBYTES_UNSIGNED_BUFFER``."
 msgstr ""
+"目前，``-1`` 对应于 ``Py_ASNATIVEBYTES_NATIVE_ENDIAN | "
+"Py_ASNATIVEBYTES_UNSIGNED_BUFFER``。"
 
 #: ../../c-api/long.rst:456
 msgid "Flag"
@@ -573,13 +577,14 @@ msgstr "``8``"
 
 #: ../../c-api/long.rst:464
 msgid "``16``"
-msgstr ""
+msgstr "``16``"
 
 #: ../../c-api/long.rst:467
 msgid ""
 "Specifying ``Py_ASNATIVEBYTES_NATIVE_ENDIAN`` will override any other endian"
 " flags. Passing ``2`` is reserved."
 msgstr ""
+"指定 ``Py_ASNATIVEBYTES_NATIVE_ENDIAN`` 将覆盖任何其他端序旗标。 传入 ``2`` 被保留用于后续版本。"
 
 #: ../../c-api/long.rst:470
 msgid ""
@@ -587,6 +592,8 @@ msgid ""
 "example, when converting 128 with *n_bytes=1*, the function will return 2 "
 "(or more) in order to store a zero sign bit."
 msgstr ""
+"在默认情况下，将会请求足够的缓冲区以包括符号位。 例如在设置 *n_bytes=1* 转换 128 时，该函数将返回 2 (或更大的值) "
+"以存储一个零值符号位。"
 
 #: ../../c-api/long.rst:474
 msgid ""
@@ -597,6 +604,9 @@ msgid ""
 "affect handling of negative values: for those, space for a sign bit is "
 "always requested."
 msgstr ""
+"如果指定了 ``Py_ASNATIVEBYTES_UNSIGNED_BUFFER``，将在计算大小时忽略零值符号位。 例如，这将允许将 128 "
+"放入一个单字节缓冲区。 如果目标缓冲区随后又被当作是带符号位的，则一个正数输入值可能会变成负值。 "
+"请注意此旗标不会影响对负值的处理：对于这种情况，总是会请求用作符号位的空间。"
 
 #: ../../c-api/long.rst:481
 msgid ""
@@ -605,6 +615,9 @@ msgid ""
 "copied provided there is enough space for at least one sign bit, regardless "
 "of whether ``Py_ASNATIVEBYTES_UNSIGNED_BUFFER`` was specified."
 msgstr ""
+"指定 ``Py_ASNATIVEBYTES_REJECT_NEGATIVE`` 将导致当 *pylong* 为负值时设置一个异常。 "
+"如果没有此旗标，只要至少有足够容纳一个符号位的空间就将拷贝负值，无论是否指定了 "
+"``Py_ASNATIVEBYTES_UNSIGNED_BUFFER``。"
 
 #: ../../c-api/long.rst:486
 msgid ""
@@ -615,6 +628,10 @@ msgid ""
 " ``-1``, this option is not set, and non-integer values will raise "
 ":exc:`TypeError`."
 msgstr ""
+"如果指定了 ``Py_ASNATIVEBYTES_ALLOW_INDEX`` 并且传入一个非整数值，则会先调用其 "
+":meth:`~object.__index__` 方法。 这可能导致 Python "
+"代码执行并允许运行其他线程，在此情况下将会改变其他正在使用的对象或值。 当 *flags* 为 ``-1`` 时，则不设置此选项，而非整数值将会引发 "
+":exc:`TypeError`。"
 
 #: ../../c-api/long.rst:495
 msgid ""
@@ -623,6 +640,9 @@ msgid ""
 "without overflow. For example, both ``255`` and ``-1`` fit a single-byte "
 "buffer and set all its bits. This matches typical C cast behavior."
 msgstr ""
+"如果使用默认 *flags* (``-1`` 或不带 *REJECT_NEGATIVE* 的 *UNSIGNED_BUFFER*)，则多个 Python"
+" 整数可映射为单个值而不会溢出。 例如，``255`` 和 ``-1`` 都可放入一个单字节缓冲区并设置其全部比特位。 这与典型的 C "
+"强制转换行为相匹配。"
 
 #: ../../c-api/long.rst:506
 msgid "Return 1 if *op* is compact, 0 otherwise."
@@ -636,6 +656,9 @@ msgid ""
 ":c:func:`PyLong_As* <PyLong_AsSize_t>` function or "
 ":c:func:`PyLong_AsNativeBytes`."
 msgstr ""
+"此函数使得注重性能的代码可以实现小整数的“快速路径”。 对于紧凑值将使用 "
+":c:func:`PyUnstable_Long_CompactValue`；对于其他值则回退为 :c:func:`PyLong_As* "
+"<PyLong_AsSize_t>` 函数或者 :c:func:`PyLong_AsNativeBytes`。"
 
 #: ../../c-api/long.rst:514
 msgid "The speedup is expected to be negligible for most users."
