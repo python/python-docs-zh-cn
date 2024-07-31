@@ -34,7 +34,7 @@ msgstr ""
 
 #: ../../c-api/init.rst:8
 msgid "Initialization, Finalization, and Threads"
-msgstr "初始化，终结和线程"
+msgstr "初始化，最终化和线程"
 
 #: ../../c-api/init.rst:10
 msgid "See also :ref:`Python Initialization Configuration <init-config>`."
@@ -822,7 +822,7 @@ msgstr ""
 ":c:member:`PyConfig.program_name` 设置的程序名称和某些环境变量所派生的一系列复杂规则获得的；举例来说，如果程序名称为 "
 "``'/usr/local/bin/python'``，则 exec-prefix 为 ``'/usr/local'``。 "
 "返回的字符串指向静态存储；调用方不应修改其值。 这对应于最高层级 :file:`Makefile` 中的 :makevar:`exec_prefix` "
-"变量以及在构建时传给 :program:`configure` 脚本的 ``--exec-prefix`` 参数。 该值半以 "
+"变量以及在构建时传给 :program:`configure` 脚本的 ``--exec-prefix`` 参数。 该值将以 "
 "``sys.exec_prefix`` 的名称供 Python 代码访问。 它仅适用于 Unix。"
 
 #: ../../c-api/init.rst:521
@@ -893,10 +893,14 @@ msgid ""
 "startup; it can be (and usually is) modified later to change the search path"
 " for loading modules."
 msgstr ""
+"返回默认模块搜索路径；这是基于程序名称（由 :c:member:`PyConfig.program_name` 设置）和某些环境变量计算得出的。 "
+"返回的字符串由一系列以依赖于平台的分隔符分开的目录名称组成。 此分隔符在 Unix 和 macOS 上为 ``':'``，在 Windows 上为 "
+"``';'``。 返回的字符串将指向静态存储；调用方不应修改其值。 列表 :data:`sys.path` "
+"将在解释器启动时使用该值来初始化；它可以在随后被修改（并且通常都会被修改）以变更用于加载模块的搜索路径。"
 
 #: ../../c-api/init.rst:598
 msgid "Get :data:`sys.path` instead."
-msgstr ""
+msgstr "改为获取 :data:`sys.path`。"
 
 #: ../../c-api/init.rst:604
 msgid ""
@@ -1098,12 +1102,14 @@ msgid ""
 ":c:member:`PyConfig.home`, or the value of the :envvar:`PYTHONHOME` "
 "environment variable if it is set."
 msgstr ""
+"返回默认的 \"home\"，就是由 :c:member:`PyConfig.home` 所设置的值，或者在设置了 "
+":envvar:`PYTHONHOME` 环境变量的情况下则为该变量的值。"
 
 #: ../../c-api/init.rst:784
 msgid ""
 "Get :c:member:`PyConfig.home` or :envvar:`PYTHONHOME` environment variable "
 "instead."
-msgstr ""
+msgstr "改为获取 :c:member:`PyConfig.home` 或 :envvar:`PYTHONHOME` 环境变量。"
 
 #: ../../c-api/init.rst:792
 msgid "Thread State and the Global Interpreter Lock"
@@ -1398,6 +1404,9 @@ msgid ""
 "interpreter is in process of being finalized before calling this function to"
 " avoid unwanted termination."
 msgstr ""
+"当运行时正在最终化时从某个线程调用此函数将终结该线程，即使线程不是由 Python 创建的。 你可以在调用此函数之前使用 "
+":c:func:`Py_IsFinalizing` 或 :func:`sys.is_finalizing` "
+"来检查解释器是否还处于最终化过程中以避免不必要的终结操作。"
 
 #: ../../c-api/init.rst:1038
 msgid ""
