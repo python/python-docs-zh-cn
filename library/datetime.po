@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-19 14:50+0000\n"
+"POT-Creation-Date: 2024-07-29 04:36+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -99,7 +99,7 @@ msgstr "感知型对象和简单型对象"
 msgid ""
 "Date and time objects may be categorized as \"aware\" or \"naive\" depending"
 " on whether or not they include time zone information."
-msgstr ""
+msgstr "日期和时间对象可以根据它们是否包含时区信息而分为“感知型”和“简单型”两类。"
 
 #: ../../library/datetime.rst:53
 msgid ""
@@ -122,6 +122,9 @@ msgid ""
 " objects are easy to understand and to work with, at the cost of ignoring "
 "some aspects of reality."
 msgstr ""
+"**简单型** 对象没有包含足够多的信息来无歧义地相对于其他 date/time 对象来定位自身时间点。 "
+"不论一个简单型对象所代表的是世界标准时间（UTC）、当地时间还是某个其他时区的时间完全取决于具体程序，就像一个特定数字所代表的是米、英里还是质量完全取决于具体程序一样。"
+" 简单型对象更易于理解和使用，代价则是忽略了某些现实性考量。"
 
 #: ../../library/datetime.rst:66
 msgid ""
@@ -146,6 +149,9 @@ msgid ""
 "across the world are more political than rational, change frequently, and "
 "there is no standard suitable for every application aside from UTC."
 msgstr ""
+":mod:`!datetime` 模块只提供了一个具体的 :class:`tzinfo` 类，即 :class:`timezone` 类。 "
+":class:`!timezone` 类可以表示具有相对于 UTC 的固定时差的简单时区，例如 UTC 本身或北美 EST 和 EDT 时区等。 "
+"支持时区的详细程度取决于具体的应用。 世界各地的时间调整规则往往是政治性多于合理性，经常会发生变化，除了 UTC 之外并没有一个能适合所有应用的标准。"
 
 #: ../../library/datetime.rst:81
 msgid "Constants"
@@ -170,7 +176,7 @@ msgstr ""
 
 #: ../../library/datetime.rst:98
 msgid "Alias for the UTC time zone singleton :attr:`datetime.timezone.utc`."
-msgstr ""
+msgstr "UTC 时区单例 :attr:`datetime.timezone.utc` 的别名。"
 
 #: ../../library/datetime.rst:103
 msgid "Available Types"
@@ -1220,7 +1226,7 @@ msgstr "增加了 *fold* 形参。"
 
 #: ../../library/datetime.rst:853
 msgid "Return the current local date and time, with :attr:`.tzinfo` ``None``."
-msgstr ""
+msgstr "返回表示当前地方时的 date 和 time，其中 :attr:`.tzinfo` 为 ``None``。"
 
 #: ../../library/datetime.rst:855
 msgid "Equivalent to::"
@@ -1488,7 +1494,7 @@ msgstr "返回一个对应于 *date_string*，根据 *format* 进行解析得到
 msgid ""
 "If *format* does not contain microseconds or time zone information, this is "
 "equivalent to::"
-msgstr ""
+msgstr "如果 *format* 不包含微秒或时区信息，这将等价于::"
 
 #: ../../library/datetime.rst:1058
 msgid ""
@@ -1773,6 +1779,8 @@ msgid ""
 " :meth:`utcoffset` and :meth:`dst` methods must not return ``None``. If "
 "*self* is naive, it is presumed to represent time in the system time zone."
 msgstr ""
+"如果给出了 *tz*，则它必须是一个 :class:`tzinfo` 子类的实例，并且其 :meth:`utcoffset` 和 :meth:`dst`"
+" 方法不可返回 ``None``。 如果 *self* 为简单型，它会被假定为基于系统时区表示的时间。"
 
 #: ../../library/datetime.rst:1272
 msgid ""
@@ -1781,6 +1789,8 @@ msgid ""
 "converted datetime instance will be set to an instance of :class:`timezone` "
 "with the zone name and offset obtained from the OS."
 msgstr ""
+"如果调用时不传入参数 (或传入 ``tz=None``) 则将假定目标时区为系统的本地时区。 转换后 datetime 实例的 ``.tzinfo`` "
+"属性将被设为一个 :class:`timezone` 实例，时区名称和时差值将从 OS 获取。"
 
 #: ../../library/datetime.rst:1277
 msgid ""
@@ -1790,6 +1800,9 @@ msgid ""
 "``astz = dt.astimezone(tz)``, ``astz - astz.utcoffset()`` will have the same"
 " date and time data as ``dt - dt.utcoffset()``."
 msgstr ""
+"如果 ``self.tzinfo`` 为 *tz*，``self.astimezone(tz)`` 等于 *self*: 不会对日期或时间数据进行调整。"
+" 否则结果为 *tz* 时区的本地时间，代表的 UTC 时间与 *self* 相同：在 ``astz = dt.astimezone(tz)`` "
+"之后，``astz - astz.utcoffset()`` 将具有与 ``dt - dt.utcoffset()`` 相同的日期和时间数据。"
 
 #: ../../library/datetime.rst:1283
 msgid ""
@@ -1799,6 +1812,9 @@ msgid ""
 ":class:`!timezone` object from an aware datetime *dt* without conversion of "
 "date and time data, use ``dt.replace(tzinfo=None)``."
 msgstr ""
+"如果你只是想要附加一个 :class:`timezone` 对象 *tz* 到一个 datetime 对象 *dt* 而不调整日期和时间数据，请使用 "
+"``dt.replace(tzinfo=tz)``。 如果你只是想要从一个感知型 datetime 对象 *dt* 移除 "
+":class:`!timezone` 对象，请使用 ``dt.replace(tzinfo=None)``。"
 
 #: ../../library/datetime.rst:1288
 msgid ""
@@ -1960,6 +1976,9 @@ msgid ""
 "this convention and your system time zone is not set to UTC, you can obtain "
 "the POSIX timestamp by supplying ``tzinfo=timezone.utc``::"
 msgstr ""
+"没有一个方法能直接从表示 UTC 时间的简单型 :class:`.datetime` 实例获取 POSIX 时间戳。 "
+"如果你的应用程序使用此惯例并且你的系统时区不是设为 UTC，你可以通过提供 ``tzinfo=timezone.utc`` 来获取 POSIX "
+"时间戳::"
 
 #: ../../library/datetime.rst:1415
 msgid "or by calculating the timestamp directly::"
@@ -2416,6 +2435,9 @@ msgid ""
 "represent time zones with fixed offset from UTC such as UTC itself or North "
 "American EST and EDT."
 msgstr ""
+"你需要派生一个实体子类，并且（至少）提供你使用 :class:`.datetime` 方法所需要的标准 :class:`tzinfo` 方法的实现。 "
+":mod:`!datetime` 模块提供了 :class:`timezone`，这是 :class:`tzinfo` 的一个简单实体子类，它能以与 "
+"UTC 的固定差值来表示不同的时区，例如 UTC 本身或北美的 EST 和 EDT。"
 
 #: ../../library/datetime.rst:1980
 msgid ""
@@ -2604,6 +2626,9 @@ msgid ""
 "methods interpret *dt* as being in local time, and not need worry about "
 "objects in other time zones."
 msgstr ""
+"当传入一个 :class:`.datetime` 对象来回应 :class:`.datetime` 方法时，``dt.tzinfo`` 与 *self*"
+" 是同一对象。 :class:`tzinfo` 方法可以依赖这一点，除非用户代码直接调用了 :class:`tzinfo` 方法。 此行为的目的是使得 "
+":class:`tzinfo` 方法将 *dt* 解读为本地时间，而不需要担心其他时区的相关对象。"
 
 #: ../../library/datetime.rst:2104
 msgid ""
@@ -2735,16 +2760,18 @@ msgid ""
 "handling arbitrary fixed offsets from UTC) and its :attr:`timezone.utc` "
 "attribute (a UTC :class:`!timezone` instance)."
 msgstr ""
+":mod:`!datetime` 模块有一个基本 :class:`timezone` 类（用来处理任意与 UTC 的固定时差）及其 "
+":attr:`timezone.utc` 属性（UTC :class:`!timezone` 实例）。"
 
 #: ../../library/datetime.rst:2221
 msgid ""
 "``zoneinfo`` brings the *IANA time zone database* (also known as the Olson "
 "database) to Python, and its usage is recommended."
-msgstr ""
+msgstr "``zoneinfo`` 为 Python 带来了 *IANA时区数据库* （也被称为 Olson 数据库），推荐使用它。"
 
 #: ../../library/datetime.rst:2224
 msgid "`IANA time zone database <https://www.iana.org/time-zones>`_"
-msgstr ""
+msgstr "`IANA 时区数据库 <https://www.iana.org/time-zones>`_"
 
 #: ../../library/datetime.rst:2225
 msgid ""
@@ -2766,13 +2793,14 @@ msgid ""
 "The :class:`timezone` class is a subclass of :class:`tzinfo`, each instance "
 "of which represents a time zone defined by a fixed offset from UTC."
 msgstr ""
+":class:`timezone` 类是 :class:`tzinfo` 的子类，它的每个实例都代表一个以与 UTC 的固定时差来定义的时区。"
 
 #: ../../library/datetime.rst:2241
 msgid ""
 "Objects of this class cannot be used to represent time zone information in "
 "the locations where different offsets are used in different days of the year"
 " or where historical changes have been made to civil time."
-msgstr ""
+msgstr "此类的对象不可被用于代表某些特殊地点的时区信息，这些地点在一年的不同日期会使用不同的时差，或是在历史上对民用时间进行过调整。"
 
 #: ../../library/datetime.rst:2248
 msgid ""
@@ -2835,7 +2863,7 @@ msgstr ""
 
 #: ../../library/datetime.rst:2302
 msgid "The UTC time zone, ``timezone(timedelta(0))``."
-msgstr ""
+msgstr "UTC 时区，``timezone(timedelta(0))``。"
 
 #: ../../library/datetime.rst:2311
 msgid ":meth:`~.datetime.strftime` and :meth:`~.datetime.strptime` Behavior"
@@ -3433,6 +3461,8 @@ msgid ""
 "information, which are supported in ``datetime.strptime`` but are discarded "
 "by ``time.strptime``."
 msgstr ""
+"除非格式中包含秒以下的部分或时区差值信息，它们在 ``datetime.strptime`` 中受支持但会被 ``time.strptime`` "
+"所丢弃。"
 
 #: ../../library/datetime.rst:2515
 msgid ""
