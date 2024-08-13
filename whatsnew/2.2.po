@@ -1488,6 +1488,11 @@ msgid ""
 " buggy modules have all been fixed to use :const:`!ascii_letters` instead. "
 "(Reported by an unknown person; fixed by Fred L. Drake, Jr.)"
 msgstr ""
+"为 :mod:`string` 模块增加了新的常量 :const:`!ascii_letters`, :const:`!ascii_lowercase`"
+" 和 :const:`!ascii_uppercase`。 标准库中有一些模块使用 :const:`!string.letters` 来表示 "
+"A-Za-z，但当使用不同语言区域时其含义并不正确，因为 :const:`!string.letters` "
+"会根据当前语言区域所定义的合法字符集而发生变化。 这些有问题的模块已全部被修正为改用 :const:`!ascii_letters`。 "
+"（由未知人士报告；由 Fred L. Drake, Jr. 修正）。"
 
 #: ../../whatsnew/2.2.rst:1037
 msgid ""
@@ -1495,6 +1500,8 @@ msgid ""
 " databases by the addition of a :class:`~mimetypes.MimeTypes` class, which "
 "takes a list of filenames to be parsed.  (Contributed by Fred L. Drake, Jr.)"
 msgstr ""
+"现在 :mod:`mimetypes` 模块通过添加 :class:`~mimetypes.MimeTypes` 类让使用不同的 MIME "
+"类型数据库更为容易，该类接受一个文件名列表供解析。 （由 Fred L. Drake, Jr. 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1041
 msgid ""
@@ -1531,6 +1538,10 @@ msgid ""
 "exist, and have simply been changed to use the new C-level interface.  "
 "(Contributed by Fred L. Drake, Jr.)"
 msgstr ""
+"性能分析和追踪函数现在可以用 C 语言来实现，相比基于 Python 的函数能够显著提高运行速度并能够减少性能分析和追踪的资源开销。 Python "
+"开发环境的编写者对此将会很感兴趣。 Python 的 API 增加了两个新的 C 函数，:c:func:`PyEval_SetProfile` 和 "
+":c:func:`PyEval_SetTrace`。 现有的 :func:`sys.setprofile` 和 :func:`sys.settrace`"
+" 函数仍然存在，并已简单地更改为使用新的 C 层级接口。 （由 Fred L. Drake, Jr. 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1065
 msgid ""
@@ -1542,6 +1553,10 @@ msgid ""
 "allow looping over all the thread states for a given interpreter.  "
 "(Contributed by David Beazley.)"
 msgstr ""
+"增加了另一套低层级 API，它主要面向 Python 调试器和开发工具的实现者。 :c:func:`PyInterpreterState_Head` 和"
+" :c:func:`PyInterpreterState_Next` "
+"可让调用方访问所有现存的解释器对象；:c:func:`PyInterpreterState_ThreadHead` 和 "
+":c:func:`PyThreadState_Next` 允许对某个解释器的所有线程状态执行循环。 （由 David Beazley 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1072
 msgid ""
@@ -1589,7 +1604,7 @@ msgstr "从对象大小计算中移除 :c:macro:`!PyGC_HEAD_SIZE`。"
 #: ../../whatsnew/2.2.rst:1091
 msgid ""
 "Remove calls to :c:func:`!PyObject_AS_GC` and :c:func:`!PyObject_FROM_GC`."
-msgstr ""
+msgstr "移除对 :c:func:`!PyObject_AS_GC` 和 :c:func:`!PyObject_FROM_GC` 的调用。"
 
 #: ../../whatsnew/2.2.rst:1093
 msgid ""
@@ -1641,6 +1656,8 @@ msgid ""
 "can simply be discarded when porting code from earlier versions to Python "
 "2.2."
 msgstr ""
+":c:func:`_PyTuple_Resize` 函数去掉了一个未使用的形参，因此现在它接受 2 个形参而不是 3 个。 "
+"第三个参数从未被使用，在将代码从较早的版本移植到 Python 2.2 时可以简单地丢弃它。"
 
 #: ../../whatsnew/2.2.rst:1129
 msgid "Other Changes and Fixes"
@@ -1714,6 +1731,8 @@ msgid ""
 "automatically removes obsolete ``__future__`` statements from Python source "
 "code."
 msgstr ""
+"由 Tim Peters 编写的新脚本 :file:`Tools/scripts/cleanfuture.py` 可自动从 Python "
+"源代码移除过时的 ``__future__`` 语句。"
 
 #: ../../whatsnew/2.2.rst:1189
 msgid ""
@@ -1723,6 +1742,9 @@ msgid ""
 "other development environments.  This is described in :pep:`264`. "
 "(Contributed by Michael Hudson.)"
 msgstr ""
+"向内置函数 :func:`compile` 添加了一个额外的 *flags* 参数，以便现在 ``__future__`` 语句的行为能在模拟的 "
+"shell，例如由 IDLE 和其他开发环境所提供的此类工具中被正确地观察。 此特性的描述参见 :pep:`264`。 （由 Michael "
+"Hudson 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1195
 msgid ""
@@ -1827,6 +1849,9 @@ msgid ""
 ":c:func:`dlopen` using the :func:`sys.getdlopenflags` and "
 ":func:`sys.setdlopenflags` functions. (Contributed by Bram Stolk.)"
 msgstr ""
+"在 Python 会使用 C :c:func:`dlopen` 函数来加载扩展模块的平台上，现在可以使用 "
+":func:`sys.getdlopenflags` 和 :func:`sys.setdlopenflags` 等函数来设置 "
+":c:func:`dlopen` 所使用的旗标。 （由 Bram Stolk 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1250
 msgid ""
@@ -1836,6 +1861,9 @@ msgid ""
 "result varies unpredictably depending on the platform.  A call such as "
 "``pow(2.0, 8.0, 7.0)`` will now raise a :exc:`TypeError` exception."
 msgstr ""
+"当传入浮点数时 :func:`pow` 内置函数已不再支持 3 个参数。 ``pow(x, y, z)`` 将返回 ``(x**y) % "
+"z``，但这对于浮点数来说没有用处，并且其最终结果会因具体平台的不同而产生不可预料的变化。 现在 ``pow(2.0, 8.0, 7.0)`` "
+"这样的调用将会引发 :exc:`TypeError` 异常。"
 
 #: ../../whatsnew/2.2.rst:1260
 msgid "Acknowledgements"
