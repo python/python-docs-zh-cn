@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 05:06+0000\n"
+"POT-Creation-Date: 2024-08-16 15:24+0000\n"
 "PO-Revision-Date: 2023-05-24 02:23+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -354,6 +354,8 @@ msgid ""
 "bit more memory, because Python may have to maintain two versions of each "
 "string (in the legacy format and in the new efficient storage)."
 msgstr ""
+"在 C API 方面，:pep:`393` 完全向后兼容。 旧的 API 至少还能使用五年。 使用传统 API "
+"的应用程序不会完全受益于内存的减少，或者更糟的是，可能会使用更多的内存，因为 Python 可能需要维护每个字符串的两个版本（传统格式和新的高效存储）。"
 
 #: ../../whatsnew/3.3.rst:227
 msgid "Functionality"
@@ -370,36 +372,40 @@ msgid ""
 "between narrow and wide builds no longer exists and Python now behaves like "
 "a wide build, even under Windows."
 msgstr ""
+"Python 现在始终支持全部 Unicode 码位，包括非 BMP 码位 (即从 ``U+0000`` 到 ``U+10FFFF``)。 "
+"窄编译版本和宽编译版本之间的区别已不复存在，Python 现在的行为就像宽编译版本，甚至在 Windows 下也是如此。"
 
 #: ../../whatsnew/3.3.rst:236
 msgid ""
 "With the death of narrow builds, the problems specific to narrow builds have"
 " also been fixed, for example:"
-msgstr ""
+msgstr "例如，随着窄编译版本的消亡，窄编译版本特有的问题也得到了解决："
 
 #: ../../whatsnew/3.3.rst:239
 msgid ""
 ":func:`len` now always returns 1 for non-BMP characters, so "
 "``len('\\U0010FFFF') == 1``;"
-msgstr ""
+msgstr "现在 :func:`len` 对于非 BMP 字符总是返回 1，因此 ``len('\\U0010FFFF') == 1``；"
 
 #: ../../whatsnew/3.3.rst:242
 msgid ""
 "surrogate pairs are not recombined in string literals, so ``'\\uDBFF\\uDFFF'"
 " != '\\U0010FFFF'``;"
-msgstr ""
+msgstr "替换对不会在字符串字面值中重新合并，因此 ``'\\uDBFF\\uDFFF' != '\\U0010FFFF'``；"
 
 #: ../../whatsnew/3.3.rst:245
 msgid ""
 "indexing or slicing non-BMP characters returns the expected value, so "
 "``'\\U0010FFFF'[0]`` now returns ``'\\U0010FFFF'`` and not ``'\\uDBFF'``;"
 msgstr ""
+"索引或切分非 BMP 字符会返回预期的值，因此 ``'\\U0010FFFF'[0]`` 现在会返回 ``'\\U0010FFFF'`` 而不是 "
+"``'\\uDBFF'``；"
 
 #: ../../whatsnew/3.3.rst:248
 msgid ""
 "all other functions in the standard library now correctly handle non-BMP "
 "code points."
-msgstr ""
+msgstr "标准库中的所有其他函数现在都能正确处理非 BMP 代码点。"
 
 #: ../../whatsnew/3.3.rst:251
 msgid ""
@@ -408,25 +414,28 @@ msgid ""
 "either ``0xFFFF`` or ``0x10FFFF`` for backward compatibility, and it should "
 "not be used with the new Unicode API (see :issue:`13054`)."
 msgstr ""
+":data:`sys.maxunicode` 的值现在总是 ``1114111`` (十六进制为 ``0x10FFFF``)。 "
+":c:func:`!PyUnicode_GetMax` 函数仍返回 ``0xFFFF`` 或 ``0x10FFFF`` 以便向下兼容，但不应与新的 "
+"Unicode API 一起使用 (参见 :issue:`13054`)。"
 
 #: ../../whatsnew/3.3.rst:256
 msgid "The :file:`./configure` flag ``--with-wide-unicode`` has been removed."
-msgstr ""
+msgstr ":file:`./configure` 标志 ``--with-wide-unicode`` 已被移除。"
 
 #: ../../whatsnew/3.3.rst:259
 msgid "Performance and resource usage"
-msgstr ""
+msgstr "性能和资源使用情况"
 
 #: ../../whatsnew/3.3.rst:261
 msgid ""
 "The storage of Unicode strings now depends on the highest code point in the "
 "string:"
-msgstr ""
+msgstr "现在，Unicode 字符串的存储取决于字符串中的最高码位："
 
 #: ../../whatsnew/3.3.rst:263
 msgid ""
 "pure ASCII and Latin1 strings (``U+0000-U+00FF``) use 1 byte per code point;"
-msgstr ""
+msgstr "纯 ASCII 和 Latin1 字符串 (``U+0000-U+00FF``) 每个码位使用 1 个字节；"
 
 #: ../../whatsnew/3.3.rst:265
 msgid "BMP strings (``U+0000-U+FFFF``) use 2 bytes per code point;"
@@ -448,6 +457,10 @@ msgid ""
 "than Python 3.2, and a little bit better than Python 2.7, on a Django "
 "benchmark (see the PEP for details)."
 msgstr ""
+"这样做的效果是，对于大多数应用而言，字符串存储的内存使用量应该会大幅减少 —— 尤其是与以前的宽 unicode 版本相比 —— "
+"因为在许多情况下，即使在国际环境中，字符串也将是纯 ASCII 格式（因为许多字符串存储的是非人类语言数据，如 XML 片段、HTTP 标头、JSON "
+"编码数据等）。 出于同样的原因，我们还希望它能提高非小应用程序的 CPU 缓存效率。 在 Django 基准测试中，Python 3.3 的内存使用量比"
+" Python 3.2 少两到三倍，比 Python 2.7 略好一些（详情请参见 PEP）。"
 
 #: ../../whatsnew/3.3.rst:283
 msgid ":pep:`393` - Flexible String Representation"
@@ -469,6 +482,7 @@ msgid ""
 "that can be used to launch Python applications in a version independent "
 "fashion."
 msgstr ""
+"Python 3.3 的 Windows 安装程序现在包含一个 ``py`` 启动程序，可用于以版本无关的方式启动 Python 应用程序。"
 
 #: ../../whatsnew/3.3.rst:296
 msgid ""
@@ -478,6 +492,8 @@ msgid ""
 " version is used by default, but this can be overridden by including a Unix-"
 "style \"shebang line\" in the Python script."
 msgstr ""
+"双击 ``*.py`` 文件时会隐式调用该启动器。 如果系统中只安装了一个 Python 版本，则将使用该版本运行文件。 "
+"如果安装了多个版本，则默认使用最新版本，但也可以通过在 Python 脚本中加入 Unix 风格的“shebang 行”来覆盖该版本。"
 
 #: ../../whatsnew/3.3.rst:302
 msgid ""
@@ -488,6 +504,9 @@ msgid ""
 "Python 2 is also installed, or ``-2.6`` to specifically request an earlier "
 "Python version when a more recent version is installed)."
 msgstr ""
+"启动器也可以作为 ``py`` 应用程序在命令行中显式使用。运行 ``py`` "
+"遵循与隐式启动脚本相同的版本选择规则，但可以通过传递适当的参数来选择更具体的版本（例如，当 Python 2 也已安装时，使用 ``-3`` 来请求 "
+"Python 3；当安装了较新的 Python 版本时，使用 ``-2.6`` 来特别请求较早的 Python 版本）。"
 
 #: ../../whatsnew/3.3.rst:309
 msgid ""
@@ -495,6 +514,8 @@ msgid ""
 " add the newly installed Python to the system PATH.  (Contributed by Brian "
 "Curtin in :issue:`3561`.)"
 msgstr ""
+"除了启动器之外，Windows 安装程序现在还包含一个选项，可将新安装的 Python 添加到系统 PATH 中。  （由 Brian Curtin 在"
+" :issue:`3561` 中贡献）。"
 
 #: ../../whatsnew/3.3.rst:317
 msgid ":pep:`397` - Python Launcher for Windows"
@@ -522,7 +543,7 @@ msgstr "PEP 3151: 重写 OS 和 IO 异常的层次结构"
 msgid ""
 "The hierarchy of exceptions raised by operating system errors is now both "
 "simplified and finer-grained."
-msgstr ""
+msgstr "现在，由操作系统错误引发的异常层次结构既得到了简化，又更加精细。"
 
 #: ../../whatsnew/3.3.rst:332
 msgid ""
@@ -533,6 +554,10 @@ msgid ""
 ":exc:`OSError`.  The other names are kept as aliases for compatibility "
 "reasons."
 msgstr ""
+"您不必再为在 "
+":exc:`OSError`、:exc:`IOError`、:exc:`EnvironmentError`、:exc:`WindowsError`、:exc:`mmap.error`、:exc:`socket.error`"
+" 或 :exc:`select.error` 之间选择合适的异常类型而烦恼。 所有这些异常类型现在都只有一个: :exc:`OSError`。 "
+"出于兼容性考虑，其他名称将作为别名保留。"
 
 #: ../../whatsnew/3.3.rst:339
 msgid ""
@@ -541,6 +566,8 @@ msgid ""
 "constant from the :mod:`errno` module, you can catch the adequate "
 ":exc:`OSError` subclass.  The available subclasses are the following:"
 msgstr ""
+"此外，现在捕捉特定错误条件也更容易了。无需从 :mod:`errno` 模块中检查 ``errno`` 属性（或 ``args[0]`` "
+"）中的特定常量，您可以捕捉适当的 :exc:`OSError` 子类。可用的子类如下："
 
 #: ../../whatsnew/3.3.rst:344
 msgid ":exc:`BlockingIOError`"
@@ -610,13 +637,13 @@ msgstr ":exc:`ConnectionResetError`"
 msgid ""
 "Thanks to the new exceptions, common usages of the :mod:`errno` can now be "
 "avoided.  For example, the following code written for Python 3.2::"
-msgstr ""
+msgstr "有了新的异常，现在就可以避免 :mod:`errno` 的常见用法了。 例如，下面是为 Python 3.2 编写的代码："
 
 #: ../../whatsnew/3.3.rst:379
 msgid ""
 "can now be written without the :mod:`errno` import and without manual "
 "inspection of exception attributes::"
-msgstr ""
+msgstr "现在无需导入 :mod:`errno`，也无需手动检查异常属性："
 
 #: ../../whatsnew/3.3.rst:392
 msgid ":pep:`3151` - Reworking the OS and IO Exception Hierarchy"
@@ -638,19 +665,23 @@ msgid ""
 " generator. Additionally, the subgenerator is allowed to return with a "
 "value, and the value is made available to the delegating generator."
 msgstr ""
+"PEP 380 增加了 ``yield from`` 表达式，允许 :term:`generator` 将其部分操作委托给另一个生成器。 这样，包含 "
+":keyword:`yield` 的代码部分就可以被分解出来，放在另一个生成器中。 此外，还允许子生成器返回一个值，并将该值提供给委托生成器。"
 
 #: ../../whatsnew/3.3.rst:411
 msgid ""
 "While designed primarily for use in delegating to a subgenerator, the "
 "``yield from`` expression actually allows delegation to arbitrary "
 "subiterators."
-msgstr ""
+msgstr "虽然 ``yield from`` 表达式主要用于委托给子生成器，但它实际上允许委托给任意子生成器。"
 
 #: ../../whatsnew/3.3.rst:414
 msgid ""
 "For simple iterators, ``yield from iterable`` is essentially just a "
 "shortened form of ``for item in iterable: yield item``::"
 msgstr ""
+"对于简单的迭代器而言，``yield from iterable`` 本质上只是 ``for item in iterable: yield "
+"item`` 的简写形式："
 
 #: ../../whatsnew/3.3.rst:424
 msgid ""
