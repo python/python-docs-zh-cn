@@ -1,0 +1,445 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001-2024, Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# ww song <sww4718168@gmail.com>, 2024
+# Nyuan Zhang, 2024
+# Freesand Leo <yuqinju@163.com>, 2024
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.13\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-16 14:15+0000\n"
+"PO-Revision-Date: 2024-06-20 06:42+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../howto/free-threading-extensions.rst:7
+msgid "C API Extension Support for Free Threading"
+msgstr "自由线程的 C API 扩展支持"
+
+#: ../../howto/free-threading-extensions.rst:9
+msgid ""
+"Starting with the 3.13 release, CPython has experimental support for running"
+" with the :term:`global interpreter lock` (GIL) disabled in a configuration "
+"called :term:`free threading`.  This document describes how to adapt C API "
+"extensions to support free threading."
+msgstr ""
+"从 3.13 发布起，CPython 通过 :term:`free threading` 配置项引入了禁用 :term:`global "
+"interpreter lock` (GIL) 的实验性支持。这份文档阐述了如何修改 C API 扩展以支持自由线程。"
+
+#: ../../howto/free-threading-extensions.rst:16
+msgid "Identifying the Free-Threaded Build in C"
+msgstr "在 C 中识别自由线程构建"
+
+#: ../../howto/free-threading-extensions.rst:18
+msgid ""
+"The CPython C API exposes the ``Py_GIL_DISABLED`` macro: in the free-"
+"threaded build it's defined to ``1``, and in the regular build it's not "
+"defined. You can use it to enable code that only runs under the free-"
+"threaded build::"
+msgstr ""
+"CPython C API 提供了 ``Py_GIL_DISABLED`` 宏，它在自由线程构建中被定义为 "
+"``1``，而在常规构建中未被定义。你可以使用它让代码仅在自由线程构建中运行："
+
+#: ../../howto/free-threading-extensions.rst:27
+msgid "Module Initialization"
+msgstr "模块初始化"
+
+#: ../../howto/free-threading-extensions.rst:29
+msgid ""
+"Extension modules need to explicitly indicate that they support running with"
+" the GIL disabled; otherwise importing the extension will raise a warning "
+"and enable the GIL at runtime."
+msgstr "扩展模块需要明确指明它们支持在禁用 GIL 的情况下运行；否则导入扩展模块时会引发警告，并在运行时启用 GIL。"
+
+#: ../../howto/free-threading-extensions.rst:33
+msgid ""
+"There are two ways to indicate that an extension module supports running "
+"with the GIL disabled depending on whether the extension uses multi-phase or"
+" single-phase initialization."
+msgstr "取决于扩展使用多阶段还是单阶段初始化，有两种方式指明扩展模块支持在 GIL 禁用的情况下运行。"
+
+#: ../../howto/free-threading-extensions.rst:38
+msgid "Multi-Phase Initialization"
+msgstr "多阶段初始化"
+
+#: ../../howto/free-threading-extensions.rst:40
+msgid ""
+"Extensions that use multi-phase initialization (i.e., "
+":c:func:`PyModuleDef_Init`) should add a :c:data:`Py_mod_gil` slot in the "
+"module definition.  If your extension supports older versions of CPython, "
+"you should guard the slot with a :c:data:`PY_VERSION_HEX` check."
+msgstr ""
+"使用多阶段初始化（例如 :c:func:`PyModuleDef_Init`）的扩展应该在模块定义中添加 :c:data:`Py_mod_gil` "
+"槽位。如果你的扩展需要支持更老版本的 CPython，请检查 :c:data:`PY_VERSION_HEX` 以保护槽位。"
+
+#: ../../howto/free-threading-extensions.rst:63
+msgid "Single-Phase Initialization"
+msgstr "单阶段初始化"
+
+#: ../../howto/free-threading-extensions.rst:65
+msgid ""
+"Extensions that use single-phase initialization (i.e., "
+":c:func:`PyModule_Create`) should call :c:func:`PyUnstable_Module_SetGIL` to"
+" indicate that they support running with the GIL disabled.  The function is "
+"only defined in the free-threaded build, so you should guard the call with "
+"``#ifdef Py_GIL_DISABLED`` to avoid compilation errors in the regular build."
+msgstr ""
+"使用单阶段初始化（即 :c:func:`PyModule_Create`）的扩展应该调用 "
+":c:func:`PyUnstable_Module_SetGIL` 来表明它们支持在禁用 GIL "
+"的情况下运行。该函数只在自由线程构建中被定义，因此应使用 ``#ifdef Py_GIL_DISABLED`` "
+"来保护调用，以避免在常规构建中出现编译错误。"
+
+#: ../../howto/free-threading-extensions.rst:93
+msgid "General API Guidelines"
+msgstr "通用 API 指南"
+
+#: ../../howto/free-threading-extensions.rst:95
+msgid "Most of the C API is thread-safe, but there are some exceptions."
+msgstr "大多数 C API 是线程安全的，但是也存在例外。"
+
+#: ../../howto/free-threading-extensions.rst:97
+msgid ""
+"**Struct Fields**: Accessing fields in Python C API objects or structs "
+"directly is not thread-safe if the field may be concurrently modified."
+msgstr "**结构字段**：如果 Python C API 对象或结构的字段可能被并行修改，那么直接访问这些字段不是线程安全的。"
+
+#: ../../howto/free-threading-extensions.rst:99
+msgid ""
+"**Macros**: Accessor macros like :c:macro:`PyList_GET_ITEM` and "
+":c:macro:`PyList_SET_ITEM` do not perform any error checking or locking. "
+"These macros are not thread-safe if the container object may be modified "
+"concurrently."
+msgstr ""
+"**宏**：:c:macro:`PyList_GET_ITEM` 以及 :c:macro:`PyList_SET_ITEM` "
+"等访问宏不进行错误检查和上锁，因而容器对象可能被并行修改时它们不是线程安全的。"
+
+#: ../../howto/free-threading-extensions.rst:103
+msgid ""
+"**Borrowed References**: C API functions that return :term:`borrowed "
+"references <borrowed reference>` may not be thread-safe if the containing "
+"object is modified concurrently.  See the section on :ref:`borrowed "
+"references <borrowed-references>` for more information."
+msgstr ""
+"**借入引用**：返回 :term:`借入引用 <borrowed reference>` 的  C API "
+"函数如果引用内容可能被并行修改，那么它不是线程安全的。详见 :ref:`借入引用 <borrowed-references>`。"
+
+#: ../../howto/free-threading-extensions.rst:110
+msgid "Container Thread Safety"
+msgstr "容器相关的线程安全"
+
+#: ../../howto/free-threading-extensions.rst:112
+msgid ""
+"Containers like :c:struct:`PyListObject`, :c:struct:`PyDictObject`, and "
+":c:struct:`PySetObject` perform internal locking in the free-threaded build."
+"  For example, the :c:func:`PyList_Append` will lock the list before "
+"appending an item."
+msgstr ""
+":c:struct:`PyListObject`, :c:struct:`PyDictObject` 及 :c:struct:`PySetObject`"
+" 等容器在自由线程构建中执行内部上锁机制，例如 :c:func:`PyList_Append` 在追加对象前会对列表上锁。"
+
+#: ../../howto/free-threading-extensions.rst:120
+msgid "``PyDict_Next``"
+msgstr "``PyDict_Next``"
+
+#: ../../howto/free-threading-extensions.rst:122
+msgid ""
+"A notable exception is :c:func:`PyDict_Next`, which does not lock the "
+"dictionary.  You should use :c:macro:`Py_BEGIN_CRITICAL_SECTION` to protect "
+"the dictionary while iterating over it if the dictionary may be concurrently"
+" modified::"
+msgstr ""
+"一个值得注意的例外是 :c:func:`PyDict_Next`，它不会锁定目录。 在迭代目录时如果该目录可能被并发地修改那么你应当使用 "
+":c:macro:`Py_BEGIN_CRITICAL_SECTION` 来保护它::"
+
+#: ../../howto/free-threading-extensions.rst:137
+msgid "Borrowed References"
+msgstr "借入引用"
+
+#: ../../howto/free-threading-extensions.rst:141
+msgid ""
+"Some C API functions return :term:`borrowed references <borrowed "
+"reference>`. These APIs are not thread-safe if the containing object is "
+"modified concurrently.  For example, it's not safe to use "
+":c:func:`PyList_GetItem` if the list may be modified concurrently."
+msgstr ""
+"有些 C API 函数返回 :term:`borrowed references <borrowed "
+"reference>`。如果引用内容可能被并行修改，那么这些 API 不是线程安全的。例如，如果列表可能被并行修改，那么使用 "
+":c:func:`PyList_GetItem` 是不安全的。"
+
+#: ../../howto/free-threading-extensions.rst:146
+msgid ""
+"The following table lists some borrowed reference APIs and their "
+"replacements that return :term:`strong references <strong reference>`."
+msgstr "下表列出了一些返回借入引用的 API 及它们返回 :term:`强引用 <strong reference>` 的替代版本。"
+
+#: ../../howto/free-threading-extensions.rst:150
+msgid "Borrowed reference API"
+msgstr "借入引用 API"
+
+#: ../../howto/free-threading-extensions.rst:150
+msgid "Strong reference API"
+msgstr "强引用 API"
+
+#: ../../howto/free-threading-extensions.rst:152
+msgid ":c:func:`PyList_GetItem`"
+msgstr ":c:func:`PyList_GetItem`"
+
+#: ../../howto/free-threading-extensions.rst:152
+msgid ":c:func:`PyList_GetItemRef`"
+msgstr ":c:func:`PyList_GetItemRef`"
+
+#: ../../howto/free-threading-extensions.rst:154
+msgid ":c:func:`PyDict_GetItem`"
+msgstr ":c:func:`PyDict_GetItem`"
+
+#: ../../howto/free-threading-extensions.rst:154
+#: ../../howto/free-threading-extensions.rst:156
+msgid ":c:func:`PyDict_GetItemRef`"
+msgstr ":c:func:`PyDict_GetItemRef`"
+
+#: ../../howto/free-threading-extensions.rst:156
+msgid ":c:func:`PyDict_GetItemWithError`"
+msgstr ":c:func:`PyDict_GetItemWithError`"
+
+#: ../../howto/free-threading-extensions.rst:158
+msgid ":c:func:`PyDict_GetItemString`"
+msgstr ":c:func:`PyDict_GetItemString`"
+
+#: ../../howto/free-threading-extensions.rst:158
+msgid ":c:func:`PyDict_GetItemStringRef`"
+msgstr ":c:func:`PyDict_GetItemStringRef`"
+
+#: ../../howto/free-threading-extensions.rst:160
+msgid ":c:func:`PyDict_SetDefault`"
+msgstr ":c:func:`PyDict_SetDefault`"
+
+#: ../../howto/free-threading-extensions.rst:160
+msgid ":c:func:`PyDict_SetDefaultRef`"
+msgstr ":c:func:`PyDict_SetDefaultRef`"
+
+#: ../../howto/free-threading-extensions.rst:162
+msgid ":c:func:`PyDict_Next`"
+msgstr ":c:func:`PyDict_Next`"
+
+#: ../../howto/free-threading-extensions.rst:162
+msgid "none (see :ref:`PyDict_Next`)"
+msgstr "无 (参见 :ref:`PyDict_Next`)"
+
+#: ../../howto/free-threading-extensions.rst:164
+msgid ":c:func:`PyWeakref_GetObject`"
+msgstr ":c:func:`PyWeakref_GetObject`"
+
+#: ../../howto/free-threading-extensions.rst:164
+#: ../../howto/free-threading-extensions.rst:166
+msgid ":c:func:`PyWeakref_GetRef`"
+msgstr ":c:func:`PyWeakref_GetRef`"
+
+#: ../../howto/free-threading-extensions.rst:166
+msgid ":c:func:`PyWeakref_GET_OBJECT`"
+msgstr ":c:func:`PyWeakref_GET_OBJECT`"
+
+#: ../../howto/free-threading-extensions.rst:168
+msgid ":c:func:`PyImport_AddModule`"
+msgstr ":c:func:`PyImport_AddModule`"
+
+#: ../../howto/free-threading-extensions.rst:168
+msgid ":c:func:`PyImport_AddModuleRef`"
+msgstr ":c:func:`PyImport_AddModuleRef`"
+
+#: ../../howto/free-threading-extensions.rst:171
+msgid ""
+"Not all APIs that return borrowed references are problematic.  For example, "
+":c:func:`PyTuple_GetItem` is safe because tuples are immutable. Similarly, "
+"not all uses of the above APIs are problematic.  For example, "
+":c:func:`PyDict_GetItem` is often used for parsing keyword argument "
+"dictionaries in function calls; those keyword argument dictionaries are "
+"effectively private (not accessible by other threads), so using borrowed "
+"references in that context is safe."
+msgstr ""
+"返回借用引用的 API 不一定都有问题。例如，:c:func:`PyTuple_GetItem` 是安全的，因为元组是不可变的。同样，上述 API "
+"的使用不一定都有问题。 例如，:c:func:`PyDict_GetItem` "
+"通常用于解析函数调用中的关键字参数字典；这些关键字参数字典实际上是私有（其他线程无法访问）的，因此在这种情况下使用借入引用是安全的。"
+
+#: ../../howto/free-threading-extensions.rst:179
+msgid ""
+"Some of these functions were added in Python 3.13.  You can use the "
+"`pythoncapi-compat <https://github.com/python/pythoncapi-compat>`_ package "
+"to provide implementations of these functions for older Python versions."
+msgstr ""
+"上述函数中有的是在 Python 3.13 中添加的。在旧 Python 版本上您可以使用提供这些函数实现的 `pythoncapi-compat "
+"<https://github.com/python/pythoncapi-compat>`_ 包。"
+
+#: ../../howto/free-threading-extensions.rst:185
+msgid "Memory Allocation APIs"
+msgstr "内存分配 API"
+
+#: ../../howto/free-threading-extensions.rst:187
+msgid ""
+"Python's memory management C API provides functions in three different "
+":ref:`allocation domains <allocator-domains>`: \"raw\", \"mem\", and "
+"\"object\". For thread-safety, the free-threaded build requires that only "
+"Python objects are allocated using the object domain, and that all Python "
+"object are allocated using that domain.  This differs from the prior Python "
+"versions, where this was only a best practice and not a hard requirement."
+msgstr ""
+"Python 的内存管理 C API 提供了三个不同 :ref:`分配域 <allocator-domains>` 的函数: \"raw\", "
+"\"mem\" 和 \"object\"。 为了保证线程安全，自由线程构建版要求只有 Python 对象使用 object 域来分配，并且所有 "
+"Python 对象都应使用该域来分配。 这不同于之前的 Python 版本，因为在此之前这只是一个最佳实践而不是硬性要求。"
+
+#: ../../howto/free-threading-extensions.rst:196
+msgid ""
+"Search for uses of :c:func:`PyObject_Malloc` in your extension and check "
+"that the allocated memory is used for Python objects. Use "
+":c:func:`PyMem_Malloc` to allocate buffers instead of "
+":c:func:`PyObject_Malloc`."
+msgstr ""
+"搜索 :c:func:`PyObject_Malloc` 在您的扩展中的使用，并检查分配的内存是否用于 Python 对象。使用 "
+":c:func:`PyMem_Malloc` 来分配缓冲区，而不是 :c:func:`PyObject_Malloc`。"
+
+#: ../../howto/free-threading-extensions.rst:203
+msgid "Thread State and GIL APIs"
+msgstr "线程状态与 GIL API"
+
+#: ../../howto/free-threading-extensions.rst:205
+msgid ""
+"Python provides a set of functions and macros to manage thread state and the"
+" GIL, such as:"
+msgstr "Python 提供了一系列函数和宏来管理线程状态和 GIL，例如："
+
+#: ../../howto/free-threading-extensions.rst:208
+msgid ":c:func:`PyGILState_Ensure` and :c:func:`PyGILState_Release`"
+msgstr ":c:func:`PyGILState_Ensure` 与 :c:func:`PyGILState_Release`"
+
+#: ../../howto/free-threading-extensions.rst:209
+msgid ":c:func:`PyEval_SaveThread` and :c:func:`PyEval_RestoreThread`"
+msgstr ":c:func:`PyEval_SaveThread` 与 :c:func:`PyEval_RestoreThread`"
+
+#: ../../howto/free-threading-extensions.rst:210
+msgid ":c:macro:`Py_BEGIN_ALLOW_THREADS` and :c:macro:`Py_END_ALLOW_THREADS`"
+msgstr ":c:macro:`Py_BEGIN_ALLOW_THREADS` 与 :c:macro:`Py_END_ALLOW_THREADS`"
+
+#: ../../howto/free-threading-extensions.rst:212
+msgid ""
+"These functions should still be used in the free-threaded build to manage "
+"thread state even when the :term:`GIL` is disabled.  For example, if you "
+"create a thread outside of Python, you must call :c:func:`PyGILState_Ensure`"
+" before calling into the Python API to ensure that the thread has a valid "
+"Python thread state."
+msgstr ""
+"即使 :term:`GIL` 被禁用，仍应在自由线程构建中使用这些函数管理线程状态。例如，如果在 Python 之外创建线程，则必须在调用 Python"
+" API 前调用 :c:func:`PyGILState_Ensure`，以确保线程具有有效的 Python 线程状态。"
+
+#: ../../howto/free-threading-extensions.rst:218
+msgid ""
+"You should continue to call :c:func:`PyEval_SaveThread` or "
+":c:macro:`Py_BEGIN_ALLOW_THREADS` around blocking operations, such as I/O or"
+" lock acquisitions, to allow other threads to run the :term:`cyclic garbage "
+"collector <garbage collection>`."
+msgstr ""
+"你应该继续在阻塞操作（如输入/输出或获取锁）前调用 :c:func:`PyEval_SaveThread` 或 "
+":c:macro:`Py_BEGIN_ALLOW_THREADS`，以允许其他线程运行 :term:`循环垃圾回收器 <garbage "
+"collection>`。"
+
+#: ../../howto/free-threading-extensions.rst:225
+msgid "Protecting Internal Extension State"
+msgstr "保护内部扩展状态"
+
+#: ../../howto/free-threading-extensions.rst:227
+msgid ""
+"Your extension may have internal state that was previously protected by the "
+"GIL.  You may need to add locking to protect this state.  The approach will "
+"depend on your extension, but some common patterns include:"
+msgstr "您的扩展可能有以前受 GIL 保护的内部状态。您可能需要上锁来保护内部状态。具体方法取决于您的扩展，但一些常见的模式包括："
+
+#: ../../howto/free-threading-extensions.rst:231
+msgid ""
+"**Caches**: global caches are a common source of shared state.  Consider "
+"using a lock to protect the cache or disabling it in the free-threaded build"
+" if the cache is not critical for performance."
+msgstr "**缓存**：全局缓存是共享状态的常见来源。如果缓存对性能并不重要，可考虑使用锁来保护缓存，或在自由线程构建中禁用缓存。"
+
+#: ../../howto/free-threading-extensions.rst:234
+msgid ""
+"**Global State**: global state may need to be protected by a lock or moved "
+"to thread local storage. C11 and C++11 provide the ``thread_local`` or "
+"``_Thread_local`` for `thread-local storage "
+"<https://en.cppreference.com/w/c/language/storage_duration>`_."
+msgstr ""
+"**全局状态**：全局状态可能需要用锁保护或移至线程本地存储。C11 和 C++11 提供了 ``thread_local`` 或 "
+"``_Thread_local`` 用于 `线程本地存储 "
+"<https://en.cppreference.com/w/c/language/storage_duration>`_。"
+
+#: ../../howto/free-threading-extensions.rst:241
+msgid "Building Extensions for the Free-Threaded Build"
+msgstr "为自由线程构建进行扩展构建"
+
+#: ../../howto/free-threading-extensions.rst:243
+msgid ""
+"C API extensions need to be built specifically for the free-threaded build. "
+"The wheels, shared libraries, and binaries are indicated by a ``t`` suffix."
+msgstr "C API 扩展需要专门为自由线程构建进行构建。构建的 wheel、共享库和二进制文件用后缀 ``t`` 指示。"
+
+#: ../../howto/free-threading-extensions.rst:246
+msgid ""
+"`pypa/manylinux <https://github.com/pypa/manylinux>`_ supports the free-"
+"threaded build, with the ``t`` suffix, such as ``python3.13t``."
+msgstr ""
+"`pypa/manylinux <https://github.com/pypa/manylinux>`_ 支持后缀为 ``t`` 的自由线程构建，如 "
+"``python3.13t``。"
+
+#: ../../howto/free-threading-extensions.rst:248
+msgid ""
+"`pypa/cibuildwheel <https://github.com/pypa/cibuildwheel>`_ supports the "
+"free-threaded build if you set `CIBW_FREE_THREADED_SUPPORT "
+"<https://cibuildwheel.pypa.io/en/stable/options/#free-threaded-support>`_."
+msgstr ""
+"如果设置了 `CIBW_FREE_THREADED_SUPPORT "
+"<https://cibuildwheel.pypa.io/en/stable/options/#free-threaded-support>`_，则 "
+"`pypa/cibuildwheel <https://github.com/pypa/cibuildwheel>`_ 支持自由线程构建。"
+
+#: ../../howto/free-threading-extensions.rst:253
+msgid "Limited C API and Stable ABI"
+msgstr "受限的 C API 与稳定 ABI"
+
+#: ../../howto/free-threading-extensions.rst:255
+msgid ""
+"The free-threaded build does not currently support the :ref:`Limited C API "
+"<limited-c-api>` or the stable ABI.  If you use `setuptools "
+"<https://setuptools.pypa.io/en/latest/setuptools.html>`_ to build your "
+"extension and currently set ``py_limited_api=True`` you can use "
+"``py_limited_api=not sysconfig.get_config_var(\"Py_GIL_DISABLED\")`` to opt "
+"out of the limited API when building with the free-threaded build."
+msgstr ""
+"自由线程构建目前不支持 :ref:`受限 C API <limited-c-api>` 或稳定 ABI。 如果当前您使用 `setuptools "
+"<https://setuptools.pypa.io/en/latest/setuptools.html>`_ 来构建您的扩展，并且设置了 "
+"``py_limited_api=True``，您可以使用 ``py_limited_api=not "
+"sysconfig.get_config_var(\"Py_GIL_DISABLED\")`` 在使用自由线程构建进行构建时不使用受限 API。"
+
+#: ../../howto/free-threading-extensions.rst:263
+msgid ""
+"You will need to build separate wheels specifically for the free-threaded "
+"build.  If you currently use the stable ABI, you can continue to build a "
+"single wheel for multiple non-free-threaded Python versions."
+msgstr ""
+"您需要为自由线程构建单独构建 wheel。如果您当前使用稳定 ABI，则可以继续构建适用于多个非自由线程 Python 版本的单个 wheel。"
+
+#: ../../howto/free-threading-extensions.rst:269
+msgid "Windows"
+msgstr "Windows"
+
+#: ../../howto/free-threading-extensions.rst:271
+msgid ""
+"Due to a limitation of the official Windows installer, you will need to "
+"manually define ``Py_GIL_DISABLED=1`` when building extensions from source."
+msgstr "由于 Windows 官方安装程序的限制，从源代码构建扩展时需要手动定义 ``Py_GIL_DISABLED=1``。"
