@@ -550,6 +550,10 @@ msgid ""
 "enabled at runtime using the environment variable :envvar:`PYTHON_GIL` or "
 "the command-line option :option:`-X gil`."
 msgstr ""
+"自由线程式的执行允许在可用的 CPU 核心上并行地运行线程从而充分利用可用的处理能力。 "
+"虽然并非所有软件都能自动从中受益，但在设计时将线程纳入考虑的程序在多核心硬件上运行速度会更快。 **自由线程模式是实验性的** "
+"并且处于不断改进的过程中：预计会出现一些程序错误并且在单线程场景下出现明显的性能损失。 可以选择使用环境变量 :envvar:`PYTHON_GIL` "
+"或命令行选项 :option:`-X gil` 让 CPython 的自由线程构建版支持在运行时启用 GIL。"
 
 #: ../../whatsnew/3.13.rst:340
 msgid ""
@@ -558,6 +562,9 @@ msgid ""
 "build\". The new :func:`!sys._is_gil_enabled` function can be used to check "
 "whether the GIL is actually disabled in the running process."
 msgstr ""
+"为了检查当前解释器是否支持自由线程，:option:`python -VV <-V>` 和 :attr:`sys.version` 将包含 "
+"\"experimental free-theading build\" 字样。 可以使用新增的 "
+":func:`!sys._is_gil_enabled` 函数来检查正在运行的线程是否确实禁用了 GIL。"
 
 #: ../../whatsnew/3.13.rst:345
 msgid ""
@@ -571,16 +578,23 @@ msgid ""
 ":option:`-X gil=0` option. pip 24.1 or newer is required to install packages"
 " with C extensions in the free-threaded build."
 msgstr ""
+"C-API 扩展模块需要针对自由线程构建版专门进行构建。 支持在禁用 :term:`GIL` 的情况下运行的扩展应当使用 "
+":c:data:`Py_mod_gil` 槽位。 使用单阶段初始化的扩展应当使用 :c:func:`PyUnstable_Module_SetGIL` "
+"来指明它们是支支持在禁用 GIL 的情况下运行。 导入不使用这些机制的 C 扩展将导致 GIL 被启用，除非通过 "
+":envvar:`PYTHON_GIL` 环境变量或 :option:`-X gil=0` 选项显式地禁用 GIL。 需要 pip 24.1 "
+"或更新的版本才能在自由线程构建版中安装带有 C 扩展的软件包。"
 
 #: ../../whatsnew/3.13.rst:358
 msgid ""
 ":pep:`703` \"Making the Global Interpreter Lock Optional in CPython\" "
 "contains rationale and information surrounding this work."
 msgstr ""
+":pep:`703` \"Making the Global Interpreter Lock Optional in CPython\" "
+"中包含了有关此项工作的理念和信息。"
 
 #: ../../whatsnew/3.13.rst:365
 msgid "An experimental just-in-time (JIT) compiler"
-msgstr ""
+msgstr "实验性的即时 (JIT) 编译器"
 
 #: ../../whatsnew/3.13.rst:367
 msgid ""
@@ -1486,7 +1500,7 @@ msgid ""
 "In summary, code that attempted to manipulate the behavior of the cycle GC "
 "may not work exactly as intended, but it is very unlikely to be harmful. All"
 " other code will work just fine."
-msgstr ""
+msgstr "总而言之，尝试操纵循环 GC 的行为的代码可能无法完全如预期一样有效，但也不太可能产生什么损害。 所有其他代码都会正常执行。"
 
 #: ../../whatsnew/3.13.rst:859
 msgid "glob"
@@ -1740,6 +1754,12 @@ msgid ""
 ":const:`os.TFD_TIMER_CANCEL_ON_SET` (Contributed by Masaru Tsuchiyama in "
 ":gh:`108277`.)"
 msgstr ""
+"增加了针对 Linux 的计时器通知文件描述符的低层级接口，使用 :func:`os.timerfd_create`, "
+":func:`os.timerfd_settime`, :func:`os.timerfd_settime_ns`, "
+":func:`os.timerfd_gettime` 和 :func:`os.timerfd_gettime_ns`, "
+":const:`os.TFD_NONBLOCK`, :const:`os.TFD_CLOEXEC`, "
+":const:`os.TFD_TIMER_ABSTIME` 和 :const:`os.TFD_TIMER_CANCEL_ON_SET`。 （由 "
+"Masaru Tsuchiyama 在 :gh:`108277` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:983
 msgid ""
@@ -2156,6 +2176,9 @@ msgid ""
 "*grayscale* parameters to :class:`!PhotoImage` method :meth:`!write`. "
 "(Contributed by Serhiy Storchaka in :gh:`118271`.)"
 msgstr ""
+"增加了 :class:`!PhotoImage` 方法 :meth:`!read` 用于从文件读取图像以及 :meth:`!data` "
+"用于获取图像数据。 向 :class:`!PhotoImage` 方法 :meth:`!write` 增加了 *background* 和 "
+"*grayscale* 形参。 （由 Serhiy Storchaka 在 :gh:`118271` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1227
 msgid "traceback"
@@ -2180,6 +2203,9 @@ msgid ""
 " (default ``True``) to indicate whether ``exc_type`` should be saved. "
 "(Contributed by Irit Katriel in :gh:`112332`.)"
 msgstr ""
+"向 :class:`~traceback.TracebackException` 增加了字段 *exc_type_str*，它将保存 "
+"*exc_type* 的字符串显示。 弃用了保存着类型对象本身的字段 *exc_type*。 增加了形参 *save_exc_type* (默认为 "
+"``True``) 以指明 ``exc_type`` 是否应当被保存。 （由 Irit Katriel 在 :gh:`112332` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1240
 msgid "types"
@@ -2206,6 +2232,9 @@ msgid ""
 " whether a class is a :class:`typing.Protocol`. (Contributed by Jelle "
 "Zijlstra in :gh:`104873`.)"
 msgstr ""
+"增加了 :func:`typing.get_protocol_members` 用于返回定义一个 :class:`typing.Protocol` "
+"的成员的集合。 增加了 :func:`typing.is_protocol` 用于检查一个类是否为 :class:`typing.Protocol`。 "
+"（由 Jelle Zijlstra 在 :gh:`104873` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1255
 msgid ""
