@@ -2097,6 +2097,14 @@ msgid ""
 "set this so that we can improve our API selection logic for everyone. "
 "(Contributed by Jakub Kulik in :gh:`113117`.)"
 msgstr ""
+"现在 :mod:`subprocess` 会在更多场景下使用 :func:`os.posix_spawn` 函数。 主要是在多种平台的较新版本中 "
+"``close_fds=True`` 的默认场景下，包括由 C 库提供 "
+":c:func:`!posix_spawn_file_actions_addclosefrom_np` 的 Linux, FreeBSD 和 "
+"Solaris 等。 在 Linux 上其性能应当类似于现有 Linux 基于 :c:func:`!vfork` 的代码。 如果你需要强制 "
+":mod:`subprocess` 绝不使用 :func:`os.posix_spawn` 可将私有控制节点 "
+":attr:`!subprocess._USE_POSIX_SPAWN` 设为 ``False``。 如果你已这样设置请在 CPython "
+"问题追踪系统中报告你的理由和平台细节信息以便我们能够为所有人改进 API 选择逻辑。 （由 Jakub Kulik 在 :gh:`113117` "
+"中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1187
 msgid "sys"
@@ -2194,6 +2202,8 @@ msgid ""
 ":class:`tkinter.ttk.Style`. (Contributed by Serhiy Storchaka in "
 ":gh:`68166`.)"
 msgstr ""
+"在 :class:`tkinter.ttk.Style` 的 :meth:`~tkinter.ttk.Style.element_create` "
+"方法中添加了对 \"vsapi\" 元素类型的支持。 （由 Serhiy Storchaka 在 :gh:`68166` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1245
 msgid ""
@@ -2479,6 +2489,8 @@ msgid ""
 "directly on the desired query string, except for ``multipart/form-data`` "
 "input, which can be handled as described for ``cgi.parse_multipart()``."
 msgstr ""
+"``cgi.parse()`` 可被替换为在想要的查询字符串上直接调用 :func:`urllib.parse.parse_qs`，但 "
+"``multipart/form-data`` 输入除外，它可以如 ``cgi.parse_multipart()`` 所描述的那样处理。"
 
 #: ../../whatsnew/3.13.rst:1406
 msgid ""
@@ -2791,6 +2803,8 @@ msgid ""
 " method, deprecated in Python 3.11. (Contributed by Hugo van Kemenade in "
 ":gh:`104992`.)"
 msgstr ""
+"移除了未经测试且未写入文档的 :meth:`!unittest.TestProgram.usageExit` 方法，之前在 Python 3.11 "
+"中已弃用。 （由 Hugo van Kemenade 在 :gh:`104992` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1578
 msgid "urllib"
@@ -2805,6 +2819,11 @@ msgid ""
 " the system's trusted CA certificates for you. (Contributed by Victor "
 "Stinner in :gh:`105382`.)"
 msgstr ""
+"移除了 :func:`urllib.request.urlopen` 函数的 *cafile*, *capath* 和 *cadefault* "
+"等形参，它们在 Python 3.6 中已弃用：应改为传入 *context* 形参。 使用 "
+":meth:`ssl.SSLContext.load_cert_chain` 来加载指定的证书，或是让 "
+":func:`ssl.create_default_context` 为你选择系统的受信任 CA 证书。 （由 Victor Stinner 在 "
+":gh:`105382` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:1589
 msgid "webbrowser"
@@ -4296,6 +4315,8 @@ msgid ""
 " if the operation needs to block. (Contributed by Sam Gross in "
 ":gh:`108724`.)"
 msgstr ""
+"增加了 :c:type:`PyMutex` API，它是占用一个字节的轻量级互斥锁。 当操作需要阻塞时 :c:func:`PyMutex_Lock` "
+"函数将释放  (当前持有的) GIL。 （由 Sam Gross 在 :gh:`108724` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2005
 msgid "Build Changes"
@@ -4341,7 +4362,7 @@ msgstr ""
 msgid ""
 "Building CPython now requires a compiler with support for the C11 atomic "
 "library, GCC built-in atomic functions, or MSVC interlocked intrinsics."
-msgstr ""
+msgstr "现在构建 CPython 需要带有 C11 atomic 库支持的编译器、GCC 内置 atomic 函数或 MSVC 互锁内生函数。"
 
 #: ../../whatsnew/3.13.rst:2026
 msgid ""
@@ -4352,18 +4373,27 @@ msgid ""
 " built with the :ref:`limited C API <limited-c-api>`. (Contributed by Victor"
 " Stinner in :gh:`85283`.)"
 msgstr ""
+"现在 ``errno``, ``fcntl``, ``grp``, ``md5``, ``pwd``, ``resource``, "
+"``termios``, ``winsound``, ``_ctypes_test``, "
+"``_multiprocessing.posixshmem``, ``_scproxy``, ``_stat``, ``_statistics``, "
+"``_testconsole``, ``_testimportmultiple`` 和 ``_uuid`` C 扩展是使用 :ref:`受限 C API"
+" <limited-c-api>` 构建的。 （由 Victor Stinner 在 :gh:`85283` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2033
 msgid ""
 "``wasm32-wasi`` is now a :pep:`11` tier 2 platform. (Contributed by Brett "
 "Cannon in :gh:`115192`.)"
 msgstr ""
+"现在 ``wasm32-wasi`` 是 :pep:`11` 第 2 层级的平台。 （由 Brett Cannon 在 :gh:`115192` "
+"中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2036
 msgid ""
 "``wasm32-emscripten`` is no longer a :pep:`11` supported platform. "
 "(Contributed by Brett Cannon in :gh:`115192`.)"
 msgstr ""
+"``wasm32-emscripten`` 不再是 :pep:`11` 的受支持平台。 （由 Brett Cannon 在 :gh:`115192` "
+"中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2039
 msgid ""
