@@ -15,9 +15,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-15 14:13+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-29 13:04+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -123,13 +123,63 @@ msgid ""
 "option::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:105
+msgid ""
+"import argparse\n"
+"parser = argparse.ArgumentParser(\n"
+"            description = 'Manage servers',         # main description for help\n"
+"            epilog = 'Tested on Solaris and Linux') # displayed after help\n"
+"parser.add_argument('action',                       # argument name\n"
+"            choices = ['deploy', 'start', 'stop'],  # three allowed values\n"
+"            help = 'action on each target')         # help msg\n"
+"parser.add_argument('targets',\n"
+"            metavar = 'HOSTNAME',                   # var name used in help msg\n"
+"            nargs = '+',                            # require one or more targets\n"
+"            help = 'url for target machines')       # help msg explanation\n"
+"parser.add_argument('-u', '--user',                 # -u or --user option\n"
+"            required = True,                        # make it a required argument\n"
+"            help = 'login as user')"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:120
 msgid "Example of calling the parser on a command string::"
 msgstr "在命令字符串中调用解析器的示例::"
 
+#: ../../whatsnew/3.2.rst:122
+msgid ""
+">>> cmd = 'deploy sneezy.example.com sleepy.example.com -u skycaptain'\n"
+">>> result = parser.parse_args(cmd.split())\n"
+">>> result.action\n"
+"'deploy'\n"
+">>> result.targets\n"
+"['sneezy.example.com', 'sleepy.example.com']\n"
+">>> result.user\n"
+"'skycaptain'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:131
 msgid "Example of the parser's automatically generated help::"
 msgstr "解释器自动生成的帮助示例::"
+
+#: ../../whatsnew/3.2.rst:133
+msgid ""
+">>> parser.parse_args('-h'.split())\n"
+"\n"
+"usage: manage_cloud.py [-h] -u USER\n"
+"                       {deploy,start,stop} HOSTNAME [HOSTNAME ...]\n"
+"\n"
+"Manage servers\n"
+"\n"
+"positional arguments:\n"
+"  {deploy,start,stop}   action on each target\n"
+"  HOSTNAME              url for target machines\n"
+"\n"
+"optional arguments:\n"
+"  -h, --help            show this help message and exit\n"
+"  -u USER, --user USER  login as user\n"
+"\n"
+"Tested on Solaris and Linux"
+msgstr ""
 
 #: ../../whatsnew/3.2.rst:150
 msgid ""
@@ -137,7 +187,31 @@ msgid ""
 "subparsers, each with their own argument patterns and help displays::"
 msgstr "一个非常好的 :mod:`argparse` 特性是可以定义子解析器，每个子解析器拥有它们自己的参数模式和帮助显示::"
 
-#: ../../whatsnew/3.2.rst:176
+#: ../../whatsnew/3.2.rst:153
+msgid ""
+"import argparse\n"
+"parser = argparse.ArgumentParser(prog='HELM')\n"
+"subparsers = parser.add_subparsers()\n"
+"\n"
+"parser_l = subparsers.add_parser('launch', help='Launch Control')   # first subgroup\n"
+"parser_l.add_argument('-m', '--missiles', action='store_true')\n"
+"parser_l.add_argument('-t', '--torpedos', action='store_true')\n"
+"\n"
+"parser_m = subparsers.add_parser('move', help='Move Vessel',        # second subgroup\n"
+"                                 aliases=('steer', 'turn'))         # equivalent names\n"
+"parser_m.add_argument('-c', '--course', type=int, required=True)\n"
+"parser_m.add_argument('-s', '--speed', type=int, default=0)"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:166
+msgid ""
+"$ ./helm.py --help                         # top level help (launch and move)\n"
+"$ ./helm.py launch --help                  # help for launch options\n"
+"$ ./helm.py launch --missiles              # set missiles=True and torpedos=False\n"
+"$ ./helm.py steer --course 180 --speed 5   # set movement parameters"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:175
 msgid ":pep:`389` - New Command Line Parsing Module"
 msgstr ":pep:`389` - 新的命令行解析模块"
 
@@ -174,10 +248,43 @@ msgid ""
 " dictionary::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:197
+msgid ""
+"{\"version\": 1,\n"
+" \"formatters\": {\"brief\": {\"format\": \"%(levelname)-8s: %(name)-15s: %(message)s\"},\n"
+"                \"full\": {\"format\": \"%(asctime)s %(name)-15s %(levelname)-8s %(message)s\"}\n"
+"                },\n"
+" \"handlers\": {\"console\": {\n"
+"                   \"class\": \"logging.StreamHandler\",\n"
+"                   \"formatter\": \"brief\",\n"
+"                   \"level\": \"INFO\",\n"
+"                   \"stream\": \"ext://sys.stdout\"},\n"
+"              \"console_priority\": {\n"
+"                   \"class\": \"logging.StreamHandler\",\n"
+"                   \"formatter\": \"full\",\n"
+"                   \"level\": \"ERROR\",\n"
+"                   \"stream\": \"ext://sys.stderr\"}\n"
+"              },\n"
+" \"root\": {\"level\": \"DEBUG\", \"handlers\": [\"console\", \"console_priority\"]}}"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:215
 msgid ""
 "If that dictionary is stored in a file called :file:`conf.json`, it can be "
 "loaded and called with code like this::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:218
+msgid ""
+">>> import json, logging.config\n"
+">>> with open('conf.json') as f:\n"
+"...     conf = json.load(f)\n"
+"...\n"
+">>> logging.config.dictConfig(conf)\n"
+">>> logging.info(\"Transaction completed normally\")\n"
+"INFO    : root           : Transaction completed normally\n"
+">>> logging.critical(\"Abnormal termination\")\n"
+"2011-02-17 11:14:36,694 root            CRITICAL Abnormal termination"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:230
@@ -246,7 +353,17 @@ msgid ""
 "launch of four parallel threads for copying files::"
 msgstr ""
 
-#: ../../whatsnew/3.2.rst:282
+#: ../../whatsnew/3.2.rst:272
+msgid ""
+"import concurrent.futures, shutil\n"
+"with concurrent.futures.ThreadPoolExecutor(max_workers=4) as e:\n"
+"    e.submit(shutil.copy, 'src1.txt', 'dest1.txt')\n"
+"    e.submit(shutil.copy, 'src2.txt', 'dest2.txt')\n"
+"    e.submit(shutil.copy, 'src3.txt', 'dest3.txt')\n"
+"    e.submit(shutil.copy, 'src3.txt', 'dest4.txt')"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:281
 msgid ":pep:`3148` - Futures -- Execute Computations Asynchronously"
 msgstr ":pep:`3148` -- futures - 异步执行指令"
 
@@ -373,11 +490,26 @@ msgid ""
 "package is installed::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:370
+msgid ""
+"/usr/share/pyshared/foo.cpython-32m.so\n"
+"/usr/share/pyshared/foo.cpython-33md.so"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:373
 msgid ""
 "In Python itself, the tags are accessible from functions in the "
 ":mod:`sysconfig` module::"
 msgstr "对于 Python 本身，可以通过 :mod:`sysconfig` 模块中的函数来访问这些标签::"
+
+#: ../../whatsnew/3.2.rst:376
+msgid ""
+">>> import sysconfig\n"
+">>> sysconfig.get_config_var('SOABI')       # find the version tag\n"
+"'cpython-32mu'\n"
+">>> sysconfig.get_config_var('EXT_SUFFIX')  # find the full filename extension\n"
+"'.cpython-32mu.so'"
+msgstr ""
 
 #: ../../whatsnew/3.2.rst:384
 msgid ":pep:`3149` - ABI Version Tagged .so Files"
@@ -494,6 +626,29 @@ msgid ""
 "supply a :meth:`__missing__` method for unknown keys::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:463
+msgid ""
+">>> import shelve\n"
+">>> d = shelve.open('tmp.shl')\n"
+">>> 'The {project_name} status is {status} as of {date}'.format_map(d)\n"
+"'The testing project status is green as of February 15, 2011'\n"
+"\n"
+">>> class LowerCasedDict(dict):\n"
+"...     def __getitem__(self, key):\n"
+"...         return dict.__getitem__(self, key.lower())\n"
+"...\n"
+">>> lcd = LowerCasedDict(part='widgets', quantity=10)\n"
+">>> 'There are {QUANTITY} {Part} in stock'.format_map(lcd)\n"
+"'There are 10 widgets in stock'\n"
+"\n"
+">>> class PlaceholderDict(dict):\n"
+"...     def __missing__(self, key):\n"
+"...         return '<{}>'.format(key)\n"
+"...\n"
+">>> 'Hello {name}, welcome to {location}'.format_map(PlaceholderDict())\n"
+"'Hello <name>, welcome to <location>'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:483
 msgid ""
 "(Suggested by Raymond Hettinger and implemented by Eric Smith in "
@@ -506,6 +661,15 @@ msgid ""
 "the copyright and version information from being displayed in the "
 "interactive mode.  The option can be introspected using the "
 ":data:`sys.flags` attribute:"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:490
+msgid ""
+"$ python -q\n"
+">>> sys.flags\n"
+"sys.flags(debug=0, division_warning=0, inspect=0, interactive=0,\n"
+"optimize=0, dont_write_bytecode=0, no_user_site=0, no_site=0,\n"
+"ignore_environment=0, verbose=0, bytes_warning=0, quiet=1)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:498
@@ -521,6 +685,20 @@ msgid ""
 "class dictionary.  Formerly, *hasattr* would catch any exception, possibly "
 "masking genuine errors.  Now, *hasattr* has been tightened to only catch "
 ":exc:`AttributeError` and let other exceptions pass through::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:508
+msgid ""
+">>> class A:\n"
+"...     @property\n"
+"...     def f(self):\n"
+"...         return 1 // 0\n"
+"...\n"
+">>> a = A()\n"
+">>> hasattr(a, 'f')\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ZeroDivisionError: integer division or modulo by zero"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:519
@@ -559,11 +737,32 @@ msgid ""
 "occurs as a free variable in a nested block::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:548
+msgid ""
+"def outer(x):\n"
+"    def inner():\n"
+"        return x\n"
+"    inner()\n"
+"    del x"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:554
 msgid ""
 "This is now allowed.  Remember that the target of an :keyword:`except` "
 "clause is cleared, so this code which used to work with Python 2.6, raised a"
 " :exc:`SyntaxError` with Python 3.1 and now works again::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:558
+msgid ""
+"def f():\n"
+"    def print_error():\n"
+"        print(e)\n"
+"    try:\n"
+"        something\n"
+"    except Exception as e:\n"
+"        print_error()\n"
+"        # implicit \"del e\" here"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:567
@@ -590,6 +789,11 @@ msgstr ""
 msgid ""
 "Warnings are now easier to control using the :envvar:`PYTHONWARNINGS` "
 "environment variable as an alternative to using ``-W`` at the command line:"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:588
+msgid ""
+"$ export PYTHONWARNINGS='ignore::RuntimeWarning::,once::UnicodeWarning::'"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:592
@@ -625,6 +829,14 @@ msgid ""
 "enabling the warning from the command line:"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:612
+msgid ""
+"$ python -q -Wdefault\n"
+">>> f = open(\"foo\", \"wb\")\n"
+">>> del f\n"
+"__main__:1: ResourceWarning: unclosed file <_io.BufferedWriter name='foo'>"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:619
 msgid ""
 "(Added by Antoine Pitrou and Georg Brandl in :issue:`10093` and "
@@ -640,6 +852,18 @@ msgid ""
 "addition, :class:`range` objects now support slicing and negative indices, "
 "even with values larger than :data:`sys.maxsize`.  This makes *range* more "
 "interoperable with lists::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:628
+msgid ""
+">>> range(0, 100, 2).count(10)\n"
+"1\n"
+">>> range(0, 100, 2).index(10)\n"
+"5\n"
+">>> range(0, 100, 2)[5]\n"
+"10\n"
+">>> range(0, 100, 2)[0:5]\n"
+"range(0, 10, 2)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:637
@@ -686,7 +910,7 @@ msgstr "Python 标准库经过了大量的维护工作和质量改进。"
 #: ../../whatsnew/3.2.rst:664
 msgid ""
 "The biggest news for Python 3.2 is that the :mod:`email` package, "
-":mod:`mailbox` module, and :mod:`nntplib` modules now work correctly with "
+":mod:`mailbox` module, and :mod:`!nntplib` modules now work correctly with "
 "the bytes/text model in Python 3.  For the first time, there is correct "
 "handling of messages with mixed encodings."
 msgstr ""
@@ -897,9 +1121,10 @@ msgstr ""
 msgid ""
 "(Contributed by Raymond Hettinger and incorporating design ideas from Jim "
 "Baker, Miki Tebeka, and Nick Coghlan; see `recipe 498245 "
-"<https://code.activestate.com/recipes/498245/>`_\\, `recipe 577479 "
-"<https://code.activestate.com/recipes/577479/>`_\\, :issue:`10586`, and "
-":issue:`10593`.)"
+"<https://code.activestate.com/recipes/498245-lru-and-lfu-cache-"
+"decorators/>`_\\, `recipe 577479 "
+"<https://code.activestate.com/recipes/577479-simple-caching-decorator/>`_\\,"
+" :issue:`10586`, and :issue:`10593`.)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:792
@@ -943,6 +1168,19 @@ msgid ""
 msgstr ""
 "例如，提供 *__eq__* and *__lt__* 将启用 :func:`~functools.total_ordering` 来填充 "
 "*__le__*, *__gt__* 和 *__ge__*::"
+
+#: ../../whatsnew/3.2.rst:814
+msgid ""
+"@total_ordering\n"
+"class Student:\n"
+"    def __eq__(self, other):\n"
+"        return ((self.lastname.lower(), self.firstname.lower()) ==\n"
+"                (other.lastname.lower(), other.firstname.lower()))\n"
+"\n"
+"    def __lt__(self, other):\n"
+"        return ((self.lastname.lower(), self.firstname.lower()) <\n"
+"                (other.lastname.lower(), other.firstname.lower()))"
+msgstr ""
 
 #: ../../whatsnew/3.2.rst:824
 msgid ""
@@ -1070,6 +1308,21 @@ msgstr ""
 msgid "Example of using barriers::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:940
+msgid ""
+"from threading import Barrier, Thread\n"
+"\n"
+"def get_votes(site):\n"
+"    ballots = conduct_election(site)\n"
+"    all_polls_closed.wait()        # do not count until all polls are closed\n"
+"    totals = summarize(ballots)\n"
+"    publish(site, totals)\n"
+"\n"
+"all_polls_closed = Barrier(len(sites))\n"
+"for site in sites:\n"
+"    Thread(target=get_votes, args=(site,)).start()"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:952
 msgid ""
 "In this example, the barrier enforces a rule that votes cannot be counted at"
@@ -1086,6 +1339,20 @@ msgid ""
 "elapses before all the predecessor tasks reach the barrier point, all "
 "waiting threads are released and a :exc:`~threading.BrokenBarrierError` "
 "exception is raised::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:963
+msgid ""
+"def get_votes(site):\n"
+"    ballots = conduct_election(site)\n"
+"    try:\n"
+"        all_polls_closed.wait(timeout=midnight - time.now())\n"
+"    except BrokenBarrierError:\n"
+"        lockbox = seal_ballots(ballots)\n"
+"        queue.put(lockbox)\n"
+"    else:\n"
+"        totals = summarize(ballots)\n"
+"        publish(site, totals)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:974
@@ -1124,6 +1391,17 @@ msgid ""
 "datetime objects::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:995
+msgid ""
+">>> from datetime import datetime, timezone\n"
+"\n"
+">>> datetime.now(timezone.utc)\n"
+"datetime.datetime(2010, 12, 8, 21, 4, 2, 923754, tzinfo=datetime.timezone.utc)\n"
+"\n"
+">>> datetime.strptime(\"01/01/2000 12:00 +0000\", \"%m/%d/%Y %H:%M %z\")\n"
+"datetime.datetime(2000, 1, 1, 12, 0, tzinfo=datetime.timezone.utc)"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1003
 msgid ""
 "Also, :class:`~datetime.timedelta` objects can now be multiplied by "
@@ -1151,6 +1429,23 @@ msgid ""
 ":exc:`DeprecationWarning`.  Instead, it is recommended that "
 ":data:`!time.accept2dyear` be set to ``False`` so that large date ranges can"
 " be used without guesswork::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1020
+msgid ""
+">>> import time, warnings\n"
+">>> warnings.resetwarnings()      # remove the default warning filters\n"
+"\n"
+">>> time.accept2dyear = True      # guess whether 11 means 11 or 2011\n"
+">>> time.asctime((11, 1, 1, 12, 34, 56, 4, 1, 0))\n"
+"Warning (from warnings module):\n"
+"  ...\n"
+"DeprecationWarning: Century info guessed for a 2-digit year.\n"
+"'Fri Jan  1 12:34:56 2011'\n"
+"\n"
+">>> time.accept2dyear = False     # use the full range of allowable dates\n"
+">>> time.asctime((11, 1, 1, 12, 34, 56, 4, 1, 0))\n"
+"'Fri Jan  1 12:34:56 11'"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1034
@@ -1203,6 +1498,17 @@ msgid ""
 "complementary error function, :func:`~math.erfc`, is ``1 - erf(x)``:"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1072
+msgid ""
+">>> from math import erf, erfc, sqrt\n"
+">>> erf(1.0/sqrt(2.0))   # portion of normal distribution within 1 standard deviation\n"
+"0.682689492137086\n"
+">>> erfc(1.0/sqrt(2.0))  # portion of normal distribution outside 1 standard deviation\n"
+"0.31731050786291404\n"
+">>> erf(1.0/sqrt(2.0)) + erfc(1.0/sqrt(2.0))\n"
+"1.0"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1083
 msgid ""
 "The :func:`~math.gamma` function is a continuous extension of the factorial "
@@ -1233,6 +1539,17 @@ msgid ""
 "implemented::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1107
+msgid ""
+"class Temperature(metaclass=abc.ABCMeta):\n"
+"    @abc.abstractclassmethod\n"
+"    def from_fahrenheit(cls, t):\n"
+"        ...\n"
+"    @abc.abstractclassmethod\n"
+"    def from_celsius(cls, t):\n"
+"        ..."
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1115
 msgid "(Patch submitted by Daniel Urban; :issue:`5867`.)"
 msgstr ""
@@ -1247,6 +1564,30 @@ msgid ""
 "which provides functionality similar to :func:`memoryview`.  It creates an "
 "editable view of the data without making a copy.  The buffer's random access"
 " and support for slice notation are well-suited to in-place editing::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1125
+msgid ""
+">>> REC_LEN, LOC_START, LOC_LEN = 34, 7, 11\n"
+"\n"
+">>> def change_location(buffer, record_number, location):\n"
+"...     start = record_number * REC_LEN + LOC_START\n"
+"...     buffer[start: start+LOC_LEN] = location\n"
+"\n"
+">>> import io\n"
+"\n"
+">>> byte_stream = io.BytesIO(\n"
+"...     b'G3805  storeroom  Main chassis    '\n"
+"...     b'X7899  shipping   Reserve cog     '\n"
+"...     b'L6988  receiving  Primary sprocket'\n"
+"... )\n"
+">>> buffer = byte_stream.getbuffer()\n"
+">>> change_location(buffer, 1, b'warehouse  ')\n"
+">>> change_location(buffer, 0, b'showroom   ')\n"
+">>> print(byte_stream.getvalue())\n"
+"b'G3805  showroom   Main chassis    '\n"
+"b'X7899  warehouse  Reserve cog     '\n"
+"b'L6988  receiving  Primary sprocket'"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1146
@@ -1272,6 +1613,20 @@ msgid ""
 "module has a new decorator, :func:`~reprlib.recursive_repr`, for detecting "
 "recursive calls to :meth:`!__repr__` and substituting a placeholder string "
 "instead::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1161
+msgid ""
+">>> class MyList(list):\n"
+"...     @recursive_repr()\n"
+"...     def __repr__(self):\n"
+"...         return '<' + '|'.join(map(repr, self)) + '>'\n"
+"...\n"
+">>> m = MyList('abc')\n"
+">>> m.append(m)\n"
+">>> m.append('x')\n"
+">>> print(m)\n"
+"<'a'|'b'|'c'|...|'x'>"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1172
@@ -1304,6 +1659,14 @@ msgid ""
 ":meth:`str.format` style, or can be set to \"$\" for the shell-style "
 "formatting provided by :class:`string.Template`.  The following three "
 "configurations are equivalent::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1191
+msgid ""
+">>> from logging import basicConfig\n"
+">>> basicConfig(style='%', format=\"%(name)s -> %(levelname)s: %(message)s\")\n"
+">>> basicConfig(style='{', format=\"{name} -> {levelname} {message}\")\n"
+">>> basicConfig(style='$', format=\"$name -> $levelname: $message\")"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1196
@@ -1350,6 +1713,19 @@ msgid ""
 "document the field names::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1223
+msgid ""
+">>> import csv, sys\n"
+">>> w = csv.DictWriter(sys.stdout, ['name', 'dept'], dialect='unix')\n"
+">>> w.writeheader()\n"
+"\"name\",\"dept\"\n"
+">>> w.writerows([\n"
+"...     {'name': 'tom', 'dept': 'accounting'},\n"
+"...     {'name': 'susan', 'dept': 'Salesl'}])\n"
+"\"tom\",\"accounting\"\n"
+"\"susan\",\"sales\""
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1233
 msgid ""
 "(New dialect suggested by Jay Talbot in :issue:`5975`, and the new method "
@@ -1393,12 +1769,41 @@ msgid ""
 "in a single definition::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1259
+msgid ""
+"from contextlib import contextmanager\n"
+"import logging\n"
+"\n"
+"logging.basicConfig(level=logging.INFO)\n"
+"\n"
+"@contextmanager\n"
+"def track_entry_and_exit(name):\n"
+"    logging.info('Entering: %s', name)\n"
+"    yield\n"
+"    logging.info('Exiting: %s', name)"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1270
 msgid "Formerly, this would have only been usable as a context manager::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1272
+msgid ""
+"with track_entry_and_exit('widget loader'):\n"
+"    print('Some time consuming activity goes here')\n"
+"    load_widget()"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1276
 msgid "Now, it can be used as a decorator as well::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1278
+msgid ""
+"@track_entry_and_exit('widget loader')\n"
+"def activity():\n"
+"    print('Some time consuming activity goes here')\n"
+"    load_widget()"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1283
@@ -1431,6 +1836,12 @@ msgid ""
 "actual values are equal (:issue:`8188`)::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1300
+msgid ""
+"assert hash(Fraction(3, 2)) == hash(1.5) == \\\n"
+"       hash(Decimal(\"1.5\")) == hash(complex(1.5, 0))"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1303
 msgid ""
 "Some of the hashing details are exposed through a new attribute, "
@@ -1445,7 +1856,7 @@ msgid ""
 " been relaxed.  It is still unsupported (and ill-advised) to have implicit "
 "mixing in arithmetic expressions such as ``Decimal('1.1') + float('1.1')`` "
 "because the latter loses information in the process of constructing the "
-"binary float.  However, since existing floating point value can be converted"
+"binary float.  However, since existing floating-point value can be converted"
 " losslessly to either a decimal or rational representation, it makes sense "
 "to add them to the constructor and to support mixed-type comparisons."
 msgstr ""
@@ -1496,12 +1907,33 @@ msgid ""
 "FTP connection when done::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1352
+msgid ""
+">>> from ftplib import FTP\n"
+">>> with FTP(\"ftp1.at.proftpd.org\") as ftp:\n"
+"        ftp.login()\n"
+"        ftp.dir()\n"
+"\n"
+"'230 Anonymous login ok, restrictions apply.'\n"
+"dr-xr-xr-x   9 ftp      ftp           154 May  6 10:43 .\n"
+"dr-xr-xr-x   9 ftp      ftp           154 May  6 10:43 ..\n"
+"dr-xr-xr-x   5 ftp      ftp          4096 May  6 10:43 CentOS\n"
+"dr-xr-xr-x   3 ftp      ftp            18 Jul 10  2008 Fedora"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1363
 msgid ""
 "Other file-like objects such as :class:`mmap.mmap` and "
 ":func:`fileinput.input` also grew auto-closing context managers::"
 msgstr ""
 "其他文件型对象如 :class:`mmap.mmap` 和 :func:`fileinput.input` 也有了支持自动关闭的上下文管理器::"
+
+#: ../../whatsnew/3.2.rst:1366
+msgid ""
+"with fileinput.input(files=('log1.txt', 'log2.txt')) as f:\n"
+"    for line in f:\n"
+"        process(line)"
+msgstr ""
 
 #: ../../whatsnew/3.2.rst:1370
 msgid ""
@@ -1623,6 +2055,26 @@ msgid ""
 "the function can return ``None``::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1454
+msgid ""
+">>> import tarfile, glob\n"
+"\n"
+">>> def myfilter(tarinfo):\n"
+"...     if tarinfo.isfile():             # only save real files\n"
+"...         tarinfo.uname = 'monty'      # redact the user name\n"
+"...         return tarinfo\n"
+"\n"
+">>> with tarfile.open(name='myarchive.tar.gz', mode='w:gz') as tf:\n"
+"...     for filename in glob.glob('*.txt'):\n"
+"...         tf.add(filename, filter=myfilter)\n"
+"...     tf.list()\n"
+"-rw-r--r-- monty/501        902 2011-01-26 17:59:11 annotations.txt\n"
+"-rw-r--r-- monty/501        123 2011-01-26 17:59:11 general_questions.txt\n"
+"-rw-r--r-- monty/501       3514 2011-01-26 17:59:11 prion.txt\n"
+"-rw-r--r-- monty/501        124 2011-01-26 17:59:11 py_todo.txt\n"
+"-rw-r--r-- monty/501       1399 2011-01-26 17:59:11 semaphore_notes.txt"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1471
 msgid ""
 "(Proposed by Tarek Ziadé and implemented by Lars Gustäbel in :issue:`6856`.)"
@@ -1637,6 +2089,20 @@ msgid ""
 "The :mod:`hashlib` module has two new constant attributes listing the "
 "hashing algorithms guaranteed to be present in all implementations and those"
 " available on the current implementation::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1480
+msgid ""
+">>> import hashlib\n"
+"\n"
+">>> hashlib.algorithms_guaranteed\n"
+"{'sha1', 'sha224', 'sha384', 'sha256', 'sha512', 'md5'}\n"
+"\n"
+">>> hashlib.algorithms_available\n"
+"{'md2', 'SHA256', 'SHA512', 'dsaWithSHA', 'mdc2', 'SHA224', 'MD4', 'sha256',\n"
+"'sha512', 'ripemd160', 'SHA1', 'MDC2', 'SHA', 'SHA384', 'MD2',\n"
+"'ecdsa-with-SHA1','md4', 'md5', 'sha1', 'DSA-SHA', 'sha224',\n"
+"'dsaEncryption', 'DSA', 'RIPEMD160', 'sha', 'MD5', 'sha384'}"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1491
@@ -1655,6 +2121,21 @@ msgid ""
 "builtin :func:`eval` function which is easily abused.  Python 3.2 adds "
 ":class:`bytes` and :class:`set` literals to the list of supported types: "
 "strings, bytes, numbers, tuples, lists, dicts, sets, booleans, and ``None``."
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1505
+msgid ""
+">>> from ast import literal_eval\n"
+"\n"
+">>> request = \"{'req': 3, 'func': 'pow', 'args': (2, 0.5)}\"\n"
+">>> literal_eval(request)\n"
+"{'args': (2, 0.5), 'req': 3, 'func': 'pow'}\n"
+"\n"
+">>> request = \"os.system('do something harmful')\"\n"
+">>> literal_eval(request)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ValueError: malformed node or string: <_ast.Call object at 0x101739a10>"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1517
@@ -1732,6 +2213,32 @@ msgid ""
 "directory (which can be set by :func:`os.chdir`) and on any sub-directories."
 " The archive filename needs to be specified with a full pathname.  The "
 "archiving step is non-destructive (the original files are left unchanged)."
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1569
+msgid ""
+">>> import shutil, pprint\n"
+"\n"
+">>> os.chdir('mydata')  # change to the source directory\n"
+">>> f = shutil.make_archive('/var/backup/mydata',\n"
+"...                         'zip')      # archive the current directory\n"
+">>> f                                   # show the name of archive\n"
+"'/var/backup/mydata.zip'\n"
+">>> os.chdir('tmp')                     # change to an unpacking\n"
+">>> shutil.unpack_archive('/var/backup/mydata.zip')  # recover the data\n"
+"\n"
+">>> pprint.pprint(shutil.get_archive_formats())  # display known formats\n"
+"[('bztar', \"bzip2'ed tar-file\"),\n"
+" ('gztar', \"gzip'ed tar-file\"),\n"
+" ('tar', 'uncompressed tar file'),\n"
+" ('zip', 'ZIP file')]\n"
+"\n"
+">>> shutil.register_archive_format(     # register a new archive format\n"
+"...     name='xz',\n"
+"...     function=xz.compress,           # callable archiving function\n"
+"...     extra_args=[('level', 8)],      # arguments to the function\n"
+"...     description='xz compression'\n"
+"... )"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1595
@@ -1879,7 +2386,7 @@ msgstr "nntp"
 
 #: ../../whatsnew/3.2.rst:1680
 msgid ""
-"The :mod:`nntplib` module has a revamped implementation with better bytes "
+"The :mod:`!nntplib` module has a revamped implementation with better bytes "
 "and text semantics as well as more practical APIs.  These improvements break"
 " compatibility with the nntplib version in Python 3.1, which was partly "
 "dysfunctional in itself."
@@ -1888,8 +2395,8 @@ msgstr ""
 #: ../../whatsnew/3.2.rst:1685
 msgid ""
 "Support for secure connections through both implicit (using "
-":class:`nntplib.NNTP_SSL`) and explicit (using "
-":meth:`nntplib.NNTP.starttls`) TLS has also been added."
+":class:`!nntplib.NNTP_SSL`) and explicit (using "
+":meth:`!nntplib.NNTP.starttls`) TLS has also been added."
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1689
@@ -2002,6 +2509,10 @@ msgid ""
 "and a directory to start discovery with ``-s``:"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1755
+msgid "$ python -m unittest discover -s my_proj_dir -p _test.py"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1759 ../../whatsnew/3.2.rst:1768
 #: ../../whatsnew/3.2.rst:1924
 msgid "(Contributed by Michael Foord.)"
@@ -2021,6 +2532,12 @@ msgid ""
 "type is triggered by the code under test::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1775
+msgid ""
+"with self.assertWarns(DeprecationWarning):\n"
+"    legacy_function('XYZ')"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1778
 msgid "(Contributed by Antoine Pitrou, :issue:`9754`.)"
 msgstr "（由 Antoine Pitrou 在 :issue:`9754` 中贡献。）"
@@ -2031,6 +2548,12 @@ msgid ""
 "compare two iterables to determine if their element counts are equal "
 "(whether the same elements are present with the same number of occurrences "
 "regardless of order)::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1785
+msgid ""
+"def test_anagram(self):\n"
+"    self.assertCountEqual('algorithm', 'logarithm')"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1790
@@ -2200,6 +2723,12 @@ msgid ""
 "cleanup of temporary directories::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1877
+msgid ""
+"with tempfile.TemporaryDirectory() as tmpdirname:\n"
+"    print('created temporary dir:', tmpdirname)"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1880
 msgid "(Contributed by Neil Schemenauer and Nick Coghlan; :issue:`5178`.)"
 msgstr "（由 Neil Schemenauer 和 Nick Coghlan 在 :issue:`5178` 中贡献。）"
@@ -2217,6 +2746,24 @@ msgstr ""
 ":mod:`inspect` 模块有一个新函数 :func:`~inspect.getgeneratorstate` "
 "用来方便地标识一个生成器迭代器的当前状态::"
 
+#: ../../whatsnew/3.2.rst:1889
+msgid ""
+">>> from inspect import getgeneratorstate\n"
+">>> def gen():\n"
+"...     yield 'demo'\n"
+"...\n"
+">>> g = gen()\n"
+">>> getgeneratorstate(g)\n"
+"'GEN_CREATED'\n"
+">>> next(g)\n"
+"'demo'\n"
+">>> getgeneratorstate(g)\n"
+"'GEN_SUSPENDED'\n"
+">>> next(g, None)\n"
+">>> getgeneratorstate(g)\n"
+"'GEN_CLOSED'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1904
 msgid "(Contributed by Rodolpho Eckhardt and Nick Coghlan, :issue:`10220`.)"
 msgstr "（由 Rodolpho Eckhardt 和 Nick Coghlan 在 :issue:`10220` 中贡献。）"
@@ -2229,6 +2776,22 @@ msgid ""
 "read-only search, guaranteed not to change state while it is searching::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1911
+msgid ""
+">>> class A:\n"
+"...     @property\n"
+"...     def f(self):\n"
+"...         print('Running')\n"
+"...         return 10\n"
+"...\n"
+">>> a = A()\n"
+">>> getattr(a, 'f')\n"
+"Running\n"
+"10\n"
+">>> inspect.getattr_static(a, 'f')\n"
+"<property object at 0x1022bd788>"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1927
 msgid "pydoc"
 msgstr "pydoc"
@@ -2238,6 +2801,10 @@ msgid ""
 "The :mod:`pydoc` module now provides a much-improved web server interface, "
 "as well as a new command-line option ``-b`` to automatically open a browser "
 "window to display that server:"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1933
+msgid "$ pydoc3.2 -b"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1937
@@ -2257,11 +2824,57 @@ msgid ""
 "it::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:1947
+msgid ""
+">>> import dis, random\n"
+">>> dis.show_code(random.choice)\n"
+"Name:              choice\n"
+"Filename:          /Library/Frameworks/Python.framework/Versions/3.2/lib/python3.2/random.py\n"
+"Argument count:    2\n"
+"Kw-only arguments: 0\n"
+"Number of locals:  3\n"
+"Stack size:        11\n"
+"Flags:             OPTIMIZED, NEWLOCALS, NOFREE\n"
+"Constants:\n"
+"   0: 'Choose a random element from a non-empty sequence.'\n"
+"   1: 'Cannot choose from an empty sequence'\n"
+"Names:\n"
+"   0: _randbelow\n"
+"   1: len\n"
+"   2: ValueError\n"
+"   3: IndexError\n"
+"Variable names:\n"
+"   0: self\n"
+"   1: seq\n"
+"   2: i"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:1969
 msgid ""
 "In addition, the :func:`~dis.dis` function now accepts string arguments so "
 "that the common idiom ``dis(compile(s, '', 'eval'))`` can be shortened to "
 "``dis(s)``::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:1973
+msgid ""
+">>> dis('3*x+1 if x%2==1 else x//2')\n"
+"  1           0 LOAD_NAME                0 (x)\n"
+"              3 LOAD_CONST               0 (2)\n"
+"              6 BINARY_MODULO\n"
+"              7 LOAD_CONST               1 (1)\n"
+"             10 COMPARE_OP               2 (==)\n"
+"             13 POP_JUMP_IF_FALSE       28\n"
+"             16 LOAD_CONST               2 (3)\n"
+"             19 LOAD_NAME                0 (x)\n"
+"             22 BINARY_MULTIPLY\n"
+"             23 LOAD_CONST               1 (1)\n"
+"             26 BINARY_ADD\n"
+"             27 RETURN_VALUE\n"
+"        >>   28 LOAD_NAME                0 (x)\n"
+"             31 LOAD_CONST               0 (2)\n"
+"             34 BINARY_FLOOR_DIVIDE\n"
+"             35 RETURN_VALUE"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:1991
@@ -2326,10 +2939,31 @@ msgid ""
 "directory path."
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:2025
+msgid ""
+">>> import site\n"
+">>> site.getsitepackages()\n"
+"['/Library/Frameworks/Python.framework/Versions/3.2/lib/python3.2/site-packages',\n"
+" '/Library/Frameworks/Python.framework/Versions/3.2/lib/site-python',\n"
+" '/Library/Python/3.2/site-packages']\n"
+">>> site.getuserbase()\n"
+"'/Users/raymondhettinger/Library/Python/3.2'\n"
+">>> site.getusersitepackages()\n"
+"'/Users/raymondhettinger/Library/Python/3.2/lib/python/site-packages'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:2035
 msgid ""
 "Conveniently, some of site's functionality is accessible directly from the "
 "command-line:"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:2038
+msgid ""
+"$ python -m site --user-base\n"
+"/Users/raymondhettinger/.local\n"
+"$ python -m site --user-site\n"
+"/Users/raymondhettinger/.local/lib/python3.2/site-packages"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2045
@@ -2387,6 +3021,44 @@ msgstr ""
 #: ../../whatsnew/3.2.rst:2071
 msgid "There is also a convenient command-line interface:"
 msgstr "还有一个方便的命令行界面："
+
+#: ../../whatsnew/3.2.rst:2073
+msgid ""
+"C:\\Python32>python -m sysconfig\n"
+"Platform: \"win32\"\n"
+"Python version: \"3.2\"\n"
+"Current installation scheme: \"nt\"\n"
+"\n"
+"Paths:\n"
+"        data = \"C:\\Python32\"\n"
+"        include = \"C:\\Python32\\Include\"\n"
+"        platinclude = \"C:\\Python32\\Include\"\n"
+"        platlib = \"C:\\Python32\\Lib\\site-packages\"\n"
+"        platstdlib = \"C:\\Python32\\Lib\"\n"
+"        purelib = \"C:\\Python32\\Lib\\site-packages\"\n"
+"        scripts = \"C:\\Python32\\Scripts\"\n"
+"        stdlib = \"C:\\Python32\\Lib\"\n"
+"\n"
+"Variables:\n"
+"        BINDIR = \"C:\\Python32\"\n"
+"        BINLIBDEST = \"C:\\Python32\\Lib\"\n"
+"        EXE = \".exe\"\n"
+"        INCLUDEPY = \"C:\\Python32\\Include\"\n"
+"        LIBDEST = \"C:\\Python32\\Lib\"\n"
+"        SO = \".pyd\"\n"
+"        VERSION = \"32\"\n"
+"        abiflags = \"\"\n"
+"        base = \"C:\\Python32\"\n"
+"        exec_prefix = \"C:\\Python32\"\n"
+"        platbase = \"C:\\Python32\"\n"
+"        prefix = \"C:\\Python32\"\n"
+"        projectbase = \"C:\\Python32\"\n"
+"        py_version = \"3.2\"\n"
+"        py_version_nodot = \"32\"\n"
+"        py_version_short = \"3.2\"\n"
+"        srcdir = \"C:\\Python32\"\n"
+"        userbase = \"C:\\Documents and Settings\\Raymond\\Application Data\\Python\""
+msgstr ""
 
 #: ../../whatsnew/3.2.rst:2110
 msgid "(Moved out of Distutils by Tarek Ziadé.)"
@@ -2463,6 +3135,35 @@ msgstr ""
 msgid "Config parsers gained a new API based on the mapping protocol::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:2144
+msgid ""
+">>> parser = ConfigParser()\n"
+">>> parser.read_string(\"\"\"\n"
+"... [DEFAULT]\n"
+"... location = upper left\n"
+"... visible = yes\n"
+"... editable = no\n"
+"... color = blue\n"
+"...\n"
+"... [main]\n"
+"... title = Main Menu\n"
+"... color = green\n"
+"...\n"
+"... [options]\n"
+"... title = Options\n"
+"... \"\"\")\n"
+">>> parser['main']['color']\n"
+"'green'\n"
+">>> parser['main']['editable']\n"
+"'no'\n"
+">>> section = parser['options']\n"
+">>> section['title']\n"
+"'Options'\n"
+">>> section['title'] = 'Options (editable: %(editable)s)'\n"
+">>> section['title']\n"
+"'Options (editable: no)'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:2170
 msgid ""
 "The new API is implemented on top of the classical API, so custom parser "
@@ -2480,6 +3181,39 @@ msgstr ""
 msgid ""
 "There is support for pluggable interpolation including an additional "
 "interpolation handler :class:`~configparser.ExtendedInterpolation`::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:2180
+msgid ""
+">>> parser = ConfigParser(interpolation=ExtendedInterpolation())\n"
+">>> parser.read_dict({'buildout': {'directory': '/home/ambv/zope9'},\n"
+"...                   'custom': {'prefix': '/usr/local'}})\n"
+">>> parser.read_string(\"\"\"\n"
+"... [buildout]\n"
+"... parts =\n"
+"...   zope9\n"
+"...   instance\n"
+"... find-links =\n"
+"...   ${buildout:directory}/downloads/dist\n"
+"...\n"
+"... [zope9]\n"
+"... recipe = plone.recipe.zope9install\n"
+"... location = /opt/zope\n"
+"...\n"
+"... [instance]\n"
+"... recipe = plone.recipe.zope9instance\n"
+"... zope9-location = ${zope9:location}\n"
+"... zope-conf = ${custom:prefix}/etc/zope.conf\n"
+"... \"\"\")\n"
+">>> parser['buildout']['find-links']\n"
+"'\\n/home/ambv/zope9/downloads/dist'\n"
+">>> parser['instance']['zope-conf']\n"
+"'/usr/local/etc/zope.conf'\n"
+">>> instance = parser['instance']\n"
+">>> instance['zope-conf']\n"
+"'/usr/local/etc/zope.conf'\n"
+">>> instance['zope9-location']\n"
+"'/opt/zope'"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2210
@@ -2516,12 +3250,32 @@ msgid ""
 "tuple`::"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:2237
+msgid ""
+">>> r = urllib.parse.urldefrag('http://python.org/about/#target')\n"
+">>> r\n"
+"DefragResult(url='http://python.org/about/', fragment='target')\n"
+">>> r[0]\n"
+"'http://python.org/about/'\n"
+">>> r.fragment\n"
+"'target'"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:2245
 msgid ""
 "And, the :func:`~urllib.parse.urlencode` function is now much more flexible,"
 " accepting either a string or bytes type for the *query* argument.  If it is"
 " a string, then the *safe*, *encoding*, and *error* parameters are sent to "
 ":func:`~urllib.parse.quote_plus` for encoding::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:2250
+msgid ""
+">>> urllib.parse.urlencode([\n"
+"...      ('type', 'telenovela'),\n"
+"...      ('name', '¿Dónde Está Elisa?')],\n"
+"...      encoding='latin-1')\n"
+"'type=telenovela&name=%BFD%F3nde+Est%E1+Elisa%3F'"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2256
@@ -2607,6 +3361,10 @@ msgid ""
 " from the command-line:"
 msgstr ""
 
+#: ../../whatsnew/3.2.rst:2309
+msgid "$ python -m turtledemo"
+msgstr ""
+
 #: ../../whatsnew/3.2.rst:2313
 msgid ""
 "(Moved from the Demo directory by Alexander Belopolsky in :issue:`10199`.)"
@@ -2625,7 +3383,7 @@ msgid ""
 "ensuing system calls.  The notion of a \"check interval\" to allow thread "
 "switches has been abandoned and replaced by an absolute duration expressed "
 "in seconds.  This parameter is tunable through "
-":func:`sys.setswitchinterval()`. It currently defaults to 5 milliseconds."
+":func:`sys.setswitchinterval`. It currently defaults to 5 milliseconds."
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2327
@@ -2682,6 +3440,13 @@ msgid ""
 "Now that the speed penalty is gone, it is practical to start writing "
 "membership tests using set-notation.  This style is both semantically clear "
 "and operationally fast::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:2362
+msgid ""
+"extension = name.rpartition('.')[2]\n"
+"if extension in {'xml', 'html', 'xhtml', 'css'}:\n"
+"    handle(name)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2366
@@ -2851,7 +3616,7 @@ msgstr "文档"
 
 #: ../../whatsnew/3.2.rst:2463
 msgid "The documentation continues to be improved."
-msgstr ""
+msgstr "文档继续得到改进。"
 
 #: ../../whatsnew/3.2.rst:2465
 msgid ""
@@ -3167,7 +3932,7 @@ msgstr ""
 
 #: ../../whatsnew/3.2.rst:2647
 msgid ""
-"The :mod:`nntplib` module was reworked extensively, meaning that its APIs "
+"The :mod:`!nntplib` module was reworked extensively, meaning that its APIs "
 "are often incompatible with the 3.1 APIs."
 msgstr ""
 
@@ -3191,11 +3956,11 @@ msgstr "``PyArg_Parse*()`` 函数:"
 
 #: ../../whatsnew/3.2.rst:2660
 msgid "\"t#\" format has been removed: use \"s#\" or \"s*\" instead"
-msgstr ""
+msgstr "\"t#\" 格式已被移除：改用 \"s#\" 或 \"s*\""
 
 #: ../../whatsnew/3.2.rst:2661
 msgid "\"w\" and \"w#\" formats has been removed: use \"w*\" instead"
-msgstr ""
+msgstr "\"w\" 和 \"w#\" 格式已被移除：改用 \"w*\""
 
 #: ../../whatsnew/3.2.rst:2663
 msgid ""
@@ -3242,6 +4007,14 @@ msgid ""
 "multiple context managers.  The latter technique is faster (because it is "
 "built-in), and it does a better job finalizing multiple context managers "
 "when one of them raises an exception::"
+msgstr ""
+
+#: ../../whatsnew/3.2.rst:2692
+msgid ""
+"with open('mylog.txt') as infile, open('a.out', 'w') as outfile:\n"
+"    for line in infile:\n"
+"        if '<critical>' in line:\n"
+"            outfile.write(line)"
 msgstr ""
 
 #: ../../whatsnew/3.2.rst:2697
