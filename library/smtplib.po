@@ -7,7 +7,7 @@
 # 汪心禾 <wangxinhe06@gmail.com>, 2021
 # ppcfish <ppcfish@gmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Arisaka97 <solitaire2312@gmail.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-20 06:40+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -103,13 +103,17 @@ msgstr ""
 ":class:`SMTP` 类支持 :keyword:`with` 语句。当这样使用时，:keyword:`!with` 语句一退出就会自动发出 "
 "SMTP ``QUIT`` 命令。例如::"
 
-#: ../../library/smtplib.rst:69
+#: ../../library/smtplib.rst:52
 msgid ""
-"Raises an :ref:`auditing event <auditing>` ``smtplib.send`` with arguments "
-"``self``, ``data``."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``smtplib.send``，附带参数 ``self``, ``data``。"
+">>> from smtplib import SMTP\n"
+">>> with SMTP(\"domain.org\") as smtp:\n"
+"...     smtp.noop()\n"
+"...\n"
+"(250, b'Ok')\n"
+">>>"
+msgstr ""
 
-#: ../../library/smtplib.rst:61
+#: ../../library/smtplib.rst:59 ../../library/smtplib.rst:61
 msgid ""
 "All commands will raise an :ref:`auditing event <auditing>` "
 "``smtplib.SMTP.send`` with arguments ``self`` and ``data``, where ``data`` "
@@ -362,13 +366,13 @@ msgstr ""
 "结尾，后跟数字，则该后缀将被删除，且数字将视作要使用的端口号。如果在实例化时指定了 host，则构造函数会自动调用本方法。返回包含响应码和响应消息的 2"
 " 元组，它们由服务器在其连接响应中发送。"
 
-#: ../../library/smtplib.rst:263
+#: ../../library/smtplib.rst:253
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``smtplib.connect`` with "
 "arguments ``self``, ``host``, ``port``."
 msgstr ""
-"触发一个 :ref:`auditing event <auditing>` ``smtplib.connect``，其参数为 ``self`` ， "
-"``host`` ， ``port`` 。"
+"引发一个 :ref:`审计事件 <auditing>` ``smtplib.connect`` 并附带参数 ``self``, ``host``, "
+"``port``。"
 
 #: ../../library/smtplib.rst:258
 msgid ""
@@ -533,6 +537,10 @@ msgstr ""
 msgid ""
 "*authobject* must be a callable object taking an optional single argument::"
 msgstr "*authobject* 必须为接受一个可选的单独参数的可调用对象::"
+
+#: ../../library/smtplib.rst:356
+msgid "data = authobject(challenge=None)"
+msgstr "data = authobject(challenge=None)"
 
 #: ../../library/smtplib.rst:358
 msgid ""
@@ -863,6 +871,36 @@ msgstr ""
 "这个例子提示用户输入消息封包所需的地址 ('To' 和 'From' 地址)，以及要发送的消息。 "
 "请注意包括在消息中的标头必须包括在输入的消息中；这个例子不对 :rfc:`822` 标头进行任何处理。 具体来说，'To' 和 'From' "
 "地址必须显式地包括在消息标头中::"
+
+#: ../../library/smtplib.rst:561
+msgid ""
+"import smtplib\n"
+"\n"
+"def prompt(title):\n"
+"    return input(title).strip()\n"
+"\n"
+"from_addr = prompt(\"From: \")\n"
+"to_addrs  = prompt(\"To: \").split()\n"
+"print(\"Enter message, end with ^D (Unix) or ^Z (Windows):\")\n"
+"\n"
+"# Add the From: and To: headers at the start!\n"
+"lines = [f\"From: {from_addr}\", f\"To: {', '.join(to_addrs)}\", \"\"]\n"
+"while True:\n"
+"    try:\n"
+"        line = input()\n"
+"    except EOFError:\n"
+"        break\n"
+"    else:\n"
+"        lines.append(line)\n"
+"\n"
+"msg = \"\\r\\n\".join(lines)\n"
+"print(\"Message length is\", len(msg))\n"
+"\n"
+"server = smtplib.SMTP(\"localhost\")\n"
+"server.set_debuglevel(1)\n"
+"server.sendmail(from_addr, to_addrs, msg)\n"
+"server.quit()"
+msgstr ""
 
 #: ../../library/smtplib.rst:590
 msgid ""

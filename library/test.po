@@ -9,7 +9,7 @@
 # Leo Li <foxleoly@hotmail.com>, 2021
 # meowmeowcat <meowmeowcat1211@gmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Dai Xu <daixu61@hotmail.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:15+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:14+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -108,6 +108,40 @@ msgstr ""
 msgid "A basic boilerplate is often used::"
 msgstr "有一个基本模板经常会被使用::"
 
+#: ../../library/test.rst:57
+msgid ""
+"import unittest\n"
+"from test import support\n"
+"\n"
+"class MyTestCase1(unittest.TestCase):\n"
+"\n"
+"    # Only use setUp() and tearDown() if necessary\n"
+"\n"
+"    def setUp(self):\n"
+"        ... code to execute in preparation for tests ...\n"
+"\n"
+"    def tearDown(self):\n"
+"        ... code to execute to clean up after tests ...\n"
+"\n"
+"    def test_feature_one(self):\n"
+"        # Test feature one.\n"
+"        ... testing code ...\n"
+"\n"
+"    def test_feature_two(self):\n"
+"        # Test feature two.\n"
+"        ... testing code ...\n"
+"\n"
+"    ... more test methods ...\n"
+"\n"
+"class MyTestCase2(unittest.TestCase):\n"
+"    ... same structure as MyTestCase1 ...\n"
+"\n"
+"... more test classes ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    unittest.main()"
+msgstr ""
+
 #: ../../library/test.rst:88
 msgid ""
 "This code pattern allows the testing suite to be run by "
@@ -187,6 +221,25 @@ msgid ""
 msgstr ""
 "尝试最大限度地重用代码。 在某些情况下，测试结果会因使用不同类型的输入这样的小细节而变化。 "
 "可通过一个指定输入的类来子类化一个基本测试类来最大限度地减少重复代码::"
+
+#: ../../library/test.rst:129
+msgid ""
+"class TestFuncAcceptsSequencesMixin:\n"
+"\n"
+"    func = mySuperWhammyFunction\n"
+"\n"
+"    def test_func(self):\n"
+"        self.func(self.arg)\n"
+"\n"
+"class AcceptLists(TestFuncAcceptsSequencesMixin, unittest.TestCase):\n"
+"    arg = [1, 2, 3]\n"
+"\n"
+"class AcceptStrings(TestFuncAcceptsSequencesMixin, unittest.TestCase):\n"
+"    arg = 'abc'\n"
+"\n"
+"class AcceptTuples(TestFuncAcceptsSequencesMixin, unittest.TestCase):\n"
+"    arg = (1, 2, 3)"
+msgstr ""
 
 #: ../../library/test.rst:145
 msgid ""
@@ -562,9 +615,25 @@ msgstr ""
 msgid "Example::"
 msgstr "示例："
 
+#: ../../library/test.rst:428
+msgid ""
+"for _ in support.busy_retry(support.SHORT_TIMEOUT):\n"
+"    if check():\n"
+"        break"
+msgstr ""
+
 #: ../../library/test.rst:432 ../../library/test.rst:456
 msgid "Example of error=False usage::"
 msgstr "error=False 的用法示例::"
+
+#: ../../library/test.rst:434
+msgid ""
+"for _ in support.busy_retry(support.SHORT_TIMEOUT, error=False):\n"
+"    if check():\n"
+"        break\n"
+"else:\n"
+"    raise RuntimeError('my custom error')"
+msgstr ""
 
 #: ../../library/test.rst:442
 msgid "Wait strategy that applies exponential backoff."
@@ -586,6 +655,22 @@ msgstr "请参阅 :func:`busy_retry` 文档了解相关形参的用法。"
 #: ../../library/test.rst:450
 msgid "Example raising an exception after SHORT_TIMEOUT seconds::"
 msgstr "在 SHORT_TIMEOUT 秒后引发异常的示例::"
+
+#: ../../library/test.rst:452
+msgid ""
+"for _ in support.sleeping_retry(support.SHORT_TIMEOUT):\n"
+"    if check():\n"
+"        break"
+msgstr ""
+
+#: ../../library/test.rst:458
+msgid ""
+"for _ in support.sleeping_retry(support.SHORT_TIMEOUT, error=False):\n"
+"    if check():\n"
+"        break\n"
+"else:\n"
+"    raise RuntimeError('my custom error')"
+msgstr ""
 
 #: ../../library/test.rst:466
 msgid ""
@@ -654,6 +739,13 @@ msgstr ""
 "使用此检测来保护 CPython 实现专属的测试或者仅在有这些参数保护的实现上运行它们。 此函数将根据主机系统平台的不同返回 ``True`` 或 "
 "``False``。 用法示例::"
 
+#: ../../library/test.rst:524
+msgid ""
+"check_impl_detail()               # Only on CPython (default).\n"
+"check_impl_detail(jython=True)    # Only on Jython.\n"
+"check_impl_detail(cpython=False)  # Everywhere except CPython."
+msgstr ""
+
 #: ../../library/test.rst:531
 msgid ""
 "Set the values for :data:`max_memuse` and :data:`real_max_memuse` for big "
@@ -695,9 +787,28 @@ msgstr "使用 :class:`io.StringIO` 对象临时替换指定流的上下文管�
 msgid "Example use with output streams::"
 msgstr "使用输出流的示例::"
 
+#: ../../library/test.rst:568
+msgid ""
+"with captured_stdout() as stdout, captured_stderr() as stderr:\n"
+"    print(\"hello\")\n"
+"    print(\"error\", file=sys.stderr)\n"
+"assert stdout.getvalue() == \"hello\\n\"\n"
+"assert stderr.getvalue() == \"error\\n\""
+msgstr ""
+
 #: ../../library/test.rst:574
 msgid "Example use with input stream::"
 msgstr "使用输入流的示例::"
+
+#: ../../library/test.rst:576
+msgid ""
+"with captured_stdin() as stdin:\n"
+"    stdin.write('hello\\n')\n"
+"    stdin.seek(0)\n"
+"    # call test code that consumes from sys.stdin\n"
+"    captured = input()\n"
+"self.assertEqual(captured, \"hello\")"
+msgstr ""
 
 #: ../../library/test.rst:586
 msgid "A context manager that temporary disables :mod:`faulthandler`."
@@ -728,6 +839,12 @@ msgstr "上下文管理器用一个新对象来交换一个属性。"
 msgid "Usage::"
 msgstr "用法："
 
+#: ../../library/test.rst:609
+msgid ""
+"with swap_attr(obj, \"attr\", 5):\n"
+"    ..."
+msgstr ""
+
 #: ../../library/test.rst:612
 msgid ""
 "This will set ``obj.attr`` to 5 for the duration of the ``with`` block, "
@@ -746,6 +863,12 @@ msgstr "旧值 (或者如果不存在旧值则为 ``None``) 将被赋给 \"as\" 
 #: ../../library/test.rst:623
 msgid "Context manager to swap out an item with a new object."
 msgstr "上下文件管理器用一个新对象来交换一个条目。"
+
+#: ../../library/test.rst:627
+msgid ""
+"with swap_item(obj, \"item\", 5):\n"
+"    ..."
+msgstr ""
 
 #: ../../library/test.rst:630
 msgid ""
@@ -1012,6 +1135,19 @@ msgid ""
 msgstr ""
 "存储对象 (``cm.unraisable.object``) 如果被设置为一个正在最终化的对象则可以恢复它。 退出上下文管理器将清除已存在对象。"
 
+#: ../../library/test.rst:868
+msgid ""
+"with support.catch_unraisable_exception() as cm:\n"
+"    # code creating an \"unraisable exception\"\n"
+"    ...\n"
+"\n"
+"    # check the unraisable exception: use cm.unraisable\n"
+"    ...\n"
+"\n"
+"# cm.unraisable attribute no longer exists at this point\n"
+"# (to break a reference cycle)"
+msgstr ""
+
 #: ../../library/test.rst:883
 msgid ""
 "Generic implementation of the :mod:`unittest` ``load_tests`` protocol for "
@@ -1023,6 +1159,15 @@ msgstr ""
 "在测试包中使用的 :mod:`unittest` ``load_tests`` 协议的通用实现。 *pkg_dir* 是包的根目录；*loader*, "
 "*standard_tests* 和 *pattern* 是 ``load_tests`` 所期望的参数。 在简单的情况下，测试包的 "
 "``__init__.py`` 可以是下面这样的::"
+
+#: ../../library/test.rst:889
+msgid ""
+"import os\n"
+"from test.support import load_package_tests\n"
+"\n"
+"def load_tests(*args):\n"
+"    return load_package_tests(os.path.dirname(__file__), *args)"
+msgstr ""
 
 #: ../../library/test.rst:898
 msgid ""
@@ -1109,6 +1254,26 @@ msgstr "*not_exported* 参数可以是一个不可被当作公共 API 的一部�
 #: ../../library/test.rst:955 ../../library/test.rst:1582
 msgid "Example use::"
 msgstr "用法示例::"
+
+#: ../../library/test.rst:957
+msgid ""
+"import bar\n"
+"import foo\n"
+"import unittest\n"
+"from test import support\n"
+"\n"
+"class MiscTestCase(unittest.TestCase):\n"
+"    def test__all__(self):\n"
+"        support.check__all__(self, foo)\n"
+"\n"
+"class OtherTestCase(unittest.TestCase):\n"
+"    def test__all__(self):\n"
+"        extra = {'BAR_CONST', 'FOO_CONST'}\n"
+"        not_exported = {'baz'}  # Undocumented name.\n"
+"        # bar imports part of its API from _bar.\n"
+"        support.check__all__(self, bar, ('bar', '_bar'),\n"
+"                             extra=extra, not_exported=not_exported)"
+msgstr ""
 
 #: ../../library/test.rst:978
 msgid ""
@@ -1552,6 +1717,21 @@ msgstr "参见 :func:`threading.excepthook` 文档。"
 msgid "These attributes are deleted at the context manager exit."
 msgstr "这些属性在上下文管理器退出时将被删除。"
 
+#: ../../library/test.rst:1334
+msgid ""
+"with threading_helper.catch_threading_exception() as cm:\n"
+"    # code spawning a thread which raises an exception\n"
+"    ...\n"
+"\n"
+"    # check the thread exception, use cm attributes:\n"
+"    # exc_type, exc_value, exc_traceback, thread\n"
+"    ...\n"
+"\n"
+"# exc_type, exc_value, exc_traceback, thread attributes of cm no longer\n"
+"# exists at this point\n"
+"# (to avoid reference cycles)"
+msgstr ""
+
 #: ../../library/test.rst:1350
 msgid ":mod:`test.support.os_helper` --- Utilities for os tests"
 msgstr ":mod:`test.support.os_helper` --- 用于操作系统测试的工具"
@@ -1826,6 +2006,16 @@ msgid ""
 "imported."
 msgstr "如果指定名称的模块无法被导入则此函数将引发 :exc:`ImportError`。"
 
+#: ../../library/test.rst:1584
+msgid ""
+"# Get copies of the warnings module for testing without affecting the\n"
+"# version being used by the rest of the test suite. One copy uses the\n"
+"# C implementation, the other is forced to use the pure Python fallback\n"
+"# implementation\n"
+"py_warnings = import_fresh_module('warnings', blocked=['_warnings'])\n"
+"c_warnings = import_fresh_module('warnings', fresh=['_warnings'])"
+msgstr ""
+
 #: ../../library/test.rst:1596
 msgid ""
 "This function imports and returns the named module. Unlike a normal import, "
@@ -1877,6 +2067,12 @@ msgstr ""
 "强制导入以返回一个新的模块引用的上下文管理器。 这适用于测试模块层级的行为，例如在导入时发出 :exc:`DeprecationWarning`。 "
 "示例用法::"
 
+#: ../../library/test.rst:1638
+msgid ""
+"with CleanImport('foo'):\n"
+"    importlib.import_module('foo')  # New reference."
+msgstr ""
+
 #: ../../library/test.rst:1644
 msgid "A context manager to temporarily add directories to :data:`sys.path`."
 msgstr "一个临时性地向 :data:`sys.path` 添加目录的上下文管理器。"
@@ -1918,6 +2114,13 @@ msgstr ""
 ":func:`warnings.catch_warnings` 设置 :meth:`warnings.simplefilter('ignore', "
 "category=category) <warnings.simplefilter>`。 例如::"
 
+#: ../../library/test.rst:1674
+msgid ""
+"@warning_helper.ignore_warnings(category=DeprecationWarning)\n"
+"def test_suppress_warning():\n"
+"    # do something"
+msgstr ""
+
 #: ../../library/test.rst:1683
 msgid ""
 "Context manager to check that no :exc:`ResourceWarning` was raised.  You "
@@ -1946,15 +2149,12 @@ msgstr ""
 
 #: ../../library/test.rst:1704
 msgid ""
-"A convenience wrapper for :func:`warnings.catch_warnings()` that makes it "
+"A convenience wrapper for :func:`warnings.catch_warnings` that makes it "
 "easier to test that a warning was correctly raised.  It is approximately "
 "equivalent to calling ``warnings.catch_warnings(record=True)`` with "
 ":meth:`warnings.simplefilter` set to ``always`` and with the option to "
 "automatically validate the results that are recorded."
 msgstr ""
-"一个用于 :func:`warnings.catch_warnings()` 以更容易地测试特定警告是否被正确引发的便捷包装器。 它大致等价于调用 "
-"``warnings.catch_warnings(record=True)`` 并将 :meth:`warnings.simplefilter` 设为"
-" ``always`` 并附带自动验证已记录结果的选项。"
 
 #: ../../library/test.rst:1710
 msgid ""
@@ -1975,6 +2175,10 @@ msgstr ""
 #: ../../library/test.rst:1719
 msgid "If no arguments are specified, it defaults to::"
 msgstr "如果未指定任何参数，则默认为::"
+
+#: ../../library/test.rst:1721
+msgid "check_warnings((\"\", Warning), quiet=True)"
+msgstr ""
 
 #: ../../library/test.rst:1723
 msgid "In this case all warnings are caught and no errors are raised."
@@ -2006,6 +2210,14 @@ msgstr "该记录器对象还有一个 :meth:`reset` 方法，该方法会清空
 msgid "The context manager is designed to be used like this::"
 msgstr "该上下文管理器被设计为像这样来使用::"
 
+#: ../../library/test.rst:1739
+msgid ""
+"with check_warnings((\"assertion is always true\", SyntaxWarning),\n"
+"                    (\"\", UserWarning)):\n"
+"    exec('assert(False, \"Hey!\")')\n"
+"    warnings.warn(UserWarning(\"Hide me!\"))"
+msgstr ""
+
 #: ../../library/test.rst:1744
 msgid ""
 "In this case if either warning was not raised, or some other warning was "
@@ -2017,6 +2229,19 @@ msgid ""
 "When a test needs to look more deeply into the warnings, rather than just "
 "checking whether or not they occurred, code like this can be used::"
 msgstr "当一个测试需要更深入地查看这些警告，而不是仅仅检查它们是否发生时，可以使用这样的代码::"
+
+#: ../../library/test.rst:1750
+msgid ""
+"with check_warnings(quiet=True) as w:\n"
+"    warnings.warn(\"foo\")\n"
+"    assert str(w.args[0]) == \"foo\"\n"
+"    warnings.warn(\"bar\")\n"
+"    assert str(w.args[0]) == \"bar\"\n"
+"    assert str(w.warnings[0].args[0]) == \"foo\"\n"
+"    assert str(w.warnings[1].args[0]) == \"bar\"\n"
+"    w.reset()\n"
+"    assert len(w.warnings) == 0"
+msgstr ""
 
 #: ../../library/test.rst:1761
 msgid ""

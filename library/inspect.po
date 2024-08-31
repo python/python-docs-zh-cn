@@ -12,7 +12,7 @@
 # ww song <sww4718168@gmail.com>, 2022
 # Xu Siyuan, 2022
 # WH-2099 <wh2099@outlook.com>, 2022
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Alpha Du <alphanow@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:15+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:08+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -785,11 +785,34 @@ msgid ""
 "generators:"
 msgstr "也可被用于区分基于生成器的协程和常规的生成器："
 
+#: ../../library/inspect.rst:427
+msgid ""
+"import types\n"
+"\n"
+"def gen():\n"
+"    yield\n"
+"@types.coroutine\n"
+"def gen_coro():\n"
+"    yield\n"
+"\n"
+"assert not isawaitable(gen())\n"
+"assert isawaitable(gen_coro())"
+msgstr ""
+
 #: ../../library/inspect.rst:445
 msgid ""
 "Return ``True`` if the object is an :term:`asynchronous generator` function,"
 " for example:"
 msgstr "如果对象是一个 :term:`asynchronous generator` 函数则返回 ``True``，例如："
+
+#: ../../library/inspect.rst:448
+msgid ""
+">>> async def agen():\n"
+"...     yield 1\n"
+"...\n"
+">>> inspect.isasyncgenfunction(agen)\n"
+"True"
+msgstr ""
 
 #: ../../library/inspect.rst:458
 msgid ""
@@ -1056,6 +1079,24 @@ msgstr ""
 msgid "Return a :class:`Signature` object for the given *callable*:"
 msgstr "返回一个给定 *callable* 的 :class:`Signature` 对象："
 
+#: ../../library/inspect.rst:676
+msgid ""
+">>> from inspect import signature\n"
+">>> def foo(a, *, b:int, **kwargs):\n"
+"...     pass\n"
+"\n"
+">>> sig = signature(foo)\n"
+"\n"
+">>> str(sig)\n"
+"'(a, *, b: int, **kwargs)'\n"
+"\n"
+">>> str(sig.parameters['b'])\n"
+"'b: int'\n"
+"\n"
+">>> sig.parameters['b'].annotation\n"
+"<class 'int'>"
+msgstr ""
+
 #: ../../library/inspect.rst:693
 msgid ""
 "Accepts a wide range of Python callables, from plain functions and classes "
@@ -1223,6 +1264,17 @@ msgstr ""
 " 和/或 *return_annotation* 来覆盖基类签名的相应特征属性。 要从拷贝的 :class:`!Signature` 中移除 "
 "``return_annotation``，可以传入 :attr:`Signature.empty`。"
 
+#: ../../library/inspect.rst:803
+msgid ""
+">>> def test(a, b):\n"
+"...     pass\n"
+"...\n"
+">>> sig = signature(test)\n"
+">>> new_sig = sig.replace(return_annotation=\"new return anno\")\n"
+">>> str(new_sig)\n"
+"\"(a, b) -> 'new return anno'\""
+msgstr ""
+
 #: ../../library/inspect.rst:813
 msgid ""
 ":class:`Signature` objects are also supported by the generic function "
@@ -1251,6 +1303,14 @@ msgstr "返回给定的可调用对象 *obj* 的 :class:`Signature` (或其子�
 #: ../../library/inspect.rst:832
 msgid "This method simplifies subclassing of :class:`Signature`:"
 msgstr "该方法简化了 :class:`Signature` 的子类化操作："
+
+#: ../../library/inspect.rst:834
+msgid ""
+"class MySignature(Signature):\n"
+"    pass\n"
+"sig = MySignature.from_callable(sum)\n"
+"assert isinstance(sig, MySignature)"
+msgstr ""
 
 #: ../../library/inspect.rst:841
 msgid "Its behavior is otherwise identical to that of :func:`signature`."
@@ -1379,6 +1439,19 @@ msgstr "一个未绑定到其他形参的关键字参数的字典。这对应于
 msgid "Example: print all keyword-only arguments without default values:"
 msgstr "示例：打印全部没有默认值的仅限关键字参数："
 
+#: ../../library/inspect.rst:927
+msgid ""
+">>> def foo(a, b, *, c, d=10):\n"
+"...     pass\n"
+"\n"
+">>> sig = signature(foo)\n"
+">>> for param in sig.parameters.values():\n"
+"...     if (param.kind == param.KEYWORD_ONLY and\n"
+"...                        param.default is param.empty):\n"
+"...         print('Parameter:', param)\n"
+"Parameter: c"
+msgstr ""
+
 #: ../../library/inspect.rst:941
 msgid "Describes an enum value of :attr:`Parameter.kind`."
 msgstr "描述 :attr:`Parameter.kind` 的枚举值。"
@@ -1386,6 +1459,20 @@ msgstr "描述 :attr:`Parameter.kind` 的枚举值。"
 #: ../../library/inspect.rst:945
 msgid "Example: print all descriptions of arguments:"
 msgstr "示例：打印全部参数的描述："
+
+#: ../../library/inspect.rst:947
+msgid ""
+">>> def foo(a, b, *, c, d=10):\n"
+"...     pass\n"
+"\n"
+">>> sig = signature(foo)\n"
+">>> for param in sig.parameters.values():\n"
+"...     print(param.kind.description)\n"
+"positional or keyword\n"
+"positional or keyword\n"
+"keyword-only\n"
+"keyword-only"
+msgstr ""
 
 #: ../../library/inspect.rst:962
 msgid ""
@@ -1397,6 +1484,20 @@ msgstr ""
 "根据发起调用 replace 的实例新建一个 :class:`Parameter` 实例。 要覆盖一个 :class:`!Parameter` "
 "属性，可以传入相应的参数。 要从一个 :class:`!Parameter` 中移除默认值或/和标注，可以传入 "
 ":attr:`Parameter.empty`。"
+
+#: ../../library/inspect.rst:967
+msgid ""
+">>> from inspect import Parameter\n"
+">>> param = Parameter('foo', Parameter.KEYWORD_ONLY, default=42)\n"
+">>> str(param)\n"
+"'foo=42'\n"
+"\n"
+">>> str(param.replace()) # Will create a shallow copy of 'param'\n"
+"'foo=42'\n"
+"\n"
+">>> str(param.replace(default=Parameter.empty, annotation='spam'))\n"
+"\"foo: 'spam'\""
+msgstr ""
 
 #: ../../library/inspect.rst:980
 msgid ""
@@ -1483,11 +1584,30 @@ msgid ""
 "For variable-keyword arguments (``**kwargs``) the default is an empty dict."
 msgstr "对于变长关键字参数（``**kwargs``）默认值是一个空字典。"
 
+#: ../../library/inspect.rst:1037
+msgid ""
+">>> def foo(a, b='ham', *args): pass\n"
+">>> ba = inspect.signature(foo).bind('spam')\n"
+">>> ba.apply_defaults()\n"
+">>> ba.arguments\n"
+"{'a': 'spam', 'b': 'ham', 'args': ()}"
+msgstr ""
+
 #: ../../library/inspect.rst:1047
 msgid ""
 "The :attr:`args` and :attr:`kwargs` properties can be used to invoke "
 "functions:"
 msgstr ":attr:`args` 和 :attr:`kwargs` 特征属性可被用于发起调用函数："
+
+#: ../../library/inspect.rst:1050
+msgid ""
+"def test(a, *, b):\n"
+"    ...\n"
+"\n"
+"sig = signature(test)\n"
+"ba = sig.bind(10, b=20)\n"
+"test(*ba.args, **ba.kwargs)"
+msgstr ""
 
 #: ../../library/inspect.rst:1062
 msgid ":pep:`362` - Function Signature Object."
@@ -1633,6 +1753,22 @@ msgstr ""
 "``**`` 参数的名称，如果有的话）绑定到 *args* 和 *kwds* 中的值。 对于不正确地发起调用 *func* 的情况，即 "
 "``func(*args, **kwds)`` 因函数签名不兼容而引发异常的时候，将引发一个相同类型的异常并附带相同或相似的消息。 例如："
 
+#: ../../library/inspect.rst:1171
+msgid ""
+">>> from inspect import getcallargs\n"
+">>> def f(a, b=1, *pos, **named):\n"
+"...     pass\n"
+"...\n"
+">>> getcallargs(f, 1, 2, 3) == {'a': 1, 'named': {}, 'b': 2, 'pos': (3,)}\n"
+"True\n"
+">>> getcallargs(f, a=2, x=4) == {'a': 2, 'named': {'x': 4}, 'b': 1, 'pos': ()}\n"
+"True\n"
+">>> getcallargs(f)\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"TypeError: f() missing 1 required positional argument: 'a'"
+msgstr ""
+
 #: ../../library/inspect.rst:1188
 msgid "Use :meth:`Signature.bind` and :meth:`Signature.bind_partial` instead."
 msgstr "改使用 :meth:`Signature.bind` 和 :meth:`Signature.bind_partial`。"
@@ -1705,11 +1841,9 @@ msgstr "该函数帮助你处理若干细节："
 #: ../../library/inspect.rst:1238
 msgid ""
 "If ``eval_str`` is true, values of type ``str`` will be un-stringized using "
-":func:`eval()`.  This is intended for use with stringized annotations "
-"(``from __future__ import annotations``)."
+":func:`eval`.  This is intended for use with stringized annotations (``from "
+"__future__ import annotations``)."
 msgstr ""
-"如果 ``eval_str`` 为真， ``str`` 类型的值将会通过 :func:`eval()` "
-"来反字符串化。这被设计用于字符串化标注（``from __future__ import annotations``）。"
 
 #: ../../library/inspect.rst:1242
 msgid ""
@@ -1737,18 +1871,15 @@ msgstr "请确保始终、始终、始终返回一个新创建的字典。"
 #: ../../library/inspect.rst:1252
 msgid ""
 "``eval_str`` controls whether or not values of type ``str`` are replaced "
-"with the result of calling :func:`eval()` on those values:"
-msgstr "``eval_str`` 控制 ``str`` 类型的值是否应该替换为对其调用 :func:`eval()` 的结果："
+"with the result of calling :func:`eval` on those values:"
+msgstr ""
 
 #: ../../library/inspect.rst:1255
 msgid ""
-"If eval_str is true, :func:`eval()` is called on values of type ``str``. "
-"(Note that ``get_annotations`` doesn't catch exceptions; if :func:`eval()` "
-"raises an exception, it will unwind the stack past the ``get_annotations`` "
-"call.)"
+"If eval_str is true, :func:`eval` is called on values of type ``str``. (Note"
+" that ``get_annotations`` doesn't catch exceptions; if :func:`eval` raises "
+"an exception, it will unwind the stack past the ``get_annotations`` call.)"
 msgstr ""
-"如果 eval_str 为真， :func:`eval()` 会被调用于 ``str`` 类型。（注意 ``get_annotations`` "
-"并不捕获异常；如果 :func:`eval()` 返回一个错误，它会将栈展开跳过 ``get_annotations`` 调用。）"
 
 #: ../../library/inspect.rst:1259
 msgid ""
@@ -1757,14 +1888,11 @@ msgstr "如果 eval_str 为假（默认值）， ``str`` 类型的值将不会�
 
 #: ../../library/inspect.rst:1261
 msgid ""
-"``globals`` and ``locals`` are passed in to :func:`eval()`; see the "
-"documentation for :func:`eval()` for more information.  If ``globals`` or "
+"``globals`` and ``locals`` are passed in to :func:`eval`; see the "
+"documentation for :func:`eval` for more information.  If ``globals`` or "
 "``locals`` is ``None``, this function may replace that value with a context-"
 "specific default, contingent on ``type(obj)``:"
 msgstr ""
-"``globals`` 和 ``locals`` 会被直接传入函数 :func:`eval()`，详见 :func:`eval()` 的文档。如果 "
-"``globals`` 或者 ``locals`` 是 ``None``，则改函数视 ``type(obj)`` "
-"而定，可能将相应的值替换为一个上下文有关的默认值。"
 
 #: ../../library/inspect.rst:1266
 msgid "If ``obj`` is a module, ``globals`` defaults to ``obj.__dict__``."
@@ -1928,6 +2056,16 @@ msgstr ""
 "子句中移除循环来产生确定的行为。对于循环检测器在编译 Python 时被禁用或者使用 :func:`gc.disable` "
 "时，这样处理更加尤为重要。比如："
 
+#: ../../library/inspect.rst:1387
+msgid ""
+"def handle_stackframe_without_leak():\n"
+"    frame = inspect.currentframe()\n"
+"    try:\n"
+"        # do something with the frame\n"
+"    finally:\n"
+"        del frame"
+msgstr ""
+
 #: ../../library/inspect.rst:1394
 msgid ""
 "If you want to keep the frame around (for example to print a traceback "
@@ -2081,6 +2219,29 @@ msgid ""
 "You can handle these with code like the following. Note that for arbitrary "
 "getset descriptors invoking these may trigger code execution::"
 msgstr "你可以用类似下方的代码的方法处理此事。注意，对于任意 getset 描述符，使用这段代码仍可能触发代码执行。"
+
+#: ../../library/inspect.rst:1521
+msgid ""
+"# example code for resolving the builtin descriptor types\n"
+"class _foo:\n"
+"    __slots__ = ['foo']\n"
+"\n"
+"slot_descriptor = type(_foo.foo)\n"
+"getset_descriptor = type(type(open(__file__)).name)\n"
+"wrapper_descriptor = type(str.__dict__['__add__'])\n"
+"descriptor_types = (slot_descriptor, getset_descriptor, wrapper_descriptor)\n"
+"\n"
+"result = getattr_static(some_object, 'foo')\n"
+"if type(result) in descriptor_types:\n"
+"    try:\n"
+"        result = result.__get__()\n"
+"    except AttributeError:\n"
+"        # descriptors can raise AttributeError to\n"
+"        # indicate there is no underlying value\n"
+"        # in which case the descriptor itself will\n"
+"        # have to do\n"
+"        pass"
+msgstr ""
 
 #: ../../library/inspect.rst:1543
 msgid "Current State of Generators, Coroutines, and Asynchronous Generators"

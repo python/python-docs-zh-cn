@@ -13,12 +13,12 @@
 # ppcfish <ppcfish@gmail.com>, 2021
 # 1lin24 <1lin24@sina.com>, 2021
 # Sean Chao <seanchao0804@gmail.com>, 2021
+# Alpha Du <alphanow@gmail.com>, 2022
 # 高乐喆 <gaolezhe@outlook.com>, 2023
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # sunsol s <sunsolzn@gmail.com>, 2023
 # Xu Siyuan, 2023
 # WH-2099 <wh2099@outlook.com>, 2023
-# Alpha Du <alphanow@gmail.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 14:16+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:14+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -100,13 +100,7 @@ msgstr ""
 ":c:func:`PySys_AddAuditHook` 来添加任何安全敏感的钩子，并且应当完全删除或密切监视任何允许任意修改内存的模块 (如 "
 ":mod:`ctypes`)。"
 
-#: ../../library/sys.rst:49
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``sys.addaudithook`` with no "
-"arguments."
-msgstr " "
-
-#: ../../library/sys.rst:51
+#: ../../library/sys.rst:49 ../../library/sys.rst:51
 msgid ""
 "Calling :func:`sys.addaudithook` will itself raise an auditing event named "
 "``sys.addaudithook`` with no arguments. If any existing hooks raise an "
@@ -347,7 +341,7 @@ msgstr ""
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys._current_frames`` with no "
 "arguments."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys._current_frames``，没有附带参数。"
+msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys._current_frames``。"
 
 #: ../../library/sys.rst:229
 msgid ""
@@ -366,7 +360,7 @@ msgstr "这对于静态性能分析来说最为有用。"
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys._current_exceptions`` with "
 "no arguments."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys._current_exceptions``，不附带任何参数。"
+msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys._current_exceptions``。"
 
 #: ../../library/sys.rst:240
 msgid ""
@@ -493,6 +487,27 @@ msgstr ""
 msgid "Pseudo-code::"
 msgstr "伪代码::"
 
+#: ../../library/sys.rst:316
+msgid ""
+"def displayhook(value):\n"
+"    if value is None:\n"
+"        return\n"
+"    # Set '_' to None to avoid recursion\n"
+"    builtins._ = None\n"
+"    text = repr(value)\n"
+"    try:\n"
+"        sys.stdout.write(text)\n"
+"    except UnicodeEncodeError:\n"
+"        bytes = text.encode(sys.stdout.encoding, 'backslashreplace')\n"
+"        if hasattr(sys.stdout, 'buffer'):\n"
+"            sys.stdout.buffer.write(bytes)\n"
+"        else:\n"
+"            text = bytes.decode(sys.stdout.encoding, 'strict')\n"
+"            sys.stdout.write(text)\n"
+"    sys.stdout.write(\"\\n\")\n"
+"    builtins._ = value"
+msgstr ""
+
 #: ../../library/sys.rst:334
 msgid "Use ``'backslashreplace'`` error handler on :exc:`UnicodeEncodeError`."
 msgstr "在发生 :exc:`UnicodeEncodeError` 时使用 ``'backslashreplace'`` 错误处理方案。"
@@ -591,15 +606,7 @@ msgstr ""
 "并附带三个参数：异常类、异常实例和回溯对象。 在交互会话中这将发生在控制返回提示符之前；在 Python 程序中这将发生在程序退出之前。 "
 "这种最高层级异常的处理可以通过为 ``sys.excepthook`` 指定另一个三参数函数来实现自定义。"
 
-#: ../../library/sys.rst:405
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``sys.excepthook`` with arguments"
-" ``hook``, ``type``, ``value``, ``traceback``."
-msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sys.excepthook``，附带参数 ``hook``, ``type``, "
-"``value``, ``traceback``。"
-
-#: ../../library/sys.rst:407
+#: ../../library/sys.rst:405 ../../library/sys.rst:407
 msgid ""
 "Raise an auditing event ``sys.excepthook`` with arguments ``hook``, "
 "``type``, ``value``, ``traceback`` when an uncaught exception occurs. If no "
@@ -1068,11 +1075,28 @@ msgstr ""
 "属性 :attr:`sys.float_info.dig` 需要进一步的解释。 如果 ``s`` 是表示十进制数的字符串，且最多有 "
 ":attr:`!sys.float_info.dig` 位有效数字，那么将 ``s`` 转换为浮点数再转换回来将恢复为一个表示相同十进制值的字符串::"
 
+#: ../../library/sys.rst:705
+msgid ""
+">>> import sys\n"
+">>> sys.float_info.dig\n"
+"15\n"
+">>> s = '3.14159265358979'    # decimal string with 15 significant digits\n"
+">>> format(float(s), '.15g')  # convert to float and back -> same value\n"
+"'3.14159265358979'"
+msgstr ""
+
 #: ../../library/sys.rst:712
 msgid ""
 "But for strings with more than :attr:`sys.float_info.dig` significant "
 "digits, this isn't always true::"
 msgstr "但是对于超过 :attr:`sys.float_info.dig` 位有效数字的字符串，转换前后并非总是相同::"
+
+#: ../../library/sys.rst:715
+msgid ""
+">>> s = '9876543211234567'    # 16 significant digits is too many!\n"
+">>> format(float(s), '.16g')  # conversion changes value\n"
+"'9876543211234568'"
+msgstr ""
 
 #: ../../library/sys.rst:721
 msgid ""
@@ -1094,17 +1118,15 @@ msgid ""
 "regardless of their size.  This function is mainly useful for tracking and "
 "debugging memory leaks.  Because of the interpreter's internal caches, the "
 "result can vary from call to call; you may have to call "
-":func:`_clear_internal_caches()` and :func:`gc.collect()` to get more "
+":func:`_clear_internal_caches` and :func:`gc.collect` to get more "
 "predictable results."
 msgstr ""
-"返回解释器当前已分配的内存块数，无论它们的大小如何。 此函数主要用于跟踪和调试内存泄漏。 因为解释器有内部缓存，所以不同调用的结果会有变化； "
-"你可能需要调用 :func:`_clear_internal_caches()` 和 :func:`gc.collect()` 来获得更为可预测的结果。"
 
 #: ../../library/sys.rst:741
 msgid ""
 "If a Python build or implementation cannot reasonably compute this "
-"information, :func:`getallocatedblocks()` is allowed to return 0 instead."
-msgstr "如果当前 Python 构建或实现无法合理地计算此信息，允许 :func:`getallocatedblocks()` 返回 0。"
+"information, :func:`getallocatedblocks` is allowed to return 0 instead."
+msgstr ""
 
 #: ../../library/sys.rst:749
 msgid "Return the number of unicode objects that have been interned."
@@ -1309,7 +1331,7 @@ msgstr ""
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys._getframe`` with argument "
 "``frame``."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys._getframe``，附带参数 ``frame``。"
+msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys._getframe`` 并附带参数 ``frame``。"
 
 #: ../../library/sys.rst:903 ../../library/sys.rst:919
 msgid ""
@@ -1333,7 +1355,7 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys._getframemodulename`` with "
 "argument ``depth``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sys._getframemodulename``，附带参数 ``depth``。"
+"引发一个 :ref:`审计事件 <auditing>` ``sys._getframemodulename`` 并附带参数 ``depth``。"
 
 #: ../../library/sys.rst:929
 msgid "Get the profiler function as set by :func:`setprofile`."
@@ -1539,6 +1561,16 @@ msgid ""
 msgstr ""
 "编码为单个整数的版本号。该整数会确保每个版本都自增，其中适当包括了未发布版本。举例来说，要测试 Python 解释器的版本不低于 1.5.2，请使用::"
 
+#: ../../library/sys.rst:1080
+msgid ""
+"if sys.hexversion >= 0x010502F0:\n"
+"    # use some advanced feature\n"
+"    ...\n"
+"else:\n"
+"    # use an alternative implementation or warn the user\n"
+"    ..."
+msgstr ""
+
 #: ../../library/sys.rst:1087
 msgid ""
 "This is called ``hexversion`` since it only really looks meaningful when "
@@ -1671,14 +1703,7 @@ msgstr ""
 ":envvar:`PYTHONSTARTUP` 文件之后完成的，所以可以在该文件中设置这一钩子。:mod:`site` 模块 :ref:`设置了这一属性"
 " <rlcompleter-config>`。"
 
-#: ../../library/sys.rst:1179
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``cpython.run_interactivehook`` "
-"with argument ``hook``."
-msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``cpython.run_interactivehook``，附带参数 ``hook``。"
-
-#: ../../library/sys.rst:1181
+#: ../../library/sys.rst:1179 ../../library/sys.rst:1181
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``cpython.run_interactivehook`` "
 "with the hook object as the argument when the hook is called on startup."
@@ -2042,6 +2067,12 @@ msgstr ""
 "所返回的版本号的第一部分，例如 ``'sunos5'`` 或 ``'freebsd8'``，*对应 Python 被构建的时间*。 "
 "除非你想要检测特定的系统版本，否则建议使用以下惯例::"
 
+#: ../../library/sys.rst:1402
+msgid ""
+"if sys.platform.startswith('freebsd'):\n"
+"    # FreeBSD-specific code here..."
+msgstr ""
+
 #: ../../library/sys.rst:1405
 msgid ""
 "On Linux, :data:`sys.platform` doesn't contain the major version anymore. It"
@@ -2274,7 +2305,7 @@ msgstr "表示某个 C 函数抛出了异常。*arg* 是 C 函数对象。"
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys.setprofile`` with no "
 "arguments."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys.setprofile``，不附带任何参数。"
+msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys.setprofile``。"
 
 #: ../../library/sys.rst:1552
 msgid ""
@@ -2467,7 +2498,7 @@ msgstr "关于代码对象和帧对象的更多信息请参考 :ref:`types`。"
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sys.settrace`` with no "
 "arguments."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``sys.settrace``，不附带任何参数。"
+msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys.settrace``。"
 
 #: ../../library/sys.rst:1669
 msgid ""
@@ -2503,14 +2534,14 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` "
 "``sys.set_asyncgen_hooks_firstiter`` with no arguments."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sys.set_asyncgen_hooks_firstiter``，不附带任何参数。"
+"引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys.set_asyncgen_hooks_firstiter``。"
 
 #: ../../library/sys.rst:1689
 msgid ""
 "Raises an :ref:`auditing event <auditing>` "
 "``sys.set_asyncgen_hooks_finalizer`` with no arguments."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sys.set_asyncgen_hooks_finalizer``，不附带任何参数。"
+"引发一个不带参数的 :ref:`审计事件 <auditing>` ``sys.set_asyncgen_hooks_finalizer``。"
 
 #: ../../library/sys.rst:1691
 msgid ""
@@ -2617,7 +2648,7 @@ msgstr ""
 msgid "See :pep:`529` for more details."
 msgstr "更多详情请参阅 :pep:`529`。"
 
-#: ../../library/sys.rst:1780
+#: ../../library/sys.rst:1779
 msgid "Use :envvar:`PYTHONLEGACYWINDOWSFSENCODING` instead."
 msgstr "应改用 :envvar:`PYTHONLEGACYWINDOWSFSENCODING`。"
 
@@ -2923,13 +2954,7 @@ msgstr ""
 "使用自定义钩子存储 :attr:`!object` 可能会在它被设为正在终结的对象时将其复活。 为避免对象复活应当避免在自定义钩子完成后存储 "
 ":attr:`!object`。"
 
-#: ../../library/sys.rst:1961
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``sys.unraisablehook`` with "
-"arguments ``hook``, ``unraisable``."
-msgstr "引发一个审计事件 ``sys.unraisablehook`` 并附带参数 ``hook``, ``unraisable``。"
-
-#: ../../library/sys.rst:1963
+#: ../../library/sys.rst:1961 ../../library/sys.rst:1963
 msgid ""
 "Raise an auditing event ``sys.unraisablehook`` with arguments *hook*, "
 "*unraisable* when an exception that cannot be handled occurs. The "
@@ -3008,6 +3033,17 @@ msgid ""
 msgstr ""
 "一个字典，包含通过 :option:`-X` 命令行选项传递的旗标，这些旗标专属于各种具体实现。选项名称将会映射到对应的值（如果显式指定）或者 "
 ":const:`True`。例如:"
+
+#: ../../library/sys.rst:2029
+msgid ""
+"$ ./python -Xa=b -Xc\n"
+"Python 3.2a3+ (py3k, Oct 16 2010, 20:14:50)\n"
+"[GCC 4.4.3] on linux2\n"
+"Type \"help\", \"copyright\", \"credits\" or \"license\" for more information.\n"
+">>> import sys\n"
+">>> sys._xoptions\n"
+"{'a': 'b', 'c': True}"
+msgstr ""
 
 #: ../../library/sys.rst:2041
 msgid ""

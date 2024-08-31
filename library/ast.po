@@ -13,7 +13,7 @@
 # Dai Xu <daixu61@hotmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2021
 # Nyuan Zhang, 2022
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # 乐成 王, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:15+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 00:54+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -70,6 +70,162 @@ msgstr "抽象文法"
 #: ../../library/ast.rst:35
 msgid "The abstract grammar is currently defined as follows:"
 msgstr "抽象文法目前定义如下"
+
+#: ../../library/ast.rst:37
+msgid ""
+"-- ASDL's 4 builtin types are:\n"
+"-- identifier, int, string, constant\n"
+"\n"
+"module Python\n"
+"{\n"
+"    mod = Module(stmt* body, type_ignore* type_ignores)\n"
+"        | Interactive(stmt* body)\n"
+"        | Expression(expr body)\n"
+"        | FunctionType(expr* argtypes, expr returns)\n"
+"\n"
+"    stmt = FunctionDef(identifier name, arguments args,\n"
+"                       stmt* body, expr* decorator_list, expr? returns,\n"
+"                       string? type_comment, type_param* type_params)\n"
+"          | AsyncFunctionDef(identifier name, arguments args,\n"
+"                             stmt* body, expr* decorator_list, expr? returns,\n"
+"                             string? type_comment, type_param* type_params)\n"
+"\n"
+"          | ClassDef(identifier name,\n"
+"             expr* bases,\n"
+"             keyword* keywords,\n"
+"             stmt* body,\n"
+"             expr* decorator_list,\n"
+"             type_param* type_params)\n"
+"          | Return(expr? value)\n"
+"\n"
+"          | Delete(expr* targets)\n"
+"          | Assign(expr* targets, expr value, string? type_comment)\n"
+"          | TypeAlias(expr name, type_param* type_params, expr value)\n"
+"          | AugAssign(expr target, operator op, expr value)\n"
+"          -- 'simple' indicates that we annotate simple name without parens\n"
+"          | AnnAssign(expr target, expr annotation, expr? value, int simple)\n"
+"\n"
+"          -- use 'orelse' because else is a keyword in target languages\n"
+"          | For(expr target, expr iter, stmt* body, stmt* orelse, string? type_comment)\n"
+"          | AsyncFor(expr target, expr iter, stmt* body, stmt* orelse, string? type_comment)\n"
+"          | While(expr test, stmt* body, stmt* orelse)\n"
+"          | If(expr test, stmt* body, stmt* orelse)\n"
+"          | With(withitem* items, stmt* body, string? type_comment)\n"
+"          | AsyncWith(withitem* items, stmt* body, string? type_comment)\n"
+"\n"
+"          | Match(expr subject, match_case* cases)\n"
+"\n"
+"          | Raise(expr? exc, expr? cause)\n"
+"          | Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)\n"
+"          | TryStar(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)\n"
+"          | Assert(expr test, expr? msg)\n"
+"\n"
+"          | Import(alias* names)\n"
+"          | ImportFrom(identifier? module, alias* names, int? level)\n"
+"\n"
+"          | Global(identifier* names)\n"
+"          | Nonlocal(identifier* names)\n"
+"          | Expr(expr value)\n"
+"          | Pass | Break | Continue\n"
+"\n"
+"          -- col_offset is the byte offset in the utf8 string the parser uses\n"
+"          attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"          -- BoolOp() can use left & right?\n"
+"    expr = BoolOp(boolop op, expr* values)\n"
+"         | NamedExpr(expr target, expr value)\n"
+"         | BinOp(expr left, operator op, expr right)\n"
+"         | UnaryOp(unaryop op, expr operand)\n"
+"         | Lambda(arguments args, expr body)\n"
+"         | IfExp(expr test, expr body, expr orelse)\n"
+"         | Dict(expr* keys, expr* values)\n"
+"         | Set(expr* elts)\n"
+"         | ListComp(expr elt, comprehension* generators)\n"
+"         | SetComp(expr elt, comprehension* generators)\n"
+"         | DictComp(expr key, expr value, comprehension* generators)\n"
+"         | GeneratorExp(expr elt, comprehension* generators)\n"
+"         -- the grammar constrains where yield expressions can occur\n"
+"         | Await(expr value)\n"
+"         | Yield(expr? value)\n"
+"         | YieldFrom(expr value)\n"
+"         -- need sequences for compare to distinguish between\n"
+"         -- x < 4 < 3 and (x < 4) < 3\n"
+"         | Compare(expr left, cmpop* ops, expr* comparators)\n"
+"         | Call(expr func, expr* args, keyword* keywords)\n"
+"         | FormattedValue(expr value, int conversion, expr? format_spec)\n"
+"         | JoinedStr(expr* values)\n"
+"         | Constant(constant value, string? kind)\n"
+"\n"
+"         -- the following expression can appear in assignment context\n"
+"         | Attribute(expr value, identifier attr, expr_context ctx)\n"
+"         | Subscript(expr value, expr slice, expr_context ctx)\n"
+"         | Starred(expr value, expr_context ctx)\n"
+"         | Name(identifier id, expr_context ctx)\n"
+"         | List(expr* elts, expr_context ctx)\n"
+"         | Tuple(expr* elts, expr_context ctx)\n"
+"\n"
+"         -- can appear only in Subscript\n"
+"         | Slice(expr? lower, expr? upper, expr? step)\n"
+"\n"
+"          -- col_offset is the byte offset in the utf8 string the parser uses\n"
+"          attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"    expr_context = Load | Store | Del\n"
+"\n"
+"    boolop = And | Or\n"
+"\n"
+"    operator = Add | Sub | Mult | MatMult | Div | Mod | Pow | LShift\n"
+"                 | RShift | BitOr | BitXor | BitAnd | FloorDiv\n"
+"\n"
+"    unaryop = Invert | Not | UAdd | USub\n"
+"\n"
+"    cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn\n"
+"\n"
+"    comprehension = (expr target, expr iter, expr* ifs, int is_async)\n"
+"\n"
+"    excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)\n"
+"                    attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"    arguments = (arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,\n"
+"                 expr* kw_defaults, arg? kwarg, expr* defaults)\n"
+"\n"
+"    arg = (identifier arg, expr? annotation, string? type_comment)\n"
+"           attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"    -- keyword arguments supplied to call (NULL identifier for **kwargs)\n"
+"    keyword = (identifier? arg, expr value)\n"
+"               attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"    -- import name with optional 'as' alias.\n"
+"    alias = (identifier name, identifier? asname)\n"
+"             attributes (int lineno, int col_offset, int? end_lineno, int? end_col_offset)\n"
+"\n"
+"    withitem = (expr context_expr, expr? optional_vars)\n"
+"\n"
+"    match_case = (pattern pattern, expr? guard, stmt* body)\n"
+"\n"
+"    pattern = MatchValue(expr value)\n"
+"            | MatchSingleton(constant value)\n"
+"            | MatchSequence(pattern* patterns)\n"
+"            | MatchMapping(expr* keys, pattern* patterns, identifier? rest)\n"
+"            | MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)\n"
+"\n"
+"            | MatchStar(identifier? name)\n"
+"            -- The optional \"rest\" MatchMapping parameter handles capturing extra mapping keys\n"
+"\n"
+"            | MatchAs(pattern? pattern, identifier? name)\n"
+"            | MatchOr(pattern* patterns)\n"
+"\n"
+"             attributes (int lineno, int col_offset, int end_lineno, int end_col_offset)\n"
+"\n"
+"    type_ignore = TypeIgnore(int lineno, string tag)\n"
+"\n"
+"    type_param = TypeVar(identifier name, expr? bound, expr? default_value)\n"
+"               | ParamSpec(identifier name, expr? default_value)\n"
+"               | TypeVarTuple(identifier name, expr? default_value)\n"
+"               attributes (int lineno, int col_offset, int end_lineno, int end_col_offset)\n"
+"}\n"
+msgstr ""
 
 #: ../../library/ast.rst:42
 msgid "Node classes"
@@ -135,6 +291,12 @@ msgstr ""
 "每次个实体类上的 :attr:`!_field_types` 属性都是一个将字段名（与在 :attr:`_fields` 中列出的相同）) "
 "映射到其类型的字典。"
 
+#: ../../library/ast.rst:82
+msgid ""
+">>> ast.TypeVar._field_types\n"
+"{'name': <class 'str'>, 'bound': ast.expr | None, 'default_value': ast.expr | None}"
+msgstr ""
+
 #: ../../library/ast.rst:94
 msgid ""
 "Instances of :class:`ast.expr` and :class:`ast.stmt` subclasses have "
@@ -185,6 +347,12 @@ msgid ""
 "For example, to create and populate an :class:`ast.UnaryOp` node, you could "
 "use ::"
 msgstr "比方说，要创建和填充节点 :class:`ast.UnaryOp`，你得用 ::"
+
+#: ../../library/ast.rst:118
+msgid ""
+"node = ast.UnaryOp(ast.USub(), ast.Constant(5, lineno=0, col_offset=0),\n"
+"                   lineno=0, col_offset=0)"
+msgstr ""
 
 #: ../../library/ast.rst:121
 msgid ""
@@ -274,6 +442,17 @@ msgid ""
 msgstr ""
 "*type_ignores* 是由该模块的类型忽略注释组成的 :class:`list`；请参阅 :func:`ast.parse` 了解更多细节。"
 
+#: ../../library/ast.rst:181
+msgid ""
+">>> print(ast.dump(ast.parse('x = 1'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Name(id='x', ctx=Store())],\n"
+"            value=Constant(value=1))])"
+msgstr ""
+
 #: ../../library/ast.rst:194
 msgid ""
 "A single Python :ref:`expression input <expression-input>`. Node type "
@@ -288,6 +467,13 @@ msgid ""
 "expressions>`."
 msgstr "*body* 为单独节点，是 :ref:`表达式类型 <ast-expressions>` 中的某一个。"
 
+#: ../../library/ast.rst:200 ../../library/ast.rst:270
+msgid ""
+">>> print(ast.dump(ast.parse('123', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Constant(value=123))"
+msgstr ""
+
 #: ../../library/ast.rst:209
 msgid ""
 "A single :ref:`interactive input <interactive>`, like in :ref:`tut-interac`."
@@ -299,6 +485,21 @@ msgstr ""
 #: ../../library/ast.rst:212
 msgid "*body* is a :class:`list` of :ref:`statement nodes <ast-statements>`."
 msgstr "*body* 是由 :ref:`语句节点 <ast-statements>` 组成的 :class:`list`。"
+
+#: ../../library/ast.rst:214
+msgid ""
+">>> print(ast.dump(ast.parse('x = 1; y = 2', mode='single'), indent=4))\n"
+"Interactive(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Name(id='x', ctx=Store())],\n"
+"            value=Constant(value=1)),\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Name(id='y', ctx=Store())],\n"
+"            value=Constant(value=2))])"
+msgstr ""
 
 #: ../../library/ast.rst:231
 msgid ""
@@ -313,6 +514,13 @@ msgstr ""
 msgid "Such type comments would look like this::"
 msgstr "此种类型注释的形式是这样的::"
 
+#: ../../library/ast.rst:237
+msgid ""
+"def sum_two_number(a, b):\n"
+"    # type: (int, int) -> int\n"
+"    return a + b"
+msgstr ""
+
 #: ../../library/ast.rst:241
 msgid ""
 "*argtypes* is a :class:`list` of :ref:`expression nodes <ast-expressions>`."
@@ -321,6 +529,19 @@ msgstr "*argtypes* 是由 :ref:`表达式节点 <ast-expressions>` 组成的 :cl
 #: ../../library/ast.rst:243
 msgid "*returns* is a single :ref:`expression node <ast-expressions>`."
 msgstr "*returns* 是单独的 :ref:`表达式节点 <ast-expressions>`。"
+
+#: ../../library/ast.rst:245
+msgid ""
+">>> print(ast.dump(ast.parse('(int, str) -> List[int]', mode='func_type'), indent=4))\n"
+"FunctionType(\n"
+"    argtypes=[\n"
+"        Name(id='int', ctx=Load()),\n"
+"        Name(id='str', ctx=Load())],\n"
+"    returns=Subscript(\n"
+"        value=Name(id='List', ctx=Load()),\n"
+"        slice=Name(id='int', ctx=Load()),\n"
+"        ctx=Load()))"
+msgstr ""
 
 #: ../../library/ast.rst:261
 msgid "Literals"
@@ -387,7 +608,29 @@ msgid ""
 ":class:`Constant` nodes."
 msgstr "一个 f-字符串，由一系列 :class:`FormattedValue` 和 :class:`Constant` 节点组成。"
 
-#: ../../library/ast.rst:325
+#: ../../library/ast.rst:302
+msgid ""
+">>> print(ast.dump(ast.parse('f\"sin({a}) is {sin(a):.3}\"', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=JoinedStr(\n"
+"        values=[\n"
+"            Constant(value='sin('),\n"
+"            FormattedValue(\n"
+"                value=Name(id='a', ctx=Load()),\n"
+"                conversion=-1),\n"
+"            Constant(value=') is '),\n"
+"            FormattedValue(\n"
+"                value=Call(\n"
+"                    func=Name(id='sin', ctx=Load()),\n"
+"                    args=[\n"
+"                        Name(id='a', ctx=Load())]),\n"
+"                conversion=-1,\n"
+"                format_spec=JoinedStr(\n"
+"                    values=[\n"
+"                        Constant(value='.3')]))]))"
+msgstr ""
+
+#: ../../library/ast.rst:327
 msgid ""
 "A list or tuple. ``elts`` holds a list of nodes representing the elements. "
 "``ctx`` is :class:`Store` if the container is an assignment target (i.e. "
@@ -396,11 +639,42 @@ msgstr ""
 "一个列表或元组。 ``elts`` 保存一个代表元素的节点的列表。 ``ctx`` 在容器为赋值的目标时 (如 ``(x,y)=something``)"
 " 是 :class:`Store`，否则是 :class:`Load`。"
 
-#: ../../library/ast.rst:351
+#: ../../library/ast.rst:331
+msgid ""
+">>> print(ast.dump(ast.parse('[1, 2, 3]', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=List(\n"
+"        elts=[\n"
+"            Constant(value=1),\n"
+"            Constant(value=2),\n"
+"            Constant(value=3)],\n"
+"        ctx=Load()))\n"
+">>> print(ast.dump(ast.parse('(1, 2, 3)', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Tuple(\n"
+"        elts=[\n"
+"            Constant(value=1),\n"
+"            Constant(value=2),\n"
+"            Constant(value=3)],\n"
+"        ctx=Load()))"
+msgstr ""
+
+#: ../../library/ast.rst:353
 msgid "A set. ``elts`` holds a list of nodes representing the set's elements."
 msgstr "一个集合。 ``elts`` 保存一个代表集合的元组的节点的列表。"
 
-#: ../../library/ast.rst:366
+#: ../../library/ast.rst:355
+msgid ""
+">>> print(ast.dump(ast.parse('{1, 2, 3}', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Set(\n"
+"        elts=[\n"
+"            Constant(value=1),\n"
+"            Constant(value=2),\n"
+"            Constant(value=3)]))"
+msgstr ""
+
+#: ../../library/ast.rst:368
 msgid ""
 "A dictionary. ``keys`` and ``values`` hold lists of nodes representing the "
 "keys and the values respectively, in matching order (what would be returned "
@@ -409,7 +683,7 @@ msgstr ""
 "一个字典。 ``keys`` 和 ``values`` 保存分别代表键和值的节点的列表，按照匹配的顺序（即当调用 "
 ":code:`dictionary.keys()` 和 :code:`dictionary.values()` 时将返回的结果）。"
 
-#: ../../library/ast.rst:370
+#: ../../library/ast.rst:372
 msgid ""
 "When doing dictionary unpacking using dictionary literals the expression to "
 "be expanded goes in the ``values`` list, with a ``None`` at the "
@@ -417,24 +691,61 @@ msgid ""
 msgstr ""
 "当使用字典字面值进行字典解包操作时要扩展的表达式放入 ``values`` 列表，并将 ``None`` 放入 ``keys`` 的对应位置。"
 
-#: ../../library/ast.rst:388
+#: ../../library/ast.rst:376
+msgid ""
+">>> print(ast.dump(ast.parse('{\"a\":1, **d}', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Dict(\n"
+"        keys=[\n"
+"            Constant(value='a'),\n"
+"            None],\n"
+"        values=[\n"
+"            Constant(value=1),\n"
+"            Name(id='d', ctx=Load())]))"
+msgstr ""
+
+#: ../../library/ast.rst:390
 msgid "Variables"
 msgstr "变量"
 
-#: ../../library/ast.rst:392
+#: ../../library/ast.rst:394
 msgid ""
 "A variable name. ``id`` holds the name as a string, and ``ctx`` is one of "
 "the following types."
 msgstr "一个变量名。 ``id`` 将名称保存为字符串，而 ``ctx`` 为下列类型之一。"
 
-#: ../../library/ast.rst:400
+#: ../../library/ast.rst:402
 msgid ""
 "Variable references can be used to load the value of a variable, to assign a"
 " new value to it, or to delete it. Variable references are given a context "
 "to distinguish these cases."
 msgstr "变量引用可被用来载入一个变量的值，为其赋一个新值，或是将其删除。 变量引用会给出一个上下文来区分这几种情况。"
 
-#: ../../library/ast.rst:430
+#: ../../library/ast.rst:406
+msgid ""
+">>> print(ast.dump(ast.parse('a'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Expr(\n"
+"            value=Name(id='a', ctx=Load()))])\n"
+"\n"
+">>> print(ast.dump(ast.parse('a = 1'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Name(id='a', ctx=Store())],\n"
+"            value=Constant(value=1))])\n"
+"\n"
+">>> print(ast.dump(ast.parse('del a'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Delete(\n"
+"            targets=[\n"
+"                Name(id='a', ctx=Del())])])"
+msgstr ""
+
+#: ../../library/ast.rst:432
 msgid ""
 "A ``*var`` variable reference. ``value`` holds the variable, typically a "
 ":class:`Name` node. This type must be used when building a :class:`Call` "
@@ -443,11 +754,28 @@ msgstr ""
 "一个 ``*var`` 变量引用。 ``value`` 保存变量，通常为一个 :class:`Name` 节点。 此类型必须在构建 "
 ":class:`Call` 节点并传入 ``*args`` 时被使用。"
 
-#: ../../library/ast.rst:454
+#: ../../library/ast.rst:436
+msgid ""
+">>> print(ast.dump(ast.parse('a, *b = it'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Tuple(\n"
+"                    elts=[\n"
+"                        Name(id='a', ctx=Store()),\n"
+"                        Starred(\n"
+"                            value=Name(id='b', ctx=Store()),\n"
+"                            ctx=Store())],\n"
+"                    ctx=Store())],\n"
+"            value=Name(id='it', ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:456
 msgid "Expressions"
 msgstr "表达式"
 
-#: ../../library/ast.rst:458
+#: ../../library/ast.rst:460
 msgid ""
 "When an expression, such as a function call, appears as a statement by "
 "itself with its return value not used or stored, it is wrapped in this "
@@ -459,29 +787,59 @@ msgstr ""
 " :class:`Constant`, :class:`Name`, :class:`Lambda`, :class:`Yield` 或者 "
 ":class:`YieldFrom` 节点。"
 
-#: ../../library/ast.rst:476
+#: ../../library/ast.rst:465
+msgid ""
+">>> print(ast.dump(ast.parse('-a'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Expr(\n"
+"            value=UnaryOp(\n"
+"                op=USub(),\n"
+"                operand=Name(id='a', ctx=Load())))])"
+msgstr ""
+
+#: ../../library/ast.rst:478
 msgid ""
 "A unary operation. ``op`` is the operator, and ``operand`` any expression "
 "node."
 msgstr "一个单目运算。 ``op`` 是运算符，而 ``operand`` 是任意表达式节点。"
 
-#: ../../library/ast.rst:485
+#: ../../library/ast.rst:487
 msgid ""
 "Unary operator tokens. :class:`Not` is the ``not`` keyword, :class:`Invert` "
 "is the ``~`` operator."
 msgstr "单目运算符对应的形符。 :class:`Not` 是 ``not`` 关键字，:class:`Invert` 是 ``~`` 运算符。"
 
-#: ../../library/ast.rst:499
+#: ../../library/ast.rst:490
+msgid ""
+">>> print(ast.dump(ast.parse('not x', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=UnaryOp(\n"
+"        op=Not(),\n"
+"        operand=Name(id='x', ctx=Load())))"
+msgstr ""
+
+#: ../../library/ast.rst:501
 msgid ""
 "A binary operation (like addition or division). ``op`` is the operator, and "
 "``left`` and ``right`` are any expression nodes."
 msgstr "一个双目运算（如相加或相减）。 ``op`` 是运算符，而 ``left`` 和 ``right`` 是任意表达式节点。"
 
-#: ../../library/ast.rst:526
+#: ../../library/ast.rst:504
+msgid ""
+">>> print(ast.dump(ast.parse('x + y', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=BinOp(\n"
+"        left=Name(id='x', ctx=Load()),\n"
+"        op=Add(),\n"
+"        right=Name(id='y', ctx=Load())))"
+msgstr ""
+
+#: ../../library/ast.rst:528
 msgid "Binary operator tokens."
 msgstr "双目运算符对应的形符。"
 
-#: ../../library/ast.rst:531
+#: ../../library/ast.rst:533
 msgid ""
 "A boolean operation, 'or' or 'and'. ``op`` is :class:`Or` or :class:`And`. "
 "``values`` are the values involved. Consecutive operations with the same "
@@ -491,15 +849,26 @@ msgstr ""
 "一个布尔运算，'or' 或者 'and'。 ``op`` 是 :class:`Or` 或者 :class:`And`。 ``values`` "
 "是参与运算的值。 具有相同运算符的连续运算，如 ``a or b or c``，会被折叠为具有多个值的单个节点。"
 
-#: ../../library/ast.rst:536
+#: ../../library/ast.rst:538
 msgid "This doesn't include ``not``, which is a :class:`UnaryOp`."
 msgstr "这不包括 ``not``，它属于 :class:`UnaryOp`。"
 
-#: ../../library/ast.rst:552
+#: ../../library/ast.rst:540
+msgid ""
+">>> print(ast.dump(ast.parse('x or y', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=BoolOp(\n"
+"        op=Or(),\n"
+"        values=[\n"
+"            Name(id='x', ctx=Load()),\n"
+"            Name(id='y', ctx=Load())]))"
+msgstr ""
+
+#: ../../library/ast.rst:554
 msgid "Boolean operator tokens."
 msgstr "布尔运算符对应的形符。"
 
-#: ../../library/ast.rst:557
+#: ../../library/ast.rst:559
 msgid ""
 "A comparison of two or more values. ``left`` is the first value in the "
 "comparison, ``ops`` the list of operators, and ``comparators`` the list of "
@@ -508,47 +877,90 @@ msgstr ""
 "两个或更多值之间的比较运算。 ``left`` 是参加比较的第一个值，``ops`` 是由运算符组成的列表，而 ``comparators`` "
 "是由参加比较的第一个元素之后的值组成的列表。"
 
-#: ../../library/ast.rst:586
+#: ../../library/ast.rst:563
+msgid ""
+">>> print(ast.dump(ast.parse('1 <= a < 10', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Compare(\n"
+"        left=Constant(value=1),\n"
+"        ops=[\n"
+"            LtE(),\n"
+"            Lt()],\n"
+"        comparators=[\n"
+"            Name(id='a', ctx=Load()),\n"
+"            Constant(value=10)]))"
+msgstr ""
+
+#: ../../library/ast.rst:588
 msgid "Comparison operator tokens."
 msgstr "比较运算符对应的形符。"
 
-#: ../../library/ast.rst:591
+#: ../../library/ast.rst:593
 msgid ""
 "A function call. ``func`` is the function, which will often be a "
 ":class:`Name` or :class:`Attribute` object. Of the arguments:"
 msgstr ""
 "一个函数调用。 ``func`` 是函数，它通常是一个 :class:`Name` 或 :class:`Attribute` 对象。 对于其参数:"
 
-#: ../../library/ast.rst:594
+#: ../../library/ast.rst:596
 msgid "``args`` holds a list of the arguments passed by position."
 msgstr "``args`` 保存由按位置传入的参数组成的列表。"
 
-#: ../../library/ast.rst:595
+#: ../../library/ast.rst:597
 msgid ""
 "``keywords`` holds a list of :class:`.keyword` objects representing "
 "arguments passed by keyword."
 msgstr "``keywords`` 保存了一个代表以关键字传入的参数的 :class:`.keyword` 对象的列表。"
 
-#: ../../library/ast.rst:598
+#: ../../library/ast.rst:600
 msgid ""
 "The ``args`` and ``keywords`` arguments are optional and default to empty "
 "lists."
 msgstr "``args`` 和 ``keywords`` 参数是可选的并且默认为空列表。"
 
-#: ../../library/ast.rst:621
+#: ../../library/ast.rst:602
+msgid ""
+">>> print(ast.dump(ast.parse('func(a, b=c, *d, **e)', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Call(\n"
+"        func=Name(id='func', ctx=Load()),\n"
+"        args=[\n"
+"            Name(id='a', ctx=Load()),\n"
+"            Starred(\n"
+"                value=Name(id='d', ctx=Load()),\n"
+"                ctx=Load())],\n"
+"        keywords=[\n"
+"            keyword(\n"
+"                arg='b',\n"
+"                value=Name(id='c', ctx=Load())),\n"
+"            keyword(\n"
+"                value=Name(id='e', ctx=Load()))]))"
+msgstr ""
+
+#: ../../library/ast.rst:623
 msgid ""
 "A keyword argument to a function call or class definition. ``arg`` is a raw "
 "string of the parameter name, ``value`` is a node to pass in."
 msgstr "传给函数调用或类定义的关键字参数。 ``arg`` 是形参名称对应的原始字符串，``value`` 是要传入的节点。"
 
-#: ../../library/ast.rst:627
+#: ../../library/ast.rst:629
 msgid ""
 "An expression such as ``a if b else c``. Each field holds a single node, so "
 "in the following example, all three are :class:`Name` nodes."
 msgstr ""
 "一个表达式例如 ``a if b else c``。 每个字段保存一个单独节点，因而在下面的示例中，三个节点均为 :class:`Name` 节点。"
 
-#: ../../library/ast.rst:642
+#: ../../library/ast.rst:632
+msgid ""
+">>> print(ast.dump(ast.parse('a if b else c', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=IfExp(\n"
+"        test=Name(id='b', ctx=Load()),\n"
+"        body=Name(id='a', ctx=Load()),\n"
+"        orelse=Name(id='c', ctx=Load())))"
+msgstr ""
+
+#: ../../library/ast.rst:644
 msgid ""
 "Attribute access, e.g. ``d.keys``. ``value`` is a node, typically a "
 ":class:`Name`. ``attr`` is a bare string giving the name of the attribute, "
@@ -559,7 +971,17 @@ msgstr ""
 "是一个给出属性名称的纯字符串，而 ``ctx`` 根据属性操作的方式可以为 :class:`Load`, :class:`Store` 或 "
 ":class:`Del`。"
 
-#: ../../library/ast.rst:659
+#: ../../library/ast.rst:649
+msgid ""
+">>> print(ast.dump(ast.parse('snake.colour', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Attribute(\n"
+"        value=Name(id='snake', ctx=Load()),\n"
+"        attr='colour',\n"
+"        ctx=Load()))"
+msgstr ""
+
+#: ../../library/ast.rst:661
 msgid ""
 "A named expression. This AST node is produced by the assignment expressions "
 "operator (also known as the walrus operator). As opposed to the "
@@ -569,11 +991,20 @@ msgstr ""
 "一个带名称的表达式。 此 AST 节点是由赋值表达式运算符（或称海象运算符）产生的。 与第一个参数可以有多个节点的 :class:`Assign` "
 "节点不同，在此情况下 ``target`` 和 ``value`` 都必须为单独节点。"
 
-#: ../../library/ast.rst:675
+#: ../../library/ast.rst:666
+msgid ""
+">>> print(ast.dump(ast.parse('(x := 4)', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=NamedExpr(\n"
+"        target=Name(id='x', ctx=Store()),\n"
+"        value=Constant(value=4)))"
+msgstr ""
+
+#: ../../library/ast.rst:677
 msgid "Subscripting"
 msgstr "抽取"
 
-#: ../../library/ast.rst:679
+#: ../../library/ast.rst:681
 msgid ""
 "A subscript, such as ``l[1]``. ``value`` is the subscripted object (usually "
 "sequence or mapping). ``slice`` is an index, slice or key. It can be a "
@@ -585,7 +1016,23 @@ msgstr ""
 ":class:`Slice` 的 :class:`Tuple`。 ``ctx`` 根据抽取所执行的操作可以为 :class:`Load`, "
 ":class:`Store` 或 :class:`Del`。"
 
-#: ../../library/ast.rst:703
+#: ../../library/ast.rst:687
+msgid ""
+">>> print(ast.dump(ast.parse('l[1:2, 3]', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Subscript(\n"
+"        value=Name(id='l', ctx=Load()),\n"
+"        slice=Tuple(\n"
+"            elts=[\n"
+"                Slice(\n"
+"                    lower=Constant(value=1),\n"
+"                    upper=Constant(value=2)),\n"
+"                Constant(value=3)],\n"
+"            ctx=Load()),\n"
+"        ctx=Load()))"
+msgstr ""
+
+#: ../../library/ast.rst:705
 msgid ""
 "Regular slicing (on the form ``lower:upper`` or ``lower:upper:step``). Can "
 "occur only inside the *slice* field of :class:`Subscript`, either directly "
@@ -594,11 +1041,23 @@ msgstr ""
 "常规切片 (形式如 ``lower:upper`` 或 ``lower:upper:step``)。 只能在 :class:`Subscript` 的 "
 "*slice* 字段内部出现，可以是直接切片对象或是作为 :class:`Tuple` 的元素。"
 
-#: ../../library/ast.rst:720
+#: ../../library/ast.rst:709
+msgid ""
+">>> print(ast.dump(ast.parse('l[1:2]', mode='eval'), indent=4))\n"
+"Expression(\n"
+"    body=Subscript(\n"
+"        value=Name(id='l', ctx=Load()),\n"
+"        slice=Slice(\n"
+"            lower=Constant(value=1),\n"
+"            upper=Constant(value=2)),\n"
+"        ctx=Load()))"
+msgstr ""
+
+#: ../../library/ast.rst:722
 msgid "Comprehensions"
 msgstr "推导式"
 
-#: ../../library/ast.rst:727
+#: ../../library/ast.rst:729
 msgid ""
 "List and set comprehensions, generator expressions, and dictionary "
 "comprehensions. ``elt`` (or ``key`` and ``value``) is a single node "
@@ -607,11 +1066,55 @@ msgstr ""
 "列表和集合推导式、生成器表达式以及字典推导式。 ``elt`` (或 ``key`` 和 ``value``) "
 "是一个代表将针对每个条目被求值的部分的单独节点。"
 
-#: ../../library/ast.rst:731
+#: ../../library/ast.rst:733
 msgid "``generators`` is a list of :class:`comprehension` nodes."
 msgstr "``generators`` 是一个由 :class:`comprehension` 节点组成的列表。"
 
-#: ../../library/ast.rst:779
+#: ../../library/ast.rst:735
+msgid ""
+">>> print(ast.dump(\n"
+"...     ast.parse('[x for x in numbers]', mode='eval'),\n"
+"...     indent=4,\n"
+"... ))\n"
+"Expression(\n"
+"    body=ListComp(\n"
+"        elt=Name(id='x', ctx=Load()),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='x', ctx=Store()),\n"
+"                iter=Name(id='numbers', ctx=Load()),\n"
+"                is_async=0)]))\n"
+">>> print(ast.dump(\n"
+"...     ast.parse('{x: x**2 for x in numbers}', mode='eval'),\n"
+"...     indent=4,\n"
+"... ))\n"
+"Expression(\n"
+"    body=DictComp(\n"
+"        key=Name(id='x', ctx=Load()),\n"
+"        value=BinOp(\n"
+"            left=Name(id='x', ctx=Load()),\n"
+"            op=Pow(),\n"
+"            right=Constant(value=2)),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='x', ctx=Store()),\n"
+"                iter=Name(id='numbers', ctx=Load()),\n"
+"                is_async=0)]))\n"
+">>> print(ast.dump(\n"
+"...     ast.parse('{x for x in numbers}', mode='eval'),\n"
+"...     indent=4,\n"
+"... ))\n"
+"Expression(\n"
+"    body=SetComp(\n"
+"        elt=Name(id='x', ctx=Load()),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='x', ctx=Store()),\n"
+"                iter=Name(id='numbers', ctx=Load()),\n"
+"                is_async=0)]))"
+msgstr ""
+
+#: ../../library/ast.rst:781
 msgid ""
 "One ``for`` clause in a comprehension. ``target`` is the reference to use "
 "for each element - typically a :class:`Name` or :class:`Tuple` node. "
@@ -622,24 +1125,83 @@ msgstr ""
 ":class:`Tuple` 节点。 ``iter`` 是要执行迭代的对象。 ``ifs`` 是一个由测试表达式组成的列表：每个 ``for`` "
 "子句都可以拥有多个 ``ifs``。"
 
-#: ../../library/ast.rst:784
+#: ../../library/ast.rst:786
 msgid ""
 "``is_async`` indicates a comprehension is asynchronous (using an ``async "
 "for`` instead of ``for``). The value is an integer (0 or 1)."
 msgstr ""
 "``is_async`` 表明推导式是异步的 (使用 ``async for`` 而不是 ``for``)。 它的值是一个整数 (0 或 1)。"
 
-#: ../../library/ast.rst:849
+#: ../../library/ast.rst:789
+msgid ""
+">>> print(ast.dump(ast.parse('[ord(c) for line in file for c in line]', mode='eval'),\n"
+"...                indent=4)) # Multiple comprehensions in one.\n"
+"Expression(\n"
+"    body=ListComp(\n"
+"        elt=Call(\n"
+"            func=Name(id='ord', ctx=Load()),\n"
+"            args=[\n"
+"                Name(id='c', ctx=Load())]),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='line', ctx=Store()),\n"
+"                iter=Name(id='file', ctx=Load()),\n"
+"                is_async=0),\n"
+"            comprehension(\n"
+"                target=Name(id='c', ctx=Store()),\n"
+"                iter=Name(id='line', ctx=Load()),\n"
+"                is_async=0)]))\n"
+"\n"
+">>> print(ast.dump(ast.parse('(n**2 for n in it if n>5 if n<10)', mode='eval'),\n"
+"...                indent=4)) # generator comprehension\n"
+"Expression(\n"
+"    body=GeneratorExp(\n"
+"        elt=BinOp(\n"
+"            left=Name(id='n', ctx=Load()),\n"
+"            op=Pow(),\n"
+"            right=Constant(value=2)),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='n', ctx=Store()),\n"
+"                iter=Name(id='it', ctx=Load()),\n"
+"                ifs=[\n"
+"                    Compare(\n"
+"                        left=Name(id='n', ctx=Load()),\n"
+"                        ops=[\n"
+"                            Gt()],\n"
+"                        comparators=[\n"
+"                            Constant(value=5)]),\n"
+"                    Compare(\n"
+"                        left=Name(id='n', ctx=Load()),\n"
+"                        ops=[\n"
+"                            Lt()],\n"
+"                        comparators=[\n"
+"                            Constant(value=10)])],\n"
+"                is_async=0)]))\n"
+"\n"
+">>> print(ast.dump(ast.parse('[i async for i in soc]', mode='eval'),\n"
+"...                indent=4)) # Async comprehension\n"
+"Expression(\n"
+"    body=ListComp(\n"
+"        elt=Name(id='i', ctx=Load()),\n"
+"        generators=[\n"
+"            comprehension(\n"
+"                target=Name(id='i', ctx=Store()),\n"
+"                iter=Name(id='soc', ctx=Load()),\n"
+"                is_async=1)]))"
+msgstr ""
+
+#: ../../library/ast.rst:851
 msgid "Statements"
 msgstr "语句"
 
-#: ../../library/ast.rst:853
+#: ../../library/ast.rst:855
 msgid ""
 "An assignment. ``targets`` is a list of nodes, and ``value`` is a single "
 "node."
 msgstr "一次赋值。 ``targets`` 是一个由节点组成的列表，而 ``value`` 是一个单独节点。"
 
-#: ../../library/ast.rst:855
+#: ../../library/ast.rst:857
 msgid ""
 "Multiple nodes in ``targets`` represents assigning the same value to each. "
 "Unpacking is represented by putting a :class:`Tuple` or :class:`List` within"
@@ -648,14 +1210,38 @@ msgstr ""
 "``targets`` 中有多个节点表示将同一个值赋给多个目标。 解包操作是通过在 ``targets`` 中放入一个 :class:`Tuple` 或"
 " :class:`List` 来表示的。"
 
-#: ../../library/ast.rst:861 ../../library/ast.rst:1156
-#: ../../library/ast.rst:1350 ../../library/ast.rst:1879
+#: ../../library/ast.rst:863 ../../library/ast.rst:1158
+#: ../../library/ast.rst:1352 ../../library/ast.rst:1881
 msgid ""
 "``type_comment`` is an optional string with the type annotation as a "
 "comment."
 msgstr "``type_comment`` 是带有以注释表示的类型标注的可选的字符串。"
 
-#: ../../library/ast.rst:889
+#: ../../library/ast.rst:865
+msgid ""
+">>> print(ast.dump(ast.parse('a = b = 1'), indent=4)) # Multiple assignment\n"
+"Module(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Name(id='a', ctx=Store()),\n"
+"                Name(id='b', ctx=Store())],\n"
+"            value=Constant(value=1))])\n"
+"\n"
+">>> print(ast.dump(ast.parse('a,b = c'), indent=4)) # Unpacking\n"
+"Module(\n"
+"    body=[\n"
+"        Assign(\n"
+"            targets=[\n"
+"                Tuple(\n"
+"                    elts=[\n"
+"                        Name(id='a', ctx=Store()),\n"
+"                        Name(id='b', ctx=Store())],\n"
+"                    ctx=Store())],\n"
+"            value=Name(id='c', ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:891
 msgid ""
 "An assignment with a type annotation. ``target`` is a single node and can be"
 " a :class:`Name`, an :class:`Attribute` or a :class:`Subscript`. "
@@ -666,7 +1252,7 @@ msgstr ""
 ":class:`Subscript`。 ``annotation`` 是标注，例如一个 :class:`Constant` 或 "
 ":class:`Name` 节点。 ``value`` 是单独的可选节点。"
 
-#: ../../library/ast.rst:894
+#: ../../library/ast.rst:896
 msgid ""
 "``simple`` is always either 0 (indicating a \"complex\" target) or 1 "
 "(indicating a \"simple\" target). A \"simple\" target consists solely of a "
@@ -678,7 +1264,49 @@ msgstr ""
 ":class:`Name` 节点组成；所有其他目标均被视为复杂目标。 只有简单目标会出现在模块和类的 :attr:`__annotations__` "
 "字典中。"
 
-#: ../../library/ast.rst:944
+#: ../../library/ast.rst:902
+msgid ""
+">>> print(ast.dump(ast.parse('c: int'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        AnnAssign(\n"
+"            target=Name(id='c', ctx=Store()),\n"
+"            annotation=Name(id='int', ctx=Load()),\n"
+"            simple=1)])\n"
+"\n"
+">>> print(ast.dump(ast.parse('(a): int = 1'), indent=4)) # Annotation with parenthesis\n"
+"Module(\n"
+"    body=[\n"
+"        AnnAssign(\n"
+"            target=Name(id='a', ctx=Store()),\n"
+"            annotation=Name(id='int', ctx=Load()),\n"
+"            value=Constant(value=1),\n"
+"            simple=0)])\n"
+"\n"
+">>> print(ast.dump(ast.parse('a.b: int'), indent=4)) # Attribute annotation\n"
+"Module(\n"
+"    body=[\n"
+"        AnnAssign(\n"
+"            target=Attribute(\n"
+"                value=Name(id='a', ctx=Load()),\n"
+"                attr='b',\n"
+"                ctx=Store()),\n"
+"            annotation=Name(id='int', ctx=Load()),\n"
+"            simple=0)])\n"
+"\n"
+">>> print(ast.dump(ast.parse('a[1]: int'), indent=4)) # Subscript annotation\n"
+"Module(\n"
+"    body=[\n"
+"        AnnAssign(\n"
+"            target=Subscript(\n"
+"                value=Name(id='a', ctx=Load()),\n"
+"                slice=Constant(value=1),\n"
+"                ctx=Store()),\n"
+"            annotation=Name(id='int', ctx=Load()),\n"
+"            simple=0)])"
+msgstr ""
+
+#: ../../library/ast.rst:946
 msgid ""
 "Augmented assignment, such as ``a += 1``. In the following example, "
 "``target`` is a :class:`Name` node for ``x`` (with the :class:`Store` "
@@ -689,14 +1317,25 @@ msgstr ""
 ":class:`Name` 节点，``op`` 为 :class:`Add`，而 ``value`` 是一个值为 1 的 "
 ":class:`Constant`。"
 
-#: ../../library/ast.rst:949
+#: ../../library/ast.rst:951
 msgid ""
 "The ``target`` attribute cannot be of class :class:`Tuple` or :class:`List`,"
 " unlike the targets of :class:`Assign`."
 msgstr ""
 "``target`` 属性不可以是 :class:`Tuple` 或 :class:`List` 类，这与 :class:`Assign` 的目标不同。"
 
-#: ../../library/ast.rst:965
+#: ../../library/ast.rst:954
+msgid ""
+">>> print(ast.dump(ast.parse('x += 2'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        AugAssign(\n"
+"            target=Name(id='x', ctx=Store()),\n"
+"            op=Add(),\n"
+"            value=Constant(value=2))])"
+msgstr ""
+
+#: ../../library/ast.rst:967
 msgid ""
 "A ``raise`` statement. ``exc`` is the exception object to be raised, "
 "normally a :class:`Call` or :class:`Name`, or ``None`` for a standalone "
@@ -705,13 +1344,33 @@ msgstr ""
 "一条 ``raise`` 语句。 ``exc`` 是要引发的异常，对于一个单独的 ``raise`` 通常为 :class:`Call` 或 "
 ":class:`Name`，或者为 ``None``。 ``cause`` 是针对 ``raise x from y`` 中 ``y`` 的可选部分。"
 
-#: ../../library/ast.rst:981
+#: ../../library/ast.rst:971
+msgid ""
+">>> print(ast.dump(ast.parse('raise x from y'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Raise(\n"
+"            exc=Name(id='x', ctx=Load()),\n"
+"            cause=Name(id='y', ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:983
 msgid ""
 "An assertion. ``test`` holds the condition, such as a :class:`Compare` node."
 " ``msg`` holds the failure message."
 msgstr "一条断言。 ``test`` 保存条件，例如为一个 :class:`Compare` 节点。 ``msg`` 保存失败消息。"
 
-#: ../../library/ast.rst:996
+#: ../../library/ast.rst:986
+msgid ""
+">>> print(ast.dump(ast.parse('assert x,y'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Assert(\n"
+"            test=Name(id='x', ctx=Load()),\n"
+"            msg=Name(id='y', ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:998
 msgid ""
 "Represents a ``del`` statement. ``targets`` is a list of nodes, such as "
 ":class:`Name`, :class:`Attribute` or :class:`Subscript` nodes."
@@ -719,11 +1378,31 @@ msgstr ""
 "代表一条 ``del`` 语句。 ``targets`` 是一个由节点组成的列表，例如 :class:`Name`, "
 ":class:`Attribute` 或 :class:`Subscript` 节点。"
 
-#: ../../library/ast.rst:1013
+#: ../../library/ast.rst:1001
+msgid ""
+">>> print(ast.dump(ast.parse('del x,y,z'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Delete(\n"
+"            targets=[\n"
+"                Name(id='x', ctx=Del()),\n"
+"                Name(id='y', ctx=Del()),\n"
+"                Name(id='z', ctx=Del())])])"
+msgstr ""
+
+#: ../../library/ast.rst:1015
 msgid "A ``pass`` statement."
 msgstr "一条 ``pass`` 语句。"
 
-#: ../../library/ast.rst:1025
+#: ../../library/ast.rst:1017
+msgid ""
+">>> print(ast.dump(ast.parse('pass'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Pass()])"
+msgstr ""
+
+#: ../../library/ast.rst:1027
 msgid ""
 "A :ref:`type alias <type-aliases>` created through the :keyword:`type` "
 "statement. ``name`` is the name of the alias, ``type_params`` is a list of "
@@ -734,21 +1413,43 @@ msgstr ""
 "是别名的名称，``type_params`` 是 :ref:`类型形参 <ast-type-params>` 的列表，而 ``value`` "
 "是类型别名的值。"
 
-#: ../../library/ast.rst:1041
+#: ../../library/ast.rst:1032
+msgid ""
+">>> print(ast.dump(ast.parse('type Alias = int'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        TypeAlias(\n"
+"            name=Name(id='Alias', ctx=Store()),\n"
+"            value=Name(id='int', ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:1043
 msgid ""
 "Other statements which are only applicable inside functions or loops are "
 "described in other sections."
 msgstr "其他仅在函数或循环内部可用的语句将在其他小节中描述。"
 
-#: ../../library/ast.rst:1045
+#: ../../library/ast.rst:1047
 msgid "Imports"
 msgstr "导入"
 
-#: ../../library/ast.rst:1049
+#: ../../library/ast.rst:1051
 msgid "An import statement. ``names`` is a list of :class:`alias` nodes."
 msgstr "一条导入语句。 ``names`` 是一个由 :class:`alias` 节点组成的列表。"
 
-#: ../../library/ast.rst:1065
+#: ../../library/ast.rst:1053
+msgid ""
+">>> print(ast.dump(ast.parse('import x,y,z'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Import(\n"
+"            names=[\n"
+"                alias(name='x'),\n"
+"                alias(name='y'),\n"
+"                alias(name='z')])])"
+msgstr ""
+
+#: ../../library/ast.rst:1067
 msgid ""
 "Represents ``from x import y``. ``module`` is a raw string of the 'from' "
 "name, without any leading dots, or ``None`` for statements such as ``from . "
@@ -758,23 +1459,50 @@ msgstr ""
 "代表 ``from x import y``。 ``module`` 是一个 'from' 名称的原始字符串，不带任何前导点号，或者为 ``None``"
 " 表示 ``from . import foo`` 这样的语句。 ``level`` 是一个保存相对导入层级的整数（0 表示绝对导入）。"
 
-#: ../../library/ast.rst:1086
+#: ../../library/ast.rst:1072
+msgid ""
+">>> print(ast.dump(ast.parse('from y import x,y,z'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        ImportFrom(\n"
+"            module='y',\n"
+"            names=[\n"
+"                alias(name='x'),\n"
+"                alias(name='y'),\n"
+"                alias(name='z')],\n"
+"            level=0)])"
+msgstr ""
+
+#: ../../library/ast.rst:1088
 msgid ""
 "Both parameters are raw strings of the names. ``asname`` can be ``None`` if "
 "the regular name is to be used."
 msgstr "两个形参均为名称的原始字符串。 如果要使用常规名称则 ``asname`` 可以为 ``None``。"
 
-#: ../../library/ast.rst:1102
+#: ../../library/ast.rst:1091
+msgid ""
+">>> print(ast.dump(ast.parse('from ..foo.bar import a as b, c'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        ImportFrom(\n"
+"            module='foo.bar',\n"
+"            names=[\n"
+"                alias(name='a', asname='b'),\n"
+"                alias(name='c')],\n"
+"            level=2)])"
+msgstr ""
+
+#: ../../library/ast.rst:1104
 msgid "Control flow"
 msgstr "控制流"
 
-#: ../../library/ast.rst:1105
+#: ../../library/ast.rst:1107
 msgid ""
 "Optional clauses such as ``else`` are stored as an empty list if they're not"
 " present."
 msgstr "可选的子句如 ``else`` 如果不存在则会被存储为一个空列表。"
 
-#: ../../library/ast.rst:1110
+#: ../../library/ast.rst:1112
 msgid ""
 "An ``if`` statement. ``test`` holds a single node, such as a "
 ":class:`Compare` node. ``body`` and ``orelse`` each hold a list of nodes."
@@ -782,7 +1510,7 @@ msgstr ""
 "一条 ``if`` 语句。 ``test`` 保存一个单独节点，如一个 :class:`Compare` 节点。 ``body`` 和 "
 "``orelse`` 各自保存一个节点列表。"
 
-#: ../../library/ast.rst:1113
+#: ../../library/ast.rst:1115
 msgid ""
 "``elif`` clauses don't have a special representation in the AST, but rather "
 "appear as extra :class:`If` nodes within the ``orelse`` section of the "
@@ -790,7 +1518,35 @@ msgid ""
 msgstr ""
 "``elif`` 子句在 AST 中没有特别的表示形式，而是作为上文介绍的 ``orelse`` 部分之内的一个额外 :class:`If` 节点出现。"
 
-#: ../../library/ast.rst:1147
+#: ../../library/ast.rst:1119
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... if x:\n"
+"...    ...\n"
+"... elif y:\n"
+"...    ...\n"
+"... else:\n"
+"...    ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        If(\n"
+"            test=Name(id='x', ctx=Load()),\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            orelse=[\n"
+"                If(\n"
+"                    test=Name(id='y', ctx=Load()),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))],\n"
+"                    orelse=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1149
 msgid ""
 "A ``for`` loop. ``target`` holds the variable(s) the loop assigns to, as a "
 "single :class:`Name`, :class:`Tuple`, :class:`List`, :class:`Attribute` or "
@@ -804,17 +1560,87 @@ msgstr ""
 "保存要被循环的条目，同样也是一个单独节点。 ``body`` 和 ``orelse`` 包含要执行的节点列表。 ``orelse`` "
 "中的语句会在循环正常结束时被执行，而不是通过 ``break`` 语句执行。"
 
-#: ../../library/ast.rst:1181
+#: ../../library/ast.rst:1160
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... for x in y:\n"
+"...     ...\n"
+"... else:\n"
+"...     ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        For(\n"
+"            target=Name(id='x', ctx=Store()),\n"
+"            iter=Name(id='y', ctx=Load()),\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            orelse=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))])])"
+msgstr ""
+
+#: ../../library/ast.rst:1183
 msgid ""
 "A ``while`` loop. ``test`` holds the condition, such as a :class:`Compare` "
 "node."
 msgstr "一个 ``while`` 循环。 ``test`` 保存条件，如一个 :class:`Compare` 节点。"
 
-#: ../../library/ast.rst:1207
+#: ../../library/ast.rst:1186
+msgid ""
+">> print(ast.dump(ast.parse(\"\"\"\n"
+"... while x:\n"
+"...    ...\n"
+"... else:\n"
+"...    ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        While(\n"
+"            test=Name(id='x', ctx=Load()),\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            orelse=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))])])"
+msgstr ""
+
+#: ../../library/ast.rst:1209
 msgid "The ``break`` and ``continue`` statements."
 msgstr "``break`` 和 ``continue`` 语句。"
 
-#: ../../library/ast.rst:1240
+#: ../../library/ast.rst:1211
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... for a in b:\n"
+"...     if a > 5:\n"
+"...         break\n"
+"...     else:\n"
+"...         continue\n"
+"...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        For(\n"
+"            target=Name(id='a', ctx=Store()),\n"
+"            iter=Name(id='b', ctx=Load()),\n"
+"            body=[\n"
+"                If(\n"
+"                    test=Compare(\n"
+"                        left=Name(id='a', ctx=Load()),\n"
+"                        ops=[\n"
+"                            Gt()],\n"
+"                        comparators=[\n"
+"                            Constant(value=5)]),\n"
+"                    body=[\n"
+"                        Break()],\n"
+"                    orelse=[\n"
+"                        Continue()])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1242
 msgid ""
 "``try`` blocks. All attributes are list of nodes to execute, except for "
 "``handlers``, which is a list of :class:`ExceptHandler` nodes."
@@ -822,7 +1648,47 @@ msgstr ""
 "``try`` 代码块。 所有属性都是要执行的节点列表，除了 ``handlers``，它是一个 :class:`ExceptHandler` "
 "节点列表。"
 
-#: ../../library/ast.rst:1285
+#: ../../library/ast.rst:1245
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... try:\n"
+"...    ...\n"
+"... except Exception:\n"
+"...    ...\n"
+"... except OtherException as e:\n"
+"...    ...\n"
+"... else:\n"
+"...    ...\n"
+"... finally:\n"
+"...    ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Try(\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            handlers=[\n"
+"                ExceptHandler(\n"
+"                    type=Name(id='Exception', ctx=Load()),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                ExceptHandler(\n"
+"                    type=Name(id='OtherException', ctx=Load()),\n"
+"                    name='e',\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])],\n"
+"            orelse=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            finalbody=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))])])"
+msgstr ""
+
+#: ../../library/ast.rst:1287
 msgid ""
 "``try`` blocks which are followed by ``except*`` clauses. The attributes are"
 " the same as for :class:`Try` but the :class:`ExceptHandler` nodes in "
@@ -832,7 +1698,29 @@ msgstr ""
 ":class:`ExceptHandler` 节点在 ``handlers`` 中会被解读为 ``except*`` 而不是 ``except`` "
 "代码块。"
 
-#: ../../library/ast.rst:1314
+#: ../../library/ast.rst:1291
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... try:\n"
+"...    ...\n"
+"... except* Exception:\n"
+"...    ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        TryStar(\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Constant(value=Ellipsis))],\n"
+"            handlers=[\n"
+"                ExceptHandler(\n"
+"                    type=Name(id='Exception', ctx=Load()),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1316
 msgid ""
 "A single ``except`` clause. ``type`` is the exception type it will match, "
 "typically a :class:`Name` node (or ``None`` for a catch-all ``except:`` "
@@ -843,7 +1731,31 @@ msgstr ""
 "表示捕获全部的 ``except:`` 子句）。 ``name`` 是一个用于存放异常的别名的原始字符串，或者如果子句没有 ``as foo`` 则为 "
 "``None``。 ``body`` 为一个节点列表。"
 
-#: ../../library/ast.rst:1345
+#: ../../library/ast.rst:1321
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... try:\n"
+"...     a + 1\n"
+"... except TypeError:\n"
+"...     pass\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Try(\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=BinOp(\n"
+"                        left=Name(id='a', ctx=Load()),\n"
+"                        op=Add(),\n"
+"                        right=Constant(value=1)))],\n"
+"            handlers=[\n"
+"                ExceptHandler(\n"
+"                    type=Name(id='TypeError', ctx=Load()),\n"
+"                    body=[\n"
+"                        Pass()])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1347
 msgid ""
 "A ``with`` block. ``items`` is a list of :class:`withitem` nodes "
 "representing the context managers, and ``body`` is the indented block inside"
@@ -852,7 +1764,7 @@ msgstr ""
 "一个 ``with`` 代码块。 ``items`` 是一个代表上下文管理器的 :class:`withitem` 节点列表，而 ``body`` "
 "是该上下文中的缩进代码块。"
 
-#: ../../library/ast.rst:1355
+#: ../../library/ast.rst:1357
 msgid ""
 "A single context manager in a ``with`` block. ``context_expr`` is the "
 "context manager, often a :class:`Call` node. ``optional_vars`` is a "
@@ -863,11 +1775,36 @@ msgstr ""
 "``optional_vars`` 为一个针对 ``as foo`` 部分的 :class:`Name`, :class:`Tuple` 或 "
 ":class:`List`，或者如果未使用别名则为 ``None``。"
 
-#: ../../library/ast.rst:1386
+#: ../../library/ast.rst:1362
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... with a as b, c as d:\n"
+"...    something(b, d)\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        With(\n"
+"            items=[\n"
+"                withitem(\n"
+"                    context_expr=Name(id='a', ctx=Load()),\n"
+"                    optional_vars=Name(id='b', ctx=Store())),\n"
+"                withitem(\n"
+"                    context_expr=Name(id='c', ctx=Load()),\n"
+"                    optional_vars=Name(id='d', ctx=Store()))],\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Call(\n"
+"                        func=Name(id='something', ctx=Load()),\n"
+"                        args=[\n"
+"                            Name(id='b', ctx=Load()),\n"
+"                            Name(id='d', ctx=Load())]))])])"
+msgstr ""
+
+#: ../../library/ast.rst:1388
 msgid "Pattern matching"
 msgstr "模式匹配"
 
-#: ../../library/ast.rst:1391
+#: ../../library/ast.rst:1393
 msgid ""
 "A ``match`` statement. ``subject`` holds the subject of the match (the "
 "object that is being matched against the cases) and ``cases`` contains an "
@@ -876,7 +1813,7 @@ msgstr ""
 "一条 ``match`` 语句。 ``subject`` 保存匹配的目标（与 cases 相匹配的对象）而 ``cases`` 包含一个由不同分支的 "
 ":class:`match_case` 节点组成的可迭代对象。"
 
-#: ../../library/ast.rst:1399
+#: ../../library/ast.rst:1401
 msgid ""
 "A single case pattern in a ``match`` statement. ``pattern`` contains the "
 "match pattern that the subject will be matched against. Note that the "
@@ -886,19 +1823,54 @@ msgstr ""
 "一个 ``match`` 语句中单独的 case 模式。 ``pattern`` 包含目标将要去匹配的匹配模式。 请注意针对模式所产生的 "
 ":class:`AST` 节点不同于针对表达式所产生的节点，即使它们共享相同的语法。"
 
-#: ../../library/ast.rst:1404
+#: ../../library/ast.rst:1406
 msgid ""
 "The ``guard`` attribute contains an expression that will be evaluated if the"
 " pattern matches the subject."
 msgstr "``guard`` 属性包含一个当模式与目标相匹配时将被求值的表达式。"
 
-#: ../../library/ast.rst:1407
+#: ../../library/ast.rst:1409
 msgid ""
 "``body`` contains a list of nodes to execute if the pattern matches and the "
 "result of evaluating the guard expression is true."
 msgstr "``body`` 包含一个当模式匹配并且对 guard 表达式求值的结果为真时要执行的节点列表。"
 
-#: ../../library/ast.rst:1448
+#: ../../library/ast.rst:1412
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case [x] if x>0:\n"
+"...         ...\n"
+"...     case tuple():\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchSequence(\n"
+"                        patterns=[\n"
+"                            MatchAs(name='x')]),\n"
+"                    guard=Compare(\n"
+"                        left=Name(id='x', ctx=Load()),\n"
+"                        ops=[\n"
+"                            Gt()],\n"
+"                        comparators=[\n"
+"                            Constant(value=0)]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                match_case(\n"
+"                    pattern=MatchClass(\n"
+"                        cls=Name(id='tuple', ctx=Load())),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1450
 msgid ""
 "A match literal or value pattern that compares by equality. ``value`` is an "
 "expression node. Permitted value nodes are restricted as described in the "
@@ -908,7 +1880,27 @@ msgstr ""
 "一个按相等性进行比较的匹配字面值或值模式。 ``value`` 为一个表达式节点。 允许的值节点被限制为 match 语句文档中所描述的节点。 "
 "如果匹配目标等于 value 的求值结果则模式匹配成功。"
 
-#: ../../library/ast.rst:1476
+#: ../../library/ast.rst:1455
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case \"Relevant\":\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchValue(\n"
+"                        value=Constant(value='Relevant')),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1478
 msgid ""
 "A match literal pattern that compares by identity. ``value`` is the "
 "singleton to be compared against: ``None``, ``True``, or ``False``. This "
@@ -917,7 +1909,26 @@ msgstr ""
 "一个按标识号进行比较的匹配字面值模式。 ``value`` 为用于比较的单例对象: ``None``, ``True`` 或 ``False``。 "
 "如果匹配目标为给定的常量则该模式匹配成功。"
 
-#: ../../library/ast.rst:1502
+#: ../../library/ast.rst:1482
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case None:\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchSingleton(value=None),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1504
 msgid ""
 "A match sequence pattern. ``patterns`` contains the patterns to be matched "
 "against the subject elements if the subject is a sequence. Matches a "
@@ -927,7 +1938,31 @@ msgstr ""
 "一个匹配序列模式。 ``patterns`` 包含当目标为一个序列时要与目标元素进行匹配的模式。 如果某一子模式为 ``MatchStar`` "
 "节点则将匹配一个变长度序列，否则将匹配一个固定长度序列。"
 
-#: ../../library/ast.rst:1534
+#: ../../library/ast.rst:1509
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case [1, 2]:\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchSequence(\n"
+"                        patterns=[\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=1)),\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=2))]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1536
 msgid ""
 "Matches the rest of the sequence in a variable length match sequence "
 "pattern. If ``name`` is not ``None``, a list containing the remaining "
@@ -937,7 +1972,41 @@ msgstr ""
 "匹配一个可变长度匹配序列模式中的剩余部分序列。 如果 ``name`` 不为 "
 "``None``，则当整个序列模式匹配成功时将把一个包含剩余序列元素的列表绑定到该名称。"
 
-#: ../../library/ast.rst:1575
+#: ../../library/ast.rst:1540
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case [1, 2, *rest]:\n"
+"...         ...\n"
+"...     case [*_]:\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchSequence(\n"
+"                        patterns=[\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=1)),\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=2)),\n"
+"                            MatchStar(name='rest')]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                match_case(\n"
+"                    pattern=MatchSequence(\n"
+"                        patterns=[\n"
+"                            MatchStar()]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1577
 msgid ""
 "A match mapping pattern. ``keys`` is a sequence of expression nodes. "
 "``patterns`` is a corresponding sequence of pattern nodes. ``rest`` is an "
@@ -948,7 +2017,7 @@ msgstr ""
 "一个匹配的映射模式。 ``keys`` 为一个由表达式节点组成的序列。 ``patterns`` 为一个由对应的模式节点组成的序列。 ``rest`` "
 "是一个可被指定用来捕获剩余映射元素的可选名称。 允许的关键字表达式被限制为与 match 语句文档中所描述的一致。"
 
-#: ../../library/ast.rst:1581
+#: ../../library/ast.rst:1583
 msgid ""
 "This pattern succeeds if the subject is a mapping, all evaluated key "
 "expressions are present in the mapping, and the value corresponding to each "
@@ -959,7 +2028,39 @@ msgstr ""
 "如果目标为一个映射、所有被求值的表达式都存在于该映射中，并且对应于每个键的值都与对应的子模式相匹配则此模式匹配成功。 如果 ``rest`` 不为 "
 "``None``，则当整个映射模式匹配成功时会将一个包含剩余映射元素的字典绑定到该名称。"
 
-#: ../../library/ast.rst:1622
+#: ../../library/ast.rst:1589
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case {1: _, 2: _}:\n"
+"...         ...\n"
+"...     case {**rest}:\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchMapping(\n"
+"                        keys=[\n"
+"                            Constant(value=1),\n"
+"                            Constant(value=2)],\n"
+"                        patterns=[\n"
+"                            MatchAs(),\n"
+"                            MatchAs()]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                match_case(\n"
+"                    pattern=MatchMapping(rest='rest'),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1624
 msgid ""
 "A match class pattern. ``cls`` is an expression giving the nominal class to "
 "be matched. ``patterns`` is a sequence of pattern nodes to be matched "
@@ -973,14 +2074,14 @@ msgstr ""
 "为一个由要与该类所定义的模式匹配属性相匹配的模式节点组成的序列。 ``kwd_attrs`` "
 "为一个由要匹配的附加属性（指定为该类模式中的关键字参数）组成的序列，``kwd_patterns`` 为对应的模式（指定为该类模式中的关键字值）。"
 
-#: ../../library/ast.rst:1629
+#: ../../library/ast.rst:1631
 msgid ""
 "This pattern succeeds if the subject is an instance of the nominated class, "
 "all positional patterns match the corresponding class-defined attributes, "
 "and any specified keyword attributes match their corresponding pattern."
 msgstr "如果目标为被指名类的一个实例、所有的位置模式都与对应的类定义属性相匹配，并且任何被指定的关键字属性都与其对应的模式相匹配则此模式匹配成功。"
 
-#: ../../library/ast.rst:1633
+#: ../../library/ast.rst:1635
 msgid ""
 "Note: classes may define a property that returns self in order to match a "
 "pattern node against the instance being matched. Several builtin types are "
@@ -989,7 +2090,51 @@ msgstr ""
 "注意：类可能会定义一个返回自身的特征属性以便能将一个模式节点与被匹配的实例相匹配。 某些内置类型也是以这种方式来匹配的，与 match "
 "语句文档中所描述的一致。"
 
-#: ../../library/ast.rst:1684
+#: ../../library/ast.rst:1639
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case Point2D(0, 0):\n"
+"...         ...\n"
+"...     case Point3D(x=0, y=0, z=0):\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchClass(\n"
+"                        cls=Name(id='Point2D', ctx=Load()),\n"
+"                        patterns=[\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=0)),\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=0))]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                match_case(\n"
+"                    pattern=MatchClass(\n"
+"                        cls=Name(id='Point3D', ctx=Load()),\n"
+"                        kwd_attrs=[\n"
+"                            'x',\n"
+"                            'y',\n"
+"                            'z'],\n"
+"                        kwd_patterns=[\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=0)),\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=0)),\n"
+"                            MatchValue(\n"
+"                                value=Constant(value=0))]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1686
 msgid ""
 "A match \"as-pattern\", capture pattern or wildcard pattern. ``pattern`` "
 "contains the match pattern that the subject will be matched against. If the "
@@ -999,7 +2144,7 @@ msgstr ""
 "一个匹配 \"as-模式\"、捕获模式或通配符模式。 ``pattern`` 包含将要与目标相匹配的匹配模式。 如果模式为 "
 "``None``，则该节点代表一个捕获模式（即一个简单的名称）并将总是会成功。"
 
-#: ../../library/ast.rst:1689
+#: ../../library/ast.rst:1691
 msgid ""
 "The ``name`` attribute contains the name that will be bound if the pattern "
 "is successful. If ``name`` is ``None``, ``pattern`` must also be ``None`` "
@@ -1008,7 +2153,37 @@ msgstr ""
 "``name`` 属性包含当模式匹配成功时将要绑定的名称。 如果 ``name`` 为 ``None``，则 ``pattern`` 也必须为 "
 "``None`` 并且该节点代表的是通配符模式。"
 
-#: ../../library/ast.rst:1726
+#: ../../library/ast.rst:1695
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case [x] as y:\n"
+"...         ...\n"
+"...     case _:\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchAs(\n"
+"                        pattern=MatchSequence(\n"
+"                            patterns=[\n"
+"                                MatchAs(name='x')]),\n"
+"                        name='y'),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))]),\n"
+"                match_case(\n"
+"                    pattern=MatchAs(),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1728
 msgid ""
 "A match \"or-pattern\". An or-pattern matches each of its subpatterns in "
 "turn to the subject, until one succeeds. The or-pattern is then deemed to "
@@ -1019,17 +2194,41 @@ msgstr ""
 "一个匹配 \"or-模式\"。 or-模式会依次将其每个子模式与目标相匹配，直到有一个匹配成功。 此时该 or-模式将被视为匹配成功。 "
 "如果没有一个子模式匹配成功则该 or-模式匹配失败。 ``patterns`` 属性包含一个由将与目标相匹配的匹配模式节点组成的列表。"
 
-#: ../../library/ast.rst:1760
+#: ../../library/ast.rst:1734
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\n"
+"... match x:\n"
+"...     case [x] | (y):\n"
+"...         ...\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Match(\n"
+"            subject=Name(id='x', ctx=Load()),\n"
+"            cases=[\n"
+"                match_case(\n"
+"                    pattern=MatchOr(\n"
+"                        patterns=[\n"
+"                            MatchSequence(\n"
+"                                patterns=[\n"
+"                                    MatchAs(name='x')]),\n"
+"                            MatchAs(name='y')]),\n"
+"                    body=[\n"
+"                        Expr(\n"
+"                            value=Constant(value=Ellipsis))])])])"
+msgstr ""
+
+#: ../../library/ast.rst:1762
 msgid "Type parameters"
 msgstr "类型形参"
 
-#: ../../library/ast.rst:1762
+#: ../../library/ast.rst:1764
 msgid ""
 ":ref:`Type parameters <type-params>` can exist on classes, functions, and "
 "type aliases."
 msgstr ":ref:`类型形参 <type-params>` 可以存在于类、函数和类型别名中。"
 
-#: ../../library/ast.rst:1767
+#: ../../library/ast.rst:1769
 msgid ""
 "A :class:`typing.TypeVar`. *name* is the name of the type variable. *bound* "
 "is the bound or constraints, if any. If *bound* is a :class:`Tuple`, it "
@@ -1041,12 +2240,30 @@ msgstr ""
 "*bound* 是一个 :class:`Tuple`，则它表示约束值；否则它表示边界值。 *default_value* 为默认值；如果 "
 ":class:`!TypeVar` 没有默认值，该属性将被设为 ``None``。"
 
-#: ../../library/ast.rst:1792 ../../library/ast.rst:1827
-#: ../../library/ast.rst:1859
+#: ../../library/ast.rst:1775
+msgid ""
+">>> print(ast.dump(ast.parse(\"type Alias[T: int = bool] = list[T]\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        TypeAlias(\n"
+"            name=Name(id='Alias', ctx=Store()),\n"
+"            type_params=[\n"
+"                TypeVar(\n"
+"                    name='T',\n"
+"                    bound=Name(id='int', ctx=Load()),\n"
+"                    default_value=Name(id='bool', ctx=Load()))],\n"
+"            value=Subscript(\n"
+"                value=Name(id='list', ctx=Load()),\n"
+"                slice=Name(id='T', ctx=Load()),\n"
+"                ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:1794 ../../library/ast.rst:1829
+#: ../../library/ast.rst:1861
 msgid "Added the *default_value* parameter."
 msgstr "增加了 *default_value* 形参。"
 
-#: ../../library/ast.rst:1797
+#: ../../library/ast.rst:1799
 msgid ""
 "A :class:`typing.ParamSpec`. *name* is the name of the parameter "
 "specification. *default_value* is the default value; if the "
@@ -1055,7 +2272,32 @@ msgstr ""
 "一个 :class:`typing.ParamSpec`。 *name* 为形参规格的名称。 *default_value* 为默认值；如果 "
 ":class:`!ParamSpec` 没有默认值，该属性将被设为 ``None``。"
 
-#: ../../library/ast.rst:1832
+#: ../../library/ast.rst:1803
+msgid ""
+">>> print(ast.dump(ast.parse(\"type Alias[**P = (int, str)] = Callable[P, int]\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        TypeAlias(\n"
+"            name=Name(id='Alias', ctx=Store()),\n"
+"            type_params=[\n"
+"                ParamSpec(\n"
+"                    name='P',\n"
+"                    default_value=Tuple(\n"
+"                        elts=[\n"
+"                            Name(id='int', ctx=Load()),\n"
+"                            Name(id='str', ctx=Load())],\n"
+"                        ctx=Load()))],\n"
+"            value=Subscript(\n"
+"                value=Name(id='Callable', ctx=Load()),\n"
+"                slice=Tuple(\n"
+"                    elts=[\n"
+"                        Name(id='P', ctx=Load()),\n"
+"                        Name(id='int', ctx=Load())],\n"
+"                    ctx=Load()),\n"
+"                ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:1834
 msgid ""
 "A :class:`typing.TypeVarTuple`. *name* is the name of the type variable "
 "tuple. *default_value* is the default value; if the :class:`!TypeVarTuple` "
@@ -1064,99 +2306,182 @@ msgstr ""
 "一个 :class:`typing.TypeVarTuple`。 *name* 为类型变量元组的名称。 *default_value* 为默认值；如果 "
 ":class:`!TypeVarTuple` 没有默认值，该属性将被设为 ``None``。"
 
-#: ../../library/ast.rst:1863
+#: ../../library/ast.rst:1838
+msgid ""
+">>> print(ast.dump(ast.parse(\"type Alias[*Ts = ()] = tuple[*Ts]\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        TypeAlias(\n"
+"            name=Name(id='Alias', ctx=Store()),\n"
+"            type_params=[\n"
+"                TypeVarTuple(\n"
+"                    name='Ts',\n"
+"                    default_value=Tuple(ctx=Load()))],\n"
+"            value=Subscript(\n"
+"                value=Name(id='tuple', ctx=Load()),\n"
+"                slice=Tuple(\n"
+"                    elts=[\n"
+"                        Starred(\n"
+"                            value=Name(id='Ts', ctx=Load()),\n"
+"                            ctx=Load())],\n"
+"                    ctx=Load()),\n"
+"                ctx=Load()))])"
+msgstr ""
+
+#: ../../library/ast.rst:1865
 msgid "Function and class definitions"
 msgstr "函数与类定义"
 
-#: ../../library/ast.rst:1867
+#: ../../library/ast.rst:1869
 msgid "A function definition."
 msgstr "一个函数定义。"
 
-#: ../../library/ast.rst:1869
+#: ../../library/ast.rst:1871
 msgid "``name`` is a raw string of the function name."
 msgstr "``name`` 是函数名称的原始字符串。"
 
-#: ../../library/ast.rst:1870
+#: ../../library/ast.rst:1872
 msgid "``args`` is an :class:`arguments` node."
 msgstr "``args`` 是一个 :class:`arguments` 节点。"
 
-#: ../../library/ast.rst:1871
+#: ../../library/ast.rst:1873
 msgid "``body`` is the list of nodes inside the function."
 msgstr "``body`` 是函数内部的节点列表。"
 
-#: ../../library/ast.rst:1872
+#: ../../library/ast.rst:1874
 msgid ""
 "``decorator_list`` is the list of decorators to be applied, stored outermost"
 " first (i.e. the first in the list will be applied last)."
 msgstr "``decorator_list`` 是要应用的装饰器列表，最外层的最先保存（即列表中的第一项将最后被应用）。"
 
-#: ../../library/ast.rst:1874
+#: ../../library/ast.rst:1876
 msgid "``returns`` is the return annotation."
 msgstr "``returns`` 是返回标注。"
 
-#: ../../library/ast.rst:1875 ../../library/ast.rst:2039
+#: ../../library/ast.rst:1877 ../../library/ast.rst:2041
 msgid "``type_params`` is a list of :ref:`type parameters <ast-type-params>`."
 msgstr "``type_params`` 是一个 :ref:`类型形参 <ast-type-params>` 的列表。"
 
-#: ../../library/ast.rst:1881 ../../library/ast.rst:2066
-#: ../../library/ast.rst:2077
+#: ../../library/ast.rst:1883 ../../library/ast.rst:2068
+#: ../../library/ast.rst:2079
 msgid "Added ``type_params``."
 msgstr "增加了 ``type_params``。"
 
-#: ../../library/ast.rst:1887
+#: ../../library/ast.rst:1889
 msgid ""
 "``lambda`` is a minimal function definition that can be used inside an "
 "expression. Unlike :class:`FunctionDef`, ``body`` holds a single node."
 msgstr ""
 "``lambda`` 是可在表达式内部使用的最小化函数定义。 不同于 :class:`FunctionDef`，``body`` 是保存一个单独节点。"
 
-#: ../../library/ast.rst:1906
+#: ../../library/ast.rst:1892
+msgid ""
+">>> print(ast.dump(ast.parse('lambda x,y: ...'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Expr(\n"
+"            value=Lambda(\n"
+"                args=arguments(\n"
+"                    args=[\n"
+"                        arg(arg='x'),\n"
+"                        arg(arg='y')]),\n"
+"                body=Constant(value=Ellipsis)))])"
+msgstr ""
+
+#: ../../library/ast.rst:1908
 msgid "The arguments for a function."
 msgstr "函数的参数。"
 
-#: ../../library/ast.rst:1908
+#: ../../library/ast.rst:1910
 msgid ""
 "``posonlyargs``, ``args`` and ``kwonlyargs`` are lists of :class:`arg` "
 "nodes."
 msgstr "``posonlyargs``, ``args`` 和 ``kwonlyargs`` 均为 :class:`arg` 节点的列表。"
 
-#: ../../library/ast.rst:1909
+#: ../../library/ast.rst:1911
 msgid ""
 "``vararg`` and ``kwarg`` are single :class:`arg` nodes, referring to the "
 "``*args, **kwargs`` parameters."
 msgstr ""
 "``vararg`` 和 ``kwarg`` 均为单独的 :class:`arg` 节点，指向 ``*args, **kwargs`` 形参。"
 
-#: ../../library/ast.rst:1911
+#: ../../library/ast.rst:1913
 msgid ""
 "``kw_defaults`` is a list of default values for keyword-only arguments. If "
 "one is ``None``, the corresponding argument is required."
 msgstr "``kw_defaults`` 是一个由仅限关键字参数默认值组成的列表。 如果有一个为 ``None``，则对应的参数为必须的参数。"
 
-#: ../../library/ast.rst:1913
+#: ../../library/ast.rst:1915
 msgid ""
 "``defaults`` is a list of default values for arguments that can be passed "
 "positionally. If there are fewer defaults, they correspond to the last n "
 "arguments."
 msgstr "``defaults`` 是一个由可按位置传入的参数的默认值组成的列表。 如果默认值个数少于参数个数，则它们将对应最后 n 个参数。"
 
-#: ../../library/ast.rst:1920
+#: ../../library/ast.rst:1922
 msgid ""
 "A single argument in a list. ``arg`` is a raw string of the argument name; "
 "``annotation`` is its annotation, such as a :class:`Name` node."
 msgstr ""
 "列表中的一个单独参数。 ``arg`` 为参数名称原始字符串；``annotation`` 为其标，如一个 :class:`Name` 节点。"
 
-#: ../../library/ast.rst:1925
+#: ../../library/ast.rst:1927
 msgid ""
 "``type_comment`` is an optional string with the type annotation as a comment"
 msgstr "``type_comment`` 是一个可选的将注释用作类型标注的字符串。"
 
-#: ../../library/ast.rst:1967
+#: ../../library/ast.rst:1929
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... @decorator1\n"
+"... @decorator2\n"
+"... def f(a: 'annotation', b=1, c=2, *d, e, f=3, **g) -> 'return annotation':\n"
+"...     pass\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        FunctionDef(\n"
+"            name='f',\n"
+"            args=arguments(\n"
+"                args=[\n"
+"                    arg(\n"
+"                        arg='a',\n"
+"                        annotation=Constant(value='annotation')),\n"
+"                    arg(arg='b'),\n"
+"                    arg(arg='c')],\n"
+"                vararg=arg(arg='d'),\n"
+"                kwonlyargs=[\n"
+"                    arg(arg='e'),\n"
+"                    arg(arg='f')],\n"
+"                kw_defaults=[\n"
+"                    None,\n"
+"                    Constant(value=3)],\n"
+"                kwarg=arg(arg='g'),\n"
+"                defaults=[\n"
+"                    Constant(value=1),\n"
+"                    Constant(value=2)]),\n"
+"            body=[\n"
+"                Pass()],\n"
+"            decorator_list=[\n"
+"                Name(id='decorator1', ctx=Load()),\n"
+"                Name(id='decorator2', ctx=Load())],\n"
+"            returns=Constant(value='return annotation'))])"
+msgstr ""
+
+#: ../../library/ast.rst:1969
 msgid "A ``return`` statement."
 msgstr "一条 ``return`` 语句。"
 
-#: ../../library/ast.rst:1981
+#: ../../library/ast.rst:1971
+msgid ""
+">>> print(ast.dump(ast.parse('return 4'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Return(\n"
+"            value=Constant(value=4))])"
+msgstr ""
+
+#: ../../library/ast.rst:1983
 msgid ""
 "A ``yield`` or ``yield from`` expression. Because these are expressions, "
 "they must be wrapped in an :class:`Expr` node if the value sent back is not "
@@ -1165,24 +2490,62 @@ msgstr ""
 "一个 ``yield`` 或 ``yield from`` 表达式。 因为这些属性表达式，所以如果发回的值未被使用则必须将它们包装在 "
 ":class:`Expr` 节点中。"
 
-#: ../../library/ast.rst:2004
+#: ../../library/ast.rst:1986
+msgid ""
+">>> print(ast.dump(ast.parse('yield x'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Expr(\n"
+"            value=Yield(\n"
+"                value=Name(id='x', ctx=Load())))])\n"
+"\n"
+">>> print(ast.dump(ast.parse('yield from x'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Expr(\n"
+"            value=YieldFrom(\n"
+"                value=Name(id='x', ctx=Load())))])"
+msgstr ""
+
+#: ../../library/ast.rst:2006
 msgid ""
 "``global`` and ``nonlocal`` statements. ``names`` is a list of raw strings."
 msgstr "``global`` 和 ``nonlocal`` 语句。 ``names`` 为一个由原始字符串组成的列表。"
 
-#: ../../library/ast.rst:2029
+#: ../../library/ast.rst:2008
+msgid ""
+">>> print(ast.dump(ast.parse('global x,y,z'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Global(\n"
+"            names=[\n"
+"                'x',\n"
+"                'y',\n"
+"                'z'])])\n"
+"\n"
+">>> print(ast.dump(ast.parse('nonlocal x,y,z'), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        Nonlocal(\n"
+"            names=[\n"
+"                'x',\n"
+"                'y',\n"
+"                'z'])])"
+msgstr ""
+
+#: ../../library/ast.rst:2031
 msgid "A class definition."
 msgstr "一个类定义。"
 
-#: ../../library/ast.rst:2031
+#: ../../library/ast.rst:2033
 msgid "``name`` is a raw string for the class name"
 msgstr "``name`` 为类名称的原始字符串。"
 
-#: ../../library/ast.rst:2032
+#: ../../library/ast.rst:2034
 msgid "``bases`` is a list of nodes for explicitly specified base classes."
 msgstr "``bases`` 为一个由显式指明的基类节点组成的列表。"
 
-#: ../../library/ast.rst:2033
+#: ../../library/ast.rst:2035
 msgid ""
 "``keywords`` is a list of :class:`.keyword` nodes, principally for "
 "'metaclass'. Other keywords will be passed to the metaclass, as per "
@@ -1191,34 +2554,78 @@ msgstr ""
 "``keywords`` 是一个 :class:`.keyword` 节点的列表，主要用于‘元类’。 其他关键字将被传给相应的元类，参见 "
 "`PEP-3115 <https://peps.python.org/pep-3115/>`_。"
 
-#: ../../library/ast.rst:2036
+#: ../../library/ast.rst:2038
 msgid ""
 "``body`` is a list of nodes representing the code within the class "
 "definition."
 msgstr "``body`` 是一个由代表类定义内部代码的节点组成的列表。"
 
-#: ../../library/ast.rst:2038
+#: ../../library/ast.rst:2040
 msgid "``decorator_list`` is a list of nodes, as in :class:`FunctionDef`."
 msgstr "``decorator_list`` 是一个节点的列表，与 :class:`FunctionDef` 中的一致。"
 
-#: ../../library/ast.rst:2070
+#: ../../library/ast.rst:2043
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... @decorator1\n"
+"... @decorator2\n"
+"... class Foo(base1, base2, metaclass=meta):\n"
+"...     pass\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        ClassDef(\n"
+"            name='Foo',\n"
+"            bases=[\n"
+"                Name(id='base1', ctx=Load()),\n"
+"                Name(id='base2', ctx=Load())],\n"
+"            keywords=[\n"
+"                keyword(\n"
+"                    arg='metaclass',\n"
+"                    value=Name(id='meta', ctx=Load()))],\n"
+"            body=[\n"
+"                Pass()],\n"
+"            decorator_list=[\n"
+"                Name(id='decorator1', ctx=Load()),\n"
+"                Name(id='decorator2', ctx=Load())])])"
+msgstr ""
+
+#: ../../library/ast.rst:2072
 msgid "Async and await"
 msgstr "async 与 await"
 
-#: ../../library/ast.rst:2074
+#: ../../library/ast.rst:2076
 msgid ""
 "An ``async def`` function definition. Has the same fields as "
 ":class:`FunctionDef`."
 msgstr "一个 ``async def`` 函数定义。 具有与 :class:`FunctionDef` 相同的字段。"
 
-#: ../../library/ast.rst:2083
+#: ../../library/ast.rst:2085
 msgid ""
 "An ``await`` expression. ``value`` is what it waits for. Only valid in the "
 "body of an :class:`AsyncFunctionDef`."
 msgstr ""
 "一个 ``await`` 表达式。 ``value`` 是它所等待的值。 仅在 :class:`AsyncFunctionDef` 的函数体内可用。"
 
-#: ../../library/ast.rst:2107
+#: ../../library/ast.rst:2088
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... async def f():\n"
+"...     await other_func()\n"
+"... \"\"\"), indent=4))\n"
+"Module(\n"
+"    body=[\n"
+"        AsyncFunctionDef(\n"
+"            name='f',\n"
+"            args=arguments(),\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Await(\n"
+"                        value=Call(\n"
+"                            func=Name(id='other_func', ctx=Load()))))])])"
+msgstr ""
+
+#: ../../library/ast.rst:2109
 msgid ""
 "``async for`` loops and ``async with`` context managers. They have the same "
 "fields as :class:`For` and :class:`With`, respectively. Only valid in the "
@@ -1227,7 +2634,7 @@ msgstr ""
 "``async for`` 循环和 ``async with`` 上下文管理器。 它们分别具有与 :class:`For` 和 "
 ":class:`With` 相同的字段。 仅在 :class:`AsyncFunctionDef` 的函数体内可用。"
 
-#: ../../library/ast.rst:2112
+#: ../../library/ast.rst:2114
 msgid ""
 "When a string is parsed by :func:`ast.parse`, operator nodes (subclasses of "
 ":class:`ast.operator`, :class:`ast.unaryop`, :class:`ast.cmpop`, "
@@ -1240,17 +2647,17 @@ msgstr ""
 ":class:`ast.expr_context` 的子类) 将均为单例对象。 对其中某一个 (例如 :class:`ast.Add`) "
 "的修改将反映到同一个值所出现的其他位置上。"
 
-#: ../../library/ast.rst:2120
+#: ../../library/ast.rst:2122
 msgid ":mod:`ast` Helpers"
 msgstr ":mod:`ast` 中的辅助函数"
 
-#: ../../library/ast.rst:2122
+#: ../../library/ast.rst:2124
 msgid ""
 "Apart from the node classes, the :mod:`ast` module defines these utility "
 "functions and classes for traversing abstract syntax trees:"
 msgstr "除了节点类， :mod:`ast` 模块里为遍历抽象语法树定义了这些工具函数和类:"
 
-#: ../../library/ast.rst:2127
+#: ../../library/ast.rst:2129
 msgid ""
 "Parse the source into an AST node.  Equivalent to ``compile(source, "
 "filename, mode, flags=FLAGS_VALUE, optimize=optimize)``, where "
@@ -1261,25 +2668,20 @@ msgstr ""
 "flags=FLAGS_VALUE, optimize=optimize)``，其中当 ``optimize <= 0`` 时 "
 "``FLAGS_VALUE`` 为 ``ast.PyCF_ONLY_AST`` 否则为 ``ast.PyCF_OPTIMIZED_AST``。"
 
-#: ../../library/ast.rst:2132
+#: ../../library/ast.rst:2134
 msgid ""
 "If ``type_comments=True`` is given, the parser is modified to check and "
 "return type comments as specified by :pep:`484` and :pep:`526`. This is "
 "equivalent to adding :data:`ast.PyCF_TYPE_COMMENTS` to the flags passed to "
-":func:`compile()`.  This will report syntax errors for misplaced type "
+":func:`compile`.  This will report syntax errors for misplaced type "
 "comments.  Without this flag, type comments will be ignored, and the "
 "``type_comment`` field on selected AST nodes will always be ``None``.  In "
 "addition, the locations of ``# type: ignore`` comments will be returned as "
 "the ``type_ignores`` attribute of :class:`Module` (otherwise it is always an"
 " empty list)."
 msgstr ""
-"如果给出 ``type_comments=True``，解析器会被修改以检查并返回 :pep:`484` 和 :pep:`526` 所描述的类型注释。 "
-"这相当于将 :data:`ast.PyCF_TYPE_COMMENTS` 添加到传给 :func:`compile()` 的旗标中。 "
-"这将报告针对未在正确放置类型注释的语法错误。 没有这个旗标，类型注释将被忽略，而指定 AST 节点上的  ``type_comment`` 字段将总是为"
-" ``None``。 此外，``# type: ignore`` 注释的位置将作为 :class:`Module` 的 ``type_ignores``"
-" 属性被返回（在其他情况下则总是为空列表）。"
 
-#: ../../library/ast.rst:2142
+#: ../../library/ast.rst:2144
 msgid ""
 "In addition, if ``mode`` is ``'func_type'``, the input syntax is modified to"
 " correspond to :pep:`484` \"signature type comments\", e.g. ``(str, int) -> "
@@ -1288,7 +2690,7 @@ msgstr ""
 "并且，如果 ``mode`` 为 ``'func_type'``，则输入语法会进行与 :pep:`484` \"签名类型注释\" 对应的修改，例如 "
 "``(str, int) -> List[str]``。"
 
-#: ../../library/ast.rst:2146
+#: ../../library/ast.rst:2148
 msgid ""
 "Setting ``feature_version`` to a tuple ``(major, minor)`` will result in a "
 "\"best-effort\" attempt to parse using that Python version's grammar. For "
@@ -1306,12 +2708,12 @@ msgstr ""
 "``sys.version_info[0:2]``。 “尽力”尝试意味着不能保证解析（或解析成功）与在对应于 ``feature_version`` 的"
 " Python 版本上运行时相同。"
 
-#: ../../library/ast.rst:2156
+#: ../../library/ast.rst:2158
 msgid ""
 "If source contains a null character (``\\0``), :exc:`ValueError` is raised."
 msgstr "如果源包含一个空字符 (``\\0``)，则会引发 :exc:`ValueError`。"
 
-#: ../../library/ast.rst:2159
+#: ../../library/ast.rst:2161
 msgid ""
 "Note that successfully parsing source code into an AST object doesn't "
 "guarantee that the source code provided is valid Python code that can be "
@@ -1324,30 +2726,30 @@ msgstr ""
 ":exc:`SyntaxError` 异常。 例如，对于源代码 ``return 42`` 可以生成一条有效的 return 语句 AST "
 "节点，但它不能被单独编译（它必须位于一个函数节点之内）。"
 
-#: ../../library/ast.rst:2166
+#: ../../library/ast.rst:2168
 msgid ""
 "In particular, :func:`ast.parse` won't do any scoping checks, which the "
 "compilation step does."
 msgstr "特别地，:func:`ast.parse` 不会执行任何作用域检查，这是由编译步骤来做的。"
 
-#: ../../library/ast.rst:2170
+#: ../../library/ast.rst:2172
 msgid ""
 "It is possible to crash the Python interpreter with a sufficiently "
 "large/complex string due to stack depth limitations in Python's AST "
 "compiler."
 msgstr "足够复杂或是巨大的字符串可能导致Python解释器的崩溃，因为Python的AST编译器是有栈深限制的。"
 
-#: ../../library/ast.rst:2174
+#: ../../library/ast.rst:2176
 msgid "Added ``type_comments``, ``mode='func_type'`` and ``feature_version``."
 msgstr "增加了 ``type_comments``, ``mode='func_type'`` 和 ``feature_version``。"
 
-#: ../../library/ast.rst:2177
+#: ../../library/ast.rst:2179
 msgid ""
 "The minimum supported version for ``feature_version`` is now ``(3, 7)``. The"
 " ``optimize`` argument was added."
 msgstr "现在最低的支持 ``feature_version`` 的版本为 ``(3, 7)``。 增加了 ``optimize`` 参数。"
 
-#: ../../library/ast.rst:2184
+#: ../../library/ast.rst:2186
 msgid ""
 "Unparse an :class:`ast.AST` object and generate a string with code that "
 "would produce an equivalent :class:`ast.AST` object if parsed back with "
@@ -1356,7 +2758,7 @@ msgstr ""
 "反向解析一个 :class:`ast.AST` 对象并生成一个包含当再次使用 :func:`ast.parse` 解析时将产生同样的 "
 ":class:`ast.AST` 对象的代码的字符串。"
 
-#: ../../library/ast.rst:2189
+#: ../../library/ast.rst:2191
 msgid ""
 "The produced code string will not necessarily be equal to the original code "
 "that generated the :class:`ast.AST` object (without any compiler "
@@ -1364,13 +2766,13 @@ msgid ""
 msgstr ""
 "所产生的代码字符串将不一定与生成 :class:`ast.AST` 对象的原始代码完全一致（不带任何编译器优化，例如常量元组/冻结集合等）。"
 
-#: ../../library/ast.rst:2194
+#: ../../library/ast.rst:2196
 msgid ""
 "Trying to unparse a highly complex expression would result with "
 ":exc:`RecursionError`."
 msgstr "尝试反向解析一个高度复杂的表达式可能会导致 :exc:`RecursionError`。"
 
-#: ../../library/ast.rst:2202
+#: ../../library/ast.rst:2204
 msgid ""
 "Evaluate an expression node or a string containing only a Python literal or "
 "container display.  The string or node provided may only consist of the "
@@ -1380,7 +2782,7 @@ msgstr ""
 "对表达式节点或仅包含 Python 字面值或容器表示形式的字符串进行求值。 所提供的字符串或节点可能只包含下列 Python "
 "字面值结构：字符串、字节串、数字、元组、字典、集合、布尔值、``None`` 和 ``Ellipsis``。"
 
-#: ../../library/ast.rst:2207
+#: ../../library/ast.rst:2209
 msgid ""
 "This can be used for evaluating strings containing Python values without the"
 " need to parse the values oneself.  It is not capable of evaluating "
@@ -1389,7 +2791,7 @@ msgid ""
 msgstr ""
 "这可被用于对包含 Python 值的字符串进行求值而不必解析这些值本身。 它不能对任意的复杂表达式进行求值，例如涉及运算符或索引操作的表达式。"
 
-#: ../../library/ast.rst:2212
+#: ../../library/ast.rst:2214
 msgid ""
 "This function had been documented as \"safe\" in the past without defining "
 "what that meant. That was misleading. This is specifically designed not to "
@@ -1404,13 +2806,13 @@ msgstr ""
 " 不同。 它没有命名空间、没有名称查找或执行外部调用的能力。 但是它并不能完全避免攻击：一个相对较小的输入有可能导致内存耗尽或 C "
 "栈耗尽，使得进程崩溃。 还可能在某些输入上出现过度消耗 CPU 的拒绝服务问题。 因此不建议在未被信任的数据上调用它。"
 
-#: ../../library/ast.rst:2222
+#: ../../library/ast.rst:2224
 msgid ""
 "It is possible to crash the Python interpreter due to stack depth "
 "limitations in Python's AST compiler."
 msgstr "有可能由于 Python 的 AST 编译器中的栈深度限制而导致 Python 解释器的崩溃。"
 
-#: ../../library/ast.rst:2225
+#: ../../library/ast.rst:2227
 msgid ""
 "It can raise :exc:`ValueError`, :exc:`TypeError`, :exc:`SyntaxError`, "
 ":exc:`MemoryError` and :exc:`RecursionError` depending on the malformed "
@@ -1419,19 +2821,19 @@ msgstr ""
 "根据输入错误的具体形式它可能引发 :exc:`ValueError`, :exc:`TypeError`, :exc:`SyntaxError`, "
 ":exc:`MemoryError` 以及 :exc:`RecursionError`。"
 
-#: ../../library/ast.rst:2229
+#: ../../library/ast.rst:2231
 msgid "Now allows bytes and set literals."
 msgstr "目前支持字节和集合。"
 
-#: ../../library/ast.rst:2232
+#: ../../library/ast.rst:2234
 msgid "Now supports creating empty sets with ``'set()'``."
 msgstr "现在支持通过 ``'set()'`` 创建空集合。"
 
-#: ../../library/ast.rst:2235
+#: ../../library/ast.rst:2237
 msgid "For string inputs, leading spaces and tabs are now stripped."
 msgstr "对于字符串输入，打头的空格和制表符现在会被去除。"
 
-#: ../../library/ast.rst:2241
+#: ../../library/ast.rst:2243
 msgid ""
 "Return the docstring of the given *node* (which must be a "
 ":class:`FunctionDef`, :class:`AsyncFunctionDef`, :class:`ClassDef`, or "
@@ -1442,11 +2844,11 @@ msgstr ""
 ":class:`ClassDef` 或 :class:`Module` 节点) 的文档字符串，或者如果没有文档字符串则返回 ``None``。 如果 "
 "*clean* 为真值，则通过 :func:`inspect.cleandoc` 清除文档字符串的缩进。"
 
-#: ../../library/ast.rst:2247
+#: ../../library/ast.rst:2249
 msgid ":class:`AsyncFunctionDef` is now supported."
 msgstr "目前支持 :class:`AsyncFunctionDef`"
 
-#: ../../library/ast.rst:2253
+#: ../../library/ast.rst:2255
 msgid ""
 "Get source code segment of the *source* that generated *node*. If some "
 "location information (:attr:`~ast.AST.lineno`, :attr:`~ast.AST.end_lineno`, "
@@ -1457,13 +2859,13 @@ msgstr ""
 ":attr:`~ast.AST.end_lineno`, :attr:`~ast.AST.col_offset` 或 "
 ":attr:`~ast.AST.end_col_offset`)，则返回 ``None``。"
 
-#: ../../library/ast.rst:2257
+#: ../../library/ast.rst:2259
 msgid ""
 "If *padded* is ``True``, the first line of a multi-line statement will be "
 "padded with spaces to match its original position."
 msgstr "如果 *padded* 为 ``True``，则多行语句的第一行将以与其初始位置相匹配的空格填充。"
 
-#: ../../library/ast.rst:2265
+#: ../../library/ast.rst:2267
 msgid ""
 "When you compile a node tree with :func:`compile`, the compiler expects "
 ":attr:`~ast.AST.lineno` and :attr:`~ast.AST.col_offset` attributes for every"
@@ -1477,14 +2879,14 @@ msgstr ""
 "对于已生成的节点来说这是相当繁琐的，因此这个辅助工具会递归地为尚未设置这些属性的节点添加它们，具体做法是将其设为父节点的对应值。 它将从 *node* "
 "开始递归地执行。"
 
-#: ../../library/ast.rst:2274
+#: ../../library/ast.rst:2276
 msgid ""
 "Increment the line number and end line number of each node in the tree "
 "starting at *node* by *n*. This is useful to \"move code\" to a different "
 "location in a file."
 msgstr "从 *node* 开始按 *n* 递增节点树中每个节点的行号和结束行号。 这在“移动代码”到文件中的不同位置时很有用处。"
 
-#: ../../library/ast.rst:2281
+#: ../../library/ast.rst:2283
 msgid ""
 "Copy source location (:attr:`~ast.AST.lineno`, :attr:`~ast.AST.col_offset`, "
 ":attr:`~ast.AST.end_lineno`, and :attr:`~ast.AST.end_col_offset`) from "
@@ -1494,20 +2896,20 @@ msgstr ""
 ":attr:`~ast.AST.end_lineno` 和 :attr:`~ast.AST.end_col_offset`) 从 *old_node* "
 "拷贝到 *new_node*，并返回 *new_node*。"
 
-#: ../../library/ast.rst:2288
+#: ../../library/ast.rst:2290
 msgid ""
 "Yield a tuple of ``(fieldname, value)`` for each field in ``node._fields`` "
 "that is present on *node*."
 msgstr ""
 "针对于 *node* 上在 ``node._fields`` 中出现的每个字段产生一个 ``(fieldname, value)`` 元组。"
 
-#: ../../library/ast.rst:2294
+#: ../../library/ast.rst:2296
 msgid ""
 "Yield all direct child nodes of *node*, that is, all fields that are nodes "
 "and all items of fields that are lists of nodes."
 msgstr "产生 *node* 所有的直接子节点，也就是说，所有为节点的字段所有为节点列表的字段条目。"
 
-#: ../../library/ast.rst:2300
+#: ../../library/ast.rst:2302
 msgid ""
 "Recursively yield all descendant nodes in the tree starting at *node* "
 "(including *node* itself), in no specified order.  This is useful if you "
@@ -1516,7 +2918,7 @@ msgstr ""
 "递归地产生节点树中从 *node* 开始（包括 *node* 本身）的所有下级节点，没有确定的排序方式。 "
 "这在你仅想要原地修改节点而不关心具体上下文时很有用处。"
 
-#: ../../library/ast.rst:2307
+#: ../../library/ast.rst:2309
 msgid ""
 "A node visitor base class that walks the abstract syntax tree and calls a "
 "visitor function for every node found.  This function may return a value "
@@ -1524,13 +2926,13 @@ msgid ""
 msgstr ""
 "一个遍历抽象语法树并针对所找到的每个节点调用访问器函数的节点访问器基类。 该函数可能会返回一个由 :meth:`visit` 方法所提供的值。"
 
-#: ../../library/ast.rst:2311
+#: ../../library/ast.rst:2313
 msgid ""
 "This class is meant to be subclassed, with the subclass adding visitor "
 "methods."
 msgstr "这个类应当被子类化，并由子类来添加访问器方法。"
 
-#: ../../library/ast.rst:2316
+#: ../../library/ast.rst:2318
 msgid ""
 "Visit a node.  The default implementation calls the method called "
 ":samp:`self.visit_{classname}` where *classname* is the name of the node "
@@ -1539,22 +2941,22 @@ msgstr ""
 "访问一个节点。 默认实现会调用名为 :samp:`self.visit_{classname}` 的方法其中 *classname* "
 "为节点类的名称，或者如果该方法不存在则为 :meth:`generic_visit`。"
 
-#: ../../library/ast.rst:2322
+#: ../../library/ast.rst:2324
 msgid "This visitor calls :meth:`visit` on all children of the node."
 msgstr "该访问器会在节点的所有子节点上调用 :meth:`visit`。"
 
-#: ../../library/ast.rst:2324
+#: ../../library/ast.rst:2326
 msgid ""
 "Note that child nodes of nodes that have a custom visitor method won't be "
 "visited unless the visitor calls :meth:`generic_visit` or visits them "
 "itself."
 msgstr "请注意所有包含自定义访问器方法的节点的子节点将不会被访问除非访问器调用了 :meth:`generic_visit` 或是自行访问它们。"
 
-#: ../../library/ast.rst:2330
+#: ../../library/ast.rst:2332
 msgid "Handles all constant nodes."
 msgstr "处理所有常量节点。"
 
-#: ../../library/ast.rst:2332
+#: ../../library/ast.rst:2334
 msgid ""
 "Don't use the :class:`NodeVisitor` if you want to apply changes to nodes "
 "during traversal.  For this a special visitor exists "
@@ -1563,7 +2965,7 @@ msgstr ""
 "如果你想在遍历期间应用对节点的修改则请不要使用 :class:`NodeVisitor`。 对此目的可使用一个允许修改的特殊访问器 "
 "(:class:`NodeTransformer`)。"
 
-#: ../../library/ast.rst:2338
+#: ../../library/ast.rst:2340
 msgid ""
 "Methods :meth:`!visit_Num`, :meth:`!visit_Str`, :meth:`!visit_Bytes`, "
 ":meth:`!visit_NameConstant` and :meth:`!visit_Ellipsis` are deprecated now "
@@ -1574,13 +2976,13 @@ msgstr ""
 ":meth:`!visit_NameConstant` 和 :meth:`!visit_Ellipsis` 等方法现在已被弃用并且在未来的 Python"
 " 版本中将不再被调用。 请添加 :meth:`visit_Constant` 方法来处理所有常量节点。"
 
-#: ../../library/ast.rst:2346
+#: ../../library/ast.rst:2348
 msgid ""
 "A :class:`NodeVisitor` subclass that walks the abstract syntax tree and "
 "allows modification of nodes."
 msgstr "子类 :class:`NodeVisitor`  用于遍历抽象语法树，并允许修改节点。"
 
-#: ../../library/ast.rst:2349
+#: ../../library/ast.rst:2351
 msgid ""
 "The :class:`NodeTransformer` will walk the AST and use the return value of "
 "the visitor methods to replace or remove the old node.  If the return value "
@@ -1591,13 +2993,25 @@ msgstr ""
 ":class:`NodeTransformer` 将遍历抽象语法树并使用visitor方法的返回值去替换或移除旧节点。如果visitor方法的返回值为 "
 "``None`` , 则该节点将从其位置移除，否则将替换为返回值。当返回值是原始节点时，无需替换。"
 
-#: ../../library/ast.rst:2355
+#: ../../library/ast.rst:2357
 msgid ""
 "Here is an example transformer that rewrites all occurrences of name lookups"
 " (``foo``) to ``data['foo']``::"
 msgstr "如下是一个转换器示例，它将所有出现的名称 (``foo``) 重写为 ``data['foo']``::"
 
-#: ../../library/ast.rst:2367
+#: ../../library/ast.rst:2360
+msgid ""
+"class RewriteName(NodeTransformer):\n"
+"\n"
+"    def visit_Name(self, node):\n"
+"        return Subscript(\n"
+"            value=Name(id='data', ctx=Load()),\n"
+"            slice=Constant(value=node.id),\n"
+"            ctx=node.ctx\n"
+"        )"
+msgstr ""
+
+#: ../../library/ast.rst:2369
 msgid ""
 "Keep in mind that if the node you're operating on has child nodes you must "
 "either transform the child nodes yourself or call the "
@@ -1606,14 +3020,14 @@ msgstr ""
 "请记住如果你正在操作的节点具有子节点，你必须先自行转换这些子节点或是为该节点调用 "
 ":meth:`~ast.NodeVisitor.generic_visit` 方法。"
 
-#: ../../library/ast.rst:2371
+#: ../../library/ast.rst:2373
 msgid ""
 "For nodes that were part of a collection of statements (that applies to all "
 "statement nodes), the visitor may also return a list of nodes rather than "
 "just a single node."
 msgstr "对于属于语句集合（适用于所有语句节点）的节点，访问者还可以返回节点列表而不仅仅是单个节点。"
 
-#: ../../library/ast.rst:2375
+#: ../../library/ast.rst:2377
 msgid ""
 "If :class:`NodeTransformer` introduces new nodes (that weren't part of "
 "original tree) without giving them location information (such as "
@@ -1624,11 +3038,21 @@ msgstr ""
 ":attr:`~ast.AST.lineno` 等），则应当调用 :func:`fix_missing_locations` "
 "并传入新的子节点树来重新计算位置信息::"
 
-#: ../../library/ast.rst:2383
+#: ../../library/ast.rst:2382
+msgid ""
+"tree = ast.parse('foo', mode='eval')\n"
+"new_tree = fix_missing_locations(RewriteName().visit(tree))"
+msgstr ""
+
+#: ../../library/ast.rst:2385
 msgid "Usually you use the transformer like this::"
 msgstr "通常你可以像这样使用转换器::"
 
-#: ../../library/ast.rst:2390
+#: ../../library/ast.rst:2387
+msgid "node = YourTransformer().visit(node)"
+msgstr ""
+
+#: ../../library/ast.rst:2392
 msgid ""
 "Return a formatted dump of the tree in *node*.  This is mainly useful for "
 "debugging purposes.  If *annotate_fields* is true (by default), the returned"
@@ -1642,7 +3066,7 @@ msgstr ""
 "为真值（默认），返回的字符串将显示字段的名称和值。 如果 *annotate_fields* 为假值，结果字符串将通过省略无歧义的字段名称变得更为紧凑。"
 " 默认情况下不会转储行号和列偏移等属性。 如果需要，可将 *include_attributes* 设为真值。"
 
-#: ../../library/ast.rst:2398
+#: ../../library/ast.rst:2400
 msgid ""
 "If *indent* is a non-negative integer or string, then the tree will be "
 "pretty-printed with that indent level.  An indent level of 0, negative, or "
@@ -1655,50 +3079,78 @@ msgstr ""
 "则将只插入换行符。  ``None`` (默认) 将选择最紧凑的表示形式。 使用一个正整数将让每个级别缩进相应数量的空格。 如果 *indent* "
 "是一个字符串 (如 ``\"\\t\"``)，该字符串会被用于缩进每个级别。"
 
-#: ../../library/ast.rst:2405
+#: ../../library/ast.rst:2407
 msgid ""
 "If *show_empty* is ``False`` (the default), empty lists and fields that are "
 "``None`` will be omitted from the output."
 msgstr "如果 *show_empty* 为 ``False`` (默认值)，则空列表和值为 ``None`` 的字段将在输出中省略。"
 
-#: ../../library/ast.rst:2408
+#: ../../library/ast.rst:2410
 msgid "Added the *indent* option."
 msgstr "添加了 *indent* 选项。"
 
-#: ../../library/ast.rst:2411
+#: ../../library/ast.rst:2413
 msgid "Added the *show_empty* option."
 msgstr "增加了 *show_empty* 选项。"
 
-#: ../../library/ast.rst:2445
+#: ../../library/ast.rst:2416
+msgid ""
+">>> print(ast.dump(ast.parse(\"\"\"\\\n"
+"... async def f():\n"
+"...     await other_func()\n"
+"... \"\"\"), indent=4, show_empty=True))\n"
+"Module(\n"
+"    body=[\n"
+"        AsyncFunctionDef(\n"
+"            name='f',\n"
+"            args=arguments(\n"
+"                posonlyargs=[],\n"
+"                args=[],\n"
+"                kwonlyargs=[],\n"
+"                kw_defaults=[],\n"
+"                defaults=[]),\n"
+"            body=[\n"
+"                Expr(\n"
+"                    value=Await(\n"
+"                        value=Call(\n"
+"                            func=Name(id='other_func', ctx=Load()),\n"
+"                            args=[],\n"
+"                            keywords=[])))],\n"
+"            decorator_list=[],\n"
+"            type_params=[])],\n"
+"    type_ignores=[])"
+msgstr ""
+
+#: ../../library/ast.rst:2447
 msgid "Compiler Flags"
 msgstr "编译器旗标"
 
-#: ../../library/ast.rst:2447
+#: ../../library/ast.rst:2449
 msgid ""
 "The following flags may be passed to :func:`compile` in order to change "
 "effects on the compilation of a program:"
 msgstr "下列旗标可被传给 :func:`compile` 用来改变程序编译的效果:"
 
-#: ../../library/ast.rst:2452
+#: ../../library/ast.rst:2454
 msgid ""
 "Enables support for top-level ``await``, ``async for``, ``async with`` and "
 "async comprehensions."
 msgstr "启用对最高层级 ``await``, ``async for``, ``async with`` 以及异步推导式的支持。"
 
-#: ../../library/ast.rst:2459
+#: ../../library/ast.rst:2461
 msgid ""
 "Generates and returns an abstract syntax tree instead of returning a "
 "compiled code object."
 msgstr "生成并返回一个抽象语法树而不是返回一个已编译的代码对象。"
 
-#: ../../library/ast.rst:2464
+#: ../../library/ast.rst:2466
 msgid ""
 "The returned AST is optimized according to the *optimize* argument in "
 ":func:`compile` or :func:`ast.parse`."
 msgstr ""
 "返回的 AST 已根据 :func:`compile` 或 :func:`ast.parse` 中的 *optimize* 参数进行了优化。"
 
-#: ../../library/ast.rst:2471
+#: ../../library/ast.rst:2473
 msgid ""
 "Enables support for :pep:`484` and :pep:`526` style type comments (``# type:"
 " <type>``, ``# type: ignore <stuff>``)."
@@ -1706,49 +3158,53 @@ msgstr ""
 "启用对 :pep:`484` 和 :pep:`526` 风格的类型注释的支持 (``# type: <type>``, ``# type: ignore"
 " <stuff>``)。"
 
-#: ../../library/ast.rst:2480
+#: ../../library/ast.rst:2482
 msgid "Command-Line Usage"
 msgstr "命令行用法"
 
-#: ../../library/ast.rst:2484
+#: ../../library/ast.rst:2486
 msgid ""
 "The :mod:`ast` module can be executed as a script from the command line. It "
 "is as simple as:"
 msgstr ":mod:`ast` 模块可以在命令行下作为脚本来执行。 具体做法非常简单:"
 
-#: ../../library/ast.rst:2491
+#: ../../library/ast.rst:2489
+msgid "python -m ast [-m <mode>] [-a] [infile]"
+msgstr ""
+
+#: ../../library/ast.rst:2493
 msgid "The following options are accepted:"
 msgstr "可以接受以下选项："
 
-#: ../../library/ast.rst:2497
+#: ../../library/ast.rst:2499
 msgid "Show the help message and exit."
 msgstr "显示帮助信息并退出。"
 
-#: ../../library/ast.rst:2502
+#: ../../library/ast.rst:2504
 msgid ""
 "Specify what kind of code must be compiled, like the *mode* argument in "
 ":func:`parse`."
 msgstr "指明哪种代码必须被编译，相当于 :func:`parse` 中的 *mode* 参数。"
 
-#: ../../library/ast.rst:2507
+#: ../../library/ast.rst:2509
 msgid "Don't parse type comments."
 msgstr "不要解析类型注释。"
 
-#: ../../library/ast.rst:2511
+#: ../../library/ast.rst:2513
 msgid "Include attributes such as line numbers and column offsets."
 msgstr "包括属性如行号和列偏移。"
 
-#: ../../library/ast.rst:2516
+#: ../../library/ast.rst:2518
 msgid "Indentation of nodes in AST (number of spaces)."
 msgstr "AST 中节点的缩进（空格数）。"
 
-#: ../../library/ast.rst:2518
+#: ../../library/ast.rst:2520
 msgid ""
 "If :file:`infile` is specified its contents are parsed to AST and dumped to "
 "stdout.  Otherwise, the content is read from stdin."
 msgstr "如果指定了 :file:`infile` 则其内容将被解析为 AST 并转储至 stdout。 在其他情况下，将从 stdin 读取内容。"
 
-#: ../../library/ast.rst:2524
+#: ../../library/ast.rst:2526
 msgid ""
 "`Green Tree Snakes <https://greentreesnakes.readthedocs.io/>`_, an external "
 "documentation resource, has good details on working with Python ASTs."
@@ -1756,7 +3212,7 @@ msgstr ""
 "`Green Tree Snakes <https://greentreesnakes.readthedocs.io/>`_，一个外部文档资源，包含处理"
 " Python AST 的完整细节。"
 
-#: ../../library/ast.rst:2527
+#: ../../library/ast.rst:2529
 msgid ""
 "`ASTTokens <https://asttokens.readthedocs.io/en/latest/user-guide.html>`_ "
 "annotates Python ASTs with the positions of tokens and text in the source "
@@ -1766,7 +3222,7 @@ msgstr ""
 "`ASTTokens <https://asttokens.readthedocs.io/en/latest/user-guide.html>`_ 会为"
 " Python AST 标注生成它们的源代码中的形符和文本的位置。 这对执行源代码转换的工具很有帮助。"
 
-#: ../../library/ast.rst:2532
+#: ../../library/ast.rst:2534
 msgid ""
 "`leoAst.py <https://leo-editor.github.io/leo-editor/appendices.html#leoast-"
 "py>`_ unifies the token-based and parse-tree-based views of python programs "
@@ -1775,7 +3231,7 @@ msgstr ""
 "`leoAst.py <https://leo-editor.github.io/leo-editor/appendices.html#leoast-"
 "py>`_ 通过在形符和 ast 节点之间插入双向链接统一了 python 程序基于形符的和基于解析树的视图。"
 
-#: ../../library/ast.rst:2537
+#: ../../library/ast.rst:2539
 msgid ""
 "`LibCST <https://libcst.readthedocs.io/>`_ parses code as a Concrete Syntax "
 "Tree that looks like an ast tree and keeps all formatting details. It's "
@@ -1785,7 +3241,7 @@ msgstr ""
 "`LibCST <https://libcst.readthedocs.io/>`_ 将代码解析为一个实体语法树（Concrete Syntax "
 "Tree），它看起来像是 ast 树而又保留了所有格式化细节。 它对构建自动化重构（codemod）应用和代码质量检查工具很有用处。"
 
-#: ../../library/ast.rst:2542
+#: ../../library/ast.rst:2544
 msgid ""
 "`Parso <https://parso.readthedocs.io>`_ is a Python parser that supports "
 "error recovery and round-trip parsing for different Python versions (in "

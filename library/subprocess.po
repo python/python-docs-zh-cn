@@ -11,7 +11,7 @@
 # Zombie110year <zombie110year@gmail.com>, 2021
 # nick <2330458484@qq.com>, 2021
 # jaystone776 <1732865113@qq.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:15+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:14+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -44,6 +44,12 @@ msgid ""
 "intends to replace several older modules and functions::"
 msgstr ""
 ":mod:`subprocess` 模块允许你生成新的进程，连接它们的输入、输出、错误管道，并且获取它们的返回码。此模块打算代替一些老旧的模块与功能："
+
+#: ../../library/subprocess.rst:18
+msgid ""
+"os.system\n"
+"os.spawn*"
+msgstr ""
 
 #: ../../library/subprocess.rst:21
 msgid ""
@@ -111,7 +117,7 @@ msgid ""
 ":data:`~subprocess.PIPE` and *stderr* to :data:`~subprocess.STDOUT`, instead"
 " of using *capture_output*."
 msgstr ""
-"如果 *capture_output* 为真值，则 stdout 和 stderr 将被捕获。 当被五个堂姐夫，内部 :class:`Popen` "
+"如果 *capture_output* 为真值，则 stdout 和 stderr 将被捕获。 当被使用时，内部 :class:`Popen` "
 "对象将自动创建并把 *stdout* 和 *stderr* 均设为 :data:`~subprocess.PIPE`。 *stdout* 和 "
 "*stderr* 参数不可与 *capture_output* 同时提供。 如果你希望捕获并将两个流合并在一起，请将 *stdout* 设为 "
 ":data:`~subprocess.PIPE` 并将 *stderr* 设为 :data:`~subprocess.STDOUT`，而不是使用 "
@@ -182,6 +188,21 @@ msgstr ""
 #: ../../library/subprocess.rst:95
 msgid "Examples::"
 msgstr "示例::"
+
+#: ../../library/subprocess.rst:97
+msgid ""
+">>> subprocess.run([\"ls\", \"-l\"])  # doesn't capture output\n"
+"CompletedProcess(args=['ls', '-l'], returncode=0)\n"
+"\n"
+">>> subprocess.run(\"exit 1\", shell=True, check=True)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"subprocess.CalledProcessError: Command 'exit 1' returned non-zero exit status 1\n"
+"\n"
+">>> subprocess.run([\"ls\", \"-l\", \"/dev/null\"], capture_output=True)\n"
+"CompletedProcess(args=['ls', '-l', '/dev/null'], returncode=0,\n"
+"stdout=b'crw-rw-rw- 1 root root 1, 3 Jan 23 16:23 /dev/null\\n', stderr=b'')"
+msgstr ""
 
 #: ../../library/subprocess.rst:113
 msgid "Added *encoding* and *errors* parameters"
@@ -568,6 +589,10 @@ msgid ""
 "is::"
 msgstr "向外部函数传入序列形式参数的一个例子如下::"
 
+#: ../../library/subprocess.rst:403
+msgid "Popen([\"/usr/bin/git\", \"commit\", \"-m\", \"Fixes a bug.\"])"
+msgstr ""
+
 #: ../../library/subprocess.rst:405
 msgid ""
 "On POSIX, if *args* is a string, the string is interpreted as the name or "
@@ -584,6 +609,17 @@ msgid ""
 msgstr ""
 "将 shell 命令拆分为参数序列的方式可能并不很直观，特别是在复杂的情况下。 :meth:`shlex.split` 可以演示如何确定 *args* "
 "适当的拆分形式::"
+
+#: ../../library/subprocess.rst:415
+msgid ""
+">>> import shlex, subprocess\n"
+">>> command_line = input()\n"
+"/bin/vikings -input eggs.txt -output \"spam spam.txt\" -cmd \"echo '$MONEY'\"\n"
+">>> args = shlex.split(command_line)\n"
+">>> print(args)\n"
+"['/bin/vikings', '-input', 'eggs.txt', '-output', 'spam spam.txt', '-cmd', \"echo '$MONEY'\"]\n"
+">>> p = subprocess.Popen(args) # Success!"
+msgstr ""
 
 #: ../../library/subprocess.rst:423
 msgid ""
@@ -645,6 +681,10 @@ msgstr ""
 "是一个字符串，此字符串指定将通过 shell "
 "执行的命令。这意味着字符串的格式必须和在命令提示符中所输入的完全相同。这包括，例如，引号和反斜杠转义包含空格的文件名。如果 *args* "
 "是一个序列，第一项指定了命令，另外的项目将作为传递给 shell （而非命令） 的参数对待。也就是说， :class:`Popen` 等同于::"
+
+#: ../../library/subprocess.rst:455
+msgid "Popen(['/bin/sh', '-c', args[0], args[1], ...])"
+msgstr ""
 
 #: ../../library/subprocess.rst:457
 msgid ""
@@ -894,37 +934,28 @@ msgstr "添加了 *process_group*。"
 msgid ""
 "If *group* is not ``None``, the setregid() system call will be made in the "
 "child process prior to the execution of the subprocess. If the provided "
-"value is a string, it will be looked up via :func:`grp.getgrnam()` and the "
+"value is a string, it will be looked up via :func:`grp.getgrnam` and the "
 "value in ``gr_gid`` will be used. If the value is an integer, it will be "
 "passed verbatim. (POSIX only)"
 msgstr ""
-"如果 *group* 不为 ``None``，则 setregid() 系统调用将于子进程执行之前在下级进程中进行。 如果所提供的值为一个字符串，将通过"
-" :func:`grp.getgrnam()` 来查找它，并将使用 ``gr_gid`` 中的值。 如果该值为一个整数，它将被原样传递。 （POSIX "
-"专属）"
 
 #: ../../library/subprocess.rst:618
 msgid ""
 "If *extra_groups* is not ``None``, the setgroups() system call will be made "
 "in the child process prior to the execution of the subprocess. Strings "
-"provided in *extra_groups* will be looked up via :func:`grp.getgrnam()` and "
+"provided in *extra_groups* will be looked up via :func:`grp.getgrnam` and "
 "the values in ``gr_gid`` will be used. Integer values will be passed "
 "verbatim. (POSIX only)"
 msgstr ""
-"如果 *extra_groups* 不为 ``None``，则 setgroups() 系统调用将于子进程之前在下级进程中进行。 在 "
-"*extra_groups* 中提供的字符串将通过 :func:`grp.getgrnam()` 来查找，并将使用 ``gr_gid`` 中的值。 "
-"整数值将被原样传递。 （POSIX 专属）"
 
 #: ../../library/subprocess.rst:627
 msgid ""
 "If *user* is not ``None``, the setreuid() system call will be made in the "
 "child process prior to the execution of the subprocess. If the provided "
-"value is a string, it will be looked up via :func:`pwd.getpwnam()` and the "
+"value is a string, it will be looked up via :func:`pwd.getpwnam` and the "
 "value in ``pw_uid`` will be used. If the value is an integer, it will be "
 "passed verbatim. (POSIX only)"
 msgstr ""
-"如果 *user* 不为 ``None``，则 setreuid() 系统调用将于子进程执行之前在下级进程中进行。 如果所提供的值为一个字符串，将通过 "
-":func:`pwd.getpwnam()` 来查找它，并将使用 ``pw_uid`` 中的值。 如果该值为一个整数，它将被原样传递。 （POSIX "
-"专属）"
 
 #: ../../library/subprocess.rst:636
 msgid ""
@@ -1056,15 +1087,13 @@ msgid ""
 " waited for. ::"
 msgstr "Popen 对象支持通过 :keyword:`with` 语句作为上下文管理器，在退出时关闭文件描述符并等待进程::"
 
-#: ../../library/subprocess.rst:713
+#: ../../library/subprocess.rst:698
 msgid ""
-"Raises an :ref:`auditing event <auditing>` ``subprocess.Popen`` with "
-"arguments ``executable``, ``args``, ``cwd``, ``env``."
+"with Popen([\"ifconfig\"], stdout=PIPE) as proc:\n"
+"    log.write(proc.stdout.read())"
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``subprocess.Popen``，附带参数 ``executable``, "
-"``args``, ``cwd``, ``env``。"
 
-#: ../../library/subprocess.rst:703
+#: ../../library/subprocess.rst:701 ../../library/subprocess.rst:703
 msgid ""
 "Popen and the other functions in this module that use it raise an "
 ":ref:`auditing event <auditing>` ``subprocess.Popen`` with arguments "
@@ -1290,6 +1319,16 @@ msgid ""
 "and finish communication::"
 msgstr "如果超时到期，子进程不会被杀死，所以为了正确清理一个行为良好的应用程序应该杀死子进程并完成通讯。"
 
+#: ../../library/subprocess.rst:840
+msgid ""
+"proc = subprocess.Popen(...)\n"
+"try:\n"
+"    outs, errs = proc.communicate(timeout=15)\n"
+"except TimeoutExpired:\n"
+"    proc.kill()\n"
+"    outs, errs = proc.communicate()"
+msgstr ""
+
 #: ../../library/subprocess.rst:849
 msgid ""
 "The data read is buffered in memory, so do not use this method if the data "
@@ -1449,6 +1488,12 @@ msgid ""
 "A bit field that determines whether certain :class:`STARTUPINFO` attributes "
 "are used when the process creates a window. ::"
 msgstr "一个位字段，用于确定进程在创建窗口时是否使用某些 :class:`STARTUPINFO` 属性。"
+
+#: ../../library/subprocess.rst:971
+msgid ""
+"si = subprocess.STARTUPINFO()\n"
+"si.dwFlags = subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW"
+msgstr ""
 
 #: ../../library/subprocess.rst:976
 msgid ""
@@ -1718,6 +1763,10 @@ msgid ""
 "Code needing to capture stdout or stderr should use :func:`run` instead::"
 msgstr "需要捕获 stdout 或 stderr 的代码应当改用 :func:`run`::"
 
+#: ../../library/subprocess.rst:1193
+msgid "run(...).returncode"
+msgstr ""
+
 #: ../../library/subprocess.rst:1195 ../../library/subprocess.rst:1235
 msgid "To suppress stdout or stderr, supply a value of :data:`DEVNULL`."
 msgstr "要屏蔽 stdout 或 stderr，可提供 :data:`DEVNULL` 这个值。"
@@ -1753,6 +1802,10 @@ msgstr ""
 ":exc:`CalledProcessError` 对象将在 :attr:`~CalledProcessError.returncode` "
 "属性中保存返回码。 如果 :func:`check_call` 无法开始进程则它将传播已被引发的异常。"
 
+#: ../../library/subprocess.rst:1233
+msgid "run(..., check=True)"
+msgstr ""
+
 #: ../../library/subprocess.rst:1266
 msgid "Run command with arguments and return its output."
 msgstr "附带参数运行命令并返回其输出。"
@@ -1771,6 +1824,10 @@ msgstr ""
 #: ../../library/subprocess.rst:1273
 msgid "This is equivalent to::"
 msgstr "这相当于："
+
+#: ../../library/subprocess.rst:1275
+msgid "run(..., check=True, stdout=PIPE).stdout"
+msgstr ""
 
 #: ../../library/subprocess.rst:1277
 msgid ""
@@ -1807,6 +1864,15 @@ msgid ""
 "To also capture standard error in the result, use "
 "``stderr=subprocess.STDOUT``::"
 msgstr "要在结果中同时捕获标准错误，请使用 ``stderr=subprocess.STDOUT``::"
+
+#: ../../library/subprocess.rst:1295
+msgid ""
+">>> subprocess.check_output(\n"
+"...     \"ls non_existent_file; exit 0\",\n"
+"...     stderr=subprocess.STDOUT,\n"
+"...     shell=True)\n"
+"'ls: non_existent_file: No such file or directory\\n'"
+msgstr ""
 
 #: ../../library/subprocess.rst:1306
 msgid "Support for the *input* keyword argument was added."
@@ -1854,14 +1920,34 @@ msgstr "在下列例子中，我们假定相关的函数都已从 :mod:`subproce
 msgid "Replacing :program:`/bin/sh` shell command substitution"
 msgstr "替代 :program:`/bin/sh` shell 命令替换"
 
+#: ../../library/subprocess.rst:1349
+msgid "output=$(mycmd myarg)"
+msgstr ""
+
 #: ../../library/subprocess.rst:1353 ../../library/subprocess.rst:1364
 #: ../../library/subprocess.rst:1381
 msgid "becomes::"
 msgstr "改为::"
 
+#: ../../library/subprocess.rst:1355
+msgid "output = check_output([\"mycmd\", \"myarg\"])"
+msgstr ""
+
 #: ../../library/subprocess.rst:1358
 msgid "Replacing shell pipeline"
 msgstr "替代 shell 管道"
+
+#: ../../library/subprocess.rst:1360 ../../library/subprocess.rst:1377
+msgid "output=$(dmesg | grep hda)"
+msgstr ""
+
+#: ../../library/subprocess.rst:1366
+msgid ""
+"p1 = Popen([\"dmesg\"], stdout=PIPE)\n"
+"p2 = Popen([\"grep\", \"hda\"], stdin=p1.stdout, stdout=PIPE)\n"
+"p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.\n"
+"output = p2.communicate()[0]"
+msgstr ""
 
 #: ../../library/subprocess.rst:1371
 msgid ""
@@ -1876,9 +1962,20 @@ msgid ""
 " be used directly:"
 msgstr "另外，对于受信任的输入，shell 本身的管道支持仍然可被直接使用:"
 
+#: ../../library/subprocess.rst:1383
+msgid "output = check_output(\"dmesg | grep hda\", shell=True)"
+msgstr ""
+
 #: ../../library/subprocess.rst:1387
 msgid "Replacing :func:`os.system`"
 msgstr "替代 :func:`os.system`"
+
+#: ../../library/subprocess.rst:1391
+msgid ""
+"sts = os.system(\"mycmd\" + \" myarg\")\n"
+"# becomes\n"
+"retcode = call(\"mycmd\" + \" myarg\", shell=True)"
+msgstr ""
 
 #: ../../library/subprocess.rst:1395
 msgid "Notes:"
@@ -1907,6 +2004,18 @@ msgstr ""
 msgid "A more realistic example would look like this::"
 msgstr "一个更现实的例子如下所示::"
 
+#: ../../library/subprocess.rst:1407
+msgid ""
+"try:\n"
+"    retcode = call(\"mycmd\" + \" myarg\", shell=True)\n"
+"    if retcode < 0:\n"
+"        print(\"Child was terminated by signal\", -retcode, file=sys.stderr)\n"
+"    else:\n"
+"        print(\"Child returned\", retcode, file=sys.stderr)\n"
+"except OSError as e:\n"
+"    print(\"Execution failed:\", e, file=sys.stderr)"
+msgstr ""
+
 #: ../../library/subprocess.rst:1418
 msgid "Replacing the :func:`os.spawn <os.spawnl>` family"
 msgstr "替代 :func:`os.spawn <os.spawnl>` 函数族"
@@ -1915,25 +2024,99 @@ msgstr "替代 :func:`os.spawn <os.spawnl>` 函数族"
 msgid "P_NOWAIT example::"
 msgstr "P_NOWAIT 示例::"
 
+#: ../../library/subprocess.rst:1422
+msgid ""
+"pid = os.spawnlp(os.P_NOWAIT, \"/bin/mycmd\", \"mycmd\", \"myarg\")\n"
+"==>\n"
+"pid = Popen([\"/bin/mycmd\", \"myarg\"]).pid"
+msgstr ""
+
 #: ../../library/subprocess.rst:1426
 msgid "P_WAIT example::"
 msgstr "P_WAIT 示例::"
+
+#: ../../library/subprocess.rst:1428
+msgid ""
+"retcode = os.spawnlp(os.P_WAIT, \"/bin/mycmd\", \"mycmd\", \"myarg\")\n"
+"==>\n"
+"retcode = call([\"/bin/mycmd\", \"myarg\"])"
+msgstr ""
 
 #: ../../library/subprocess.rst:1432
 msgid "Vector example::"
 msgstr "Vector 示例::"
 
+#: ../../library/subprocess.rst:1434
+msgid ""
+"os.spawnvp(os.P_NOWAIT, path, args)\n"
+"==>\n"
+"Popen([path] + args[1:])"
+msgstr ""
+
 #: ../../library/subprocess.rst:1438
 msgid "Environment example::"
 msgstr "Environment 示例::"
+
+#: ../../library/subprocess.rst:1440
+msgid ""
+"os.spawnlpe(os.P_NOWAIT, \"/bin/mycmd\", \"mycmd\", \"myarg\", env)\n"
+"==>\n"
+"Popen([\"/bin/mycmd\", \"myarg\"], env={\"PATH\": \"/usr/bin\"})"
+msgstr ""
 
 #: ../../library/subprocess.rst:1447
 msgid "Replacing :func:`os.popen`, :func:`os.popen2`, :func:`os.popen3`"
 msgstr "替代 :func:`os.popen`, :func:`os.popen2`, :func:`os.popen3`"
 
+#: ../../library/subprocess.rst:1451
+msgid ""
+"(child_stdin, child_stdout) = os.popen2(cmd, mode, bufsize)\n"
+"==>\n"
+"p = Popen(cmd, shell=True, bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
+"(child_stdin, child_stdout) = (p.stdin, p.stdout)"
+msgstr ""
+
+#: ../../library/subprocess.rst:1459
+msgid ""
+"(child_stdin,\n"
+" child_stdout,\n"
+" child_stderr) = os.popen3(cmd, mode, bufsize)\n"
+"==>\n"
+"p = Popen(cmd, shell=True, bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)\n"
+"(child_stdin,\n"
+" child_stdout,\n"
+" child_stderr) = (p.stdin, p.stdout, p.stderr)"
+msgstr ""
+
+#: ../../library/subprocess.rst:1471
+msgid ""
+"(child_stdin, child_stdout_and_stderr) = os.popen4(cmd, mode, bufsize)\n"
+"==>\n"
+"p = Popen(cmd, shell=True, bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, stderr=STDOUT, close_fds=True)\n"
+"(child_stdin, child_stdout_and_stderr) = (p.stdin, p.stdout)"
+msgstr ""
+
 #: ../../library/subprocess.rst:1477
 msgid "Return code handling translates as follows::"
 msgstr "返回码以如下方式处理转写::"
+
+#: ../../library/subprocess.rst:1479
+msgid ""
+"pipe = os.popen(cmd, 'w')\n"
+"...\n"
+"rc = pipe.close()\n"
+"if rc is not None and rc >> 8:\n"
+"    print(\"There were some errors\")\n"
+"==>\n"
+"process = Popen(cmd, stdin=PIPE)\n"
+"...\n"
+"process.stdin.close()\n"
+"if process.wait() != 0:\n"
+"    print(\"There were some errors\")"
+msgstr ""
 
 #: ../../library/subprocess.rst:1493
 msgid "Replacing functions from the :mod:`!popen2` module"
@@ -1944,6 +2127,24 @@ msgid ""
 "If the cmd argument to popen2 functions is a string, the command is executed"
 " through /bin/sh.  If it is a list, the command is directly executed."
 msgstr "如果 popen2 函数的 cmd 参数是一个字符串，命令会通过 /bin/sh 来执行。 如果是一个列表，命令会被直接执行。"
+
+#: ../../library/subprocess.rst:1502
+msgid ""
+"(child_stdout, child_stdin) = popen2.popen2(\"somestring\", bufsize, mode)\n"
+"==>\n"
+"p = Popen(\"somestring\", shell=True, bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
+"(child_stdout, child_stdin) = (p.stdout, p.stdin)"
+msgstr ""
+
+#: ../../library/subprocess.rst:1510
+msgid ""
+"(child_stdout, child_stdin) = popen2.popen2([\"mycmd\", \"myarg\"], bufsize, mode)\n"
+"==>\n"
+"p = Popen([\"mycmd\", \"myarg\"], bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
+"(child_stdout, child_stdin) = (p.stdout, p.stdin)"
+msgstr ""
 
 #: ../../library/subprocess.rst:1516
 msgid ""
@@ -2009,6 +2210,18 @@ msgid ""
 "command can be interpreted as the return code of subprocess.  Example::"
 msgstr "末尾的一个换行符会从输出中被去除。 命令的退出码可被解读为子进程的返回码。 例如::"
 
+#: ../../library/subprocess.rst:1551
+msgid ""
+">>> subprocess.getstatusoutput('ls /bin/ls')\n"
+"(0, '/bin/ls')\n"
+">>> subprocess.getstatusoutput('cat /bin/junk')\n"
+"(1, 'cat: /bin/junk: No such file or directory')\n"
+">>> subprocess.getstatusoutput('/bin/junk')\n"
+"(127, 'sh: /bin/junk: not found')\n"
+">>> subprocess.getstatusoutput('/bin/kill $$')\n"
+"(-15, '')"
+msgstr ""
+
 #: ../../library/subprocess.rst:1560 ../../library/subprocess.rst:1582
 msgid ":ref:`Availability <availability>`: Unix, Windows."
 msgstr ":ref:`可用性 <availability>`: Unix, Windows。"
@@ -2035,6 +2248,12 @@ msgid ""
 "Like :func:`getstatusoutput`, except the exit code is ignored and the return"
 " value is a string containing the command's output.  Example::"
 msgstr "类似于 :func:`getstatusoutput`，但退出码会被忽略并且返回值为包含命令输出的字符串。 例如::"
+
+#: ../../library/subprocess.rst:1579
+msgid ""
+">>> subprocess.getoutput('ls /bin/ls')\n"
+"'/bin/ls'"
+msgstr ""
 
 #: ../../library/subprocess.rst:1584
 msgid "Windows support added"
@@ -2119,6 +2338,10 @@ msgstr ""
 "如果你遇到了在预想中非常不正常的需要防止 ``vfork()`` 被 Python 所使用的情况，你可以将 "
 ":const:`subprocess._USE_VFORK` 属性设为假值。"
 
+#: ../../library/subprocess.rst:1646
+msgid "subprocess._USE_VFORK = False  # See CPython issue gh-NNNNNN."
+msgstr ""
+
 #: ../../library/subprocess.rst:1648
 msgid ""
 "Setting this has no impact on use of ``posix_spawn()`` which could use "
@@ -2128,6 +2351,10 @@ msgid ""
 msgstr ""
 "设置该值对于 ``posix_spawn()`` 的使用没有影响，它可以在内部使用在其 libc 实现中的 ``vfork()``。 "
 "如果你需要防止其被使用则可利用类似的 :const:`subprocess._USE_POSIX_SPAWN` 属性。"
+
+#: ../../library/subprocess.rst:1655
+msgid "subprocess._USE_POSIX_SPAWN = False  # See CPython issue gh-NNNNNN."
+msgstr ""
 
 #: ../../library/subprocess.rst:1657
 msgid ""

@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-30 14:16+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -849,6 +849,15 @@ msgid ""
 "excluding the sign and leading zeros::"
 msgstr "返回以二进制表示一个整数所需要的位数，不包括符号位和前面的零::"
 
+#: ../../library/stdtypes.rst:463
+msgid ""
+">>> n = -37\n"
+">>> bin(n)\n"
+"'-0b100101'\n"
+">>> n.bit_length()\n"
+"6"
+msgstr ""
+
 #: ../../library/stdtypes.rst:469
 msgid ""
 "More precisely, if ``x`` is nonzero, then ``x.bit_length()`` is the unique "
@@ -866,11 +875,36 @@ msgstr ""
 msgid "Equivalent to::"
 msgstr "等价于::"
 
+#: ../../library/stdtypes.rst:477
+msgid ""
+"def bit_length(self):\n"
+"    s = bin(self)       # binary representation:  bin(-37) --> '-0b100101'\n"
+"    s = s.lstrip('-0b') # remove leading zeros and minus sign\n"
+"    return len(s)       # len('100101') --> 6"
+msgstr ""
+
 #: ../../library/stdtypes.rst:486
 msgid ""
 "Return the number of ones in the binary representation of the absolute value"
 " of the integer. This is also known as the population count. Example::"
 msgstr "返回整数的绝对值的二进制表示中 1 的个数。也被称为 population count。示例::"
+
+#: ../../library/stdtypes.rst:490
+msgid ""
+">>> n = 19\n"
+">>> bin(n)\n"
+"'0b10011'\n"
+">>> n.bit_count()\n"
+"3\n"
+">>> (-n).bit_count()\n"
+"3"
+msgstr ""
+
+#: ../../library/stdtypes.rst:500
+msgid ""
+"def bit_count(self):\n"
+"    return bin(self).count(\"1\")"
+msgstr ""
 
 #: ../../library/stdtypes.rst:507
 msgid "Return an array of bytes representing an integer."
@@ -912,11 +946,30 @@ msgid ""
 " byte object::"
 msgstr "默认值可用于方便地将整数转为一个单字节对象::"
 
+#: ../../library/stdtypes.rst:537
+msgid ""
+">>> (65).to_bytes()\n"
+"b'A'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:540
 msgid ""
 "However, when using the default arguments, don't try to convert a value "
 "greater than 255 or you'll get an :exc:`OverflowError`."
 msgstr "但是，当使用默认参数时，请不要试图转换大于 255 的值否则会引发 :exc:`OverflowError`。"
+
+#: ../../library/stdtypes.rst:545
+msgid ""
+"def to_bytes(n, length=1, byteorder='big', signed=False):\n"
+"    if byteorder == 'little':\n"
+"        order = range(length)\n"
+"    elif byteorder == 'big':\n"
+"        order = reversed(range(length))\n"
+"    else:\n"
+"        raise ValueError(\"byteorder must be either 'little' or 'big'\")\n"
+"\n"
+"    return bytes((n >> i*8) & 0xff for i in order)"
+msgstr ""
 
 #: ../../library/stdtypes.rst:556
 msgid "Added default argument values for ``length`` and ``byteorder``."
@@ -951,6 +1004,23 @@ msgid ""
 "The *signed* argument indicates whether two's complement is used to "
 "represent the integer."
 msgstr "*signed* 参数指明是否使用二的补码来表示整数。"
+
+#: ../../library/stdtypes.rst:589
+msgid ""
+"def from_bytes(bytes, byteorder='big', signed=False):\n"
+"    if byteorder == 'little':\n"
+"        little_ordered = list(bytes)\n"
+"    elif byteorder == 'big':\n"
+"        little_ordered = list(reversed(bytes))\n"
+"    else:\n"
+"        raise ValueError(\"byteorder must be either 'little' or 'big'\")\n"
+"\n"
+"    n = sum(b << i*8 for i, b in enumerate(little_ordered))\n"
+"    if signed and little_ordered and (little_ordered[-1] & 0x80):\n"
+"        n -= 1 << 8*len(little_ordered)\n"
+"\n"
+"    return n"
+msgstr ""
 
 #: ../../library/stdtypes.rst:604
 msgid "Added default argument value for ``byteorder``."
@@ -996,6 +1066,14 @@ msgid ""
 "``False`` otherwise::"
 msgstr "如果 float 实例可用有限位整数表示则返回 ``True``，否则返回 ``False``::"
 
+#: ../../library/stdtypes.rst:640
+msgid ""
+">>> (-2.0).is_integer()\n"
+"True\n"
+">>> (3.2).is_integer()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:645
 msgid ""
 "Two methods support conversion to and from hexadecimal strings.  Since "
@@ -1031,6 +1109,10 @@ msgstr "请注意 :meth:`float.hex` 是实例方法，而 :meth:`float.fromhex` 
 msgid "A hexadecimal string takes the form::"
 msgstr "十六进制字符串采用的形式为::"
 
+#: ../../library/stdtypes.rst:674
+msgid "[sign] ['0x'] integer ['.' fraction] ['p' exponent]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:676
 msgid ""
 "where the optional ``sign`` may by either ``+`` or ``-``, ``integer`` and "
@@ -1060,11 +1142,23 @@ msgstr ""
 "请注意 exponent 是十进制数而非十六进制数，它给出要与系数相乘的 2 的幂次。 例如，十六进制数字符串 ``0x3.a7p10`` 表示浮点数 "
 "``(3 + 10./16 + 7./16**2) * 2.0**10`` 即 ``3740.0``::"
 
+#: ../../library/stdtypes.rst:695
+msgid ""
+">>> float.fromhex('0x3.a7p10')\n"
+"3740.0"
+msgstr ""
+
 #: ../../library/stdtypes.rst:699
 msgid ""
 "Applying the reverse conversion to ``3740.0`` gives a different hexadecimal "
 "string representing the same number::"
 msgstr "对 ``3740.0`` 应用反向转换会得到另一个代表相同数值的十六进制数字符串::"
+
+#: ../../library/stdtypes.rst:702
+msgid ""
+">>> float.hex(3740.0)\n"
+"'0x1.d380000000000p+11'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:709
 msgid "Hashing of numeric types"
@@ -1163,6 +1257,56 @@ msgid ""
 msgstr ""
 "为了阐明上述规则，这里有一些等价于内置哈希算法的 Python 代码示例，可用于计算有理数、:class:`float` 或 "
 ":class:`complex` 的哈希值::"
+
+#: ../../library/stdtypes.rst:761
+msgid ""
+"import sys, math\n"
+"\n"
+"def hash_fraction(m, n):\n"
+"    \"\"\"Compute the hash of a rational number m / n.\n"
+"\n"
+"    Assumes m and n are integers, with n positive.\n"
+"    Equivalent to hash(fractions.Fraction(m, n)).\n"
+"\n"
+"    \"\"\"\n"
+"    P = sys.hash_info.modulus\n"
+"    # Remove common factors of P.  (Unnecessary if m and n already coprime.)\n"
+"    while m % P == n % P == 0:\n"
+"        m, n = m // P, n // P\n"
+"\n"
+"    if n % P == 0:\n"
+"        hash_value = sys.hash_info.inf\n"
+"    else:\n"
+"        # Fermat's Little Theorem: pow(n, P-1, P) is 1, so\n"
+"        # pow(n, P-2, P) gives the inverse of n modulo P.\n"
+"        hash_value = (abs(m) % P) * pow(n, P - 2, P) % P\n"
+"    if m < 0:\n"
+"        hash_value = -hash_value\n"
+"    if hash_value == -1:\n"
+"        hash_value = -2\n"
+"    return hash_value\n"
+"\n"
+"def hash_float(x):\n"
+"    \"\"\"Compute the hash of a float x.\"\"\"\n"
+"\n"
+"    if math.isnan(x):\n"
+"        return object.__hash__(x)\n"
+"    elif math.isinf(x):\n"
+"        return sys.hash_info.inf if x > 0 else -sys.hash_info.inf\n"
+"    else:\n"
+"        return hash_fraction(*x.as_integer_ratio())\n"
+"\n"
+"def hash_complex(z):\n"
+"    \"\"\"Compute the hash of a complex number z.\"\"\"\n"
+"\n"
+"    hash_value = hash_float(z.real) + sys.hash_info.imag * hash_float(z.imag)\n"
+"    # do a signed reduction modulo 2**sys.hash_info.width\n"
+"    M = 2**(sys.hash_info.width - 1)\n"
+"    hash_value = (hash_value & (M - 1)) - (hash_value & M)\n"
+"    if hash_value == -1:\n"
+"        hash_value = -2\n"
+"    return hash_value"
+msgstr ""
 
 #: ../../library/stdtypes.rst:812
 msgid "Boolean Type - :class:`bool`"
@@ -1510,6 +1654,12 @@ msgstr ""
 "虽然 ``in`` 和 ``not in`` 操作在通常情况下仅被用于简单的成员检测，某些专门化序列 (例如 :class:`str`, "
 ":class:`bytes` 和 :class:`bytearray`) 也使用它们进行子序列检测::"
 
+#: ../../library/stdtypes.rst:1024
+msgid ""
+">>> \"gg\" in \"eggs\"\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1028
 msgid ""
 "Values of *n* less than ``0`` are treated as ``0`` (which yields an empty "
@@ -1520,6 +1670,16 @@ msgstr ""
 "小于 ``0`` 的 *n* 值会被当作 ``0`` 来处理 (生成一个与 *s* 同类型的空序列)。 请注意序列 *s* "
 "中的项并不会被拷贝；它们会被多次引用。 这一点经常会令 Python 编程新手感到困扰；例如::"
 
+#: ../../library/stdtypes.rst:1033
+msgid ""
+">>> lists = [[]] * 3\n"
+">>> lists\n"
+"[[], [], []]\n"
+">>> lists[0].append(3)\n"
+">>> lists\n"
+"[[3], [3], [3]]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1040
 msgid ""
 "What has happened is that ``[[]]`` is a one-element list containing an empty"
@@ -1529,6 +1689,16 @@ msgid ""
 msgstr ""
 "具体的原因在于 ``[[]]`` 是一个包含了一个空列表的单元素列表，所以 ``[[]] * 3`` 结果中的三个元素都是对这一个空列表的引用。 修改 "
 "``lists`` 中的任何一个元素实际上都是对这一个空列表的修改。 你可以用以下方式创建以不同列表为元素的列表::"
+
+#: ../../library/stdtypes.rst:1045
+msgid ""
+">>> lists = [[] for i in range(3)]\n"
+">>> lists[0].append(3)\n"
+">>> lists[1].append(5)\n"
+">>> lists[2].append(7)\n"
+">>> lists\n"
+"[[3], [5], [7]]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:1052
 msgid ""
@@ -2125,6 +2295,24 @@ msgstr ""
 msgid "Range examples::"
 msgstr "一些 range 对象的例子::"
 
+#: ../../library/stdtypes.rst:1417
+msgid ""
+">>> list(range(10))\n"
+"[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]\n"
+">>> list(range(1, 11))\n"
+"[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n"
+">>> list(range(0, 30, 5))\n"
+"[0, 5, 10, 15, 20, 25]\n"
+">>> list(range(0, 10, 3))\n"
+"[0, 3, 6, 9]\n"
+">>> list(range(0, -10, -1))\n"
+"[0, -1, -2, -3, -4, -5, -6, -7, -8, -9]\n"
+">>> list(range(0))\n"
+"[]\n"
+">>> list(range(1, 0))\n"
+"[]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1432
 msgid ""
 "Ranges implement all of the :ref:`common <typesseq-common>` sequence "
@@ -2349,6 +2537,12 @@ msgstr ""
 "将一个 :class:`bytes` 对象传入 :func:`str` 而不给出 *encoding* 或 *errors* 参数的操作属于第一种情况，"
 " 将返回非正式的字符串表示（另请参阅 Python 的 :option:`-b` 命令行选项）。 例如::"
 
+#: ../../library/stdtypes.rst:1589
+msgid ""
+">>> str(b'Zoot!')\n"
+"\"b'Zoot!'\""
+msgstr ""
+
 #: ../../library/stdtypes.rst:1592
 msgid ""
 "For more information on the ``str`` class and its methods, see "
@@ -2548,6 +2742,12 @@ msgstr ""
 ":meth:`~str.find` 方法应该只在你需要知道 *sub* 所在位置时使用。 要检查 *sub* 是否为子字符串，请使用 "
 ":keyword:`in` 操作符::"
 
+#: ../../library/stdtypes.rst:1737
+msgid ""
+">>> 'Py' in 'Python'\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1743
 msgid ""
 "Perform a string formatting operation.  The string on which this method is "
@@ -2684,6 +2884,16 @@ msgstr ""
 msgid "Example: ::"
 msgstr "示例： ::"
 
+#: ../../library/stdtypes.rst:1853
+msgid ""
+">>> from keyword import iskeyword\n"
+"\n"
+">>> 'hello'.isidentifier(), iskeyword('hello')\n"
+"(True, False)\n"
+">>> 'def'.isidentifier(), iskeyword('def')\n"
+"(True, True)"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1863
 msgid ""
 "Return ``True`` if all cased characters [4]_ in the string are lowercase and"
@@ -2795,11 +3005,27 @@ msgstr ""
 "返回原字符串的副本，移除其中的前导字符。 *chars* 参数为指定要移除字符的字符串。 如果省略或为 ``None``，则 *chars* "
 "参数默认移除空白符。 实际上 *chars* 参数并非指定单个前缀；而是会移除参数值的所有组合::"
 
+#: ../../library/stdtypes.rst:1956
+msgid ""
+">>> '   spacious   '.lstrip()\n"
+"'spacious   '\n"
+">>> 'www.example.com'.lstrip('cmowz.')\n"
+"'example.com'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:1961
 msgid ""
 "See :meth:`str.removeprefix` for a method that will remove a single prefix "
 "string rather than all of a set of characters.  For example::"
 msgstr "参见 :meth:`str.removeprefix` ，该方法将删除单个前缀字符串，而不是全部给定集合中的字符。 例如:"
+
+#: ../../library/stdtypes.rst:1964
+msgid ""
+">>> 'Arthur: three!'.lstrip('Arthur: ')\n"
+"'ee!'\n"
+">>> 'Arthur: three!'.removeprefix('Arthur: ')\n"
+"'three!'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:1972
 msgid ""
@@ -2843,6 +3069,14 @@ msgid ""
 "``string[len(prefix):]``. Otherwise, return a copy of the original string::"
 msgstr "如果字符串以 *prefix* 字符串开头，返回 ``string[len(prefix):]``。 否则，返回原始字符串的副本："
 
+#: ../../library/stdtypes.rst:1999
+msgid ""
+">>> 'TestHook'.removeprefix('Test')\n"
+"'Hook'\n"
+">>> 'BaseTestCase'.removeprefix('Test')\n"
+"'BaseTestCase'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2009
 msgid ""
 "If the string ends with the *suffix* string and that *suffix* is not empty, "
@@ -2851,6 +3085,14 @@ msgid ""
 msgstr ""
 "如果字符串以 *suffix* 字符串结尾，并且 *suffix* 非空，返回 ``string[:-len(suffix)]``。 "
 "否则，返回原始字符串的副本::"
+
+#: ../../library/stdtypes.rst:2013
+msgid ""
+">>> 'MiscTests'.removesuffix('Tests')\n"
+"'Misc'\n"
+">>> 'TmpDirMixin'.removesuffix('Tests')\n"
+"'TmpDirMixin'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2023
 msgid ""
@@ -2923,11 +3165,27 @@ msgstr ""
 "返回原字符串的副本，移除其中的末尾字符。 *chars* 参数为指定要移除字符的字符串。 如果省略或为 ``None``，则 *chars* "
 "参数默认移除空白符。 实际上 *chars* 参数并非指定单个后缀；而是会移除参数值的所有组合::"
 
+#: ../../library/stdtypes.rst:2075
+msgid ""
+">>> '   spacious   '.rstrip()\n"
+"'   spacious'\n"
+">>> 'mississippi'.rstrip('ipz')\n"
+"'mississ'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2080
 msgid ""
 "See :meth:`str.removesuffix` for a method that will remove a single suffix "
 "string rather than all of a set of characters.  For example::"
 msgstr "要删除单个后缀字符串，而不是全部给定集合中的字符，请参见 :meth:`str.removesuffix` 方法。 例如:"
+
+#: ../../library/stdtypes.rst:2083
+msgid ""
+">>> 'Monty Python'.rstrip(' Python')\n"
+"'M'\n"
+">>> 'Monty Python'.removesuffix(' Python')\n"
+"'Monty'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2090
 msgid ""
@@ -2967,6 +3225,18 @@ msgstr ""
 msgid "For example::"
 msgstr "例如："
 
+#: ../../library/stdtypes.rst:2105
+msgid ""
+">>> '1,2,3'.split(',')\n"
+"['1', '2', '3']\n"
+">>> '1,2,3'.split(',', maxsplit=1)\n"
+"['1', '2,3']\n"
+">>> '1,2,,3,'.split(',')\n"
+"['1', '2', '', '3', '']\n"
+">>> '1<>2<>3<4'.split('<>')\n"
+"['1', '2', '3<4']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2114
 msgid ""
 "If *sep* is not specified or is ``None``, a different splitting algorithm is"
@@ -2979,6 +3249,16 @@ msgstr ""
 "如果 *sep* 未指定或为 "
 "``None``，则会应用另一种拆分算法：连续的空格会被视为单个分隔符，其结果将不包含开头或末尾的空字符串，如果字符串包含前缀或后缀空格的话。 "
 "因此，使用 ``None`` 拆分空字符串或仅包含空格的字符串将返回 ``[]``。"
+
+#: ../../library/stdtypes.rst:2123
+msgid ""
+">>> '1 2 3'.split()\n"
+"['1', '2', '3']\n"
+">>> '1 2 3'.split(maxsplit=1)\n"
+"['1', '2 3']\n"
+">>> '   1   2   3   '.split()\n"
+"['1', '2', '3']"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2136
 msgid ""
@@ -3093,6 +3373,14 @@ msgstr "段分隔符"
 msgid "``\\v`` and ``\\f`` added to list of line boundaries."
 msgstr "``\\v`` 和 ``\\f`` 被添加到行边界列表"
 
+#: ../../library/stdtypes.rst:2175
+msgid ""
+">>> 'ab c\\n\\nde fg\\rkl\\r\\n'.splitlines()\n"
+"['ab c', '', 'de fg', 'kl']\n"
+">>> 'ab c\\n\\nde fg\\rkl\\r\\n'.splitlines(keepends=True)\n"
+"['ab c\\n', '\\n', 'de fg\\r', 'kl\\r\\n']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2180
 msgid ""
 "Unlike :meth:`~str.split` when a delimiter string *sep* is given, this "
@@ -3102,9 +3390,25 @@ msgstr ""
 "不同于 :meth:`~str.split`，当给出了分隔字符串 *sep* "
 "时，对于空字符串此方法将返回一个空列表，而末尾的换行不会令结果中增加额外的行::"
 
+#: ../../library/stdtypes.rst:2184
+msgid ""
+">>> \"\".splitlines()\n"
+"[]\n"
+">>> \"One line\\n\".splitlines()\n"
+"['One line']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2189
 msgid "For comparison, ``split('\\n')`` gives::"
 msgstr "作为比较，``split('\\n')`` 的结果为::"
+
+#: ../../library/stdtypes.rst:2191
+msgid ""
+">>> ''.split('\\n')\n"
+"['']\n"
+">>> 'Two lines\\n'.split('\\n')\n"
+"['Two lines', '']"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2199
 msgid ""
@@ -3127,6 +3431,14 @@ msgstr ""
 "返回原字符串的副本，移除其中的前导和末尾字符。 *chars* 参数为指定要移除字符的字符串。 如果省略或为 ``None``，则 *chars* "
 "参数默认移除空白符。 实际上 *chars* 参数并非指定单个前缀或后缀；而是会移除参数值的所有组合::"
 
+#: ../../library/stdtypes.rst:2213
+msgid ""
+">>> '   spacious   '.strip()\n"
+"'spacious'\n"
+">>> 'www.example.com'.strip('cmowz.')\n"
+"'example'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2218
 msgid ""
 "The outermost leading and trailing *chars* argument values are stripped from"
@@ -3136,6 +3448,13 @@ msgid ""
 msgstr ""
 "最外侧的前导和末尾 *chars* 参数值将从字符串中移除。 开头端的字符的移除将在遇到一个未包含于 *chars* 所指定字符集的字符时停止。 "
 "类似的操作也将在结尾端发生。 例如::"
+
+#: ../../library/stdtypes.rst:2224
+msgid ""
+">>> comment_string = '#....... Section 3.2.1 Issue #32 .......'\n"
+">>> comment_string.strip('.#! ')\n"
+"'Section 3.2.1 Issue #32'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2231
 msgid ""
@@ -3151,6 +3470,12 @@ msgid ""
 "uppercase character and the remaining characters are lowercase."
 msgstr "返回原字符串的标题版本，其中每个单词第一个字母为大写，其余字母为小写。"
 
+#: ../../library/stdtypes.rst:2243
+msgid ""
+">>> 'Hello world'.title()\n"
+"'Hello World'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2246 ../../library/stdtypes.rst:3472
 msgid ""
 "The algorithm uses a simple language-independent definition of a word as "
@@ -3160,6 +3485,12 @@ msgid ""
 msgstr ""
 "该算法使用一种简单的与语言无关的定义，将连续的字母组合视为单词。 "
 "该定义在多数情况下都很有效，但它也意味着代表缩写形式与所有格的撇号也会成为单词边界，这可能导致不希望的结果::"
+
+#: ../../library/stdtypes.rst:2251
+msgid ""
+">>> \"they're bill's friends from the UK\".title()\n"
+"\"They'Re Bill'S Friends From The Uk\""
+msgstr ""
 
 #: ../../library/stdtypes.rst:2254
 msgid ""
@@ -3172,6 +3503,18 @@ msgid ""
 "Alternatively, a workaround for apostrophes can be constructed using regular"
 " expressions::"
 msgstr "作为替代，可以使用正则表达式来构造针对撇号的变通处理::"
+
+#: ../../library/stdtypes.rst:2260
+msgid ""
+">>> import re\n"
+">>> def titlecase(s):\n"
+"...     return re.sub(r\"[A-Za-z]+('[A-Za-z]+)?\",\n"
+"...                   lambda mo: mo.group(0).capitalize(),\n"
+"...                   s)\n"
+"...\n"
+">>> titlecase(\"they're bill's friends.\")\n"
+"\"They're Bill's Friends.\""
+msgstr ""
 
 #: ../../library/stdtypes.rst:2272
 msgid ""
@@ -3232,6 +3575,14 @@ msgstr ""
 "返回原字符串的副本，在左边填充 ASCII ``'0'`` 数码使其长度变为 *width*。 正负值前缀 (``'+'``/``'-'``) "
 "的处理方式是在正负符号 *之后* 填充而非在之前。 如果 *width* 小于等于 ``len(s)`` 则返回原字符串的副本。"
 
+#: ../../library/stdtypes.rst:2311
+msgid ""
+">>> \"42\".zfill(5)\n"
+"'00042'\n"
+">>> \"-42\".zfill(5)\n"
+"'-0042'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2321
 msgid "``printf``-style String Formatting"
 msgstr "``printf`` 风格的字符串格式化"
@@ -3262,6 +3613,12 @@ msgstr ""
 "字符串具有一种特殊的内置操作即 ``%`` (求模) 运算符。 这也被称为字符串的 *格式化* 或 *插值* 运算符。 对于给定的 ``format %"
 " values`` (其中 *format* 是一个字符串)，在 *format* 中的 ``%`` 转换标记符将被替换为零个或多个 *values* "
 "中的元素。 其效果类似于在 C 语言中使用 :c:func:`sprintf` 函数。 例如："
+
+#: ../../library/stdtypes.rst:2349
+msgid ""
+">>> print('%s has %d quote types.' % ('Python', 2))\n"
+"Python has 2 quote types."
+msgstr ""
 
 #: ../../library/stdtypes.rst:2354
 msgid ""
@@ -3919,9 +4276,21 @@ msgstr ""
 "bytes 和 bytearray 对象的方法不接受字符串作为其参数，就像字符串的方法不接受 bytes 对象作为其参数一样。 "
 "例如，你必须使用以下写法::"
 
+#: ../../library/stdtypes.rst:2739
+msgid ""
+"a = \"abc\"\n"
+"b = a.replace(\"a\", \"f\")"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2742
 msgid "and::"
 msgstr "和::"
+
+#: ../../library/stdtypes.rst:2744
+msgid ""
+"a = b\"abc\"\n"
+"b = a.replace(b\"a\", b\"f\")"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2747
 msgid ""
@@ -3978,6 +4347,14 @@ msgid ""
 "data::"
 msgstr "如果二进制数据以 *prefix* 字符串开头，返回 ``bytes[len(prefix):]``。 否则，返回原始二进制数据的副本："
 
+#: ../../library/stdtypes.rst:2782
+msgid ""
+">>> b'TestHook'.removeprefix(b'Test')\n"
+"b'Hook'\n"
+">>> b'BaseTestCase'.removeprefix(b'Test')\n"
+"b'BaseTestCase'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:2787
 msgid "The *prefix* may be any :term:`bytes-like object`."
 msgstr "*prefix* 可以是任意 :term:`bytes-like object`。"
@@ -4004,6 +4381,14 @@ msgid ""
 msgstr ""
 "如果二进制数据以 *suffix* 字符串结尾，并且 *suffix* 非空，返回 ``bytes[:-len(suffix)]``。 "
 "否则，返回原始二进制数据的副本::"
+
+#: ../../library/stdtypes.rst:2804
+msgid ""
+">>> b'MiscTests'.removesuffix(b'Tests')\n"
+"b'Misc'\n"
+">>> b'TmpDirMixin'.removesuffix(b'Tests')\n"
+"b'TmpDirMixin'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2809
 msgid "The *suffix* may be any :term:`bytes-like object`."
@@ -4074,6 +4459,12 @@ msgid ""
 msgstr ""
 ":meth:`~bytes.find` 方法应该只在你需要知道 *sub* 所在位置时使用。 要检查 *sub* 是否为子串，请使用 "
 ":keyword:`in` 操作符::"
+
+#: ../../library/stdtypes.rst:2879
+msgid ""
+">>> b'Py' in b'Python'\n"
+"True"
+msgstr ""
 
 #: ../../library/stdtypes.rst:2889
 msgid ""
@@ -4196,6 +4587,12 @@ msgid ""
 "characters::"
 msgstr "对于仅需移除字符的转换，请将 *table* 参数设为 ``None``::"
 
+#: ../../library/stdtypes.rst:3016
+msgid ""
+">>> b'read this short text'.translate(None, b'aeiou')\n"
+"b'rd ths shrt txt'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3019
 msgid "*delete* is now supported as a keyword argument."
 msgstr "现在支持将 *delete* 作为关键字参数。"
@@ -4244,6 +4641,14 @@ msgstr ""
 "如果省略或为 ``None``，则 *chars* 参数默认移除 ASCII 空白符。 *chars* "
 "参数并非指定单个前缀；而是会移除参数值的所有组合::"
 
+#: ../../library/stdtypes.rst:3067
+msgid ""
+">>> b'   spacious   '.lstrip()\n"
+"b'spacious   '\n"
+">>> b'www.example.com'.lstrip(b'cmowz.')\n"
+"b'example.com'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3072
 msgid ""
 "The binary sequence of byte values to remove may be any :term:`bytes-like "
@@ -4252,6 +4657,14 @@ msgid ""
 msgstr ""
 "要移除的二进制序列可以是任意 :term:`bytes-like object` 。 要删除单个前缀字符串，而不是全部给定集合中的字符，请参见 "
 ":meth:`str.removeprefix` 方法。 例如:"
+
+#: ../../library/stdtypes.rst:3077
+msgid ""
+">>> b'Arthur: three!'.lstrip(b'Arthur: ')\n"
+"b'ee!'\n"
+">>> b'Arthur: three!'.removeprefix(b'Arthur: ')\n"
+"b'three!'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3091
 msgid ""
@@ -4289,6 +4702,14 @@ msgstr ""
 "如果省略或为 ``None``，则 *chars* 参数默认移除 ASCII 空白符。 *chars* "
 "参数并非指定单个后缀；而是会移除参数值的所有组合::"
 
+#: ../../library/stdtypes.rst:3123
+msgid ""
+">>> b'   spacious   '.rstrip()\n"
+"b'   spacious'\n"
+">>> b'mississippi'.rstrip(b'ipz')\n"
+"b'mississ'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3128
 msgid ""
 "The binary sequence of byte values to remove may be any :term:`bytes-like "
@@ -4297,6 +4718,14 @@ msgid ""
 msgstr ""
 "要移除的二进制序列可以是任意 :term:`bytes-like object` 。 要删除单个后缀字符串，而不是全部给定集合中的字符，请参见 "
 ":meth:`str.removesuffix` 方法。 例如:"
+
+#: ../../library/stdtypes.rst:3133
+msgid ""
+">>> b'Monty Python'.rstrip(b' Python')\n"
+"b'M'\n"
+">>> b'Monty Python'.removesuffix(b' Python')\n"
+"b'Monty'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3147
 msgid ""
@@ -4325,6 +4754,18 @@ msgstr ""
 "``[b'']`` 或 ``[bytearray(b'')]``，具体取决于被拆分对象的类型。 *sep* 参数可以是任何 :term:`bytes-"
 "like object`。"
 
+#: ../../library/stdtypes.rst:3163
+msgid ""
+">>> b'1,2,3'.split(b',')\n"
+"[b'1', b'2', b'3']\n"
+">>> b'1,2,3'.split(b',', maxsplit=1)\n"
+"[b'1', b'2,3']\n"
+">>> b'1,2,,3,'.split(b',')\n"
+"[b'1', b'2', b'', b'3', b'']\n"
+">>> b'1<>2<>3<4'.split(b'<>')\n"
+"[b'1', b'2', b'3<4']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3172
 msgid ""
 "If *sep* is not specified or is ``None``, a different splitting algorithm is"
@@ -4338,6 +4779,16 @@ msgstr ""
 "空白符会被视为单个分隔符，其结果将不包含序列开头或末尾的空白符。 因此，在不指定分隔符的情况下对空序列或仅包含 ASCII 空白符的序列进行拆分将返回 "
 "``[]``。"
 
+#: ../../library/stdtypes.rst:3182
+msgid ""
+">>> b'1 2 3'.split()\n"
+"[b'1', b'2', b'3']\n"
+">>> b'1 2 3'.split(maxsplit=1)\n"
+"[b'1', b'2 3']\n"
+">>> b'   1   2   3   '.split()\n"
+"[b'1', b'2', b'3']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3193
 msgid ""
 "Return a copy of the sequence with specified leading and trailing bytes "
@@ -4350,6 +4801,14 @@ msgstr ""
 "返回原序列的副本，移除指定的开头和末尾字节。 *chars* 参数为指定要移除字节值集合的二进制序列 —— 这个名称表明此方法通常是用于 ASCII "
 "字符。 如果省略或为 ``None``，则 *chars* 参数默认移除 ASCII 空白符。 *chars* "
 "参数并非指定单个前缀或后缀；而是会移除参数值的所有组合::"
+
+#: ../../library/stdtypes.rst:3201
+msgid ""
+">>> b'   spacious   '.strip()\n"
+"b'spacious'\n"
+">>> b'www.example.com'.strip(b'cmowz.')\n"
+"b'example'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3206
 msgid ""
@@ -4396,6 +4855,14 @@ msgstr ""
 "如果当前字节为 ASCII 换行符 (``b'\\n'``) 或回车符 (``b'\\r'``)，它会被复制并将当前列重设为零。 "
 "任何其他字节会被不加修改地复制并将当前列加一，不论该字节值在被打印时会如何显示::"
 
+#: ../../library/stdtypes.rst:3250
+msgid ""
+">>> b'01\\t012\\t0123\\t01234'.expandtabs()\n"
+"b'01      012     0123    01234'\n"
+">>> b'01\\t012\\t0123\\t01234'.expandtabs(4)\n"
+"b'01  012 0123    01234'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3264
 msgid ""
 "Return ``True`` if all bytes in the sequence are alphabetical ASCII "
@@ -4409,6 +4876,14 @@ msgstr ""
 "``b'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'`` 中的字符。 ASCII "
 "十进制数码就是字节值包含在序列 ``b'0123456789'`` 中的字符。"
 
+#: ../../library/stdtypes.rst:3272
+msgid ""
+">>> b'ABCabc1'.isalnum()\n"
+"True\n"
+">>> b'ABC abc1'.isalnum()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3281
 msgid ""
 "Return ``True`` if all bytes in the sequence are alphabetic ASCII characters"
@@ -4419,6 +4894,14 @@ msgstr ""
 "如果序列中所有字节都是字母类 ASCII 字符并且序列不非空则返回 ``True`` ，否则返回 ``False`` 。 字母类 ASCII "
 "字符就是字节值包含在序列 ``b'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'`` "
 "中的字符。"
+
+#: ../../library/stdtypes.rst:3288
+msgid ""
+">>> b'ABCabc'.isalpha()\n"
+"True\n"
+">>> b'ABCabc1'.isalpha()\n"
+"False"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3297
 msgid ""
@@ -4437,11 +4920,27 @@ msgstr ""
 "如果序列中所有字节都是 ASCII 十进制数码并且序列非空则返回 ``True`` ，否则返回 ``False`` 。 ASCII "
 "十进制数码就是字节值包含在序列 ``b'0123456789'`` 中的字符。"
 
+#: ../../library/stdtypes.rst:3313
+msgid ""
+">>> b'1234'.isdigit()\n"
+"True\n"
+">>> b'1.23'.isdigit()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3322
 msgid ""
 "Return ``True`` if there is at least one lowercase ASCII character in the "
 "sequence and no uppercase ASCII characters, ``False`` otherwise."
 msgstr "如果序列中至少有一个小写的 ASCII 字符并且没有大写的 ASCII 字符则返回 ``True`` ，否则返回 ``False`` 。"
+
+#: ../../library/stdtypes.rst:3327
+msgid ""
+">>> b'hello world'.islower()\n"
+"True\n"
+">>> b'Hello world'.islower()\n"
+"False"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3332 ../../library/stdtypes.rst:3374
 #: ../../library/stdtypes.rst:3390 ../../library/stdtypes.rst:3440
@@ -4473,6 +4972,14 @@ msgstr ""
 "如果序列为 ASCII 标题大小写形式并且序列非空则返回 ``True`` ，否则返回 ``False`` 。 请参阅 "
 ":meth:`bytes.title` 了解有关“标题大小写”的详细定义。"
 
+#: ../../library/stdtypes.rst:3355
+msgid ""
+">>> b'Hello World'.istitle()\n"
+"True\n"
+">>> b'Hello world'.istitle()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3364
 msgid ""
 "Return ``True`` if there is at least one uppercase alphabetic ASCII "
@@ -4480,11 +4987,25 @@ msgid ""
 "otherwise."
 msgstr "如果序列中至少有一个大写字母 ASCII 字符并且没有小写 ASCII 字符则返回 ``True`` ，否则返回 ``False`` 。"
 
+#: ../../library/stdtypes.rst:3369
+msgid ""
+">>> b'HELLO WORLD'.isupper()\n"
+"True\n"
+">>> b'Hello world'.isupper()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3382
 msgid ""
 "Return a copy of the sequence with all the uppercase ASCII characters "
 "converted to their corresponding lowercase counterpart."
 msgstr "返回原序列的副本，其所有大写 ASCII 字符均转换为对应的小写形式。"
+
+#: ../../library/stdtypes.rst:3387
+msgid ""
+">>> b'Hello World'.lower()\n"
+"b'hello world'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3407
 msgid ""
@@ -4496,6 +5017,14 @@ msgstr ""
 "返回由原二进制序列中各行组成的列表，在 ASCII 行边界符的位置拆分。 此方法使用 :term:`universal newlines` 方式来分行。"
 " 结果列表中不包含换行符，除非给出了 *keepends* 且为真值。"
 
+#: ../../library/stdtypes.rst:3414
+msgid ""
+">>> b'ab c\\n\\nde fg\\rkl\\r\\n'.splitlines()\n"
+"[b'ab c', b'', b'de fg', b'kl']\n"
+">>> b'ab c\\n\\nde fg\\rkl\\r\\n'.splitlines(keepends=True)\n"
+"[b'ab c\\n', b'\\n', b'de fg\\r', b'kl\\r\\n']"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3419
 msgid ""
 "Unlike :meth:`~bytes.split` when a delimiter string *sep* is given, this "
@@ -4505,21 +5034,33 @@ msgstr ""
 "不同于 :meth:`~bytes.split`，当给出了分隔符 *sep* "
 "时，对于空字符串此方法将返回一个空列表，而末尾的换行不会令结果中增加额外的行::"
 
+#: ../../library/stdtypes.rst:3423
+msgid ""
+">>> b\"\".split(b'\\n'), b\"Two lines\\n\".split(b'\\n')\n"
+"([b''], [b'Two lines', b''])\n"
+">>> b\"\".splitlines(), b\"One line\\n\".splitlines()\n"
+"([], [b'One line'])"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3432
 msgid ""
 "Return a copy of the sequence with all the lowercase ASCII characters "
 "converted to their corresponding uppercase counterpart and vice-versa."
 msgstr "返回原序列的副本，其所有小写 ASCII 字符均转换为对应的大写形式，反之亦反。"
 
+#: ../../library/stdtypes.rst:3437
+msgid ""
+">>> b'Hello World'.swapcase()\n"
+"b'hELLO wORLD'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3444
 msgid ""
-"Unlike :func:`str.swapcase()`, it is always the case that "
+"Unlike :func:`str.swapcase`, it is always the case that "
 "``bin.swapcase().swapcase() == bin`` for the binary versions. Case "
 "conversions are symmetrical in ASCII, even though that is not generally true"
 " for arbitrary Unicode code points."
 msgstr ""
-"不同于 :func:`str.swapcase()`，在些二进制版本下 ``bin.swapcase().swapcase() == bin`` "
-"总是成立。 大小写转换在 ASCII 中是对称的，即使其对于任意 Unicode 码位来说并不总是成立。"
 
 #: ../../library/stdtypes.rst:3458
 msgid ""
@@ -4527,6 +5068,12 @@ msgid ""
 " uppercase ASCII character and the remaining characters are lowercase. "
 "Uncased byte values are left unmodified."
 msgstr "返回原二进制序列的标题版本，其中每个单词以一个大写 ASCII 字符为开头，其余字母为小写。 不区别大小写的字节值将保持原样不变。"
+
+#: ../../library/stdtypes.rst:3464
+msgid ""
+">>> b'Hello world'.title()\n"
+"b'Hello World'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3467
 msgid ""
@@ -4538,16 +5085,41 @@ msgstr ""
 "小写 ASCII 字符就是字节值包含在序列 ``b'abcdefghijklmnopqrstuvwxyz'`` 中的字符。 大写 ASCII "
 "字符就是字节值包含在序列 ``b'ABCDEFGHIJKLMNOPQRSTUVWXYZ'`` 中的字符。 所有其他字节值都不区分大小写。"
 
+#: ../../library/stdtypes.rst:3477
+msgid ""
+">>> b\"they're bill's friends from the UK\".title()\n"
+"b\"They'Re Bill'S Friends From The Uk\""
+msgstr ""
+
 #: ../../library/stdtypes.rst:3480
 msgid ""
 "A workaround for apostrophes can be constructed using regular expressions::"
 msgstr "可以使用正则表达式来构建针对撇号的特别处理::"
+
+#: ../../library/stdtypes.rst:3482
+msgid ""
+">>> import re\n"
+">>> def titlecase(s):\n"
+"...     return re.sub(rb\"[A-Za-z]+('[A-Za-z]+)?\",\n"
+"...                   lambda mo: mo.group(0)[0:1].upper() +\n"
+"...                              mo.group(0)[1:].lower(),\n"
+"...                   s)\n"
+"...\n"
+">>> titlecase(b\"they're bill's friends.\")\n"
+"b\"They're Bill's Friends.\""
+msgstr ""
 
 #: ../../library/stdtypes.rst:3501
 msgid ""
 "Return a copy of the sequence with all the lowercase ASCII characters "
 "converted to their corresponding uppercase counterpart."
 msgstr "返回原序列的副本，其所有小写 ASCII 字符均转换为对应的大写形式。"
+
+#: ../../library/stdtypes.rst:3506
+msgid ""
+">>> b'Hello World'.upper()\n"
+"b'HELLO WORLD'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3522
 msgid ""
@@ -4560,6 +5132,14 @@ msgstr ""
 "返回原序列的副本，在左边填充 ``b'0'`` 数码使序列长度为 *width*。 正负值前缀 (``b'+'``/ ``b'-'``) "
 "的处理方式是在正负符号 *之后* 填充而非在之前。 对于 :class:`bytes` 对象，如果 *width* 小于等于 ``len(seq)`` "
 "则返回原序列。"
+
+#: ../../library/stdtypes.rst:3530
+msgid ""
+">>> b\"42\".zfill(5)\n"
+"b'00042'\n"
+">>> b\"-42\".zfill(5)\n"
+"b'-0042'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3544
 msgid "``printf``-style Bytes Formatting"
@@ -4720,6 +5300,19 @@ msgid ""
 "dimensional slicing will result in a subview::"
 msgstr ":class:`memoryview` 支持通过切片和索引访问其元素。 一维切片的结果将是一个子视图::"
 
+#: ../../library/stdtypes.rst:3781
+msgid ""
+">>> v = memoryview(b'abcefg')\n"
+">>> v[1]\n"
+"98\n"
+">>> v[-1]\n"
+"103\n"
+">>> v[1:4]\n"
+"<memory at 0x7f3ddc9f4350>\n"
+">>> bytes(v[1:4])\n"
+"b'bce'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3791
 msgid ""
 "If :class:`~memoryview.format` is one of the native format specifiers from "
@@ -4739,11 +5332,45 @@ msgstr ""
 msgid "Here is an example with a non-byte format::"
 msgstr "这里是一个使用非字节格式的例子::"
 
+#: ../../library/stdtypes.rst:3802
+msgid ""
+">>> import array\n"
+">>> a = array.array('l', [-11111111, 22222222, -33333333, 44444444])\n"
+">>> m = memoryview(a)\n"
+">>> m[0]\n"
+"-11111111\n"
+">>> m[-1]\n"
+"44444444\n"
+">>> m[::2].tolist()\n"
+"[-11111111, -33333333]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3812
 msgid ""
 "If the underlying object is writable, the memoryview supports one-"
 "dimensional slice assignment. Resizing is not allowed::"
 msgstr "如果下层对象是可写的，则内存视图支持一维切片赋值。 改变大小则不被允许::"
+
+#: ../../library/stdtypes.rst:3815
+msgid ""
+">>> data = bytearray(b'abcefg')\n"
+">>> v = memoryview(data)\n"
+">>> v.readonly\n"
+"False\n"
+">>> v[0] = ord(b'z')\n"
+">>> data\n"
+"bytearray(b'zbcefg')\n"
+">>> v[1:4] = b'123'\n"
+">>> data\n"
+"bytearray(b'z123fg')\n"
+">>> v[2:3] = b'spam'\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: memoryview assignment: lvalue and rvalue have different structures\n"
+">>> v[2:6] = b'spam'\n"
+">>> data\n"
+"bytearray(b'z1spam')"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3833
 msgid ""
@@ -4753,6 +5380,17 @@ msgid ""
 msgstr ""
 "格式符为 'B', 'b' 或 'c' 的 :term:`hashable` (只读) 类型的一维内存视图也是可哈希对象。 哈希被定义为 "
 "``hash(m) == hash(m.tobytes())``::"
+
+#: ../../library/stdtypes.rst:3837
+msgid ""
+">>> v = memoryview(b'abcefg')\n"
+">>> hash(v) == hash(b'abcefg')\n"
+"True\n"
+">>> hash(v[2:4]) == hash(b'ce')\n"
+"True\n"
+">>> hash(v[::-2]) == hash(b'abcefg'[::-2])\n"
+"True"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3845
 msgid ""
@@ -4791,12 +5429,46 @@ msgstr ""
 "对于 :meth:`tolist` 当前所支持的 :mod:`struct` 格式字符串子集，如果 ``v.tolist() == "
 "w.tolist()`` 则 ``v`` 和 ``w`` 相等::"
 
+#: ../../library/stdtypes.rst:3867
+msgid ""
+">>> import array\n"
+">>> a = array.array('I', [1, 2, 3, 4, 5])\n"
+">>> b = array.array('d', [1.0, 2.0, 3.0, 4.0, 5.0])\n"
+">>> c = array.array('b', [5, 3, 1])\n"
+">>> x = memoryview(a)\n"
+">>> y = memoryview(b)\n"
+">>> x == a == y == b\n"
+"True\n"
+">>> x.tolist() == a.tolist() == y.tolist() == b.tolist()\n"
+"True\n"
+">>> z = y[::-2]\n"
+">>> z == c\n"
+"True\n"
+">>> z.tolist() == c.tolist()\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3883
 msgid ""
 "If either format string is not supported by the :mod:`struct` module, then "
 "the objects will always compare as unequal (even if the format strings and "
 "buffer contents are identical)::"
 msgstr "如果两边的格式字符串都不被 :mod:`struct` 模块所支持，则两对象比较结果总是不相等（即使格式字符串和缓冲区内容相同）::"
+
+#: ../../library/stdtypes.rst:3887
+msgid ""
+">>> from ctypes import BigEndianStructure, c_long\n"
+">>> class BEPoint(BigEndianStructure):\n"
+"...     _fields_ = [(\"x\", c_long), (\"y\", c_long)]\n"
+"...\n"
+">>> point = BEPoint(100, 200)\n"
+">>> a = memoryview(point)\n"
+">>> b = memoryview(point)\n"
+">>> a == point\n"
+"False\n"
+">>> a == b\n"
+"False"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3899
 msgid ""
@@ -4815,6 +5487,15 @@ msgid ""
 "Return the data in the buffer as a bytestring.  This is equivalent to "
 "calling the :class:`bytes` constructor on the memoryview. ::"
 msgstr "将缓冲区中的数据作为字节串返回。 这相当于在内存视图上调用 :class:`bytes` 构造器。 ::"
+
+#: ../../library/stdtypes.rst:3911
+msgid ""
+">>> m = memoryview(b\"abc\")\n"
+">>> m.tobytes()\n"
+"b'abc'\n"
+">>> bytes(m)\n"
+"b'abc'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3917
 msgid ""
@@ -4844,6 +5525,13 @@ msgid ""
 "the buffer. ::"
 msgstr "返回一个字符串对象，其中分别以两个十六进制数码表示缓冲区里的每个字节。 ::"
 
+#: ../../library/stdtypes.rst:3934
+msgid ""
+">>> m = memoryview(b\"abc\")\n"
+">>> m.hex()\n"
+"'616263'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3940
 msgid ""
 "Similar to :meth:`bytes.hex`, :meth:`memoryview.hex` now supports optional "
@@ -4857,6 +5545,17 @@ msgstr ""
 msgid "Return the data in the buffer as a list of elements. ::"
 msgstr "将缓冲区内的数据以一个元素列表的形式返回。 ::"
 
+#: ../../library/stdtypes.rst:3949
+msgid ""
+">>> memoryview(b'abc').tolist()\n"
+"[97, 98, 99]\n"
+">>> import array\n"
+">>> a = array.array('d', [1.1, 2.2, 3.3])\n"
+">>> m = memoryview(a)\n"
+">>> m.tolist()\n"
+"[1.1, 2.2, 3.3]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:3957
 msgid ""
 ":meth:`tolist` now supports all single character native formats in "
@@ -4868,6 +5567,21 @@ msgid ""
 "Return a readonly version of the memoryview object.  The original memoryview"
 " object is unchanged. ::"
 msgstr "返回 memoryview 对象的只读版本。 原始的 memoryview 对象不会被改变。 ::"
+
+#: ../../library/stdtypes.rst:3967
+msgid ""
+">>> m = memoryview(bytearray(b'abc'))\n"
+">>> mm = m.toreadonly()\n"
+">>> mm.tolist()\n"
+"[97, 98, 99]\n"
+">>> mm[0] = 42\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: cannot modify read-only memory\n"
+">>> m[0] = 43\n"
+">>> mm.tolist()\n"
+"[43, 98, 99]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:3983
 msgid ""
@@ -4889,11 +5603,33 @@ msgstr ""
 "在此方法被调用后，任何对视图的进一步操作将引发 :class:`ValueError` (:meth:`release()` "
 "本身除外，它可以被多次调用)::"
 
+#: ../../library/stdtypes.rst:3993
+msgid ""
+">>> m = memoryview(b'abc')\n"
+">>> m.release()\n"
+">>> m[0]\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: operation forbidden on released memoryview object"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4000
 msgid ""
 "The context management protocol can be used for a similar effect, using the "
 "``with`` statement::"
 msgstr "使用 ``with`` 语句，可以通过上下文管理协议达到类似的效果::"
+
+#: ../../library/stdtypes.rst:4003
+msgid ""
+">>> with memoryview(b'abc') as m:\n"
+"...     m[0]\n"
+"...\n"
+"97\n"
+">>> m[0]\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: operation forbidden on released memoryview object"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4016
 msgid ""
@@ -4921,17 +5657,95 @@ msgstr ""
 msgid "Cast 1D/long to 1D/unsigned bytes::"
 msgstr "将 1D/long 转换为 1D/unsigned bytes::"
 
+#: ../../library/stdtypes.rst:4030
+msgid ""
+">>> import array\n"
+">>> a = array.array('l', [1,2,3])\n"
+">>> x = memoryview(a)\n"
+">>> x.format\n"
+"'l'\n"
+">>> x.itemsize\n"
+"8\n"
+">>> len(x)\n"
+"3\n"
+">>> x.nbytes\n"
+"24\n"
+">>> y = x.cast('B')\n"
+">>> y.format\n"
+"'B'\n"
+">>> y.itemsize\n"
+"1\n"
+">>> len(y)\n"
+"24\n"
+">>> y.nbytes\n"
+"24"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4051
 msgid "Cast 1D/unsigned bytes to 1D/char::"
 msgstr "将 1D/unsigned bytes 转换为 1D/char::"
+
+#: ../../library/stdtypes.rst:4053
+msgid ""
+">>> b = bytearray(b'zyz')\n"
+">>> x = memoryview(b)\n"
+">>> x[0] = b'a'\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"TypeError: memoryview: invalid type for format 'B'\n"
+">>> y = x.cast('c')\n"
+">>> y[0] = b'a'\n"
+">>> b\n"
+"bytearray(b'ayz')"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4064
 msgid "Cast 1D/bytes to 3D/ints to 1D/signed char::"
 msgstr "将 1D/bytes 转换为 3D/ints 再转换为 1D/signed char::"
 
+#: ../../library/stdtypes.rst:4066
+msgid ""
+">>> import struct\n"
+">>> buf = struct.pack(\"i\"*12, *list(range(12)))\n"
+">>> x = memoryview(buf)\n"
+">>> y = x.cast('i', shape=[2,2,3])\n"
+">>> y.tolist()\n"
+"[[[0, 1, 2], [3, 4, 5]], [[6, 7, 8], [9, 10, 11]]]\n"
+">>> y.format\n"
+"'i'\n"
+">>> y.itemsize\n"
+"4\n"
+">>> len(y)\n"
+"2\n"
+">>> y.nbytes\n"
+"48\n"
+">>> z = y.cast('b')\n"
+">>> z.format\n"
+"'b'\n"
+">>> z.itemsize\n"
+"1\n"
+">>> len(z)\n"
+"48\n"
+">>> z.nbytes\n"
+"48"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4090
 msgid "Cast 1D/unsigned long to 2D/unsigned long::"
 msgstr "将 1D/unsigned long 转换为 2D/unsigned long::"
+
+#: ../../library/stdtypes.rst:4092
+msgid ""
+">>> buf = struct.pack(\"L\"*6, *list(range(6)))\n"
+">>> x = memoryview(buf)\n"
+">>> y = x.cast('L', shape=[2,3])\n"
+">>> len(y)\n"
+"2\n"
+">>> y.nbytes\n"
+"48\n"
+">>> y.tolist()\n"
+"[[0, 1, 2], [3, 4, 5]]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4104
 msgid "The source format is no longer restricted when casting to a byte view."
@@ -4945,6 +5759,14 @@ msgstr "还存在一些可用的只读属性："
 msgid "The underlying object of the memoryview::"
 msgstr "内存视图的下层对象::"
 
+#: ../../library/stdtypes.rst:4113
+msgid ""
+">>> b  = bytearray(b'xyz')\n"
+">>> m = memoryview(b)\n"
+">>> m.obj is b\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4122
 msgid ""
 "``nbytes == product(shape) * itemsize == len(m.tobytes())``. This is the "
@@ -4954,9 +5776,41 @@ msgstr ""
 "``nbytes == product(shape) * itemsize == len(m.tobytes())``。 "
 "这是数组在连续表示时将会占用的空间总字节数。 它不一定等于 ``len(m)``::"
 
+#: ../../library/stdtypes.rst:4126
+msgid ""
+">>> import array\n"
+">>> a = array.array('i', [1,2,3,4,5])\n"
+">>> m = memoryview(a)\n"
+">>> len(m)\n"
+"5\n"
+">>> m.nbytes\n"
+"20\n"
+">>> y = m[::2]\n"
+">>> len(y)\n"
+"3\n"
+">>> y.nbytes\n"
+"12\n"
+">>> len(y.tobytes())\n"
+"12"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4141
 msgid "Multi-dimensional arrays::"
 msgstr "多维数组::"
+
+#: ../../library/stdtypes.rst:4143
+msgid ""
+">>> import struct\n"
+">>> buf = struct.pack(\"d\"*12, *[1.5*x for x in range(12)])\n"
+">>> x = memoryview(buf)\n"
+">>> y = x.cast('d', shape=[3,4])\n"
+">>> y.tolist()\n"
+"[[0.0, 1.5, 3.0, 4.5], [6.0, 7.5, 9.0, 10.5], [12.0, 13.5, 15.0, 16.5]]\n"
+">>> len(y)\n"
+"3\n"
+">>> y.nbytes\n"
+"96"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4158
 msgid "A bool indicating whether the memory is read only."
@@ -4983,6 +5837,18 @@ msgstr ""
 #: ../../library/stdtypes.rst:4173
 msgid "The size in bytes of each element of the memoryview::"
 msgstr "memoryview 中每个元素以字节表示的大小::"
+
+#: ../../library/stdtypes.rst:4175
+msgid ""
+">>> import array, struct\n"
+">>> m = memoryview(array.array('H', [32000, 32001, 32002]))\n"
+">>> m.itemsize\n"
+"2\n"
+">>> m[0]\n"
+"32000\n"
+">>> struct.calcsize('H') == m.itemsize\n"
+"True"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4186
 msgid ""
@@ -5400,6 +6266,18 @@ msgid ""
 "``{\"one\": 1, \"two\": 2, \"three\": 3}``::"
 msgstr "作为演示，以下示例返回的字典均等于 ``{\"one\": 1, \"two\": 2, \"three\": 3}``::"
 
+#: ../../library/stdtypes.rst:4489
+msgid ""
+">>> a = dict(one=1, two=2, three=3)\n"
+">>> b = {'one': 1, 'two': 2, 'three': 3}\n"
+">>> c = dict(zip(['one', 'two', 'three'], [1, 2, 3]))\n"
+">>> d = dict([('two', 2), ('one', 1), ('three', 3)])\n"
+">>> e = dict({'three': 3, 'one': 1, 'two': 2})\n"
+">>> f = dict({'one': 1, 'three': 3}, two=2)\n"
+">>> a == b == c == d == e == f\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4498
 msgid ""
 "Providing keyword arguments as in the first example only works for keys that"
@@ -5440,6 +6318,20 @@ msgstr ""
 "*key* 作为参数。 ``d[key]`` 随后将返回或引发 ``__missing__(key)`` 调用所返回或引发的任何对象或异常。 "
 "没有其他操作或方法会发起调用 :meth:`__missing__`。 如果未定义 :meth:`__missing__`，则会引发 "
 ":exc:`KeyError`。 :meth:`__missing__` 必须是一个方法；它不能是一个实例变量::"
+
+#: ../../library/stdtypes.rst:4528
+msgid ""
+">>> class Counter(dict):\n"
+"...     def __missing__(self, key):\n"
+"...         return 0\n"
+"...\n"
+">>> c = Counter()\n"
+">>> c['red']\n"
+"0\n"
+">>> c['red'] += 1\n"
+">>> c['red']\n"
+"1"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4539
 msgid ""
@@ -5594,6 +6486,13 @@ msgstr ""
 "两个 ``dict.values()`` 视图之间的相等性比较将总是返回 ``False``。 这在 ``dict.values()`` "
 "与其自身比较时也同样适用::"
 
+#: ../../library/stdtypes.rst:4650
+msgid ""
+">>> d = {'a': 1}\n"
+">>> d.values() == d.values()\n"
+"False"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4656
 msgid ""
 "Create a new dictionary with the merged keys and values of *d* and *other*, "
@@ -5627,6 +6526,24 @@ msgid ""
 "affect the order.  Keys added after deletion are inserted at the end. ::"
 msgstr "字典会保留插入时的顺序。 请注意对键的更新不会影响顺序。 删除并再次添加的键将被插入到末尾。 ::"
 
+#: ../../library/stdtypes.rst:4677
+msgid ""
+">>> d = {\"one\": 1, \"two\": 2, \"three\": 3, \"four\": 4}\n"
+">>> d\n"
+"{'one': 1, 'two': 2, 'three': 3, 'four': 4}\n"
+">>> list(d)\n"
+"['one', 'two', 'three', 'four']\n"
+">>> list(d.values())\n"
+"[1, 2, 3, 4]\n"
+">>> d[\"one\"] = 42\n"
+">>> d\n"
+"{'one': 42, 'two': 2, 'three': 3, 'four': 4}\n"
+">>> del d[\"two\"]\n"
+">>> d[\"two\"] = None\n"
+">>> d\n"
+"{'one': 42, 'three': 3, 'four': 4, 'two': None}"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4692
 msgid ""
 "Dictionary order is guaranteed to be insertion order.  This behavior was an "
@@ -5636,6 +6553,19 @@ msgstr "字典顺序会确保为插入顺序。 此行为是自 3.6 版开始的
 #: ../../library/stdtypes.rst:4696
 msgid "Dictionaries and dictionary views are reversible. ::"
 msgstr "字典和字典视图都是可逆的。 ::"
+
+#: ../../library/stdtypes.rst:4698
+msgid ""
+">>> d = {\"one\": 1, \"two\": 2, \"three\": 3, \"four\": 4}\n"
+">>> d\n"
+"{'one': 1, 'two': 2, 'three': 3, 'four': 4}\n"
+">>> list(reversed(d))\n"
+"['four', 'three', 'two', 'one']\n"
+">>> list(reversed(d.values()))\n"
+"[4, 3, 2, 1]\n"
+">>> list(reversed(d.items()))\n"
+"[('four', 4), ('three', 3), ('two', 2), ('one', 1)]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4708
 msgid "Dictionaries are now reversible."
@@ -5741,6 +6671,47 @@ msgstr ""
 #: ../../library/stdtypes.rst:4782
 msgid "An example of dictionary view usage::"
 msgstr "一个使用字典视图的示例::"
+
+#: ../../library/stdtypes.rst:4784
+msgid ""
+">>> dishes = {'eggs': 2, 'sausage': 1, 'bacon': 1, 'spam': 500}\n"
+">>> keys = dishes.keys()\n"
+">>> values = dishes.values()\n"
+"\n"
+">>> # iteration\n"
+">>> n = 0\n"
+">>> for val in values:\n"
+"...     n += val\n"
+"...\n"
+">>> print(n)\n"
+"504\n"
+"\n"
+">>> # keys and values are iterated over in the same order (insertion order)\n"
+">>> list(keys)\n"
+"['eggs', 'sausage', 'bacon', 'spam']\n"
+">>> list(values)\n"
+"[2, 1, 1, 500]\n"
+"\n"
+">>> # view objects are dynamic and reflect dict changes\n"
+">>> del dishes['eggs']\n"
+">>> del dishes['sausage']\n"
+">>> list(keys)\n"
+"['bacon', 'spam']\n"
+"\n"
+">>> # set operations\n"
+">>> keys & {'eggs', 'bacon', 'salad'}\n"
+"{'bacon'}\n"
+">>> keys ^ {'sausage', 'juice'} == {'juice', 'sausage', 'bacon', 'spam'}\n"
+"True\n"
+">>> keys | ['juice', 'juice', 'juice'] == {'bacon', 'spam', 'juice'}\n"
+"True\n"
+"\n"
+">>> # get back a read-only proxy for the original dictionary\n"
+">>> values.mapping\n"
+"mappingproxy({'bacon': 1, 'spam': 500})\n"
+">>> values.mapping['spam']\n"
+"500"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4826
 msgid "Context Manager Types"
@@ -5972,6 +6943,12 @@ msgstr ""
 "创建一个代表由类型 *X*, *Y* 来参数化的类型 ``T`` 的 ``GenericAlias``，此类型会更依赖于所使用的 ``T``。 "
 "例如，一个接受包含 :class:`float` 元素的 :class:`list` 的函数::"
 
+#: ../../library/stdtypes.rst:4968
+msgid ""
+"def average(values: list[float]) -> float:\n"
+"    return sum(values) / len(values)"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4971
 msgid ""
 "Another example for :term:`mapping` objects, using a :class:`dict`, which is"
@@ -5983,12 +6960,26 @@ msgstr ""
 ":class:`dict`，泛型的两个类型参数分别代表了键类型和值类型。本例中的函数需要一个 ``dict``，其键的类型为 "
 ":class:`str`，值的类型为 :class:`int`:。"
 
+#: ../../library/stdtypes.rst:4976
+msgid ""
+"def send_post_request(url: str, body: dict[str, int]) -> None:\n"
+"    ..."
+msgstr ""
+
 #: ../../library/stdtypes.rst:4979
 msgid ""
 "The builtin functions :func:`isinstance` and :func:`issubclass` do not "
 "accept ``GenericAlias`` types for their second argument::"
 msgstr ""
 "内置函数 :func:`isinstance` 和 :func:`issubclass` 不接受第二个参数为 ``GenericAlias`` 类型："
+
+#: ../../library/stdtypes.rst:4982
+msgid ""
+">>> isinstance([1, 2], list[str])\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: isinstance() argument 2 cannot be a parameterized generic"
+msgstr ""
 
 #: ../../library/stdtypes.rst:4987
 msgid ""
@@ -6001,11 +6992,29 @@ msgstr ""
 "Python 运行时不会强制执行 :term:`类型标注 <annotation>`。 这种行为扩展到了泛型及其类型形参。 当由 "
 "``GenericAlias`` 创建容器对象时，并不会检查容器中为元素指定的类型。 例如，以下代码虽然不被鼓励，但运行时并不会报错::"
 
+#: ../../library/stdtypes.rst:4993
+msgid ""
+">>> t = list[str]\n"
+">>> t([1, 2, 3])\n"
+"[1, 2, 3]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:4997
 msgid ""
 "Furthermore, parameterized generics erase type parameters during object "
 "creation::"
 msgstr "不仅如此，在创建对象的过程中，应用了参数后的泛型还会抹除类型参数："
+
+#: ../../library/stdtypes.rst:5000
+msgid ""
+">>> t = list[str]\n"
+">>> type(t)\n"
+"<class 'types.GenericAlias'>\n"
+"\n"
+">>> l = t()\n"
+">>> type(l)\n"
+"<class 'list'>"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5008
 msgid ""
@@ -6013,12 +7022,29 @@ msgid ""
 "type::"
 msgstr "在泛型上调用 :func:`repr` 或 :func:`str` 会显示应用参数之后的类型："
 
+#: ../../library/stdtypes.rst:5010
+msgid ""
+">>> repr(list[int])\n"
+"'list[int]'\n"
+"\n"
+">>> str(list[int])\n"
+"'list[int]'"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5016
 msgid ""
 "The :meth:`~object.__getitem__` method of generic containers will raise an "
 "exception to disallow mistakes like ``dict[str][str]``::"
 msgstr ""
 "调用泛型容器的 :meth:`~object.__getitem__` 方法将引发异常以防出现 ``dict[str][str]`` 之类的错误::"
+
+#: ../../library/stdtypes.rst:5019
+msgid ""
+">>> dict[str][str]\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"TypeError: dict[str] is not a generic class"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5024
 msgid ""
@@ -6028,6 +7054,14 @@ msgid ""
 msgstr ""
 "不过，当使用了 :ref:`类型变量 <generics>` 时这种表达式是无效的。 索引必须有与 ``GenericAlias`` 对象的 "
 ":attr:`~genericalias.__args__` 中的类型变量条目数量相当的元素。 ::"
+
+#: ../../library/stdtypes.rst:5028
+msgid ""
+">>> from typing import TypeVar\n"
+">>> Y = TypeVar('Y')\n"
+">>> dict[str, Y][int]\n"
+"dict[str, int]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5035
 msgid "Standard Generic Classes"
@@ -6267,6 +7301,12 @@ msgstr "应用参数后的泛型都实现了一些特殊的只读属性："
 msgid "This attribute points at the non-parameterized generic class::"
 msgstr "本属性指向未应用参数之前的泛型类："
 
+#: ../../library/stdtypes.rst:5106
+msgid ""
+">>> list[int].__origin__\n"
+"<class 'list'>"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5112
 msgid ""
 "This attribute is a :class:`tuple` (possibly of length 1) of generic types "
@@ -6276,11 +7316,26 @@ msgstr ""
 "该属性是传给泛型类的原始 :meth:`~object.__class_getitem__` 的泛型所组成的 :class:`tuple` (长度可能为"
 " 1)::"
 
+#: ../../library/stdtypes.rst:5116
+msgid ""
+">>> dict[str, list[int]].__args__\n"
+"(<class 'str'>, list[int])"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5122
 msgid ""
 "This attribute is a lazily computed tuple (possibly empty) of unique type "
 "variables found in ``__args__``::"
 msgstr "该属性是延迟计算出来的一个元组（可能为空），包含了  ``__args__`` 中的类型变量。"
+
+#: ../../library/stdtypes.rst:5125
+msgid ""
+">>> from typing import TypeVar\n"
+"\n"
+">>> T = TypeVar('T')\n"
+">>> list[T].__parameters__\n"
+"(~T,)"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5133
 msgid ""
@@ -6355,6 +7410,12 @@ msgstr ""
 "定义包含了 *X*、*Y* 等类型的 union 对象。 ``X | Y`` 表示 X 或 Y。相当于 ``typing.Union[X, Y]`` "
 "。比如以下函数的参数应为类型  :class:`int` 或 :class:`float` ："
 
+#: ../../library/stdtypes.rst:5184
+msgid ""
+"def square(number: int | float) -> int | float:\n"
+"    return number ** 2"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5189
 msgid ""
 "The ``|`` operand cannot be used at runtime to define unions where one or "
@@ -6375,21 +7436,41 @@ msgstr "union 对象可与其他 union 对象进行比较。详细结果如下�
 msgid "Unions of unions are flattened::"
 msgstr "多次组合的结果会平推："
 
+#: ../../library/stdtypes.rst:5201
+msgid "(int | str) | float == int | str | float"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5203
 msgid "Redundant types are removed::"
 msgstr "冗余的类型会被删除："
+
+#: ../../library/stdtypes.rst:5205
+msgid "int | str | int == int | str"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5207
 msgid "When comparing unions, the order is ignored::"
 msgstr "在相互比较时，会忽略顺序："
 
+#: ../../library/stdtypes.rst:5209
+msgid "int | str == str | int"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5211
 msgid "It is compatible with :data:`typing.Union`::"
 msgstr "与 :data:`typing.union` 兼容："
 
+#: ../../library/stdtypes.rst:5213
+msgid "int | str == typing.Union[int, str]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5215
 msgid "Optional types can be spelled as a union with ``None``::"
 msgstr "Optional 类型可表示为与 ``None`` 的组合。"
+
+#: ../../library/stdtypes.rst:5217
+msgid "str | None == typing.Optional[str]"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5222
 msgid ""
@@ -6397,11 +7478,27 @@ msgid ""
 " union object::"
 msgstr ":func:`isinstance` 和 :func:`issubclass` 也支持 union 对象："
 
+#: ../../library/stdtypes.rst:5225
+msgid ""
+">>> isinstance(\"\", int | str)\n"
+"True"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5228
 msgid ""
 "However, :ref:`parameterized generics <types-genericalias>` in union objects"
 " cannot be checked::"
 msgstr "但是联合对象中的 :ref:`参数化泛型 <types-genericalias>` 将无法被检测::"
+
+#: ../../library/stdtypes.rst:5231
+msgid ""
+">>> isinstance(1, int | list[int])  # short-circuit evaluation\n"
+"True\n"
+">>> isinstance([1], int | list[int])\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"TypeError: isinstance() argument 2 cannot be a parameterized generic"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5238
 msgid ""
@@ -6412,6 +7509,17 @@ msgstr ""
 "union 对象构成的用户类型可以经由 :data:`types.UnionType` 访问，并可用于 :func:`isinstance` 检查。 "
 "而不能由类型直接实例化为对象："
 
+#: ../../library/stdtypes.rst:5242
+msgid ""
+">>> import types\n"
+">>> isinstance(int | str, types.UnionType)\n"
+"True\n"
+">>> types.UnionType()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: cannot create 'types.UnionType' instances"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5251
 msgid ""
 "The :meth:`!__or__` method for type objects was added to support the syntax "
@@ -6420,6 +7528,21 @@ msgid ""
 msgstr ""
 "为了支持 ``X | Y`` 语法，类型对象加入了 :meth:`!__or__` 方法。 如果一个元类实现了 "
 ":meth:`!__or__`，Union 可以重载它："
+
+#: ../../library/stdtypes.rst:5255
+msgid ""
+">>> class M(type):\n"
+"...     def __or__(self, other):\n"
+"...         return \"Hello\"\n"
+"...\n"
+">>> class C(metaclass=M):\n"
+"...     pass\n"
+"...\n"
+">>> C | int\n"
+"'Hello'\n"
+">>> int | C\n"
+"int | C"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5271
 msgid ":pep:`604` -- PEP proposing the ``X | Y`` syntax and the Union type."
@@ -6552,6 +7675,22 @@ msgstr ""
 "与 :ref:`函数对象 <user-defined-funcs>` 类似，绑定方法对象也支持获取任意属性。 "
 "但是，由于方法属性实际上保存于下层的函数对象中 (:attr:`method.__func__`)，因此不允许设置绑定方法的方法属性。 "
 "尝试设置方法的属性将会导致引发 :exc:`AttributeError`。 想要设置方法属性，你必须在下层的函数对象中显式地设置它。"
+
+#: ../../library/stdtypes.rst:5364
+msgid ""
+">>> class C:\n"
+"...     def method(self):\n"
+"...         pass\n"
+"...\n"
+">>> c = C()\n"
+">>> c.method.whoami = 'my name is method'  # can't set on the method\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"AttributeError: 'method' object has no attribute 'whoami'\n"
+">>> c.method.__func__.whoami = 'my name is method'\n"
+">>> c.method.whoami\n"
+"'my name is method'"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5379
 msgid "See :ref:`instance-methods` for more information."
@@ -6740,6 +7879,12 @@ msgid ""
 " in definition order.  Example::"
 msgstr "每个类都存有对直接子类的弱引用列表。本方法返回所有存活引用的列表。列表的顺序按照子类定义的排列。例如："
 
+#: ../../library/stdtypes.rst:5546
+msgid ""
+">>> int.__subclasses__()\n"
+"[<class 'bool'>, <enum 'IntEnum'>, <flag 'IntFlag'>, <class 're._constants._NamedIntConstant'>]"
+msgstr ""
+
 #: ../../library/stdtypes.rst:5552
 msgid ""
 "A tuple containing names of attributes of this class which are accessed "
@@ -6790,6 +7935,27 @@ msgid ""
 "When an operation would exceed the limit, a :exc:`ValueError` is raised:"
 msgstr "当一个操作会超出限制时，将引发 :exc:`ValueError`:"
 
+#: ../../library/stdtypes.rst:5582
+msgid ""
+">>> import sys\n"
+">>> sys.set_int_max_str_digits(4300)  # Illustrative, this is the default.\n"
+">>> _ = int('2' * 5432)\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"ValueError: Exceeds the limit (4300 digits) for integer string conversion: value has 5432 digits; use sys.set_int_max_str_digits() to increase the limit\n"
+">>> i = int('2' * 4300)\n"
+">>> len(str(i))\n"
+"4300\n"
+">>> i_squared = i*i\n"
+">>> len(str(i_squared))\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit\n"
+">>> len(hex(i_squared))\n"
+"7144\n"
+">>> assert int(hex(i_squared), base=16) == i*i  # Hexadecimal is unlimited."
+msgstr ""
+
 #: ../../library/stdtypes.rst:5602
 msgid ""
 "The default limit is 4300 digits as provided in "
@@ -6804,6 +7970,17 @@ msgstr ""
 #: ../../library/stdtypes.rst:5607
 msgid "Verification:"
 msgstr "验证:"
+
+#: ../../library/stdtypes.rst:5609
+msgid ""
+">>> import sys\n"
+">>> assert sys.int_info.default_max_str_digits == 4300, sys.int_info\n"
+">>> assert sys.int_info.str_digits_check_threshold == 640, sys.int_info\n"
+">>> msg = int('578966293710682886880994035146873798396722250538762761564'\n"
+"...           '9252925514383915483333812743580549779436104706260696366600'\n"
+"...           '571186405732').to_bytes(53, 'big')\n"
+"..."
+msgstr ""
 
 #: ../../library/stdtypes.rst:5622
 msgid "Affected APIs"
@@ -6986,6 +8163,19 @@ msgstr ""
 #: ../../library/stdtypes.rst:5700
 msgid "Example::"
 msgstr "示例："
+
+#: ../../library/stdtypes.rst:5702
+msgid ""
+">>> import sys\n"
+">>> if hasattr(sys, \"set_int_max_str_digits\"):\n"
+"...     upper_bound = 68000\n"
+"...     lower_bound = 4004\n"
+"...     current_limit = sys.get_int_max_str_digits()\n"
+"...     if current_limit == 0 or current_limit > upper_bound:\n"
+"...         sys.set_int_max_str_digits(upper_bound)\n"
+"...     elif current_limit < lower_bound:\n"
+"...         sys.set_int_max_str_digits(lower_bound)"
+msgstr ""
 
 #: ../../library/stdtypes.rst:5712
 msgid "If you need to disable it entirely, set it to ``0``."
