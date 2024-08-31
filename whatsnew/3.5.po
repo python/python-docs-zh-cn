@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-29 13:04+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -289,6 +289,14 @@ msgid ""
 "Coroutine functions are declared using the new :keyword:`async def` syntax::"
 msgstr "协程函数是使用新的 :keyword:`async def` 语法来声明的::"
 
+#: ../../whatsnew/3.5.rst:178
+msgid ""
+">>> async def coro():\n"
+"...     return 'spam'"
+msgstr ""
+">>> async def coro():\n"
+"...     return 'spam'"
+
 #: ../../whatsnew/3.5.rst:181
 msgid ""
 "Inside a coroutine function, the new :keyword:`await` expression can be used"
@@ -309,15 +317,93 @@ msgstr "PEP 492 还增加了 :keyword:`async for` 语句用于方便地迭代异
 msgid "An example of a rudimentary HTTP client written using the new syntax::"
 msgstr "一个使用新语法编写的基本 HTTP 客户端示例::"
 
+#: ../../whatsnew/3.5.rst:191
+msgid ""
+"import asyncio\n"
+"\n"
+"async def http_get(domain):\n"
+"    reader, writer = await asyncio.open_connection(domain, 80)\n"
+"\n"
+"    writer.write(b'\\r\\n'.join([\n"
+"        b'GET / HTTP/1.1',\n"
+"        b'Host: %b' % domain.encode('latin-1'),\n"
+"        b'Connection: close',\n"
+"        b'', b''\n"
+"    ]))\n"
+"\n"
+"    async for line in reader:\n"
+"        print('>>>', line)\n"
+"\n"
+"    writer.close()\n"
+"\n"
+"loop = asyncio.get_event_loop()\n"
+"try:\n"
+"    loop.run_until_complete(http_get('example.com'))\n"
+"finally:\n"
+"    loop.close()"
+msgstr ""
+"import asyncio\n"
+"\n"
+"async def http_get(domain):\n"
+"    reader, writer = await asyncio.open_connection(domain, 80)\n"
+"\n"
+"    writer.write(b'\\r\\n'.join([\n"
+"        b'GET / HTTP/1.1',\n"
+"        b'Host: %b' % domain.encode('latin-1'),\n"
+"        b'Connection: close',\n"
+"        b'', b''\n"
+"    ]))\n"
+"\n"
+"    async for line in reader:\n"
+"        print('>>>', line)\n"
+"\n"
+"    writer.close()\n"
+"\n"
+"loop = asyncio.get_event_loop()\n"
+"try:\n"
+"    loop.run_until_complete(http_get('example.com'))\n"
+"finally:\n"
+"    loop.close()"
+
 #: ../../whatsnew/3.5.rst:215
 msgid ""
 "Similarly to asynchronous iteration, there is a new syntax for asynchronous "
 "context managers.  The following script::"
 msgstr "与异步迭代类似，增加了用于异步上下文管理器的新语法。 以下代码::"
 
+#: ../../whatsnew/3.5.rst:218
+msgid ""
+"import asyncio\n"
+"\n"
+"async def coro(name, lock):\n"
+"    print('coro {}: waiting for lock'.format(name))\n"
+"    async with lock:\n"
+"        print('coro {}: holding the lock'.format(name))\n"
+"        await asyncio.sleep(1)\n"
+"        print('coro {}: releasing the lock'.format(name))\n"
+"\n"
+"loop = asyncio.get_event_loop()\n"
+"lock = asyncio.Lock()\n"
+"coros = asyncio.gather(coro(1, lock), coro(2, lock))\n"
+"try:\n"
+"    loop.run_until_complete(coros)\n"
+"finally:\n"
+"    loop.close()"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:235
 msgid "will output::"
 msgstr "将输出："
+
+#: ../../whatsnew/3.5.rst:237
+msgid ""
+"coro 2: waiting for lock\n"
+"coro 2: holding the lock\n"
+"coro 1: waiting for lock\n"
+"coro 2: releasing the lock\n"
+"coro 1: holding the lock\n"
+"coro 1: releasing the lock"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:244
 msgid ""
@@ -378,13 +464,41 @@ msgid ""
 "cleaner code::"
 msgstr "矩阵乘法在数学，科学，工程学的许多领域中是一种常见的操作，使用 ``@`` 运算符可以编写更简洁的代码："
 
+#: ../../whatsnew/3.5.rst:285
+msgid "S = (H @ beta - r).T @ inv(H @ V @ H.T) @ (H @ beta - r)"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:287
 msgid "instead of::"
 msgstr "代替："
 
+#: ../../whatsnew/3.5.rst:289
+msgid ""
+"S = dot((dot(H, beta) - r).T,\n"
+"        dot(inv(dot(dot(H, V), H.T)), dot(H, beta) - r))"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:292
 msgid "NumPy 1.10 has support for the new operator::"
 msgstr "NumPy 1.10 支持新的运算符："
+
+#: ../../whatsnew/3.5.rst:294
+msgid ""
+">>> import numpy\n"
+"\n"
+">>> x = numpy.ones(3)\n"
+">>> x\n"
+"array([ 1., 1., 1.])\n"
+"\n"
+">>> m = numpy.eye(3)\n"
+">>> m\n"
+"array([[ 1., 0., 0.],\n"
+"       [ 0., 1., 0.],\n"
+"       [ 0., 0., 1.]])\n"
+"\n"
+">>> x @ m\n"
+"array([ 1., 1., 1.])"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:312
 msgid ":pep:`465` -- A dedicated infix operator for matrix multiplication"
@@ -407,11 +521,39 @@ msgstr ""
 ":pep:`448` 扩展了 ``*`` 可迭代对象解包操作符和 ``**`` 字典解包操作符的允许使用范围。 现在将可以在 :ref:`函数调用 "
 "<calls>` 中使用任意数量的解包操作::"
 
+#: ../../whatsnew/3.5.rst:325
+msgid ""
+">>> print(*[1], *[2], 3, *[4, 5])\n"
+"1 2 3 4 5\n"
+"\n"
+">>> def fn(a, b, c, d):\n"
+"...     print(a, b, c, d)\n"
+"...\n"
+"\n"
+">>> fn(**{'a': 1, 'c': 3}, **{'b': 2, 'd': 4})\n"
+"1 2 3 4"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:335
 msgid ""
 "Similarly, tuple, list, set, and dictionary displays allow multiple "
 "unpackings (see :ref:`exprlists` and :ref:`dict`)::"
 msgstr "类似地，元组、列表、集合与字典表示形式也允许多重解包 (参见 :ref:`exprlists` 和 :ref:`dict`)::"
+
+#: ../../whatsnew/3.5.rst:338
+msgid ""
+">>> *range(4), 4\n"
+"(0, 1, 2, 3, 4)\n"
+"\n"
+">>> [*range(4), 4]\n"
+"[0, 1, 2, 3, 4]\n"
+"\n"
+">>> {*range(4), 4, *(5, 6, 7)}\n"
+"{0, 1, 2, 3, 4, 5, 6, 7}\n"
+"\n"
+">>> {'x': 1, **{'y': 2}}\n"
+"{'x': 1, 'y': 2}"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:352
 msgid ":pep:`448` -- Additional Unpacking Generalizations"
@@ -453,6 +595,15 @@ msgstr ""
 msgid "Examples::"
 msgstr "示例::"
 
+#: ../../whatsnew/3.5.rst:375
+msgid ""
+">>> b'Hello %b!' % b'World'\n"
+"b'Hello World!'\n"
+"\n"
+">>> b'x=%i y=%f' % (1, 2.5)\n"
+"b'x=1 y=2.500000'"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:381
 msgid ""
 "Unicode is not allowed for ``%b``, but it is accepted by ``%a`` (equivalent "
@@ -460,6 +611,17 @@ msgid ""
 msgstr ""
 "Unicode 对于 ``%b`` 来说是不允许的，但对 ``%a`` 来说则是可接受的 (等价于 "
 "``repr(obj).encode('ascii', 'backslashreplace')``)::"
+
+#: ../../whatsnew/3.5.rst:384
+msgid ""
+">>> b'Hello %b!' % 'World'\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: %b requires bytes, or an object that implements __bytes__, not 'str'\n"
+"\n"
+">>> b'price: %a' % '10€'\n"
+"b\"price: '10\\\\u20ac'\""
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:392
 msgid ""
@@ -511,6 +673,12 @@ msgid ""
 "For example, here is a simple function whose argument and return type are "
 "declared in the annotations::"
 msgstr "例如，以下是一个在标注中声明了参数和返回值类型的简单函数::"
+
+#: ../../whatsnew/3.5.rst:422
+msgid ""
+"def greeting(name: str) -> str:\n"
+"    return 'Hello ' + name"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:425
 msgid ""
@@ -589,6 +757,13 @@ msgstr ""
 "下面的例子演示了 :func:`os.scandir` 的简单用法，显示给定 *path* 中所有不以 ``'.'`` 开头的文件（不包括目录）。 "
 ":meth:`entry.is_file() <os.DirEntry.is_file>` 调用通常不会执行额外的系统调用::"
 
+#: ../../whatsnew/3.5.rst:466
+msgid ""
+"for entry in os.scandir(path):\n"
+"    if not entry.name.startswith('.') and entry.is_file():\n"
+"        print(entry.name)"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:472
 msgid ""
 ":pep:`471` -- os.scandir() function -- a better and faster directory "
@@ -631,9 +806,23 @@ msgid ""
 "Compare::"
 msgstr "第一个选项会使应用程序中途出错。 第二个选项添加了大量的额外处理使得代码几乎不可读。 比较::"
 
+#: ../../whatsnew/3.5.rst:494
+msgid "print(\"Hello World\")"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:496
 msgid "and::"
 msgstr "和::"
+
+#: ../../whatsnew/3.5.rst:498
+msgid ""
+"while True:\n"
+"    try:\n"
+"        print(\"Hello World\")\n"
+"        break\n"
+"    except InterruptedError:\n"
+"        continue"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:505
 msgid ""
@@ -773,6 +962,26 @@ msgid ""
 ":term:`__future__` import is necessary::"
 msgstr "这是一个向下不兼容的更改，所以想要启用这个新行为，必须执行 :term:`__future__` 导入::"
 
+#: ../../whatsnew/3.5.rst:578
+msgid ""
+">>> from __future__ import generator_stop\n"
+"\n"
+">>> def gen():\n"
+"...     next(iter([]))\n"
+"...     yield\n"
+"...\n"
+">>> next(gen())\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 2, in gen\n"
+"StopIteration\n"
+"\n"
+"The above exception was the direct cause of the following exception:\n"
+"\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"RuntimeError: generator raised StopIteration"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:595
 msgid ""
 "Without a ``__future__`` import, a :exc:`PendingDeprecationWarning` will be "
@@ -811,11 +1020,33 @@ msgstr ""
 "函数用于检测两个值是否近似相等或称“接近”。 两个值是否接近是根据给定的绝对和相对范围来确定的。 相对范围是 ``isclose`` "
 "参数之间的最大允许差值，即相对于较大的那个绝对数值的距离::"
 
+#: ../../whatsnew/3.5.rst:617
+msgid ""
+">>> import math\n"
+">>> a = 5.0\n"
+">>> b = 4.99998\n"
+">>> math.isclose(a, b, rel_tol=1e-5)\n"
+"True\n"
+">>> math.isclose(a, b, rel_tol=1e-6)\n"
+"False"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:625
 msgid ""
 "It is also possible to compare two values using absolute tolerance, which "
 "must be a non-negative value::"
 msgstr "也可以使用绝对范围来比较两个值，它必须是一个非负数值::"
+
+#: ../../whatsnew/3.5.rst:628
+msgid ""
+">>> import math\n"
+">>> a = 5.0\n"
+">>> b = 4.99998\n"
+">>> math.isclose(a, b, abs_tol=0.00003)\n"
+"True\n"
+">>> math.isclose(a, b, abs_tol=0.00001)\n"
+"False"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:638
 msgid ":pep:`485` -- A function for testing approximate equality"
@@ -998,6 +1229,12 @@ msgid ""
 "running:"
 msgstr ""
 "使用这个新模块，想要打包你的应用程序只需简单地将所有文件，包括一个 ``__main__.py`` 文件放到一个目录 ``myapp`` 中并运行："
+
+#: ../../whatsnew/3.5.rst:747
+msgid ""
+"$ python -m zipapp myapp\n"
+"$ python myapp.pyz"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:752
 msgid ""
@@ -1325,6 +1562,14 @@ msgid ""
 "Docstrings produced by :func:`~collections.namedtuple` can now be updated::"
 msgstr "由 :func:`~collections.namedtuple` 产生的文档字符串现在可以被更新::"
 
+#: ../../whatsnew/3.5.rst:923
+msgid ""
+"Point = namedtuple('Point', ['x', 'y'])\n"
+"Point.__doc__ += ': Cartesian coordinate'\n"
+"Point.x.__doc__ = 'abscissa'\n"
+"Point.y.__doc__ = 'ordinate'"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:928
 msgid "(Contributed by Berker Peksag in :issue:`24064`.)"
 msgstr "（由 Berker Peksag 在 :issue:`24064` 中贡献。）"
@@ -1464,6 +1709,25 @@ msgstr ""
 msgid "Example::"
 msgstr "示例::"
 
+#: ../../whatsnew/3.5.rst:1000
+msgid ""
+">>> import configparser\n"
+">>> conv = {}\n"
+">>> conv['list'] = lambda v: [e.strip() for e in v.split() if e.strip()]\n"
+">>> cfg = configparser.ConfigParser(converters=conv)\n"
+">>> cfg.read_string(\"\"\"\n"
+"... [s]\n"
+"... list = a b c d e f g\n"
+"... \"\"\")\n"
+">>> cfg.get('s', 'list')\n"
+"'a b c d e f g'\n"
+">>> cfg.getlist('s', 'list')\n"
+"['a', 'b', 'c', 'd', 'e', 'f', 'g']\n"
+">>> section = cfg['s']\n"
+">>> section.getlist('list')\n"
+"['a', 'b', 'c', 'd', 'e', 'f', 'g']"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1016
 msgid "(Contributed by Łukasz Langa in :issue:`18159`.)"
 msgstr "（由 Łukasz Langa 在 :issue:`18159` 中贡献。）"
@@ -1482,6 +1746,17 @@ msgstr ""
 "新增的 :func:`~contextlib.redirect_stderr` :term:`context manager` (类似于 "
 ":func:`~contextlib.redirect_stdout`) 使得工具脚本更容易处理那些将输出写入到 :data:`sys.stderr` "
 "并且不提供任何重定向选项的不灵活 API。"
+
+#: ../../whatsnew/3.5.rst:1027
+msgid ""
+">>> import contextlib, io, logging\n"
+">>> f = io.StringIO()\n"
+">>> with contextlib.redirect_stderr(f):\n"
+"...     logging.warning('warning')\n"
+"...\n"
+">>> f.getvalue()\n"
+"'WARNING:root:warning\\n'"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1035
 msgid "(Contributed by Berker Peksag in :issue:`22389`.)"
@@ -1651,6 +1926,15 @@ msgid ""
 msgstr ""
 ":class:`~enum.Enum` 可调用对象新增了一个形参 *start* 用于在只提供了 *names* 的情况下指定枚举值的初始数量::"
 
+#: ../../whatsnew/3.5.rst:1128
+msgid ""
+">>> Animal = enum.Enum('Animal', 'cat dog', start=10)\n"
+">>> Animal.cat\n"
+"<Animal.cat: 10>\n"
+">>> Animal.dog\n"
+"<Animal.dog: 11>"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1134
 msgid "(Contributed by Ethan Furman in :issue:`21706`.)"
 msgstr "（由 Ethan Furman 在 :issue:`21706` 中贡献。）"
@@ -1725,6 +2009,17 @@ msgstr ""
 "现在 :func:`~heapq.merge` 中的元素比较可通过在新增的可选关键字参数 *key* 中传入一个 :term:`key "
 "function` 来进行定制，并且新增了可选关键字参数 *reverse* 用于反向的元素比较::"
 
+#: ../../whatsnew/3.5.rst:1181
+msgid ""
+">>> import heapq\n"
+">>> a = ['9', '777', '55555']\n"
+">>> b = ['88', '6666']\n"
+">>> list(heapq.merge(a, b, key=len))\n"
+"['9', '88', '777', '6666', '55555']\n"
+">>> list(heapq.merge(reversed(a), reversed(b), key=len, reverse=True))\n"
+"['55555', '6666', '777', '88', '9']"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1189
 msgid "(Contributed by Raymond Hettinger in :issue:`13742`.)"
 msgstr "（由 Raymond Hettinger 在 :issue:`13742` 中贡献。）"
@@ -1760,6 +2055,18 @@ msgstr ""
 "<http.client.HTTPConnection.getresponse>` 在远程服务器连接被意外关闭时会引发 "
 ":exc:`~http.client.RemoteDisconnected` 异常。 此外，如果引发了 :exc:`ConnectionError` "
 "(``RemoteDisconnected`` 是其子类)，客户端套接字现在会自动关闭，并将在下次请求时重新连接::"
+
+#: ../../whatsnew/3.5.rst:1210
+msgid ""
+"import http.client\n"
+"conn = http.client.HTTPConnection('www.python.org')\n"
+"for retries in range(3):\n"
+"    try:\n"
+"        conn.request('GET', '/')\n"
+"        resp = conn.getresponse()\n"
+"    except http.client.RemoteDisconnected:\n"
+"        pass"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1219
 msgid "(Contributed by Martin Panter in :issue:`3566`.)"
@@ -1897,6 +2204,15 @@ msgstr ""
 "新增的 :meth:`BoundArguments.apply_defaults() "
 "<inspect.BoundArguments.apply_defaults>` 方法提供了一种为缺失的参数设置默认值的方式::"
 
+#: ../../whatsnew/3.5.rst:1293
+msgid ""
+">>> def foo(a, b='ham', *args): pass\n"
+">>> ba = inspect.signature(foo).bind('spam')\n"
+">>> ba.apply_defaults()\n"
+">>> ba.arguments\n"
+"OrderedDict([('a', 'spam'), ('b', 'ham'), ('args', ())])"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1299
 msgid "(Contributed by Yury Selivanov in :issue:`24190`.)"
 msgstr "（由 Yury Selivanov 在 :issue:`24190` 中贡献。）"
@@ -1978,6 +2294,15 @@ msgstr ""
 "现在 :class:`~ipaddress.IPv4Network` 和 :class:`~ipaddress.IPv6Network` 类均接受一个 "
 "``(address, netmask)`` 元组参数，可以根据现有地址方便地构造网络对象::"
 
+#: ../../whatsnew/3.5.rst:1342
+msgid ""
+">>> import ipaddress\n"
+">>> ipaddress.IPv4Network(('127.0.0.0', 8))\n"
+"IPv4Network('127.0.0.0/8')\n"
+">>> ipaddress.IPv4Network(('127.0.0.0', '255.0.0.0'))\n"
+"IPv4Network('127.0.0.0/8')"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1348
 msgid "(Contributed by Peter Moody and Antoine Pitrou in :issue:`16531`.)"
 msgstr "（由 Peter Moody 和 Antoine Pitrou 在 :issue:`16531` 中贡献。）"
@@ -1990,6 +2315,17 @@ msgid ""
 msgstr ""
 "新增 :class:`~ipaddress.IPv4Network` 和 :class:`~ipaddress.IPv6Network` 类的 "
 ":attr:`~ipaddress.IPv4Network.reverse_pointer` 属性用于返回 DNS PTR 反向记录的名称::"
+
+#: ../../whatsnew/3.5.rst:1354
+msgid ""
+">>> import ipaddress\n"
+">>> addr = ipaddress.IPv4Address('127.0.0.1')\n"
+">>> addr.reverse_pointer\n"
+"'1.0.0.127.in-addr.arpa'\n"
+">>> addr6 = ipaddress.IPv6Address('::1')\n"
+">>> addr6.reverse_pointer\n"
+"'1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa'"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1362
 msgid "(Contributed by Leon Weber in :issue:`20480`.)"
@@ -2047,6 +2383,19 @@ msgstr ""
 "新增的 :func:`~locale.delocalize` 函数可用于将字符串转换为表示规范化数字的字符串 ，并会考虑 ``LC_NUMERIC`` "
 "的设置::"
 
+#: ../../whatsnew/3.5.rst:1394
+msgid ""
+">>> import locale\n"
+">>> locale.setlocale(locale.LC_NUMERIC, 'de_DE.UTF-8')\n"
+"'de_DE.UTF-8'\n"
+">>> locale.delocalize('1.234,56')\n"
+"'1234.56'\n"
+">>> locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')\n"
+"'en_US.UTF-8'\n"
+">>> locale.delocalize('1,234.56')\n"
+"'1234.56'"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1404
 msgid "(Contributed by Cédric Krier in :issue:`13918`.)"
 msgstr "（由 Cédric Krier 在 :issue:`13918` 中贡献。）"
@@ -2065,6 +2414,16 @@ msgstr ""
 "所有日志记录方法（如 :class:`~logging.Logger` :meth:`~logging.Logger.log`, "
 ":meth:`~logging.Logger.exception`, :meth:`~logging.Logger.critical`, "
 ":meth:`~logging.Logger.debug` 等）的 *exc_info* 参数现在除接受布尔值和异常元组以外，也接受异常实例::"
+
+#: ../../whatsnew/3.5.rst:1416
+msgid ""
+">>> import logging\n"
+">>> try:\n"
+"...     1/0\n"
+"... except ZeroDivisionError as ex:\n"
+"...     logging.error('exception', exc_info=ex)\n"
+"ERROR:root:exception"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1423
 msgid "(Contributed by Yury Selivanov in :issue:`20537`.)"
@@ -2244,6 +2603,15 @@ msgstr ""
 "新增的 :func:`os.path.commonpath` 函数可返回所传入的每个路径名的最长共同子路径。 与 "
 ":func:`os.path.commonprefix` 函数不同，该函数总是会返回一个有效的路径::"
 
+#: ../../whatsnew/3.5.rst:1512
+msgid ""
+">>> os.path.commonprefix(['/usr/lib', '/usr/local/lib'])\n"
+"'/usr/l'\n"
+"\n"
+">>> os.path.commonpath(['/usr/lib', '/usr/local/lib'])\n"
+"'/usr'"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1518
 msgid "(Contributed by Rafik Draoui and Serhiy Storchaka in :issue:`10395`.)"
 msgstr "（由 Rafik Draoui 和 Serhiy Storchaka 在 :issue:`10395` 中贡献。）"
@@ -2260,6 +2628,15 @@ msgid ""
 msgstr ""
 "新增的 :meth:`Path.samefile() <pathlib.Path.samefile>` "
 "方法可被用来检查一个路径是否与另一个路径指向相同的文件，两个路径可以是 :class:`~pathlib.Path` 对象，也可以是字符串::"
+
+#: ../../whatsnew/3.5.rst:1528
+msgid ""
+">>> import pathlib\n"
+">>> p1 = pathlib.Path('/etc/hosts')\n"
+">>> p2 = pathlib.Path('/etc/../etc/hosts')\n"
+">>> p1.samefile(p2)\n"
+"True"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1534
 msgid "(Contributed by Vajrasky Kok and Antoine Pitrou in :issue:`19775`.)"
@@ -2314,6 +2691,14 @@ msgid ""
 "``~/spam42``::"
 msgstr "以下代码片段将创建或重写现有的文件 ``~/spam42``::"
 
+#: ../../whatsnew/3.5.rst:1558
+msgid ""
+">>> import pathlib\n"
+">>> p = pathlib.Path('~/spam42')\n"
+">>> p.expanduser().write_text('ham')\n"
+"3"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1563
 msgid "(Contributed by Christopher Welborn in :issue:`20218`.)"
 msgstr "（由 Christopher Welborn 在 :issue:`20218` 中贡献。）"
@@ -2355,6 +2740,16 @@ msgid ""
 "allowed in lookbehind assertions::"
 msgstr "现在对固定长度分组的引用和有条件引用在后视断言中已被允许::"
 
+#: ../../whatsnew/3.5.rst:1589
+msgid ""
+">>> import re\n"
+">>> pat = re.compile(r'(a|b).(?<=\\1)c')\n"
+">>> pat.match('aac')\n"
+"<_sre.SRE_Match object; span=(0, 3), match='aac'>\n"
+">>> pat.match('bbc')\n"
+"<_sre.SRE_Match object; span=(0, 3), match='bbc'>"
+msgstr ""
+
 #: ../../whatsnew/3.5.rst:1596
 msgid "(Contributed by Serhiy Storchaka in :issue:`9179`.)"
 msgstr "（由 Serhiy Storchaka 在 :issue:`9179` 中贡献。）"
@@ -2385,6 +2780,17 @@ msgstr ""
 ":class:`re.error` 异常添加了新的属性 :attr:`~re.error.msg`, "
 ":attr:`~re.error.pattern`, :attr:`~re.error.pos`, :attr:`~re.error.lineno` 和"
 " :attr:`~re.error.colno`，以提供更详细的错误上下文信息::"
+
+#: ../../whatsnew/3.5.rst:1611
+msgid ""
+">>> re.compile(\"\"\"\n"
+"...     (?x)\n"
+"...     .++\n"
+"... \"\"\")\n"
+"Traceback (most recent call last):\n"
+"   ...\n"
+"sre_constants.error: multiple repeat at position 16 (line 3, column 7)"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1619
 msgid "(Contributed by Serhiy Storchaka in :issue:`22578`.)"
@@ -2798,6 +3204,21 @@ msgstr ""
 ":class:`~subprocess.CompletedProcess` 对象，该对象表示已结束的进程。 这个新 API 有更好的一致性并且是在 "
 "Python 中发起调用子进程的推荐方式，它不需要维持与更早的 Python 的兼容性。 （由 Thomas Kluyver 在 "
 ":issue:`23342` 中贡献。）"
+
+#: ../../whatsnew/3.5.rst:1850
+msgid ""
+">>> subprocess.run([\"ls\", \"-l\"])  # doesn't capture output\n"
+"CompletedProcess(args=['ls', '-l'], returncode=0)\n"
+"\n"
+">>> subprocess.run(\"exit 1\", shell=True, check=True)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"subprocess.CalledProcessError: Command 'exit 1' returned non-zero exit status 1\n"
+"\n"
+">>> subprocess.run([\"ls\", \"-l\", \"/dev/null\"], stdout=subprocess.PIPE)\n"
+"CompletedProcess(args=['ls', '-l', '/dev/null'], returncode=0,\n"
+"stdout=b'crw-rw-rw- 1 root root 1, 3 Jan 23 16:23 /dev/null\\n')"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:1864
 msgid "sys"
@@ -3806,6 +4227,12 @@ msgid ""
 "Due to an oversight, earlier Python versions erroneously accepted the "
 "following syntax::"
 msgstr "由于一个疏忽，之前的 Python 版本会错误地接受以下语法::"
+
+#: ../../whatsnew/3.5.rst:2389
+msgid ""
+"f(1 for x in [1], *args)\n"
+"f(1 for x in [1], **kwargs)"
+msgstr ""
 
 #: ../../whatsnew/3.5.rst:2392
 msgid ""

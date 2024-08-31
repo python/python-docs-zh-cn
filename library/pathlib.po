@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 04:06+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:11+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -114,25 +114,70 @@ msgstr "基础使用"
 msgid "Importing the main class::"
 msgstr "导入主类::"
 
+#: ../../library/pathlib.rst:57
+msgid ">>> from pathlib import Path"
+msgstr ">>> from pathlib import Path"
+
 #: ../../library/pathlib.rst:59
 msgid "Listing subdirectories::"
 msgstr "列出子目录::"
+
+#: ../../library/pathlib.rst:61
+msgid ""
+">>> p = Path('.')\n"
+">>> [x for x in p.iterdir() if x.is_dir()]\n"
+"[PosixPath('.hg'), PosixPath('docs'), PosixPath('dist'),\n"
+" PosixPath('__pycache__'), PosixPath('build')]"
+msgstr ""
 
 #: ../../library/pathlib.rst:66
 msgid "Listing Python source files in this directory tree::"
 msgstr "列出当前目录树下的所有 Python 源代码文件::"
 
+#: ../../library/pathlib.rst:68
+msgid ""
+">>> list(p.glob('**/*.py'))\n"
+"[PosixPath('test_pathlib.py'), PosixPath('setup.py'),\n"
+" PosixPath('pathlib.py'), PosixPath('docs/conf.py'),\n"
+" PosixPath('build/lib/pathlib.py')]"
+msgstr ""
+
 #: ../../library/pathlib.rst:73
 msgid "Navigating inside a directory tree::"
 msgstr "在目录树中移动::"
+
+#: ../../library/pathlib.rst:75
+msgid ""
+">>> p = Path('/etc')\n"
+">>> q = p / 'init.d' / 'reboot'\n"
+">>> q\n"
+"PosixPath('/etc/init.d/reboot')\n"
+">>> q.resolve()\n"
+"PosixPath('/etc/rc.d/init.d/halt')"
+msgstr ""
 
 #: ../../library/pathlib.rst:82
 msgid "Querying path properties::"
 msgstr "查询路径的属性::"
 
+#: ../../library/pathlib.rst:84
+msgid ""
+">>> q.exists()\n"
+"True\n"
+">>> q.is_dir()\n"
+"False"
+msgstr ""
+
 #: ../../library/pathlib.rst:89
 msgid "Opening a file::"
 msgstr "打开一个文件::"
+
+#: ../../library/pathlib.rst:91
+msgid ""
+">>> with q.open() as f: f.readline()\n"
+"...\n"
+"'#!/bin/bash\\n'"
+msgstr ""
 
 #: ../../library/pathlib.rst:97
 msgid "Exceptions"
@@ -163,6 +208,12 @@ msgstr ""
 "一个通用的类，代表当前系统的路径风格（实例化为 :class:`PurePosixPath` 或者 "
 ":class:`PureWindowsPath`）::"
 
+#: ../../library/pathlib.rst:121
+msgid ""
+">>> PurePath('setup.py')      # Running on a Unix machine\n"
+"PurePosixPath('setup.py')"
+msgstr ""
+
 #: ../../library/pathlib.rst:124
 msgid ""
 "Each element of *pathsegments* can be either a string representing a path "
@@ -173,9 +224,23 @@ msgstr ""
 "*pathsegments* 的每个元素既可以是代表一个路径段的字符串，也可以是实现了 :class:`os.PathLike` 接口的对象，其中 "
 ":meth:`~os.PathLike.__fspath__` 方法返回一个字符串，例如另一个路径对象::"
 
+#: ../../library/pathlib.rst:129
+msgid ""
+">>> PurePath('foo', 'some/path', 'bar')\n"
+"PurePosixPath('foo/some/path/bar')\n"
+">>> PurePath(Path('foo'), Path('bar'))\n"
+"PurePosixPath('foo/bar')"
+msgstr ""
+
 #: ../../library/pathlib.rst:134
 msgid "When *pathsegments* is empty, the current directory is assumed::"
 msgstr "当 *pathsegments* 为空的时候，假定为当前目录::"
+
+#: ../../library/pathlib.rst:136
+msgid ""
+">>> PurePath()\n"
+"PurePosixPath('.')"
+msgstr ""
 
 #: ../../library/pathlib.rst:139
 msgid ""
@@ -183,11 +248,25 @@ msgid ""
 ":func:`os.path.join`)::"
 msgstr "如果某个段为绝对路径，则其前面的所有段都会被忽略 (类似 :func:`os.path.join`)::"
 
+#: ../../library/pathlib.rst:142
+msgid ""
+">>> PurePath('/etc', '/usr', 'lib64')\n"
+"PurePosixPath('/usr/lib64')\n"
+">>> PureWindowsPath('c:/Windows', 'd:bar')\n"
+"PureWindowsPath('d:bar')"
+msgstr ""
+
 #: ../../library/pathlib.rst:147
 msgid ""
 "On Windows, the drive is not reset when a rooted relative path segment "
 "(e.g., ``r'\\foo'``) is encountered::"
 msgstr "在 Windows 上，当遇到带根符号的路径段 (如 ``r'\\foo'``) 时驱动器将不会被重置::"
+
+#: ../../library/pathlib.rst:150
+msgid ""
+">>> PureWindowsPath('c:/Windows', '/Program Files')\n"
+"PureWindowsPath('c:/Program Files')"
+msgstr ""
 
 #: ../../library/pathlib.rst:153
 msgid ""
@@ -197,6 +276,18 @@ msgid ""
 msgstr ""
 "假斜杠和单个点号会被消除，但双点号 (``'..'``) 和打头的双斜杠 (``'//'``) 不会，因为这会出于各种原因改变路径的实际含义 "
 "(例如符号链接、UNC 路径等)::"
+
+#: ../../library/pathlib.rst:157
+msgid ""
+">>> PurePath('foo//bar')\n"
+"PurePosixPath('foo/bar')\n"
+">>> PurePath('//foo/bar')\n"
+"PurePosixPath('//foo/bar')\n"
+">>> PurePath('foo/./bar')\n"
+"PurePosixPath('foo/bar')\n"
+">>> PurePath('foo/../bar')\n"
+"PurePosixPath('foo/../bar')"
+msgstr ""
 
 #: ../../library/pathlib.rst:166
 msgid ""
@@ -223,6 +314,12 @@ msgid ""
 "filesystem paths::"
 msgstr "一个 :class:`PurePath` 的子类，路径风格不同于 Windows 文件系统::"
 
+#: ../../library/pathlib.rst:181
+msgid ""
+">>> PurePosixPath('/etc/hosts')\n"
+"PurePosixPath('/etc/hosts')"
+msgstr ""
+
 #: ../../library/pathlib.rst:184 ../../library/pathlib.rst:196
 #: ../../library/pathlib.rst:766 ../../library/pathlib.rst:776
 #: ../../library/pathlib.rst:791
@@ -234,6 +331,14 @@ msgid ""
 "A subclass of :class:`PurePath`, this path flavour represents Windows "
 "filesystem paths, including `UNC paths`_::"
 msgstr ":class:`PurePath` 的一个子类，此路径风格代表 Windows 文件系统路径，包括 `UNC paths`_::"
+
+#: ../../library/pathlib.rst:191
+msgid ""
+">>> PureWindowsPath('c:/', 'Users', 'Ximénez')\n"
+"PureWindowsPath('c:/Users/Ximénez')\n"
+">>> PureWindowsPath('//server/share/file')\n"
+"PureWindowsPath('//server/share/file')"
+msgstr ""
 
 #: ../../library/pathlib.rst:200
 msgid ""
@@ -252,9 +357,31 @@ msgid ""
 "folding semantics::"
 msgstr "路径是不可变并且 :term:`hashable`。 相同风格的路径可以排序和比较。 这此特性会尊重对应风格的大小写转换语义。::"
 
+#: ../../library/pathlib.rst:211
+msgid ""
+">>> PurePosixPath('foo') == PurePosixPath('FOO')\n"
+"False\n"
+">>> PureWindowsPath('foo') == PureWindowsPath('FOO')\n"
+"True\n"
+">>> PureWindowsPath('FOO') in { PureWindowsPath('foo') }\n"
+"True\n"
+">>> PureWindowsPath('C:') < PureWindowsPath('d:')\n"
+"True"
+msgstr ""
+
 #: ../../library/pathlib.rst:220
 msgid "Paths of a different flavour compare unequal and cannot be ordered::"
 msgstr "不同风格的路径比较得到不等的结果并且无法被排序::"
+
+#: ../../library/pathlib.rst:222
+msgid ""
+">>> PureWindowsPath('foo') == PurePosixPath('foo')\n"
+"False\n"
+">>> PureWindowsPath('foo') < PurePosixPath('foo')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: '<' not supported between instances of 'PureWindowsPath' and 'PurePosixPath'"
+msgstr ""
 
 #: ../../library/pathlib.rst:231
 msgid "Operators"
@@ -270,11 +397,35 @@ msgstr ""
 "斜杠操作符可以帮助创建子路径，如 :func:`os.path.join`。 如果参数为一个绝对路径，则之前的路径会被忽略。 在 Windows "
 "上，当参数为一个带根符号的相对路径 (如 ``r'\\foo'``) 时驱动器将不会被重置::"
 
+#: ../../library/pathlib.rst:238
+msgid ""
+">>> p = PurePath('/etc')\n"
+">>> p\n"
+"PurePosixPath('/etc')\n"
+">>> p / 'init.d' / 'apache2'\n"
+"PurePosixPath('/etc/init.d/apache2')\n"
+">>> q = PurePath('bin')\n"
+">>> '/usr' / q\n"
+"PurePosixPath('/usr/bin')\n"
+">>> p / '/an_absolute_path'\n"
+"PurePosixPath('/an_absolute_path')\n"
+">>> PureWindowsPath('c:/Windows', '/Program Files')\n"
+"PureWindowsPath('c:/Program Files')"
+msgstr ""
+
 #: ../../library/pathlib.rst:251
 msgid ""
 "A path object can be used anywhere an object implementing "
 ":class:`os.PathLike` is accepted::"
 msgstr "文件对象可用于任何接受 :class:`os.PathLike` 接口实现的地方。"
+
+#: ../../library/pathlib.rst:254
+msgid ""
+">>> import os\n"
+">>> p = PurePath('/etc')\n"
+">>> os.fspath(p)\n"
+"'/etc'"
+msgstr ""
 
 #: ../../library/pathlib.rst:259
 msgid ""
@@ -284,12 +435,28 @@ msgid ""
 msgstr ""
 "路径的字符串表示法为它自己原始的文件系统路径（以原生形式，例如在 Windows 下使用反斜杠）。你可以传递给任何需要字符串形式路径的函数。"
 
+#: ../../library/pathlib.rst:263
+msgid ""
+">>> p = PurePath('/etc')\n"
+">>> str(p)\n"
+"'/etc'\n"
+">>> p = PureWindowsPath('c:/Program Files')\n"
+">>> str(p)\n"
+"'c:\\\\Program Files'"
+msgstr ""
+
 #: ../../library/pathlib.rst:270
 msgid ""
 "Similarly, calling :class:`bytes` on a path gives the raw filesystem path as"
 " a bytes object, as encoded by :func:`os.fsencode`::"
 msgstr ""
 "类似地，在路径上调用 :class:`bytes` 将原始文件系统路径作为字节对象给出，就像被 :func:`os.fsencode` 编码一样::"
+
+#: ../../library/pathlib.rst:273
+msgid ""
+">>> bytes(p)\n"
+"b'/etc'"
+msgstr ""
 
 #: ../../library/pathlib.rst:277
 msgid ""
@@ -310,6 +477,17 @@ msgstr "为了访问路径独立的部分 （组件），使用以下特征属�
 #: ../../library/pathlib.rst:289
 msgid "A tuple giving access to the path's various components::"
 msgstr "一个元组，可以访问路径的多个组件::"
+
+#: ../../library/pathlib.rst:291
+msgid ""
+">>> p = PurePath('/usr/bin/python3')\n"
+">>> p.parts\n"
+"('/', 'usr', 'bin', 'python3')\n"
+"\n"
+">>> p = PureWindowsPath('c:/Program Files/PSF')\n"
+">>> p.parts\n"
+"('c:\\\\', 'Program Files', 'PSF')"
+msgstr ""
 
 #: ../../library/pathlib.rst:299
 msgid "(note how the drive and local root are regrouped in a single part)"
@@ -333,23 +511,65 @@ msgstr "用于低层级路径解析与合并的 :mod:`os.path` 模块的实现: 
 msgid "A string representing the drive letter or name, if any::"
 msgstr "一个表示驱动器盘符或命名的字符串，如果存在::"
 
+#: ../../library/pathlib.rst:322
+msgid ""
+">>> PureWindowsPath('c:/Program Files/').drive\n"
+"'c:'\n"
+">>> PureWindowsPath('/Program Files/').drive\n"
+"''\n"
+">>> PurePosixPath('/etc').drive\n"
+"''"
+msgstr ""
+
 #: ../../library/pathlib.rst:329
 msgid "UNC shares are also considered drives::"
 msgstr "UNC 分享也被认作驱动器::"
+
+#: ../../library/pathlib.rst:331
+msgid ""
+">>> PureWindowsPath('//host/share/foo.txt').drive\n"
+"'\\\\\\\\host\\\\share'"
+msgstr ""
 
 #: ../../library/pathlib.rst:336
 msgid "A string representing the (local or global) root, if any::"
 msgstr "一个表示（本地或全局）根的字符串，如果存在::"
 
+#: ../../library/pathlib.rst:338
+msgid ""
+">>> PureWindowsPath('c:/Program Files/').root\n"
+"'\\\\'\n"
+">>> PureWindowsPath('c:Program Files/').root\n"
+"''\n"
+">>> PurePosixPath('/etc').root\n"
+"'/'"
+msgstr ""
+
 #: ../../library/pathlib.rst:345
 msgid "UNC shares always have a root::"
 msgstr "UNC 分享一样拥有根::"
+
+#: ../../library/pathlib.rst:347
+msgid ""
+">>> PureWindowsPath('//host/share').root\n"
+"'\\\\'"
+msgstr ""
 
 #: ../../library/pathlib.rst:350
 msgid ""
 "If the path starts with more than two successive slashes, "
 ":class:`~pathlib.PurePosixPath` collapses them::"
 msgstr "如果路径以超过两个连续斜框打头，:class:`~pathlib.PurePosixPath` 会合并它们::"
+
+#: ../../library/pathlib.rst:353
+msgid ""
+">>> PurePosixPath('//etc').root\n"
+"'//'\n"
+">>> PurePosixPath('///etc').root\n"
+"'/'\n"
+">>> PurePosixPath('////etc').root\n"
+"'/'"
+msgstr ""
 
 #: ../../library/pathlib.rst:362
 msgid ""
@@ -372,11 +592,34 @@ msgstr "*\"以连续两个斜杠打头的路径名可能会以具体实现所定
 msgid "The concatenation of the drive and root::"
 msgstr "驱动器和根的联合::"
 
+#: ../../library/pathlib.rst:374
+msgid ""
+">>> PureWindowsPath('c:/Program Files/').anchor\n"
+"'c:\\\\'\n"
+">>> PureWindowsPath('c:Program Files/').anchor\n"
+"'c:'\n"
+">>> PurePosixPath('/etc').anchor\n"
+"'/'\n"
+">>> PureWindowsPath('//host/share').anchor\n"
+"'\\\\\\\\host\\\\share\\\\'"
+msgstr ""
+
 #: ../../library/pathlib.rst:386
 msgid ""
 "An immutable sequence providing access to the logical ancestors of the "
 "path::"
 msgstr "提供访问此路径的逻辑祖先的不可变序列::"
+
+#: ../../library/pathlib.rst:389
+msgid ""
+">>> p = PureWindowsPath('c:/foo/bar/setup.py')\n"
+">>> p.parents[0]\n"
+"PureWindowsPath('c:/foo/bar')\n"
+">>> p.parents[1]\n"
+"PureWindowsPath('c:/foo')\n"
+">>> p.parents[2]\n"
+"PureWindowsPath('c:/')"
+msgstr ""
 
 #: ../../library/pathlib.rst:397
 msgid ""
@@ -388,13 +631,37 @@ msgstr "parents 序列现在支持 :term:`切片 <slice>` 和负的索引值。"
 msgid "The logical parent of the path::"
 msgstr "此路径的逻辑父路径::"
 
+#: ../../library/pathlib.rst:404
+msgid ""
+">>> p = PurePosixPath('/a/b/c/d')\n"
+">>> p.parent\n"
+"PurePosixPath('/a/b/c')"
+msgstr ""
+
 #: ../../library/pathlib.rst:408
 msgid "You cannot go past an anchor, or empty path::"
 msgstr "你不能超过一个 anchor 或空路径::"
 
+#: ../../library/pathlib.rst:410
+msgid ""
+">>> p = PurePosixPath('/')\n"
+">>> p.parent\n"
+"PurePosixPath('/')\n"
+">>> p = PurePosixPath('.')\n"
+">>> p.parent\n"
+"PurePosixPath('.')"
+msgstr ""
+
 #: ../../library/pathlib.rst:418
 msgid "This is a purely lexical operation, hence the following behaviour::"
 msgstr "这是一个单纯的词法操作，因此有以下行为::"
+
+#: ../../library/pathlib.rst:420
+msgid ""
+">>> p = PurePosixPath('foo/..')\n"
+">>> p.parent\n"
+"PurePosixPath('foo')"
+msgstr ""
 
 #: ../../library/pathlib.rst:424
 msgid ""
@@ -409,13 +676,37 @@ msgid ""
 "root, if any::"
 msgstr "一个表示最后路径组件的字符串，排除了驱动器与根目录，如果存在的话::"
 
+#: ../../library/pathlib.rst:434
+msgid ""
+">>> PurePosixPath('my/library/setup.py').name\n"
+"'setup.py'"
+msgstr ""
+
 #: ../../library/pathlib.rst:437
 msgid "UNC drive names are not considered::"
 msgstr "UNC 驱动器名不被考虑::"
 
+#: ../../library/pathlib.rst:439
+msgid ""
+">>> PureWindowsPath('//some/share/setup.py').name\n"
+"'setup.py'\n"
+">>> PureWindowsPath('//some/share').name\n"
+"''"
+msgstr ""
+
 #: ../../library/pathlib.rst:447
 msgid "The last dot-separated portion of the final component, if any::"
 msgstr "最后一个路径组件中以点分割的后一部分（如果有） ::"
+
+#: ../../library/pathlib.rst:449
+msgid ""
+">>> PurePosixPath('my/library/setup.py').suffix\n"
+"'.py'\n"
+">>> PurePosixPath('my/library.tar.gz').suffix\n"
+"'.gz'\n"
+">>> PurePosixPath('my/library').suffix\n"
+"''"
+msgstr ""
 
 #: ../../library/pathlib.rst:456
 msgid "This is commonly called the file extension."
@@ -425,20 +716,66 @@ msgstr "这通常被称作文件扩展名。"
 msgid "A list of the path's suffixes, often called file extensions::"
 msgstr "由路径后缀组成的列表，经常被称作文件扩展名::"
 
+#: ../../library/pathlib.rst:462
+msgid ""
+">>> PurePosixPath('my/library.tar.gar').suffixes\n"
+"['.tar', '.gar']\n"
+">>> PurePosixPath('my/library.tar.gz').suffixes\n"
+"['.tar', '.gz']\n"
+">>> PurePosixPath('my/library').suffixes\n"
+"[]"
+msgstr ""
+
 #: ../../library/pathlib.rst:472
 msgid "The final path component, without its suffix::"
 msgstr "最后一个路径组件，除去后缀::"
+
+#: ../../library/pathlib.rst:474
+msgid ""
+">>> PurePosixPath('my/library.tar.gz').stem\n"
+"'library.tar'\n"
+">>> PurePosixPath('my/library.tar').stem\n"
+"'library'\n"
+">>> PurePosixPath('my/library').stem\n"
+"'library'"
+msgstr ""
 
 #: ../../library/pathlib.rst:484
 msgid ""
 "Return a string representation of the path with forward slashes (``/``)::"
 msgstr "返回使用正斜杠（``/``）的路径字符串::"
 
+#: ../../library/pathlib.rst:486
+msgid ""
+">>> p = PureWindowsPath('c:\\\\windows')\n"
+">>> str(p)\n"
+"'c:\\\\windows'\n"
+">>> p.as_posix()\n"
+"'c:/windows'"
+msgstr ""
+
 #: ../../library/pathlib.rst:495
 msgid ""
 "Return whether the path is absolute or not.  A path is considered absolute "
 "if it has both a root and (if the flavour allows) a drive::"
 msgstr "返回此路径是否为绝对路径。如果路径同时拥有驱动器符与根路径（如果风格允许）则将被认作绝对路径。"
+
+#: ../../library/pathlib.rst:498
+msgid ""
+">>> PurePosixPath('/a/b').is_absolute()\n"
+"True\n"
+">>> PurePosixPath('a/b').is_absolute()\n"
+"False\n"
+"\n"
+">>> PureWindowsPath('c:/a/b').is_absolute()\n"
+"True\n"
+">>> PureWindowsPath('/a/b').is_absolute()\n"
+"False\n"
+">>> PureWindowsPath('c:').is_absolute()\n"
+"False\n"
+">>> PureWindowsPath('//some/share').is_absolute()\n"
+"True"
+msgstr ""
 
 #: ../../library/pathlib.rst:515
 msgid "Return whether or not this path is relative to the *other* path."
@@ -483,11 +820,35 @@ msgid ""
 "given *pathsegments* in turn::"
 msgstr "调用此方法等同于依次将路径与给定的每个 *pathsegments* 组合到一起::"
 
+#: ../../library/pathlib.rst:556
+msgid ""
+">>> PurePosixPath('/etc').joinpath('passwd')\n"
+"PurePosixPath('/etc/passwd')\n"
+">>> PurePosixPath('/etc').joinpath(PurePosixPath('passwd'))\n"
+"PurePosixPath('/etc/passwd')\n"
+">>> PurePosixPath('/etc').joinpath('init.d', 'apache2')\n"
+"PurePosixPath('/etc/init.d/apache2')\n"
+">>> PureWindowsPath('c:').joinpath('/Program Files')\n"
+"PureWindowsPath('c:/Program Files')"
+msgstr ""
+
 #: ../../library/pathlib.rst:568
 msgid ""
 "Match this path against the provided glob-style pattern.  Return ``True`` if"
 " matching is successful, ``False`` otherwise.  For example::"
 msgstr "将此路径与所提供的 glob 样式匹配。如果匹配成功，则返回``True``，否则返回``False``。例如::"
+
+#: ../../library/pathlib.rst:571
+msgid ""
+">>> PurePath('a/b.py').full_match('a/*.py')\n"
+"True\n"
+">>> PurePath('a/b.py').full_match('*.py')\n"
+"False\n"
+">>> PurePath('/a/b/c.py').full_match('/a/**')\n"
+"True\n"
+">>> PurePath('/a/b/c.py').full_match('**/*.py')\n"
+"True"
+msgstr ""
 
 #: ../../library/pathlib.rst:581 ../../library/pathlib.rst:1291
 msgid ":ref:`pathlib-pattern-language` documentation."
@@ -496,6 +857,14 @@ msgstr ":ref:`pathlib-pattern-language` 文档。"
 #: ../../library/pathlib.rst:583
 msgid "As with other methods, case-sensitivity follows platform defaults::"
 msgstr "与其他方法一样，是否大小写敏感遵循平台的默认规则::"
+
+#: ../../library/pathlib.rst:585
+msgid ""
+">>> PurePosixPath('b.py').full_match('*.PY')\n"
+"False\n"
+">>> PureWindowsPath('b.py').full_match('*.PY')\n"
+"True"
+msgstr ""
 
 #: ../../library/pathlib.rst:590
 msgid ""
@@ -519,6 +888,16 @@ msgstr ""
 ":exc:`ValueError`)，也不支持递归通配符 \"``**``\" (将视为非递归的 "
 "\"``*``\")，并且如果提供了一个相对格式，则将从右开始匹配::"
 
+#: ../../library/pathlib.rst:605
+msgid ""
+">>> PurePath('a/b.py').match('*.py')\n"
+"True\n"
+">>> PurePath('/a/b/c.py').match('b/*.py')\n"
+"True\n"
+">>> PurePath('/a/b/c.py').match('a/*.py')\n"
+"False"
+msgstr ""
+
 #: ../../library/pathlib.rst:612 ../../library/pathlib.rst:1310
 #: ../../library/pathlib.rst:1335
 msgid "The *pattern* parameter accepts a :term:`path-like object`."
@@ -535,6 +914,21 @@ msgid ""
 "  If it's impossible, :exc:`ValueError` is raised::"
 msgstr "计算此路径相对于 *other* 所表示路径的版本。 如果不可计算，则引发 :exc:`ValueError`::"
 
+#: ../../library/pathlib.rst:624
+msgid ""
+">>> p = PurePosixPath('/etc/passwd')\n"
+">>> p.relative_to('/')\n"
+"PurePosixPath('etc/passwd')\n"
+">>> p.relative_to('/etc')\n"
+"PurePosixPath('passwd')\n"
+">>> p.relative_to('/usr')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"pathlib.py\", line 941, in relative_to\n"
+"    raise ValueError(error_message.format(str(self), str(formatted)))\n"
+"ValueError: '/etc/passwd' is not in the subpath of '/usr' OR one path is relative and the other is absolute."
+msgstr ""
+
 #: ../../library/pathlib.rst:636
 msgid ""
 "When *walk_up* is false (the default), the path must start with *other*. "
@@ -544,6 +938,18 @@ msgid ""
 msgstr ""
 "当 *walk_up* 为（默认的）假值时，路径必须以 *other* 开始。 当参数为真值时，可能会添加 ``..`` 条目以形成相对路径。 "
 "在所有其他情况下，例如路径引用了不同的驱动器，则会引发 :exc:`ValueError`。::"
+
+#: ../../library/pathlib.rst:641
+msgid ""
+">>> p.relative_to('/usr', walk_up=True)\n"
+"PurePosixPath('../etc/passwd')\n"
+">>> p.relative_to('foo', walk_up=True)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"pathlib.py\", line 941, in relative_to\n"
+"    raise ValueError(error_message.format(str(self), str(formatted)))\n"
+"ValueError: '/etc/passwd' is not on the same drive as 'foo' OR one path is relative and the other is absolute."
+msgstr ""
 
 #: ../../library/pathlib.rst:651
 msgid ""
@@ -573,11 +979,44 @@ msgid ""
 "doesn't have a name, ValueError is raised::"
 msgstr "返回一个新的路径并修改 :attr:`name`。如果原本路径没有 name，ValueError 被抛出::"
 
+#: ../../library/pathlib.rst:670
+msgid ""
+">>> p = PureWindowsPath('c:/Downloads/pathlib.tar.gz')\n"
+">>> p.with_name('setup.py')\n"
+"PureWindowsPath('c:/Downloads/setup.py')\n"
+">>> p = PureWindowsPath('c:/')\n"
+">>> p.with_name('setup.py')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"/home/antoine/cpython/default/Lib/pathlib.py\", line 751, in with_name\n"
+"    raise ValueError(\"%r has an empty name\" % (self,))\n"
+"ValueError: PureWindowsPath('c:/') has an empty name"
+msgstr ""
+
 #: ../../library/pathlib.rst:684
 msgid ""
 "Return a new path with the :attr:`stem` changed.  If the original path "
 "doesn't have a name, ValueError is raised::"
 msgstr "返回一个带有修改后 :attr:`stem` 的新路径。 如果原路径没有名称，则会引发 ValueError::"
+
+#: ../../library/pathlib.rst:687
+msgid ""
+">>> p = PureWindowsPath('c:/Downloads/draft.txt')\n"
+">>> p.with_stem('final')\n"
+"PureWindowsPath('c:/Downloads/final.txt')\n"
+">>> p = PureWindowsPath('c:/Downloads/pathlib.tar.gz')\n"
+">>> p.with_stem('lib')\n"
+"PureWindowsPath('c:/Downloads/lib.gz')\n"
+">>> p = PureWindowsPath('c:/')\n"
+">>> p.with_stem('')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"/home/antoine/cpython/default/Lib/pathlib.py\", line 861, in with_stem\n"
+"    return self.with_name(stem + self.suffix)\n"
+"  File \"/home/antoine/cpython/default/Lib/pathlib.py\", line 851, in with_name\n"
+"    raise ValueError(\"%r has an empty name\" % (self,))\n"
+"ValueError: PureWindowsPath('c:/') has an empty name"
+msgstr ""
 
 #: ../../library/pathlib.rst:708
 msgid ""
@@ -588,6 +1027,19 @@ msgstr ""
 "返回一个新的路径并修改 :attr:`suffix`。如果原本的路径没有后缀，新的 *suffix* 则被追加以代替。如果 *suffix* "
 "是空字符串，则原本的后缀被移除::"
 
+#: ../../library/pathlib.rst:712
+msgid ""
+">>> p = PureWindowsPath('c:/Downloads/pathlib.tar.gz')\n"
+">>> p.with_suffix('.bz2')\n"
+"PureWindowsPath('c:/Downloads/pathlib.tar.bz2')\n"
+">>> p = PureWindowsPath('README')\n"
+">>> p.with_suffix('.txt')\n"
+"PureWindowsPath('README.txt')\n"
+">>> p = PureWindowsPath('README.txt')\n"
+">>> p.with_suffix('')\n"
+"PureWindowsPath('README')"
+msgstr ""
+
 #: ../../library/pathlib.rst:725
 msgid ""
 "Create a new path object of the same type by combining the given "
@@ -597,6 +1049,23 @@ msgid ""
 msgstr ""
 "通过组合给定的 *pathsegments* 创建一个相同类型的新路径对象。 每当创建派生路径，如从 :attr:`parent` 和 "
 ":meth:`relative_to` 创建时都会调用此方法。 子类可以覆盖此方法以便向派生路径传递信息，例如::"
+
+#: ../../library/pathlib.rst:730
+msgid ""
+"from pathlib import PurePosixPath\n"
+"\n"
+"class MyPath(PurePosixPath):\n"
+"    def __init__(self, *pathsegments, session_id):\n"
+"        super().__init__(*pathsegments)\n"
+"        self.session_id = session_id\n"
+"\n"
+"    def with_segments(self, *pathsegments):\n"
+"        return type(self)(*pathsegments, session_id=self.session_id)\n"
+"\n"
+"etc = MyPath('/etc', session_id=42)\n"
+"hosts = etc / 'hosts'\n"
+"print(hosts.session_id)  # 42"
+msgstr ""
 
 #: ../../library/pathlib.rst:751
 msgid "Concrete paths"
@@ -618,12 +1087,24 @@ msgstr ""
 "一个 :class:`PurePath` 的子类，此类以当前系统的路径风格表示路径（实例化为 :class:`PosixPath` 或 "
 ":class:`WindowsPath`）::"
 
+#: ../../library/pathlib.rst:763
+msgid ""
+">>> Path('setup.py')\n"
+"PosixPath('setup.py')"
+msgstr ""
+
 #: ../../library/pathlib.rst:770
 msgid ""
 "A subclass of :class:`Path` and :class:`PurePosixPath`, this class "
 "represents concrete non-Windows filesystem paths::"
 msgstr ""
 "一个 :class:`Path` 和 :class:`PurePosixPath` 的子类，此类表示一个非 Windows 文件系统的具体路径::"
+
+#: ../../library/pathlib.rst:773
+msgid ""
+">>> PosixPath('/etc/hosts')\n"
+"PosixPath('/etc/hosts')"
+msgstr ""
 
 #: ../../library/pathlib.rst:778
 msgid ""
@@ -640,6 +1121,12 @@ msgid ""
 msgstr ""
 ":class:`Path` 和 :class:`PureWindowsPath` 的子类，从类表示一个 Windows 文件系统的具体路径::"
 
+#: ../../library/pathlib.rst:788
+msgid ""
+">>> WindowsPath('c:/', 'Users', 'Ximénez')\n"
+"WindowsPath('c:/Users/Ximénez')"
+msgstr ""
+
 #: ../../library/pathlib.rst:793
 msgid ""
 "Raises :exc:`UnsupportedOperation` on non-Windows platforms. In previous "
@@ -654,6 +1141,23 @@ msgid ""
 "(allowing system calls on non-compatible path flavours could lead to bugs or"
 " failures in your application)::"
 msgstr "你只能实例化与当前系统风格相同的类（允许系统调用作用于不兼容的路径风格可能在应用程序中导致缺陷或失败）::"
+
+#: ../../library/pathlib.rst:802
+msgid ""
+">>> import os\n"
+">>> os.name\n"
+"'posix'\n"
+">>> Path('setup.py')\n"
+"PosixPath('setup.py')\n"
+">>> PosixPath('setup.py')\n"
+"PosixPath('setup.py')\n"
+">>> WindowsPath('setup.py')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"pathlib.py\", line 798, in __new__\n"
+"    % (cls.__name__,))\n"
+"UnsupportedOperation: cannot instantiate 'WindowsPath' on your system"
+msgstr ""
 
 #: ../../library/pathlib.rst:816
 msgid ""
@@ -681,13 +1185,39 @@ msgstr "文件 URI 不能在具有不同 :ref:`文件系统编码格式 <filesys
 msgid "Return a new path object from parsing a 'file' URI. For example::"
 msgstr "通过解析一个 '文件' URI 来返回新的路径对象。 例如::"
 
+#: ../../library/pathlib.rst:835
+msgid ""
+">>> p = Path.from_uri('file:///etc/hosts')\n"
+"PosixPath('/etc/hosts')"
+msgstr ""
+
 #: ../../library/pathlib.rst:838
 msgid "On Windows, DOS device and UNC paths may be parsed from URIs::"
 msgstr "在 Windows 上，可以基于 URI 来解析 DOS 设备和 UNC 路径::"
 
+#: ../../library/pathlib.rst:840
+msgid ""
+">>> p = Path.from_uri('file:///c:/windows')\n"
+"WindowsPath('c:/windows')\n"
+">>> p = Path.from_uri('file://server/share')\n"
+"WindowsPath('//server/share')"
+msgstr ""
+
 #: ../../library/pathlib.rst:845
 msgid "Several variant forms are supported::"
 msgstr "某些变化形式也是受支持的::"
+
+#: ../../library/pathlib.rst:847
+msgid ""
+">>> p = Path.from_uri('file:////server/share')\n"
+"WindowsPath('//server/share')\n"
+">>> p = Path.from_uri('file://///server/share')\n"
+"WindowsPath('//server/share')\n"
+">>> p = Path.from_uri('file:c:/windows')\n"
+"WindowsPath('c:/windows')\n"
+">>> p = Path.from_uri('file:/c|/windows')\n"
+"WindowsPath('c:/windows')"
+msgstr ""
 
 #: ../../library/pathlib.rst:856
 msgid ""
@@ -700,6 +1230,16 @@ msgid ""
 "Represent the path as a 'file' URI.  :exc:`ValueError` is raised if the path"
 " isn't absolute."
 msgstr "将路径表示为 'file' URI。 如果路径不是绝对路径则会引发 :exc:`ValueError`。"
+
+#: ../../library/pathlib.rst:867
+msgid ""
+">>> p = PosixPath('/etc/passwd')\n"
+">>> p.as_uri()\n"
+"'file:///etc/passwd'\n"
+">>> p = WindowsPath('c:/Windows')\n"
+">>> p.as_uri()\n"
+"'file:///c:/Windows'"
+msgstr ""
 
 #: ../../library/pathlib.rst:876
 msgid ""
@@ -722,6 +1262,12 @@ msgstr ""
 "返回一个表示用户家目录的新路径对象（与带 ``~`` 构造的 :func:`os.path.expanduser` 所返回的相同）。 "
 "如果无法解析家目录，则会引发 :exc:`RuntimeError`。"
 
+#: ../../library/pathlib.rst:892
+msgid ""
+">>> Path.home()\n"
+"PosixPath('/home/antoine')"
+msgstr ""
+
 #: ../../library/pathlib.rst:900
 msgid ""
 "Return a new path with expanded ``~`` and ``~user`` constructs, as returned "
@@ -731,11 +1277,24 @@ msgstr ""
 "返回带有扩展 ``~`` 和 ``~user`` 构造的新路径，与 :meth:`os.path.expanduser` 所返回的相同。 "
 "如果无法解析家目录，则会引发 :exc:`RuntimeError`。"
 
+#: ../../library/pathlib.rst:906
+msgid ""
+">>> p = PosixPath('~/films/Monty Python')\n"
+">>> p.expanduser()\n"
+"PosixPath('/home/eric/films/Monty Python')"
+msgstr ""
+
 #: ../../library/pathlib.rst:915
 msgid ""
 "Return a new path object representing the current directory (as returned by "
 ":func:`os.getcwd`)::"
 msgstr "返回一个新的表示当前目录的路径对象（和 :func:`os.getcwd` 返回的相同）::"
+
+#: ../../library/pathlib.rst:918
+msgid ""
+">>> Path.cwd()\n"
+"PosixPath('/home/antoine/pathlib')"
+msgstr ""
 
 #: ../../library/pathlib.rst:924
 msgid ""
@@ -743,17 +1302,42 @@ msgid ""
 " a new path object::"
 msgstr "改为绝对路径，不会执行正规化或解析符号链接。 返回一个新的路径对象::"
 
+#: ../../library/pathlib.rst:927
+msgid ""
+">>> p = Path('tests')\n"
+">>> p\n"
+"PosixPath('tests')\n"
+">>> p.absolute()\n"
+"PosixPath('/home/antoine/pathlib/tests')"
+msgstr ""
+
 #: ../../library/pathlib.rst:936
 msgid ""
 "Make the path absolute, resolving any symlinks.  A new path object is "
 "returned::"
 msgstr "将路径绝对化，解析任何符号链接。返回新的路径对象::"
 
+#: ../../library/pathlib.rst:939
+msgid ""
+">>> p = Path()\n"
+">>> p\n"
+"PosixPath('.')\n"
+">>> p.resolve()\n"
+"PosixPath('/home/antoine/pathlib')"
+msgstr ""
+
 #: ../../library/pathlib.rst:945
 msgid ""
 "\"``..``\" components are also eliminated (this is the only method to do "
 "so)::"
 msgstr "\"``..``\" 组件也将被消除（只有这一种方法这么做）::"
+
+#: ../../library/pathlib.rst:947
+msgid ""
+">>> p = Path('docs/../setup.py')\n"
+">>> p.resolve()\n"
+"PosixPath('/home/antoine/pathlib/setup.py')"
+msgstr ""
 
 #: ../../library/pathlib.rst:951
 msgid ""
@@ -783,6 +1367,14 @@ msgid ""
 "Return the path to which the symbolic link points (as returned by "
 ":func:`os.readlink`)::"
 msgstr "返回符号链接所指向的路径（即 :func:`os.readlink` 的返回值）::"
+
+#: ../../library/pathlib.rst:970
+msgid ""
+">>> p = Path('mylink')\n"
+">>> p.symlink_to('setup.py')\n"
+">>> p.readlink()\n"
+"PosixPath('setup.py')"
+msgstr ""
 
 #: ../../library/pathlib.rst:977
 msgid ""
@@ -828,6 +1420,15 @@ msgstr ""
 "此方法通常会跟随符号链接；要对 symlink 使用 stat 请添加参数 ``follow_symlinks=False``，或者使用 "
 ":meth:`~Path.lstat`。"
 
+#: ../../library/pathlib.rst:1005
+msgid ""
+">>> p = Path('setup.py')\n"
+">>> p.stat().st_size\n"
+"956\n"
+">>> p.stat().st_mtime\n"
+"1327883547.852554"
+msgstr ""
+
 #: ../../library/pathlib.rst:1011 ../../library/pathlib.rst:1039
 #: ../../library/pathlib.rst:1054 ../../library/pathlib.rst:1069
 #: ../../library/pathlib.rst:1600 ../../library/pathlib.rst:1616
@@ -850,6 +1451,18 @@ msgid ""
 "This method normally follows symlinks; to check if a symlink exists, add the"
 " argument ``follow_symlinks=False``."
 msgstr "此方法通常会跟随符号链接；要检查符号链接是否存在，请添加参数 ``follow_symlinks=False``。"
+
+#: ../../library/pathlib.rst:1030
+msgid ""
+">>> Path('.').exists()\n"
+"True\n"
+">>> Path('setup.py').exists()\n"
+"True\n"
+">>> Path('/etc').exists()\n"
+"True\n"
+">>> Path('nonexistentfile').exists()\n"
+"False"
+msgstr ""
 
 #: ../../library/pathlib.rst:1045
 msgid ""
@@ -963,6 +1576,16 @@ msgid ""
 "reason."
 msgstr "如果两者都以同一原因无法访问，则抛出 :exc:`OSError`。"
 
+#: ../../library/pathlib.rst:1153
+msgid ""
+">>> p = Path('spam')\n"
+">>> q = Path('eggs')\n"
+">>> p.samefile(q)\n"
+"False\n"
+">>> p.samefile('spam')\n"
+"True"
+msgstr ""
+
 #: ../../library/pathlib.rst:1164
 msgid "Reading and writing files"
 msgstr "读写文件"
@@ -973,9 +1596,27 @@ msgid ""
 "function does::"
 msgstr "打开路径指向的文件，就像内置的 :func:`open` 函数所做的一样::"
 
+#: ../../library/pathlib.rst:1172
+msgid ""
+">>> p = Path('setup.py')\n"
+">>> with p.open() as f:\n"
+"...     f.readline()\n"
+"...\n"
+"'#!/usr/bin/env python3\\n'"
+msgstr ""
+
 #: ../../library/pathlib.rst:1181
 msgid "Return the decoded contents of the pointed-to file as a string::"
 msgstr "以字符串形式返回路径指向的文件的解码后文本内容。"
+
+#: ../../library/pathlib.rst:1183 ../../library/pathlib.rst:1216
+msgid ""
+">>> p = Path('my_text_file')\n"
+">>> p.write_text('Text file contents')\n"
+"18\n"
+">>> p.read_text()\n"
+"'Text file contents'"
+msgstr ""
 
 #: ../../library/pathlib.rst:1189
 msgid ""
@@ -990,6 +1631,15 @@ msgstr "增加了 *newline* 形参。"
 #: ../../library/pathlib.rst:1200
 msgid "Return the binary contents of the pointed-to file as a bytes object::"
 msgstr "以字节对象的形式返回路径指向的文件的二进制内容::"
+
+#: ../../library/pathlib.rst:1202 ../../library/pathlib.rst:1236
+msgid ""
+">>> p = Path('my_binary_file')\n"
+">>> p.write_bytes(b'Binary file contents')\n"
+"20\n"
+">>> p.read_bytes()\n"
+"b'Binary file contents'"
+msgstr ""
 
 #: ../../library/pathlib.rst:1213
 msgid ""
@@ -1023,6 +1673,20 @@ msgid ""
 "contents::"
 msgstr "当路径指向一个目录时，产生该路径下的对象的路径::"
 
+#: ../../library/pathlib.rst:1255
+msgid ""
+">>> p = Path('docs')\n"
+">>> for child in p.iterdir(): child\n"
+"...\n"
+"PosixPath('docs/conf.py')\n"
+"PosixPath('docs/_templates')\n"
+"PosixPath('docs/make.bat')\n"
+"PosixPath('docs/index.rst')\n"
+"PosixPath('docs/_build')\n"
+"PosixPath('docs/_static')\n"
+"PosixPath('docs/Makefile')"
+msgstr ""
+
 #: ../../library/pathlib.rst:1266
 msgid ""
 "The children are yielded in arbitrary order, and the special entries ``'.'``"
@@ -1044,6 +1708,20 @@ msgid ""
 "Glob the given relative *pattern* in the directory represented by this path,"
 " yielding all matching files (of any kind)::"
 msgstr "解析相对于此路径的通配符 *pattern*，产生所有匹配的文件::"
+
+#: ../../library/pathlib.rst:1279
+msgid ""
+">>> sorted(Path('.').glob('*.py'))\n"
+"[PosixPath('pathlib.py'), PosixPath('setup.py'), PosixPath('test_pathlib.py')]\n"
+">>> sorted(Path('.').glob('*/*.py'))\n"
+"[PosixPath('docs/conf.py')]\n"
+">>> sorted(Path('.').glob('**/*.py'))\n"
+"[PosixPath('build/lib/pathlib.py'),\n"
+" PosixPath('docs/conf.py'),\n"
+" PosixPath('pathlib.py'),\n"
+" PosixPath('setup.py'),\n"
+" PosixPath('test_pathlib.py')]"
+msgstr ""
 
 #: ../../library/pathlib.rst:1293
 msgid ""
@@ -1070,7 +1748,7 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``pathlib.Path.glob`` with "
 "arguments ``self``, ``pattern``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``pathlib.Path.glob`` 附带参数 ``self``, "
+"引发一个 :ref:`审计事件 <auditing>` ``pathlib.Path.glob`` 并附带参数 ``self``, "
 "``pattern``。"
 
 #: ../../library/pathlib.rst:1307 ../../library/pathlib.rst:1332
@@ -1102,7 +1780,7 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``pathlib.Path.rglob`` with "
 "arguments ``self``, ``pattern``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``pathlib.Path.rglob`` 附带参数 ``self``, "
+"引发一个 :ref:`审计事件 <auditing>` ``pathlib.Path.rglob`` 并附带参数 ``self``, "
 "``pattern``。"
 
 #: ../../library/pathlib.rst:1341
@@ -1227,6 +1905,22 @@ msgid ""
 "directory, while ignoring ``__pycache__`` directories::"
 msgstr "这个例子显示每个目录中所有文件使用的总字节数，忽略其中的 ``__pycache__`` 目录::"
 
+#: ../../library/pathlib.rst:1406
+msgid ""
+"from pathlib import Path\n"
+"for root, dirs, files in Path(\"cpython/Lib/concurrent\").walk(on_error=print):\n"
+"  print(\n"
+"      root,\n"
+"      \"consumes\",\n"
+"      sum((root / file).stat().st_size for file in files),\n"
+"      \"bytes in\",\n"
+"      len(files),\n"
+"      \"non-directory files\"\n"
+"  )\n"
+"  if '__pycache__' in dirs:\n"
+"        dirs.remove('__pycache__')"
+msgstr ""
+
 #: ../../library/pathlib.rst:1419
 msgid ""
 "This next example is a simple implementation of :func:`shutil.rmtree`. "
@@ -1235,6 +1929,18 @@ msgid ""
 msgstr ""
 "下一个例子是 :func:`shutil.rmtree` 的一个简单实现。 由于 :func:`rmdir` "
 "不允许在目录为空之前删除该目录因此自下而上地遍历目录树是至关重要的::"
+
+#: ../../library/pathlib.rst:1423
+msgid ""
+"# Delete everything reachable from the directory \"top\".\n"
+"# CAUTION:  This is dangerous! For example, if top == Path('/'),\n"
+"# it could delete all of your files.\n"
+"for root, dirs, files in top.walk(top_down=False):\n"
+"    for name in files:\n"
+"        (root / name).unlink()\n"
+"    for name in dirs:\n"
+"        (root / name).rmdir()"
+msgstr ""
 
 #: ../../library/pathlib.rst:1436
 msgid "Creating files and directories"
@@ -1318,6 +2024,18 @@ msgstr ""
 "*target_is_directory* 为真值则符号链接将创建为目录类型否则将创建为文件符号链接。 在非 Windows "
 "平台上，*target_is_directory* 将被忽略。"
 
+#: ../../library/pathlib.rst:1488
+msgid ""
+">>> p = Path('mylink')\n"
+">>> p.symlink_to('setup.py')\n"
+">>> p.resolve()\n"
+"PosixPath('/home/antoine/pathlib/setup.py')\n"
+">>> p.stat().st_size\n"
+"956\n"
+">>> p.lstat().st_size\n"
+"8"
+msgstr ""
+
 #: ../../library/pathlib.rst:1498
 msgid ""
 "The order of arguments (link, target) is the reverse of "
@@ -1364,6 +2082,18 @@ msgstr ""
 "将此文件或目录重命名为给定的 *target*，并返回一个新的指向 *target* 的 :class:`!Path` 实例。 在 Unix 上，如果 "
 "*target* 存在且为一个文件，那么如果用户具有相应权限则它将静默地替换。 在 Windows 上，如果 *target* 存在，则会引发 "
 ":exc:`FileExistsError`。 *target* 可以是一个字符串或者另一个路径对象::"
+
+#: ../../library/pathlib.rst:1532
+msgid ""
+">>> p = Path('foo')\n"
+">>> p.open('w').write('some text')\n"
+"9\n"
+">>> target = Path('bar')\n"
+">>> p.rename(target)\n"
+"PosixPath('bar')\n"
+">>> target.open().read()\n"
+"'some text'"
+msgstr ""
 
 #: ../../library/pathlib.rst:1541 ../../library/pathlib.rst:1557
 msgid ""
@@ -1475,6 +2205,16 @@ msgid ""
 msgstr ""
 "此方法通常会跟随符号链接。 某些 Unix 变种支持改变 symlink 本身的权限；在这些平台上你可以添加参数 "
 "``follow_symlinks=False``，或者使用 :meth:`~Path.lchmod`。"
+
+#: ../../library/pathlib.rst:1630
+msgid ""
+">>> p = Path('setup.py')\n"
+">>> p.stat().st_mode\n"
+"33277\n"
+">>> p.chmod(0o444)\n"
+">>> p.stat().st_mode\n"
+"33060"
+msgstr ""
 
 #: ../../library/pathlib.rst:1643
 msgid ""
@@ -1596,47 +2336,54 @@ msgstr "以 \"``assets/``\" 开头，但不包括 \"``assets/``\" 本身的任�
 msgid ""
 "Globbing with the \"``**``\" wildcard visits every directory in the tree. "
 "Large directory trees may take a long time to search."
-msgstr ""
+msgstr "使用 \"``**``\" 通配符执行 glob 操作将访问目录树中的每个目录。 非常大的目录树可能要花费非常长的时间来搜索。"
 
 #: ../../library/pathlib.rst:1686
 msgid ""
 "Globbing with a pattern that ends with \"``**``\" returns both files and "
 "directories. In previous versions, only directories were returned."
-msgstr ""
+msgstr "使用以 \"``**``\" 结尾的模式执行 glob 操作将同时返回文件和目录。 在之前的版本中，只有目录会被返回。"
 
 #: ../../library/pathlib.rst:1690
 msgid ""
 "In :meth:`Path.glob` and :meth:`~Path.rglob`, a trailing slash may be added "
 "to the pattern to match only directories."
-msgstr ""
+msgstr "在 :meth:`Path.glob` 和 :meth:`~Path.rglob` 中，可以向模式添加一个末尾斜杠以只匹配目录。"
 
 #: ../../library/pathlib.rst:1693
 msgid ""
 "Globbing with a pattern that ends with a pathname components separator "
 "(:data:`~os.sep` or :data:`~os.altsep`) returns only directories."
 msgstr ""
+"使用以一个路径名称组件分隔符 (:data:`~os.sep` or :data:`~os.altsep`) 结尾的模式执行 glob "
+"操作将只返回目录。"
 
 #: ../../library/pathlib.rst:1699
 msgid "Comparison to the :mod:`glob` module"
-msgstr ""
+msgstr "与 :mod:`glob` 模块的比较"
 
 #: ../../library/pathlib.rst:1701
 msgid ""
 "The patterns accepted and results generated by :meth:`Path.glob` and "
 ":meth:`Path.rglob` differ slightly from those by the :mod:`glob` module:"
 msgstr ""
+":meth:`Path.glob` 和 :meth:`Path.rglob` 所接受的模式和所生成的结果相比 :mod:`glob` 模式的略有不同："
 
 #: ../../library/pathlib.rst:1704
 msgid ""
 "Files beginning with a dot are not special in pathlib. This is like passing "
 "``include_hidden=True`` to :func:`glob.glob`."
 msgstr ""
+"以点号打点的文件在 pathlib 中没有特殊含义。 这类似于向 :func:`glob.glob` 传入 "
+"``include_hidden=True``。"
 
 #: ../../library/pathlib.rst:1706
 msgid ""
 "\"``**``\" pattern components are always recursive in pathlib. This is like "
 "passing ``recursive=True`` to :func:`glob.glob`."
 msgstr ""
+"\"``**``\" 模式组件在 pathlib 总是递归的。 这类似于向 :func:`glob.glob` 传入 "
+"``recursive=True``。"
 
 #: ../../library/pathlib.rst:1708
 msgid ""
@@ -1644,6 +2391,8 @@ msgid ""
 "This behaviour has no equivalent in :func:`glob.glob`, but you can pass "
 "``recurse_symlinks=True`` to :meth:`Path.glob` for compatible behaviour."
 msgstr ""
+"\"``**``\" 模式组件在 pathlib 中默认不会跟随符号链接。 此行为在 :func:`glob.glob` 中没有对应物，但你可以向 "
+":meth:`Path.glob` 传入 ``recurse_symlinks=True`` 以获得兼容的行为。"
 
 #: ../../library/pathlib.rst:1711
 msgid ""
@@ -1651,6 +2400,8 @@ msgid ""
 "from :meth:`Path.glob` and :meth:`Path.rglob` don't include trailing "
 "slashes."
 msgstr ""
+"与所有 :class:`PurePath` 和 :class:`Path` 对象类似，从 :meth:`Path.glob` 和 "
+":meth:`Path.rglob` 返回的值都不包括末尾斜杠。"
 
 #: ../../library/pathlib.rst:1714
 msgid ""
@@ -1658,6 +2409,8 @@ msgid ""
 "include the *path* as a prefix, unlike the results of "
 "``glob.glob(root_dir=path)``."
 msgstr ""
+"从 pathlib 的 ``path.glob()`` 和 ``path.rglob()`` 返回的值包括作为前缀的 *path*，这不同于 "
+"``glob.glob(root_dir=path)`` 的结果。"
 
 #: ../../library/pathlib.rst:1717
 msgid ""
@@ -1666,10 +2419,13 @@ msgid ""
 "results of ``glob.glob(root_dir=path)`` never include an empty string that "
 "would correspond to *path*."
 msgstr ""
+"从 pathlib 的 ``path.glob()`` 和 ``path.rglob()`` 返回的值可能包括 *path* 本身，例如当对 "
+"\"``**``\" 执行 glob 操作的时候，而 ``glob.glob(root_dir=path)`` 的结果绝不会包括与 *path* "
+"对应的空字符串。"
 
 #: ../../library/pathlib.rst:1724
 msgid "Comparison to the :mod:`os` and :mod:`os.path` modules"
-msgstr ""
+msgstr "与 :mod:`os` 和 :mod:`os.path` 模块的比较"
 
 #: ../../library/pathlib.rst:1726
 msgid ""
@@ -1679,6 +2435,9 @@ msgid ""
 "level ``str`` and ``bytes`` objects, which is a more *procedural* approach. "
 "Some users consider the object-oriented style to be more readable."
 msgstr ""
+"pathlib 使用 :class:`PurePath` 和 :class:`Path` 对象来实现路径操作，因此它被认为是 *面向对象的*。 "
+"而在另一方面，:mod:`os` 和 :mod:`os.path` 模块提供与低层级 ``str`` 和 ``bytes`` "
+"对象配合使用的函数，它更接近于 *面向过程的* 方式。 某些用户认为面向对象的风格可读性更好。"
 
 #: ../../library/pathlib.rst:1732
 msgid ""
@@ -1686,6 +2445,8 @@ msgid ""
 ":ref:`paths relative to directory descriptors <dir_fd>`. These features "
 "aren't available in pathlib."
 msgstr ""
+":mod:`os` 和 :mod:`os.path` 中的许多函数都支持 ``bytes`` 路径和 :ref:`相对于目录描述符的路径 "
+"<dir_fd>`。 这些特性在 pathlib 中均不可用。"
 
 #: ../../library/pathlib.rst:1736
 msgid ""
@@ -1694,6 +2455,8 @@ msgid ""
 "written in pure Python and is often slower, but rarely slow enough to "
 "matter."
 msgstr ""
+"Python 的 ``str`` 和 ``bytes`` 类型，以及 :mod:`os` 和 :mod:`os.path` 模块的各个部分都是用 C "
+"编写的因而非常快速。 pathlib 是用纯 Python 编写的因而往往较慢，但很少会慢到引人注意。"
 
 #: ../../library/pathlib.rst:1740
 msgid ""
@@ -1703,11 +2466,13 @@ msgid ""
 "are involved, :meth:`Path.absolute` preserves these segments for greater "
 "safety."
 msgstr ""
+"pathlib 的路径规范化比 :mod:`os.path` 更有主见也更一致。 例如，:func:`os.path.abspath` 会删除路径中的 "
+"\"``..``\" 段，因为当涉及符号链接时这可能会改变其含义；而 :meth:`Path.absolute` 则会保留这些段以提高安全性。"
 
 #: ../../library/pathlib.rst:1745
 msgid ""
 "pathlib's path normalization may render it unsuitable for some applications:"
-msgstr ""
+msgstr "pathlib 的路径规范化可能使其不适合某些应用程序："
 
 #: ../../library/pathlib.rst:1747
 msgid ""
@@ -1717,6 +2482,9 @@ msgid ""
 "separator may allow the path to be resolved as either a file or directory, "
 "rather than a directory only."
 msgstr ""
+"pathlib 会将 ``Path(\"my_folder/\")`` 规范化为 "
+"``Path(\"my_folder\")``，这改变了路径在提供给各种操作系统 API 和命令行工具时的含义。 "
+"具体来说，缺少末尾分隔符可能会使路径被解析为文件或目录，而非只是目录。"
 
 #: ../../library/pathlib.rst:1752
 msgid ""
@@ -1726,6 +2494,9 @@ msgid ""
 " a separator in the path may force it to be looked up in :envvar:`PATH` "
 "rather than the current directory."
 msgstr ""
+"pathlib 会将 ``Path(\"./my_program\")`` 规范化为 "
+"``Path(\"my_program\")``，这改变了路径在被用作可执行文件搜索路径，例如在 shell 中或者在产生子进程时的含义。 "
+"具体来说，缺少路径中的分隔符可能会迫使其在 :envvar:`PATH` 而不是在当前目录中查找。"
 
 #: ../../library/pathlib.rst:1758
 msgid ""
@@ -1901,7 +2672,7 @@ msgstr ":func:`os.lstat`"
 
 #: ../../library/pathlib.rst:1789
 msgid ":meth:`Path.lstat`"
-msgstr ""
+msgstr ":meth:`Path.lstat`"
 
 #: ../../library/pathlib.rst:1790
 msgid ":func:`os.listdir`"
@@ -1997,7 +2768,7 @@ msgstr ":func:`os.lchmod`"
 
 #: ../../library/pathlib.rst:1801
 msgid ":meth:`Path.lchmod`"
-msgstr ""
+msgstr ":meth:`Path.lchmod`"
 
 #: ../../library/pathlib.rst:1805
 msgid "Footnotes"
@@ -2010,6 +2781,9 @@ msgid ""
 "is a lexical operation that raises :exc:`ValueError` when its inputs' "
 "anchors differ (e.g. if one path is absolute and the other relative.)"
 msgstr ""
+":func:`os.path.relpath` 会调用 :func:`~os.path.abspath` 以使路径变为绝对路径并移除 "
+"\"``..``\" 部分，而 :meth:`PurePath.relative_to` "
+"是一个词法操作，当其输入的锚点不同时（例如当一个路径为绝对路径而另一个为相对路径时）将引发 :exc:`ValueError`。"
 
 #: ../../library/pathlib.rst:1810
 msgid ""
@@ -2026,6 +2800,8 @@ msgid ""
 "symlinks, which may change the meaning of the path, whereas "
 ":meth:`Path.absolute` leaves any \"``..``\" components in the path."
 msgstr ""
+":func:`os.path.abspath` 会移除 \"``..``\" 组件而不解析符号链接，这可能改变路径的含义，而 "
+":meth:`Path.absolute` 则会让路径中的任何 \"``..``\" 组件保持原样。"
 
 #: ../../library/pathlib.rst:1816
 msgid ""
@@ -2033,6 +2809,8 @@ msgid ""
 "*dirnames* and *filenames*, whereas :meth:`Path.walk` categorizes all "
 "symlinks into *filenames* when *follow_symlinks* is false (the default.)"
 msgstr ""
+":func:`os.walk` 在将路径分类为 *dirnames* 和 *filenames* 时总是会跟随符号链接，而 "
+":meth:`Path.walk` 当 *follow_symlinks* 为（默认的）假值时会将符号链接分类为 *filenames*。"
 
 #: ../../library/pathlib.rst:11
 msgid "path"

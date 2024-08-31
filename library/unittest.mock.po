@@ -7,7 +7,7 @@
 # Yon Liu <lzy110100@aliyun.com>, 2021
 # paradise321 <13386688@qq.com>, 2021
 # kevin wong <huagang517@126.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # WH-2099 <wh2099@outlook.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:16+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -122,6 +122,34 @@ msgid ""
 msgstr ""
 "使用 :func:`patch` 装饰去/上下文管理器，可以更方便地测试一个模块下的类或对象。你指定的对象会在测试过程中替换成 mock "
 "（或者其他对象），测试结束后恢复。"
+
+#: ../../library/unittest.mock.rst:101
+msgid ""
+">>> from unittest.mock import patch\n"
+">>> @patch('module.ClassName2')\n"
+"... @patch('module.ClassName1')\n"
+"... def test(MockClass1, MockClass2):\n"
+"...     module.ClassName1()\n"
+"...     module.ClassName2()\n"
+"...     assert MockClass1 is module.ClassName1\n"
+"...     assert MockClass2 is module.ClassName2\n"
+"...     assert MockClass1.called\n"
+"...     assert MockClass2.called\n"
+"...\n"
+">>> test()"
+msgstr ""
+">>> from unittest.mock import patch\n"
+">>> @patch('module.ClassName2')\n"
+"... @patch('module.ClassName1')\n"
+"... def test(MockClass1, MockClass2):\n"
+"...     module.ClassName1()\n"
+"...     module.ClassName2()\n"
+"...     assert MockClass1 is module.ClassName1\n"
+"...     assert MockClass2 is module.ClassName2\n"
+"...     assert MockClass1.called\n"
+"...     assert MockClass2.called\n"
+"...\n"
+">>> test()"
 
 #: ../../library/unittest.mock.rst:116
 msgid ""
@@ -745,6 +773,24 @@ msgstr ""
 "使用 *spec* (或 *spec_set*) 创建的可调用 mock 将在匹配调用与 mock 时内省规格说明对象的签名。 "
 "因此，它可以匹配实际调用的参数而不必关心它们是按位置还是按名称传入的::"
 
+#: ../../library/unittest.mock.rst:807
+msgid ""
+">>> def f(a, b, c): pass\n"
+"...\n"
+">>> mock = Mock(spec=f)\n"
+">>> mock(1, 2, c=3)\n"
+"<Mock name='mock()' id='140161580456576'>\n"
+">>> mock.assert_called_with(1, 2, 3)\n"
+">>> mock.assert_called_with(a=1, b=2, c=3)"
+msgstr ""
+">>> def f(a, b, c): pass\n"
+"...\n"
+">>> mock = Mock(spec=f)\n"
+">>> mock(1, 2, c=3)\n"
+"<Mock name='mock()' id='140161580456576'>\n"
+">>> mock.assert_called_with(1, 2, 3)\n"
+">>> mock.assert_called_with(a=1, b=2, c=3)"
+
 #: ../../library/unittest.mock.rst:815
 msgid ""
 "This applies to :meth:`~Mock.assert_called_with`, "
@@ -780,6 +826,27 @@ msgstr ""
 "当从一个对象提取 :class:`PropertyMock` 实例时将不附带任何参数地调用该 mock。 如果设置它则调用该 mock "
 "时将附带被设置的值。 ::"
 
+#: ../../library/unittest.mock.rst:834
+msgid ""
+">>> class Foo:\n"
+"...     @property\n"
+"...     def foo(self):\n"
+"...         return 'something'\n"
+"...     @foo.setter\n"
+"...     def foo(self, value):\n"
+"...         pass\n"
+"...\n"
+">>> with patch('__main__.Foo.foo', new_callable=PropertyMock) as mock_foo:\n"
+"...     mock_foo.return_value = 'mockity-mock'\n"
+"...     this_foo = Foo()\n"
+"...     print(this_foo.foo)\n"
+"...     this_foo.foo = 6\n"
+"...\n"
+"mockity-mock\n"
+">>> mock_foo.mock_calls\n"
+"[call(), call(6)]"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:852
 msgid ""
 "Because of the way mock attributes are stored you can't directly attach a "
@@ -789,6 +856,16 @@ msgstr ""
 "由于 mock 属性的存储方式你无法直接将 :class:`PropertyMock` 附加到一个 mock 对象。 但是你可以将它附加到 mock "
 "类型对象::"
 
+#: ../../library/unittest.mock.rst:856
+msgid ""
+">>> m = MagicMock()\n"
+">>> p = PropertyMock(return_value=3)\n"
+">>> type(m).foo = p\n"
+">>> m.foo\n"
+"3\n"
+">>> p.assert_called_once_with()"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:865
 msgid ""
 "If an :exc:`AttributeError` is raised by :class:`PropertyMock`, it will be "
@@ -797,6 +874,15 @@ msgid ""
 msgstr ""
 "如果由 :class:`PropertyMock` 引发了 :exc:`AttributeError`，它将被解读为缺少描述器并将在父 mock 上调用"
 " :meth:`~object.__getattr__`::"
+
+#: ../../library/unittest.mock.rst:869
+msgid ""
+">>> m = MagicMock()\n"
+">>> no_attribute = PropertyMock(side_effect=AttributeError)\n"
+">>> type(m).my_property = no_attribute\n"
+">>> m.my_property\n"
+"<MagicMock name='mock.my_property' id='140165240345424'>"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:875
 msgid "See :meth:`~object.__getattr__` for details."
@@ -1076,6 +1162,20 @@ msgid ""
 " returned::"
 msgstr "如果该可迭代对象有任何成员属于异常则它们将被引发而不是被返回::"
 
+#: ../../library/unittest.mock.rst:1267
+msgid ""
+">>> iterable = (33, ValueError, 66)\n"
+">>> m = MagicMock(side_effect=iterable)\n"
+">>> m()\n"
+"33\n"
+">>> m()\n"
+"Traceback (most recent call last):\n"
+" ...\n"
+"ValueError\n"
+">>> m()\n"
+"66"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1282
 msgid "Deleting Attributes"
 msgstr "删除属性"
@@ -1116,11 +1216,25 @@ msgstr ""
 "由于 \"name\" 是 :class:`Mock` 构造器的参数之一，如果你想让你的 mock 对象具有 \"name\" "
 "属性你不可以在创建时传入该参数。 有两个替代方式。 一个选项是使用 :meth:`~Mock.configure_mock`::"
 
+#: ../../library/unittest.mock.rst:1315
+msgid ""
+">>> mock = MagicMock()\n"
+">>> mock.configure_mock(name='my_name')\n"
+">>> mock.name\n"
+"'my_name'"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1320
 msgid ""
 "A simpler option is to simply set the \"name\" attribute after mock "
 "creation::"
 msgstr "一个更简单的选项是在 mock 创建之后简单地设置 \"name\" 属性::"
+
+#: ../../library/unittest.mock.rst:1322
+msgid ""
+">>> mock = MagicMock()\n"
+">>> mock.name = \"foo\""
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1327
 msgid "Attaching Mocks as Attributes"
@@ -1154,6 +1268,22 @@ msgid ""
 msgstr ""
 "通过 :func:`patch` 创建的 mock 会被自动赋予名称。 要将具有名称的 mock 附加到父对象上你应当使用 "
 ":meth:`~Mock.attach_mock` 方法::"
+
+#: ../../library/unittest.mock.rst:1362
+msgid ""
+">>> thing1 = object()\n"
+">>> thing2 = object()\n"
+">>> parent = MagicMock()\n"
+">>> with patch('__main__.thing1', return_value=None) as child1:\n"
+"...     with patch('__main__.thing2', return_value=None) as child2:\n"
+"...         parent.attach_mock(child1, 'child1')\n"
+"...         parent.attach_mock(child2, 'child2')\n"
+"...         child1('one')\n"
+"...         child2('two')\n"
+"...\n"
+">>> parent.mock_calls\n"
+"[call.child1('one'), call.child2('two')]"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1376
 msgid ""
@@ -1344,6 +1474,16 @@ msgid ""
 "it into the decorated function::"
 msgstr ":func:`patch` 作为函数装饰器，为你创建 mock 并将其传入被装饰的函数::"
 
+#: ../../library/unittest.mock.rst:1480
+msgid ""
+">>> @patch('__main__.SomeClass')\n"
+"... def function(normal_argument, mock_class):\n"
+"...     print(mock_class is SomeClass)\n"
+"...\n"
+">>> function(None)\n"
+"True"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1487
 msgid ""
 "Patching a class replaces the class with a :class:`MagicMock` *instance*. If"
@@ -1368,6 +1508,20 @@ msgid ""
 "you must do this on the :attr:`return_value`. For example::"
 msgstr "要在被打补丁的类的 *实例* 的方法上配置返回值你必须在 :attr:`return_value` 操作。 例如::"
 
+#: ../../library/unittest.mock.rst:1498
+msgid ""
+">>> class Class:\n"
+"...     def method(self):\n"
+"...         pass\n"
+"...\n"
+">>> with patch('__main__.Class') as MockClass:\n"
+"...     instance = MockClass.return_value\n"
+"...     instance.method.return_value = 'foo'\n"
+"...     assert Class() is instance\n"
+"...     assert Class().method() == 'foo'\n"
+"..."
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1509
 msgid ""
 "If you use *spec* or *spec_set* and :func:`patch` is replacing a *class*, "
@@ -1375,6 +1529,16 @@ msgid ""
 msgstr ""
 "如果你使用 *spec* 或 *spec_set* 并且 :func:`patch` 替换的是 *class*，那么所创建的 mock "
 "的返回值将具有同样的 spec。 ::"
+
+#: ../../library/unittest.mock.rst:1512
+msgid ""
+">>> Original = Class\n"
+">>> patcher = patch('__main__.Class', spec=True)\n"
+">>> MockClass = patcher.start()\n"
+">>> instance = MockClass()\n"
+">>> assert isinstance(instance, Original)\n"
+">>> patcher.stop()"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1519
 msgid ""
@@ -1385,11 +1549,37 @@ msgstr ""
 "*new_callable* 参数适用于当你想要使用其他类来替代所创建的 mock 默认的 :class:`MagicMock` 的场合。 "
 "例如，如果你想要使用 :class:`NonCallableMock`::"
 
+#: ../../library/unittest.mock.rst:1523
+msgid ""
+">>> thing = object()\n"
+">>> with patch('__main__.thing', new_callable=NonCallableMock) as mock_thing:\n"
+"...     assert thing is mock_thing\n"
+"...     thing()\n"
+"...\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"TypeError: 'NonCallableMock' object is not callable"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1532
 msgid ""
 "Another use case might be to replace an object with an :class:`io.StringIO` "
 "instance::"
 msgstr "另一个使用场景是用 :class:`io.StringIO` 实例来替换某个对象::"
+
+#: ../../library/unittest.mock.rst:1534
+msgid ""
+">>> from io import StringIO\n"
+">>> def foo():\n"
+"...     print('Something')\n"
+"...\n"
+">>> @patch('sys.stdout', new_callable=StringIO)\n"
+"... def test(mock_stdout):\n"
+"...     foo()\n"
+"...     assert mock_stdout.getvalue() == 'Something\\n'\n"
+"...\n"
+">>> test()"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1545
 msgid ""
@@ -1400,6 +1590,16 @@ msgid ""
 msgstr ""
 "当 :func:`patch` 为你创建 mock 时，通常你需要做的第一件事就是配置该 mock。 某些配置可以在对 patch 的调用中完成。 "
 "你在调用时传入的任何关键字参数都将被用来在所创建的 mock 上设置属性::"
+
+#: ../../library/unittest.mock.rst:1550
+msgid ""
+">>> patcher = patch('__main__.thing', first='one', second='two')\n"
+">>> mock_thing = patcher.start()\n"
+">>> mock_thing.first\n"
+"'one'\n"
+">>> mock_thing.second\n"
+"'two'"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1557
 msgid ""
@@ -1413,6 +1613,19 @@ msgstr ""
 ":attr:`~Mock.side_effect`，还可以配置子 mock 的属性。 将这些属性直接作为关键字参数传入在语义上是无效的，但是仍然能够使用"
 " ``**`` 将以这些属性为键的字典扩展至一个 :func:`patch` 调用中 ::"
 
+#: ../../library/unittest.mock.rst:1563
+msgid ""
+">>> config = {'method.return_value': 3, 'other.side_effect': KeyError}\n"
+">>> patcher = patch('__main__.thing', **config)\n"
+">>> mock_thing = patcher.start()\n"
+">>> mock_thing.method()\n"
+"3\n"
+">>> mock_thing.other()\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"KeyError"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1573
 msgid ""
 "By default, attempting to patch a function in a module (or a method or an "
@@ -1421,11 +1634,32 @@ msgid ""
 msgstr ""
 "在默认情况下，尝试给某个模块中并不存在的函数（或者某个类中的方法或属性）打补丁将会失败并引发 :exc:`AttributeError`::"
 
+#: ../../library/unittest.mock.rst:1576
+msgid ""
+">>> @patch('sys.non_existing_attribute', 42)\n"
+"... def test():\n"
+"...     assert sys.non_existing_attribute == 42\n"
+"...\n"
+">>> test()\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"AttributeError: <module 'sys' (built-in)> does not have the attribute 'non_existing_attribute'"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1585
 msgid ""
 "but adding ``create=True`` in the call to :func:`patch` will make the "
 "previous example work as expected::"
 msgstr "但在对 :func:`patch` 的调用中添加 ``create=True`` 将使之前示例的效果符合预期::"
+
+#: ../../library/unittest.mock.rst:1588
+msgid ""
+">>> @patch('sys.non_existing_attribute', 42, create=True)\n"
+"... def test(mock_stdout):\n"
+"...     assert sys.non_existing_attribute == 42\n"
+"...\n"
+">>> test()"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1596
 msgid ""
@@ -1596,6 +1830,12 @@ msgid ""
 "keyword arguments for the patches::"
 msgstr "在单个调用中执行多重补丁。 它接受要打补丁的对象（一个对象或一个通过导入来获取对象的字符串）以及用于补丁的关键字参数::"
 
+#: ../../library/unittest.mock.rst:1759
+msgid ""
+"with patch.multiple(settings, FIRST_PATCH='one', SECOND_PATCH='two'):\n"
+"    ..."
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1762
 msgid ""
 "Use :data:`DEFAULT` as the value if you want :func:`patch.multiple` to "
@@ -1634,6 +1874,19 @@ msgstr ""
 "如果你希望 :func:`patch.multiple` 为你创建 mock，那么你可以使用 :data:`DEFAULT` 作为值。 如果你使用 "
 ":func:`patch.multiple` 作为装饰器则所创建的 mock 会作为关键字参数传入被装饰的函数。 ::"
 
+#: ../../library/unittest.mock.rst:1779
+msgid ""
+">>> thing = object()\n"
+">>> other = object()\n"
+"\n"
+">>> @patch.multiple('__main__', thing=DEFAULT, other=DEFAULT)\n"
+"... def test_function(thing, other):\n"
+"...     assert isinstance(thing, MagicMock)\n"
+"...     assert isinstance(other, MagicMock)\n"
+"...\n"
+">>> test_function()"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1789
 msgid ""
 ":func:`patch.multiple` can be nested with other ``patch`` decorators, but "
@@ -1643,6 +1896,18 @@ msgstr ""
 ":func:`patch.multiple` 可以与其他 ``patch`` 装饰器嵌套使用，但要将作为关键字传入的参数要放在 "
 ":func:`patch` 所创建的标准参数 *之后*::"
 
+#: ../../library/unittest.mock.rst:1792
+msgid ""
+">>> @patch('sys.exit')\n"
+"... @patch.multiple('__main__', thing=DEFAULT, other=DEFAULT)\n"
+"... def test_function(mock_exit, other, thing):\n"
+"...     assert 'other' in repr(other)\n"
+"...     assert 'thing' in repr(thing)\n"
+"...     assert 'exit' in repr(mock_exit)\n"
+"...\n"
+">>> test_function()"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1801
 msgid ""
 "If :func:`patch.multiple` is used as a context manager, the value returned "
@@ -1650,6 +1915,16 @@ msgid ""
 "name::"
 msgstr ""
 "如果 :func:`patch.multiple` 被用作上下文管理器，则上下文管理器的返回值将是一个以所创建的 mock 的名称为键的字典::"
+
+#: ../../library/unittest.mock.rst:1804
+msgid ""
+">>> with patch.multiple('__main__', thing=DEFAULT, other=DEFAULT) as values:\n"
+"...     assert 'other' in repr(values['other'])\n"
+"...     assert 'thing' in repr(values['thing'])\n"
+"...     assert values['thing'] is thing\n"
+"...     assert values['other'] is other\n"
+"..."
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1815
 msgid "patch methods: start and stop"
@@ -1681,11 +1956,44 @@ msgid ""
 "returned by the call to ``patcher.start``. ::"
 msgstr "如果你使用 :func:`patch` 来创建自己的 mock 那么将可通过调用 ``patcher.start`` 来返回它。 ::"
 
+#: ../../library/unittest.mock.rst:1828
+msgid ""
+">>> patcher = patch('package.module.ClassName')\n"
+">>> from package import module\n"
+">>> original = module.ClassName\n"
+">>> new_mock = patcher.start()\n"
+">>> assert module.ClassName is not original\n"
+">>> assert module.ClassName is new_mock\n"
+">>> patcher.stop()\n"
+">>> assert module.ClassName is original\n"
+">>> assert module.ClassName is not new_mock"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1839
 msgid ""
 "A typical use case for this might be for doing multiple patches in the "
 "``setUp`` method of a :class:`TestCase`::"
 msgstr "此操作的一个典型应用场景是在一个 :class:`TestCase` 的 ``setUp`` 方法中执行多重补丁::"
+
+#: ../../library/unittest.mock.rst:1842
+msgid ""
+">>> class MyTest(unittest.TestCase):\n"
+"...     def setUp(self):\n"
+"...         self.patcher1 = patch('package.module.Class1')\n"
+"...         self.patcher2 = patch('package.module.Class2')\n"
+"...         self.MockClass1 = self.patcher1.start()\n"
+"...         self.MockClass2 = self.patcher2.start()\n"
+"...\n"
+"...     def tearDown(self):\n"
+"...         self.patcher1.stop()\n"
+"...         self.patcher2.stop()\n"
+"...\n"
+"...     def test_something(self):\n"
+"...         assert package.module.Class1 is self.MockClass1\n"
+"...         assert package.module.Class2 is self.MockClass2\n"
+"...\n"
+">>> MyTest('test_something').run()"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1861
 msgid ""
@@ -1696,6 +2004,19 @@ msgid ""
 msgstr ""
 "如果你要使用这个技巧则你必须通过调用 ``stop`` 来确保补丁被“恢复”。 这可能要比你想像的更麻烦，因为如果在 ``setUp`` "
 "中引发了异常那么 ``tearDown`` 将不会被调用。 :meth:`unittest.TestCase.addCleanup` 可以简化此操作::"
+
+#: ../../library/unittest.mock.rst:1866
+msgid ""
+">>> class MyTest(unittest.TestCase):\n"
+"...     def setUp(self):\n"
+"...         patcher = patch('package.module.Class')\n"
+"...         self.MockClass = patcher.start()\n"
+"...         self.addCleanup(patcher.stop)\n"
+"...\n"
+"...     def test_something(self):\n"
+"...         assert package.module.Class is self.MockClass\n"
+"..."
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1876
 msgid ""
@@ -1723,6 +2044,17 @@ msgid ""
 "builtin :func:`ord`::"
 msgstr "你可以为一个模块中的任何内置函数打补丁。 以以示例是为内置函数 :func:`ord` 打补丁::"
 
+#: ../../library/unittest.mock.rst:1894
+msgid ""
+">>> @patch('__main__.ord')\n"
+"... def test(mock_ord):\n"
+"...     mock_ord.return_value = 101\n"
+"...     print(ord('c'))\n"
+"...\n"
+">>> test()\n"
+"101"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1906
 msgid "TEST_PREFIX"
 msgstr "TEST_PREFIX"
@@ -1743,6 +2075,27 @@ msgid ""
 "can inform the patchers of the different prefix by setting "
 "``patch.TEST_PREFIX``::"
 msgstr "你可能会想要为你的测试使用不同的前缀。 你可以通过设置 ``patch.TEST_PREFIX`` 来告知打补丁方不同的前缀::"
+
+#: ../../library/unittest.mock.rst:1916
+msgid ""
+">>> patch.TEST_PREFIX = 'foo'\n"
+">>> value = 3\n"
+">>>\n"
+">>> @patch('__main__.value', 'not three')\n"
+"... class Thing:\n"
+"...     def foo_one(self):\n"
+"...         print(value)\n"
+"...     def foo_two(self):\n"
+"...         print(value)\n"
+"...\n"
+">>>\n"
+">>> Thing().foo_one()\n"
+"not three\n"
+">>> Thing().foo_two()\n"
+"not three\n"
+">>> value\n"
+"3"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:1936
 msgid "Nesting Patch Decorators"
@@ -1793,6 +2146,16 @@ msgid ""
 "structure::"
 msgstr "想像我们有一个想要测试的具有如下结构的项目::"
 
+#: ../../library/unittest.mock.rst:1978
+msgid ""
+"a.py\n"
+"    -> Defines SomeClass\n"
+"\n"
+"b.py\n"
+"    -> from a import SomeClass\n"
+"    -> some_function instantiates SomeClass"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1985
 msgid ""
 "Now we want to test ``some_function`` but we want to mock out ``SomeClass`` "
@@ -1817,6 +2180,10 @@ msgstr ""
 "关键在于对 ``SomeClass`` 打补丁操作是在它被使用（或它被查找）的地方。 在此情况下实际上 ``some_function`` 将在模块 b"
 " 中查找 ``SomeClass``，而我们已经在那里导入了它。 补丁看上去应该是这样::"
 
+#: ../../library/unittest.mock.rst:1996
+msgid "@patch('b.SomeClass')"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:1998
 msgid ""
 "However, consider the alternative scenario where instead of ``from a import "
@@ -1828,6 +2195,10 @@ msgstr ""
 "但是，再考虑另一个场景，其中不是 ``from a import SomeClass`` 而是模块 b 执行了 ``import a`` 并且 "
 "``some_function`` 使用了 ``a.SomeClass``。 这两个导入形式都很常见。 "
 "在这种情况下我们要打补丁的类将在该模块中被查找因而我们必须改为对 ``a.SomeClass`` 打补丁::"
+
+#: ../../library/unittest.mock.rst:2003
+msgid "@patch('a.SomeClass')"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2007
 msgid "Patching Descriptors and Proxy Objects"
@@ -2156,6 +2527,18 @@ msgstr ""
 "两个相等性方法 :meth:`!__eq__` 和 :meth:`!__ne__` 是特殊的。 它们会基于标识号进行默认的相等性比较，使用 "
 ":attr:`~Mock.side_effect` 属性，除非你修改它们的返回值以返回其他内容::"
 
+#: ../../library/unittest.mock.rst:2194
+msgid ""
+">>> MagicMock() == 3\n"
+"False\n"
+">>> MagicMock() != 3\n"
+"True\n"
+">>> mock = MagicMock()\n"
+">>> mock.__eq__.return_value = True\n"
+">>> mock == 3\n"
+"True"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2203
 msgid ""
 "The return value of :meth:`MagicMock.__iter__` can be any iterable object "
@@ -2448,6 +2831,15 @@ msgid ""
 "be used in test assertions::"
 msgstr ":data:`ANY` 并不仅限于同调用对象的比较而是也可被用于测试断言::"
 
+#: ../../library/unittest.mock.rst:2445
+msgid ""
+"class TestStringMethods(unittest.TestCase):\n"
+"\n"
+"    def test_split(self):\n"
+"        s = 'hello world'\n"
+"        self.assertEqual(s.split(), ['hello', ANY])"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2453
 msgid "FILTER_DIR"
 msgstr "FILTER_DIR"
@@ -2475,6 +2867,27 @@ msgstr ""
 "当启用过滤时，``dir(some_mock)`` 将只显示有用的属性并将包括正常情况下不会被显示的任何动态创建的属性。 如果 mock 是使用 "
 "*spec* (当然也可以是 *autospec*) 创建的则原有的所有属性都将被显示，即使它们还未被访问过:"
 
+#: ../../library/unittest.mock.rst:2469
+msgid ""
+">>> dir(Mock())\n"
+"['assert_any_call',\n"
+" 'assert_called',\n"
+" 'assert_called_once',\n"
+" 'assert_called_once_with',\n"
+" 'assert_called_with',\n"
+" 'assert_has_calls',\n"
+" 'assert_not_called',\n"
+" 'attach_mock',\n"
+" ...\n"
+">>> from urllib import request\n"
+">>> dir(Mock(spec=request))\n"
+"['AbstractBasicAuthHandler',\n"
+" 'AbstractDigestAuthHandler',\n"
+" 'AbstractHTTPHandler',\n"
+" 'BaseHandler',\n"
+" ..."
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2490
 msgid ""
 "Many of the not-very-useful (private to :class:`Mock` rather than the thing "
@@ -2485,6 +2898,21 @@ msgid ""
 msgstr ""
 "许多不太有用的（是 :class:`Mock` 的而不是被模拟对象的私有成员）开头带有下划线和双下划线的属性已从在 :class:`Mock` 上对 "
 ":func:`dir` 的调用的结果中被过滤。 如果你不喜欢此行为你可以通过设置模块级开关 :data:`FILTER_DIR` 来将其关闭:"
+
+#: ../../library/unittest.mock.rst:2496
+msgid ""
+">>> from unittest import mock\n"
+">>> mock.FILTER_DIR = False\n"
+">>> dir(mock.Mock())\n"
+"['_NonCallableMock__get_return_value',\n"
+" '_NonCallableMock__get_side_effect',\n"
+" '_NonCallableMock__return_value_doc',\n"
+" '_NonCallableMock__set_return_value',\n"
+" '_NonCallableMock__set_side_effect',\n"
+" '__call__',\n"
+" '__class__',\n"
+" ..."
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2511
 msgid ""
@@ -2559,6 +2987,12 @@ msgid ""
 "handles are closed properly and is becoming common::"
 msgstr "将 :func:`open` 用作上下文管理器一确保你的文件处理被正确关闭的最佳方式因而十分常用::"
 
+#: ../../library/unittest.mock.rst:2553
+msgid ""
+"with open('/some/path', 'w') as f:\n"
+"    f.write('something')"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2556
 msgid ""
 "The issue is that even if you mock out the call to :func:`open` it is the "
@@ -2574,9 +3008,36 @@ msgid ""
 "fiddly enough that a helper function is useful. ::"
 msgstr "通过 :class:`MagicMock` 来模拟上下文管理器是十分常见且十分麻烦的因此需要使用一个辅助函数。 ::"
 
+#: ../../library/unittest.mock.rst:2563
+msgid ""
+">>> m = mock_open()\n"
+">>> with patch('__main__.open', m):\n"
+"...     with open('foo', 'w') as h:\n"
+"...         h.write('some stuff')\n"
+"...\n"
+">>> m.mock_calls\n"
+"[call('foo', 'w'),\n"
+" call().__enter__(),\n"
+" call().write('some stuff'),\n"
+" call().__exit__(None, None, None)]\n"
+">>> m.assert_called_once_with('foo', 'w')\n"
+">>> handle = m()\n"
+">>> handle.write.assert_called_once_with('some stuff')"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2577
 msgid "And for reading files::"
 msgstr "以及针对读取文件::"
+
+#: ../../library/unittest.mock.rst:2579
+msgid ""
+">>> with patch('__main__.open', mock_open(read_data='bibble')) as m:\n"
+"...     with open('foo') as h:\n"
+"...         result = h.read()\n"
+"...\n"
+">>> m.assert_called_once_with('foo')\n"
+">>> assert result == 'bibble'"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2590
 msgid "Autospeccing"
@@ -2645,6 +3106,13 @@ msgid ""
 "with any methods on the mock:"
 msgstr "这个 spec 仅会应用于 mock 本身，因此对于 mock 中的任意方法我们仍然面临相同的问题:"
 
+#: ../../library/unittest.mock.rst:2631
+msgid ""
+">>> mock.has_data()\n"
+"<mock.Mock object at 0x...>\n"
+">>> mock.has_data.assret_called_with()  # Intentional typo!"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2637
 msgid ""
 "Auto-speccing solves this problem. You can either pass ``autospec=True`` to "
@@ -2666,6 +3134,17 @@ msgstr ""
 msgid "Here's an example of it in use::"
 msgstr "以下是一个实际应用的示例::"
 
+#: ../../library/unittest.mock.rst:2648
+msgid ""
+">>> from urllib import request\n"
+">>> patcher = patch('__main__.request', autospec=True)\n"
+">>> mock_request = patcher.start()\n"
+">>> request is mock_request\n"
+"True\n"
+">>> mock_request.Request\n"
+"<MagicMock name='request.Request' spec='Request' id='...'>"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2656
 msgid ""
 "You can see that :class:`request.Request` has a spec. "
@@ -2675,11 +3154,26 @@ msgstr ""
 "你可以看到 :class:`request.Request` 有一个 spec。 :class:`request.Request` 的构造器接受两个参数"
 " (其中一个是 *self*)。 如果我们尝试不正确地调用它则将导致::"
 
+#: ../../library/unittest.mock.rst:2660
+msgid ""
+">>> req = request.Request()\n"
+"Traceback (most recent call last):\n"
+" ...\n"
+"TypeError: <lambda>() takes at least 2 arguments (1 given)"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2665
 msgid ""
 "The spec also applies to instantiated classes (i.e. the return value of "
 "specced mocks)::"
 msgstr "该 spec 也将应用于被实例化的类（即附带i.e. the return value of spec 的 mock 的返回值）::"
+
+#: ../../library/unittest.mock.rst:2668
+msgid ""
+">>> req = request.Request('foo')\n"
+">>> req\n"
+"<NonCallableMagicMock name='request.Request()' spec='Request' id='...'>"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2672
 msgid ""
@@ -2690,6 +3184,17 @@ msgid ""
 msgstr ""
 ":class:`Request` 对象是不可调用对象，因此实例化我们的被模拟 :class:`request.Request` 的返回值是一个不可调用的"
 " mock。 有了这个 spec 我们的断言中出现任何拼写问题都将引发正确的错误::"
+
+#: ../../library/unittest.mock.rst:2676
+msgid ""
+">>> req.add_header('spam', 'eggs')\n"
+"<MagicMock name='request.Request().add_header()' id='...'>\n"
+">>> req.add_header.assret_called_with  # Intentional typo!\n"
+"Traceback (most recent call last):\n"
+" ...\n"
+"AttributeError: Mock object has no attribute 'assret_called_with'\n"
+">>> req.add_header.assert_called_with('spam', 'eggs')"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2684
 msgid ""
@@ -2733,6 +3238,21 @@ msgstr ""
 "一个更严重的问题在于实例属性通常是在 :meth:`~object.__init__` 方法中被创建而在类中完全不存在。 *autospec* "
 "无法获取动态创建的属性而使得 api 被限制于可见的属性。 ::"
 
+#: ../../library/unittest.mock.rst:2710
+msgid ""
+">>> class Something:\n"
+"...   def __init__(self):\n"
+"...     self.a = 33\n"
+"...\n"
+">>> with patch('__main__.Something', autospec=True):\n"
+"...   thing = Something()\n"
+"...   thing.a\n"
+"...\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"AttributeError: Mock object has no attribute 'a'"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2722
 msgid ""
 "There are a few different ways of resolving this problem. The easiest, but "
@@ -2743,6 +3263,14 @@ msgid ""
 msgstr ""
 "要解决这个问题有几种不同的方式。 最容易但多少有些烦扰的方式是简单地在 mock 创建完成后再设置所需的属性。 Just because "
 "*autospec* 只是不允许你获取不存在于 spec 上的属性但并不会阻止你设置它们::"
+
+#: ../../library/unittest.mock.rst:2728
+msgid ""
+">>> with patch('__main__.Something', autospec=True):\n"
+"...   thing = Something()\n"
+"...   thing.a = 33\n"
+"..."
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2733
 msgid ""
@@ -2765,6 +3293,12 @@ msgstr ""
 "解决此问题的最好方式可能是添加类属性作为在 :meth:`~object.__init__` 中初始化的实例属性的默认值。 请注意如果你只在. Note"
 " that if you are only setting default attributes in :meth:`!__init__` "
 "中设置默认属性那么通过类属性来提供它们（当然会在实例之间共享）也将有更快的速度。 例如"
+
+#: ../../library/unittest.mock.rst:2752
+msgid ""
+"class Something:\n"
+"    a = 33"
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2757
 msgid ""
@@ -2795,6 +3329,21 @@ msgstr ""
 "另一选项则是创建一个生产类的子类并向该子类添加默认值而不影响到生产类。 这两个选项都需要你使用一个替代对象作为 spec。 值得庆幸的是 "
 ":func:`patch` 支持这样做 —— 你可以简单地传入替代对象作为 *autospec* 参数::"
 
+#: ../../library/unittest.mock.rst:2780
+msgid ""
+">>> class Something:\n"
+"...   def __init__(self):\n"
+"...     self.a = 33\n"
+"...\n"
+">>> class SomethingForTest(Something):\n"
+"...   a = 33\n"
+"...\n"
+">>> p = patch('__main__.Something', autospec=SomethingForTest)\n"
+">>> mock = p.start()\n"
+">>> mock.a\n"
+"<NonCallableMagicMock name='Something.a' spec='int' id='...'>"
+msgstr ""
+
 #: ../../library/unittest.mock.rst:2793
 msgid ""
 "This only applies to classes or already instantiated objects. Calling a "
@@ -2823,6 +3372,17 @@ msgid ""
 "from fixing part of the mock object. ::"
 msgstr ""
 "如果一个带有名称或 spec 的 mock 实例被分配给一个属性则将不会在封包链中处理它。 这可以防止人们对 mock 对象的固定部分执行封包。 ::"
+
+#: ../../library/unittest.mock.rst:2814
+msgid ""
+">>> mock = Mock()\n"
+">>> mock.submock.attribute1 = 2\n"
+">>> mock.not_submock = mock.Mock(name=\"sample_name\")\n"
+">>> seal(mock)\n"
+">>> mock.new_attribute  # This will raise AttributeError.\n"
+">>> mock.submock.attribute2  # This will raise AttributeError.\n"
+">>> mock.not_submock.attribute2  # This won't raise."
+msgstr ""
 
 #: ../../library/unittest.mock.rst:2826
 msgid ""
