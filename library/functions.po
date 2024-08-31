@@ -14,7 +14,7 @@
 # belingud <1170202353@qq.com>, 2021
 # ww song <sww4718168@gmail.com>, 2022
 # laazy <laaazy@sjtu.edu.cn>, 2022
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # CCXXXI <ccxxxi@qq.com>, 2023
 # Dai Xu <daixu61@hotmail.com>, 2023
 # WH-2099 <wh2099@outlook.com>, 2023
@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-30 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 01:06+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -821,14 +821,7 @@ msgid ""
 ":func:`ast.parse`."
 msgstr "如果您想分析 Python 代码的 AST 表示，请参阅 :func:`ast.parse`。"
 
-#: ../../library/functions.rst:343
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``compile`` with arguments "
-"``source``, ``filename``."
-msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``compile`` 附带参数 ``source``, ``filename``。"
-
-#: ../../library/functions.rst:345
+#: ../../library/functions.rst:343 ../../library/functions.rst:345
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``compile`` with arguments "
 "``source`` and ``filename``. This event may also be raised by implicit "
@@ -900,6 +893,12 @@ msgid ""
 ":token:`~float:complexvalue` production rule in the following grammar, after"
 " parentheses and leading and trailing whitespace characters are removed:"
 msgstr ""
+"如果该参数为字符串，则它必须包含一个实部（使用与 :func:`float` 相同的格式）或一个虚部（使用相同的格式但带有 ``'j'`` 或 "
+"``'J'`` 后缀），或者同时包含实部和虚部（在此情况下虚部必须加上正负号）。 该字符串首尾可以选择加上空格和圆括号 ``'('`` and "
+"``')'``，它们将会被忽略。 该字符串的, which are ignored. The string must not contain "
+"whitespace between ``'+'``, ``'-'``, ``'j'`` 或 ``'J'`` 后缀以及十进制数字之间不可包含空格。 "
+"例如，``complex('1+2j')`` 是可以的，但 ``complex('1 + 2j')`` 则会引发 :exc:`ValueError`。 "
+"更准确地说，输入在移除圆括号以及开头和末尾的空格符之后，必须符合使用以下语法的 :token:`~float:complexvalue` 产生规则："
 
 #: ../../library/functions.rst:422
 msgid ""
@@ -910,6 +909,10 @@ msgid ""
 ":meth:`~object.__float__`. If :meth:`!__float__` is not defined then it "
 "falls back to :meth:`~object.__index__`."
 msgstr ""
+"如果该参数为数字，则此构造器将进行与 :class:`int` 和 :class:`float` 类似的数值转换。 对于一个普通的 Python 对象 "
+"``x``，``complex(x)`` 会委托给 ``x.__complex__()``。 如果未定义 "
+":meth:`~object.__complex__` 则它将回退至 :meth:`~object.__float__`。 如果未定义 "
+":meth:`!__float__` 则它将回退至 :meth:`~object.__index__`。"
 
 #: ../../library/functions.rst:431
 msgid ""
@@ -921,6 +924,9 @@ msgid ""
 "imaginary component ``real.imag+imag.real``. If one of arguments is a real "
 "number, only its real component is used in the above expressions."
 msgstr ""
+"如果提供了两个参数或是使用了关键字参数，则每个参数可以为任意数字类型（包括复数）。 如果两个参数均为实数值，则会返回一个实部为 *real* 而虚部为 "
+"*imag* 的复数。 如果两个参数均为复数值，则会返回一个实部为 ``real.real-imag.imag`` 而虚部为 "
+"``real.imag+imag.real`` 的复数。 如果有一个参数为实数值，则上面的表达式中将只用到实部。"
 
 #: ../../library/functions.rst:441
 msgid "If all arguments are omitted, returns ``0j``."
@@ -1056,6 +1062,10 @@ msgid ""
 "% b`` is very close to *a*, if ``a % b`` is non-zero it has the same sign as"
 " *b*, and ``0 <= abs(a % b) < abs(b)``."
 msgstr ""
+"接受两个（非复数）数字作为参数并返回由当对其使用整数除法时的商和余数组成的数字对。 在混用不同的操作数类型时，则会应用二元算术运算符的规则。 "
+"对于整数来说，结果与 ``(a // b, a % b)`` 相同。 对于浮点数来说则结果为 ``(q, a % b)``，其中 *q* 通常为 "
+"``math.floor(a / b)`` 但可能会比它小 1。 在任何情况下 ``q * b + a % b`` 都非常接近 *a*，如果 ``a %"
+" b`` 为非零值则它将具有与 *b* 相同的正负号，并且 ``0 <= abs(a % b) < abs(b)``。"
 
 #: ../../library/functions.rst:550
 msgid ""
@@ -1123,6 +1133,14 @@ msgid ""
 "environment if they are already referenced in the scope that is calling "
 ":func:`eval` (e.g. via a :keyword:`nonlocal` statement)."
 msgstr ""
+"*expression* 参数将作为一个 Python 表达式 (从技术上说，是一个条件列表) 使用 *globals* 和 *locals* "
+"映射作为全局和局部命名空间被解析并求值。 如果 *globals* 字典存在并且不包含 ``__builtins__`` 键对应的值，则在 "
+"*expression* 被解析之前会插入该键对应的指向内置模块 :mod:`builtins` 的字典的引用。 这样你就可以在将 *globals* "
+"传给 :func:`eval` 之前通过向其传入你自己的 ``__builtins__`` 字典来控制被执行代码可以使用哪些内置对象。 如果 "
+"*locals* 映射被省略则它将默认为 *globals* 字典。 如果两个映射都被省略，则将使用调用 :func:`eval` 所在环境中的 "
+"*globals* 和 *locals* 来执行该表达式。 请注意，*eval()* 将只能访问所在环境中的 :term:`嵌套作用域 <nested "
+"scope>` (非局部作用域)，如果它们已经在调用 :func:`eval` 的作用域中被引用的话 (例如通过 :keyword:`nonlocal`"
+" 语句)。"
 
 #: ../../library/functions.rst:605
 msgid "Example:"
@@ -1160,13 +1178,8 @@ msgid ""
 " with expressions containing only literals."
 msgstr "另外可以参阅 :func:`ast.literal_eval`，该函数可以安全执行仅包含文字的表达式字符串。"
 
-#: ../../library/functions.rst:627 ../../library/functions.rst:683
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``exec`` with argument "
-"``code_object``."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``exec`` 附带参数 ``code_object``。"
-
-#: ../../library/functions.rst:629 ../../library/functions.rst:685
+#: ../../library/functions.rst:627 ../../library/functions.rst:629
+#: ../../library/functions.rst:683 ../../library/functions.rst:685
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``exec`` with the code object as "
 "the argument. Code compilation events may also be raised."
@@ -1180,7 +1193,7 @@ msgstr "现在可以将 *globals* 和 *locals* 作为关键字参数传入。"
 msgid ""
 "The semantics of the default *locals* namespace have been adjusted as "
 "described for the :func:`locals` builtin."
-msgstr ""
+msgstr "默认 *locals* 命名空间的语义已被调整为与 :func:`locals` 内置函数的描述一致。"
 
 #: ../../library/functions.rst:645
 msgid ""
@@ -1194,6 +1207,11 @@ msgid ""
 " not be used outside of function definitions even within the context of code"
 " passed to the :func:`exec` function. The return value is ``None``."
 msgstr ""
+"这个函数支持动态执行 Python 代码。 *source* 必须是字符串或代码对象。 如果是字符串，那么该字符串将被解析为一组 Python "
+"语句并随即被执行（除非发生语法错误）。 [#]_ 如果是代码对象，那么它将被直接执行。 在所有情况下，被执行的代码都应当是有效的文件输入（见参考手册中的"
+" :ref:`file-input` 一节）。 请注意即使是在传递给 :func:`exec` 函数的代码的上下文中 "
+":keyword:`nonlocal`, :keyword:`yield`  和 :keyword:`return` 语句也不可在函数定义以外使用。 "
+"函数的返回值为 ``None``。"
 
 #: ../../library/functions.rst:656
 msgid ""
@@ -1205,6 +1223,10 @@ msgid ""
 " any mapping object.  Remember that at the module level, globals and locals "
 "are the same dictionary."
 msgstr ""
+"在所有情况下，如果省略了可选部分，代码将在当前作用域中执行。 如果只提供了 "
+"*globals*，则它必须是一个字典（并且不能是字典的子类），它将被同时用于全局和局部变量。 如果给出了 *globals* 和 "
+"*locals*，它们将被分别用于全局和局部变量。 如果提供了 *locals*，它可以是任何映射对象。 请记住在模块层级上，globals 和 "
+"locals 是同一个字典。"
 
 #: ../../library/functions.rst:666
 msgid ""
@@ -1214,6 +1236,8 @@ msgid ""
 "access variables assigned at the top level (as the \"top level\" variables "
 "are treated as class variables in a class definition)."
 msgstr ""
+"当 ``exec`` 获得两个不同的对象作为 *globals* 和 *locals* 时，代码被执行时就会像是嵌套在一个类定义中那样。 "
+"这意味着在被执行代码中定义的函数和类将无法访问在最高层级上赋值的变量（因为“最高层级”变量会被当作是类定义中的类变量来对待）。"
 
 #: ../../library/functions.rst:672
 msgid ""
@@ -1244,6 +1268,8 @@ msgid ""
 " global and local namespace, respectively, which may be useful to pass "
 "around for use as the second and third argument to :func:`exec`."
 msgstr ""
+"内置函数 :func:`globals` 和 :func:`locals` 分别返回当前的全局和局部字典，这在用作 :func:`exec` "
+"的第二个和第三个参数进行传递时会很有用处。"
 
 #: ../../library/functions.rst:696
 msgid ""
@@ -1251,6 +1277,8 @@ msgid ""
 "Pass an explicit *locals* dictionary if you need to see effects of the code "
 "on *locals* after function :func:`exec` returns."
 msgstr ""
+"默认的 *locals* 行为与下面 :func:`locals` 函数所描述的一样。 如果你需要在 :func:`exec` 返回之后查看代码对 "
+"*locals* 的影响可以显式地传入一个 *locals* 字典。"
 
 #: ../../library/functions.rst:700
 msgid "Added the *closure* parameter."
@@ -1288,7 +1316,7 @@ msgstr ""
 
 #: ../../library/functions.rst:737
 msgid "Return a floating-point number constructed from a number or a string."
-msgstr ""
+msgstr "返回基于一个数字或字符串构建的浮点数。"
 
 #: ../../library/functions.rst:754
 msgid ""
@@ -1300,6 +1328,9 @@ msgid ""
 "conform to the :token:`~float:floatvalue` production rule in the following "
 "grammar, after leading and trailing whitespace characters are removed:"
 msgstr ""
+"如果该参数是一个字符串，则它应当包含一个十进制数字，前面可以选择带一个符号，也可以选择嵌入空格。 可选的符号有 ``'+'`` 或 "
+"``'-'``；``'+'`` 符号对所产生的值没有影响。 该参数还可以是一个代表 NaN (not-a-number) 或者正负无穷大的字符串。 "
+"更确切地说，在移除前导和尾随的空格之后，输入必须为符合以下语法的 :token:`~float:floatvalue` 产生规则："
 
 #: ../../library/functions.rst:775
 msgid ""
@@ -1314,6 +1345,8 @@ msgid ""
 "precision) is returned.  If the argument is outside the range of a Python "
 "float, an :exc:`OverflowError` will be raised."
 msgstr ""
+"另一方面，如果参数是整数或浮点数，则返回一个具有相同值（在 Python 浮点精度范围内）的浮点数。 如果参数超出了 Python "
+"浮点数的取值范围，则会引发 :exc:`OverflowError`。"
 
 #: ../../library/functions.rst:783
 msgid ""
@@ -1531,7 +1564,7 @@ msgstr "这是对象在内存中的地址。"
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``builtins.id`` with argument "
 "``id``."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``builtins.id``，附带参数 ``id``。"
+msgstr "引发一个 :ref:`审计事件 <auditing>` ``builtins.id`` 并附带参数 ``id``。"
 
 #: ../../library/functions.rst:955
 msgid ""
@@ -1550,27 +1583,13 @@ msgid ""
 "provide elaborate line editing and history features."
 msgstr "如果加载了 :mod:`readline` 模块，:func:`input` 将使用它来提供复杂的行编辑和历史记录功能。"
 
-#: ../../library/functions.rst:968
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``builtins.input`` with argument "
-"``prompt``."
-msgstr "引发一个 :ref:`审计事件 <auditing>` ``builtins.input`` 附带参数 ``prompt``。"
-
-#: ../../library/functions.rst:970
+#: ../../library/functions.rst:968 ../../library/functions.rst:970
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``builtins.input`` with argument "
 "``prompt`` before reading input"
 msgstr "在读取输入前引发一个 :ref:`审计事件 <auditing>` ``builtins.input`` 附带参数 ``prompt``"
 
-#: ../../library/functions.rst:973
-msgid ""
-"Raises an :ref:`auditing event <auditing>` ``builtins.input/result`` with "
-"argument ``result``."
-msgstr ""
-"Raises an :ref:`auditing event <auditing>` ``builtins.input/result`` with "
-"argument ``result``."
-
-#: ../../library/functions.rst:975
+#: ../../library/functions.rst:973 ../../library/functions.rst:975
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``builtins.input/result`` with "
 "the result after successfully reading input."
@@ -1580,7 +1599,7 @@ msgstr "在成功读取输入之后引发一个 :ref:`审计事件 <auditing>` `
 msgid ""
 "Return an integer object constructed from a number or a string, or return "
 "``0`` if no arguments are given."
-msgstr ""
+msgstr "返回从一个数字或字符串构建的整数对象，或者如果未给出参数则返回 ``0``。"
 
 #: ../../library/functions.rst:1002
 msgid ""
@@ -1590,6 +1609,9 @@ msgid ""
 ":meth:`~object.__trunc__`, it returns ``x.__trunc__()``. For floating-point "
 "numbers, this truncates towards zero."
 msgstr ""
+"如果参数定义了 :meth:`~object.__int__`，``int(x)`` 将返回 ``x.__int__()``。 如果参数定义了 "
+":meth:`~object.__index__`，它将返回 ``x.__index__()``。 如果参数定义了 "
+":meth:`~object.__trunc__`，它将返回 ``x.__trunc__()``。 对于浮点数，这将向零方向截断。"
 
 #: ../../library/functions.rst:1008
 msgid ""
@@ -1599,6 +1621,9 @@ msgid ""
 " ``-`` (with no space in between), have leading zeros, be surrounded by "
 "whitespace, and have single underscores interspersed between digits."
 msgstr ""
+"如果参数不是数字或者如果给定了 *base*，则它必须是表示一个以 *base* 为基数的整数的字符串、:class:`bytes` 或 "
+":class:`bytearray` 实例。 字符串前面还可选择加上 ``+`` 或 ``-`` "
+"(中间没有空格)，带有前导的零，带有两侧的空格，以及带有数位之间的单个下划线。"
 
 #: ../../library/functions.rst:1014
 msgid ""
@@ -1783,6 +1808,7 @@ msgid ""
 "When using ``exec()`` or ``eval()`` with separate local and global "
 "arguments, it returns the local namespace passed in to the function call."
 msgstr ""
+"当附带不同的 local 和 global 参数使用 ``exec()`` 或 ``eval()`` 时，它将返回传入函数调用的 local 命名空间。"
 
 #: ../../library/functions.rst:1151
 msgid ""
@@ -1793,6 +1819,8 @@ msgid ""
 "deleting local variables will immediately affect the contents of the "
 "returned mapping object."
 msgstr ""
+"在上述所有情况下，在一个给定的执行帧中对 ``locals()`` 的每次调用都将返回 *同一个* 映射对象。 通过从 ``locals()`` "
+"返回的映射对象所做的修改都将如局部变量的赋值、重新赋值或删除一样可见，而局部变量的赋值、重新赋值或删除都将立即影响所返回映射对象的内容。"
 
 #: ../../library/functions.rst:1158
 msgid ""
@@ -1805,6 +1833,10 @@ msgid ""
 "variables and nonlocal cell references does *not* affect the contents of "
 "previously returned dictionaries."
 msgstr ""
+"在一个 :term:`optimized scope` 中（包括函数、生成器和协程），每个对 ``locals()`` "
+"的调用将改为返回一个新字典，其中包含函数的局部变量及任何非局部单元引用的当前绑定。 在此情况下，通过所返回字典对名称绑定的改变将 *不会* "
+"写回到对应的局部变量或非局部单元引用，并且赋值、重新赋值或删除局部变量和非局部单元引用也 *不会* 影响之前返回的字典的内容。affect the "
+"contents of previously returned dictionaries."
 
 #: ../../library/functions.rst:1167
 msgid ""
@@ -1814,18 +1846,21 @@ msgid ""
 "other scopes, it behaves as if the comprehension were running as a nested "
 "function."
 msgstr ""
+"将 ``locals()`` "
+"作为函数、生成器或协程中的一个推导式的组成部分来调用相当于在外层作用域中调用它，不同之处在于推导式所初始化的迭代变量将被包括在内。 "
+"在其他作用域下，其行为与将推导式作为嵌套函数来运行类似。"
 
 #: ../../library/functions.rst:1173
 msgid ""
 "Calling ``locals()`` as part of a generator expression is equivalent to "
 "calling it in a nested generator function."
-msgstr ""
+msgstr "将 ``locals()`` 作为生成器表达式的组成部分来调用相当于在嵌套的生成器函数中调用它。"
 
 #: ../../library/functions.rst:1176
 msgid ""
 "The behaviour of ``locals()`` in a comprehension has been updated as "
 "described in :pep:`709`."
-msgstr ""
+msgstr "在推导式中的 ``locals()`` 的行为已被更新为符合 :pep:`709` 中的描述。"
 
 #: ../../library/functions.rst:1180
 msgid ""
@@ -1835,6 +1870,8 @@ msgid ""
 "from being defined, the behaviour in other scopes remains unchanged from "
 "previous versions."
 msgstr ""
+"作为 :pep:`667` 的组成部分，改变从此函数返回的映射对象的语义现在已获得定义。 在 :term:`已优化作用域 <optimized "
+"scope>` 中的行为现在如上所述。 除了已获得定义，在其他作用域中的行为相比之前的版本仍然保持不变。"
 
 #: ../../library/functions.rst:1190
 msgid ""
@@ -2313,10 +2350,10 @@ msgstr ""
 
 #: ../../library/functions.rst:1505
 msgid ""
-"Raises an :ref:`auditing event <auditing>` ``open`` with arguments ``file``,"
+"Raises an :ref:`auditing event <auditing>` ``open`` with arguments ``path``,"
 " ``mode``, ``flags``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``open`` 附带参数 ``file``, ``mode``, ``flags``。"
+"引发一个 :ref:`审计事件 <auditing>` ``open`` 并附带参数 ``path``, ``mode``, ``flags``。"
 
 #: ../../library/functions.rst:1507
 msgid ""
@@ -2410,6 +2447,12 @@ msgid ""
 ":class:`float` with an integral exponent, a float result is delivered. For "
 "example, ``pow(-9, 2.0)`` returns ``81.0``."
 msgstr ""
+"这些参数必须为数字类型。 对于混用的操作数类型，将应用二元算术运算的强制转换规则。 对于 :class:`int` "
+"操作数，结果具有与操作数相同的类型（转换之后）除非第二个参数为负值；在那种情况下，所有参数将被转换为浮点数并输出浮点数的结果。 例如，``pow(10,"
+" 2)`` 返回 ``100``，而 ``pow(10, -2)`` 返回 ``0.01``。 对于 :class:`int` 或 "
+":class:`float` 类型的基数为负值而幂为非整数的情况，将产生一个复数的结果。 例如，``pow(-9, 0.5)`` 将返回一个接近 "
+"``3j`` 的值。 最后，对于 :class:`int` 或 :class:`float` 类型的基数为负值而幂为整数的情况，将产生一个浮点数的结果。"
+" 例如，``pow(-9, 2.0)`` 将返回 ``81.0``。"
 
 #: ../../library/functions.rst:1565
 msgid ""
@@ -2552,7 +2595,13 @@ msgstr "返回的特征属性对象同样具有与构造器参数相对应的属
 msgid "The docstrings of property objects are now writeable."
 msgstr "特征属性对象的文档字符串现在是可写的。"
 
-#: ../../library/functions.rst:1702
+#: ../../library/functions.rst:1698
+msgid ""
+"Attribute holding the name of the property. The name of the property can be "
+"changed at runtime."
+msgstr "保存特征属性名称的属性。 特性属性名称可在运行时被修改。"
+
+#: ../../library/functions.rst:1709
 msgid ""
 "Rather than being a function, :class:`range` is actually an immutable "
 "sequence type, as documented in :ref:`typesseq-range` and :ref:`typesseq`."
@@ -2560,7 +2609,7 @@ msgstr ""
 "虽然被称为函数，但 :class:`range` 实际上是一个不可变的序列类型，参见在 :ref:`typesseq-range` 与 "
 ":ref:`typesseq` 中的文档说明。"
 
-#: ../../library/functions.rst:1708
+#: ../../library/functions.rst:1715
 msgid ""
 "Return a string containing a printable representation of an object.  For "
 "many types, this function makes an attempt to return a string that would "
@@ -2577,11 +2626,11 @@ msgstr ""
 ":meth:`~object.__repr__` 方法来控制此函数为其实例所返回的内容。 如果 :func:`sys.displayhook` "
 "不可访问，则此函数将会引发 :exc:`RuntimeError`。"
 
-#: ../../library/functions.rst:1719
+#: ../../library/functions.rst:1726
 msgid "This class has a custom representation that can be evaluated::"
 msgstr "该类具有自定义的表示形式，它可被求值为::"
 
-#: ../../library/functions.rst:1732
+#: ../../library/functions.rst:1739
 msgid ""
 "Return a reverse :term:`iterator`.  *seq* must be an object which has a "
 ":meth:`~object.__reversed__` method or supports the sequence protocol (the "
@@ -2592,7 +2641,7 @@ msgstr ""
 "方法或是支持序列协议（具有 :meth:`~object.__len__` 方法和从 ``0`` 开始的整数参数的 "
 ":meth:`~object.__getitem__` 方法）的对象。"
 
-#: ../../library/functions.rst:1740
+#: ../../library/functions.rst:1747
 msgid ""
 "Return *number* rounded to *ndigits* precision after the decimal point.  If "
 "*ndigits* is omitted or is ``None``, it returns the nearest integer to its "
@@ -2601,7 +2650,7 @@ msgstr ""
 "返回 *number* 舍入到小数点后 *ndigits* 位精度的值。 如果 *ndigits* 被省略或为 "
 "``None``，则返回最接近输入值的整数。"
 
-#: ../../library/functions.rst:1744
+#: ../../library/functions.rst:1751
 msgid ""
 "For the built-in types supporting :func:`round`, values are rounded to the "
 "closest multiple of 10 to the power minus *ndigits*; if two multiples are "
@@ -2616,13 +2665,13 @@ msgstr ""
 "``round(1.5)`` 则为 ``2``。*ndigits* 可为任意整数值（正数、零或负数）。如果省略了 *ndigits* 或为 "
 "``None`` ，则返回值将为整数。否则返回值与 *number* 的类型相同。"
 
-#: ../../library/functions.rst:1753
+#: ../../library/functions.rst:1760
 msgid ""
 "For a general Python object ``number``, ``round`` delegates to "
 "``number.__round__``."
 msgstr "对于一般的 Python 对象 ``number``, ``round`` 将委托给 ``number.__round__``。"
 
-#: ../../library/functions.rst:1758
+#: ../../library/functions.rst:1765
 msgid ""
 "The behavior of :func:`round` for floats can be surprising: for example, "
 "``round(2.675, 2)`` gives ``2.67`` instead of the expected ``2.68``. This is"
@@ -2634,7 +2683,7 @@ msgstr ""
 "``2.68``。 这不算是程序错误：这一结果是由于大多数十进制小数实际上都不能以浮点数精确地表示。 请参阅 :ref:`tut-fp-issues` "
 "了解更多信息。"
 
-#: ../../library/functions.rst:1770
+#: ../../library/functions.rst:1777
 msgid ""
 "Return a new :class:`set` object, optionally with elements taken from "
 "*iterable*.  ``set`` is a built-in class.  See :class:`set` and :ref:`types-"
@@ -2643,7 +2692,7 @@ msgstr ""
 "返回一个新的 :class:`set` 对象，可以选择带有从 *iterable* 获取的元素。 ``set`` 是一个内置类型。 请查看 "
 ":class:`set` 和 :ref:`types-set` 获取关于这个类的文档。"
 
-#: ../../library/functions.rst:1774
+#: ../../library/functions.rst:1781
 msgid ""
 "For other containers see the built-in :class:`frozenset`, :class:`list`, "
 ":class:`tuple`, and :class:`dict` classes, as well as the :mod:`collections`"
@@ -2652,7 +2701,7 @@ msgstr ""
 "有关其他容器请参看内置的 :class:`frozenset`, :class:`list`, :class:`tuple` 和 "
 ":class:`dict` 类，以及 :mod:`collections` 模块。"
 
-#: ../../library/functions.rst:1781
+#: ../../library/functions.rst:1788
 msgid ""
 "This is the counterpart of :func:`getattr`.  The arguments are an object, a "
 "string, and an arbitrary value.  The string may name an existing attribute "
@@ -2664,7 +2713,7 @@ msgstr ""
 "相对应。其参数为一个对象、一个字符串和一个任意值。字符串可以为某现有属性的名称，或为新属性。只要对象允许，函数会将值赋给属性。如 "
 "``setattr(x, 'foobar', 123)`` 等价于 ``x.foobar = 123``。"
 
-#: ../../library/functions.rst:1787
+#: ../../library/functions.rst:1794
 msgid ""
 "*name* need not be a Python identifier as defined in :ref:`identifiers` "
 "unless the object chooses to enforce that, for example in a custom "
@@ -2676,7 +2725,7 @@ msgstr ""
 ":meth:`~object.__getattribute__` 中或是通过 :attr:`~object.__slots__`。 "
 "一个名称不为标识符的属性将不可使用点号标记来访问，但是可以通过 :func:`getattr` 等来访问。"
 
-#: ../../library/functions.rst:1795
+#: ../../library/functions.rst:1802
 msgid ""
 "Since :ref:`private name mangling <private-name-mangling>` happens at "
 "compilation time, one must manually mangle a private attribute's (attributes"
@@ -2685,7 +2734,7 @@ msgstr ""
 "由于 :ref:`私有名称混合 <private-name-mangling>` "
 "发生在编译时，因此必须手动混合私有属性（以两个下划线打头的属性）名称以便使用 :func:`setattr` 来设置它。"
 
-#: ../../library/functions.rst:1804
+#: ../../library/functions.rst:1811
 msgid ""
 "Return a :term:`slice` object representing the set of indices specified by "
 "``range(start, stop, step)``.  The *start* and *step* arguments default to "
@@ -2694,7 +2743,7 @@ msgstr ""
 "返回一个表示由 ``range(start, stop, step)`` 指定的索引集的 :term:`slice` 对象。 *start* 和 "
 "*step* 参数默认为 ``None``。"
 
-#: ../../library/functions.rst:1812
+#: ../../library/functions.rst:1819
 msgid ""
 "Slice objects have read-only data attributes :attr:`!start`, :attr:`!stop`, "
 "and :attr:`!step` which merely return the argument values (or their "
@@ -2704,7 +2753,7 @@ msgstr ""
 "切片对象具有只读的数据属性 :attr:`!start`, :attr:`!stop` 和 "
 ":attr:`!step`，它们将简单地返回相应的参数值（或其默认值）。 它们没有其他显式的功能；但是，它们会被 NumPy 和其他第三方包所使用。"
 
-#: ../../library/functions.rst:1817
+#: ../../library/functions.rst:1824
 msgid ""
 "Slice objects are also generated when extended indexing syntax is used.  For"
 " example: ``a[start:stop:step]`` or ``a[start:stop, i]``.  See "
@@ -2714,7 +2763,7 @@ msgstr ""
 "当使用扩展索引语法时也会生成切片对象。 例如: ``a[start:stop:step]`` 或 ``a[start:stop, i]``。 请参阅 "
 ":func:`itertools.islice` 了解返回 :term:`iterator` 的替代版本。"
 
-#: ../../library/functions.rst:1822
+#: ../../library/functions.rst:1829
 msgid ""
 "Slice objects are now :term:`hashable` (provided :attr:`~slice.start`, "
 ":attr:`~slice.stop`, and :attr:`~slice.step` are hashable)."
@@ -2722,16 +2771,16 @@ msgstr ""
 "Slice 对象现在将为 :term:`hashable` (如果 :attr:`~slice.start`, :attr:`~slice.stop` "
 "和 :attr:`~slice.step` 均为可哈希对象)。"
 
-#: ../../library/functions.rst:1828
+#: ../../library/functions.rst:1835
 msgid "Return a new sorted list from the items in *iterable*."
 msgstr "根据 *iterable* 中的项返回一个新的已排序列表。"
 
-#: ../../library/functions.rst:1830
+#: ../../library/functions.rst:1837
 msgid ""
 "Has two optional arguments which must be specified as keyword arguments."
 msgstr "具有两个可选参数，它们都必须指定为关键字参数。"
 
-#: ../../library/functions.rst:1832
+#: ../../library/functions.rst:1839
 msgid ""
 "*key* specifies a function of one argument that is used to extract a "
 "comparison key from each element in *iterable* (for example, "
@@ -2741,19 +2790,19 @@ msgstr ""
 "*key* 指定带有单个参数的函数，用于从 *iterable* 的每个元素中提取用于比较的键 (例如 ``key=str.lower``)。 默认值为"
 " ``None`` (直接比较元素)。"
 
-#: ../../library/functions.rst:1836
+#: ../../library/functions.rst:1843
 msgid ""
 "*reverse* is a boolean value.  If set to ``True``, then the list elements "
 "are sorted as if each comparison were reversed."
 msgstr "*reverse* 为一个布尔值。 如果设为 ``True``，则每个列表元素将按反向顺序比较进行排序。"
 
-#: ../../library/functions.rst:1839
+#: ../../library/functions.rst:1846
 msgid ""
 "Use :func:`functools.cmp_to_key` to convert an old-style *cmp* function to a"
 " *key* function."
 msgstr "使用 :func:`functools.cmp_to_key` 可将老式的 *cmp* 函数转换为 *key* 函数。"
 
-#: ../../library/functions.rst:1842
+#: ../../library/functions.rst:1849
 msgid ""
 "The built-in :func:`sorted` function is guaranteed to be stable. A sort is "
 "stable if it guarantees not to change the relative order of elements that "
@@ -2763,7 +2812,7 @@ msgstr ""
 "内置的 :func:`sorted` 确保是稳定的。 如果一个排序确保不会改变比较结果相等的元素的相对顺序就称其为稳定的 --- "
 "这有利于进行多重排序（例如先按部门、再按薪级排序）。"
 
-#: ../../library/functions.rst:1847
+#: ../../library/functions.rst:1854
 msgid ""
 "The sort algorithm uses only ``<`` comparisons between items.  While "
 "defining an :meth:`~object.__lt__` method will suffice for sorting, :PEP:`8`"
@@ -2779,29 +2828,29 @@ msgstr ""
 "）使用相同的数据时出现错误，这些工具依赖于不同的底层方法。实现所有六个比较也有助于避免混合类型比较的混乱，因为混合类型比较可以调用反射到 "
 ":meth:`~object.__gt__` 的方法。"
 
-#: ../../library/functions.rst:1856
+#: ../../library/functions.rst:1863
 msgid ""
 "For sorting examples and a brief sorting tutorial, see :ref:`sortinghowto`."
 msgstr "有关排序示例和简要排序教程，请参阅 :ref:`sortinghowto` 。"
 
-#: ../../library/functions.rst:1860
+#: ../../library/functions.rst:1867
 msgid "Transform a method into a static method."
 msgstr "将方法转换为静态方法。"
 
-#: ../../library/functions.rst:1862
+#: ../../library/functions.rst:1869
 msgid ""
 "A static method does not receive an implicit first argument. To declare a "
 "static method, use this idiom::"
 msgstr "静态方法不会接收隐式的第一个参数。要声明一个静态方法，请使用此语法 ::"
 
-#: ../../library/functions.rst:1869
+#: ../../library/functions.rst:1876
 msgid ""
 "The ``@staticmethod`` form is a function :term:`decorator` -- see "
 ":ref:`function` for details."
 msgstr ""
 "``@staticmethod`` 这样的形式称为函数的 :term:`decorator` -- 详情参阅 :ref:`function`。"
 
-#: ../../library/functions.rst:1872
+#: ../../library/functions.rst:1879
 msgid ""
 "A static method can be called either on the class (such as ``C.f()``) or on "
 "an instance (such as ``C().f()``). Moreover, the static method "
@@ -2811,14 +2860,14 @@ msgstr ""
 "静态方式既可以在类上调用 (如 ``C.f()``)，也可以在实例上调用 (如 ``C().f()``)。 此外，静态方法 "
 ":term:`descriptor` 也属于可调用对象，因而它们可以在类定义中使用 (如 ``f()``)。"
 
-#: ../../library/functions.rst:1877
+#: ../../library/functions.rst:1884
 msgid ""
 "Static methods in Python are similar to those found in Java or C++. Also, "
 "see :func:`classmethod` for a variant that is useful for creating alternate "
 "class constructors."
 msgstr "Python 的静态方法与 Java 或 C++ 类似。另请参阅 :func:`classmethod` ，可用于创建另一种类构造函数。"
 
-#: ../../library/functions.rst:1881
+#: ../../library/functions.rst:1888
 msgid ""
 "Like all decorators, it is also possible to call ``staticmethod`` as a "
 "regular function and do something with its result.  This is needed in some "
@@ -2829,11 +2878,11 @@ msgstr ""
 "像所有装饰器一样，也可以像常规函数一样调用 ``staticmethod`` "
 "，并对其结果执行某些操作。比如某些情况下需要从类主体引用函数并且您希望避免自动转换为实例方法。对于这些情况，请使用此语法::"
 
-#: ../../library/functions.rst:1893
+#: ../../library/functions.rst:1900
 msgid "For more information on static methods, see :ref:`types`."
 msgstr "想了解更多有关静态方法的信息，请参阅 :ref:`types` 。"
 
-#: ../../library/functions.rst:1895
+#: ../../library/functions.rst:1902
 msgid ""
 "Static methods now inherit the method attributes (``__module__``, "
 "``__name__``, ``__qualname__``, ``__doc__`` and ``__annotations__``), have a"
@@ -2842,18 +2891,18 @@ msgstr ""
 "静态方法继承了方法的多个属性（ ``__module__``、 ``__name__``、 ``__qualname__``、 ``__doc__`` "
 "和 ``__annotations__``），还拥有一个新的 ``__wrapped__`` 属性，并且现在还可以作为普通函数进行调用。"
 
-#: ../../library/functions.rst:1910
+#: ../../library/functions.rst:1917
 msgid ""
 "Return a :class:`str` version of *object*.  See :func:`str` for details."
 msgstr "返回一个 :class:`str` 版本的 *object* 。有关详细信息，请参阅 :func:`str` 。"
 
-#: ../../library/functions.rst:1912
+#: ../../library/functions.rst:1919
 msgid ""
 "``str`` is the built-in string :term:`class`.  For general information about"
 " strings, see :ref:`textseq`."
 msgstr "``str`` 是内置字符串 :term:`class` 。更多关于字符串的信息查看 :ref:`textseq`。"
 
-#: ../../library/functions.rst:1918
+#: ../../library/functions.rst:1925
 msgid ""
 "Sums *start* and the items of an *iterable* from left to right and returns "
 "the total.  The *iterable*'s items are normally numbers, and the start value"
@@ -2862,7 +2911,7 @@ msgstr ""
 "从 *start* 开始自左向右对 *iterable* 的项求和并返回总计值。 *iterable* 的项通常为数字，而 start "
 "值则不允许为字符串。"
 
-#: ../../library/functions.rst:1922
+#: ../../library/functions.rst:1929
 msgid ""
 "For some use cases, there are good alternatives to :func:`sum`. The "
 "preferred, fast way to concatenate a sequence of strings is by calling "
@@ -2870,25 +2919,28 @@ msgid ""
 "precision, see :func:`math.fsum`\\.  To concatenate a series of iterables, "
 "consider using :func:`itertools.chain`."
 msgstr ""
+"对于某些用例，存在 :func:`sum` 的更好替代。 拼接字符串序列的更好、更快的方式是调用 ``''.join(sequence)``。 "
+"要以扩展的精度执行浮点数值的求和，请参阅 :func:`math.fsum`。 要拼接一系列可迭代对象，请考虑使用 "
+":func:`itertools.chain`。"
 
-#: ../../library/functions.rst:1928
+#: ../../library/functions.rst:1935
 msgid "The *start* parameter can be specified as a keyword argument."
 msgstr "*start* 形参可用关键字参数形式来指定。"
 
-#: ../../library/functions.rst:1931
+#: ../../library/functions.rst:1938
 msgid ""
 "Summation of floats switched to an algorithm that gives higher accuracy and "
 "better commutativity on most builds."
-msgstr ""
+msgstr "浮点数的求和已切换为一种可在大多数构建版本中给出更高精确度和更好适应性的算法。"
 
-#: ../../library/functions.rst:1938
+#: ../../library/functions.rst:1945
 msgid ""
 "Return a proxy object that delegates method calls to a parent or sibling "
 "class of *type*.  This is useful for accessing inherited methods that have "
 "been overridden in a class."
 msgstr "返回一个代理对象，它会将方法调用委托给 *type* 的父类或兄弟类。 这对于访问已在类中被重写的继承方法很有用。"
 
-#: ../../library/functions.rst:1942
+#: ../../library/functions.rst:1949
 msgid ""
 "The *object_or_type* determines the :term:`method resolution order` to be "
 "searched.  The search starts from the class right after the *type*."
@@ -2896,7 +2948,7 @@ msgstr ""
 "*object_or_type* 确定要用于搜索的 :term:`method resolution order`。 搜索会从 *type* "
 "之后的类开始。"
 
-#: ../../library/functions.rst:1946
+#: ../../library/functions.rst:1953
 msgid ""
 "For example, if :attr:`~class.__mro__` of *object_or_type* is ``D -> B -> C "
 "-> A -> object`` and the value of *type* is ``B``, then :func:`super` "
@@ -2905,7 +2957,7 @@ msgstr ""
 "举例来说，如果 *object_or_type* 的 :attr:`~class.__mro__` 为 ``D -> B -> C -> A -> "
 "object`` 并且 *type* 的值为 ``B``，则 :func:`super` 将会搜索 ``C -> A -> object``。"
 
-#: ../../library/functions.rst:1950
+#: ../../library/functions.rst:1957
 msgid ""
 "The :attr:`~class.__mro__` attribute of the *object_or_type* lists the "
 "method resolution search order used by both :func:`getattr` and "
@@ -2915,7 +2967,7 @@ msgstr ""
 "*object_or_type* 的 :attr:`~class.__mro__` 属性列出了 :func:`getattr` 和 "
 ":func:`super` 所共同使用的方法解析搜索顺序。 该属性是动态的并可在任何继承层级结构发生更新时被改变。"
 
-#: ../../library/functions.rst:1955
+#: ../../library/functions.rst:1962
 msgid ""
 "If the second argument is omitted, the super object returned is unbound.  If"
 " the second argument is an object, ``isinstance(obj, type)`` must be true.  "
@@ -2925,7 +2977,7 @@ msgstr ""
 "如果省略第二个参数，则返回的超类对象是未绑定的。 如果第二个参数为一个对象，则 ``isinstance(obj, type)`` 必须为真值。 "
 "如果第二个参数为一个类型，则 ``issubclass(type2, type)`` 必须为真值（这适用于类方法）。"
 
-#: ../../library/functions.rst:1960
+#: ../../library/functions.rst:1967
 msgid ""
 "When called directly within an ordinary method of a class, both arguments "
 "may be omitted (\"zero-argument :func:`!super`\"). In this case, *type* will"
@@ -2934,8 +2986,11 @@ msgid ""
 "argument :func:`!super` will not work as expected within nested functions, "
 "including generator expressions, which implicitly create nested functions.)"
 msgstr ""
+"当在普通方法或类中直接调用时，这两个参数均可被省略 (即 \"零参数 :func:`!super`\")。 在此情况下，*type* 将为其外层的类，而"
+" *obj* 将为其所在函数的第一个参数 (通常为 ``self``)。 (这意味着零参数 :func:`!super` "
+"在嵌套的函数内的行为将不会如预期那样，这也包括生成器表达式，因为它会隐式地创建嵌套的函数。)"
 
-#: ../../library/functions.rst:1967
+#: ../../library/functions.rst:1974
 msgid ""
 "There are two typical use cases for *super*.  In a class hierarchy with "
 "single inheritance, *super* can be used to refer to parent classes without "
@@ -2945,7 +3000,7 @@ msgstr ""
 "*super* 有两个典型用例。 在具有单继承的类层级结构中，*super* 可用来引用父类而不必显式地指定它们的名称，从而令代码更易维护。 "
 "这种用法与其他编程语言中 *super* 的用法非常相似。"
 
-#: ../../library/functions.rst:1972
+#: ../../library/functions.rst:1979
 msgid ""
 "The second use case is to support cooperative multiple inheritance in a "
 "dynamic execution environment.  This use case is unique to Python and is not"
@@ -2961,11 +3016,11 @@ msgstr ""
 "这使用实现“菱形图”成为可能，即有多个基类实现相同的方法。 "
 "好的设计强制要求这样的方法在每个情况下都具有相同的调用签名（因为调用顺序是在运行时确定的，也因为这个顺序要适应类层级结构的更改，还因为这个顺序可能包括在运行时之前未知的兄弟类）。"
 
-#: ../../library/functions.rst:1982
+#: ../../library/functions.rst:1989
 msgid "For both use cases, a typical superclass call looks like this::"
 msgstr "对于以上两个用例，典型的超类调用看起来是这样的::"
 
-#: ../../library/functions.rst:1989
+#: ../../library/functions.rst:1996
 msgid ""
 "In addition to method lookups, :func:`super` also works for attribute "
 "lookups.  One possible use case for this is calling :term:`descriptors "
@@ -2974,7 +3029,7 @@ msgstr ""
 "除了方法查找之外，:func:`super` 也可用于属性查找。 一个可能的应用场合是在上级或同级类中调用 :term:`描述器 "
 "<descriptor>`。"
 
-#: ../../library/functions.rst:1993
+#: ../../library/functions.rst:2000
 msgid ""
 "Note that :func:`super` is implemented as part of the binding process for "
 "explicit dotted attribute lookups such as ``super().__getitem__(name)``. It "
@@ -2988,7 +3043,7 @@ msgstr ""
 ":meth:`~object.__getattribute__` 方法以便能够按支持协作多重继承的可预测的顺序来搜索类。 "
 "相应地，:func:`super` 在像 ``super()[name]`` 这样使用语句或运算符进行隐式查找时则是未定义的。"
 
-#: ../../library/functions.rst:2001
+#: ../../library/functions.rst:2008
 msgid ""
 "Also note that, aside from the zero argument form, :func:`super` is not "
 "limited to use inside methods.  The two argument form specifies the "
@@ -3000,7 +3055,7 @@ msgstr ""
 "还要注意的是，除了零个参数的形式以外，:func:`super` 并不限于在方法内部使用。 两个参数的形式明确指定参数并进行相应的引用。 "
 "零个参数的形式仅适用于类定义内部，因为编译器需要填入必要的细节以正确地检索到被定义的类，还需要让普通方法访问当前实例。"
 
-#: ../../library/functions.rst:2008
+#: ../../library/functions.rst:2015
 msgid ""
 "For practical suggestions on how to design cooperative classes using "
 ":func:`super`, see `guide to using super() "
@@ -3009,7 +3064,7 @@ msgstr ""
 "对于有关如何使用 :func:`super` 来如何设计协作类的实用建议，请参阅 `使用 super() 的指南 "
 "<https://rhettinger.wordpress.com/2011/05/26/super-considered-super/>`_。"
 
-#: ../../library/functions.rst:2018
+#: ../../library/functions.rst:2025
 msgid ""
 "Rather than being a function, :class:`tuple` is actually an immutable "
 "sequence type, as documented in :ref:`typesseq-tuple` and :ref:`typesseq`."
@@ -3017,7 +3072,7 @@ msgstr ""
 "虽然被称为函数，但 :class:`tuple` 实际上是一个不可变的序列类型，参见在 :ref:`typesseq-tuple` 与 "
 ":ref:`typesseq` 中的文档说明。"
 
-#: ../../library/functions.rst:2027
+#: ../../library/functions.rst:2034
 msgid ""
 "With one argument, return the type of an *object*.  The return value is a "
 "type object and generally the same object as returned by "
@@ -3026,13 +3081,13 @@ msgstr ""
 "传入一个参数时，返回 *object* 的类型。 返回值是一个 type 对象，通常与 :attr:`object.__class__ "
 "<instance.__class__>` 所返回的对象相同。"
 
-#: ../../library/functions.rst:2031
+#: ../../library/functions.rst:2038
 msgid ""
 "The :func:`isinstance` built-in function is recommended for testing the type"
 " of an object, because it takes subclasses into account."
 msgstr "推荐使用 :func:`isinstance` 内置函数来检测对象的类型，因为它会考虑子类的情况。"
 
-#: ../../library/functions.rst:2035
+#: ../../library/functions.rst:2042
 msgid ""
 "With three arguments, return a new type object.  This is essentially a "
 "dynamic form of the :keyword:`class` statement. The *name* string is the "
@@ -3049,11 +3104,11 @@ msgstr ""
 "属性；如果为空则会添加所有类的终极基类 :class:`object`。 *dict* 字典包含类主体的属性和方法定义；它在成为 "
 ":attr:`~object.__dict__` 属性之前可能会被拷贝或包装。 下面两条语句会创建相同的 :class:`type` 对象:"
 
-#: ../../library/functions.rst:2050
+#: ../../library/functions.rst:2057
 msgid "See also :ref:`bltin-type-objects`."
 msgstr "另请参阅 :ref:`bltin-type-objects`。"
 
-#: ../../library/functions.rst:2052
+#: ../../library/functions.rst:2059
 msgid ""
 "Keyword arguments provided to the three argument form are passed to the "
 "appropriate metaclass machinery (usually :meth:`~object.__init_subclass__`) "
@@ -3063,17 +3118,17 @@ msgstr ""
 "提供给三参数形式的关键字参数会被传递给适当的元类机制 (通常为 "
 ":meth:`~object.__init_subclass__`)，相当于类定义中关键字 (除了 *metaclass*) 的行为方式。"
 
-#: ../../library/functions.rst:2057
+#: ../../library/functions.rst:2064
 msgid "See also :ref:`class-customization`."
 msgstr "另请参阅 :ref:`class-customization`。"
 
-#: ../../library/functions.rst:2059
+#: ../../library/functions.rst:2066
 msgid ""
 "Subclasses of :class:`type` which don't override ``type.__new__`` may no "
 "longer use the one-argument form to get the type of an object."
 msgstr ":class:`type` 的子类如果未重写 ``type.__new__``，将不再能使用一个参数的形式来获取对象的类型。"
 
-#: ../../library/functions.rst:2066
+#: ../../library/functions.rst:2073
 msgid ""
 "Return the :attr:`~object.__dict__` attribute for a module, class, instance,"
 " or any other object with a :attr:`~object.__dict__` attribute."
@@ -3081,7 +3136,7 @@ msgstr ""
 "返回模块、类、实例或任何其它具有 :attr:`~object.__dict__` 属性的对象的 :attr:`~object.__dict__` "
 "属性。"
 
-#: ../../library/functions.rst:2069
+#: ../../library/functions.rst:2076
 msgid ""
 "Objects such as modules and instances have an updateable "
 ":attr:`~object.__dict__` attribute; however, other objects may have write "
@@ -3093,11 +3148,11 @@ msgstr ""
 ":attr:`~object.__dict__` 属性可能会设为限制写入（例如，类会使用 :class:`types.MappingProxyType`"
 " 来防止直接更新字典）。"
 
-#: ../../library/functions.rst:2074
+#: ../../library/functions.rst:2081
 msgid "Without an argument, :func:`vars` acts like :func:`locals`."
-msgstr ""
+msgstr "不带参数时，:func:`vars` 的行为将类似于 :func:`locals`。"
 
-#: ../../library/functions.rst:2076
+#: ../../library/functions.rst:2083
 msgid ""
 "A :exc:`TypeError` exception is raised if an object is specified but it "
 "doesn't have a :attr:`~object.__dict__` attribute (for example, if its class"
@@ -3106,29 +3161,29 @@ msgstr ""
 "如果指定了一个对象但它没有 :attr:`~object.__dict__` 属性（例如，当它所属的类定义了 "
 ":attr:`~object.__slots__` 属性时）则会引发 :exc:`TypeError` 异常。"
 
-#: ../../library/functions.rst:2082
+#: ../../library/functions.rst:2089
 msgid ""
 "The result of calling this function without an argument has been updated as "
 "described for the :func:`locals` builtin."
-msgstr ""
+msgstr "不带参数调用此函数的结果已被更新为与 :func:`locals` 内置函数的描述类似。"
 
-#: ../../library/functions.rst:2088
+#: ../../library/functions.rst:2095
 msgid ""
 "Iterate over several iterables in parallel, producing tuples with an item "
 "from each one."
 msgstr "在多个迭代器上并行迭代，从每个迭代器返回一个数据项组成元组。"
 
-#: ../../library/functions.rst:2091
+#: ../../library/functions.rst:2098
 msgid "Example::"
 msgstr "示例::"
 
-#: ../../library/functions.rst:2100
+#: ../../library/functions.rst:2107
 msgid ""
 "More formally: :func:`zip` returns an iterator of tuples, where the *i*-th "
 "tuple contains the *i*-th element from each of the argument iterables."
 msgstr "更正式的说法： :func:`zip` 返回元组的迭代器，其中第 *i* 个元组包含的是每个参数迭代器的第 *i* 个元素。"
 
-#: ../../library/functions.rst:2103
+#: ../../library/functions.rst:2110
 msgid ""
 "Another way to think of :func:`zip` is that it turns rows into columns, and "
 "columns into rows.  This is similar to `transposing a matrix "
@@ -3137,7 +3192,7 @@ msgstr ""
 "不妨换一种方式认识 :func:`zip` ：它会把行变成列，把列变成行。这类似于 `矩阵转置 "
 "<https://en.wikipedia.org/wiki/Transpose>`_ 。"
 
-#: ../../library/functions.rst:2107
+#: ../../library/functions.rst:2114
 msgid ""
 ":func:`zip` is lazy: The elements won't be processed until the iterable is "
 "iterated on, e.g. by a :keyword:`!for` loop or by wrapping in a "
@@ -3145,7 +3200,7 @@ msgid ""
 msgstr ""
 ":func:`zip` 是延迟执行的：直至迭代时才会对元素进行处理，比如 :keyword:`!for` 循环或放入 :class:`list` 中。"
 
-#: ../../library/functions.rst:2111
+#: ../../library/functions.rst:2118
 msgid ""
 "One thing to consider is that the iterables passed to :func:`zip` could have"
 " different lengths; sometimes by design, and sometimes because of a bug in "
@@ -3155,14 +3210,14 @@ msgstr ""
 "值得考虑的是，传给 :func:`zip` 的可迭代对象可能长度不同；有时是有意为之，有时是因为准备这些对象的代码存在错误。Python "
 "提供了三种不同的处理方案："
 
-#: ../../library/functions.rst:2116
+#: ../../library/functions.rst:2123
 msgid ""
 "By default, :func:`zip` stops when the shortest iterable is exhausted. It "
 "will ignore the remaining items in the longer iterables, cutting off the "
 "result to the length of the shortest iterable::"
 msgstr "默认情况下，:func:`zip` 在最短的迭代完成后停止。较长可迭代对象中的剩余项将被忽略，结果会裁切至最短可迭代对象的长度："
 
-#: ../../library/functions.rst:2123
+#: ../../library/functions.rst:2130
 msgid ""
 ":func:`zip` is often used in cases where the iterables are assumed to be of "
 "equal length.  In such cases, it's recommended to use the ``strict=True`` "
@@ -3171,13 +3226,13 @@ msgstr ""
 "通常 :func:`zip` 用于可迭代对象等长的情况下。这时建议用 ``strict=True`` 的选项。输出与普通的 :func:`zip` "
 "相同：。"
 
-#: ../../library/functions.rst:2130
+#: ../../library/functions.rst:2137
 msgid ""
 "Unlike the default behavior, it raises a :exc:`ValueError` if one iterable "
 "is exhausted before the others:"
 msgstr "与默认行为不同，如果一个可迭代对象在其他几个之前被耗尽则会引发 :exc:`ValueError`:"
 
-#: ../../library/functions.rst:2148
+#: ../../library/functions.rst:2155
 msgid ""
 "Without the ``strict=True`` argument, any bug that results in iterables of "
 "different lengths will be silenced, possibly manifesting as a hard-to-find "
@@ -3185,7 +3240,7 @@ msgid ""
 msgstr ""
 "如果未指定 ``strict=True`` 参数，所有导致可迭代对象长度不同的错误都会被抑制，这可能会在程序的其他地方表现为难以发现的错误。"
 
-#: ../../library/functions.rst:2152
+#: ../../library/functions.rst:2159
 msgid ""
 "Shorter iterables can be padded with a constant value to make all the "
 "iterables have the same length.  This is done by "
@@ -3193,17 +3248,17 @@ msgid ""
 msgstr ""
 "为了让所有的可迭代对象具有相同的长度，长度较短的可用常量进行填充。这可由 :func:`itertools.zip_longest` 来完成。"
 
-#: ../../library/functions.rst:2156
+#: ../../library/functions.rst:2163
 msgid ""
 "Edge cases: With a single iterable argument, :func:`zip` returns an iterator"
 " of 1-tuples.  With no arguments, it returns an empty iterator."
 msgstr "极端例子是只有一个可迭代对象参数，:func:`zip` 会返回一个一元组的迭代器。如果未给出参数，则返回一个空的迭代器。"
 
-#: ../../library/functions.rst:2159
+#: ../../library/functions.rst:2166
 msgid "Tips and tricks:"
 msgstr "小技巧："
 
-#: ../../library/functions.rst:2161
+#: ../../library/functions.rst:2168
 msgid ""
 "The left-to-right evaluation order of the iterables is guaranteed. This "
 "makes possible an idiom for clustering a data series into n-length groups "
@@ -3215,23 +3270,23 @@ msgstr ""
 "进行分组。这将重复 *相同* 的迭代器 ``n`` 次，输出的每个元组都包含 ``n`` 次调用迭代器的结果。这样做的效果是把输入拆分为长度为 n "
 "的块。"
 
-#: ../../library/functions.rst:2167
+#: ../../library/functions.rst:2174
 msgid ""
 ":func:`zip` in conjunction with the ``*`` operator can be used to unzip a "
 "list::"
 msgstr ":func:`zip` 与 ``*`` 运算符相结合可以用来拆解一个列表::"
 
-#: ../../library/functions.rst:2178
+#: ../../library/functions.rst:2185
 msgid "Added the ``strict`` argument."
 msgstr "增加了 ``strict`` 参数。"
 
-#: ../../library/functions.rst:2190
+#: ../../library/functions.rst:2197
 msgid ""
 "This is an advanced function that is not needed in everyday Python "
 "programming, unlike :func:`importlib.import_module`."
 msgstr "与 :func:`importlib.import_module` 不同，这是一个日常 Python 编程中不需要用到的高级函数。"
 
-#: ../../library/functions.rst:2193
+#: ../../library/functions.rst:2200
 msgid ""
 "This function is invoked by the :keyword:`import` statement.  It can be "
 "replaced (by importing the :mod:`builtins` module and assigning to "
@@ -3247,7 +3302,7 @@ msgstr ""
 "不建议这样做，因为使用导入钩子 (参见 :pep:`302`) 通常更容易实现同样的目标，并且不会导致代码问题，因为许多代码都会假定所用的是默认实现。 "
 "同样也不建议直接使用 :func:`__import__` 而应该用 :func:`importlib.import_module`。"
 
-#: ../../library/functions.rst:2202
+#: ../../library/functions.rst:2209
 msgid ""
 "The function imports the module *name*, potentially using the given "
 "*globals* and *locals* to determine how to interpret the name in a package "
@@ -3260,7 +3315,7 @@ msgstr ""
 "*name* 模块中导入的对象或子模块的名称。标准的实现代码完全不会用到 *locals* 参数，只用到了 *globals* 用于确定 "
 ":keyword:`import` 语句所在的包上下文。"
 
-#: ../../library/functions.rst:2209
+#: ../../library/functions.rst:2216
 msgid ""
 "*level* specifies whether to use absolute or relative imports. ``0`` (the "
 "default) means only perform absolute imports.  Positive values for *level* "
@@ -3271,7 +3326,7 @@ msgstr ""
 "*level* 指定是使用绝对还是相对导入。 ``0`` (默认值) 意味着仅执行绝对导入。 *level* 为正数值表示相对于模块调用 "
 ":func:`__import__` 的目录，将要搜索的父目录层数 (详情参见 :pep:`328`)。"
 
-#: ../../library/functions.rst:2215
+#: ../../library/functions.rst:2222
 msgid ""
 "When the *name* variable is of the form ``package.module``, normally, the "
 "top-level package (the name up till the first dot) is returned, *not* the "
@@ -3281,30 +3336,30 @@ msgstr ""
 "当 *name* 变量的形式为 ``package.module`` 时，通常将会返回最高层级的包（第一个点号之前的名称），而 *不是* 以 "
 "*name* 命名的模块。 但是，当给出了非空的 *fromlist* 参数时，则将返回以 *name* 命名的模块。"
 
-#: ../../library/functions.rst:2220
+#: ../../library/functions.rst:2227
 msgid ""
 "For example, the statement ``import spam`` results in bytecode resembling "
 "the following code::"
 msgstr "例如，语句 ``import spam`` 的结果将为与以下代码作用相同的字节码::"
 
-#: ../../library/functions.rst:2225
+#: ../../library/functions.rst:2232
 msgid "The statement ``import spam.ham`` results in this call::"
 msgstr "语句 ``import spam.ham`` 的结果将为以下调用::"
 
-#: ../../library/functions.rst:2229
+#: ../../library/functions.rst:2236
 msgid ""
 "Note how :func:`__import__` returns the toplevel module here because this is"
 " the object that is bound to a name by the :keyword:`import` statement."
 msgstr ""
 "请注意在这里 :func:`__import__` 是如何返回顶层模块的，因为这是通过 :keyword:`import` 语句被绑定到特定名称的对象。"
 
-#: ../../library/functions.rst:2232
+#: ../../library/functions.rst:2239
 msgid ""
 "On the other hand, the statement ``from spam.ham import eggs, sausage as "
 "saus`` results in ::"
 msgstr "另一方面，语句 ``from spam.ham import eggs, sausage as saus`` 的结果将为 ::"
 
-#: ../../library/functions.rst:2239
+#: ../../library/functions.rst:2246
 msgid ""
 "Here, the ``spam.ham`` module is returned from :func:`__import__`.  From "
 "this object, the names to import are retrieved and assigned to their "
@@ -3312,30 +3367,30 @@ msgid ""
 msgstr ""
 "在这里， ``spam.ham`` 模块会由 :func:`__import__` 返回。 要导入的对象将从此对象中提取并赋值给它们对应的名称。"
 
-#: ../../library/functions.rst:2243
+#: ../../library/functions.rst:2250
 msgid ""
 "If you simply want to import a module (potentially within a package) by "
 "name, use :func:`importlib.import_module`."
 msgstr "如果您只想按名称导入模块（可能在包中），请使用 :func:`importlib.import_module`"
 
-#: ../../library/functions.rst:2246
+#: ../../library/functions.rst:2253
 msgid ""
 "Negative values for *level* are no longer supported (which also changes the "
 "default value to 0)."
 msgstr "*level* 的值不再支持负数（默认值也修改为0）。"
 
-#: ../../library/functions.rst:2250
+#: ../../library/functions.rst:2257
 msgid ""
 "When the command line options :option:`-E` or :option:`-I` are being used, "
 "the environment variable :envvar:`PYTHONCASEOK` is now ignored."
 msgstr ""
 "当使用了命令行参数 :option:`-E` 或 :option:`-I` 时，环境变量 :envvar:`PYTHONCASEOK` 现在将被忽略。"
 
-#: ../../library/functions.rst:2255
+#: ../../library/functions.rst:2262
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../library/functions.rst:2256
+#: ../../library/functions.rst:2263
 msgid ""
 "Note that the parser only accepts the Unix-style end of line convention. If "
 "you are reading the code from a file, make sure to use newline conversion "
@@ -3346,7 +3401,7 @@ msgstr "解析器只接受 Unix 风格的行结束符。如果您从文件中读
 msgid "Boolean"
 msgstr "布尔值"
 
-#: ../../library/functions.rst:154 ../../library/functions.rst:2025
+#: ../../library/functions.rst:154 ../../library/functions.rst:2032
 msgid "type"
 msgstr "type"
 
@@ -3370,7 +3425,7 @@ msgstr "Infinity"
 msgid "__format__"
 msgstr "__format__"
 
-#: ../../library/functions.rst:801 ../../library/functions.rst:1902
+#: ../../library/functions.rst:801 ../../library/functions.rst:1909
 msgid "string"
 msgstr "string"
 
@@ -3422,7 +3477,7 @@ msgstr "缓冲"
 msgid "text mode"
 msgstr "文本模式"
 
-#: ../../library/functions.rst:1492 ../../library/functions.rst:2184
+#: ../../library/functions.rst:1492 ../../library/functions.rst:2191
 msgid "module"
 msgstr "module"
 
@@ -3430,22 +3485,22 @@ msgstr "module"
 msgid "sys"
 msgstr "sys"
 
-#: ../../library/functions.rst:1902
+#: ../../library/functions.rst:1909
 msgid "str() (built-in function)"
 msgstr "str() (内置函数)"
 
-#: ../../library/functions.rst:2025
+#: ../../library/functions.rst:2032
 msgid "object"
 msgstr "object -- 对象"
 
-#: ../../library/functions.rst:2184
+#: ../../library/functions.rst:2191
 msgid "statement"
 msgstr "statement -- 语句"
 
-#: ../../library/functions.rst:2184
+#: ../../library/functions.rst:2191
 msgid "import"
 msgstr "import"
 
-#: ../../library/functions.rst:2184
+#: ../../library/functions.rst:2191
 msgid "builtins"
 msgstr "builtins"
