@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-30 14:55+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:34+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -326,6 +326,19 @@ msgstr ""
 ":pep:`695` 引入了一种新的、更紧凑、更明确的方式来创建 :ref:`泛型类 <generic-classes>` 和 :ref:`函数 "
 "<generic-functions>`::"
 
+#: ../../whatsnew/3.12.rst:190
+msgid ""
+"def max[T](args: Iterable[T]) -> T:\n"
+"    ...\n"
+"\n"
+"class list[T]:\n"
+"    def __getitem__(self, index: int, /) -> T:\n"
+"        ...\n"
+"\n"
+"    def append(self, element: T) -> None:\n"
+"        ..."
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:200
 msgid ""
 "In addition, the PEP introduces a new way to declare :ref:`type aliases "
@@ -335,9 +348,17 @@ msgstr ""
 "此外，该 PEP 引入了一种新的方法来使用 :keyword:`type` 语句声明 :ref:`类型别名 <type-aliases>`，该语句会创建"
 " :class:`~typing.TypeAliasType` 的实例::"
 
+#: ../../whatsnew/3.12.rst:204
+msgid "type Point = tuple[float, float]"
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:206
 msgid "Type aliases can also be :ref:`generic <generic-type-aliases>`::"
 msgstr "类型别名也可以是  :ref:`generic <generic-type-aliases>`::"
+
+#: ../../whatsnew/3.12.rst:208
+msgid "type Point[T] = tuple[T, T]"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:210
 msgid ""
@@ -347,6 +368,14 @@ msgid ""
 msgstr ""
 "新语法允许声明 :class:`~typing.TypeVarTuple` 和 :class:`~typing.ParamSpec` "
 "形参，以及带边界或约束的 :class:`~typing.TypeVar` 形参::"
+
+#: ../../whatsnew/3.12.rst:214
+msgid ""
+"type IntFunc[**P] = Callable[P, int]  # ParamSpec\n"
+"type LabeledTuple[*Ts] = tuple[str, *Ts]  # TypeVarTuple\n"
+"type HashableSequence[T: Hashable] = Sequence[T]  # TypeVar with bound\n"
+"type IntOrStrSequence[T: (int, str)] = Sequence[T]  # TypeVar with constraints"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:219
 msgid ""
@@ -476,6 +505,15 @@ msgstr ""
 "f-字符串的错误消息会更加精确，包括错误的确切位置。例如，在 Python 3.11 中，下面的 f-字符串将引发一个 "
 ":exc:`SyntaxError` ："
 
+#: ../../whatsnew/3.12.rst:310
+msgid ""
+">>> my_string = f\"{x z y}\" + f\"{1 + 1}\"\n"
+"  File \"<stdin>\", line 1\n"
+"    (x z y)\n"
+"     ^^^\n"
+"SyntaxError: f-string: invalid syntax. Perhaps you forgot a comma?"
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:318
 msgid ""
 "but the error message doesn't include the exact location of the error within"
@@ -485,6 +523,15 @@ msgid ""
 msgstr ""
 "但是错误消息不包括错误在行中的确切位置，而且表达式被人为地用括号括起来。在Python 3.12中，由于f-"
 "字符串是用PEG解析器解析的，因此错误消息可以更精确，并显示整行："
+
+#: ../../whatsnew/3.12.rst:322
+msgid ""
+">>> my_string = f\"{x z y}\" + f\"{1 + 1}\"\n"
+"  File \"<stdin>\", line 1\n"
+"    my_string = f\"{x z y}\" + f\"{1 + 1}\"\n"
+"                   ^^^\n"
+"SyntaxError: invalid syntax. Perhaps you forgot a comma?"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:330
 msgid ""
@@ -517,6 +564,20 @@ msgid ""
 "Use the new :c:func:`Py_NewInterpreterFromConfig` function to create an "
 "interpreter with its own GIL:"
 msgstr "使用新的 :c:func:`Py_NewInterpreterFromConfig` 函数来创建具有单独 GIL 的解释器："
+
+#: ../../whatsnew/3.12.rst:348
+msgid ""
+"PyInterpreterConfig config = {\n"
+"    .check_multi_interp_extensions = 1,\n"
+"    .gil = PyInterpreterConfig_OWN_GIL,\n"
+"};\n"
+"PyThreadState *tstate = NULL;\n"
+"PyStatus status = Py_NewInterpreterFromConfig(&tstate, &config);\n"
+"if (PyStatus_Exception(status)) {\n"
+"    return -1;\n"
+"}\n"
+"/* The new interpreter is now active in the current thread. */"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:361
 msgid ""
@@ -708,6 +769,17 @@ msgid ""
 " typed dictionaries::"
 msgstr ":pep:`692` 通过依赖类型化的字典规定了一种更精确的针对 ``**kwargs`` 的类型标注方式::"
 
+#: ../../whatsnew/3.12.rst:497
+msgid ""
+"from typing import TypedDict, Unpack\n"
+"\n"
+"class Movie(TypedDict):\n"
+"  name: str\n"
+"  year: int\n"
+"\n"
+"def foo(**kwargs: Unpack[Movie]): ..."
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:505
 msgid "See :pep:`692` for more details."
 msgstr "更多细节请参见 :pep:`692`。"
@@ -734,6 +806,25 @@ msgstr ""
 #: ../../whatsnew/3.12.rst:520
 msgid "Example::"
 msgstr "示例::"
+
+#: ../../whatsnew/3.12.rst:522
+msgid ""
+"from typing import override\n"
+"\n"
+"class Base:\n"
+"  def get_color(self) -> str:\n"
+"    return \"blue\"\n"
+"\n"
+"class GoodChild(Base):\n"
+"  @override  # ok: overrides Base.get_color\n"
+"  def get_color(self) -> str:\n"
+"    return \"yellow\"\n"
+"\n"
+"class BadChild(Base):\n"
+"  @override  # type checker error: does not override Base.get_color\n"
+"  def get_colour(self) -> str:\n"
+"    return \"red\""
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:538
 msgid "See :pep:`698` for more details."
@@ -1622,6 +1713,26 @@ msgstr ""
 "现在运行时可检测协议的成员在运行时一旦创建了相应的类就将被视为“已冻结”。 "
 "作用于运行时可检测协议的猴子补丁属性将仍然可用，但不会再影响将对象与协议进行比较的 :func:`isinstance` 检测中。 例如::"
 
+#: ../../whatsnew/3.12.rst:995
+msgid ""
+">>> from typing import Protocol, runtime_checkable\n"
+">>> @runtime_checkable\n"
+"... class HasX(Protocol):\n"
+"...     x = 1\n"
+"...\n"
+">>> class Foo: ...\n"
+"...\n"
+">>> f = Foo()\n"
+">>> isinstance(f, HasX)\n"
+"False\n"
+">>> f.x = 1\n"
+">>> isinstance(f, HasX)\n"
+"True\n"
+">>> HasX.y = 2\n"
+">>> isinstance(f, HasX)  # unchanged, even though HasX now also has a \"y\" attribute\n"
+"True"
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:1012
 msgid ""
 "This change was made in order to speed up ``isinstance()`` checks against "
@@ -1679,6 +1790,23 @@ msgid ""
 "Add a ``--durations`` command line option, showing the N slowest test "
 "cases::"
 msgstr "增加了 ``--durations`` 命令行选项，显示 N 个最慢的测试用例::"
+
+#: ../../whatsnew/3.12.rst:1041
+msgid ""
+"python3 -m unittest --durations=3 lib.tests.test_threading\n"
+".....\n"
+"Slowest test durations\n"
+"----------------------------------------------------------------------\n"
+"1.210s     test_timeout (Lib.test.test_threading.BarrierTests)\n"
+"1.003s     test_default_timeout (Lib.test.test_threading.BarrierTests)\n"
+"0.518s     test_timeout (Lib.test.test_threading.EventTests)\n"
+"\n"
+"(0.000 durations hidden.  Use -v to show these durations.)\n"
+"----------------------------------------------------------------------\n"
+"Ran 158 tests in 9.869s\n"
+"\n"
+"OK (skipped=3)"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:1055
 msgid "(Contributed by Giampaolo Rodola in :gh:`48330`)"
@@ -2486,15 +2614,11 @@ msgstr "``read_text()``"
 
 #: ../../deprecations/pending-removal-in-3.13.rst:51
 msgid ""
-"Use :func:`importlib.resources.files()` instead.  Refer to `importlib-"
+"Use :func:`importlib.resources.files` instead.  Refer to `importlib-"
 "resources: Migrating from Legacy <https://importlib-"
 "resources.readthedocs.io/en/latest/using.html#migrating-from-legacy>`_ "
 "(:gh:`106531`)"
 msgstr ""
-"请改用 :func:`importlib.resources.files()`。 参见 `importlib-resources: Migrating "
-"from Legacy <https://importlib-"
-"resources.readthedocs.io/en/latest/using.html#migrating-from-legacy>`_ "
-"(:gh:`106531`)"
 
 #: ../../deprecations/c-api-pending-removal-in-3.14.rst:2
 #: ../../deprecations/pending-removal-in-3.14.rst:2
@@ -2682,14 +2806,10 @@ msgstr ""
 msgid ""
 ":class:`locale`: :func:`locale.getdefaultlocale` was deprecated in Python "
 "3.11 and originally planned for removal in Python 3.13 (:gh:`90817`), but "
-"removal has been postponed to Python 3.15. Use :func:`locale.setlocale()`, "
-":func:`locale.getencoding()` and :func:`locale.getlocale()` instead. "
+"removal has been postponed to Python 3.15. Use :func:`locale.setlocale`, "
+":func:`locale.getencoding` and :func:`locale.getlocale` instead. "
 "(Contributed by Hugo van Kemenade in :gh:`111187`.)"
 msgstr ""
-":class:`locale`: :func:`locale.getdefaultlocale` 在 Python 3.11 中已被弃用并且原计划在 "
-"Python 3.13 中移除 (:gh:`90817`)，但移除时间已被推迟至 Python 3.15。 请改用 "
-":func:`locale.setlocale()`, :func:`locale.getencoding()` 和 "
-":func:`locale.getlocale()`。 （由 Hugo van Kemenade 在 :gh:`111187` 中贡献。）"
 
 #: ../../deprecations/pending-removal-in-3.15.rst:16
 msgid ""
@@ -3353,15 +3473,11 @@ msgstr "hashlib"
 #: ../../whatsnew/3.12.rst:1435
 msgid ""
 "Remove the pure Python implementation of :mod:`hashlib`'s "
-":func:`hashlib.pbkdf2_hmac()`, deprecated in Python 3.10. Python 3.10 and "
+":func:`hashlib.pbkdf2_hmac`, deprecated in Python 3.10. Python 3.10 and "
 "newer requires OpenSSL 1.1.1 (:pep:`644`): this OpenSSL version provides a C"
-" implementation of :func:`~hashlib.pbkdf2_hmac()` which is faster. "
+" implementation of :func:`~hashlib.pbkdf2_hmac` which is faster. "
 "(Contributed by Victor Stinner in :gh:`94199`.)"
 msgstr ""
-"移除了 :mod:`hashlib` 中 :func:`hashlib.pbkdf2_hmac()` 的纯 Python 实现，它在 Python "
-"3.10 中已被弃用。 Python 3.10 及更新版本需要 OpenSSL 1.1.1 (:pep:`644`)：该 OpenSSL 版本提供了 "
-":func:`~hashlib.pbkdf2_hmac()` 的更快速的 C 实现。 （由 Victor Stinner 在 :gh:`94199` "
-"中贡献。）"
 
 #: ../../whatsnew/3.12.rst:1442 ../../whatsnew/3.12.rst:1469
 msgid "importlib"
@@ -3517,6 +3633,22 @@ msgstr "*见下文*"
 #: ../../whatsnew/3.12.rst:1484
 msgid "Replace ``imp.load_source()`` with::"
 msgstr "将 ``imp.load_source()`` 替换为::"
+
+#: ../../whatsnew/3.12.rst:1486
+msgid ""
+"import importlib.util\n"
+"import importlib.machinery\n"
+"\n"
+"def load_source(modname, filename):\n"
+"    loader = importlib.machinery.SourceFileLoader(modname, filename)\n"
+"    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)\n"
+"    module = importlib.util.module_from_spec(spec)\n"
+"    # The module is always executed and not cached in sys.modules.\n"
+"    # Uncomment the following line to cache the module.\n"
+"    # sys.modules[module.__name__] = module\n"
+"    loader.exec_module(module)\n"
+"    return module"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:1499
 msgid "Remove :mod:`!imp` functions and attributes with no replacements:"
@@ -4088,9 +4220,26 @@ msgstr ""
 "``FSTRING_MIDDLE`` 和 ``FSTRING_END`` 会被用于 f-字符串的“字符串”部分。 例如对于 f-字符串 "
 "``f\"start {1+1} end\"`` 旧版本的分词器会生成::"
 
+#: ../../whatsnew/3.12.rst:1753
+msgid "1,0-1,18:           STRING         'f\"start {1+1} end\"'"
+msgstr ""
+
 #: ../../whatsnew/3.12.rst:1755
 msgid "while the new version emits::"
 msgstr "而新版本将生成::"
+
+#: ../../whatsnew/3.12.rst:1757
+msgid ""
+"1,0-1,2:            FSTRING_START  'f\"'\n"
+"1,2-1,8:            FSTRING_MIDDLE 'start '\n"
+"1,8-1,9:            OP             '{'\n"
+"1,9-1,10:           NUMBER         '1'\n"
+"1,10-1,11:          OP             '+'\n"
+"1,11-1,12:          NUMBER         '1'\n"
+"1,12-1,13:          OP             '}'\n"
+"1,13-1,17:          FSTRING_MIDDLE ' end'\n"
+"1,17-1,18:          FSTRING_END    '\"'"
+msgstr ""
 
 #: ../../whatsnew/3.12.rst:1767
 msgid ""

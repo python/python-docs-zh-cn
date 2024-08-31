@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 17:14+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -197,16 +197,14 @@ msgid ""
 msgstr "用 UTF-8 作为 :term:`文件系统编码 <filesystem encoding and error handler>`。"
 
 #: ../../library/os.rst:116
-msgid ":func:`sys.getfilesystemencoding()` returns ``'utf-8'``."
-msgstr ":func:`sys.getfilesystemencoding()` 返回 ``'utf-8'``。"
+msgid ":func:`sys.getfilesystemencoding` returns ``'utf-8'``."
+msgstr ""
 
 #: ../../library/os.rst:117
 msgid ""
-":func:`locale.getpreferredencoding()` returns ``'utf-8'`` (the "
-"*do_setlocale* argument has no effect)."
+":func:`locale.getpreferredencoding` returns ``'utf-8'`` (the *do_setlocale* "
+"argument has no effect)."
 msgstr ""
-":func:`locale.getpreferredencoding()` 返回 ``'utf-8'`` (*do_setlocale* "
-"参数不起作用)。"
 
 #: ../../library/os.rst:119
 msgid ""
@@ -248,19 +246,16 @@ msgid ""
 msgstr "命令行参数，环境变量和文件名会使用 UTF-8 编码来解码为文本。"
 
 #: ../../library/os.rst:136
-msgid ""
-":func:`os.fsdecode()` and :func:`os.fsencode()` use the UTF-8 encoding."
-msgstr ":func:`os.fsdecode()` 和 :func:`os.fsencode()` 会使用 UTF-8 编码。"
+msgid ":func:`os.fsdecode` and :func:`os.fsencode` use the UTF-8 encoding."
+msgstr ""
 
 #: ../../library/os.rst:137
 msgid ""
-":func:`open()`, :func:`io.open()`, and :func:`codecs.open()` use the UTF-8 "
+":func:`open`, :func:`io.open`, and :func:`codecs.open` use the UTF-8 "
 "encoding by default. However, they still use the strict error handler by "
 "default so that attempting to open a binary file in text mode is likely to "
 "raise an exception rather than producing nonsense data."
 msgstr ""
-":func:`open()`, :func:`io.open()` 和 :func:`codecs.open()` 默认会使用 UTF-8 编码。 "
-"但是，它们默认仍将使用 strict 错误处理器，因此试图在文本模式下打开二进制文件将可能引发异常，而不是生成无意义的数据。"
 
 #: ../../library/os.rst:142
 msgid ""
@@ -883,6 +878,13 @@ msgid ""
 "namespace::"
 msgstr "此示例将线程与 ``init`` 进程的网络命名空间进行了重新关联::"
 
+#: ../../library/os.rst:635
+msgid ""
+"fd = os.open(\"/proc/1/ns/net\", os.O_RDONLY)\n"
+"os.setns(fd, os.CLONE_NEWNET)\n"
+"os.close(fd)"
+msgstr ""
+
 #: ../../library/os.rst:639
 msgid ":ref:`Availability <availability>`: Linux >= 3.0 with glibc >= 2.14."
 msgstr ":ref:`可用性 <availability>`: Linux >= 3.0 且 glibc >= 2.14。"
@@ -1164,6 +1166,15 @@ msgid ""
 "Close all file descriptors from *fd_low* (inclusive) to *fd_high* "
 "(exclusive), ignoring errors. Equivalent to (but much faster than)::"
 msgstr "关闭从 *fd_low* （包括）到 *fd_high* （排除）间的文件描述符，并忽略错误。类似（但快于）::"
+
+#: ../../library/os.rst:910
+msgid ""
+"for fd in range(fd_low, fd_high):\n"
+"    try:\n"
+"        os.close(fd)\n"
+"    except OSError:\n"
+"        pass"
+msgstr ""
 
 #: ../../library/os.rst:919
 msgid ""
@@ -2419,9 +2430,28 @@ msgstr ""
 "使用 :func:`access` 来检查用户是否具有某项权限（如打开文件的权限），然后再使用 :func:`open` "
 "打开文件，这样做存在一个安全漏洞，因为用户可能会在检查和打开文件之间的时间里做其他操作。推荐使用 :term:`EAFP` 技术。如::"
 
+#: ../../library/os.rst:1939
+msgid ""
+"if os.access(\"myfile\", os.R_OK):\n"
+"    with open(\"myfile\") as fp:\n"
+"        return fp.read()\n"
+"return \"some default data\""
+msgstr ""
+
 #: ../../library/os.rst:1944
 msgid "is better written as::"
 msgstr "最好写成::"
+
+#: ../../library/os.rst:1946
+msgid ""
+"try:\n"
+"    fp = open(\"myfile\")\n"
+"except PermissionError:\n"
+"    return \"some default data\"\n"
+"else:\n"
+"    with fp:\n"
+"        return fp.read()"
+msgstr ""
 
 #: ../../library/os.rst:1956
 msgid ""
@@ -3448,6 +3478,14 @@ msgstr ""
 "下面的例子演示了 :func:`scandir` 的简单用法，用来显示给定 *path* 中所有不以 ``'.'`` "
 "开头的文件（不包括目录）。``entry.is_file()`` 通常不会增加一次额外的系统调用::"
 
+#: ../../library/os.rst:2738
+msgid ""
+"with os.scandir(path) as it:\n"
+"    for entry in it:\n"
+"        if not entry.name.startswith('.') and entry.is_file():\n"
+"            print(entry.name)"
+msgstr ""
+
 #: ../../library/os.rst:2745
 msgid ""
 "On Unix-based systems, :func:`scandir` uses the system's `opendir() "
@@ -3472,12 +3510,10 @@ msgstr ""
 #: ../../library/os.rst:2757
 msgid ""
 "Added support for the :term:`context manager` protocol and the "
-":func:`~scandir.close()` method.  If a :func:`scandir` iterator is neither "
+":func:`~scandir.close` method.  If a :func:`scandir` iterator is neither "
 "exhausted nor explicitly closed a :exc:`ResourceWarning` will be emitted in "
 "its destructor."
 msgstr ""
-"添加了对 :term:`上下文管理 <context manager>` 协议和 :func:`~scandir.close()` 方法的支持。如果 "
-":func:`scandir` 迭代器没有迭代完毕且没有显式关闭，其析构函数将发出 :exc:`ResourceWarning` 警告。"
 
 #: ../../library/os.rst:2763
 msgid "The function accepts a :term:`path-like object`."
@@ -3812,6 +3848,18 @@ msgstr ""
 #: ../../library/os.rst:2956 ../../library/os.rst:3725
 msgid "Example::"
 msgstr "示例::"
+
+#: ../../library/os.rst:2958
+msgid ""
+">>> import os\n"
+">>> statinfo = os.stat('somefile.txt')\n"
+">>> statinfo\n"
+"os.stat_result(st_mode=33188, st_ino=7876932, st_dev=234881026,\n"
+"st_nlink=1, st_uid=501, st_gid=501, st_size=264, st_atime=1297230295,\n"
+"st_mtime=1297230027, st_ctime=1297230027)\n"
+">>> statinfo.st_size\n"
+"264"
+msgstr ""
 
 #: ../../library/os.rst:2969
 msgid ":func:`fstat` and :func:`lstat` functions."
@@ -4245,6 +4293,10 @@ msgstr ""
 "运算符。例如，如果 :func:`os.stat` 在当前平台上接受打开的文件描述符作为 *dir_fd* 参数，则此表达式的计算结果为 "
 "``True``::"
 
+#: ../../library/os.rst:3286
+msgid "os.stat in os.supports_dir_fd"
+msgstr ""
+
 #: ../../library/os.rst:3288
 msgid ""
 "Currently *dir_fd* parameters only work on Unix platforms; none of them work"
@@ -4269,6 +4321,10 @@ msgid ""
 "``effective_ids=True`` on the local platform::"
 msgstr ""
 "如果当前平台上的 :func:`os.access` 支持 ``effective_ids=True``，则此表达式的计算结果为 ``True``::"
+
+#: ../../library/os.rst:3305
+msgid "os.access in os.supports_effective_ids"
+msgstr ""
 
 #: ../../library/os.rst:3307
 msgid ""
@@ -4297,6 +4353,10 @@ msgid ""
 msgstr ""
 "要判断某个函数是否接受打开的文件描述符作为 *path* 参数，请在 ``supports_fd`` 前使用 ``in`` 运算符。例如，如果 "
 ":func:`os.chdir` 在当前平台上接受打开的文件描述符作为 *path* 参数，则此表达式的计算结果为 ``True``::"
+
+#: ../../library/os.rst:3328
+msgid "os.chdir in os.supports_fd"
+msgstr ""
 
 #: ../../library/os.rst:3335
 msgid ""
@@ -4327,6 +4387,10 @@ msgstr ""
 "要检查某个函数的 *follow_symlinks* 参数是否可以指定为 ``False``，请在 "
 "``supports_follow_symlinks`` 前使用 ``in`` 运算符。例如，如果在当前平台上调用 :func:`os.stat` "
 "时可以指定 ``follow_symlinks=False``，则此表达式的计算结果为 ``True``::"
+
+#: ../../library/os.rst:3351
+msgid "os.stat in os.supports_follow_symlinks"
+msgstr ""
 
 #: ../../library/os.rst:3358
 msgid "Create a symbolic link pointing to *src* named *dst*."
@@ -4576,6 +4640,18 @@ msgid ""
 "under any CVS subdirectory::"
 msgstr "下面的示例遍历起始目录内所有子目录，打印每个目录内的文件占用的字节数，CVS 子目录不会被遍历::"
 
+#: ../../library/os.rst:3551
+msgid ""
+"import os\n"
+"from os.path import join, getsize\n"
+"for root, dirs, files in os.walk('python/Lib/email'):\n"
+"    print(root, \"consumes\", end=\" \")\n"
+"    print(sum(getsize(join(root, name)) for name in files), end=\" \")\n"
+"    print(\"bytes in\", len(files), \"non-directory files\")\n"
+"    if 'CVS' in dirs:\n"
+"        dirs.remove('CVS')  # don't visit CVS directories"
+msgstr ""
+
 #: ../../library/os.rst:3560
 msgid ""
 "In the next example (simple implementation of :func:`shutil.rmtree`), "
@@ -4584,6 +4660,20 @@ msgid ""
 msgstr ""
 "在下一个示例（:func:`shutil.rmtree` 的简单实现）中，必须使树自下而上遍历，因为 :func:`rmdir` "
 "只允许在目录为空时删除目录::"
+
+#: ../../library/os.rst:3564
+msgid ""
+"# Delete everything reachable from the directory named in \"top\",\n"
+"# assuming there are no symbolic links.\n"
+"# CAUTION:  This is dangerous!  For example, if top == '/', it\n"
+"# could delete all your disk files.\n"
+"import os\n"
+"for root, dirs, files in os.walk(top, topdown=False):\n"
+"    for name in files:\n"
+"        os.remove(os.path.join(root, name))\n"
+"    for name in dirs:\n"
+"        os.rmdir(os.path.join(root, name))"
+msgstr ""
 
 #: ../../library/os.rst:3575
 msgid ""
@@ -4637,11 +4727,37 @@ msgstr ""
 "由于 :func:`fwalk` 会生成文件描述符，而它们仅在下一个迭代步骤前有效，因此如果要将描述符保留更久，则应复制它们（比如使用 "
 ":func:`dup`）。"
 
+#: ../../library/os.rst:3612
+msgid ""
+"import os\n"
+"for root, dirs, files, rootfd in os.fwalk('python/Lib/email'):\n"
+"    print(root, \"consumes\", end=\"\")\n"
+"    print(sum([os.stat(name, dir_fd=rootfd).st_size for name in files]),\n"
+"          end=\"\")\n"
+"    print(\"bytes in\", len(files), \"non-directory files\")\n"
+"    if 'CVS' in dirs:\n"
+"        dirs.remove('CVS')  # don't visit CVS directories"
+msgstr ""
+
 #: ../../library/os.rst:3621
 msgid ""
 "In the next example, walking the tree bottom-up is essential: :func:`rmdir` "
 "doesn't allow deleting a directory before the directory is empty::"
 msgstr "在下一个示例中，必须使树自下而上遍历，因为 :func:`rmdir` 只允许在目录为空时删除目录::"
+
+#: ../../library/os.rst:3625
+msgid ""
+"# Delete everything reachable from the directory named in \"top\",\n"
+"# assuming there are no symbolic links.\n"
+"# CAUTION:  This is dangerous!  For example, if top == '/', it\n"
+"# could delete all your disk files.\n"
+"import os\n"
+"for root, dirs, files, rootfd in os.fwalk(top, topdown=False):\n"
+"    for name in files:\n"
+"        os.unlink(name, dir_fd=rootfd)\n"
+"    for name in dirs:\n"
+"        os.rmdir(name, dir_fd=rootfd)"
+msgstr ""
 
 #: ../../library/os.rst:3636
 msgid ""
@@ -4754,6 +4870,24 @@ msgid ""
 ":sup:`64`\\ -\\ 2."
 msgstr ""
 ":func:`eventfd_write` 会递增事件计数器。如果写操作会让计数器的增量大于2\\ :sup:`64`\\ -\\ 2，则写入会被阻止。"
+
+#: ../../library/os.rst:3727
+msgid ""
+"import os\n"
+"\n"
+"# semaphore with start value '1'\n"
+"fd = os.eventfd(1, os.EFD_SEMAPHORE | os.EFC_CLOEXEC)\n"
+"try:\n"
+"    # acquire semaphore\n"
+"    v = os.eventfd_read(fd)\n"
+"    try:\n"
+"        do_work()\n"
+"    finally:\n"
+"        # release semaphore\n"
+"        os.eventfd_write(fd, v)\n"
+"finally:\n"
+"    os.close(fd)"
+msgstr ""
 
 #: ../../library/os.rst:3742
 msgid ":ref:`Availability <availability>`: Linux >= 2.6.27 with glibc >= 2.8"
@@ -5779,6 +5913,15 @@ msgid ""
 "As an example, the following calls to :func:`spawnlp` and :func:`spawnvpe` "
 "are equivalent::"
 msgstr "例如，以下对 :func:`spawnlp` 和 :func:`spawnvpe` 的调用是等效的::"
+
+#: ../../library/os.rst:4544
+msgid ""
+"import os\n"
+"os.spawnlp(os.P_WAIT, 'cp', 'cp', 'index.html', '/dev/null')\n"
+"\n"
+"L = ['cp', 'index.html', '/dev/null']\n"
+"os.spawnvpe(os.P_WAIT, 'cp', L, os.environ)"
+msgstr ""
 
 #: ../../library/os.rst:4550
 msgid ""

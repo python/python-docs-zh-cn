@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-16 14:48+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:34+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -499,13 +499,10 @@ msgstr "字节串"
 msgid ""
 "A bytes object is an immutable array.  The items are 8-bit bytes, "
 "represented by integers in the range 0 <= x < 256.  Bytes literals (like "
-"``b'abc'``) and the built-in :func:`bytes()` constructor can be used to "
-"create bytes objects.  Also, bytes objects can be decoded to strings via the"
-" :meth:`~bytes.decode` method."
+"``b'abc'``) and the built-in :func:`bytes` constructor can be used to create"
+" bytes objects.  Also, bytes objects can be decoded to strings via the "
+":meth:`~bytes.decode` method."
 msgstr ""
-"字节串对象是不可变的数组。其中每个条目都是一个 8 位字节，以取值范围 0 <= x < 256 的整型数表示。字节串字面值 (例如 "
-"``b'abc'``) 和内置的 :func:`bytes()` 构造器可被用来创建字节串对象。字节串对象还可以通过 "
-":meth:`~bytes.decode` 方法解码为字符串。"
 
 #: ../../reference/datamodel.rst:386
 msgid "Mutable sequences"
@@ -2382,6 +2379,12 @@ msgstr ""
 ":class:`set`、:class:`frozenset` 以及 :class:`dict`。``__hash__()`` "
 "应该返回一个整数。对象比较结果相同所需的唯一特征属性是其具有相同的哈希值；建议的做法是把参与比较的对象全部组件的哈希值混在一起，即将它们打包为一个元组并对该元组做哈希运算。例如::"
 
+#: ../../reference/datamodel.rst:1830
+msgid ""
+"def __hash__(self):\n"
+"    return hash((self.name, self.nick, self.color))"
+msgstr ""
+
 #: ../../reference/datamodel.rst:1835
 msgid ""
 ":func:`hash` truncates the value returned from an object's custom "
@@ -2665,6 +2668,22 @@ msgid ""
 msgstr ""
 "想要更细致地自定义模块的行为（设置属性和特性属性等待），可以将模块对象的 ``__class__`` 属性设置为一个 "
 ":class:`types.ModuleType` 的子类。例如::"
+
+#: ../../reference/datamodel.rst:2025
+msgid ""
+"import sys\n"
+"from types import ModuleType\n"
+"\n"
+"class VerboseModule(ModuleType):\n"
+"    def __repr__(self):\n"
+"        return f'Verbose {self.__name__}'\n"
+"\n"
+"    def __setattr__(self, attr, value):\n"
+"        print(f'Setting {attr}...')\n"
+"        super().__setattr__(attr, value)\n"
+"\n"
+"sys.modules[__name__].__class__ = VerboseModule"
+msgstr ""
 
 #: ../../reference/datamodel.rst:2039
 msgid ""
@@ -3092,6 +3111,17 @@ msgstr ""
 "传给一个新类的关键字参数会被传给上级类的 ``__init_subclass__``。 为了与其他使用 ``__init_subclass__`` "
 "的类兼容，应当去掉需要的关键字参数再将其他参数传给基类，例如::"
 
+#: ../../reference/datamodel.rst:2321
+msgid ""
+"class Philosopher:\n"
+"    def __init_subclass__(cls, /, default_name, **kwargs):\n"
+"        super().__init_subclass__(**kwargs)\n"
+"        cls.default_name = default_name\n"
+"\n"
+"class AustralianPhilosopher(Philosopher, default_name=\"Bruce\"):\n"
+"    pass"
+msgstr ""
+
 #: ../../reference/datamodel.rst:2329
 msgid ""
 "The default implementation ``object.__init_subclass__`` does nothing, but "
@@ -3122,6 +3152,12 @@ msgid ""
 "object has been assigned to *name* in that class::"
 msgstr "在所有者类 *owner* 被创建时自动调用。 此对象已被赋值给该类中的 *name*::"
 
+#: ../../reference/datamodel.rst:2350
+msgid ""
+"class A:\n"
+"    x = C()  # Automatically calls: x.__set_name__(A, 'x')"
+msgstr ""
+
 #: ../../reference/datamodel.rst:2353
 msgid ""
 "If the class variable is assigned after the class is created, "
@@ -3130,6 +3166,16 @@ msgid ""
 msgstr ""
 "如果类变量赋值是在类被创建之后进行的，:meth:`__set_name__` 将不会被自动调用。 如有必要，可以直接调用 "
 ":meth:`__set_name__`::"
+
+#: ../../reference/datamodel.rst:2357
+msgid ""
+"class A:\n"
+"   pass\n"
+"\n"
+"c = C()\n"
+"A.x = c                  # The hook is not called\n"
+"c.__set_name__(A, 'x')   # Manually invoke the hook"
+msgstr ""
 
 #: ../../reference/datamodel.rst:2364
 msgid "See :ref:`class-object-creation` for more details."
@@ -3157,6 +3203,18 @@ msgid ""
 msgstr ""
 "类创建过程可通过在定义行传入 ``metaclass`` 关键字参数，或是通过继承一个包含此参数的现有类来进行定制。在以下示例中，``MyClass``"
 " 和 ``MySubclass`` 都是 ``Meta`` 的实例::"
+
+#: ../../reference/datamodel.rst:2388
+msgid ""
+"class Meta(type):\n"
+"    pass\n"
+"\n"
+"class MyClass(metaclass=Meta):\n"
+"    pass\n"
+"\n"
+"class MySubclass(MyClass):\n"
+"    pass"
+msgstr ""
 
 #: ../../reference/datamodel.rst:2397
 msgid ""
@@ -3629,6 +3687,32 @@ msgstr ""
 "使用 :term:`表达式 <expression>` ``obj[x]`` 来呈现，Python 解释器会遵循下面这样的过程来确定应当调用 "
 ":meth:`~object.__getitem__` 还是 :meth:`~object.__class_getitem__`::"
 
+#: ../../reference/datamodel.rst:2676
+msgid ""
+"from inspect import isclass\n"
+"\n"
+"def subscribe(obj, x):\n"
+"    \"\"\"Return the result of the expression 'obj[x]'\"\"\"\n"
+"\n"
+"    class_of_obj = type(obj)\n"
+"\n"
+"    # If the class of obj defines __getitem__,\n"
+"    # call class_of_obj.__getitem__(obj, x)\n"
+"    if hasattr(class_of_obj, '__getitem__'):\n"
+"        return class_of_obj.__getitem__(obj, x)\n"
+"\n"
+"    # Else, if obj is a class and defines __class_getitem__,\n"
+"    # call obj.__class_getitem__(x)\n"
+"    elif isclass(obj) and hasattr(obj, '__class_getitem__'):\n"
+"        return obj.__class_getitem__(x)\n"
+"\n"
+"    # Else, raise an exception\n"
+"    else:\n"
+"        raise TypeError(\n"
+"            f\"'{class_of_obj.__name__}' object is not subscriptable\"\n"
+"        )"
+msgstr ""
+
 #: ../../reference/datamodel.rst:2699
 msgid ""
 "In Python, all classes are themselves instances of other classes. The class "
@@ -3643,6 +3727,21 @@ msgstr ""
 "``list[int]``, ``dict[str, float]`` 和 ``tuple[str, bytes]`` 这样的表达式都将导致 "
 ":meth:`~object.__class_getitem__` 被调用::"
 
+#: ../../reference/datamodel.rst:2706
+msgid ""
+">>> # list has class \"type\" as its metaclass, like most classes:\n"
+">>> type(list)\n"
+"<class 'type'>\n"
+">>> type(dict) == type(list) == type(tuple) == type(str) == type(bytes)\n"
+"True\n"
+">>> # \"list[int]\" calls \"list.__class_getitem__(int)\"\n"
+">>> list[int]\n"
+"list[int]\n"
+">>> # list.__class_getitem__ returns a GenericAlias object:\n"
+">>> type(list[int])\n"
+"<class 'types.GenericAlias'>"
+msgstr ""
+
 #: ../../reference/datamodel.rst:2718
 msgid ""
 "However, if a class has a custom metaclass that defines "
@@ -3651,6 +3750,26 @@ msgid ""
 msgstr ""
 "然而，如果一个类属于定义了 :meth:`~object.__getitem__` 的自定义元类，则抽取该类可能导致不同的行为。 这方面的一个例子可以在"
 " :mod:`enum` 模块中找到::"
+
+#: ../../reference/datamodel.rst:2722
+msgid ""
+">>> from enum import Enum\n"
+">>> class Menu(Enum):\n"
+"...     \"\"\"A breakfast menu\"\"\"\n"
+"...     SPAM = 'spam'\n"
+"...     BACON = 'bacon'\n"
+"...\n"
+">>> # Enum classes have a custom metaclass:\n"
+">>> type(Menu)\n"
+"<class 'enum.EnumMeta'>\n"
+">>> # EnumMeta defines __getitem__,\n"
+">>> # so __class_getitem__ is not called,\n"
+">>> # and the result is not a GenericAlias object:\n"
+">>> Menu['SPAM']\n"
+"<Menu.SPAM: 'spam'>\n"
+">>> type(Menu['SPAM'])\n"
+"<enum 'Menu'>"
+msgstr ""
 
 #: ../../reference/datamodel.rst:2741
 msgid ":pep:`560` - Core Support for typing module and generic types"
@@ -3779,9 +3898,17 @@ msgid ""
 "::"
 msgstr "切片是通过下述三个专门方法完成的。以下形式的调用 ::"
 
+#: ../../reference/datamodel.rst:2839
+msgid "a[1:2] = b"
+msgstr ""
+
 #: ../../reference/datamodel.rst:2841
 msgid "is translated to ::"
 msgstr "会为转写为 ::"
+
+#: ../../reference/datamodel.rst:2843
+msgid "a[slice(1, 2, None)] = b"
+msgstr ""
 
 #: ../../reference/datamodel.rst:2845
 msgid "and so forth.  Missing slice items are always filled in with ``None``."
@@ -4260,6 +4387,19 @@ msgstr ""
 "对于自定义类来说，特殊方法的隐式发起调用仅保证在其定义于对象类型中时能正确地发挥作用，而不能定义在对象实例字典中。 "
 "该行为就是以下代码会引发异常的原因。::"
 
+#: ../../reference/datamodel.rst:3245
+msgid ""
+">>> class C:\n"
+"...     pass\n"
+"...\n"
+">>> c = C()\n"
+">>> c.__len__ = lambda: 5\n"
+">>> len(c)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: object of type 'C' has no len()"
+msgstr ""
+
 #: ../../reference/datamodel.rst:3255
 msgid ""
 "The rationale behind this behaviour lies with a number of special methods "
@@ -4271,12 +4411,30 @@ msgstr ""
 "此行为背后的原理在于包括类型对象在内的所有对象都会实现的几个特殊方法如 :meth:`~object.__hash__` 和 "
 ":meth:`~object.__repr__`。 如果这些方法的隐式查找使用了传统的查找过程，则当它们在对类型对象自身发起调用时将会失败::"
 
+#: ../../reference/datamodel.rst:3262
+msgid ""
+">>> 1 .__hash__() == hash(1)\n"
+"True\n"
+">>> int.__hash__() == hash(int)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: descriptor '__hash__' of 'int' object needs an argument"
+msgstr ""
+
 #: ../../reference/datamodel.rst:3269
 msgid ""
 "Incorrectly attempting to invoke an unbound method of a class in this way is"
 " sometimes referred to as 'metaclass confusion', and is avoided by bypassing"
 " the instance when looking up special methods::"
 msgstr "以这种方式不正确地尝试发起调用一个类的未绑定方法有时被称为‘元类混淆’，可以通过在查找特殊方法时绕过实例的方式来避免::"
+
+#: ../../reference/datamodel.rst:3273
+msgid ""
+">>> type(1).__hash__(1) == hash(1)\n"
+"True\n"
+">>> type(int).__hash__(int) == hash(int)\n"
+"True"
+msgstr ""
 
 #: ../../reference/datamodel.rst:3278
 msgid ""
@@ -4286,6 +4444,31 @@ msgid ""
 msgstr ""
 "除了出于正确性考虑而会绕过任何实例属性，隐式特殊方法查找通常还会绕过 :meth:`~object.__getattribute__` "
 "方法，甚至包括对象的元类::"
+
+#: ../../reference/datamodel.rst:3282
+msgid ""
+">>> class Meta(type):\n"
+"...     def __getattribute__(*args):\n"
+"...         print(\"Metaclass getattribute invoked\")\n"
+"...         return type.__getattribute__(*args)\n"
+"...\n"
+">>> class C(object, metaclass=Meta):\n"
+"...     def __len__(self):\n"
+"...         return 10\n"
+"...     def __getattribute__(*args):\n"
+"...         print(\"Class getattribute invoked\")\n"
+"...         return object.__getattribute__(*args)\n"
+"...\n"
+">>> c = C()\n"
+">>> c.__len__()                 # Explicit lookup via instance\n"
+"Class getattribute invoked\n"
+"10\n"
+">>> type(c).__len__(c)          # Explicit lookup via type\n"
+"Metaclass getattribute invoked\n"
+"10\n"
+">>> len(c)                      # Implicit lookup\n"
+"10"
+msgstr ""
 
 #: ../../reference/datamodel.rst:3304
 msgid ""
@@ -4463,6 +4646,22 @@ msgstr "必须返回一个 *可等待对象* 输出迭代器的下一结果值�
 msgid "An example of an asynchronous iterable object::"
 msgstr "异步可迭代对象的一个示例::"
 
+#: ../../reference/datamodel.rst:3432
+msgid ""
+"class Reader:\n"
+"    async def readline(self):\n"
+"        ...\n"
+"\n"
+"    def __aiter__(self):\n"
+"        return self\n"
+"\n"
+"    async def __anext__(self):\n"
+"        val = await self.readline()\n"
+"        if val == b'':\n"
+"            raise StopAsyncIteration\n"
+"        return val"
+msgstr ""
+
 #: ../../reference/datamodel.rst:3447
 msgid ""
 "Prior to Python 3.7, :meth:`~object.__aiter__` could return an *awaitable* "
@@ -4513,6 +4712,16 @@ msgstr "在语义上类似于 :meth:`~object.__exit__`，仅有的区别在于�
 #: ../../reference/datamodel.rst:3477
 msgid "An example of an asynchronous context manager class::"
 msgstr "异步上下文管理器类的一个示例::"
+
+#: ../../reference/datamodel.rst:3479
+msgid ""
+"class AsyncContextManager:\n"
+"    async def __aenter__(self):\n"
+"        await log('entering context')\n"
+"\n"
+"    async def __aexit__(self, exc_type, exc, tb):\n"
+"        await log('exiting context')"
+msgstr ""
 
 #: ../../reference/datamodel.rst:3490
 msgid "Footnotes"

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-20 07:11+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -221,6 +221,14 @@ msgstr ""
 msgid "The name of the reverse DNS PTR record for the IP address, e.g.::"
 msgstr "IP地址的反向DNS PTR记录的名称，例如::"
 
+#: ../../library/ipaddress.rst:164
+msgid ""
+">>> ipaddress.ip_address(\"127.0.0.1\").reverse_pointer\n"
+"'1.0.0.127.in-addr.arpa'\n"
+">>> ipaddress.ip_address(\"2001:db8::1\").reverse_pointer\n"
+"'1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'"
+msgstr ""
+
 #: ../../library/ipaddress.rst:169
 msgid ""
 "This is the name that could be used for performing a PTR lookup, not the "
@@ -257,6 +265,10 @@ msgid ""
 msgstr ""
 "对于映射 IPv4 的 IPv6 地址来说 ``is_private`` 值由下层 IPv4 地址的语义决定并且以下条件将保持成立 (见 "
 ":attr:`IPv6Address.ipv4_mapped`)::"
+
+#: ../../library/ipaddress.rst:190
+msgid "address.is_private == address.ipv4_mapped.is_private"
+msgstr ""
 
 #: ../../library/ipaddress.rst:192
 msgid ""
@@ -307,6 +319,10 @@ msgid ""
 msgstr ""
 "如果地址被 iana-ipv4-special-registry_ (针对 IPv4) 或 iana-ipv6-special-registry_ "
 "(针对 IPv6) 定义为全局可用则为 ``True``，例外情况如下："
+
+#: ../../library/ipaddress.rst:217
+msgid "address.is_global == address.ipv4_mapped.is_global"
+msgstr ""
 
 #: ../../library/ipaddress.rst:219
 msgid ""
@@ -491,6 +507,18 @@ msgid ""
 "the :func:`str` and :func:`int` builtin functions::"
 msgstr "与网络模块互操作像套接字模块, 地址必须转换为字符串或整数. 这是使用 :func:`str` 和 :func:`int` 内置函数::"
 
+#: ../../library/ipaddress.rst:385
+msgid ""
+">>> str(ipaddress.IPv4Address('192.168.0.1'))\n"
+"'192.168.0.1'\n"
+">>> int(ipaddress.IPv4Address('192.168.0.1'))\n"
+"3232235521\n"
+">>> str(ipaddress.IPv6Address('::1'))\n"
+"'::1'\n"
+">>> int(ipaddress.IPv6Address('::1'))\n"
+"1"
+msgstr ""
+
 #: ../../library/ipaddress.rst:394
 msgid ""
 "Note that IPv6 scoped addresses are converted to integers without scope zone"
@@ -520,6 +548,20 @@ msgid ""
 "examples::"
 msgstr "地址对象可以用通常的一组比较运算符进行比较。具有不同范围区域ID的相同IPv6地址是不平等的。一些例子::"
 
+#: ../../library/ipaddress.rst:412
+msgid ""
+">>> IPv4Address('127.0.0.2') > IPv4Address('127.0.0.1')\n"
+"True\n"
+">>> IPv4Address('127.0.0.2') == IPv4Address('127.0.0.1')\n"
+"False\n"
+">>> IPv4Address('127.0.0.2') != IPv4Address('127.0.0.1')\n"
+"True\n"
+">>> IPv6Address('fe80::1234') == IPv6Address('fe80::1234%1')\n"
+"False\n"
+">>> IPv6Address('fe80::1234%1') != IPv6Address('fe80::1234%2')\n"
+"True"
+msgstr ""
+
 #: ../../library/ipaddress.rst:425
 msgid "Arithmetic operators"
 msgstr "算术运算符"
@@ -529,6 +571,18 @@ msgid ""
 "Integers can be added to or subtracted from address objects.  Some "
 "examples::"
 msgstr "整数可以被添加到地址对象或从地址对象中减去。 一些例子::"
+
+#: ../../library/ipaddress.rst:429
+msgid ""
+">>> IPv4Address('127.0.0.2') + 3\n"
+"IPv4Address('127.0.0.5')\n"
+">>> IPv4Address('127.0.0.2') - 3\n"
+"IPv4Address('126.255.255.255')\n"
+">>> IPv4Address('255.255.255.255') + 1\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ipaddress.AddressValueError: 4294967296 (>= 2**32) is not permitted as an IPv4 address"
+msgstr ""
 
 #: ../../library/ipaddress.rst:440
 msgid "IP Network definitions"
@@ -912,6 +966,29 @@ msgstr ""
 "网络对象可以被迭代，以列出属于该网络的所有地址。 对于迭代，*所有* 主机都会被返回，包括不可用的主机（对于可用的主机，使用 "
 ":meth:`~IPv4Network.hosts` 方法）。 一个例子::"
 
+#: ../../library/ipaddress.rst:804
+msgid ""
+">>> for addr in IPv4Network('192.0.2.0/28'):\n"
+"...     addr\n"
+"...\n"
+"IPv4Address('192.0.2.0')\n"
+"IPv4Address('192.0.2.1')\n"
+"IPv4Address('192.0.2.2')\n"
+"IPv4Address('192.0.2.3')\n"
+"IPv4Address('192.0.2.4')\n"
+"IPv4Address('192.0.2.5')\n"
+"IPv4Address('192.0.2.6')\n"
+"IPv4Address('192.0.2.7')\n"
+"IPv4Address('192.0.2.8')\n"
+"IPv4Address('192.0.2.9')\n"
+"IPv4Address('192.0.2.10')\n"
+"IPv4Address('192.0.2.11')\n"
+"IPv4Address('192.0.2.12')\n"
+"IPv4Address('192.0.2.13')\n"
+"IPv4Address('192.0.2.14')\n"
+"IPv4Address('192.0.2.15')"
+msgstr ""
+
 #: ../../library/ipaddress.rst:826
 msgid "Networks as containers of addresses"
 msgstr "作为地址容器的网络"
@@ -919,6 +996,18 @@ msgstr "作为地址容器的网络"
 #: ../../library/ipaddress.rst:828
 msgid "Network objects can act as containers of addresses.  Some examples::"
 msgstr "网络对象可以作为地址的容器。 一些例子::"
+
+#: ../../library/ipaddress.rst:830
+msgid ""
+">>> IPv4Network('192.0.2.0/28')[0]\n"
+"IPv4Address('192.0.2.0')\n"
+">>> IPv4Network('192.0.2.0/28')[15]\n"
+"IPv4Address('192.0.2.15')\n"
+">>> IPv4Address('192.0.2.6') in IPv4Network('192.0.2.0/28')\n"
+"True\n"
+">>> IPv4Address('192.0.3.6') in IPv4Network('192.0.2.0/28')\n"
+"False"
+msgstr ""
 
 #: ../../library/ipaddress.rst:841
 msgid "Interface objects"
@@ -1087,14 +1176,16 @@ msgid ""
 "different, so the expression::"
 msgstr "返回一个适合在网络和地址之间进行排序的键。 地址和网络对象在默认情况下是不可排序的；它们在本质上是不同的，所以表达式::"
 
+#: ../../library/ipaddress.rst:1002
+msgid "IPv4Address('192.0.2.0') <= IPv4Network('192.0.2.0/24')"
+msgstr ""
+
 #: ../../library/ipaddress.rst:1004
 msgid ""
 "doesn't make sense.  There are some times however, where you may wish to "
 "have :mod:`ipaddress` sort these anyway.  If you need to do this, you can "
-"use this function as the *key* argument to :func:`sorted()`."
+"use this function as the *key* argument to :func:`sorted`."
 msgstr ""
-"是没有意义的。 然而，有些时候，你可能希望让 :mod:`ipaddress` 对这些进行排序。 如果你需要这样做，你可以使用这个函数作为 "
-":func:`sorted()` 的 *key* 参数。"
 
 #: ../../library/ipaddress.rst:1008
 msgid "*obj* is either a network or address object."

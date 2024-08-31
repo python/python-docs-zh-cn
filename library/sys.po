@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 17:14+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -461,6 +461,27 @@ msgstr ""
 #: ../../library/sys.rst:303
 msgid "Pseudo-code::"
 msgstr "伪代码::"
+
+#: ../../library/sys.rst:305
+msgid ""
+"def displayhook(value):\n"
+"    if value is None:\n"
+"        return\n"
+"    # Set '_' to None to avoid recursion\n"
+"    builtins._ = None\n"
+"    text = repr(value)\n"
+"    try:\n"
+"        sys.stdout.write(text)\n"
+"    except UnicodeEncodeError:\n"
+"        bytes = text.encode(sys.stdout.encoding, 'backslashreplace')\n"
+"        if hasattr(sys.stdout, 'buffer'):\n"
+"            sys.stdout.buffer.write(bytes)\n"
+"        else:\n"
+"            text = bytes.decode(sys.stdout.encoding, 'strict')\n"
+"            sys.stdout.write(text)\n"
+"    sys.stdout.write(\"\\n\")\n"
+"    builtins._ = value"
+msgstr ""
 
 #: ../../library/sys.rst:323
 msgid "Use ``'backslashreplace'`` error handler on :exc:`UnicodeEncodeError`."
@@ -1029,11 +1050,28 @@ msgstr ""
 "属性 :attr:`sys.float_info.dig` 需要进一步的解释。 如果 ``s`` 是表示十进制数的字符串，且最多有 "
 ":attr:`!sys.float_info.dig` 位有效数字，那么将 ``s`` 转换为浮点数再转换回来将恢复为一个表示相同十进制值的字符串::"
 
+#: ../../library/sys.rst:694
+msgid ""
+">>> import sys\n"
+">>> sys.float_info.dig\n"
+"15\n"
+">>> s = '3.14159265358979'    # decimal string with 15 significant digits\n"
+">>> format(float(s), '.15g')  # convert to float and back -> same value\n"
+"'3.14159265358979'"
+msgstr ""
+
 #: ../../library/sys.rst:701
 msgid ""
 "But for strings with more than :attr:`sys.float_info.dig` significant "
 "digits, this isn't always true::"
 msgstr "但是对于超过 :attr:`sys.float_info.dig` 位有效数字的字符串，转换前后并非总是相同::"
+
+#: ../../library/sys.rst:704
+msgid ""
+">>> s = '9876543211234567'    # 16 significant digits is too many!\n"
+">>> format(float(s), '.16g')  # conversion changes value\n"
+"'9876543211234568'"
+msgstr ""
 
 #: ../../library/sys.rst:710
 msgid ""
@@ -1055,15 +1093,15 @@ msgid ""
 "regardless of their size.  This function is mainly useful for tracking and "
 "debugging memory leaks.  Because of the interpreter's internal caches, the "
 "result can vary from call to call; you may have to call "
-":func:`_clear_type_cache()` and :func:`gc.collect()` to get more predictable"
-" results."
+":func:`_clear_type_cache` and :func:`gc.collect` to get more predictable "
+"results."
 msgstr ""
 
 #: ../../library/sys.rst:730
 msgid ""
 "If a Python build or implementation cannot reasonably compute this "
-"information, :func:`getallocatedblocks()` is allowed to return 0 instead."
-msgstr "如果当前 Python 构建或实现无法合理地计算此信息，允许 :func:`getallocatedblocks()` 返回 0。"
+"information, :func:`getallocatedblocks` is allowed to return 0 instead."
+msgstr ""
 
 #: ../../library/sys.rst:738
 msgid "Return the number of unicode objects that have been interned."
@@ -1493,6 +1531,16 @@ msgid ""
 msgstr ""
 "编码为单个整数的版本号。该整数会确保每个版本都自增，其中适当包括了未发布版本。举例来说，要测试 Python 解释器的版本不低于 1.5.2，请使用::"
 
+#: ../../library/sys.rst:1067
+msgid ""
+"if sys.hexversion >= 0x010502F0:\n"
+"    # use some advanced feature\n"
+"    ...\n"
+"else:\n"
+"    # use an alternative implementation or warn the user\n"
+"    ..."
+msgstr ""
+
 #: ../../library/sys.rst:1074
 msgid ""
 "This is called ``hexversion`` since it only really looks meaningful when "
@@ -1884,6 +1932,16 @@ msgid ""
 "``uname -r`` appended, e.g. ``'sunos5'`` or ``'freebsd8'``, *at the time "
 "when Python was built*.  Unless you want to test for a specific system "
 "version, it is therefore recommended to use the following idiom::"
+msgstr ""
+
+#: ../../library/sys.rst:1354
+msgid ""
+"if sys.platform.startswith('freebsd'):\n"
+"    # FreeBSD-specific code here...\n"
+"elif sys.platform.startswith('linux'):\n"
+"    # Linux-specific code here...\n"
+"elif sys.platform.startswith('aix'):\n"
+"    # AIX-specific code here..."
 msgstr ""
 
 #: ../../library/sys.rst:1361
@@ -2903,6 +2961,17 @@ msgid ""
 msgstr ""
 "一个字典，包含通过 :option:`-X` 命令行选项传递的旗标，这些旗标专属于各种具体实现。选项名称将会映射到对应的值（如果显式指定）或者 "
 ":const:`True`。例如:"
+
+#: ../../library/sys.rst:1997
+msgid ""
+"$ ./python -Xa=b -Xc\n"
+"Python 3.2a3+ (py3k, Oct 16 2010, 20:14:50)\n"
+"[GCC 4.4.3] on linux2\n"
+"Type \"help\", \"copyright\", \"credits\" or \"license\" for more information.\n"
+">>> import sys\n"
+">>> sys._xoptions\n"
+"{'a': 'b', 'c': True}"
+msgstr ""
 
 #: ../../library/sys.rst:2009
 msgid ""

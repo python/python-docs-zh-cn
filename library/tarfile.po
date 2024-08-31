@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:44+0000\n"
+"POT-Creation-Date: 2024-08-31 11:30+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -988,12 +988,8 @@ msgid ""
 "default, although, since it affects all uses of *tarfile*, it is best "
 "practice to only do so in top-level applications or :mod:`site configuration"
 " <site>`. To set a global default this way, a filter function needs to be "
-"wrapped in :func:`staticmethod()` to prevent injection of a ``self`` "
-"argument."
+"wrapped in :func:`staticmethod` to prevent injection of a ``self`` argument."
 msgstr ""
-"该属性可在实例上设置或在子类中重载。 也可以在 ``TarFile`` 类本身上设置它以设置一个全局默认值，不过，由于它会影响 *tarfile* "
-"的所有使用，因此最好只在最高层级应用程序或 :mod:`站点配置 <site>` 中这样做。 要以这种方式设置全局默认值，需要用 "
-":func:`staticmethod()` 包装过滤器函数以防止 ``self`` 参数的注入。"
 
 #: ../../library/tarfile.rst:615
 msgid ""
@@ -1270,6 +1266,10 @@ msgstr ""
 "返回修改了给定属性的 :class:`!TarInfo` 对象的 *新* 副本。 例如，要返回组名设为 ``'staff'`` 的 "
 "``TarInfo``，请使用::"
 
+#: ../../library/tarfile.rst:886
+msgid "new_tarinfo = old_tarinfo.replace(gname='staff')"
+msgstr ""
+
 #: ../../library/tarfile.rst:888
 msgid ""
 "By default, a deep copy is made. If *deep* is false, the copy is shallow, "
@@ -1415,6 +1415,10 @@ msgid ""
 msgstr ""
 "该可调用对象将针每个被提取的成员执行调用并附带一个 :ref:`TarInfo <tarinfo-objects>` "
 "来描述该成员以及被提取归档文件的目标路径（即供所有成员使用的相同路径）::"
+
+#: ../../library/tarfile.rst:994
+msgid "filter(member: TarInfo, path: str, /) -> TarInfo | None"
+msgstr ""
 
 #: ../../library/tarfile.rst:996
 msgid ""
@@ -1679,6 +1683,12 @@ msgstr ""
 msgid "Fully trusted archive::"
 msgstr "完全受信任的归档::"
 
+#: ../../library/tarfile.rst:1132
+msgid ""
+"my_tarfile.extraction_filter = (lambda member, path: member)\n"
+"my_tarfile.extractall()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1135
 msgid ""
 "Use the ``'data'`` filter if available, but revert to Python 3.11 behavior "
@@ -1686,17 +1696,44 @@ msgid ""
 msgstr ""
 "如果可用则使用 ``'data'`` 过滤器；如果此特性不可用，则恢复为 Python 3.11 的行为 (``'fully_trusted'``)::"
 
+#: ../../library/tarfile.rst:1138
+msgid ""
+"my_tarfile.extraction_filter = getattr(tarfile, 'data_filter',\n"
+"                                       (lambda member, path: member))\n"
+"my_tarfile.extractall()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1142
 msgid "Use the ``'data'`` filter; *fail* if it is not available::"
 msgstr "使用 ``'data'`` 过滤器；如果不可用则 *fail*::"
+
+#: ../../library/tarfile.rst:1144
+msgid "my_tarfile.extractall(filter=tarfile.data_filter)"
+msgstr ""
 
 #: ../../library/tarfile.rst:1146
 msgid "or::"
 msgstr "或者："
 
+#: ../../library/tarfile.rst:1148
+msgid ""
+"my_tarfile.extraction_filter = tarfile.data_filter\n"
+"my_tarfile.extractall()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1151
 msgid "Use the ``'data'`` filter; *warn* if it is not available::"
 msgstr "使用 ``'data'`` 过滤器；如果不可用则 *warn*::"
+
+#: ../../library/tarfile.rst:1153
+msgid ""
+"if hasattr(tarfile, 'data_filter'):\n"
+"    my_tarfile.extractall(filter='data')\n"
+"else:\n"
+"    # remove this when no longer needed\n"
+"    warn_the_user('Extracting may be unsafe; consider updating Python')\n"
+"    my_tarfile.extractall()"
+msgstr ""
 
 #: ../../library/tarfile.rst:1162
 msgid "Stateful extraction filter example"
@@ -1711,9 +1748,32 @@ msgstr ""
 "*tarfile* 的提取方法接受一个简单的 *filter* 可调用对象，而自定义过滤器则可以是具有内部状态的更复杂对象。 "
 "将其写成为下文管理器可能会很有用处，即以这样的方式使用::"
 
+#: ../../library/tarfile.rst:1168
+msgid ""
+"with StatefulFilter() as filter_func:\n"
+"    tar.extractall(path, filter=filter_func)"
+msgstr ""
+
 #: ../../library/tarfile.rst:1171
 msgid "Such a filter can be written as, for example::"
 msgstr "例如，这种过滤器可以写成::"
+
+#: ../../library/tarfile.rst:1173
+msgid ""
+"class StatefulFilter:\n"
+"    def __init__(self):\n"
+"        self.file_count = 0\n"
+"\n"
+"    def __enter__(self):\n"
+"        return self\n"
+"\n"
+"    def __call__(self, member, path):\n"
+"        self.file_count += 1\n"
+"        return member\n"
+"\n"
+"    def __exit__(self, *exc_info):\n"
+"        print(f'{self.file_count} files extracted')"
+msgstr ""
 
 #: ../../library/tarfile.rst:1193
 msgid "Command-Line Interface"
@@ -1731,9 +1791,17 @@ msgid ""
 ":option:`-c` option and then list the filename(s) that should be included:"
 msgstr "如果你想要创建一个新的 tar 归档，请在 :option:`-c` 选项后指定其名称然后列出应当被包含的文件名:"
 
+#: ../../library/tarfile.rst:1203
+msgid "$ python -m tarfile -c monty.tar  spam.txt eggs.txt"
+msgstr ""
+
 #: ../../library/tarfile.rst:1207
 msgid "Passing a directory is also acceptable:"
 msgstr "传入一个目录也是可接受的:"
+
+#: ../../library/tarfile.rst:1209
+msgid "$ python -m tarfile -c monty.tar life-of-brian_1979/"
+msgstr ""
 
 #: ../../library/tarfile.rst:1213
 msgid ""
@@ -1741,15 +1809,27 @@ msgid ""
 ":option:`-e` option:"
 msgstr "如果你想要将一个 tar 归档提取到指定的目录，请使用 :option:`-e` 选项:"
 
+#: ../../library/tarfile.rst:1216
+msgid "$ python -m tarfile -e monty.tar"
+msgstr ""
+
 #: ../../library/tarfile.rst:1220
 msgid ""
 "You can also extract a tar archive into a different directory by passing the"
 " directory's name:"
 msgstr "你也可以通过传入目录名称将一个 tar 归档提取到不同的目录:"
 
+#: ../../library/tarfile.rst:1223
+msgid "$ python -m tarfile -e monty.tar  other-dir/"
+msgstr ""
+
 #: ../../library/tarfile.rst:1227
 msgid "For a list of the files in a tar archive, use the :option:`-l` option:"
 msgstr "要获取一个 tar 归档中文件的列表，请使用 :option:`-l` 选项:"
+
+#: ../../library/tarfile.rst:1229
+msgid "$ python -m tarfile -l monty.tar"
+msgstr ""
 
 #: ../../library/tarfile.rst:1235
 msgid "Command-line options"
@@ -1794,19 +1874,59 @@ msgid ""
 "How to extract an entire tar archive to the current working directory::"
 msgstr "如何将整个 tar 归档提取到当前工作目录::"
 
+#: ../../library/tarfile.rst:1275
+msgid ""
+"import tarfile\n"
+"tar = tarfile.open(\"sample.tar.gz\")\n"
+"tar.extractall(filter='data')\n"
+"tar.close()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1280
 msgid ""
 "How to extract a subset of a tar archive with :meth:`TarFile.extractall` "
 "using a generator function instead of a list::"
 msgstr "如何通过 :meth:`TarFile.extractall` 使用生成器函数而非列表来提取一个 tar 归档的子集::"
 
+#: ../../library/tarfile.rst:1283
+msgid ""
+"import os\n"
+"import tarfile\n"
+"\n"
+"def py_files(members):\n"
+"    for tarinfo in members:\n"
+"        if os.path.splitext(tarinfo.name)[1] == \".py\":\n"
+"            yield tarinfo\n"
+"\n"
+"tar = tarfile.open(\"sample.tar.gz\")\n"
+"tar.extractall(members=py_files(tar))\n"
+"tar.close()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1295
 msgid "How to create an uncompressed tar archive from a list of filenames::"
 msgstr "如何基于一个文件名列表创建未压缩的 tar 归档::"
 
+#: ../../library/tarfile.rst:1297
+msgid ""
+"import tarfile\n"
+"tar = tarfile.open(\"sample.tar\", \"w\")\n"
+"for name in [\"foo\", \"bar\", \"quux\"]:\n"
+"    tar.add(name)\n"
+"tar.close()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1303
 msgid "The same example using the :keyword:`with` statement::"
 msgstr "使用 :keyword:`with` 语句的同一个示例::"
+
+#: ../../library/tarfile.rst:1305
+msgid ""
+"import tarfile\n"
+"with tarfile.open(\"sample.tar\", \"w\") as tar:\n"
+"    for name in [\"foo\", \"bar\", \"quux\"]:\n"
+"        tar.add(name)"
+msgstr ""
 
 #: ../../library/tarfile.rst:1310
 msgid ""
@@ -1814,11 +1934,38 @@ msgid ""
 "information::"
 msgstr "如何读取一个 gzip 压缩的 tar 归档并显示一些成员信息::"
 
+#: ../../library/tarfile.rst:1312
+msgid ""
+"import tarfile\n"
+"tar = tarfile.open(\"sample.tar.gz\", \"r:gz\")\n"
+"for tarinfo in tar:\n"
+"    print(tarinfo.name, \"is\", tarinfo.size, \"bytes in size and is \", end=\"\")\n"
+"    if tarinfo.isreg():\n"
+"        print(\"a regular file.\")\n"
+"    elif tarinfo.isdir():\n"
+"        print(\"a directory.\")\n"
+"    else:\n"
+"        print(\"something else.\")\n"
+"tar.close()"
+msgstr ""
+
 #: ../../library/tarfile.rst:1324
 msgid ""
 "How to create an archive and reset the user information using the *filter* "
 "parameter in :meth:`TarFile.add`::"
 msgstr "如何创建一个归档并使用 :meth:`TarFile.add` 中的 *filter* 形参来重置用户信息::"
+
+#: ../../library/tarfile.rst:1327
+msgid ""
+"import tarfile\n"
+"def reset(tarinfo):\n"
+"    tarinfo.uid = tarinfo.gid = 0\n"
+"    tarinfo.uname = tarinfo.gname = \"root\"\n"
+"    return tarinfo\n"
+"tar = tarfile.open(\"sample.tar.gz\", \"w:gz\")\n"
+"tar.add(\"foo\", filter=reset)\n"
+"tar.close()"
+msgstr ""
 
 #: ../../library/tarfile.rst:1340
 msgid "Supported tar formats"
