@@ -1,22 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2023, Python Software Foundation
+# Copyright (C) 2001-2024, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # Menghua Xiao <arieshout@gmail.com>, 2021
-# Siyuan Xu, 2021
-# Jiuh-star <jiuh.star@gmail.com>, 2023
-# Freesand Leo <yuqinju@163.com>, 2023
+# Xu Siyuan, 2021
+# Jiuh.star <jiuh.star@gmail.com>, 2023
+# Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-29 14:12+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:17+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2023\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -139,6 +139,18 @@ msgid ""
 "Several built-in types such as :class:`list` and :class:`dict` do not "
 "directly support weak references but can add support through subclassing::"
 msgstr "一些内置类型，如 :class:`list` 和 :class:`dict`，不直接支持弱引用，但可以通过子类化添加支持::"
+
+#: ../../library/weakref.rst:80
+msgid ""
+"class Dict(dict):\n"
+"    pass\n"
+"\n"
+"obj = Dict(red=1, green=2, blue=3)   # this object is weak referenceable"
+msgstr ""
+"class Dict(dict):\n"
+"    pass\n"
+"\n"
+"obj = Dict(red=1, green=2, blue=3)   # 此对象是可弱引用的"
 
 #: ../../library/weakref.rst:87
 msgid ""
@@ -290,12 +302,36 @@ msgid ""
 msgstr ""
 "请注意，当把一个与现有键具有相同值（但是标识号不相等）的键插入字典时，它会替换该值，但不会替换现有的键。由于这一点，当删除对原来的键的引用时，也将同时删除字典中的对应条目::"
 
+#: ../../library/weakref.rst:180
+msgid ""
+">>> class T(str): pass\n"
+"...\n"
+">>> k1, k2 = T(), T()\n"
+">>> d = weakref.WeakKeyDictionary()\n"
+">>> d[k1] = 1   # d = {k1: 1}\n"
+">>> d[k2] = 2   # d = {k1: 2}\n"
+">>> del k1      # d = {}"
+msgstr ""
+
 #: ../../library/weakref.rst:188
 msgid "A workaround would be to remove the key prior to reassignment::"
 msgstr "一种变通做法是在重新赋值之前先移除键::"
 
-#: ../../library/weakref.rst:199
-msgid "Added support for ``|`` and ``|=`` operators, specified in :pep:`584`."
+#: ../../library/weakref.rst:190
+msgid ""
+">>> class T(str): pass\n"
+"...\n"
+">>> k1, k2 = T(), T()\n"
+">>> d = weakref.WeakKeyDictionary()\n"
+">>> d[k1] = 1   # d = {k1: 1}\n"
+">>> del d[k1]\n"
+">>> d[k2] = 2   # d = {k2: 2}\n"
+">>> del k1      # d = {k2: 2}"
+msgstr ""
+
+#: ../../library/weakref.rst:199 ../../library/weakref.rst:220
+msgid ""
+"Added support for ``|`` and ``|=`` operators, as specified in :pep:`584`."
 msgstr "增加了对 ``|`` 和 ``|=`` 运算符的支持，相关说明见 :pep:`584`。"
 
 #: ../../library/weakref.rst:202
@@ -320,11 +356,6 @@ msgid ""
 "Mapping class that references values weakly.  Entries in the dictionary will"
 " be discarded when no strong reference to the value exists any more."
 msgstr "弱引用值的映射类。当不再存在对该值的强引用时，字典中的条目将被丢弃。"
-
-#: ../../library/weakref.rst:220
-msgid ""
-"Added support for ``|`` and ``|=`` operators, as specified in :pep:`584`."
-msgstr "增加了对 ``|`` 和 ``|=`` 运算符的支持，相关说明见 :pep:`584`。"
 
 #: ../../library/weakref.rst:223
 msgid ""
@@ -354,6 +385,27 @@ msgid ""
 msgstr ""
 "一个模拟对绑定方法（即在类中定义并在实例中查找的方法）进行弱引用的自定义 :class:`ref` 子类。 "
 "由于绑定方法是临时性的，标准弱引用无法保持它。 :class:`WeakMethod` 包含特别代码用来重新创建绑定方法，直到对象或初始函数被销毁::"
+
+#: ../../library/weakref.rst:246
+msgid ""
+">>> class C:\n"
+"...     def method(self):\n"
+"...         print(\"method called!\")\n"
+"...\n"
+">>> c = C()\n"
+">>> r = weakref.ref(c.method)\n"
+">>> r()\n"
+">>> r = weakref.WeakMethod(c.method)\n"
+">>> r()\n"
+"<bound method C.method of <__main__.C object at 0x7fc859830220>>\n"
+">>> r()()\n"
+"method called!\n"
+">>> del c\n"
+">>> gc.collect()\n"
+"0\n"
+">>> r()\n"
+">>>"
+msgstr ""
 
 #: ../../library/weakref.rst:264
 msgid ""
@@ -473,7 +525,7 @@ msgid ""
 "both proxy types."
 msgstr "包含所有代理的类型对象的序列。 这可以用于更方便地检测一个对象是否是代理，而不必依赖于两种代理对象的名称。"
 
-#: ../../library/weakref.rst:357
+#: ../../library/weakref.rst:356
 msgid ":pep:`205` - Weak References"
 msgstr ":pep:`205` - 弱引用"
 
@@ -508,6 +560,18 @@ msgid ""
 msgstr ""
 "检测一个弱引用对象是否仍然存在应该使用表达式 ``ref() is not None``。 通常，需要使用引用对象的应用代码应当遵循这样的模式::"
 
+#: ../../library/weakref.rst:391
+msgid ""
+"# r is a weak reference object\n"
+"o = r()\n"
+"if o is None:\n"
+"    # referent has been garbage collected\n"
+"    print(\"Object has been deallocated; can't frobnicate.\")\n"
+"else:\n"
+"    print(\"Object is still live!\")\n"
+"    o.do_something_useful()"
+msgstr ""
+
 #: ../../library/weakref.rst:400
 msgid ""
 "Using a separate test for \"liveness\" creates race conditions in threaded "
@@ -536,6 +600,28 @@ msgid ""
 "when the referent is accessed::"
 msgstr "这个例子演示了如何将 :class:`ref` 的一个子类用于存储有关对象的附加信息并在引用被访问时影响其所返回的值::"
 
+#: ../../library/weakref.rst:415
+msgid ""
+"import weakref\n"
+"\n"
+"class ExtendedRef(weakref.ref):\n"
+"    def __init__(self, ob, callback=None, /, **annotations):\n"
+"        super().__init__(ob, callback)\n"
+"        self.__counter = 0\n"
+"        for k, v in annotations.items():\n"
+"            setattr(self, k, v)\n"
+"\n"
+"    def __call__(self):\n"
+"        \"\"\"Return a pair containing the referent and the number of\n"
+"        times the reference has been called.\n"
+"        \"\"\"\n"
+"        ob = super().__call__()\n"
+"        if ob is not None:\n"
+"            self.__counter += 1\n"
+"            ob = (ob, self.__counter)\n"
+"        return ob"
+msgstr ""
+
 #: ../../library/weakref.rst:438
 msgid "Example"
 msgstr "示例"
@@ -549,6 +635,21 @@ msgid ""
 msgstr ""
 "这个简单的例子演示了一个应用如何使用对象 ID 来提取之前出现过的对象。 然后对象的 ID "
 "可以在其它数据结构中使用，而无须强制对象保持存活，但处于存活状态的对象也仍然可以通过 ID 来提取。"
+
+#: ../../library/weakref.rst:449
+msgid ""
+"import weakref\n"
+"\n"
+"_id2obj_dict = weakref.WeakValueDictionary()\n"
+"\n"
+"def remember(obj):\n"
+"    oid = id(obj)\n"
+"    _id2obj_dict[oid] = obj\n"
+"    return oid\n"
+"\n"
+"def id2obj(oid):\n"
+"    return _id2obj_dict[oid]"
+msgstr ""
 
 #: ../../library/weakref.rst:465
 msgid "Finalizer Objects"
@@ -582,6 +683,15 @@ msgid ""
 msgstr ""
 "除非你将 :attr:`~finalize.atexit` 属性设为 :const:`False`，否则终结器在程序退出时如果仍然存活就将被调用。 例如"
 
+#: ../../library/weakref.rst:515
+msgid ""
+">>> obj = Object()\n"
+">>> weakref.finalize(obj, print, \"obj dead or exiting\")\n"
+"<finalize object at ...; for 'Object' at ...>\n"
+">>> exit()\n"
+"obj dead or exiting"
+msgstr ""
+
 #: ../../library/weakref.rst:526
 msgid "Comparing finalizers with :meth:`~object.__del__` methods"
 msgstr "比较终结器与 :meth:`~object.__del__` 方法"
@@ -611,6 +721,25 @@ msgid ""
 "as follows::"
 msgstr "我们可以像下面这样尝试使用 :meth:`~object.__del__` 方法来实现这个类::"
 
+#: ../../library/weakref.rst:539
+msgid ""
+"class TempDir:\n"
+"    def __init__(self):\n"
+"        self.name = tempfile.mkdtemp()\n"
+"\n"
+"    def remove(self):\n"
+"        if self.name is not None:\n"
+"            shutil.rmtree(self.name)\n"
+"            self.name = None\n"
+"\n"
+"    @property\n"
+"    def removed(self):\n"
+"        return self.name is None\n"
+"\n"
+"    def __del__(self):\n"
+"        self.remove()"
+msgstr ""
+
 #: ../../library/weakref.rst:555
 msgid ""
 "Starting with Python 3.4, :meth:`~object.__del__` methods no longer prevent "
@@ -627,7 +756,7 @@ msgid ""
 "However, handling of :meth:`~object.__del__` methods is notoriously "
 "implementation specific, since it depends on internal details of the "
 "interpreter's garbage collector implementation."
-msgstr ""
+msgstr "然而，:meth:`~object.__del__` 方法的处理严重受影响于具体实现，因为它依赖于解释器的垃圾回收实现方式的内部细节。"
 
 #: ../../library/weakref.rst:564
 msgid ""
@@ -635,6 +764,21 @@ msgid ""
 " the specific functions and objects that it needs, rather than having access"
 " to the full state of the object::"
 msgstr "更健壮的替代方式可以是定义一个终结器，只引用它所需要的特定函数和对象，而不是获取对整个对象状态的访问权::"
+
+#: ../../library/weakref.rst:568
+msgid ""
+"class TempDir:\n"
+"    def __init__(self):\n"
+"        self.name = tempfile.mkdtemp()\n"
+"        self._finalizer = weakref.finalize(self, shutil.rmtree, self.name)\n"
+"\n"
+"    def remove(self):\n"
+"        self._finalizer()\n"
+"\n"
+"    @property\n"
+"    def removed(self):\n"
+"        return not self._finalizer.alive"
+msgstr ""
 
 #: ../../library/weakref.rst:580
 msgid ""
@@ -649,6 +793,14 @@ msgid ""
 "register finalizers for classes where the definition is controlled by a "
 "third party, such as running code when a module is unloaded::"
 msgstr "基于弱引用的终结器还具有另一项优势，就是它们可被用来为定义由第三方控制的类注册终结器，例如当一个模块被卸载时运行特定代码::"
+
+#: ../../library/weakref.rst:588
+msgid ""
+"import weakref, sys\n"
+"def unloading_module():\n"
+"    # implicit reference to the module globals from the function body\n"
+"weakref.finalize(sys.modules[__name__], unloading_module)"
+msgstr ""
 
 #: ../../library/weakref.rst:596
 msgid ""

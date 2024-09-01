@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -126,9 +126,17 @@ msgstr ""
 "Python 脚本第一或第二行的注释匹配正则表达式 ``coding[=:]\\s*([-\\w.]+)`` "
 "时，该注释会被当作编码声明；这个表达式的第一组指定了源码文件的编码。编码声明必须独占一行，在第二行时，则第一行必须也是注释。编码表达式的形式如下："
 
+#: ../../reference/lexical_analysis.rst:91
+msgid "# -*- coding: <encoding-name> -*-"
+msgstr "# -*- coding: <encoding-name> -*-"
+
 #: ../../reference/lexical_analysis.rst:93
 msgid "which is recognized also by GNU Emacs, and ::"
 msgstr "这也是 GNU Emacs 认可的形式，此外，还支持如下形式："
+
+#: ../../reference/lexical_analysis.rst:95
+msgid "# vim:fileencoding=<encoding-name>"
+msgstr ""
 
 #: ../../reference/lexical_analysis.rst:97
 msgid "which is recognized by Bram Moolenaar's VIM."
@@ -166,6 +174,14 @@ msgid ""
 msgstr ""
 "两个及两个以上的物理行可用反斜杠（``\\``）拼接为一个逻辑行，规则如下：以不在字符串或注释内的反斜杠结尾时，物理行将与下一行拼接成一个逻辑行，并删除反斜杠及其后的换行符。例如："
 
+#: ../../reference/lexical_analysis.rst:122
+msgid ""
+"if 1900 < year < 2100 and 1 <= month <= 12 \\\n"
+"   and 1 <= day <= 31 and 0 <= hour < 24 \\\n"
+"   and 0 <= minute < 60 and 0 <= second < 60:   # Looks like a valid date\n"
+"        return 1"
+msgstr ""
+
 #: ../../reference/lexical_analysis.rst:127
 msgid ""
 "A line ending in a backslash cannot carry a comment.  A backslash does not "
@@ -185,6 +201,14 @@ msgid ""
 "Expressions in parentheses, square brackets or curly braces can be split "
 "over more than one physical line without using backslashes. For example::"
 msgstr "圆括号、方括号、花括号内的表达式可以分成多个物理行，不必使用反斜杠。例如："
+
+#: ../../reference/lexical_analysis.rst:142
+msgid ""
+"month_names = ['Januari', 'Februari', 'Maart',      # These are the\n"
+"               'April',   'Mei',      'Juni',       # Dutch names\n"
+"               'Juli',    'Augustus', 'September',  # for the months\n"
+"               'Oktober', 'November', 'December']   # of the year"
+msgstr ""
 
 #: ../../reference/lexical_analysis.rst:147
 msgid ""
@@ -293,9 +317,35 @@ msgid ""
 "Python code::"
 msgstr "下面的 Python 代码缩进示例虽然正确，但含混不清："
 
+#: ../../reference/lexical_analysis.rst:221
+msgid ""
+"def perm(l):\n"
+"        # Compute the list of all permutations of l\n"
+"    if len(l) <= 1:\n"
+"                  return [l]\n"
+"    r = []\n"
+"    for i in range(len(l)):\n"
+"             s = l[:i] + l[i+1:]\n"
+"             p = perm(s)\n"
+"             for x in p:\n"
+"              r.append(l[i:i+1] + x)\n"
+"    return r"
+msgstr ""
+
 #: ../../reference/lexical_analysis.rst:233
 msgid "The following example shows various indentation errors::"
 msgstr "下例展示了多种缩进错误："
+
+#: ../../reference/lexical_analysis.rst:235
+msgid ""
+" def perm(l):                       # error: first line indented\n"
+"for i in range(len(l)):             # error: not indented\n"
+"    s = l[:i] + l[i+1:]\n"
+"        p = perm(l[:i] + l[i+1:])   # error: unexpected indent\n"
+"        for x in p:\n"
+"                r.append(l[i:i+1] + x)\n"
+"            return r                # error: inconsistent dedent"
+msgstr ""
 
 #: ../../reference/lexical_analysis.rst:243
 msgid ""
@@ -460,6 +510,17 @@ msgid ""
 "language, and cannot be used as ordinary identifiers.  They must be spelled "
 "exactly as written here:"
 msgstr "以下标识符为保留字，或称 *关键字*，不可用于普通标识符。关键字的拼写必须与这里列出的完全一致："
+
+#: ../../reference/lexical_analysis.rst:342
+msgid ""
+"False      await      else       import     pass\n"
+"None       break      except     in         raise\n"
+"True       class      finally    is         return\n"
+"and        continue   for        lambda     try\n"
+"as         def        from       nonlocal   while\n"
+"assert     del        global     not        with\n"
+"async      elif       if         or         yield"
+msgstr ""
 
 #: ../../reference/lexical_analysis.rst:356
 msgid "Soft Keywords"
@@ -642,23 +703,22 @@ msgstr ""
 #: ../../reference/lexical_analysis.rst:505
 msgid ""
 "Both string and bytes literals may optionally be prefixed with a letter "
-"``'r'`` or ``'R'``; such strings are called :dfn:`raw strings` and treat "
-"backslashes as literal characters.  As a result, in string literals, "
-"``'\\U'`` and ``'\\u'`` escapes in raw strings are not treated specially. "
-"Given that Python 2.x's raw unicode literals behave differently than Python "
-"3.x's the ``'ur'`` syntax is not supported."
+"``'r'`` or ``'R'``; such constructs are called :dfn:`raw string literals` "
+"and :dfn:`raw bytes literals` respectively and treat backslashes as literal "
+"characters.  As a result, in raw string literals, ``'\\U'`` and ``'\\u'`` "
+"escapes are not treated specially."
 msgstr ""
-"字符串和字节串都可以加前缀 ``'r'`` 或 ``'R'``，称为 "
-":dfn:`原始字符串`，原始字符串把反斜杠当作原义字符，不执行转义操作。因此，原始字符串不转义 ``'\\U'`` 和 ``'\\u'``。与 "
-"Python 2.x 的原始 unicode 字面值操作不同，Python 3.x 现已不支持 ``'ur'`` 句法。"
+"字符串和字节串字面值都可选择加前缀字母 ``'r'`` 或 ``'R'``；这分别被称为 :dfn:`原始字符串字面值` 和 "
+":dfn:`原始字节串字面值` 并会将反斜杠视为原本的字符字面值。 因此，在原始字符串字面值中，``'\\U'`` 和 ``'\\u'`` "
+"转义符号不会被特殊对待。"
 
-#: ../../reference/lexical_analysis.rst:512
+#: ../../reference/lexical_analysis.rst:511
 msgid ""
 "The ``'rb'`` prefix of raw bytes literals has been added as a synonym of "
 "``'br'``."
 msgstr "新增原始字节串 ``'rb'`` 前缀，是 ``'br'`` 的同义词。"
 
-#: ../../reference/lexical_analysis.rst:516
+#: ../../reference/lexical_analysis.rst:515
 msgid ""
 "Support for the unicode legacy literal (``u'value'``) was reintroduced to "
 "simplify the maintenance of dual Python 2.x and 3.x codebases. See "
@@ -667,7 +727,7 @@ msgstr ""
 "支持 unicode 字面值（``u'value'``）遗留代码，简化 Python 2.x 和 3.x 并行代码库的维护工作。详见 "
 ":pep:`414`。"
 
-#: ../../reference/lexical_analysis.rst:524
+#: ../../reference/lexical_analysis.rst:523
 msgid ""
 "A string literal with ``'f'`` or ``'F'`` in its prefix is a :dfn:`formatted "
 "string literal`; see :ref:`f-strings`.  The ``'f'`` may be combined with "
@@ -677,7 +737,7 @@ msgstr ""
 "前缀为 ``'f'`` 或 ``'F'`` 的字符串称为 :dfn:`格式字符串`；详见 :ref:`f-strings`。``'f'`` 可与 "
 "``'r'`` 连用，但不能与 ``'b'`` 或 ``'u'`` 连用，因此，可以使用原始格式字符串，但不能使用格式字节串字面值。"
 
-#: ../../reference/lexical_analysis.rst:529
+#: ../../reference/lexical_analysis.rst:528
 msgid ""
 "In triple-quoted literals, unescaped newlines and quotes are allowed (and "
 "are retained), except that three unescaped quotes in a row terminate the "
@@ -687,197 +747,204 @@ msgstr ""
 "三引号字面值可以包含未转义的换行和引号（原样保留），除了连在一起的，用于终止字面值的，未经转义的三个引号。（\"引号\" 是启用字面值的字符，可以是 "
 "``'``，也可以是 ``\"``。）"
 
-#: ../../reference/lexical_analysis.rst:552
+#: ../../reference/lexical_analysis.rst:551
 msgid "Escape sequences"
 msgstr "转义序列"
 
-#: ../../reference/lexical_analysis.rst:554
+#: ../../reference/lexical_analysis.rst:553
 msgid ""
 "Unless an ``'r'`` or ``'R'`` prefix is present, escape sequences in string "
 "and bytes literals are interpreted according to rules similar to those used "
 "by Standard C.  The recognized escape sequences are:"
 msgstr "如未标注 ``'r'`` 或 ``'R'`` 前缀，字符串和字节串字面值中，转义序列以类似 C 标准的规则进行解释。可用的转义序列如下："
 
-#: ../../reference/lexical_analysis.rst:559
-#: ../../reference/lexical_analysis.rst:592
+#: ../../reference/lexical_analysis.rst:558
+#: ../../reference/lexical_analysis.rst:591
 msgid "Escape Sequence"
 msgstr "转义序列"
 
-#: ../../reference/lexical_analysis.rst:559
-#: ../../reference/lexical_analysis.rst:592
+#: ../../reference/lexical_analysis.rst:558
+#: ../../reference/lexical_analysis.rst:591
 msgid "Meaning"
 msgstr "含意"
 
-#: ../../reference/lexical_analysis.rst:559
-#: ../../reference/lexical_analysis.rst:592
+#: ../../reference/lexical_analysis.rst:558
+#: ../../reference/lexical_analysis.rst:591
 msgid "Notes"
 msgstr "备注"
 
-#: ../../reference/lexical_analysis.rst:561
+#: ../../reference/lexical_analysis.rst:560
 msgid "``\\``\\ <newline>"
 msgstr "``\\``\\ <newline>"
 
-#: ../../reference/lexical_analysis.rst:561
+#: ../../reference/lexical_analysis.rst:560
 msgid "Backslash and newline ignored"
 msgstr "忽略反斜杠与换行符"
 
-#: ../../reference/lexical_analysis.rst:561
+#: ../../reference/lexical_analysis.rst:560
 msgid "\\(1)"
 msgstr "\\(1)"
 
-#: ../../reference/lexical_analysis.rst:563
+#: ../../reference/lexical_analysis.rst:562
 msgid "``\\\\``"
 msgstr "``\\\\``"
 
-#: ../../reference/lexical_analysis.rst:563
+#: ../../reference/lexical_analysis.rst:562
 msgid "Backslash (``\\``)"
 msgstr "反斜杠（``\\``）"
 
-#: ../../reference/lexical_analysis.rst:565
+#: ../../reference/lexical_analysis.rst:564
 msgid "``\\'``"
 msgstr "``\\'``"
 
-#: ../../reference/lexical_analysis.rst:565
+#: ../../reference/lexical_analysis.rst:564
 msgid "Single quote (``'``)"
 msgstr "单引号（``'``）"
 
-#: ../../reference/lexical_analysis.rst:567
+#: ../../reference/lexical_analysis.rst:566
 msgid "``\\\"``"
 msgstr "``\\\"``"
 
-#: ../../reference/lexical_analysis.rst:567
+#: ../../reference/lexical_analysis.rst:566
 msgid "Double quote (``\"``)"
 msgstr "双引号（``\"``）"
 
-#: ../../reference/lexical_analysis.rst:569
+#: ../../reference/lexical_analysis.rst:568
 msgid "``\\a``"
 msgstr "``\\a``"
 
-#: ../../reference/lexical_analysis.rst:569
+#: ../../reference/lexical_analysis.rst:568
 msgid "ASCII Bell (BEL)"
 msgstr "ASCII 响铃（BEL）"
 
-#: ../../reference/lexical_analysis.rst:571
+#: ../../reference/lexical_analysis.rst:570
 msgid "``\\b``"
 msgstr "``\\b``"
 
-#: ../../reference/lexical_analysis.rst:571
+#: ../../reference/lexical_analysis.rst:570
 msgid "ASCII Backspace (BS)"
 msgstr "ASCII 退格符（BS）"
 
-#: ../../reference/lexical_analysis.rst:573
+#: ../../reference/lexical_analysis.rst:572
 msgid "``\\f``"
 msgstr "``\\f``"
 
-#: ../../reference/lexical_analysis.rst:573
+#: ../../reference/lexical_analysis.rst:572
 msgid "ASCII Formfeed (FF)"
 msgstr "ASCII 换页符（FF）"
 
-#: ../../reference/lexical_analysis.rst:575
+#: ../../reference/lexical_analysis.rst:574
 msgid "``\\n``"
 msgstr "``\\n``"
 
-#: ../../reference/lexical_analysis.rst:575
+#: ../../reference/lexical_analysis.rst:574
 msgid "ASCII Linefeed (LF)"
 msgstr "ASCII 换行符（LF）"
 
-#: ../../reference/lexical_analysis.rst:577
+#: ../../reference/lexical_analysis.rst:576
 msgid "``\\r``"
 msgstr "``\\r``"
 
-#: ../../reference/lexical_analysis.rst:577
+#: ../../reference/lexical_analysis.rst:576
 msgid "ASCII Carriage Return (CR)"
 msgstr "ASCII 回车符（CR）"
 
-#: ../../reference/lexical_analysis.rst:579
+#: ../../reference/lexical_analysis.rst:578
 msgid "``\\t``"
 msgstr "``\\t``"
 
-#: ../../reference/lexical_analysis.rst:579
+#: ../../reference/lexical_analysis.rst:578
 msgid "ASCII Horizontal Tab (TAB)"
 msgstr "ASCII 水平制表符（TAB）"
 
-#: ../../reference/lexical_analysis.rst:581
+#: ../../reference/lexical_analysis.rst:580
 msgid "``\\v``"
 msgstr "``\\v``"
 
-#: ../../reference/lexical_analysis.rst:581
+#: ../../reference/lexical_analysis.rst:580
 msgid "ASCII Vertical Tab (VT)"
 msgstr "ASCII 垂直制表符（VT）"
 
-#: ../../reference/lexical_analysis.rst:583
+#: ../../reference/lexical_analysis.rst:582
 msgid ":samp:`\\\\\\\\{ooo}`"
 msgstr ":samp:`\\\\\\\\{ooo}`"
 
-#: ../../reference/lexical_analysis.rst:583
+#: ../../reference/lexical_analysis.rst:582
 msgid "Character with octal value *ooo*"
 msgstr "八进制数 *ooo* 字符"
 
-#: ../../reference/lexical_analysis.rst:583
+#: ../../reference/lexical_analysis.rst:582
 msgid "(2,4)"
 msgstr "(2,4)"
 
-#: ../../reference/lexical_analysis.rst:586
+#: ../../reference/lexical_analysis.rst:585
 msgid ":samp:`\\\\x{hh}`"
 msgstr ":samp:`\\\\x{hh}`"
 
-#: ../../reference/lexical_analysis.rst:586
+#: ../../reference/lexical_analysis.rst:585
 msgid "Character with hex value *hh*"
 msgstr "十六进制数 *hh* 字符"
 
-#: ../../reference/lexical_analysis.rst:586
+#: ../../reference/lexical_analysis.rst:585
 msgid "(3,4)"
 msgstr "(3,4)"
 
-#: ../../reference/lexical_analysis.rst:589
+#: ../../reference/lexical_analysis.rst:588
 msgid "Escape sequences only recognized in string literals are:"
 msgstr "字符串字面值专用的转义序列："
 
-#: ../../reference/lexical_analysis.rst:594
+#: ../../reference/lexical_analysis.rst:593
 msgid ":samp:`\\\\N\\\\{{name}\\\\}`"
 msgstr ":samp:`\\\\N\\\\{{name}\\\\}`"
 
-#: ../../reference/lexical_analysis.rst:594
+#: ../../reference/lexical_analysis.rst:593
 msgid "Character named *name* in the Unicode database"
 msgstr "Unicode 数据库中名为 *name* 的字符"
 
-#: ../../reference/lexical_analysis.rst:594
+#: ../../reference/lexical_analysis.rst:593
 msgid "\\(5)"
 msgstr "\\(5)"
 
-#: ../../reference/lexical_analysis.rst:597
+#: ../../reference/lexical_analysis.rst:596
 msgid ":samp:`\\\\u{xxxx}`"
 msgstr ":samp:`\\\\u{xxxx}`"
 
-#: ../../reference/lexical_analysis.rst:597
+#: ../../reference/lexical_analysis.rst:596
 msgid "Character with 16-bit hex value *xxxx*"
 msgstr "16 位十六进制数 *xxxx* 码位的字符"
 
-#: ../../reference/lexical_analysis.rst:597
+#: ../../reference/lexical_analysis.rst:596
 msgid "\\(6)"
 msgstr "\\(6)"
 
-#: ../../reference/lexical_analysis.rst:600
+#: ../../reference/lexical_analysis.rst:599
 msgid ":samp:`\\\\U{xxxxxxxx}`"
 msgstr ":samp:`\\\\U{xxxxxxxx}`"
 
-#: ../../reference/lexical_analysis.rst:600
+#: ../../reference/lexical_analysis.rst:599
 msgid "Character with 32-bit hex value *xxxxxxxx*"
 msgstr "32 位 16 进制数 *xxxxxxxx* 码位的字符"
 
-#: ../../reference/lexical_analysis.rst:600
+#: ../../reference/lexical_analysis.rst:599
 msgid "\\(7)"
 msgstr "\\(7)"
 
-#: ../../reference/lexical_analysis.rst:604
+#: ../../reference/lexical_analysis.rst:603
 msgid "Notes:"
 msgstr "注释："
 
-#: ../../reference/lexical_analysis.rst:607
+#: ../../reference/lexical_analysis.rst:606
 msgid "A backslash can be added at the end of a line to ignore the newline::"
 msgstr "可以在行尾添加一个反斜杠来忽略换行符::"
 
-#: ../../reference/lexical_analysis.rst:613
+#: ../../reference/lexical_analysis.rst:608
+msgid ""
+">>> 'This string will not include \\\n"
+"... backslashes or newline characters.'\n"
+"'This string will not include backslashes or newline characters.'"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:612
 msgid ""
 "The same result can be achieved using :ref:`triple-quoted strings "
 "<strings>`, or parentheses and :ref:`string literal concatenation <string-"
@@ -886,17 +953,17 @@ msgstr ""
 "同样的效果也可以使用 :ref:`三重引号字符串 <strings>`，或者圆括号和 :ref:`字符串字面值拼接 <string-"
 "concatenation>` 来达成。"
 
-#: ../../reference/lexical_analysis.rst:618
+#: ../../reference/lexical_analysis.rst:617
 msgid "As in Standard C, up to three octal digits are accepted."
 msgstr "与 C 标准一致，接受最多三个八进制数字。"
 
-#: ../../reference/lexical_analysis.rst:620
+#: ../../reference/lexical_analysis.rst:619
 msgid ""
 "Octal escapes with value larger than ``0o377`` produce a "
 ":exc:`DeprecationWarning`."
 msgstr "取值大于 ``0o377`` 的八进制数转义序列会产生 :exc:`DeprecationWarning`。"
 
-#: ../../reference/lexical_analysis.rst:624
+#: ../../reference/lexical_analysis.rst:623
 msgid ""
 "Octal escapes with value larger than ``0o377`` produce a "
 ":exc:`SyntaxWarning`. In a future Python version they will be eventually a "
@@ -905,11 +972,11 @@ msgstr ""
 "数值大于 ``0o377`` 的八进制转义符会产生 :exc:`SyntaxWarning`。 在未来的 Python 版本中将最终改为 "
 ":exc:`SyntaxError`。"
 
-#: ../../reference/lexical_analysis.rst:630
+#: ../../reference/lexical_analysis.rst:629
 msgid "Unlike in Standard C, exactly two hex digits are required."
 msgstr "与 C 标准不同，必须为两个十六进制数字。"
 
-#: ../../reference/lexical_analysis.rst:633
+#: ../../reference/lexical_analysis.rst:632
 msgid ""
 "In a bytes literal, hexadecimal and octal escapes denote the byte with the "
 "given value. In a string literal, these escapes denote a Unicode character "
@@ -917,21 +984,21 @@ msgid ""
 msgstr ""
 "*字节串* 字面值中，十六进制数和八进制数的转义码以相应数值代表每个字节。*字符串* 字面值中，这些转义码以相应数值代表每个 Unicode 字符。"
 
-#: ../../reference/lexical_analysis.rst:638
+#: ../../reference/lexical_analysis.rst:637
 msgid "Support for name aliases [#]_ has been added."
 msgstr "加入了对别名 [#]_ 的支持。"
 
-#: ../../reference/lexical_analysis.rst:642
+#: ../../reference/lexical_analysis.rst:641
 msgid "Exactly four hex digits are required."
 msgstr "必须为 4 个十六进制数码。"
 
-#: ../../reference/lexical_analysis.rst:645
+#: ../../reference/lexical_analysis.rst:644
 msgid ""
 "Any Unicode character can be encoded this way.  Exactly eight hex digits are"
 " required."
 msgstr "表示任意 Unicode 字符。必须为 8 个十六进制数码。"
 
-#: ../../reference/lexical_analysis.rst:651
+#: ../../reference/lexical_analysis.rst:650
 msgid ""
 "Unlike Standard C, all unrecognized escape sequences are left in the string "
 "unchanged, i.e., *the backslash is left in the result*.  (This behavior is "
@@ -943,18 +1010,18 @@ msgstr ""
 "与 C "
 "标准不同，无法识别的转义序列在字符串里原样保留，即，*输出结果保留反斜杠*。（调试时，这种方式很有用：输错转义序列时，更容易在输出结果中识别错误。）注意，在字节串字面值内，字符串字面值专用的转义序列属于无法识别的转义序列。"
 
-#: ../../reference/lexical_analysis.rst:658
+#: ../../reference/lexical_analysis.rst:657
 msgid "Unrecognized escape sequences produce a :exc:`DeprecationWarning`."
 msgstr "不可识别的转义序列会产生 :exc:`DeprecationWarning`。"
 
-#: ../../reference/lexical_analysis.rst:661
+#: ../../reference/lexical_analysis.rst:660
 msgid ""
 "Unrecognized escape sequences produce a :exc:`SyntaxWarning`. In a future "
 "Python version they will be eventually a :exc:`SyntaxError`."
 msgstr ""
 "不可识别的转义序列会产生 :exc:`SyntaxWarning`。 在未来的 Python 版本中将最终改为 :exc:`SyntaxError`。"
 
-#: ../../reference/lexical_analysis.rst:665
+#: ../../reference/lexical_analysis.rst:664
 msgid ""
 "Even in a raw literal, quotes can be escaped with a backslash, but the "
 "backslash remains in the result; for example, ``r\"\\\"\"`` is a valid "
@@ -971,11 +1038,11 @@ msgstr ""
 "则不是有效字符串字面值（原始字符串也不能以奇数个反斜杠结尾）。尤其是，*原始字面值不能以单个反斜杠结尾* "
 "（反斜杠会转义其后的引号)。还要注意，反斜杠加换行在字面值中被解释为两个字符，而 *不是* 连续行。"
 
-#: ../../reference/lexical_analysis.rst:678
+#: ../../reference/lexical_analysis.rst:677
 msgid "String literal concatenation"
 msgstr "字符串字面值合并"
 
-#: ../../reference/lexical_analysis.rst:680
+#: ../../reference/lexical_analysis.rst:679
 msgid ""
 "Multiple adjacent string or bytes literals (delimited by whitespace), "
 "possibly using different quoting conventions, are allowed, and their meaning"
@@ -987,7 +1054,14 @@ msgstr ""
 "以空白符分隔的多个相邻字符串或字节串字面值，可用不同引号标注，等同于合并操作。因此，``\"hello\" 'world'`` 等价于 "
 "``\"helloworld\"``。此功能不需要反斜杠，即可将长字符串分为多个物理行，还可以为不同部分的字符串添加注释，例如："
 
-#: ../../reference/lexical_analysis.rst:691
+#: ../../reference/lexical_analysis.rst:686
+msgid ""
+"re.compile(\"[A-Za-z_]\"       # letter or underscore\n"
+"           \"[A-Za-z0-9_]*\"   # letter, digit or underscore\n"
+"          )"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:690
 msgid ""
 "Note that this feature is defined at the syntactical level, but implemented "
 "at compile time.  The '+' operator must be used to concatenate string "
@@ -999,11 +1073,11 @@ msgstr ""
 "注意，此功能在句法层面定义，在编译时实现。在运行时，合并字符串表达式必须使用 '+' "
 "运算符。还要注意，字面值合并可以为每个部分应用不同的引号风格（甚至混用原始字符串和三引号字符串)，格式字符串字面值也可以与纯字符串字面值合并。"
 
-#: ../../reference/lexical_analysis.rst:714
+#: ../../reference/lexical_analysis.rst:713
 msgid "f-strings"
 msgstr "f 字符串"
 
-#: ../../reference/lexical_analysis.rst:718
+#: ../../reference/lexical_analysis.rst:717
 msgid ""
 "A :dfn:`formatted string literal` or :dfn:`f-string` is a string literal "
 "that is prefixed with ``'f'`` or ``'F'``.  These strings may contain "
@@ -1014,14 +1088,14 @@ msgstr ""
 ":dfn:`格式字符串字面值` 或称 :dfn:`f-string` 是标注了 ``'f'`` 或 ``'F'`` "
 "前缀的字符串字面值。这种字符串可包含替换字段，即以 ``{}`` 标注的表达式。其他字符串字面值只是常量，格式字符串字面值则是可在运行时求值的表达式。"
 
-#: ../../reference/lexical_analysis.rst:724
+#: ../../reference/lexical_analysis.rst:723
 msgid ""
 "Escape sequences are decoded like in ordinary string literals (except when a"
 " literal is also marked as a raw string).  After decoding, the grammar for "
 "the contents of the string is:"
 msgstr "除非字面值标记为原始字符串，否则，与在普通字符串字面值中一样，转义序列也会被解码。解码后，用于字符串内容的语法如下："
 
-#: ../../reference/lexical_analysis.rst:738
+#: ../../reference/lexical_analysis.rst:737
 msgid ""
 "The parts of the string outside curly braces are treated literally, except "
 "that any doubled curly braces ``'{{'`` or ``'}}'`` are replaced with the "
@@ -1037,7 +1111,7 @@ msgstr ""
 "表达式开头的替换字段。在表达式后加等于号 ``'='``，可在求值后，同时显示表达式文本及其结果（用于调试）。 随后是用叹号 ``'!'`` "
 "标记的转换字段。还可以在冒号 ``':'``  后附加格式说明符。替换字段以右花括号 ``'}'`` 为结尾。"
 
-#: ../../reference/lexical_analysis.rst:748
+#: ../../reference/lexical_analysis.rst:747
 msgid ""
 "Expressions in formatted string literals are treated like regular Python "
 "expressions surrounded by parentheses, with a few exceptions. An empty "
@@ -1055,7 +1129,14 @@ msgstr ""
 "每个表达式都将在格式化字符串字面值出现的上下文中按从左到右的顺序进行求值。 替换表达式可在单引号和三引号f-字符串中包含换行符并可包含注释。 替换字段内"
 " ``#`` 后面的所有内容都是注释（即使结尾花括号和引号也是）。 在这种情况下，替换字段必须在另一行中结束。"
 
-#: ../../reference/lexical_analysis.rst:765
+#: ../../reference/lexical_analysis.rst:758
+msgid ""
+">>> f\"abc{a # This is a comment }\"\n"
+"... + 3}\"\n"
+"'abc5'"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:764
 msgid ""
 "Prior to Python 3.7, an :keyword:`await` expression and comprehensions "
 "containing an :keyword:`async for` clause were illegal in the expressions in"
@@ -1064,13 +1145,13 @@ msgstr ""
 "Python 3.7 以前， 因为实现的问题，不允许在格式字符串字面值表达式中使用 :keyword:`await` 表达式与包含 "
 ":keyword:`async for` 子句的推导式。"
 
-#: ../../reference/lexical_analysis.rst:770
+#: ../../reference/lexical_analysis.rst:769
 msgid ""
 "Prior to Python 3.12, comments were not allowed inside f-string replacement "
 "fields."
 msgstr "在 Python 3.12 之前，不允许在 f-字符串的替换字段中使用注释。"
 
-#: ../../reference/lexical_analysis.rst:774
+#: ../../reference/lexical_analysis.rst:773
 msgid ""
 "When the equal sign ``'='`` is provided, the output will have the expression"
 " text, the ``'='`` and the evaluated value. Spaces after the opening brace "
@@ -1084,11 +1165,11 @@ msgstr ""
 "``'='`` 后的空格。没有指定格式时，``'='`` 默认调用表达式的 :func:`repr`。指定了格式时，默认调用表达式的 "
 ":func:`str`，除非声明了转换字段 ``'!r'``。"
 
-#: ../../reference/lexical_analysis.rst:782
+#: ../../reference/lexical_analysis.rst:781
 msgid "The equal sign ``'='``."
 msgstr "等号 ``'='``。"
 
-#: ../../reference/lexical_analysis.rst:785
+#: ../../reference/lexical_analysis.rst:784
 msgid ""
 "If a conversion is specified, the result of evaluating the expression is "
 "converted before formatting.  Conversion ``'!s'`` calls :func:`str` on the "
@@ -1097,7 +1178,7 @@ msgstr ""
 "指定了转换符时，表达式求值的结果会先转换，再格式化。转换符 ``'!s'`` 调用 :func:`str` 转换求值结果，``'!r'`` 调用 "
 ":func:`repr`，``'!a'`` 调用 :func:`ascii`。"
 
-#: ../../reference/lexical_analysis.rst:789
+#: ../../reference/lexical_analysis.rst:788
 msgid ""
 "The result is then formatted using the :func:`format` protocol.  The format "
 "specifier is passed to the :meth:`~object.__format__` method of the "
@@ -1108,7 +1189,7 @@ msgstr ""
 "然后使用 :func:`format` 协议对结果进行格式化。 格式说明符将传给表达式或转换结果的 :meth:`~object.__format__`"
 " 方法。 如果省略格式说明符则将传入空字符串。 格式化后的结果将包括在整个字符串的最终值中。"
 
-#: ../../reference/lexical_analysis.rst:795
+#: ../../reference/lexical_analysis.rst:794
 msgid ""
 "Top-level format specifiers may include nested replacement fields. These "
 "nested fields may include their own conversion fields and :ref:`format "
@@ -1120,117 +1201,182 @@ msgstr ""
 "<formatspec>`，但是不可再包括更深层嵌套的替换字段。 这里的 :ref:`格式说明符微语言 <formatspec>` 与 "
 ":meth:`str.format` 方法所使用的相同。"
 
-#: ../../reference/lexical_analysis.rst:801
+#: ../../reference/lexical_analysis.rst:800
 msgid ""
 "Formatted string literals may be concatenated, but replacement fields cannot"
 " be split across literals."
 msgstr "格式化字符串字面值可以拼接，但是一个替换字段不能拆分到多个字面值。"
 
-#: ../../reference/lexical_analysis.rst:804
+#: ../../reference/lexical_analysis.rst:803
 msgid "Some examples of formatted string literals::"
 msgstr "格式字符串字面值示例如下："
 
-#: ../../reference/lexical_analysis.rst:836
+#: ../../reference/lexical_analysis.rst:805
+msgid ""
+">>> name = \"Fred\"\n"
+">>> f\"He said his name is {name!r}.\"\n"
+"\"He said his name is 'Fred'.\"\n"
+">>> f\"He said his name is {repr(name)}.\"  # repr() is equivalent to !r\n"
+"\"He said his name is 'Fred'.\"\n"
+">>> width = 10\n"
+">>> precision = 4\n"
+">>> value = decimal.Decimal(\"12.34567\")\n"
+">>> f\"result: {value:{width}.{precision}}\"  # nested fields\n"
+"'result:      12.35'\n"
+">>> today = datetime(year=2017, month=1, day=27)\n"
+">>> f\"{today:%B %d, %Y}\"  # using date format specifier\n"
+"'January 27, 2017'\n"
+">>> f\"{today=:%B %d, %Y}\" # using date format specifier and debugging\n"
+"'today=January 27, 2017'\n"
+">>> number = 1024\n"
+">>> f\"{number:#0x}\"  # using integer format specifier\n"
+"'0x400'\n"
+">>> foo = \"bar\"\n"
+">>> f\"{ foo = }\" # preserves whitespace\n"
+"\" foo = 'bar'\"\n"
+">>> line = \"The mill's closed\"\n"
+">>> f\"{line = }\"\n"
+"'line = \"The mill\\'s closed\"'\n"
+">>> f\"{line = :20}\"\n"
+"\"line = The mill's closed   \"\n"
+">>> f\"{line = !r:20}\"\n"
+"'line = \"The mill\\'s closed\" '"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:835
 msgid ""
 "Reusing the outer f-string quoting type inside a replacement field is "
 "permitted::"
 msgstr "允许在替换字段中重用外层 f-字符串的引号类型::"
 
-#: ../../reference/lexical_analysis.rst:843
+#: ../../reference/lexical_analysis.rst:838
+msgid ""
+">>> a = dict(x=2)\n"
+">>> f\"abc {a[\"x\"]} def\"\n"
+"'abc 2 def'"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:842
 msgid ""
 "Prior to Python 3.12, reuse of the same quoting type of the outer f-string "
 "inside a replacement field was not possible."
 msgstr "在 Python 3.12 之前不允许在替换字段中重用与外层 f-字符串相同的引号类型。"
 
-#: ../../reference/lexical_analysis.rst:847
+#: ../../reference/lexical_analysis.rst:846
 msgid ""
 "Backslashes are also allowed in replacement fields and are evaluated the "
 "same way as in any other context::"
 msgstr "替换字段中也允许使用反斜杠并会以与在其他场景下相同的方式求值::"
 
-#: ../../reference/lexical_analysis.rst:857
+#: ../../reference/lexical_analysis.rst:849
+msgid ""
+">>> a = [\"a\", \"b\", \"c\"]\n"
+">>> print(f\"List a contains:\\n{\"\\n\".join(a)}\")\n"
+"List a contains:\n"
+"a\n"
+"b\n"
+"c"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:856
 msgid ""
 "Prior to Python 3.12, backslashes were not permitted inside an f-string "
 "replacement field."
 msgstr "在 Python 3.12 之前，f-字符串的替换字段内不允许使用反斜杠。"
 
-#: ../../reference/lexical_analysis.rst:861
+#: ../../reference/lexical_analysis.rst:860
 msgid ""
 "Formatted string literals cannot be used as docstrings, even if they do not "
 "include expressions."
 msgstr "即便未包含表达式，格式字符串字面值也不能用作文档字符串。"
 
-#: ../../reference/lexical_analysis.rst:872
+#: ../../reference/lexical_analysis.rst:865
+msgid ""
+">>> def foo():\n"
+"...     f\"Not a docstring\"\n"
+"...\n"
+">>> foo.__doc__ is None\n"
+"True"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:871
 msgid ""
 "See also :pep:`498` for the proposal that added formatted string literals, "
 "and :meth:`str.format`, which uses a related format string mechanism."
 msgstr "参阅 :pep:`498`，了解格式字符串字面值的提案，以及与格式字符串机制相关的 :meth:`str.format`。"
 
-#: ../../reference/lexical_analysis.rst:879
+#: ../../reference/lexical_analysis.rst:878
 msgid "Numeric literals"
 msgstr "数值字面值"
 
-#: ../../reference/lexical_analysis.rst:885
+#: ../../reference/lexical_analysis.rst:884
 msgid ""
 "There are three types of numeric literals: integers, floating-point numbers,"
 " and imaginary numbers.  There are no complex literals (complex numbers can "
 "be formed by adding a real number and an imaginary number)."
 msgstr "数值字面值有三种类型：整数、浮点数、虚数。没有复数字面值（复数由实数加虚数构成）。"
 
-#: ../../reference/lexical_analysis.rst:889
+#: ../../reference/lexical_analysis.rst:888
 msgid ""
 "Note that numeric literals do not include a sign; a phrase like ``-1`` is "
 "actually an expression composed of the unary operator '``-``' and the "
 "literal ``1``."
 msgstr "注意，数值字面值不含正负号；实际上，``-1`` 等负数是由一元运算符 '``-``' 和字面值 ``1`` 合成的。"
 
-#: ../../reference/lexical_analysis.rst:903
+#: ../../reference/lexical_analysis.rst:902
 msgid "Integer literals"
 msgstr "整数字面值"
 
-#: ../../reference/lexical_analysis.rst:905
+#: ../../reference/lexical_analysis.rst:904
 msgid "Integer literals are described by the following lexical definitions:"
 msgstr "整数字面值词法定义如下："
 
-#: ../../reference/lexical_analysis.rst:919
+#: ../../reference/lexical_analysis.rst:918
 msgid ""
 "There is no limit for the length of integer literals apart from what can be "
 "stored in available memory."
 msgstr "整数字面值的长度没有限制，能一直大到占满可用内存。"
 
-#: ../../reference/lexical_analysis.rst:922
+#: ../../reference/lexical_analysis.rst:921
 msgid ""
 "Underscores are ignored for determining the numeric value of the literal.  "
 "They can be used to group digits for enhanced readability.  One underscore "
 "can occur between digits, and after base specifiers like ``0x``."
 msgstr "确定数值时，会忽略字面值中的下划线。下划线只是为了分组数字，让数字更易读。下划线可在数字之间，也可在 ``0x`` 等基数说明符后。"
 
-#: ../../reference/lexical_analysis.rst:926
+#: ../../reference/lexical_analysis.rst:925
 msgid ""
 "Note that leading zeros in a non-zero decimal number are not allowed. This "
 "is for disambiguation with C-style octal literals, which Python used before "
 "version 3.0."
 msgstr "注意，除了 0 以外，十进制数字的开头不允许有零。以免与 Python 3.0 版之前使用的 C 样式八进制字面值混淆。"
 
-#: ../../reference/lexical_analysis.rst:930
+#: ../../reference/lexical_analysis.rst:929
 msgid "Some examples of integer literals::"
 msgstr "整数字面值示例如下："
 
-#: ../../reference/lexical_analysis.rst:936
-#: ../../reference/lexical_analysis.rst:968
+#: ../../reference/lexical_analysis.rst:931
+msgid ""
+"7     2147483647                        0o177    0b100110111\n"
+"3     79228162514264337593543950336     0o377    0xdeadbeef\n"
+"      100_000_000_000                   0b_1110_0101"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:935
+#: ../../reference/lexical_analysis.rst:967
 msgid "Underscores are now allowed for grouping purposes in literals."
 msgstr "现已支持在字面值中，用下划线分组数字。"
 
-#: ../../reference/lexical_analysis.rst:947
+#: ../../reference/lexical_analysis.rst:946
 msgid "Floating-point literals"
 msgstr "浮点数字面值"
 
-#: ../../reference/lexical_analysis.rst:949
+#: ../../reference/lexical_analysis.rst:948
 msgid ""
 "Floating-point literals are described by the following lexical definitions:"
 msgstr "浮点数字面值的词法定义如下所述："
 
-#: ../../reference/lexical_analysis.rst:959
+#: ../../reference/lexical_analysis.rst:958
 msgid ""
 "Note that the integer and exponent parts are always interpreted using radix "
 "10. For example, ``077e010`` is legal, and denotes the same number as "
@@ -1241,19 +1387,23 @@ msgstr ""
 "注意，解析时，整数和指数部分总以 10 为基数。 例如，``077e010`` 是合法的，表示的数值与 ``77e10`` 相同。 "
 "浮点数字面值的支持范围取决于具体实现。 整数字面值支持用下划线分组数字。"
 
-#: ../../reference/lexical_analysis.rst:964
+#: ../../reference/lexical_analysis.rst:963
 msgid "Some examples of floating-point literals::"
 msgstr "一些浮点数字面值的示例如下::"
 
-#: ../../reference/lexical_analysis.rst:977
+#: ../../reference/lexical_analysis.rst:965
+msgid "3.14    10.    .001    1e100    3.14e-10    0e0    3.14_15_93"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:976
 msgid "Imaginary literals"
 msgstr "虚数字面值"
 
-#: ../../reference/lexical_analysis.rst:979
+#: ../../reference/lexical_analysis.rst:978
 msgid "Imaginary literals are described by the following lexical definitions:"
 msgstr "虚数字面值词法定义如下："
 
-#: ../../reference/lexical_analysis.rst:984
+#: ../../reference/lexical_analysis.rst:983
 msgid ""
 "An imaginary literal yields a complex number with a real part of 0.0.  "
 "Complex numbers are represented as a pair of floating-point numbers and have"
@@ -1264,23 +1414,42 @@ msgstr ""
 "虚数字面值生成实部为 0.0 的复数。 复数由一对浮点数表示，它们的取值范围相同。 创建实部不为零的复数，则需添加浮点数，例如 ``(3+4j)``。 "
 "虚数字面值示例如下::"
 
-#: ../../reference/lexical_analysis.rst:996
+#: ../../reference/lexical_analysis.rst:989
+msgid "3.14j   10.j    10j     .001j   1e100j   3.14e-10j   3.14_15_93j"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:995
 msgid "Operators"
 msgstr "运算符"
 
-#: ../../reference/lexical_analysis.rst:1000
+#: ../../reference/lexical_analysis.rst:999
 msgid "The following tokens are operators:"
 msgstr "运算符如下所示："
 
-#: ../../reference/lexical_analysis.rst:1013
+#: ../../reference/lexical_analysis.rst:1001
+msgid ""
+"+       -       *       **      /       //      %      @\n"
+"<<      >>      &       |       ^       ~       :=\n"
+"<       >       <=      >=      ==      !="
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:1012
 msgid "Delimiters"
 msgstr "分隔符"
 
-#: ../../reference/lexical_analysis.rst:1017
+#: ../../reference/lexical_analysis.rst:1016
 msgid "The following tokens serve as delimiters in the grammar:"
 msgstr "以下形符在语法中为分隔符："
 
-#: ../../reference/lexical_analysis.rst:1026
+#: ../../reference/lexical_analysis.rst:1018
+msgid ""
+"(       )       [       ]       {       }\n"
+",       :       .       ;       @       =       ->\n"
+"+=      -=      *=      /=      //=     %=      @=\n"
+"&=      |=      ^=      >>=     <<=     **="
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:1025
 msgid ""
 "The period can also occur in floating-point and imaginary literals.  A "
 "sequence of three periods has a special meaning as an ellipsis literal. The "
@@ -1288,23 +1457,31 @@ msgid ""
 " as delimiters, but also perform an operation."
 msgstr "句点也可以用于浮点数和虚数字面值。三个连续句点表示省略符。列表后半部分是增强赋值操作符，用作词法分隔符，但也可以执行运算。"
 
-#: ../../reference/lexical_analysis.rst:1031
+#: ../../reference/lexical_analysis.rst:1030
 msgid ""
 "The following printing ASCII characters have special meaning as part of "
 "other tokens or are otherwise significant to the lexical analyzer:"
 msgstr "以下 ASCII 字符具有特殊含义，对词法分析器有重要意义："
 
-#: ../../reference/lexical_analysis.rst:1038
+#: ../../reference/lexical_analysis.rst:1033
+msgid "'       \"       #       \\"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:1037
 msgid ""
 "The following printing ASCII characters are not used in Python.  Their "
 "occurrence outside string literals and comments is an unconditional error:"
 msgstr "以下 ASCII 字符不用于 Python。在字符串字面值或注释外使用时，将直接报错："
 
-#: ../../reference/lexical_analysis.rst:1047
+#: ../../reference/lexical_analysis.rst:1040
+msgid "$       ?       `"
+msgstr ""
+
+#: ../../reference/lexical_analysis.rst:1046
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../reference/lexical_analysis.rst:1048
+#: ../../reference/lexical_analysis.rst:1047
 msgid "https://www.unicode.org/Public/15.1.0/ucd/NameAliases.txt"
 msgstr "https://www.unicode.org/Public/15.1.0/ucd/NameAliases.txt"
 
@@ -1330,7 +1507,7 @@ msgstr "逻辑行"
 
 #: ../../reference/lexical_analysis.rst:35
 #: ../../reference/lexical_analysis.rst:114
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "physical line"
 msgstr "物理行"
 
@@ -1519,211 +1696,211 @@ msgstr "原始字符串字面值"
 msgid "r\""
 msgstr "r\""
 
-#: ../../reference/lexical_analysis.rst:520
+#: ../../reference/lexical_analysis.rst:519
 msgid "f'"
 msgstr "f'"
 
-#: ../../reference/lexical_analysis.rst:520
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:519
+#: ../../reference/lexical_analysis.rst:697
 msgid "formatted string literal"
 msgstr "格式字符串字面值"
 
-#: ../../reference/lexical_analysis.rst:520
+#: ../../reference/lexical_analysis.rst:519
 msgid "f\""
 msgstr "f\""
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "escape sequence"
 msgstr "转义序列"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "Standard C"
 msgstr "标准 C"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "C"
 msgstr "C"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\ (backslash)"
 msgstr "\\ (反斜杠)"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\\\"
 msgstr "\\\\"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\a"
 msgstr "\\a"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\b"
 msgstr "\\b"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\f"
 msgstr "\\f"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\n"
 msgstr "\\n"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\r"
 msgstr "\\r"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\t"
 msgstr "\\t"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\v"
 msgstr "\\v"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\x"
 msgstr "\\x"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\u"
 msgstr "\\u"
 
-#: ../../reference/lexical_analysis.rst:533
+#: ../../reference/lexical_analysis.rst:532
 msgid "\\U"
 msgstr "\\U"
 
-#: ../../reference/lexical_analysis.rst:649
+#: ../../reference/lexical_analysis.rst:648
 msgid "unrecognized escape sequence"
 msgstr "无法识别的转义序列"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "interpolated string literal"
 msgstr "插值字符串字面值"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "string"
 msgstr "string"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "formatted literal"
 msgstr "格式化字面值"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "interpolated literal"
 msgstr "插值字面值"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "f-string"
 msgstr "f-string -- f-字符串"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "fstring"
 msgstr "fstring"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "{} (curly brackets)"
 msgstr "{} (花括号)"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "in formatted string literal"
 msgstr "格式字符串字面值形式"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "! (exclamation)"
 msgstr "! (感叹号)"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid ": (colon)"
 msgstr ": (冒号)"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "= (equals)"
 msgstr "= (等于号)"
 
-#: ../../reference/lexical_analysis.rst:698
+#: ../../reference/lexical_analysis.rst:697
 msgid "for help in debugging using string literals"
 msgstr "用于帮助使用字符串字面值进行调试"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "number"
 msgstr "数字"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "numeric literal"
 msgstr "数字字面值"
 
-#: ../../reference/lexical_analysis.rst:881
-#: ../../reference/lexical_analysis.rst:894
+#: ../../reference/lexical_analysis.rst:880
+#: ../../reference/lexical_analysis.rst:893
 msgid "integer literal"
 msgstr "整数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "floating-point literal"
 msgstr "浮点数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "hexadecimal literal"
 msgstr "十六进制数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "octal literal"
 msgstr "八进制数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "binary literal"
 msgstr "二进制数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "decimal literal"
 msgstr "十进制数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "imaginary literal"
 msgstr "虚数字面值"
 
-#: ../../reference/lexical_analysis.rst:881
+#: ../../reference/lexical_analysis.rst:880
 msgid "complex literal"
 msgstr "复数字面值"
 
-#: ../../reference/lexical_analysis.rst:894
+#: ../../reference/lexical_analysis.rst:893
 msgid "0b"
 msgstr "0b"
 
-#: ../../reference/lexical_analysis.rst:894
+#: ../../reference/lexical_analysis.rst:893
 msgid "0o"
 msgstr "0o"
 
-#: ../../reference/lexical_analysis.rst:894
+#: ../../reference/lexical_analysis.rst:893
 msgid "0x"
 msgstr "0x"
 
-#: ../../reference/lexical_analysis.rst:894
-#: ../../reference/lexical_analysis.rst:940
+#: ../../reference/lexical_analysis.rst:893
+#: ../../reference/lexical_analysis.rst:939
 msgid "_ (underscore)"
 msgstr "_ (下划线)"
 
-#: ../../reference/lexical_analysis.rst:894
-#: ../../reference/lexical_analysis.rst:940
-#: ../../reference/lexical_analysis.rst:972
+#: ../../reference/lexical_analysis.rst:893
+#: ../../reference/lexical_analysis.rst:939
+#: ../../reference/lexical_analysis.rst:971
 msgid "in numeric literal"
 msgstr "数字字面值形式"
 
-#: ../../reference/lexical_analysis.rst:940
+#: ../../reference/lexical_analysis.rst:939
 msgid ". (dot)"
 msgstr ". (点号)"
 
-#: ../../reference/lexical_analysis.rst:940
+#: ../../reference/lexical_analysis.rst:939
 msgid "e"
 msgstr "e"
 
-#: ../../reference/lexical_analysis.rst:972
+#: ../../reference/lexical_analysis.rst:971
 msgid "j"
 msgstr "j"
 
-#: ../../reference/lexical_analysis.rst:998
+#: ../../reference/lexical_analysis.rst:997
 msgid "operators"
 msgstr "运算符"
 
-#: ../../reference/lexical_analysis.rst:1015
+#: ../../reference/lexical_analysis.rst:1014
 msgid "delimiters"
 msgstr "分隔符"
