@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 01:51+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -210,6 +210,14 @@ msgstr ""
 "内置类型，如整数、列表、字典，甚至文件，现在都是新式类。此外，还添加了一个名为 :class:`object` "
 "的新式类，它是所有内置类型的基类，因此如果没有合适的内置类型，你可以直接继承 :class:`object` 类："
 
+#: ../../whatsnew/2.2.rst:116
+msgid ""
+"class C(object):\n"
+"    def __init__ (self):\n"
+"        ...\n"
+"    ..."
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:121
 msgid ""
 "This means that :keyword:`class` statements that don't have any base classes"
@@ -233,6 +241,14 @@ msgstr ""
 ":func:`int`、:func:`float` 和 :func:`str` 的内置函数。在 Python 2.2 "
 "中，它们不再是函数，而是作为被调用时表现为工厂的类型对象。"
 
+#: ../../whatsnew/2.2.rst:131
+msgid ""
+">>> int\n"
+"<type 'int'>\n"
+">>> int('123')\n"
+"123"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:136
 msgid ""
 "To make the set of types complete, new type objects such as :func:`dict` and"
@@ -241,6 +257,15 @@ msgid ""
 msgstr ""
 "为了使类型集合更为完备，增加了新的类型对象如 :func:`dict` 和 :func:`!file`。 下面是一个更有趣的示例，向文件对象添加一个 "
 ":meth:`!lock` 方法::"
+
+#: ../../whatsnew/2.2.rst:140
+msgid ""
+"class LockableFile(file):\n"
+"    def lock (self, operation, length=0, start=0, whence=0):\n"
+"        import fcntl\n"
+"        return fcntl.lockf(self.fileno(), operation,\n"
+"                           length, start, whence)"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:146
 msgid ""
@@ -317,6 +342,12 @@ msgid ""
 "performs are::"
 msgstr "例如，当你写下 ``obj.x``，Python 实际要执行的步骤是::"
 
+#: ../../whatsnew/2.2.rst:186
+msgid ""
+"descriptor = obj.__class__.x\n"
+"descriptor.__get__(obj)"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:189
 msgid ""
 "For methods, :meth:`!descriptor.__get__` returns a temporary object that's "
@@ -331,6 +362,18 @@ msgstr ""
 "对于方法，:meth:`!descriptor.__get__` 返回一个可调用的临时对象，它将实例和要调用的方法封装在一起。 "
 "这也是为什么现在可以实现静态方法和类方法的原因；它们有描述器，可以只封装方法，或者封装方法和类。 "
 "作为对这些新方法类型的简要说明，静态方法不传递实例，因此类似于常规函数。 类方法传递对象的类，但不传递对象本身。 静态方法和类方法的定义如下::"
+
+#: ../../whatsnew/2.2.rst:198
+msgid ""
+"class C(object):\n"
+"    def f(arg1, arg2):\n"
+"        ...\n"
+"    f = staticmethod(f)\n"
+"\n"
+"    def g(cls, arg1, arg2):\n"
+"        ...\n"
+"    g = classmethod(g)"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:207
 msgid ""
@@ -357,6 +400,24 @@ msgstr ""
 "和属性，也作为新类型的描述符实现。编写一个实现新功能的描述符类并不困难。例如，可以编写一个描述符类，使其能够为方法编写类似 Eiffel "
 "风格的前置条件和后置条件。使用该功能的类可能定义如下："
 
+#: ../../whatsnew/2.2.rst:220
+msgid ""
+"from eiffel import eiffelmethod\n"
+"\n"
+"class C(object):\n"
+"    def f(self, arg1, arg2):\n"
+"        # The actual function\n"
+"        ...\n"
+"    def pre_f(self):\n"
+"        # Check preconditions\n"
+"        ...\n"
+"    def post_f(self):\n"
+"        # Check postconditions\n"
+"        ...\n"
+"\n"
+"    f = eiffelmethod(f, pre_f, post_f)"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:235
 msgid ""
 "Note that a person using the new :func:`!eiffelmethod` doesn't have to "
@@ -381,6 +442,23 @@ msgid ""
 " taken from :pep:`253` by Guido van Rossum)::"
 msgstr ""
 "通过改变名称解析规则，多重继承也变得更加有用。  请看下面这组类（图表摘自 :pep:`253` ，作者 Guido van Rossum）："
+
+#: ../../whatsnew/2.2.rst:250
+msgid ""
+"      class A:\n"
+"        ^ ^  def save(self): ...\n"
+"       /   \\\n"
+"      /     \\\n"
+"     /       \\\n"
+"    /         \\\n"
+"class B     class C:\n"
+"    ^         ^  def save(self): ...\n"
+"     \\       /\n"
+"      \\     /\n"
+"       \\   /\n"
+"        \\ /\n"
+"      class D"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:264
 msgid ""
@@ -444,6 +522,16 @@ msgstr ""
 "Lisp 遵循的规则相同。 新的内置函数 :func:`super` 提供了一种无需重新实现 Python 算法就能获取类的超类的方法。 最常用的形式是"
 " ``super(class, obj)`` ，它返回一个绑定的超类对象（而不是实际的类对象）。 "
 "这种形式将用于调用超类中的方法；例如，:class:`!D` 的 :meth:`!save` 方法看起来像这样::"
+
+#: ../../whatsnew/2.2.rst:296
+msgid ""
+"class D (B,C):\n"
+"    def save (self):\n"
+"        # Call superclass .save()\n"
+"        super(D, self).save()\n"
+"        # Save D's private information here\n"
+"        ..."
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:303
 msgid ""
@@ -522,6 +610,24 @@ msgstr ""
 "是一种新的内置类型，它打包了三个用于获取、设置或删除属性的函数，以及一个文档字符串。例如，如果你想定义一个计算得出的属性 "
 ":attr:`!size`，同时又希望这个属性是可设置的，你可以这样写::"
 
+#: ../../whatsnew/2.2.rst:342
+msgid ""
+"class C(object):\n"
+"    def get_size (self):\n"
+"        result = ... computation ...\n"
+"        return result\n"
+"    def set_size (self, size):\n"
+"        ... compute something based on the size\n"
+"        and set internal state appropriately ...\n"
+"\n"
+"    # Define a property.  The 'delete this attribute'\n"
+"    # method is defined as None, so the attribute\n"
+"    # can't be deleted.\n"
+"    size = property(get_size, set_size,\n"
+"                    None,\n"
+"                    \"Storage size of this instance\")"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:357
 msgid ""
 "That is certainly clearer and easier to write than a pair of "
@@ -549,6 +655,23 @@ msgstr ""
 "最后，可以使用新的类属性 :attr:`~object.__slots__` 来限制对象上可以引用的属性列表。Python "
 "对象通常非常动态，可以随时通过简单地 ``obj.new_attr=1`` 来定义一个新属性。新式类可以定义一个名为 "
 ":attr:`~object.__slots__` 的类属性，以将合法属性限制为特定的一组名称。一个例子可以更清楚地说明这一点："
+
+#: ../../whatsnew/2.2.rst:371
+msgid ""
+">>> class C(object):\n"
+"...     __slots__ = ('template', 'name')\n"
+"...\n"
+">>> obj = C()\n"
+">>> print obj.template\n"
+"None\n"
+">>> obj.template = 'Test'\n"
+">>> print obj.template\n"
+"Test\n"
+">>> obj.newattr = None\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in ?\n"
+"AttributeError: 'C' object has no attribute 'newattr'"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:385
 msgid ""
@@ -626,6 +749,12 @@ msgstr ""
 "在 Python 2.1 及之前的版本中，使 ``for item in obj`` 语句生效的常用方法是定义一个类似于下面的 "
 ":meth:`~object.__getitem__` 方法："
 
+#: ../../whatsnew/2.2.rst:429
+msgid ""
+"def __getitem__(self, index):\n"
+"    return <next item>"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:432
 msgid ""
 ":meth:`~object.__getitem__` is more properly used to define an indexing "
@@ -685,6 +814,25 @@ msgstr ""
 "总结一下，迭代器实际上做什么？它们有一个必需的方法 :meth:`next`，该方法不接受任何参数并返回下一个值。当没有更多的值可以返回时，调用 "
 ":meth:`next` 应该引发 :exc:`StopIteration` 异常。以下是一个简单的例子来说明迭代器的工作原理："
 
+#: ../../whatsnew/2.2.rst:462
+msgid ""
+">>> L = [1,2,3]\n"
+">>> i = iter(L)\n"
+">>> print i\n"
+"<iterator object at 0x8116870>\n"
+">>> i.next()\n"
+"1\n"
+">>> i.next()\n"
+"2\n"
+">>> i.next()\n"
+"3\n"
+">>> i.next()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in ?\n"
+"StopIteration\n"
+">>>"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:478
 msgid ""
 "In 2.2, Python's :keyword:`for` statement no longer expects a sequence; it "
@@ -701,12 +849,41 @@ msgstr ""
 "方法的序列，会自动构造一个迭代器，因此 ``for i in [1,2,3]`` 仍然可以正常工作。 Python "
 "解释器在循环遍历序列时，已经改为使用迭代器协议。 这意味着你可以做类似这样的事情："
 
+#: ../../whatsnew/2.2.rst:486
+msgid ""
+">>> L = [1,2,3]\n"
+">>> i = iter(L)\n"
+">>> a,b,c = i\n"
+">>> a,b,c\n"
+"(1, 2, 3)"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:492
 msgid ""
 "Iterator support has been added to some of Python's basic types.   Calling "
 ":func:`iter` on a dictionary will return an iterator which loops over its "
 "keys::"
 msgstr "迭代器支持已被添加到Python的一些基本类型中。对字典调用 :func:`iter` 会返回一个迭代器，该迭代器遍历字典的键，如下所示："
+
+#: ../../whatsnew/2.2.rst:495
+msgid ""
+">>> m = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,\n"
+"...      'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}\n"
+">>> for key in m: print key, m[key]\n"
+"...\n"
+"Mar 3\n"
+"Feb 2\n"
+"Aug 8\n"
+"Sep 9\n"
+"May 5\n"
+"Jun 6\n"
+"Jul 7\n"
+"Jan 1\n"
+"Apr 4\n"
+"Nov 11\n"
+"Dec 12\n"
+"Oct 10"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:512
 msgid ""
@@ -717,12 +894,24 @@ msgid ""
 " dictionaries, so ``key in dict`` is now equivalent to "
 "``dict.has_key(key)``."
 msgstr ""
+"这只是默认行为。如果你想迭代键、值或键/值对，可以显式调用 :meth:`!iterkeys`、:meth:`!itervalues` 或 "
+":meth:`!iteritems` 方法来获取适当的迭代器。 在一个相关的小改动中，成员运算符 :keyword:`in` 现在可以用于字典，因此 "
+"``key in dict`` 现在等价于 ``dict.has_key(key)``。"
 
 #: ../../whatsnew/2.2.rst:518
 msgid ""
 "Files also provide an iterator, which calls the :meth:`readline` method "
 "until there are no more lines in the file.  This means you can now read each"
 " line of a file using code like this::"
+msgstr ""
+"文件也提供了一个迭代器，它会调用 :meth:`readline` "
+"方法，直到文件中没有更多的行。这意味着你现在可以使用类似这样的代码来读取文件的每一行："
+
+#: ../../whatsnew/2.2.rst:522
+msgid ""
+"for line in file:\n"
+"    # do something for each line\n"
+"    ..."
 msgstr ""
 
 #: ../../whatsnew/2.2.rst:526
@@ -732,6 +921,8 @@ msgid ""
 "object could provide such additional capabilities, but the iterator protocol"
 " only requires a :meth:`next` method."
 msgstr ""
+"请注意，你只能在迭代器中向前移动；没有办法获取前一个元素、重置迭代器或复制迭代器。一个迭代器对象可以提供这些额外的功能，但迭代器协议只要求有一个 "
+":meth:`next` 方法。"
 
 #: ../../whatsnew/2.2.rst:534
 msgid ":pep:`234` - Iterators"
@@ -772,6 +963,13 @@ msgstr ""
 #: ../../whatsnew/2.2.rst:556
 msgid "Here's the simplest example of a generator function::"
 msgstr "这里是一个生成器函数的最简示例::"
+
+#: ../../whatsnew/2.2.rst:558
+msgid ""
+"def generate_ints(N):\n"
+"    for i in range(N):\n"
+"        yield i"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:562
 msgid ""
@@ -814,6 +1012,24 @@ msgstr ""
 msgid "Here's a sample usage of the :func:`!generate_ints` generator::"
 msgstr "下面是 :func:`!generate_ints` 生成器的用法示例::"
 
+#: ../../whatsnew/2.2.rst:585
+msgid ""
+">>> gen = generate_ints(3)\n"
+">>> gen\n"
+"<generator object at 0x8117f90>\n"
+">>> gen.next()\n"
+"0\n"
+">>> gen.next()\n"
+"1\n"
+">>> gen.next()\n"
+"2\n"
+">>> gen.next()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in ?\n"
+"  File \"<stdin>\", line 2, in generate_ints\n"
+"StopIteration"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:600
 msgid ""
 "You could equally write ``for i in generate_ints(5)``, or ``a,b,c = "
@@ -853,6 +1069,18 @@ msgstr ""
 "并返回它。然而，对于一个中等复杂的生成器，编写一个相应的类将会更加混乱。:file:`Lib/test/test_generators.py` "
 "包含了一些更有趣的例子。其中最简单的一个使用生成器递归实现了树的中序遍历："
 
+#: ../../whatsnew/2.2.rst:620
+msgid ""
+"# A recursive generator that generates Tree leaves in in-order.\n"
+"def inorder(t):\n"
+"    if t:\n"
+"        for x in inorder(t.left):\n"
+"            yield x\n"
+"        yield t.label\n"
+"        for x in inorder(t.right):\n"
+"            yield x"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:629
 msgid ""
 "Two other examples in :file:`Lib/test/test_generators.py` produce solutions "
@@ -861,6 +1089,8 @@ msgid ""
 "knight to every square of an $NxN$ chessboard without visiting any square "
 "twice)."
 msgstr ""
+"在 :file:`Lib/test/test_generators.py` "
+"中还有另外两个例子，它们分别解决了N皇后问题（在$NxN$的棋盘上放置$N$个皇后，使得没有任何皇后威胁到其他皇后）和骑士巡游问题（在$NxN$的棋盘上，骑士访问每一个方格且不重复访问任何方格的路径）。"
 
 #: ../../whatsnew/2.2.rst:634
 msgid ""
@@ -870,6 +1100,16 @@ msgid ""
 "generator.  One example from \"An Overview of the Icon Programming "
 "Language\" at https://www2.cs.arizona.edu/icon/docs/ipd266.htm gives an idea"
 " of what this looks like::"
+msgstr ""
+"生成器的概念源自其他编程语言，尤其是 Icon（https://www2.cs.arizona.edu/icon/ ），在 Icon "
+"语言中，生成器的概念是核心。在 Icon 中，每个表达式和函数调用生成器的概念源自其他编程语言，尤其是 Icon。 在 Icon "
+"中，每个表达式和函数调用都可以表现得像一个生成器。 以下是来自“Icon 编程语言概述”中的一个示例，展示了生成器的用法 "
+"https://www2.cs.arizona.edu/icon/docs/ipd266.htm ："
+
+#: ../../whatsnew/2.2.rst:641
+msgid ""
+"sentence := \"Store it in the neighboring harbor\"\n"
+"if (i := find(\"or\", sentence)) > 5 then write(i)"
 msgstr ""
 
 #: ../../whatsnew/2.2.rst:644
@@ -881,6 +1121,9 @@ msgid ""
 "5, so the comparison now succeeds, and the code prints the value 23 to the "
 "screen."
 msgstr ""
+"在Icon中，:func:`!find` 函数返回子字符串\"or\"所在的索引：3、23、33。在 :keyword:`if` 语句中，``i`` "
+"首先被赋值为 3，但 3 小于 5，因此比较失败，Icon 会使用第二个值 23 进行重试。 23 大于 5，因此比较成功，代码将值 23 "
+"打印到屏幕上。"
 
 #: ../../whatsnew/2.2.rst:650
 msgid ""
@@ -925,6 +1168,10 @@ msgid ""
 "be used as a slice index, and ``'abc'[1L:]`` would raise a :exc:`TypeError` "
 "exception with the message 'slice index must be int'."
 msgstr ""
+"在最近的版本中，普通整数（在大多数机器上是 32 位值）和长整数（可以是任意大小）的区别变得令人烦恼。 例如，在支持大于 ``2**32`` "
+"比特的文件的平台上，文件对象的 :meth:`!tell` 方法必须返回一个长整数。 然而，Python "
+"的各个部分期望普通整数，如果提供了长整数，则会引发错误。 例如，在 Python 1.5 中，只有普通整数可以用作切片索引，而 "
+"``'abc'[1L:]`` 会引发一个 :exc:`TypeError` 异常，并显示消息“slice index must be int”。"
 
 #: ../../whatsnew/2.2.rst:681
 msgid ""
@@ -940,12 +1187,20 @@ msgstr ""
 "2.x 版本的 Python 中，使用 'L' 后缀将被不鼓励，并在 Python 2.4 中触发警告，可能在 Python 3.0 "
 "中被移除。）许多以前会引发 :exc:`OverflowError` 的操作现在会返回一个长整数作为结果。例如："
 
+#: ../../whatsnew/2.2.rst:689
+msgid ""
+">>> 1234567890123\n"
+"1234567890123L\n"
+">>> 2 ** 64\n"
+"18446744073709551616L"
+msgstr ""
+
 #: ../../whatsnew/2.2.rst:694
 msgid ""
 "In most cases, integers and long integers will now be treated identically.  "
 "You can still distinguish them with the :func:`type` built-in function, but "
 "that's rarely needed."
-msgstr ""
+msgstr "在大多数情况下，整数和长整数现在将被视为相同。你仍然可以使用内置的 :func:`type` 函数区分它们，但这很少需要。"
 
 #: ../../whatsnew/2.2.rst:701
 msgid ":pep:`237` - Unifying Long Integers and Integers"
@@ -973,6 +1228,9 @@ msgid ""
 "the two operands and because Python is dynamically typed, it can be "
 "difficult to determine the possible types of the operands."
 msgstr ""
+"Python 2.2中最具争议的变化预示着修复一个自Python诞生以来的旧设计缺陷的努力的开始。目前，Python的除法操作符 ``/`` "
+"在接收两个整数参数时表现得像C语言的除法操作符：它返回一个被截断为整数的结果。例如，``3/2`` 是1，而不是1.5，``(-1)/2`` "
+"是-1，而不是-0.5。这意味着除法的结果可能会根据两个操作数的类型而意外变化，并且由于Python是动态类型的，确定操作数的可能类型可能会很困难。"
 
 #: ../../whatsnew/2.2.rst:721
 msgid ""
@@ -983,6 +1241,9 @@ msgid ""
 "either side here and will stick to describing what's  implemented in 2.2.  "
 "Read :pep:`238` for a summary of arguments and counter-arguments.)"
 msgstr ""
+"（争议在于这是否*真的*算是一个设计缺陷，以及是否值得为了修复它而破坏现有代码。这在python-"
+"dev上引发了无休止的讨论，并在2001年7月爆发成一场在 :newsgroup:`comp.lang.python` "
+"的充满讽刺性言辞的风暴。我不会在这里为任何一方辩护，只会描述在2.2中实现的内容。请阅读 :pep:`238` 以获取争论和反驳的摘要。）"
 
 #: ../../whatsnew/2.2.rst:728
 msgid ""
@@ -1003,6 +1264,10 @@ msgid ""
 "operands are integers, and returns the result of true division when one of "
 "the operands is a floating-point number."
 msgstr ""
+"首先，我将借用一些来自 :pep:`238` "
+"的术语。“真除法”是大多数非程序员所熟悉的除法：3/2是1.5，1/4是0.25，等等。“地板除法”是Python的 ``/`` "
+"操作符在给定整数操作数时当前执行的操作；其结果是真除法返回值的地板值。“经典除法”是当前 ``/`` "
+"操作符的混合行为；当操作数是整数时，它返回地板除法的结果，而当其中一个操作数是浮点数时，它返回真除法的结果。"
 
 #: ../../whatsnew/2.2.rst:740
 msgid "Here are the changes 2.2 introduces:"
@@ -1015,12 +1280,14 @@ msgid ""
 "no matter what the types of its operands are, so ``1 // 2`` is 0 and ``1.0 "
 "// 2.0`` is also 0.0."
 msgstr ""
+"一个新的操作符，``//`` 是地板除法操作符。 （是的，我们知道它看起来像 C++ 的注释符号。） ``//`` *始终* "
+"执行地板除法，无论其操作数的类型是什么，因此 ``1 // 2`` 是 0，``1.0 // 2.0`` 也是0.0。"
 
 #: ../../whatsnew/2.2.rst:747
 msgid ""
 "``//`` is always available in Python 2.2; you don't need to enable it using "
 "a ``__future__`` statement."
-msgstr ""
+msgstr "``//`` 操作符在Python 2.2中始终可用；你不需要通过 ``__future__`` 语句来启用它。"
 
 #: ../../whatsnew/2.2.rst:750
 msgid ""
@@ -1029,6 +1296,9 @@ msgid ""
 "is 0.5.  Without the ``__future__`` statement, ``/`` still means classic "
 "division. The default meaning of ``/`` will not change until Python 3.0."
 msgstr ""
+"通过在模块中包含 ``from __future__ import division``，``/``操作符将被更改为返回真除法的结果，因此 "
+"``1/2`` 是0.5。如果没有这条 ``__future__`` 语句，``/`` 仍然表示经典除法。``/`` 的默认含义在Python "
+"3.0之前不会改变。"
 
 #: ../../whatsnew/2.2.rst:755
 msgid ""
@@ -1037,6 +1307,8 @@ msgid ""
 " C level, there are also slots in the :c:type:`PyNumberMethods` structure so"
 " extension types can define the two operators."
 msgstr ""
+"类可以定义名为 :meth:`~object.__truediv__` 和 :meth:`~object.__floordiv__` "
+"的方法来重载这两个除法操作符。 在 C 语言层面，:c:type:`PyNumberMethods` 结构中也有槽位，因此扩展类型可以定义这两个操作符。"
 
 #: ../../whatsnew/2.2.rst:760
 msgid ""
@@ -1075,6 +1347,10 @@ msgid ""
 "script.   (It's also possible to specify :option:`!--disable-unicode` to "
 "completely disable Unicode support.)"
 msgstr ""
+"Python的Unicode支持在2.2版本中有所增强。Unicode字符串通常以UCS-2形式存储，即16位无符号整数。通过向配置脚本提供 "
+":option:`!--enable-unicode=ucs4` 选项，Python "
+"2.2也可以编译为使用UCS-4（32位无符号整数）作为其内部编码。（也可以指定 :option:`!--disable-unicode` "
+"选项来完全禁用Unicode支持。）"
 
 #: ../../whatsnew/2.2.rst:786
 msgid ""
@@ -1086,6 +1362,10 @@ msgid ""
 "exception. This is all described in :pep:`261`, \"Support for 'wide' Unicode"
 " characters\"; consult it for further details."
 msgstr ""
+"当构建为使用 UCS-4（称为“宽Python”）时，解释器可以原生处理从 U+000000 到 U+110000 的 Unicode 字符，因此 "
+":func:`!unichr` 函数的合法值范围也相应扩大。 使用编译为 UCS-2（称为“窄Python”）的解释器时，值大于 65535 仍将导致 "
+":func:`!unichr` 函数引发 :exc:`ValueError` 异常。 所有这些内容在 :pep:`261` "
+"“支持‘宽’Unicode字符”中有详细描述；请查阅以获取更多细节。"
 
 #: ../../whatsnew/2.2.rst:794
 msgid ""
@@ -1097,6 +1377,10 @@ msgid ""
 "the specified encoding and decodes it, returning whatever is returned by the"
 " codec."
 msgstr ""
+"另一个变化的解释更为简单。 自引入以来，Unicode 字符串支持一个 :meth:`!encode` 方法，可以将字符串转换为选定的编码，如 "
+"UTF-8 或 Latin-1。 在 2.2 版本中，为 8 位字符串（但不是Unicode字符串）添加了一个对称的 "
+"``decode([*encoding*])`` 方法。 :meth:`!decode` "
+"方法假定字符串使用指定的编码，并对其进行解码，返回由编解码器返回的内容。"
 
 #: ../../whatsnew/2.2.rst:801
 msgid ""
@@ -1104,12 +1388,35 @@ msgid ""
 "related to Unicode.  For example, codecs have been added for uu-encoding, "
 "MIME's base64 encoding, and compression with the :mod:`zlib` module::"
 msgstr ""
+"利用这一新特性，编解码器被添加用于与Unicode不直接相关的任务。例如，已经添加了用于uu编码、MIME的base64编码以及使用 "
+":mod:`zlib` 模块进行压缩的编解码器："
+
+#: ../../whatsnew/2.2.rst:805
+msgid ""
+">>> s = \"\"\"Here is a lengthy piece of redundant, overly verbose,\n"
+"... and repetitive text.\n"
+"... \"\"\"\n"
+">>> data = s.encode('zlib')\n"
+">>> data\n"
+"'x\\x9c\\r\\xc9\\xc1\\r\\x80 \\x10\\x04\\xc0?Ul...'\n"
+">>> data.decode('zlib')\n"
+"'Here is a lengthy piece of redundant, overly verbose,\\nand repetitive text.\\n'\n"
+">>> print s.encode('uu')\n"
+"begin 666 <data>\n"
+"M2&5R92!I<R!A(&QE;F=T:'D@<&EE8V4@;V8@<F5D=6YD86YT+\"!O=F5R;'D@\n"
+">=F5R8F]S92P*86YD(')E<&5T:71I=F4@=&5X=\"X*\n"
+"\n"
+"end\n"
+">>> \"sheesh\".encode('rot-13')\n"
+"'furrfu'"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:822
 msgid ""
 "To convert a class instance to Unicode, a :meth:`!__unicode__` method can be"
 " defined by a class, analogous to :meth:`!__str__`."
 msgstr ""
+"要将类实例转换为Unicode，类可以定义一个 :meth:`!__unicode__` 方法，类似于 :meth:`!__str__` 方法。"
 
 #: ../../whatsnew/2.2.rst:825
 msgid ""
@@ -1117,6 +1424,8 @@ msgid ""
 "by Marc-André Lemburg.  The changes to support using UCS-4 internally were "
 "implemented by Fredrik Lundh and Martin von Löwis."
 msgstr ""
+":meth:`!encode`、:meth:`!decode` 和 :meth:`!__unicode__` 方法由 Marc-André "
+"Lemburg 实现。 支持内部使用 UCS-4 的更改由 Fredrik Lundh 和 Martin von Löwis 实现。"
 
 #: ../../whatsnew/2.2.rst:832
 msgid ":pep:`261` - Support for 'wide' Unicode characters"
@@ -1139,6 +1448,9 @@ msgid ""
 "scopes from my \"What's New in Python 2.1\" document; if you read it when "
 "2.1 came out, you can skip the rest of this section."
 msgstr ""
+"在Python 2.1中，静态嵌套作用域作为一个可选特性被添加，需要通过 ``from __future__ import "
+"nested_scopes`` 指令来启用。在2.2版本中，嵌套作用域不再需要特别启用，现在总是存在。本节的其余部分是从我的《Python "
+"2.1的新特性》文档中复制的嵌套作用域描述；如果你在2.1发布时已经阅读过，可以跳过本节的其余部分。"
 
 #: ../../whatsnew/2.2.rst:848
 msgid ""
@@ -1153,6 +1465,22 @@ msgstr ""
 "中，任意给定的时刻至多使用三个命名空间来查找变量名称：局部、模块和内置命名空间。 这往往会导致令人吃惊的结果因为它与人们直觉上的预期不相匹配。 "
 "例如，一个嵌套的递归函数将不起作用::"
 
+#: ../../whatsnew/2.2.rst:855
+msgid ""
+"def f():\n"
+"    ...\n"
+"    def g(value):\n"
+"        ...\n"
+"        return g(value-1) + 1\n"
+"    ..."
+msgstr ""
+"def f():\n"
+"    ...\n"
+"    def g(value):\n"
+"        ...\n"
+"        return g(value-1) + 1\n"
+"    ..."
+
 #: ../../whatsnew/2.2.rst:862
 msgid ""
 "The function :func:`!g` will always raise a :exc:`NameError` exception, "
@@ -1164,6 +1492,24 @@ msgid ""
 "find local variables being copied by passing them as the default values of "
 "arguments. ::"
 msgstr ""
+"函数 :func:`!g` 将始终引发 :exc:`NameError` 异常，因为名称 ``g`` "
+"的绑定既不在其局部命名空间中，也不在模块级命名空间中。这在实际中并不是什么大问题（你有多常递归地定义这样的内部函数？），但这也使得使用 "
+":keyword:`lambda` 表达式变得笨拙，这在实践中确实是个问题。在使用 :keyword:`!lambda` "
+"的代码中，你经常可以看到局部变量通过将它们作为参数的默认值传递来进行复制。 ::"
+
+#: ../../whatsnew/2.2.rst:870
+msgid ""
+"def find(self, name):\n"
+"    \"Return list of any entries equal to 'name'\"\n"
+"    L = filter(lambda x, name=name: x == name,\n"
+"               self.list_attribute)\n"
+"    return L"
+msgstr ""
+"def find(self, name):\n"
+"    \"Return list of any entries equal to 'name'\"\n"
+"    L = filter(lambda x, name=name: x == name,\n"
+"               self.list_attribute)\n"
+"    return L"
 
 #: ../../whatsnew/2.2.rst:876
 msgid ""
@@ -1226,6 +1572,22 @@ msgstr ""
 msgid "To make the preceding explanation a bit clearer, here's an example::"
 msgstr "为了使前面的解释更清楚，下面是一个例子::"
 
+#: ../../whatsnew/2.2.rst:909
+msgid ""
+"x = 1\n"
+"def f():\n"
+"    # The next line is a syntax error\n"
+"    exec 'x=2'\n"
+"    def g():\n"
+"        return x"
+msgstr ""
+"x = 1\n"
+"def f():\n"
+"    # 下一行有语法错误\n"
+"    exec 'x=2'\n"
+"    def g():\n"
+"        return x"
+
 #: ../../whatsnew/2.2.rst:916
 msgid ""
 "Line 4 containing the ``exec`` statement is a syntax error, since ``exec`` "
@@ -1263,6 +1625,29 @@ msgid ""
 "from the O'Reilly Network, and then  lists the recent headlines for one "
 "channel::"
 msgstr ""
+":mod:`xmlrpclib <xmlrpc.client>` 模块由 Fredrik Lundh 贡献给标准库，提供了编写 XML-RPC "
+"客户端的支持。 XML-RPC 是一种建立在 HTTP 和 XML 之上的简单远程过程调用协议。 例如，以下代码片段从 O'Reilly Network"
+" 检索 RSS 频道列表，然后列出一个频道的最新头条新闻："
+
+#: ../../whatsnew/2.2.rst:942
+msgid ""
+"import xmlrpclib\n"
+"s = xmlrpclib.Server(\n"
+"      'http://www.oreillynet.com/meerkat/xml-rpc/server.php')\n"
+"channels = s.meerkat.getChannels()\n"
+"# channels is a list of dictionaries, like this:\n"
+"# [{'id': 4, 'title': 'Freshmeat Daily News'}\n"
+"#  {'id': 190, 'title': '32Bits Online'},\n"
+"#  {'id': 4549, 'title': '3DGamers'}, ... ]\n"
+"\n"
+"# Get the items for one channel\n"
+"items = s.meerkat.getItems( {'channel': 4} )\n"
+"\n"
+"# 'items' is another list of dictionaries, like this:\n"
+"# [{'link': 'http://freshmeat.net/releases/52719/',\n"
+"#   'description': 'A utility which converts HTML to XSL FO.',\n"
+"#   'title': 'html2fo 0.3 (Default)'}, ... ]"
+msgstr ""
 
 #: ../../whatsnew/2.2.rst:959
 msgid ""
@@ -1270,12 +1655,14 @@ msgid ""
 " straightforward XML-RPC servers.  See http://xmlrpc.scripting.com/ for more"
 " information about XML-RPC."
 msgstr ""
+":mod:`SimpleXMLRPCServer <xmlrpc.server>` 模块使创建简单的 XML-RPC 服务器变得容易。 有关 XML-"
+"RPC 的更多信息，请参见 http://xmlrpc.scripting.com/。"
 
 #: ../../whatsnew/2.2.rst:962
 msgid ""
 "The new :mod:`hmac` module implements the HMAC algorithm described by "
 ":rfc:`2104`. (Contributed by Gerhard Häring.)"
-msgstr ""
+msgstr "新的 :mod:`hmac` 模块实现了由 :rfc:`2104` 描述的HMAC算法。（由Gerhard Häring贡献。）"
 
 #: ../../whatsnew/2.2.rst:965
 msgid ""
@@ -1287,6 +1674,11 @@ msgid ""
 ":func:`~time.localtime`, :func:`~time.gmtime`, and :func:`~time.strptime` in"
 " the :mod:`time` module."
 msgstr ""
+"几个最初返回长元组的函数现在返回伪序列，这些伪序列仍然像元组一样工作，但也具有助记属性，例如 :attr:`!memberst_mtime` 或 "
+":attr:`~time.struct_time.tm_year`。增强的函数包括 :mod:`os` 模块中的 "
+":func:`~os.stat`、:func:`~os.fstat`、:func:`~os.statvfs` 和 "
+":func:`~os.fstatvfs`，以及 :mod:`time` 模块中的 "
+":func:`~time.localtime`、:func:`~time.gmtime` 和 :func:`~time.strptime`。"
 
 #: ../../whatsnew/2.2.rst:972
 msgid ""
@@ -1295,6 +1687,8 @@ msgid ""
 "now this can be written more clearly as ``file_size = "
 "os.stat(filename).st_size``."
 msgstr ""
+"例如，使用旧的元组来获取文件的大小时，你可能会写成 ``file_size = os.stat(filename)[stat.ST_SIZE]`` "
+"，但现在可以更清晰地写成 ``file_size = os.stat(filename).st_size``。"
 
 #: ../../whatsnew/2.2.rst:976
 msgid "The original patch for this feature was contributed by Nick Mathewson."
@@ -1314,6 +1708,8 @@ msgid ""
 ":option:`!--enable-ipv6` option to Python's configure script.  (Contributed "
 "by Jun-ichiro \"itojun\" Hagino.)"
 msgstr ""
+":mod:`socket` 模块可以编译为支持IPv6；为Python的配置脚本指定 :option:`!--enable-ipv6` "
+"选项。（由Jun-ichiro \"itojun\" Hagino贡献。）"
 
 #: ../../whatsnew/2.2.rst:985
 msgid ""
@@ -1322,6 +1718,8 @@ msgid ""
 " for a signed 64-bit integer, and ``Q`` is for an unsigned one.  The value "
 "is returned in Python's long integer type.  (Contributed by Tim Peters.)"
 msgstr ""
+"在支持 C 语言 long long 类型的平台上，为 64 位整数添加了两个新的格式字符到 :mod:`struct` 模块。 ``q`` 用于有符号"
+" 64 位整数，``Q`` 用于无符号 64 位整数。返回的值是 Python 的长整数类型。（由 Tim Peters 贡献。）"
 
 #: ../../whatsnew/2.2.rst:990
 msgid ""
@@ -1333,6 +1731,10 @@ msgid ""
 "read their help text. (Contributed by Guido van Rossum, using Ka-Ping Yee's "
 ":mod:`pydoc` module.)"
 msgstr ""
+"在解释器的交互模式下，有一个新的内置函数 :func:`help`，它使用在Python 2.1 中引入的 :mod:`pydoc` "
+"模块来提供交互式帮助。 ``help(object)`` 显示关于*object*的任何可用帮助文本。不带参数调用 :func:`help` "
+"会进入一个在线帮助工具，在那里你可以输入函数、类或模块的名称来阅读它们的帮助文本。（由Guido van Rossum贡献，使用Ka-Ping Yee的"
+" :mod:`pydoc` 模块。）"
 
 #: ../../whatsnew/2.2.rst:998
 msgid ""
@@ -1344,6 +1746,10 @@ msgid ""
 "overlapping matches in  a given string.  (SRE is maintained by Fredrik "
 "Lundh.  The BIGCHARSET patch was contributed by Martin von Löwis.)"
 msgstr ""
+"对 :mod:`re` 模块底层的 SRE 引擎进行了各种错误修复和性能改进。例如，:func:`re.sub` 和 :func:`re.split` "
+"函数已用 C 语言重写。 另一个贡献的补丁将某些 Unicode 字符范围的速度提高了两倍，并新增了一个 :meth:`~re.finditer` "
+"方法，该方法返回给定字符串中所有不重叠匹配的迭代器。（SRE 由 Fredrik Lundh 维护。 BIGCHARSET 补丁由 Martin von"
+" Löwis 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1006
 msgid ""
@@ -1352,6 +1758,9 @@ msgid ""
 "program and the mail transport agent being handed a message.  :mod:`smtplib`"
 " also supports SMTP authentication.  (Contributed by Gerhard Häring.)"
 msgstr ""
+":mod:`smtplib` 模块现在支持 :rfc:`2487`：\"Secure SMTP over "
+"TLS\"，因此现在可以加密Python程序与接收消息的邮件传输代理之间的SMTP流量。:mod:`smtplib` "
+"还支持SMTP身份验证。（由Gerhard Häring贡献。）"
 
 #: ../../whatsnew/2.2.rst:1011
 msgid ""
@@ -1360,6 +1769,8 @@ msgid ""
 "SORT, GETACL and SETACL.  (Contributed by Anthony Baxter and Michel "
 "Pelletier.)"
 msgstr ""
+":mod:`imaplib` 模块由 Piers Lauder 维护，支持几个新扩展: :rfc:`2342` 中定义的 NAMESPACE "
+"扩展、SORT、GETACL和SETACL。（由 Anthony Baxter 和 Michel Pelletier 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1015
 msgid ""
@@ -1369,6 +1780,9 @@ msgid ""
 "added for parsing and generating e-mail messages.  (Contributed by Barry "
 "Warsaw, and arising out of his work on Mailman.)"
 msgstr ""
+":mod:`!rfc822` 模块对电子邮件地址的解析现在符合 :rfc:`2822`，这是对 :rfc:`822` 的更新。（模块名称 *不会* "
+"更改为 ``rfc2822``。） 新增了一个包 :mod:`email`，用于解析和生成电子邮件消息。（由 Barry Warsaw 贡献，并源于他在"
+" Mailman 上的工作。）"
 
 #: ../../whatsnew/2.2.rst:1021
 msgid ""
@@ -1380,6 +1794,10 @@ msgid ""
 "contributed by David Goodger, from ndiff.py code by Tim Peters who then did "
 "the generatorization.)"
 msgstr ""
+":mod:`difflib` 模块现在包含一个新的 :class:`!Differ` "
+"类，用于生成两个文本行序列之间的可读性高的变更列表（“delta”）。 还有两个生成器函数，:func:`!ndiff` 和 "
+":func:`!restore`，分别从两个序列返回一个 delta，或从一个 delta 返回其中一个原始序列。 （基础工作由 David "
+"Goodger 贡献，基于 Tim Peters 的 ndiff.py 代码，后者进行了生成器化。）"
 
 #: ../../whatsnew/2.2.rst:1028
 msgid ""
@@ -1392,6 +1810,11 @@ msgid ""
 " buggy modules have all been fixed to use :const:`!ascii_letters` instead. "
 "(Reported by an unknown person; fixed by Fred L. Drake, Jr.)"
 msgstr ""
+"为 :mod:`string` 模块增加了新的常量 :const:`!ascii_letters`, :const:`!ascii_lowercase`"
+" 和 :const:`!ascii_uppercase`。 标准库中有一些模块使用 :const:`!string.letters` 来表示 "
+"A-Za-z，但当使用不同语言区域时其含义并不正确，因为 :const:`!string.letters` "
+"会根据当前语言区域所定义的合法字符集而发生变化。 这些有问题的模块已全部被修正为改用 :const:`!ascii_letters`。 "
+"（由未知人士报告；由 Fred L. Drake, Jr. 修正）。"
 
 #: ../../whatsnew/2.2.rst:1037
 msgid ""
@@ -1399,6 +1822,8 @@ msgid ""
 " databases by the addition of a :class:`~mimetypes.MimeTypes` class, which "
 "takes a list of filenames to be parsed.  (Contributed by Fred L. Drake, Jr.)"
 msgstr ""
+"现在 :mod:`mimetypes` 模块通过添加 :class:`~mimetypes.MimeTypes` 类让使用不同的 MIME "
+"类型数据库更为容易，该类接受一个文件名列表供解析。 （由 Fred L. Drake, Jr. 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1041
 msgid ""
@@ -1406,6 +1831,8 @@ msgid ""
 "that allows scheduling an activity to happen at some future time.  "
 "(Contributed by Itamar Shtull-Trauring.)"
 msgstr ""
+":class:`~threading.Timer` 模块中新增了一个 :mod:`threading` 类，可以调度某个活动在未来某个时间发生。 （由 "
+"Itamar Shtull-Trauring 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1049
 msgid "Interpreter Changes and Fixes"
@@ -1433,6 +1860,10 @@ msgid ""
 "exist, and have simply been changed to use the new C-level interface.  "
 "(Contributed by Fred L. Drake, Jr.)"
 msgstr ""
+"性能分析和追踪函数现在可以用 C 语言来实现，相比基于 Python 的函数能够显著提高运行速度并能够减少性能分析和追踪的资源开销。 Python "
+"开发环境的编写者对此将会很感兴趣。 Python 的 API 增加了两个新的 C 函数，:c:func:`PyEval_SetProfile` 和 "
+":c:func:`PyEval_SetTrace`。 现有的 :func:`sys.setprofile` 和 :func:`sys.settrace`"
+" 函数仍然存在，并已简单地更改为使用新的 C 层级接口。 （由 Fred L. Drake, Jr. 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1065
 msgid ""
@@ -1444,6 +1875,10 @@ msgid ""
 "allow looping over all the thread states for a given interpreter.  "
 "(Contributed by David Beazley.)"
 msgstr ""
+"增加了另一套低层级 API，它主要面向 Python 调试器和开发工具的实现者。 :c:func:`PyInterpreterState_Head` 和"
+" :c:func:`PyInterpreterState_Next` "
+"可让调用方访问所有现存的解释器对象；:c:func:`PyInterpreterState_ThreadHead` 和 "
+":c:func:`PyThreadState_Next` 允许对某个解释器的所有线程状态执行循环。 （由 David Beazley 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1072
 msgid ""
@@ -1465,7 +1900,7 @@ msgstr "要将一个扩展模块升级至新 API，请执行下列步骤:"
 
 #: ../../whatsnew/2.2.rst:1081
 msgid "Rename :c:macro:`!Py_TPFLAGS_GC` to :c:macro:`Py_TPFLAGS_HAVE_GC`."
-msgstr ""
+msgstr "将 :c:macro:`!Py_TPFLAGS_GC` 重命名为 :c:macro:`Py_TPFLAGS_HAVE_GC`。"
 
 #: ../../whatsnew/2.2.rst:1083
 msgid ""
@@ -1481,15 +1916,17 @@ msgid ""
 "Rename :c:func:`!PyObject_GC_Init` to :c:func:`PyObject_GC_Track` and "
 ":c:func:`!PyObject_GC_Fini` to :c:func:`PyObject_GC_UnTrack`."
 msgstr ""
+"将 :c:func:`!PyObject_GC_Init` 重命名为 :c:func:`PyObject_GC_Track` 并将 "
+":c:func:`!PyObject_GC_Fini` 重命名为 :c:func:`PyObject_GC_UnTrack`。"
 
 #: ../../whatsnew/2.2.rst:1089
 msgid "Remove :c:macro:`!PyGC_HEAD_SIZE` from object size calculations."
-msgstr ""
+msgstr "从对象大小计算中移除 :c:macro:`!PyGC_HEAD_SIZE`。"
 
 #: ../../whatsnew/2.2.rst:1091
 msgid ""
 "Remove calls to :c:func:`!PyObject_AS_GC` and :c:func:`!PyObject_FROM_GC`."
-msgstr ""
+msgstr "移除对 :c:func:`!PyObject_AS_GC` 和 :c:func:`!PyObject_FROM_GC` 的调用。"
 
 #: ../../whatsnew/2.2.rst:1093
 msgid ""
@@ -1503,6 +1940,11 @@ msgid ""
 "and used for the MBCS support on Windows described in the following "
 "section.)"
 msgstr ""
+"向 :c:func:`PyArg_ParseTuple` 添加了一个新的 ``et`` 格式序列；``et`` "
+"接受一个形参和一个编码格式名称，如果该形参值是一个 Unicode 字符串则将其转换为给定的编码格式，或者如果它是一个 8 "
+"比特位字符串则让其保持原样，即假定它已经使用了适当的编码格式。 这不同于 ``es`` 格式字符，它假定该 8 比特位字符串是使用 Python 默认的"
+" ASCII 编码格式并将其转换为指定的新编码格式。 （由 M.-A. Lemburg 贡献，用于下一节所描述的 Windows 上的 MBCS "
+"支持。）"
 
 #: ../../whatsnew/2.2.rst:1102
 msgid ""
@@ -1512,6 +1954,9 @@ msgid ""
 " expected, and a set of pointers to :c:expr:`PyObject*` variables that will "
 "be filled in with argument values."
 msgstr ""
+"增加了一个不同的解析函数 :c:func:`PyArg_UnpackTuple`，它更为简单并且应该也更为快速。 "
+"调用方不必再指定格式字符串，而是简单地给出所预期参数的最小和最大数量，以及一组指向将以这些参数值来填充的 :c:expr:`PyObject*` "
+"变量的指针。"
 
 #: ../../whatsnew/2.2.rst:1108
 msgid ""
@@ -1522,6 +1967,9 @@ msgid ""
 ":c:macro:`METH_VARARGS`.  Also, the old :c:macro:`!METH_OLDARGS` style of "
 "writing C methods is  now officially deprecated."
 msgstr ""
+"在方法定义表中可使用两个新的旗标 :c:macro:`METH_NOARGS` 和 :c:macro:`METH_O` "
+"来简化无参数或只有单个未定类型参数的方法的实现。 调用这样的方法比调用使用 :c:macro:`METH_VARARGS` 的相应方法更高效。 "
+"此外，编写 C 方法的旧风格 :c:macro:`!METH_OLDARGS` 现已正式被弃用。"
 
 #: ../../whatsnew/2.2.rst:1114
 msgid ""
@@ -1533,6 +1981,10 @@ msgid ""
 "check the bounds of the buffer used to protect against buffer overruns. "
 "(Contributed by M.-A. Lemburg.)"
 msgstr ""
+"新增了两个包装器函数 :c:func:`PyOS_snprintf` 和 :c:func:`PyOS_vsnprintf` 以提供相对较新的 "
+":c:func:`snprintf` 和 :c:func:`vsnprintf` C 库 API 的跨平台实现。 与标准的 "
+":c:func:`sprintf` 和 :c:func:`!vsprintf` 函数相比，Python 版本会检查缓冲区边界用以防止缓冲区溢出。 （由 "
+"M.-A. Lemburg 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1121
 msgid ""
@@ -1541,6 +1993,8 @@ msgid ""
 "can simply be discarded when porting code from earlier versions to Python "
 "2.2."
 msgstr ""
+":c:func:`_PyTuple_Resize` 函数去掉了一个未使用的形参，因此现在它接受 2 个形参而不是 3 个。 "
+"第三个参数从未被使用，在将代码从较早的版本移植到 Python 2.2 时可以简单地丢弃它。"
 
 #: ../../whatsnew/2.2.rst:1129
 msgid "Other Changes and Fixes"
@@ -1584,6 +2038,11 @@ msgid ""
 "Python application, porting the MacPython IDE, possibly using Python as a "
 "standard OSA scripting language and much more.\""
 msgstr ""
+"最重要的变化是能够将 Python 作为框架来进行构建，这可以通过在编译 Python 时向配置脚本提供 :option:`!--enable-"
+"framework` 选项来启用。 根据 Jack Jansen 的说法，“这会将一个独立的 Python 安装版加上 OS X 框架‘粘合起来’放到 "
+":file:`/Library/Frameworks/Python.framework` 中（或者其他选定的位置）。 "
+"就目前而言这样做并没有什么直接的额外好处（实际上，这样做还存在必须更改 PATH 才能找到Python 的坏处），但它是创建完整的 Python "
+"应用程序、移植 MacPython IDE、并可能使用 Python 作为标准 OSA 脚本语言及其他更多功能的基础。”"
 
 #: ../../whatsnew/2.2.rst:1153
 msgid ""
@@ -1592,6 +2051,8 @@ msgid ""
 " been left commented out in :file:`setup.py`.  People who want to experiment"
 " with these modules can uncomment them manually."
 msgstr ""
+"作为 MacOS API 如 windowing, QuickTime, scripting 等的接口的许多 MacPython 工具箱模块已被移植到 "
+"OS X，但它们在 :file:`setup.py` 中被注释掉了。 希望尝试这些模块的人可以手动取消注释它们。"
 
 #: ../../whatsnew/2.2.rst:1176
 msgid ""
@@ -1599,6 +2060,8 @@ msgid ""
 "cause a :exc:`TypeError` exception to be raised, with the message "
 "\"*function* takes no keyword arguments\"."
 msgstr ""
+"现在将关键字参数传给不接受它们的内置函数会导致引发 :exc:`TypeError` 异常，并附带消息 \"*function* takes no "
+"keyword arguments\"。"
 
 #: ../../whatsnew/2.2.rst:1180
 msgid ""
@@ -1607,6 +2070,8 @@ msgid ""
 "The :exc:`ReferenceError` exception has therefore moved from the "
 ":mod:`weakref` module to become a built-in exception."
 msgstr ""
+"在 Python 2.1 中作为扩展模块加入的弱引用现在已成为核心组成部分，因为它们被用于新式类的实现。 为此 "
+":exc:`ReferenceError` 异常也已从 :mod:`weakref` 模块移出成为一个内置异常。"
 
 #: ../../whatsnew/2.2.rst:1185
 msgid ""
@@ -1614,6 +2079,8 @@ msgid ""
 "automatically removes obsolete ``__future__`` statements from Python source "
 "code."
 msgstr ""
+"由 Tim Peters 编写的新脚本 :file:`Tools/scripts/cleanfuture.py` 可自动从 Python "
+"源代码移除过时的 ``__future__`` 语句。"
 
 #: ../../whatsnew/2.2.rst:1189
 msgid ""
@@ -1623,6 +2090,9 @@ msgid ""
 "other development environments.  This is described in :pep:`264`. "
 "(Contributed by Michael Hudson.)"
 msgstr ""
+"向内置函数 :func:`compile` 添加了一个额外的 *flags* 参数，以便现在 ``__future__`` 语句的行为能在模拟的 "
+"shell，例如由 IDLE 和其他开发环境所提供的此类工具中被正确地观察。 此特性的描述参见 :pep:`264`。 （由 Michael "
+"Hudson 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1195
 msgid ""
@@ -1677,6 +2147,11 @@ msgid ""
 " fourth argument to the :c:func:`!PyRange_New` function, ``repeat``, has "
 "also been deprecated."
 msgstr ""
+"由 :func:`!xrange` 函数所返回的对象的某些特性现在已被弃用，当它们被访问时将会触发警告；它们将在 Python 2.3 中被去除。 "
+":class:`!xrange` 对象曾试图伪装成完全的序列类型，支持切片、序列乘法以及 :keyword:`in` "
+"运算符等，但这些特性很少被使用因而存在许多缺陷。 :meth:`!tolist` 方法以及 :attr:`!start`, :attr:`!stop` "
+"和 :attr:`!step` 属性也已被弃用。 在 C 层级上，传给 :c:func:`!PyRange_New` 函数的第四个参数 "
+"``repeat`` 也已被弃用。"
 
 #: ../../whatsnew/2.2.rst:1224
 msgid ""
@@ -1719,6 +2194,9 @@ msgid ""
 "such scripts, in case they're also usable as modules.  (Implemented by David"
 " Bolen.)"
 msgstr ""
+"在 Windows 上现在将会导入以 ``.pyw`` 结尾的文件。 ``.pyw`` 是 Windows 专属的，用来指明一个脚本需要使用 "
+"PYTHONW.EXE 而不是 PYTHON.EXE 来运行以避免弹出 DOS 控制台来显示输出。 "
+"该补丁使得导入这样的脚本成为可能，让它们也可以作为模块来使用。 （由 David Bolen 实现。）"
 
 #: ../../whatsnew/2.2.rst:1245
 msgid ""
@@ -1727,6 +2205,9 @@ msgid ""
 ":c:func:`dlopen` using the :func:`sys.getdlopenflags` and "
 ":func:`sys.setdlopenflags` functions. (Contributed by Bram Stolk.)"
 msgstr ""
+"在 Python 会使用 C :c:func:`dlopen` 函数来加载扩展模块的平台上，现在可以使用 "
+":func:`sys.getdlopenflags` 和 :func:`sys.setdlopenflags` 等函数来设置 "
+":c:func:`dlopen` 所使用的旗标。 （由 Bram Stolk 贡献。）"
 
 #: ../../whatsnew/2.2.rst:1250
 msgid ""
@@ -1736,6 +2217,9 @@ msgid ""
 "result varies unpredictably depending on the platform.  A call such as "
 "``pow(2.0, 8.0, 7.0)`` will now raise a :exc:`TypeError` exception."
 msgstr ""
+"当传入浮点数时 :func:`pow` 内置函数已不再支持 3 个参数。 ``pow(x, y, z)`` 将返回 ``(x**y) % "
+"z``，但这对于浮点数来说没有用处，并且其最终结果会因具体平台的不同而产生不可预料的变化。 现在 ``pow(2.0, 8.0, 7.0)`` "
+"这样的调用将会引发 :exc:`TypeError` 异常。"
 
 #: ../../whatsnew/2.2.rst:1260
 msgid "Acknowledgements"
