@@ -13,20 +13,21 @@
 # Naisen Xu <723648649@qq.com>, 2021
 # Jing Li <tes286.lijing@gmail.com>, 2021
 # 高乐喆 <gaolezhe@outlook.com>, 2023
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # taotieren <admin@taotieren.com>, 2023
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # lqks, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
+# Nyuan Zhang, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 00:47+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Nyuan Zhang, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -700,6 +701,10 @@ msgstr ""
 "通过 *converter* 函数将 Python 对象转换为 C 变量。这需要两个参数：第一个是函数，第二个是 C 变量（任意类型）的地址，转换为 "
 ":c:expr:`void *`。*转换器* 函数依次调用如下："
 
+#: ../../c-api/arg.rst:316
+msgid "status = converter(object, address);"
+msgstr "status = converter(object, address);"
+
 #: ../../c-api/arg.rst:318
 msgid ""
 "where *object* is the Python object to be converted and *address* is the "
@@ -941,6 +946,30 @@ msgstr "解析一个将单独位置形参转为局部变量的函数的形参。
 msgid "Example::"
 msgstr "示例::"
 
+#: ../../c-api/arg.rst:467
+msgid ""
+"// Function using METH_O calling convention\n"
+"static PyObject*\n"
+"my_function(PyObject *module, PyObject *arg)\n"
+"{\n"
+"    int value;\n"
+"    if (!PyArg_Parse(arg, \"i:my_function\", &value)) {\n"
+"        return NULL;\n"
+"    }\n"
+"    // ... use value ...\n"
+"}"
+msgstr ""
+"// 使用 METH_O 调用规范的函数\n"
+"static PyObject*\n"
+"my_function(PyObject *module, PyObject *arg)\n"
+"{\n"
+"    int value;\n"
+"    if (!PyArg_Parse(arg, \"i:my_function\", &value)) {\n"
+"        return NULL;\n"
+"    }\n"
+"    // ... 使用 value ...\n"
+"}"
+
 #: ../../c-api/arg.rst:481
 msgid ""
 "A simpler form of parameter retrieval which does not use a format string to "
@@ -971,12 +1000,44 @@ msgid ""
 "the :mod:`!_weakref` helper module for weak references::"
 msgstr "这是一个使用该函数的示例，取自 :mod:`!_weakref` 弱引用辅助模块的源代码::"
 
+#: ../../c-api/arg.rst:499
+msgid ""
+"static PyObject *\n"
+"weakref_ref(PyObject *self, PyObject *args)\n"
+"{\n"
+"    PyObject *object;\n"
+"    PyObject *callback = NULL;\n"
+"    PyObject *result = NULL;\n"
+"\n"
+"    if (PyArg_UnpackTuple(args, \"ref\", 1, 2, &object, &callback)) {\n"
+"        result = PyWeakref_NewRef(object, callback);\n"
+"    }\n"
+"    return result;\n"
+"}"
+msgstr ""
+"static PyObject *\n"
+"weakref_ref(PyObject *self, PyObject *args)\n"
+"{\n"
+"    PyObject *object;\n"
+"    PyObject *callback = NULL;\n"
+"    PyObject *result = NULL;\n"
+"\n"
+"    if (PyArg_UnpackTuple(args, \"ref\", 1, 2, &object, &callback)) {\n"
+"        result = PyWeakref_NewRef(object, callback);\n"
+"    }\n"
+"    return result;\n"
+"}"
+
 #: ../../c-api/arg.rst:512
 msgid ""
 "The call to :c:func:`PyArg_UnpackTuple` in this example is entirely "
 "equivalent to this call to :c:func:`PyArg_ParseTuple`::"
 msgstr ""
 "这个例子中调用 :c:func:`PyArg_UnpackTuple` 完全等价于调用 :c:func:`PyArg_ParseTuple`::"
+
+#: ../../c-api/arg.rst:515
+msgid "PyArg_ParseTuple(args, \"O|O:ref\", &object, &callback)"
+msgstr "PyArg_ParseTuple(args, \"O|O:ref\", &object, &callback)"
 
 #: ../../c-api/arg.rst:519
 msgid ""
