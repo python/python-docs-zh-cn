@@ -5,15 +5,15 @@
 # 
 # Translators:
 # ppcfish <ppcfish@gmail.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-15 14:13+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 00:52+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -199,6 +199,16 @@ msgstr ""
 "可以使用 :c:func:`PyObject_CallMethod` 函数来调用某个对象的任意方法。 形参为该对象、要调用的方法名、类似 "
 ":c:func:`Py_BuildValue` 所用的格式字符串以及要传给方法的参数值::"
 
+#: ../../faq/extending.rst:117
+msgid ""
+"PyObject *\n"
+"PyObject_CallMethod(PyObject *object, const char *method_name,\n"
+"                    const char *arg_format, ...);"
+msgstr ""
+"PyObject *\n"
+"PyObject_CallMethod(PyObject *object, const char *method_name,\n"
+"                    const char *arg_format, ...);"
+
 #: ../../faq/extending.rst:121
 msgid ""
 "This works for any object that has methods -- whether built-in or user-"
@@ -212,6 +222,24 @@ msgid ""
 "To call, e.g., a file object's \"seek\" method with arguments 10, 0 "
 "(assuming the file object pointer is \"f\")::"
 msgstr "例如调用某个文件对象的 \"seek\" 方法并传入参数 10, 0 (假定文件对象的指针为 \"f\")::"
+
+#: ../../faq/extending.rst:127
+msgid ""
+"res = PyObject_CallMethod(f, \"seek\", \"(ii)\", 10, 0);\n"
+"if (res == NULL) {\n"
+"        ... an exception occurred ...\n"
+"}\n"
+"else {\n"
+"        Py_DECREF(res);\n"
+"}"
+msgstr ""
+"res = PyObject_CallMethod(f, \"seek\", \"(ii)\", 10, 0);\n"
+"if (res == NULL) {\n"
+"        ... an exception occurred ...\n"
+"}\n"
+"else {\n"
+"        Py_DECREF(res);\n"
+"}"
 
 #: ../../faq/extending.rst:135
 msgid ""
@@ -244,9 +272,59 @@ msgstr ""
 msgid "The easiest way to do this is to use the :class:`io.StringIO` class:"
 msgstr "做到这一点的最简单方式是使用 :class:`io.StringIO` 类："
 
+#: ../../faq/extending.rst:151
+msgid ""
+">>> import io, sys\n"
+">>> sys.stdout = io.StringIO()\n"
+">>> print('foo')\n"
+">>> print('hello world!')\n"
+">>> sys.stderr.write(sys.stdout.getvalue())\n"
+"foo\n"
+"hello world!"
+msgstr ""
+">>> import io, sys\n"
+">>> sys.stdout = io.StringIO()\n"
+">>> print('foo')\n"
+">>> print('hello world!')\n"
+">>> sys.stderr.write(sys.stdout.getvalue())\n"
+"foo\n"
+"hello world!"
+
 #: ../../faq/extending.rst:161
 msgid "A custom object to do the same would look like this:"
 msgstr "实现同样效果的自定义对象看起来是这样的："
+
+#: ../../faq/extending.rst:163
+msgid ""
+">>> import io, sys\n"
+">>> class StdoutCatcher(io.TextIOBase):\n"
+"...     def __init__(self):\n"
+"...         self.data = []\n"
+"...     def write(self, stuff):\n"
+"...         self.data.append(stuff)\n"
+"...\n"
+">>> import sys\n"
+">>> sys.stdout = StdoutCatcher()\n"
+">>> print('foo')\n"
+">>> print('hello world!')\n"
+">>> sys.stderr.write(''.join(sys.stdout.data))\n"
+"foo\n"
+"hello world!"
+msgstr ""
+">>> import io, sys\n"
+">>> class StdoutCatcher(io.TextIOBase):\n"
+"...     def __init__(self):\n"
+"...         self.data = []\n"
+"...     def write(self, stuff):\n"
+"...         self.data.append(stuff)\n"
+"...\n"
+">>> import sys\n"
+">>> sys.stdout = StdoutCatcher()\n"
+">>> print('foo')\n"
+">>> print('hello world!')\n"
+">>> sys.stderr.write(''.join(sys.stdout.data))\n"
+"foo\n"
+"hello world!"
 
 #: ../../faq/extending.rst:182
 msgid "How do I access a module written in Python from C?"
@@ -255,6 +333,10 @@ msgstr "如何从C访问用Python编写的模块？"
 #: ../../faq/extending.rst:184
 msgid "You can get a pointer to the module object as follows::"
 msgstr "你可以通过如下方式获得一个指向模块对象的指针::"
+
+#: ../../faq/extending.rst:186
+msgid "module = PyImport_ImportModule(\"<modulename>\");"
+msgstr "module = PyImport_ImportModule(\"<modulename>\");"
 
 #: ../../faq/extending.rst:188
 msgid ""
@@ -273,6 +355,10 @@ msgid ""
 "You can then access the module's attributes (i.e. any name defined in the "
 "module) as follows::"
 msgstr "之后你就可以通过如下方式来访问模块的属性（即模块中定义的任何名称）::"
+
+#: ../../faq/extending.rst:197
+msgid "attr = PyObject_GetAttrString(module, \"<attrname>\");"
+msgstr "attr = PyObject_GetAttrString(module, \"<attrname>\");"
 
 #: ../../faq/extending.rst:199
 msgid ""
@@ -328,9 +414,29 @@ msgstr "将GDB与动态加载的扩展名一起使用时，在加载扩展名之
 msgid "In your ``.gdbinit`` file (or interactively), add the command:"
 msgstr "在您的 ``.gdbinit`` 文件中（或交互式）添加命令："
 
+#: ../../faq/extending.rst:231
+msgid "br _PyImport_LoadDynamicModule"
+msgstr "br _PyImport_LoadDynamicModule"
+
 #: ../../faq/extending.rst:235
 msgid "Then, when you run GDB:"
 msgstr "然后运行GDB："
+
+#: ../../faq/extending.rst:237
+msgid ""
+"$ gdb /local/bin/python\n"
+"gdb) run myscript.py\n"
+"gdb) continue # repeat until your extension is loaded\n"
+"gdb) finish   # so that your extension is loaded\n"
+"gdb) br myfunction.c:50\n"
+"gdb) continue"
+msgstr ""
+"$ gdb /local/bin/python\n"
+"gdb) run myscript.py\n"
+"gdb) continue # 重复直到你的扩展被载入\n"
+"gdb) finish   # 你的扩展已被载入\n"
+"gdb) br myfunction.c:50\n"
+"gdb) continue"
 
 #: ../../faq/extending.rst:247
 msgid ""
