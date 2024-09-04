@@ -390,6 +390,22 @@ msgid ""
 "finally:\n"
 "    loop.close()"
 msgstr ""
+"import asyncio\n"
+"\n"
+"async def coro(name, lock):\n"
+"    print('coro {}: waiting for lock'.format(name))\n"
+"    async with lock:\n"
+"        print('coro {}: holding the lock'.format(name))\n"
+"        await asyncio.sleep(1)\n"
+"        print('coro {}: releasing the lock'.format(name))\n"
+"\n"
+"loop = asyncio.get_event_loop()\n"
+"lock = asyncio.Lock()\n"
+"coros = asyncio.gather(coro(1, lock), coro(2, lock))\n"
+"try:\n"
+"    loop.run_until_complete(coros)\n"
+"finally:\n"
+"    loop.close()"
 
 #: ../../whatsnew/3.5.rst:235
 msgid "will output::"
@@ -404,6 +420,12 @@ msgid ""
 "coro 1: holding the lock\n"
 "coro 1: releasing the lock"
 msgstr ""
+"coro 2: waiting for lock\n"
+"coro 2: holding the lock\n"
+"coro 1: waiting for lock\n"
+"coro 2: releasing the lock\n"
+"coro 1: holding the lock\n"
+"coro 1: releasing the lock"
 
 #: ../../whatsnew/3.5.rst:244
 msgid ""
@@ -466,7 +488,7 @@ msgstr "矩阵乘法在数学，科学，工程学的许多领域中是一种常
 
 #: ../../whatsnew/3.5.rst:285
 msgid "S = (H @ beta - r).T @ inv(H @ V @ H.T) @ (H @ beta - r)"
-msgstr ""
+msgstr "S = (H @ beta - r).T @ inv(H @ V @ H.T) @ (H @ beta - r)"
 
 #: ../../whatsnew/3.5.rst:287
 msgid "instead of::"
@@ -477,6 +499,8 @@ msgid ""
 "S = dot((dot(H, beta) - r).T,\n"
 "        dot(inv(dot(dot(H, V), H.T)), dot(H, beta) - r))"
 msgstr ""
+"S = dot((dot(H, beta) - r).T,\n"
+"        dot(inv(dot(dot(H, V), H.T)), dot(H, beta) - r))"
 
 #: ../../whatsnew/3.5.rst:292
 msgid "NumPy 1.10 has support for the new operator::"
