@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-31 10:59+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 01:03+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -77,6 +77,10 @@ msgid ""
 "    self.unit_price = unit_price\n"
 "    self.quantity_on_hand = quantity_on_hand"
 msgstr ""
+"def __init__(self, name: str, unit_price: float, quantity_on_hand: int = 0):\n"
+"    self.name = name\n"
+"    self.unit_price = unit_price\n"
+"    self.quantity_on_hand = quantity_on_hand"
 
 #: ../../library/dataclasses.rst:41
 msgid ""
@@ -147,6 +151,18 @@ msgid ""
 "class C:\n"
 "    ..."
 msgstr ""
+"@dataclass\n"
+"class C:\n"
+"    ...\n"
+"\n"
+"@dataclass()\n"
+"class C:\n"
+"    ...\n"
+"\n"
+"@dataclass(init=True, repr=True, eq=True, order=False, unsafe_hash=False, frozen=False,\n"
+"           match_args=True, kw_only=False, slots=False, weakref_slot=False)\n"
+"class C:\n"
+"    ..."
 
 #: ../../library/dataclasses.rst:87
 msgid "The parameters to ``@dataclass`` are:"
@@ -228,16 +244,13 @@ msgstr ""
 
 #: ../../library/dataclasses.rst:127
 msgid ""
-":meth:`!__hash__` is used by built-in :meth:`hash()`, and when objects are "
+":meth:`!__hash__` is used by built-in :meth:`hash`, and when objects are "
 "added to hashed collections such as dictionaries and sets.  Having a "
 ":meth:`!__hash__` implies that instances of the class are immutable. "
 "Mutability is a complicated property that depends on the programmer's "
 "intent, the existence and behavior of :meth:`!__eq__`, and the values of the"
 " *eq* and *frozen* flags in the ``@dataclass`` decorator."
 msgstr ""
-":meth:`!__hash__` 会在对象被添加到哈希多项集例如字典和集合时由内置的 :meth:`hash()` 使用。 具有 "
-":meth:`!__hash__` 就意味着类的实例是不可变的。 可变性是一个依赖于程序员的实际意图、:meth:`!__eq__` "
-"是否存在和具体行为，以及 ``@dataclass`` 装饰器中 *eq* 和 *frozen* 旗标值的复杂特征属性。"
 
 #: ../../library/dataclasses.rst:134
 msgid ""
@@ -335,19 +348,28 @@ msgid ""
 "*slots*: If true (the default is ``False``), :attr:`~object.__slots__` "
 "attribute will be generated and new class will be returned instead of the "
 "original one. If :attr:`!__slots__` is already defined in the class, then "
-":exc:`TypeError` is raised. Calling no-arg :func:`super` in dataclasses "
-"using ``slots=True`` will result in the following exception being raised: "
-"``TypeError: super(type, obj): obj must be an instance or subtype of type``."
-" The two-arg :func:`super` is a valid workaround. See :gh:`90562` for full "
-"details."
+":exc:`TypeError` is raised."
 msgstr ""
-"*slots*: 如为真值 (默认为 ``False``)，将会生成 :attr:`~object.__slots__` "
-"属性并将返回新类而不是原本的类。 如果类中已经定义了 :attr:`!__slots__`，则会引发 :exc:`TypeError`。 在数据类中使用"
-" ``slots=True`` 调用无参数的 :func:`super`  将导致引发以下异常: ``TypeError: super(type, "
-"obj): obj must be an instance or subtype of type``。 可用的绕过方式是调用双参数的 "
-":func:`super`。 请参阅 :gh:`90562` 了解完整细节。"
+"*slots*: 如为真值 (默认为 ``False``)，则将生成 :attr:`~object.__slots__` "
+"属性并返回一个新类而非原本的类。 如果 :attr:`!__slots__` 已在类中定义，则会引发 :exc:`TypeError`。"
 
-#: ../../library/dataclasses.rst:195
+#: ../../library/dataclasses.rst:191
+msgid ""
+"Calling no-arg :func:`super` in dataclasses using ``slots=True`` will result"
+" in the following exception being raised: ``TypeError: super(type, obj): obj"
+" must be an instance or subtype of type``. The two-arg :func:`super` is a "
+"valid workaround. See :gh:`90562` for full details."
+msgstr ""
+
+#: ../../library/dataclasses.rst:198
+msgid ""
+"Passing parameters to a base class :meth:`~object.__init_subclass__` when "
+"using ``slots=True`` will result in a :exc:`TypeError`. Either use "
+"``__init_subclass__`` with no parameters or use default values as a "
+"workaround. See :gh:`91126` for full details."
+msgstr ""
+
+#: ../../library/dataclasses.rst:206
 msgid ""
 "If a field name is already included in the :attr:`!__slots__` of a base "
 "class, it will not be included in the generated :attr:`!__slots__` to "
@@ -361,24 +383,21 @@ msgstr ""
 " 而应改用 :func:`fields`。 为了能够确定所继承的槽位，基类 :attr:`!__slots__` 可以是任意可迭代对象，但是 *不可以*"
 " 是迭代器。an iterator."
 
-#: ../../library/dataclasses.rst:205
+#: ../../library/dataclasses.rst:216
 msgid ""
 "*weakref_slot*: If true (the default is ``False``), add a slot named "
-"\"__weakref__\", which is required to make an instance weakref-able.  It is "
-"an error to specify ``weakref_slot=True`` without also specifying "
-"``slots=True``."
+"\"__weakref__\", which is required to make an instance :func:`weakref-able "
+"<weakref.ref>`. It is an error to specify ``weakref_slot=True`` without also"
+" specifying ``slots=True``."
 msgstr ""
-"*weakref_slot*: 如为真值 (默认为 ``False``)，则添加一个名为 \"__weakref__\" "
-"的槽位，这是使得一个实例可以被弱引用所必需的。 指定 ``weakref_slot=True`` 而不同时指定 ``slots=True`` "
-"将会导致错误。"
 
-#: ../../library/dataclasses.rst:212
+#: ../../library/dataclasses.rst:224
 msgid ""
 "``field``\\s may optionally specify a default value, using normal Python "
 "syntax::"
 msgstr "可以用普通的 Python 语法为各个 ``field`` 指定默认值："
 
-#: ../../library/dataclasses.rst:215
+#: ../../library/dataclasses.rst:227
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -386,7 +405,7 @@ msgid ""
 "    b: int = 0   # assign a default value for 'b'"
 msgstr ""
 
-#: ../../library/dataclasses.rst:220
+#: ../../library/dataclasses.rst:232
 msgid ""
 "In this example, both :attr:`!a` and :attr:`!b` will be included in the "
 "added :meth:`~object.__init__` method, which will be defined as::"
@@ -394,11 +413,11 @@ msgstr ""
 "在这个例子中，:attr:`!a` 和 :attr:`!b` 都将被包括在所添加的 :meth:`~object.__init__` "
 "方法中，该方法将被定义为::"
 
-#: ../../library/dataclasses.rst:223
+#: ../../library/dataclasses.rst:235
 msgid "def __init__(self, a: int, b: int = 0):"
 msgstr "def __init__(self, a: int, b: int = 0):"
 
-#: ../../library/dataclasses.rst:225
+#: ../../library/dataclasses.rst:237
 msgid ""
 ":exc:`TypeError` will be raised if a field without a default value follows a"
 " field with a default value.  This is true whether this occurs in a single "
@@ -406,7 +425,7 @@ msgid ""
 msgstr ""
 "如果在具有默认值的字段之后存在没有默认值的字段，将会引发 :exc:`TypeError`。无论此情况是发生在单个类中还是作为类继承的结果，都是如此。"
 
-#: ../../library/dataclasses.rst:231
+#: ../../library/dataclasses.rst:243
 msgid ""
 "For common and simple use cases, no other functionality is required.  There "
 "are, however, some dataclass features that require additional per-field "
@@ -417,7 +436,7 @@ msgstr ""
 "对于常见和简单的用例，不需要其他的功能。 但是，有些数据类的特性需要额外的每字段信息。 为了满足这种对额外信息的需求，你可以通过调用所提供的 "
 ":func:`!field` 函数来替换默认的字段值。 例如::"
 
-#: ../../library/dataclasses.rst:237
+#: ../../library/dataclasses.rst:249
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -433,7 +452,7 @@ msgstr ""
 "c = C()\n"
 "c.mylist += [1, 2, 3]"
 
-#: ../../library/dataclasses.rst:244
+#: ../../library/dataclasses.rst:256
 msgid ""
 "As shown above, the :const:`MISSING` value is a sentinel object used to "
 "detect if some parameters are provided by the user. This sentinel is used "
@@ -443,11 +462,11 @@ msgstr ""
 "如上所示，:const:`MISSING` 值是一个哨兵对象，用于检测一些形参是否由用户提供。使用它是因为 ``None`` "
 "对于一些形参来说是有效的用户值。任何代码都不应该直接使用 :const:`MISSING` 值。"
 
-#: ../../library/dataclasses.rst:249
+#: ../../library/dataclasses.rst:261
 msgid "The parameters to :func:`!field` are:"
 msgstr "传给 :func:`!field` 的形参有："
 
-#: ../../library/dataclasses.rst:251
+#: ../../library/dataclasses.rst:263
 msgid ""
 "*default*: If provided, this will be the default value for this field.  This"
 " is needed because the :func:`!field` call itself replaces the normal "
@@ -455,7 +474,7 @@ msgid ""
 msgstr ""
 "*default*: 如果提供，这将为该字段的默认值。 设置此形参是因为 :func:`!field` 调用本身会替换通常的默认值所在位置。"
 
-#: ../../library/dataclasses.rst:255
+#: ../../library/dataclasses.rst:267
 msgid ""
 "*default_factory*: If provided, it must be a zero-argument callable that "
 "will be called when a default value is needed for this field.  Among other "
@@ -466,19 +485,19 @@ msgstr ""
 "*default_factory*: 如果提供，它必须是一个零参数的可调用对象，它将在该字段需要一个默认值时被调用。 "
 "在其他目的以外，它还可被用于指定具有可变默认值的字段，如下所述。 同时指定 *default* 和 *default_factory* 将会导致错误。"
 
-#: ../../library/dataclasses.rst:261
+#: ../../library/dataclasses.rst:273
 msgid ""
 "*init*: If true (the default), this field is included as a parameter to the "
 "generated :meth:`~object.__init__` method."
 msgstr "*init*: 如为真值（默认），则该字段将作为一个形参被包括在生成的 :meth:`~object.__init__` 方法中。"
 
-#: ../../library/dataclasses.rst:264
+#: ../../library/dataclasses.rst:276
 msgid ""
 "*repr*: If true (the default), this field is included in the string returned"
 " by the generated :meth:`~object.__repr__` method."
 msgstr "*repr*: 如为真值（默认值），则该字段将被包括在生成的 :meth:`~object.__repr__` 方法所返回的字符串中。"
 
-#: ../../library/dataclasses.rst:267
+#: ../../library/dataclasses.rst:279
 msgid ""
 "*hash*: This can be a bool or ``None``.  If true, this field is included in "
 "the generated :meth:`~object.__hash__` method.  If ``None`` (the default), "
@@ -490,7 +509,7 @@ msgstr ""
 " 如果为 ``None`` (默认)，则将使用 *compare* 的值：这通常是预期的行为。 一个字段如果被用于比较那么就应当在哈希时考虑到它。 "
 "不建议将该值设为 ``None`` 以外的任何其他值。"
 
-#: ../../library/dataclasses.rst:274
+#: ../../library/dataclasses.rst:286
 msgid ""
 "One possible reason to set ``hash=False`` but ``compare=True`` would be if a"
 " field is expensive to compute a hash value for, that field is needed for "
@@ -501,7 +520,7 @@ msgstr ""
 "设置 ``hash=False`` 但 ``compare=True`` "
 "的一个合理情况是，一个计算哈希值的代价很高的字段是检验等价性需要的，且还有其他字段可以用于计算类型的哈希值。可以从哈希值中排除该字段，但仍令它用于比较。"
 
-#: ../../library/dataclasses.rst:280
+#: ../../library/dataclasses.rst:292
 msgid ""
 "*compare*: If true (the default), this field is included in the generated "
 "equality and comparison methods (:meth:`~object.__eq__`, "
@@ -510,7 +529,7 @@ msgstr ""
 "*compare*: 如为真值（默认），则该字段将被包括在生成的相等和比较方法中 (:meth:`~object.__eq__`, "
 ":meth:`~object.__gt__` 等等)。"
 
-#: ../../library/dataclasses.rst:284
+#: ../../library/dataclasses.rst:296
 msgid ""
 "*metadata*: This can be a mapping or ``None``. ``None`` is treated as an "
 "empty dict.  This value is wrapped in :func:`~types.MappingProxyType` to "
@@ -523,7 +542,7 @@ msgstr ""
 ":func:`~types.MappingProxyType` 以便其为只读，并暴露在 :class:`Field` 对象上。 "
 "它完全不被数据类所使用，并且是作为第三方扩展机制提供的。 多个第三方可以各自拥有其本身的键，以用作元数据的命名空间。"
 
-#: ../../library/dataclasses.rst:292
+#: ../../library/dataclasses.rst:304
 msgid ""
 "*kw_only*: If true, this field will be marked as keyword-only. This is used "
 "when the generated :meth:`~object.__init__` method's parameters are "
@@ -532,7 +551,7 @@ msgstr ""
 "*kw_only*: 如为真值，则该字段将被标记为仅限关键字的。 这将在计算所生成的 :meth:`~object.__init__` "
 "方法的形参时被使用。"
 
-#: ../../library/dataclasses.rst:298
+#: ../../library/dataclasses.rst:310
 msgid ""
 "If the default value of a field is specified by a call to :func:`!field`, "
 "then the class attribute for this field will be replaced by the specified "
@@ -546,7 +565,7 @@ msgstr ""
 "*default*，那么该类属性将被删除。 其意图是在 :func:`@dataclass <dataclass>` "
 "装饰器运行之后，该类属性将包含所有字段的默认值，就像直接指定了默认值本身一样。 例如，在执行以下代码之后::"
 
-#: ../../library/dataclasses.rst:307
+#: ../../library/dataclasses.rst:319
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -562,7 +581,7 @@ msgstr ""
 "    z: int = field(repr=False, default=10)\n"
 "    t: int = 20"
 
-#: ../../library/dataclasses.rst:314
+#: ../../library/dataclasses.rst:326
 msgid ""
 "The class attribute :attr:`!C.z` will be ``10``, the class attribute "
 ":attr:`!C.t` will be ``20``, and the class attributes :attr:`!C.x` and "
@@ -571,7 +590,7 @@ msgstr ""
 "类属性 :attr:`!C.z` 将为 ``10``，类属性 :attr:`!C.t` 将为 ``20``，类属性 :attr:`!C.x` 和 "
 ":attr:`!C.y` 将不被设置。"
 
-#: ../../library/dataclasses.rst:320
+#: ../../library/dataclasses.rst:332
 msgid ""
 ":class:`!Field` objects describe each defined field. These objects are "
 "created internally, and are returned by the :func:`fields` module-level "
@@ -581,15 +600,15 @@ msgstr ""
 ":class:`!Field` 对象描述每个已定义的字段。 这些对象是在内部创建的，并会由 :func:`fields` 模块块方法返回（见下文）。 "
 "用户绝不应直接实例化 :class:`!Field` 对象。 已写入文档的属性如下："
 
-#: ../../library/dataclasses.rst:325
+#: ../../library/dataclasses.rst:337
 msgid ":attr:`!name`: The name of the field."
 msgstr ":attr:`!name`: 字段的名称。"
 
-#: ../../library/dataclasses.rst:326
+#: ../../library/dataclasses.rst:338
 msgid ":attr:`!type`: The type of the field."
 msgstr ":attr:`!type`: 字段的类型。"
 
-#: ../../library/dataclasses.rst:327
+#: ../../library/dataclasses.rst:339
 msgid ""
 ":attr:`!default`, :attr:`!default_factory`, :attr:`!init`, :attr:`!repr`, "
 ":attr:`!hash`, :attr:`!compare`, :attr:`!metadata`, and :attr:`!kw_only` "
@@ -600,13 +619,13 @@ msgstr ""
 ":attr:`!hash`, :attr:`!compare`, :attr:`!metadata` 和 :attr:`!kw_only` 具有与 "
 ":func:`field` 函数中对应参数相同的含义和值。"
 
-#: ../../library/dataclasses.rst:331
+#: ../../library/dataclasses.rst:343
 msgid ""
 "Other attributes may exist, but they are private and must not be inspected "
 "or relied on."
 msgstr "可能存在其他属性，但它们是私有的。用户不应检查或依赖于这些属性。"
 
-#: ../../library/dataclasses.rst:336
+#: ../../library/dataclasses.rst:348
 msgid ""
 "Returns a tuple of :class:`Field` objects that define the fields for this "
 "dataclass.  Accepts either a dataclass, or an instance of a dataclass. "
@@ -617,7 +636,7 @@ msgstr ""
 "对象。接受数据类或数据类的实例。如果没有传递一个数据类或实例将引发 :exc:`TypeError`。不返回 ``ClassVar`` 或 "
 "``InitVar`` 等伪字段。"
 
-#: ../../library/dataclasses.rst:343
+#: ../../library/dataclasses.rst:355
 msgid ""
 "Converts the dataclass *obj* to a dict (by using the factory function "
 "*dict_factory*).  Each dataclass is converted to a dict of its fields, as "
@@ -627,11 +646,11 @@ msgstr ""
 "将数据类 *obj* 转换为一个字典 (使用工厂函数 *dict_factory*)。 每个数据类会被转换为以 ``name: value`` "
 "键值对来存储其字段的字典。 数据类、字典、列表和元组会被递归地处理。 其他对象会通过 :func:`copy.deepcopy` 来拷贝。"
 
-#: ../../library/dataclasses.rst:349
+#: ../../library/dataclasses.rst:361
 msgid "Example of using :func:`!asdict` on nested dataclasses::"
 msgstr "在嵌套的数据类上使用 :func:`!asdict` 的例子::"
 
-#: ../../library/dataclasses.rst:351
+#: ../../library/dataclasses.rst:363
 msgid ""
 "@dataclass\n"
 "class Point:\n"
@@ -648,22 +667,36 @@ msgid ""
 "c = C([Point(0, 0), Point(10, 4)])\n"
 "assert asdict(c) == {'mylist': [{'x': 0, 'y': 0}, {'x': 10, 'y': 4}]}"
 msgstr ""
+"@dataclass\n"
+"class Point:\n"
+"     x: int\n"
+"     y: int\n"
+"\n"
+"@dataclass\n"
+"class C:\n"
+"     mylist: list[Point]\n"
+"\n"
+"p = Point(10, 20)\n"
+"assert asdict(p) == {'x': 10, 'y': 20}\n"
+"\n"
+"c = C([Point(0, 0), Point(10, 4)])\n"
+"assert asdict(c) == {'mylist': [{'x': 0, 'y': 0}, {'x': 10, 'y': 4}]}"
 
-#: ../../library/dataclasses.rst:366 ../../library/dataclasses.rst:386
+#: ../../library/dataclasses.rst:378 ../../library/dataclasses.rst:398
 msgid "To create a shallow copy, the following workaround may be used::"
 msgstr "要创建一个浅拷贝，可以使用以下的变通方法："
 
-#: ../../library/dataclasses.rst:368
+#: ../../library/dataclasses.rst:380
 msgid "{field.name: getattr(obj, field.name) for field in fields(obj)}"
-msgstr ""
+msgstr "{field.name: getattr(obj, field.name) for field in fields(obj)}"
 
-#: ../../library/dataclasses.rst:370
+#: ../../library/dataclasses.rst:382
 msgid ""
 ":func:`!asdict` raises :exc:`TypeError` if *obj* is not a dataclass "
 "instance."
 msgstr "如果 *obj* 不是一个数据类实例则 :func:`!asdict` 将引发 :exc:`TypeError` 。"
 
-#: ../../library/dataclasses.rst:375
+#: ../../library/dataclasses.rst:387
 msgid ""
 "Converts the dataclass *obj* to a tuple (by using the factory function "
 "*tuple_factory*).  Each dataclass is converted to a tuple of its field "
@@ -673,27 +706,27 @@ msgstr ""
 "将数据类 *obj* 转换为元组 (使用工厂函数 *tuple_factory*)。 每个数据类将被转换为由其字段值组成的元组。 "
 "数据类、字典、列表和元组会被递归地处理。 其他对象会通过 :func:`copy.deepcopy` 来拷贝。"
 
-#: ../../library/dataclasses.rst:381
+#: ../../library/dataclasses.rst:393
 msgid "Continuing from the previous example::"
 msgstr "继续前一个例子："
 
-#: ../../library/dataclasses.rst:383
+#: ../../library/dataclasses.rst:395
 msgid ""
 "assert astuple(p) == (10, 20)\n"
 "assert astuple(c) == ([(0, 0), (10, 4)],)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:388
+#: ../../library/dataclasses.rst:400
 msgid "tuple(getattr(obj, field.name) for field in dataclasses.fields(obj))"
 msgstr ""
 
-#: ../../library/dataclasses.rst:390
+#: ../../library/dataclasses.rst:402
 msgid ""
 ":func:`!astuple` raises :exc:`TypeError` if *obj* is not a dataclass "
 "instance."
 msgstr "如果 *obj* 不是一个数据类实例则 :func:`!astuple` 将引发 :exc:`TypeError`。"
 
-#: ../../library/dataclasses.rst:395
+#: ../../library/dataclasses.rst:407
 msgid ""
 "Creates a new dataclass with name *cls_name*, fields as defined in *fields*,"
 " base classes as given in *bases*, and initialized with a namespace as given"
@@ -711,7 +744,7 @@ msgstr ""
 "*match_args*, *kw_only*, *slots* 和 *weakref_slot* 值的含义与 :func:`@dataclass "
 "<dataclass>` 中的同名参数一致。"
 
-#: ../../library/dataclasses.rst:405
+#: ../../library/dataclasses.rst:417
 msgid ""
 "If *module* is defined, the :attr:`!__module__` attribute of the dataclass "
 "is set to that value. By default, it is set to the module name of the "
@@ -719,7 +752,7 @@ msgid ""
 msgstr ""
 "如果定义了 *module*，则该数据类的 :attr:`!__module__` 属性将被设为该值。 在默认情况下，它将被设为调用方的模块名。"
 
-#: ../../library/dataclasses.rst:409
+#: ../../library/dataclasses.rst:421
 msgid ""
 "This function is not strictly required, because any Python mechanism for "
 "creating a new class with :attr:`!__annotations__` can then apply the "
@@ -729,7 +762,7 @@ msgstr ""
 "此函数不是必需的，因为任何用于创建带有 :attr:`!__annotations__` 的新类的 Python 机制都可以进一步用 "
 ":func:`@dataclass <dataclass>` 函数将创建的类转换为数据类。 提供此函数是为了方便。 例如::"
 
-#: ../../library/dataclasses.rst:415
+#: ../../library/dataclasses.rst:427
 msgid ""
 "C = make_dataclass('C',\n"
 "                   [('x', int),\n"
@@ -738,11 +771,11 @@ msgid ""
 "                   namespace={'add_one': lambda self: self.x + 1})"
 msgstr ""
 
-#: ../../library/dataclasses.rst:421
+#: ../../library/dataclasses.rst:433
 msgid "Is equivalent to::"
 msgstr "等价于："
 
-#: ../../library/dataclasses.rst:423
+#: ../../library/dataclasses.rst:435
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -754,7 +787,7 @@ msgid ""
 "        return self.x + 1"
 msgstr ""
 
-#: ../../library/dataclasses.rst:434
+#: ../../library/dataclasses.rst:446
 msgid ""
 "Creates a new object of the same type as *obj*, replacing fields with values"
 " from *changes*.  If *obj* is not a Data Class, raises :exc:`TypeError`.  If"
@@ -764,7 +797,7 @@ msgstr ""
 "创建一个与 *obj* 类型相同的新对象，将字段替换为 *changes* 的值。 如果 *obj* 不是数据类，则会引发 "
 ":exc:`TypeError`。 如果 *changes* 中的键不是给定数据类的字段名，则会引发 :exc:`TypeError`。"
 
-#: ../../library/dataclasses.rst:439
+#: ../../library/dataclasses.rst:451
 msgid ""
 "The newly returned object is created by calling the :meth:`~object.__init__`"
 " method of the dataclass.  This ensures that :meth:`__post_init__`, if "
@@ -773,7 +806,7 @@ msgstr ""
 "新返回的对象是通过调用数据类的 :meth:`~object.__init__` 方法来创建的。 这确保了如果存在 "
 ":meth:`__post_init__`，则它也会被调用。"
 
-#: ../../library/dataclasses.rst:443
+#: ../../library/dataclasses.rst:455
 msgid ""
 "Init-only variables without default values, if any exist, must be specified "
 "on the call to :func:`!replace` so that they can be passed to "
@@ -782,7 +815,7 @@ msgstr ""
 "如果存在任何没有默认值的仅初始化变量，那么必须在调用 :func:`!replace` 时指定它们的值，以便它们可以被传递给 "
 ":meth:`!__init__` 和 :meth:`__post_init__`。"
 
-#: ../../library/dataclasses.rst:447
+#: ../../library/dataclasses.rst:459
 msgid ""
 "It is an error for *changes* to contain any fields that are defined as "
 "having ``init=False``.  A :exc:`ValueError` will be raised in this case."
@@ -790,7 +823,7 @@ msgstr ""
 "如果 *changes* 包含被任何定义为 defined as having ``init=False`` 的字段都会导致错误。 在此情况下将引发 "
 ":exc:`ValueError`。"
 
-#: ../../library/dataclasses.rst:451
+#: ../../library/dataclasses.rst:463
 msgid ""
 "Be forewarned about how ``init=False`` fields work during a call to "
 ":func:`!replace`.  They are not copied from the source object, but rather "
@@ -805,19 +838,19 @@ msgstr ""
 "字段将很少能被正确地使用。 如果要使用它们，那么更明智的做法是使用另外的类构造器，或者自定义的 :func:`!replace` (或类似名称) "
 "方法来处理实例的拷贝。"
 
-#: ../../library/dataclasses.rst:460
+#: ../../library/dataclasses.rst:472
 msgid ""
 "Dataclass instances are also supported by generic function "
 ":func:`copy.replace`."
 msgstr "数据类支持也被泛型函数 :func:`copy.replace` 所支持。"
 
-#: ../../library/dataclasses.rst:464
+#: ../../library/dataclasses.rst:476
 msgid ""
 "Return ``True`` if its parameter is a dataclass (including subclasses of a "
 "dataclass) or an instance of one, otherwise return ``False``."
 msgstr "如果其形参是一个 dataclass（包括 dataclass 的子类）或其实例则返回 ``True``，否则返回 ``False``。"
 
-#: ../../library/dataclasses.rst:467
+#: ../../library/dataclasses.rst:479
 msgid ""
 "If you need to know if a class is an instance of a dataclass (and not a "
 "dataclass itself), then add a further check for ``not isinstance(obj, "
@@ -825,17 +858,17 @@ msgid ""
 msgstr ""
 "如果你需要知道一个类是否是一个数据类的实例（而不是一个数据类本身），那么再添加一个 ``not isinstance(obj, type)`` 检查："
 
-#: ../../library/dataclasses.rst:471
+#: ../../library/dataclasses.rst:483
 msgid ""
 "def is_dataclass_instance(obj):\n"
 "    return is_dataclass(obj) and not isinstance(obj, type)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:476
+#: ../../library/dataclasses.rst:488
 msgid "A sentinel value signifying a missing default or default_factory."
 msgstr "一个指明“没有提供 default 或 default_factory”的监视值。"
 
-#: ../../library/dataclasses.rst:480
+#: ../../library/dataclasses.rst:492
 msgid ""
 "A sentinel value used as a type annotation.  Any fields after a pseudo-field"
 " with the type of :const:`!KW_ONLY` are marked as keyword-only fields.  Note"
@@ -850,13 +883,13 @@ msgstr ""
 ":const:`!KW_ONLY` 字段。 仅限关键字字段指明当类被实例化时 :meth:`~object.__init__` "
 "形参必须以关键字形式来指定。"
 
-#: ../../library/dataclasses.rst:489
+#: ../../library/dataclasses.rst:501
 msgid ""
 "In this example, the fields ``y`` and ``z`` will be marked as keyword-only "
 "fields::"
 msgstr "在这个例子中，字段 ``y`` 和 ``z`` 将被标记为仅限关键字字段::"
 
-#: ../../library/dataclasses.rst:491
+#: ../../library/dataclasses.rst:503
 msgid ""
 "@dataclass\n"
 "class Point:\n"
@@ -868,13 +901,13 @@ msgid ""
 "p = Point(0, y=1.5, z=2.0)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:500
+#: ../../library/dataclasses.rst:512
 msgid ""
 "In a single dataclass, it is an error to specify more than one field whose "
 "type is :const:`!KW_ONLY`."
 msgstr "在单个数据类中，指定一个以上 :const:`!KW_ONLY` 类型的字段将导致错误。"
 
-#: ../../library/dataclasses.rst:507
+#: ../../library/dataclasses.rst:519
 msgid ""
 "Raised when an implicitly defined :meth:`~object.__setattr__` or "
 ":meth:`~object.__delattr__` is called on a dataclass which was defined with "
@@ -883,11 +916,11 @@ msgstr ""
 "在定义时设置了 ``frozen=True`` 的类上调用隐式定义的 :meth:`~object.__setattr__` 或 "
 ":meth:`~object.__delattr__` 时引发。 这是 :exc:`AttributeError` 的一个子类。"
 
-#: ../../library/dataclasses.rst:514
+#: ../../library/dataclasses.rst:526
 msgid "Post-init processing"
 msgstr "初始化后处理"
 
-#: ../../library/dataclasses.rst:518
+#: ../../library/dataclasses.rst:530
 msgid ""
 "When defined on the class, it will be called by the generated "
 ":meth:`~object.__init__`, normally as :meth:`!self.__post_init__`. However, "
@@ -900,13 +933,13 @@ msgstr ""
 " 的形式。 但是，如果定义了任何 ``InitVar`` 字段，它们也将按照它们在类中定义的顺序被传递给 :meth:`!__post_init__`。"
 " 如果没有生成 :meth:`!__init__` 方法，那么 :meth:`!__post_init__` 将不会被自动调用。"
 
-#: ../../library/dataclasses.rst:525
+#: ../../library/dataclasses.rst:537
 msgid ""
 "Among other uses, this allows for initializing field values that depend on "
 "one or more other fields.  For example::"
 msgstr "在其他用途中，这允许初始化依赖于一个或多个其他字段的字段值。例如::"
 
-#: ../../library/dataclasses.rst:528
+#: ../../library/dataclasses.rst:540
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -918,7 +951,7 @@ msgid ""
 "        self.c = self.a + self.b"
 msgstr ""
 
-#: ../../library/dataclasses.rst:537
+#: ../../library/dataclasses.rst:549
 msgid ""
 "The :meth:`~object.__init__` method generated by :func:`@dataclass "
 "<dataclass>` does not call base class :meth:`!__init__` methods. If the base"
@@ -929,7 +962,7 @@ msgstr ""
 ":meth:`!__init__` 方法。 如果基类有必须被调用的 :meth:`!__init__` 方法，通常是在 "
 ":meth:`__post_init__` 方法中调用此方法::"
 
-#: ../../library/dataclasses.rst:542
+#: ../../library/dataclasses.rst:554
 msgid ""
 "class Rectangle:\n"
 "    def __init__(self, height, width):\n"
@@ -944,7 +977,7 @@ msgid ""
 "        super().__init__(self.side, self.side)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:554
+#: ../../library/dataclasses.rst:566
 msgid ""
 "Note, however, that in general the dataclass-generated :meth:`!__init__` "
 "methods don't need to be called, since the derived dataclass will take care "
@@ -952,7 +985,7 @@ msgid ""
 msgstr ""
 "但是，请注意一般来说数据类生成的 :meth:`!__init__` 方法不需要被调用，因为派生的数据类将负责初始化任何本身为数据类的基类的所有字段。"
 
-#: ../../library/dataclasses.rst:558
+#: ../../library/dataclasses.rst:570
 msgid ""
 "See the section below on init-only variables for ways to pass parameters to "
 ":meth:`!__post_init__`.  Also see the warning about how :func:`replace` "
@@ -961,11 +994,11 @@ msgstr ""
 "请参阅下面有关仅初始化变量的小节来了解如何将形参传递给 :meth:`!__post_init__`。 另请参阅关于 :func:`replace` "
 "如何处理 ``init=False`` 字段的警告。"
 
-#: ../../library/dataclasses.rst:565
+#: ../../library/dataclasses.rst:577
 msgid "Class variables"
 msgstr "类变量"
 
-#: ../../library/dataclasses.rst:567
+#: ../../library/dataclasses.rst:579
 msgid ""
 "One of the few places where :func:`@dataclass <dataclass>` actually inspects"
 " the type of a field is to determine if a field is a class variable as "
@@ -980,11 +1013,11 @@ msgstr ""
 "``ClassVar``，它将被排除在考虑范围之外并被数据类机制所忽略。 这样的 ``ClassVar`` 伪字段将不会被模块层级的 "
 ":func:`fields` 函数返回。"
 
-#: ../../library/dataclasses.rst:578
+#: ../../library/dataclasses.rst:590
 msgid "Init-only variables"
 msgstr "仅初始化变量"
 
-#: ../../library/dataclasses.rst:580
+#: ../../library/dataclasses.rst:592
 msgid ""
 "Another place where :func:`@dataclass <dataclass>` inspects a type "
 "annotation is to determine if a field is an init-only variable.  It does "
@@ -1002,13 +1035,13 @@ msgstr ""
 "函数返回。 仅限初始化字段会作为形参被添加到所生成的 :meth:`~object.__init__` 方法中，并被传递给可选的 "
 ":meth:`__post_init__` 方法。 在其他情况下它们将不会被数据类所使用。"
 
-#: ../../library/dataclasses.rst:590
+#: ../../library/dataclasses.rst:602
 msgid ""
 "For example, suppose a field will be initialized from a database, if a value"
 " is not provided when creating the class::"
 msgstr "例如，假设在创建类时没有为某个字段提供值，初始化时将从数据库中取值::"
 
-#: ../../library/dataclasses.rst:593
+#: ../../library/dataclasses.rst:605
 msgid ""
 "@dataclass\n"
 "class C:\n"
@@ -1023,7 +1056,7 @@ msgid ""
 "c = C(10, database=my_database)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:605
+#: ../../library/dataclasses.rst:617
 msgid ""
 "In this case, :func:`fields` will return :class:`Field` objects for "
 ":attr:`!i` and :attr:`!j`, but not for :attr:`!database`."
@@ -1031,11 +1064,11 @@ msgstr ""
 "在这种情况下，:func:`fields` 将返回 :class:`Field` 作为 :attr:`!i` 和 :attr:`!j`，但不包括 "
 ":attr:`!database`。"
 
-#: ../../library/dataclasses.rst:611
+#: ../../library/dataclasses.rst:623
 msgid "Frozen instances"
 msgstr "冻结的实例"
 
-#: ../../library/dataclasses.rst:613
+#: ../../library/dataclasses.rst:625
 msgid ""
 "It is not possible to create truly immutable Python objects.  However, by "
 "passing ``frozen=True`` to the :func:`@dataclass <dataclass>` decorator you "
@@ -1047,7 +1080,7 @@ msgstr ""
 "<dataclass>` 装饰器来模拟出不可变性。 在这种情况下，数据类将向类添加 :meth:`~object.__setattr__` 和 "
 ":meth:`~object.__delattr__` 方法。 当被发起调用时这些方法将会引发 :exc:`FrozenInstanceError`。"
 
-#: ../../library/dataclasses.rst:619
+#: ../../library/dataclasses.rst:631
 msgid ""
 "There is a tiny performance penalty when using ``frozen=True``: "
 ":meth:`~object.__init__` cannot use simple assignment to initialize fields, "
@@ -1056,11 +1089,11 @@ msgstr ""
 "在使用 ``frozen=True`` 时会有微小的性能损失: :meth:`~object.__init__` "
 "不能使用简单赋值来初始化字段，而必须使用 :meth:`!object.__setattr__`。"
 
-#: ../../library/dataclasses.rst:628
+#: ../../library/dataclasses.rst:640
 msgid "Inheritance"
 msgstr "继承"
 
-#: ../../library/dataclasses.rst:630
+#: ../../library/dataclasses.rst:642
 msgid ""
 "When the dataclass is being created by the :func:`@dataclass <dataclass>` "
 "decorator, it looks through all of the class's base classes in reverse MRO "
@@ -1075,7 +1108,7 @@ msgstr ""
 ":class:`object` 开始）查看它的所有基类，并将找到的每个数据类的字段添加到一个有序映射中。 所有生成的方法都将使用这个有序映射。 "
 "字段会遵守它们被插入的顺序，因此派生类会重写基类。 一个例子::"
 
-#: ../../library/dataclasses.rst:640
+#: ../../library/dataclasses.rst:652
 msgid ""
 "@dataclass\n"
 "class Base:\n"
@@ -1088,7 +1121,7 @@ msgid ""
 "    x: int = 15"
 msgstr ""
 
-#: ../../library/dataclasses.rst:650
+#: ../../library/dataclasses.rst:662
 msgid ""
 "The final list of fields is, in order, :attr:`!x`, :attr:`!y`, :attr:`!z`.  "
 "The final type of :attr:`!x` is :class:`int`, as specified in class "
@@ -1097,21 +1130,21 @@ msgstr ""
 "最终的字段列表依次是 :attr:`!x`, :attr:`!y`, :attr:`!z`。 最终的 :attr:`!x` 类型是 "
 ":class:`int`，正如类 :class:`!C` 中所指定的。"
 
-#: ../../library/dataclasses.rst:653
+#: ../../library/dataclasses.rst:665
 msgid ""
 "The generated :meth:`~object.__init__` method for :class:`!C` will look "
 "like::"
 msgstr "为 :class:`!C` 生成的 :meth:`~object.__init__` 方法看起来像是这样::"
 
-#: ../../library/dataclasses.rst:655
+#: ../../library/dataclasses.rst:667
 msgid "def __init__(self, x: int = 15, y: int = 0, z: int = 10):"
 msgstr ""
 
-#: ../../library/dataclasses.rst:658
+#: ../../library/dataclasses.rst:670
 msgid "Re-ordering of keyword-only parameters in :meth:`!__init__`"
 msgstr ":meth:`!__init__` 中仅限关键字形参的重新排序"
 
-#: ../../library/dataclasses.rst:660
+#: ../../library/dataclasses.rst:672
 msgid ""
 "After the parameters needed for :meth:`~object.__init__` are computed, any "
 "keyword-only parameters are moved to come after all regular (non-keyword-"
@@ -1121,7 +1154,7 @@ msgstr ""
 "在计算出 :meth:`~object.__init__` 所需要的形参之后，任何仅限关键字形参会被移至所有常规（非仅限关键字）形参的后面。 这是 "
 "Python 中实现仅限关键字形参所要求的：它们必须位于非仅限关键字形参之后。"
 
-#: ../../library/dataclasses.rst:666
+#: ../../library/dataclasses.rst:678
 msgid ""
 "In this example, :attr:`!Base.y`, :attr:`!Base.w`, and :attr:`!D.t` are "
 "keyword-only fields, and :attr:`!Base.x` and :attr:`!D.z` are regular "
@@ -1130,7 +1163,7 @@ msgstr ""
 "在这个例子中，:attr:`!Base.y`, :attr:`!Base.w` 和 :attr:`!D.t` 是仅限关键字字段，而 "
 ":attr:`!Base.x` 和 :attr:`!D.z` 是常规字段::"
 
-#: ../../library/dataclasses.rst:669
+#: ../../library/dataclasses.rst:681
 msgid ""
 "@dataclass\n"
 "class Base:\n"
@@ -1145,35 +1178,35 @@ msgid ""
 "    t: int = field(kw_only=True, default=0)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:681
+#: ../../library/dataclasses.rst:693
 msgid ""
 "The generated :meth:`!__init__` method for :class:`!D` will look like::"
 msgstr "为 :class:`!D` 生成的 :meth:`!__init__` 方法看起来像是这样::"
 
-#: ../../library/dataclasses.rst:683
+#: ../../library/dataclasses.rst:695
 msgid ""
 "def __init__(self, x: Any = 15.0, z: int = 10, *, y: int = 0, w: int = 1, t:"
 " int = 0):"
 msgstr ""
 
-#: ../../library/dataclasses.rst:685
+#: ../../library/dataclasses.rst:697
 msgid ""
 "Note that the parameters have been re-ordered from how they appear in the "
 "list of fields: parameters derived from regular fields are followed by "
 "parameters derived from keyword-only fields."
 msgstr "请注意形参原来在字段列表中出现的位置已被重新排序：前面是来自常规字段的形参而后面是来自仅限关键字字段的形参。"
 
-#: ../../library/dataclasses.rst:689
+#: ../../library/dataclasses.rst:701
 msgid ""
 "The relative ordering of keyword-only parameters is maintained in the re-"
 "ordered :meth:`!__init__` parameter list."
 msgstr "仅限关键字形参的相对顺序会在重新排序的 :meth:`!__init__` 列表中保持不变。"
 
-#: ../../library/dataclasses.rst:694
+#: ../../library/dataclasses.rst:706
 msgid "Default factory functions"
 msgstr "默认工厂函数"
 
-#: ../../library/dataclasses.rst:696
+#: ../../library/dataclasses.rst:708
 msgid ""
 "If a :func:`field` specifies a *default_factory*, it is called with zero "
 "arguments when a default value for the field is needed.  For example, to "
@@ -1182,11 +1215,11 @@ msgstr ""
 "如果一个 :func:`field` 指定了 *default_factory*，它将在该字段需要默认值时不带参数地被调用。 "
 "例如，要创建一个列表的新实例，则使用::"
 
-#: ../../library/dataclasses.rst:700
+#: ../../library/dataclasses.rst:712
 msgid "mylist: list = field(default_factory=list)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:702
+#: ../../library/dataclasses.rst:714
 msgid ""
 "If a field is excluded from :meth:`~object.__init__` (using ``init=False``) "
 "and the field also specifies *default_factory*, then the default factory "
@@ -1198,17 +1231,17 @@ msgstr ""
 "*default_factory*，则默认的工厂函数将总是会从生成的 :meth:`!__init__` 函数中被调用。 "
 "发生这种情况是因为没有其他方式能为字段提供初始值。"
 
-#: ../../library/dataclasses.rst:709
+#: ../../library/dataclasses.rst:721
 msgid "Mutable default values"
 msgstr "可变的默认值"
 
-#: ../../library/dataclasses.rst:711
+#: ../../library/dataclasses.rst:723
 msgid ""
 "Python stores default member variable values in class attributes. Consider "
 "this example, not using dataclasses::"
 msgstr "Python 在类属性中存储默认成员变量值。思考这个例子，不使用数据类::"
 
-#: ../../library/dataclasses.rst:714
+#: ../../library/dataclasses.rst:726
 msgid ""
 "class C:\n"
 "    x = []\n"
@@ -1223,17 +1256,17 @@ msgid ""
 "assert o1.x is o2.x"
 msgstr ""
 
-#: ../../library/dataclasses.rst:726
+#: ../../library/dataclasses.rst:738
 msgid ""
 "Note that the two instances of class :class:`!C` share the same class "
 "variable :attr:`!x`, as expected."
 msgstr "请注意类 :class:`!C` 的两个实例将共享同一个类变量 :attr:`!x`，正如预期的那样。"
 
-#: ../../library/dataclasses.rst:729
+#: ../../library/dataclasses.rst:741
 msgid "Using dataclasses, *if* this code was valid::"
 msgstr "使用数据类，*如果* 此代码有效："
 
-#: ../../library/dataclasses.rst:731
+#: ../../library/dataclasses.rst:743
 msgid ""
 "@dataclass\n"
 "class D:\n"
@@ -1242,11 +1275,11 @@ msgid ""
 "        self.x.append(element)"
 msgstr ""
 
-#: ../../library/dataclasses.rst:737
+#: ../../library/dataclasses.rst:749
 msgid "it would generate code similar to::"
 msgstr "它生成的代码类似于::"
 
-#: ../../library/dataclasses.rst:739
+#: ../../library/dataclasses.rst:751
 msgid ""
 "class D:\n"
 "    x = []\n"
@@ -1258,7 +1291,7 @@ msgid ""
 "assert D().x is D().x"
 msgstr ""
 
-#: ../../library/dataclasses.rst:748
+#: ../../library/dataclasses.rst:760
 msgid ""
 "This has the same issue as the original example using class :class:`!C`. "
 "That is, two instances of class :class:`!D` that do not specify a value for "
@@ -1276,13 +1309,13 @@ msgstr ""
 "数据类没有任何通用方式来检测这种情况。 相反地，:func:`@dataclass <dataclass>` 装饰器在检测到不可哈希的默认形参时将会引发"
 " :exc:`ValueError`。 这一行为假定如果一个值是不可哈希的，则它就是可变对象。 这是一个部分解决方案，但它确实能防止许多常见错误。"
 
-#: ../../library/dataclasses.rst:759
+#: ../../library/dataclasses.rst:771
 msgid ""
 "Using default factory functions is a way to create new instances of mutable "
 "types as default values for fields::"
 msgstr "使用默认工厂函数是一种创建可变类型新实例的方法，并将其作为字段的默认值::"
 
-#: ../../library/dataclasses.rst:762
+#: ../../library/dataclasses.rst:774
 msgid ""
 "@dataclass\n"
 "class D:\n"
@@ -1291,7 +1324,7 @@ msgid ""
 "assert D().x is not D().x"
 msgstr ""
 
-#: ../../library/dataclasses.rst:768
+#: ../../library/dataclasses.rst:780
 msgid ""
 "Instead of looking for and disallowing objects of type :class:`list`, "
 ":class:`dict`, or :class:`set`, unhashable objects are now not allowed as "
@@ -1300,17 +1333,17 @@ msgstr ""
 "现在不再是寻找并阻止使用类型为 :class:`list`, :class:`dict` 或 :class:`set` "
 "的对象，而是不允许将不可哈希的对象用作默认值。 就是不可哈希性被作为不可变性的近似物了。"
 
-#: ../../library/dataclasses.rst:775
+#: ../../library/dataclasses.rst:787
 msgid "Descriptor-typed fields"
 msgstr "描述器类型的字段"
 
-#: ../../library/dataclasses.rst:777
+#: ../../library/dataclasses.rst:789
 msgid ""
 "Fields that are assigned :ref:`descriptor objects <descriptors>` as their "
 "default value have the following special behaviors:"
 msgstr "当字段被 :ref:`描述器对象 <descriptors>` 赋值为默认值时会遵循以下行为:"
 
-#: ../../library/dataclasses.rst:780
+#: ../../library/dataclasses.rst:792
 msgid ""
 "The value for the field passed to the dataclass's :meth:`~object.__init__` "
 "method is passed to the descriptor's :meth:`~object.__set__` method rather "
@@ -1319,7 +1352,7 @@ msgstr ""
 "传递给数据类的 :meth:`~object.__init__` 方法的字段值会被传递给描述器的 :meth:`~object.__set__` "
 "方法而不会覆盖描述器对象。"
 
-#: ../../library/dataclasses.rst:784
+#: ../../library/dataclasses.rst:796
 msgid ""
 "Similarly, when getting or setting the field, the descriptor's "
 ":meth:`~object.__get__` or :meth:`!__set__` method is called rather than "
@@ -1328,7 +1361,7 @@ msgstr ""
 "类似地，当获取或设置字段值时，将调用描述器的 :meth:`~object.__get__` 或 :meth:`!__set__` "
 "方法而不是返回或重写描述器对象。"
 
-#: ../../library/dataclasses.rst:788
+#: ../../library/dataclasses.rst:800
 msgid ""
 "To determine whether a field contains a default value, :func:`@dataclass "
 "<dataclass>` will call the descriptor's :meth:`!__get__` method using its "
@@ -1342,7 +1375,7 @@ msgstr ""
 "如果在此情况下描述器返回了一个值，它将被用作字段的默认值。 另一方面，如果在此情况下描述器引发了 "
 ":exc:`AttributeError`，则不会为字段提供默认值。"
 
-#: ../../library/dataclasses.rst:798
+#: ../../library/dataclasses.rst:810
 msgid ""
 "class IntConversionDescriptor:\n"
 "    def __init__(self, *, default):\n"
@@ -1370,7 +1403,7 @@ msgid ""
 "print(i.quantity_on_hand)   # 2"
 msgstr ""
 
-#: ../../library/dataclasses.rst:823
+#: ../../library/dataclasses.rst:835
 msgid ""
 "Note that if a field is annotated with a descriptor type, but is not "
 "assigned a descriptor object as its default value, the field will act like a"

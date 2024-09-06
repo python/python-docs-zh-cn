@@ -9,7 +9,7 @@
 # ppcfish <ppcfish@gmail.com>, 2022
 # Alpha Du <alphanow@gmail.com>, 2022
 # char46 <haosiru@h-sr.cn>, 2023
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Jason Ren, 2023
 # Nyuan Zhang, 2023
 # LeeWendao <LeeWendao@outlook.com>, 2023
@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-28 14:15+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -136,6 +136,14 @@ msgstr ""
 ":func:`sqlite3.connect` 来创建与当前工作目录下 :file:`tutorial.db` "
 "数据库的连接，如果它不存在则会隐式地创建它:"
 
+#: ../../library/sqlite3.rst:81
+msgid ""
+"import sqlite3\n"
+"con = sqlite3.connect(\"tutorial.db\")"
+msgstr ""
+"import sqlite3\n"
+"con = sqlite3.connect(\"tutorial.db\")"
+
 #: ../../library/sqlite3.rst:86
 msgid ""
 "The returned :class:`Connection` object ``con`` represents the connection to"
@@ -151,6 +159,10 @@ msgid ""
 msgstr ""
 "为了执行 SQL 语句并且从 SQL 查询中取得结果，我们需要使用游标 (cursor) 。在下面的代码中，我们调用函数 "
 ":meth:`con.cursor() <Connection.cursor>` 创建了一个游标 (:class:`Cursor`) ："
+
+#: ../../library/sqlite3.rst:93
+msgid "cur = con.cursor()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:97
 msgid ""
@@ -169,6 +181,10 @@ msgstr ""
 " 特性，它使得我们在使用 SQLite 时，指明数据类型这一项工作时可选的。如下面的代码所示，我们通过调用函数 "
 ":meth:`cur.excute(...) <Cursor.execute>` 执行创建表格的 ``CREATE TABLE`` 语句："
 
+#: ../../library/sqlite3.rst:106
+msgid "cur.execute(\"CREATE TABLE movie(title, year, score)\")"
+msgstr ""
+
 #: ../../library/sqlite3.rst:113
 msgid ""
 "We can verify that the new table has been created by querying the "
@@ -183,16 +199,27 @@ msgstr ""
 ":meth:`cur.excute(...) <Cursor.execute>` 执行查询，把结果赋给 ``res`` ，而后调用 "
 ":meth:`res.fetchone() <Cursor.fetchone>` 获取结果行："
 
+#: ../../library/sqlite3.rst:121
+msgid ""
+">>> res = cur.execute(\"SELECT name FROM sqlite_master\")\n"
+">>> res.fetchone()\n"
+"('movie',)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:127
 msgid ""
 "We can see that the table has been created, as the query returns a "
 ":class:`tuple` containing the table's name. If we query ``sqlite_master`` "
-"for a non-existent table ``spam``, :meth:`!res.fetchone()` will return "
+"for a non-existent table ``spam``, :meth:`!res.fetchone` will return "
 "``None``:"
 msgstr ""
-"在上面的代码中，我们可以看到表格已经被创建，因为查询结果返回了一个包含表格名的元组 (:class:`tuple`) 。倘若我们在 "
-"``sqlite_master`` 表中查询一个并不存在的表 ``spam`` ，那么 :meth:`!res.fetchone()` 将会返回 "
-"``None`` ："
+
+#: ../../library/sqlite3.rst:132
+msgid ""
+">>> res = cur.execute(\"SELECT name FROM sqlite_master WHERE name='spam'\")\n"
+">>> res.fetchone() is None\n"
+"True"
+msgstr ""
 
 #: ../../library/sqlite3.rst:138
 msgid ""
@@ -202,6 +229,15 @@ msgid ""
 msgstr ""
 "现在，让我们再次调用 :meth:`cur.execute(...) <Cursor.execute>` 去添加由 SQL 字面量 (literals)"
 " 提供的两行数据："
+
+#: ../../library/sqlite3.rst:142
+msgid ""
+"cur.execute(\"\"\"\n"
+"    INSERT INTO movie VALUES\n"
+"        ('Monty Python and the Holy Grail', 1975, 8.2),\n"
+"        ('And Now for Something Completely Different', 1971, 7.5)\n"
+"\"\"\")"
+msgstr ""
 
 #: ../../library/sqlite3.rst:150
 msgid ""
@@ -215,6 +251,10 @@ msgstr ""
 ":ref:`sqlite3-controlling-transactions` ）。我们通过在一个连接对象（本例中为 ``con``）上调用 "
 ":meth:`con.commit() <Connection.commit>` 提交事务："
 
+#: ../../library/sqlite3.rst:156
+msgid "con.commit()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:160
 msgid ""
 "We can verify that the data was inserted correctly by executing a ``SELECT``"
@@ -225,6 +265,13 @@ msgstr ""
 "我们可以通过执行一个 ``SELECT`` 查询以验证数据是否被正确地插入表中。下面的代码中，我们使用我们已经很熟悉的函数 "
 ":meth:`cur.execute(...) <Cursor.execute>` 将查询结果赋给 ``res`` ，而后调用 "
 ":meth:`res.fetchall() <Cursor.fetchall>` 返回所有的结果行："
+
+#: ../../library/sqlite3.rst:166
+msgid ""
+">>> res = cur.execute(\"SELECT score FROM movie\")\n"
+">>> res.fetchall()\n"
+"[(8.2,), (7.5,)]"
+msgstr ""
 
 #: ../../library/sqlite3.rst:172
 msgid ""
@@ -239,6 +286,17 @@ msgid ""
 "Now, insert three more rows by calling :meth:`cur.executemany(...) "
 "<Cursor.executemany>`:"
 msgstr "现在，让我们调用 :meth:`cur.executemany(...) <Cursor.executemany>` 再插入三行数据："
+
+#: ../../library/sqlite3.rst:178
+msgid ""
+"data = [\n"
+"    (\"Monty Python Live at the Hollywood Bowl\", 1982, 7.9),\n"
+"    (\"Monty Python's The Meaning of Life\", 1983, 7.5),\n"
+"    (\"Monty Python's Life of Brian\", 1979, 8.0),\n"
+"]\n"
+"cur.executemany(\"INSERT INTO movie VALUES(?, ?, ?)\", data)\n"
+"con.commit()  # Remember to commit the transaction after executing INSERT."
+msgstr ""
 
 #: ../../library/sqlite3.rst:188
 msgid ""
@@ -257,6 +315,17 @@ msgid ""
 "query, this time iterating over the results of the query:"
 msgstr "同样的，我们可以通过执行 ``SELECT`` 查询验证新的数据行是否已经插入表中，这一次我们将迭代查询的结果："
 
+#: ../../library/sqlite3.rst:198
+msgid ""
+">>> for row in cur.execute(\"SELECT year, title FROM movie ORDER BY year\"):\n"
+"...     print(row)\n"
+"(1971, 'And Now for Something Completely Different')\n"
+"(1975, 'Monty Python and the Holy Grail')\n"
+"(1979, \"Monty Python's Life of Brian\")\n"
+"(1982, 'Monty Python Live at the Hollywood Bowl')\n"
+"(1983, \"Monty Python's The Meaning of Life\")"
+msgstr ""
+
 #: ../../library/sqlite3.rst:208
 msgid ""
 "Each row is a two-item :class:`tuple` of ``(year, title)``, matching the "
@@ -272,6 +341,18 @@ msgid ""
 msgstr ""
 "最后，让我们先通过调用 :meth:`con.close() <Connection.close>` "
 "关闭现存的与数据库的连接，而后打开一个新的连接、创建一个新的游标、执行一个新的查询以验证我们是否将数据库写入到了本地磁盘上："
+
+#: ../../library/sqlite3.rst:216
+msgid ""
+">>> con.close()\n"
+">>> new_con = sqlite3.connect(\"tutorial.db\")\n"
+">>> new_cur = new_con.cursor()\n"
+">>> res = new_cur.execute(\"SELECT title, year FROM movie ORDER BY score DESC\")\n"
+">>> title, year = res.fetchone()\n"
+">>> print(f'The highest scoring Monty Python movie is {title!r}, released in {year}')\n"
+"The highest scoring Monty Python movie is 'Monty Python and the Holy Grail', released in 1975\n"
+">>> new_con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:227
 msgid ""
@@ -437,17 +518,15 @@ msgstr "返回类型"
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sqlite3.connect`` with argument"
 " ``database``."
-msgstr ""
-"使用它将引发一个附带参数 ``database`` 的 :ref:`审计事件 (auditing event) <auditing>` "
-"``sqlite3.connect`` 。"
+msgstr "引发一个 :ref:`审计事件 <auditing>` ``sqlite3.connect`` 并附带参数 ``database``。"
 
 #: ../../library/sqlite3.rst:347
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sqlite3.connect/handle`` with "
 "argument ``connection_handle``."
 msgstr ""
-"使用它将引发一个附带参数 ``connection_handle`` 的 :ref:`审计事件 <auditing>` "
-"``sqlite3.connect/handle`` 。"
+"引发一个 :ref:`审计事件 <auditing>` ``sqlite3.connect/handle`` 并附带参数 "
+"``connection_handle``。"
 
 #: ../../library/sqlite3.rst:349
 msgid "Added the *uri* parameter."
@@ -491,6 +570,14 @@ msgstr ""
 #: ../../library/sqlite3.rst:375
 msgid "For example:"
 msgstr "例如:"
+
+#: ../../library/sqlite3.rst:377
+msgid ""
+">>> sqlite3.complete_statement(\"SELECT foo FROM bar;\")\n"
+"True\n"
+">>> sqlite3.complete_statement(\"SELECT foo\")\n"
+"False"
+msgstr ""
 
 #: ../../library/sqlite3.rst:384
 msgid ""
@@ -583,6 +670,10 @@ msgstr ""
 "将这个旗标值传递给 :func:`connect` 的 *detect_types* "
 "形参，以使用从查询列名解析的类型名作为转换器字典键来查找转换器函数。类型名称必须用方括号（``[]``）括起来。"
 
+#: ../../library/sqlite3.rst:447
+msgid "SELECT p as \"p [point]\" FROM test;  ! will look up converter \"point\""
+msgstr ""
+
 #: ../../library/sqlite3.rst:451
 msgid ""
 "This flag may be combined with :const:`PARSE_DECLTYPES` using the ``|`` "
@@ -600,6 +691,15 @@ msgstr ""
 "将这个旗标值传递给 :func:`connect` 的 *detect_types* "
 "形参，以使用创建数据库表时为每列声明的类型的查找转换器函数。:mod:`!sqlite3` "
 "将使用声明类型的第一个单词作为转换字典键来查找转换函数。例如："
+
+#: ../../library/sqlite3.rst:464
+msgid ""
+"CREATE TABLE test(\n"
+"   i integer primary key,  ! will look up a converter named \"integer\"\n"
+"   p point,                ! will look up a converter named \"point\"\n"
+"   n number(10)            ! will look up a converter named \"number\"\n"
+" )"
+msgstr ""
 
 #: ../../library/sqlite3.rst:472
 msgid ""
@@ -759,7 +859,7 @@ msgid ""
 "version of the SQLite library."
 msgstr "此模块 :class:`字符串 <str>` 形式的版本号。 这不是 SQLite 库的版本号。"
 
-#: ../../library/sqlite3.rst:556 ../../library/sqlite3.rst:566
+#: ../../library/sqlite3.rst:553 ../../library/sqlite3.rst:563
 msgid ""
 "This constant used to reflect the version number of the ``pysqlite`` "
 "package, a third-party library which used to upstream changes to "
@@ -979,6 +1079,19 @@ msgstr "增加了 *deterministic* 形参。"
 msgid "Example:"
 msgstr "示例:"
 
+#: ../../library/sqlite3.rst:740
+msgid ""
+">>> import hashlib\n"
+">>> def md5sum(t):\n"
+"...     return hashlib.md5(t).hexdigest()\n"
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.create_function(\"md5\", 1, md5sum)\n"
+">>> for row in con.execute(\"SELECT md5(?)\", (b\"foo\",)):\n"
+"...     print(row)\n"
+"('acbd18db4cc2f85cedef654fccc4a4d8',)\n"
+">>> con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:754
 msgid ""
 "Passing *name*, *narg*, and *func* as keyword arguments is deprecated. These"
@@ -1036,6 +1149,29 @@ msgstr "``step()`` 方法所必须接受的参数数量是由 *n_arg* 控制的�
 #: ../../library/sqlite3.rst:779
 msgid "Set to ``None`` to remove an existing SQL aggregate function."
 msgstr "设为 ``None`` 以移除现有的 SQL 聚合函数。"
+
+#: ../../library/sqlite3.rst:784
+msgid ""
+"class MySum:\n"
+"    def __init__(self):\n"
+"        self.count = 0\n"
+"\n"
+"    def step(self, value):\n"
+"        self.count += value\n"
+"\n"
+"    def finalize(self):\n"
+"        return self.count\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.create_aggregate(\"mysum\", 1, MySum)\n"
+"cur = con.execute(\"CREATE TABLE test(i)\")\n"
+"cur.execute(\"INSERT INTO test(i) VALUES(1)\")\n"
+"cur.execute(\"INSERT INTO test(i) VALUES(2)\")\n"
+"cur.execute(\"SELECT mysum(i) FROM test\")\n"
+"print(cur.fetchone()[0])\n"
+"\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:813
 msgid ""
@@ -1107,6 +1243,54 @@ msgid ""
 "aggregate window functions."
 msgstr "如果在早于 SQLite 3.25.0，不支持聚合窗口函数的版本上使用。"
 
+#: ../../library/sqlite3.rst:852
+msgid ""
+"# Example taken from https://www.sqlite.org/windowfunctions.html#udfwinfunc\n"
+"class WindowSumInt:\n"
+"    def __init__(self):\n"
+"        self.count = 0\n"
+"\n"
+"    def step(self, value):\n"
+"        \"\"\"Add a row to the current window.\"\"\"\n"
+"        self.count += value\n"
+"\n"
+"    def value(self):\n"
+"        \"\"\"Return the current value of the aggregate.\"\"\"\n"
+"        return self.count\n"
+"\n"
+"    def inverse(self, value):\n"
+"        \"\"\"Remove a row from the current window.\"\"\"\n"
+"        self.count -= value\n"
+"\n"
+"    def finalize(self):\n"
+"        \"\"\"Return the final value of the aggregate.\n"
+"\n"
+"        Any clean-up actions should be placed here.\n"
+"        \"\"\"\n"
+"        return self.count\n"
+"\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.execute(\"CREATE TABLE test(x, y)\")\n"
+"values = [\n"
+"    (\"a\", 4),\n"
+"    (\"b\", 5),\n"
+"    (\"c\", 3),\n"
+"    (\"d\", 8),\n"
+"    (\"e\", 1),\n"
+"]\n"
+"cur.executemany(\"INSERT INTO test VALUES(?, ?)\", values)\n"
+"con.create_window_function(\"sumint\", 1, WindowSumInt)\n"
+"cur.execute(\"\"\"\n"
+"    SELECT x, sumint(y) OVER (\n"
+"        ORDER BY x ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING\n"
+"    ) AS sum_y\n"
+"    FROM test ORDER BY x\n"
+"\"\"\")\n"
+"print(cur.fetchall())\n"
+"con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:906
 msgid ""
 "Create a collation named *name* using the collating function *callable*. "
@@ -1131,6 +1315,27 @@ msgstr "如果它们的顺序相同则为 ``0``"
 #: ../../library/sqlite3.rst:914
 msgid "The following example shows a reverse sorting collation:"
 msgstr "下面的例子显示了一个反向排序的排序方法:"
+
+#: ../../library/sqlite3.rst:916
+msgid ""
+"def collate_reverse(string1, string2):\n"
+"    if string1 == string2:\n"
+"        return 0\n"
+"    elif string1 < string2:\n"
+"        return 1\n"
+"    else:\n"
+"        return -1\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.create_collation(\"reverse\", collate_reverse)\n"
+"\n"
+"cur = con.execute(\"CREATE TABLE test(x)\")\n"
+"cur.executemany(\"INSERT INTO test(x) VALUES(?)\", [(\"a\",), (\"b\",)])\n"
+"cur.execute(\"SELECT x FROM test ORDER BY x COLLATE reverse\")\n"
+"for row in cur:\n"
+"    print(row)\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:942
 msgid "Remove a collation function by setting *callable* to ``None``."
@@ -1294,12 +1499,37 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sqlite3.enable_load_extension``"
 " with arguments ``connection``, ``enabled``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sqlite3.enable_load_extension``，附带参数 "
+"引发一个 :ref:`审计事件 <auditing>` ``sqlite3.enable_load_extension`` 并附带参数 "
 "``connection``, ``enabled``。"
 
 #: ../../library/sqlite3.rst:1055
 msgid "Added the ``sqlite3.enable_load_extension`` auditing event."
 msgstr "增加了 ``sqlite3.enable_load_extension`` 审计事件。"
+
+#: ../../library/sqlite3.rst:1061
+msgid ""
+"con.enable_load_extension(True)\n"
+"\n"
+"# Load the fulltext search extension\n"
+"con.execute(\"select load_extension('./fts3.so')\")\n"
+"\n"
+"# alternatively you can load the extension using an API call:\n"
+"# con.load_extension(\"./fts3.so\")\n"
+"\n"
+"# disable extension loading again\n"
+"con.enable_load_extension(False)\n"
+"\n"
+"# example from SQLite wiki\n"
+"con.execute(\"CREATE VIRTUAL TABLE recipe USING fts3(name, ingredients)\")\n"
+"con.executescript(\"\"\"\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('broccoli stew', 'broccoli peppers cheese tomatoes');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('pumpkin stew', 'pumpkin onions garlic celery');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('broccoli pie', 'broccoli cheese onions flour');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('pumpkin pie', 'pumpkin sugar flour butter');\n"
+"    \"\"\")\n"
+"for row in con.execute(\"SELECT rowid, name, ingredients FROM recipe WHERE name MATCH 'pie'\"):\n"
+"    print(row)"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1087
 msgid ""
@@ -1325,8 +1555,8 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``sqlite3.load_extension`` with "
 "arguments ``connection``, ``path``."
 msgstr ""
-"引发一个 :ref:`审计事件 <auditing>` ``sqlite3.load_extension``，附带参数 ``connection``, "
-"``path``。"
+"引发一个 :ref:`审计事件 <auditing>` ``sqlite3.load_extension`` 并附带参数 ``connection``,"
+" ``path``。"
 
 #: ../../library/sqlite3.rst:1108
 msgid "Added the ``sqlite3.load_extension`` auditing event."
@@ -1352,6 +1582,16 @@ msgid ""
 "included."
 msgstr ""
 "可选的 ``LIKE`` 模式用于确定要转储的数据库对象，例如 ``prefix_%``。 如为 ``None`` (默认值)，则将包括所有数据库对象。"
+
+#: ../../library/sqlite3.rst:1131
+msgid ""
+"# Convert file example.db to SQL dump file dump.sql\n"
+"con = sqlite3.connect('example.db')\n"
+"with open('dump.sql', 'w') as f:\n"
+"    for line in con.iterdump():\n"
+"        f.write('%s\\n' % line)\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1142 ../../library/sqlite3.rst:1216
 msgid ":ref:`sqlite3-howto-encoding`"
@@ -1410,9 +1650,31 @@ msgstr "连续尝试备份剩余页所要间隔的休眠秒数。"
 msgid "Example 1, copy an existing database into another:"
 msgstr "示例 1，将现有数据库拷贝至另一个数据库:"
 
+#: ../../library/sqlite3.rst:1185
+msgid ""
+"def progress(status, remaining, total):\n"
+"    print(f'Copied {total-remaining} of {total} pages...')\n"
+"\n"
+"src = sqlite3.connect('example.db')\n"
+"dst = sqlite3.connect('backup.db')\n"
+"with dst:\n"
+"    src.backup(dst, pages=1, progress=progress)\n"
+"dst.close()\n"
+"src.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:1202
 msgid "Example 2, copy an existing database into a transient copy:"
 msgstr "示例 2，将现有数据库拷贝至一个临时副本:"
+
+#: ../../library/sqlite3.rst:1204
+msgid ""
+"src = sqlite3.connect('example.db')\n"
+"dst = sqlite3.connect(':memory:')\n"
+"src.backup(dst)\n"
+"dst.close()\n"
+"src.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1220
 msgid "Get a connection runtime limit."
@@ -1431,6 +1693,12 @@ msgid ""
 "Example, query the maximum length of an SQL statement for "
 ":class:`Connection` ``con`` (the default is 1000000000):"
 msgstr "示例，查询 :class:`Connection` ``con`` 上一条 SQL 语句的最大长度（默认值为 1000000000）:"
+
+#: ../../library/sqlite3.rst:1240
+msgid ""
+">>> con.getlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH)\n"
+"1000000000"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1250
 msgid ""
@@ -1454,6 +1722,14 @@ msgid ""
 "Example, limit the number of attached databases to 1 for :class:`Connection`"
 " ``con`` (the default limit is 10):"
 msgstr "示例，将 :class:`Connection` ``con`` 上附加的数据库数量限制为 1（默认限制为 10）:"
+
+#: ../../library/sqlite3.rst:1270
+msgid ""
+">>> con.setlimit(sqlite3.SQLITE_LIMIT_ATTACHED, 1)\n"
+"10\n"
+">>> con.getlimit(sqlite3.SQLITE_LIMIT_ATTACHED)\n"
+"1"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1288
 msgid "Query a boolean connection configuration option."
@@ -1696,6 +1972,12 @@ msgstr ""
 "Cursor 对象属于 :term:`迭代器 <iterator>`，这意味着如果你通过 :meth:`~Cursor.execute` 来执行 "
 "``SELECT`` 查询，你可以简单地迭代游标来获取结果行:"
 
+#: ../../library/sqlite3.rst:1475
+msgid ""
+"for row in cur.execute(\"SELECT t FROM data\"):\n"
+"    print(row)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:1489
 msgid "A :class:`Cursor` instance has the following attributes and methods."
 msgstr ":class:`Cursor` 游标实例具有以下属性和方法。"
@@ -1780,6 +2062,16 @@ msgid ""
 "If *sql* contains more than one SQL statement, or is not a DML statement."
 msgstr "如果 *sql* 包含多条 SQL 语句，或者不属于 DML 语句。"
 
+#: ../../library/sqlite3.rst:1553
+msgid ""
+"rows = [\n"
+"    (\"row1\",),\n"
+"    (\"row2\",),\n"
+"]\n"
+"# cur is an sqlite3.Cursor object\n"
+"cur.executemany(\"INSERT INTO data VALUES(?)\", rows)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:1568
 msgid ""
 "Any resulting rows are discarded, including DML statements with `RETURNING "
@@ -1812,6 +2104,18 @@ msgstr ""
 #: ../../library/sqlite3.rst:1592
 msgid "*sql_script* must be a :class:`string <str>`."
 msgstr "*sql_script* 必须为 :class:`字符串 <str>`。"
+
+#: ../../library/sqlite3.rst:1596
+msgid ""
+"# cur is an sqlite3.Cursor object\n"
+"cur.executescript(\"\"\"\n"
+"    BEGIN;\n"
+"    CREATE TABLE person(firstname, lastname, age);\n"
+"    CREATE TABLE book(title, author, published);\n"
+"    CREATE TABLE publisher(name, address);\n"
+"    COMMIT;\n"
+"\"\"\")"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1609
 msgid ""
@@ -1890,6 +2194,15 @@ msgstr ""
 "提供属于该游标的 SQLite :class:`Connection` 的只读属性。 通过调用 :meth:`con.cursor() "
 "<Connection.cursor>` 创建的 :class:`Cursor` 对象将具有一个指向 *con* 的 "
 ":attr:`connection` 属性:"
+
+#: ../../library/sqlite3.rst:1665
+msgid ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> cur = con.cursor()\n"
+">>> cur.connection == con\n"
+"True\n"
+">>> con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1675
 msgid ""
@@ -2014,6 +2327,28 @@ msgid ""
 "Use the :class:`Blob` as a :term:`context manager` to ensure that the blob "
 "handle is closed after use."
 msgstr "将 :class:`Blob` 作为 :term:`context manager` 使用以确保使用结束后 blob 句柄自动关闭。"
+
+#: ../../library/sqlite3.rst:1773
+msgid ""
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE test(blob_col blob)\")\n"
+"con.execute(\"INSERT INTO test(blob_col) VALUES(zeroblob(13))\")\n"
+"\n"
+"# Write to our blob, using two write operations:\n"
+"with con.blobopen(\"test\", \"blob_col\", 1) as blob:\n"
+"    blob.write(b\"hello, \")\n"
+"    blob.write(b\"world.\")\n"
+"    # Modify the first and last bytes of our blob\n"
+"    blob[0] = ord(\"H\")\n"
+"    blob[-1] = ord(\"!\")\n"
+"\n"
+"# Read the contents of our blob\n"
+"with con.blobopen(\"test\", \"blob_col\", 1) as blob:\n"
+"    greeting = blob.read()\n"
+"\n"
+"print(greeting)  # outputs \"b'Hello, world!'\"\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:1801
 msgid "Close the blob."
@@ -2347,6 +2682,10 @@ msgstr ""
 ":mod:`!sqlite3` 模块可以作为脚本发起调用，使用解释器的 :option:`-m` 开关选项，以提供一个简单的 SQLite shell。"
 " 参数签名如下::"
 
+#: ../../library/sqlite3.rst:2031
+msgid "python -m sqlite3 [-h] [-v] [filename] [sql]"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2033
 msgid "Type ``.quit`` or CTRL-D to exit the shell."
 msgstr "输入 ``.quit`` 或 CTRL-D 退出 shell。"
@@ -2377,6 +2716,17 @@ msgstr ""
 "SQL 操作通常会需要使用来自 Python 变量的值。 不过，请谨慎使用 Python 的字符串操作来拼装查询，因为这样易受 `SQL "
 "injection attacks`_。 例如，攻击者可以简单地添加结束单引号并注入 ``OR TRUE`` 来选择所有的行::"
 
+#: ../../library/sqlite3.rst:2063
+msgid ""
+">>> # Never do this -- insecure!\n"
+">>> symbol = input()\n"
+"' OR TRUE; --\n"
+">>> sql = \"SELECT * FROM stocks WHERE symbol = '%s'\" % symbol\n"
+">>> print(sql)\n"
+"SELECT * FROM stocks WHERE symbol = '' OR TRUE; --'\n"
+">>> cur.execute(sql)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2071
 msgid ""
 "Instead, use the DB-API's parameter substitution. To insert a variable into "
@@ -2401,6 +2751,27 @@ msgstr ""
 "要是一个长度必须与占位符的数量相匹配的 :term:`sequence`，否则将引发 :exc:`ProgrammingError`。 "
 "对于命名风格，*parameters* 必须是 :class:`dict` "
 "（或其子类）的实例，它必须包含与所有命名参数相对应的键；任何额外的条目都将被忽略。 下面是一个同时使用这两种风格的示例："
+
+#: ../../library/sqlite3.rst:2087
+msgid ""
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.execute(\"CREATE TABLE lang(name, first_appeared)\")\n"
+"\n"
+"# This is the named style used with executemany():\n"
+"data = (\n"
+"    {\"name\": \"C\", \"year\": 1972},\n"
+"    {\"name\": \"Fortran\", \"year\": 1957},\n"
+"    {\"name\": \"Python\", \"year\": 1991},\n"
+"    {\"name\": \"Go\", \"year\": 2009},\n"
+")\n"
+"cur.executemany(\"INSERT INTO lang VALUES(:name, :year)\", data)\n"
+"\n"
+"# This is the qmark style used in a SELECT query:\n"
+"params = (1972,)\n"
+"cur.execute(\"SELECT * FROM lang WHERE first_appeared = ?\", params)\n"
+"print(cur.fetchall())\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2114
 msgid ""
@@ -2450,6 +2821,24 @@ msgstr ""
 " 这可以通过添加一个返回已适配值的 ``__conform__(self, protocol)`` 方法来实现。 传给 *protocol* 的对象将为"
 " :class:`PrepareProtocol` 类型。"
 
+#: ../../library/sqlite3.rst:2149
+msgid ""
+"class Point:\n"
+"    def __init__(self, x, y):\n"
+"        self.x, self.y = x, y\n"
+"\n"
+"    def __conform__(self, protocol):\n"
+"        if protocol is sqlite3.PrepareProtocol:\n"
+"            return f\"{self.x};{self.y}\"\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.cursor()\n"
+"\n"
+"cur.execute(\"SELECT ?\", (Point(4.0, -3.2),))\n"
+"print(cur.fetchone()[0])\n"
+"con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2173
 msgid "How to register adapter callables"
 msgstr "如何注册适配器可调用对象"
@@ -2462,6 +2851,25 @@ msgid ""
 msgstr ""
 "另一种可能的方式是创建一个将 Python 对象转换为 SQLite 兼容类型的函数。 随后可使用 :func:`register_adapter` "
 "来注册该函数。"
+
+#: ../../library/sqlite3.rst:2179
+msgid ""
+"class Point:\n"
+"    def __init__(self, x, y):\n"
+"        self.x, self.y = x, y\n"
+"\n"
+"def adapt_point(point):\n"
+"    return f\"{point.x};{point.y}\"\n"
+"\n"
+"sqlite3.register_adapter(Point, adapt_point)\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.cursor()\n"
+"\n"
+"cur.execute(\"SELECT ?\", (Point(1.0, 2.5),))\n"
+"print(cur.fetchone()[0])\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2206
 msgid "How to convert SQLite values to custom Python types"
@@ -2494,6 +2902,13 @@ msgid ""
 " the underlying SQLite data type."
 msgstr "转换器函数 **总是** 接受传入一个 :class:`bytes` 对象，无论下层的 SQLite 数据类型是什么。"
 
+#: ../../library/sqlite3.rst:2224
+msgid ""
+"def convert_point(s):\n"
+"    x, y = map(float, s.split(b\";\"))\n"
+"    return Point(x, y)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2230
 msgid ""
 "We now need to tell :mod:`!sqlite3` when it should convert a given SQLite "
@@ -2524,6 +2939,48 @@ msgid ""
 "The following example illustrates the implicit and explicit approaches:"
 msgstr "下面的示例演示了隐式和显式的方法:"
 
+#: ../../library/sqlite3.rst:2242
+msgid ""
+"class Point:\n"
+"    def __init__(self, x, y):\n"
+"        self.x, self.y = x, y\n"
+"\n"
+"    def __repr__(self):\n"
+"        return f\"Point({self.x}, {self.y})\"\n"
+"\n"
+"def adapt_point(point):\n"
+"    return f\"{point.x};{point.y}\"\n"
+"\n"
+"def convert_point(s):\n"
+"    x, y = list(map(float, s.split(b\";\")))\n"
+"    return Point(x, y)\n"
+"\n"
+"# Register the adapter and converter\n"
+"sqlite3.register_adapter(Point, adapt_point)\n"
+"sqlite3.register_converter(\"point\", convert_point)\n"
+"\n"
+"# 1) Parse using declared types\n"
+"p = Point(4.0, -3.2)\n"
+"con = sqlite3.connect(\":memory:\", detect_types=sqlite3.PARSE_DECLTYPES)\n"
+"cur = con.execute(\"CREATE TABLE test(p point)\")\n"
+"\n"
+"cur.execute(\"INSERT INTO test(p) VALUES(?)\", (p,))\n"
+"cur.execute(\"SELECT p FROM test\")\n"
+"print(\"with declared types:\", cur.fetchone()[0])\n"
+"cur.close()\n"
+"con.close()\n"
+"\n"
+"# 2) Parse using column names\n"
+"con = sqlite3.connect(\":memory:\", detect_types=sqlite3.PARSE_COLNAMES)\n"
+"cur = con.execute(\"CREATE TABLE test(p)\")\n"
+"\n"
+"cur.execute(\"INSERT INTO test(p) VALUES(?)\", (p,))\n"
+"cur.execute('SELECT p AS \"p [point]\" FROM test')\n"
+"print(\"with column names:\", cur.fetchone()[0])\n"
+"cur.close()\n"
+"con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2293
 msgid "Adapter and converter recipes"
 msgstr "适配器和转换器范例程序"
@@ -2531,6 +2988,44 @@ msgstr "适配器和转换器范例程序"
 #: ../../library/sqlite3.rst:2295
 msgid "This section shows recipes for common adapters and converters."
 msgstr "本小节显示了通用适配器和转换器的范例程序。"
+
+#: ../../library/sqlite3.rst:2297
+msgid ""
+"import datetime\n"
+"import sqlite3\n"
+"\n"
+"def adapt_date_iso(val):\n"
+"    \"\"\"Adapt datetime.date to ISO 8601 date.\"\"\"\n"
+"    return val.isoformat()\n"
+"\n"
+"def adapt_datetime_iso(val):\n"
+"    \"\"\"Adapt datetime.datetime to timezone-naive ISO 8601 date.\"\"\"\n"
+"    return val.isoformat()\n"
+"\n"
+"def adapt_datetime_epoch(val):\n"
+"    \"\"\"Adapt datetime.datetime to Unix timestamp.\"\"\"\n"
+"    return int(val.timestamp())\n"
+"\n"
+"sqlite3.register_adapter(datetime.date, adapt_date_iso)\n"
+"sqlite3.register_adapter(datetime.datetime, adapt_datetime_iso)\n"
+"sqlite3.register_adapter(datetime.datetime, adapt_datetime_epoch)\n"
+"\n"
+"def convert_date(val):\n"
+"    \"\"\"Convert ISO 8601 date to datetime.date object.\"\"\"\n"
+"    return datetime.date.fromisoformat(val.decode())\n"
+"\n"
+"def convert_datetime(val):\n"
+"    \"\"\"Convert ISO 8601 datetime to datetime.datetime object.\"\"\"\n"
+"    return datetime.datetime.fromisoformat(val.decode())\n"
+"\n"
+"def convert_timestamp(val):\n"
+"    \"\"\"Convert Unix epoch timestamp to datetime.datetime object.\"\"\"\n"
+"    return datetime.datetime.fromtimestamp(int(val))\n"
+"\n"
+"sqlite3.register_converter(\"date\", convert_date)\n"
+"sqlite3.register_converter(\"datetime\", convert_datetime)\n"
+"sqlite3.register_converter(\"timestamp\", convert_timestamp)"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2357
 msgid "How to use connection shortcut methods"
@@ -2552,6 +3047,28 @@ msgstr ""
 "方法，您可以简化您的代码，因为无需再显式创建 （通常是多余的） :class:`Cursor` 对象。此时 :class:`Cursor` "
 "对象会被隐式创建并且由这些快捷方法返回。这样一来，您仅需在 :class:`Connection` 对象上调用一次方法就可以执行 ``SELECT`` "
 "语句，并对其进行迭代。"
+
+#: ../../library/sqlite3.rst:2368
+msgid ""
+"# Create and fill the table.\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE lang(name, first_appeared)\")\n"
+"data = [\n"
+"    (\"C++\", 1985),\n"
+"    (\"Objective-C\", 1984),\n"
+"]\n"
+"con.executemany(\"INSERT INTO lang(name, first_appeared) VALUES(?, ?)\", data)\n"
+"\n"
+"# Print the table contents\n"
+"for row in con.execute(\"SELECT name, first_appeared FROM lang\"):\n"
+"    print(row)\n"
+"\n"
+"print(\"I just deleted\", con.execute(\"DELETE FROM lang\").rowcount, \"rows\")\n"
+"\n"
+"# close() is not a shortcut method and it's not called automatically;\n"
+"# the connection object should be closed manually\n"
+"con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2400
 msgid "How to use the connection context manager"
@@ -2589,6 +3106,28 @@ msgid ""
 msgstr ""
 "上下文管理器既不会隐式开启新事务也不会关闭连接。 如果你需要关闭上下文管理器，请考虑使用 :meth:`contextlib.closing`。"
 
+#: ../../library/sqlite3.rst:2422
+msgid ""
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE lang(id INTEGER PRIMARY KEY, name VARCHAR UNIQUE)\")\n"
+"\n"
+"# Successful, con.commit() is called automatically afterwards\n"
+"with con:\n"
+"    con.execute(\"INSERT INTO lang(name) VALUES(?)\", (\"Python\",))\n"
+"\n"
+"# con.rollback() is called after the with block finishes with an exception,\n"
+"# the exception is still raised and must be caught\n"
+"try:\n"
+"    with con:\n"
+"        con.execute(\"INSERT INTO lang(name) VALUES(?)\", (\"Python\",))\n"
+"except sqlite3.IntegrityError:\n"
+"    print(\"couldn't add Python twice\")\n"
+"\n"
+"# Connection object used as context manager only commits or rollbacks transactions,\n"
+"# so the connection object should be closed manually\n"
+"con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2452
 msgid "How to work with SQLite URIs"
 msgstr "如何使用 SQLite URI"
@@ -2601,6 +3140,14 @@ msgstr "一些有用的 URI 技巧包括:"
 msgid "Open a database in read-only mode:"
 msgstr "以只读模式打开一个数据库:"
 
+#: ../../library/sqlite3.rst:2458
+msgid ""
+">>> con = sqlite3.connect(\"file:tutorial.db?mode=ro\", uri=True)\n"
+">>> con.execute(\"CREATE TABLE readonly(data)\")\n"
+"Traceback (most recent call last):\n"
+"OperationalError: attempt to write a readonly database"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2465
 msgid ""
 "Do not implicitly create a new database file if it does not already exist; "
@@ -2608,9 +3155,31 @@ msgid ""
 msgstr ""
 "如果一个数据库尚不存在则不会隐式地新建数据库；如果无法新建数据库则将引发 :exc:`~sqlite3.OperationalError`:"
 
+#: ../../library/sqlite3.rst:2468
+msgid ""
+">>> con = sqlite3.connect(\"file:nosuchdb.db?mode=rw\", uri=True)\n"
+"Traceback (most recent call last):\n"
+"OperationalError: unable to open database file"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2475
 msgid "Create a shared named in-memory database:"
 msgstr "创建一个名为 shared 的内存数据库:"
+
+#: ../../library/sqlite3.rst:2477
+msgid ""
+"db = \"file:mem1?mode=memory&cache=shared\"\n"
+"con1 = sqlite3.connect(db, uri=True)\n"
+"con2 = sqlite3.connect(db, uri=True)\n"
+"with con1:\n"
+"    con1.execute(\"CREATE TABLE shared(data)\")\n"
+"    con1.execute(\"INSERT INTO shared VALUES(28)\")\n"
+"res = con2.execute(\"SELECT data FROM shared\")\n"
+"assert res.fetchone() == (28,)\n"
+"\n"
+"con1.close()\n"
+"con2.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2491
 msgid ""
@@ -2651,9 +3220,30 @@ msgstr ""
 ":class:`!Row` 提供了针对列的序列方式和大小写不敏感的名称方式访问，具有优于 :class:`!tuple` 的最小化内存开销和性能影响。 "
 "要使用 :class:`!Row` 作为行工厂对象，请将其赋值给 :attr:`!row_factory` 属性:"
 
+#: ../../library/sqlite3.rst:2517
+msgid ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.row_factory = sqlite3.Row"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2522
 msgid "Queries now return :class:`!Row` objects:"
 msgstr "现在查询将返回 :class:`!Row` 对象:"
+
+#: ../../library/sqlite3.rst:2524
+msgid ""
+">>> res = con.execute(\"SELECT 'Earth' AS name, 6378 AS radius\")\n"
+">>> row = res.fetchone()\n"
+">>> row.keys()\n"
+"['name', 'radius']\n"
+">>> row[0]         # Access by index.\n"
+"'Earth'\n"
+">>> row[\"name\"]    # Access by name.\n"
+"'Earth'\n"
+">>> row[\"RADIUS\"]  # Column names are case-insensitive.\n"
+"6378\n"
+">>> con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2540
 msgid ""
@@ -2672,18 +3262,60 @@ msgid ""
 msgstr ""
 "你可以创建自定义 :attr:`~Cursor.row_factory` 用来返回 :class:`dict` 形式的行，将列名映射到相应的值。"
 
+#: ../../library/sqlite3.rst:2548
+msgid ""
+"def dict_factory(cursor, row):\n"
+"    fields = [column[0] for column in cursor.description]\n"
+"    return {key: value for key, value in zip(fields, row)}"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2554
 msgid ""
 "Using it, queries now return a :class:`!dict` instead of a :class:`!tuple`:"
 msgstr "使用它，现在查询将返回 :class:`!dict` 而不是 :class:`!tuple`:"
 
+#: ../../library/sqlite3.rst:2556
+msgid ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.row_factory = dict_factory\n"
+">>> for row in con.execute(\"SELECT 1 AS a, 2 AS b\"):\n"
+"...     print(row)\n"
+"{'a': 1, 'b': 2}\n"
+">>> con.close()"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2565
 msgid "The following row factory returns a :term:`named tuple`:"
 msgstr "以下行工厂函数将返回一个 :term:`named tuple`:"
 
+#: ../../library/sqlite3.rst:2567
+msgid ""
+"from collections import namedtuple\n"
+"\n"
+"def namedtuple_factory(cursor, row):\n"
+"    fields = [column[0] for column in cursor.description]\n"
+"    cls = namedtuple(\"Row\", fields)\n"
+"    return cls._make(row)"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2576
 msgid ":func:`!namedtuple_factory` can be used as follows:"
 msgstr ":func:`!namedtuple_factory` 可以像下面这样使用:"
+
+#: ../../library/sqlite3.rst:2578
+msgid ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.row_factory = namedtuple_factory\n"
+">>> cur = con.execute(\"SELECT 1 AS a, 2 AS b\")\n"
+">>> row = cur.fetchone()\n"
+">>> row\n"
+"Row(a=1, b=2)\n"
+">>> row[0]  # Indexed access.\n"
+"1\n"
+">>> row.b   # Attribute access.\n"
+"2\n"
+">>> con.close()"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2592
 msgid ""
@@ -2724,12 +3356,20 @@ msgstr ""
 "编码的文本的数据库，例如一个捷克语-英语字典条目的表。 假定我们现在有一个 :class:`Connection` 实例 :py:data:`!con`"
 " 已连接到这个数据库，我们将可以使用这个 :attr:`~Connection.text_factory` 来解码使用 Latin-2 编码的文本："
 
+#: ../../library/sqlite3.rst:2617
+msgid "con.text_factory = lambda data: str(data, encoding=\"latin2\")"
+msgstr ""
+
 #: ../../library/sqlite3.rst:2621
 msgid ""
 "For invalid UTF-8 or arbitrary data in stored in ``TEXT`` table columns, you"
 " can use the following technique, borrowed from the :ref:`unicode-howto`:"
 msgstr ""
 "对于存储在 ``TEXT`` 表字段中的无效 UTF-8 或任意数据，你可以使用以下技巧，借用自 :ref:`unicode-howto`:"
+
+#: ../../library/sqlite3.rst:2624
+msgid "con.text_factory = lambda data: str(data, errors=\"surrogateescape\")"
+msgstr ""
 
 #: ../../library/sqlite3.rst:2630
 msgid ""

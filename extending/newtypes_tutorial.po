@@ -15,9 +15,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-14 22:56+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 00:52+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -87,6 +87,96 @@ msgstr ""
 "这里展示的方法是定义 *static* 扩展类型的传统方法。可以适合大部分用途。C API也可以定义在堆上分配的扩展类型，使用 "
 ":c:func:`PyType_FromSpec` 函数，但不在本入门里讨论。"
 
+#: ../../extending/newtypes_tutorial.rst:48
+msgid ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"\n"
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    /* Type-specific fields go here. */\n"
+"} CustomObject;\n"
+"\n"
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT,\n"
+"    .tp_new = PyType_GenericNew,\n"
+"};\n"
+"\n"
+"static PyModuleDef custommodule = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"custom\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_custom(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    if (PyType_Ready(&CustomType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&custommodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+msgstr ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"\n"
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    /* Type-specific fields go here. */\n"
+"} CustomObject;\n"
+"\n"
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT,\n"
+"    .tp_new = PyType_GenericNew,\n"
+"};\n"
+"\n"
+"static PyModuleDef custommodule = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"custom\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_custom(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    if (PyType_Ready(&CustomType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&custommodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+
 #: ../../extending/newtypes_tutorial.rst:50
 msgid ""
 "Now that's quite a bit to take in at once, but hopefully bits will seem "
@@ -121,6 +211,13 @@ msgstr ""
 msgid "The first bit is::"
 msgstr "结构的第一块是 ::"
 
+#: ../../extending/newtypes_tutorial.rst:63
+msgid ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"} CustomObject;"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:67
 msgid ""
 "This is what a Custom object will contain.  ``PyObject_HEAD`` is mandatory "
@@ -149,9 +246,30 @@ msgid ""
 "standard Python floats::"
 msgstr "当然，对象除了在 ``PyObject_HEAD`` 存储数据外，还有额外数据；例如，如下定义了标准的Python浮点数::"
 
+#: ../../extending/newtypes_tutorial.rst:83
+msgid ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    double ob_fval;\n"
+"} PyFloatObject;"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:88
 msgid "The second bit is the definition of the type object. ::"
 msgstr "第二个位是类型对象的定义::"
+
+#: ../../extending/newtypes_tutorial.rst:90
+msgid ""
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT,\n"
+"    .tp_new = PyType_GenericNew,\n"
+"};"
+msgstr ""
 
 #: ../../extending/newtypes_tutorial.rst:101
 msgid ""
@@ -176,17 +294,33 @@ msgstr ""
 msgid "We're going to pick it apart, one field at a time::"
 msgstr "我们先挑选一部分，每次一个字段::"
 
+#: ../../extending/newtypes_tutorial.rst:112
+msgid ".ob_base = PyVarObject_HEAD_INIT(NULL, 0)"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:114
 msgid ""
 "This line is mandatory boilerplate to initialize the ``ob_base`` field "
 "mentioned above. ::"
 msgstr "这一行是强制的样板，用以初始化如上提到的 ``ob_base`` 字段::"
 
+#: ../../extending/newtypes_tutorial.rst:117
+msgid ".tp_name = \"custom.Custom\","
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:119
 msgid ""
 "The name of our type.  This will appear in the default textual "
 "representation of our objects and in some error messages, for example:"
 msgstr "我们的类型的名称。 这将出现在我们的对象的默认文本表示形式和某些错误消息中，例如:"
+
+#: ../../extending/newtypes_tutorial.rst:122
+msgid ""
+">>> \"\" + custom.Custom()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: can only concatenate str (not \"custom.Custom\") to str"
+msgstr ""
 
 #: ../../extending/newtypes_tutorial.rst:129
 msgid ""
@@ -200,6 +334,12 @@ msgstr ""
 "请注意此名称是一个带点号名称，它同时包括模块名称和模块中的类型名称。 本例中的模块是 :mod:`!custom` 而类型是 "
 ":class:`!Custom`，因此我们将类型名称设为 :class:`!custom.Custom`。 使用真正的带点号的导入路径对于使你的类型与 "
 ":mod:`pydoc` 和 :mod:`pickle` 模块保持兼容是很重要的。 ::"
+
+#: ../../extending/newtypes_tutorial.rst:135
+msgid ""
+".tp_basicsize = sizeof(CustomObject),\n"
+".tp_itemsize = 0,"
+msgstr ""
 
 #: ../../extending/newtypes_tutorial.rst:138
 msgid ""
@@ -233,6 +373,10 @@ msgstr ""
 msgid "We set the class flags to :c:macro:`Py_TPFLAGS_DEFAULT`. ::"
 msgstr "我们将类旗标设为 :c:macro:`Py_TPFLAGS_DEFAULT`。 ::"
 
+#: ../../extending/newtypes_tutorial.rst:156
+msgid ".tp_flags = Py_TPFLAGS_DEFAULT,"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:158
 msgid ""
 "All types should include this constant in their flags.  It enables all of "
@@ -247,6 +391,10 @@ msgid ""
 "We provide a doc string for the type in :c:member:`~PyTypeObject.tp_doc`. ::"
 msgstr "我们为 :c:member:`~PyTypeObject.tp_doc` 类型提供一个文档字符串. ::"
 
+#: ../../extending/newtypes_tutorial.rst:164
+msgid ".tp_doc = PyDoc_STR(\"Custom objects\"),"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:166
 msgid ""
 "To enable object creation, we have to provide a "
@@ -259,11 +407,21 @@ msgstr ""
 ":meth:`~object.__new__`，但必须显式地指定。 在这种情况下，我们可以使用 API 函数 "
 ":c:func:`PyType_GenericNew` 所提供的默认实现。 ::"
 
+#: ../../extending/newtypes_tutorial.rst:171
+msgid ".tp_new = PyType_GenericNew,"
+msgstr ""
+
 #: ../../extending/newtypes_tutorial.rst:173
 msgid ""
 "Everything else in the file should be familiar, except for some code in "
 ":c:func:`!PyInit_custom`::"
 msgstr "除了 :c:func:`!PyInit_custom` 中的某些代码以外，文件中的其他内容应该都很容易理解::"
+
+#: ../../extending/newtypes_tutorial.rst:176
+msgid ""
+"if (PyType_Ready(&CustomType) < 0)\n"
+"    return;"
+msgstr ""
 
 #: ../../extending/newtypes_tutorial.rst:179
 msgid ""
@@ -274,27 +432,63 @@ msgstr ""
 "这将初始化 :class:`!Custom` 类型，为一些成员填充适当的默认值，包括我们在初始时设为 ``NULL`` 的 "
 ":c:member:`~PyObject.ob_type`。 ::"
 
-#: ../../extending/newtypes_tutorial.rst:190
+#: ../../extending/newtypes_tutorial.rst:183
+msgid ""
+"if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"    Py_DECREF(m);\n"
+"    return NULL;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:188
 msgid ""
 "This adds the type to the module dictionary.  This allows us to create "
 ":class:`!Custom` instances by calling the :class:`!Custom` class:"
 msgstr "这将把类型添加到模块字典中。 这样我们就能通过调用 :class:`!Custom` 类来创建 :class:`!Custom` 实例："
 
-#: ../../extending/newtypes_tutorial.rst:198
+#: ../../extending/newtypes_tutorial.rst:191
+msgid ""
+">>> import custom\n"
+">>> mycustom = custom.Custom()"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:196
 msgid ""
 "That's it!  All that remains is to build it; put the above code in a file "
 "called :file:`custom.c`,"
 msgstr "就是这样！ 剩下的工作就是编译它；将上述代码放入名为 :file:`custom.c` 的文件中，"
 
-#: ../../extending/newtypes_tutorial.rst:203
+#: ../../extending/newtypes_tutorial.rst:199
+msgid ""
+"[build-system]\n"
+"requires = [\"setuptools\"]\n"
+"build-backend = \"setuptools.build_meta\"\n"
+"\n"
+"[project]\n"
+"name = \"custom\"\n"
+"version = \"1\"\n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:201
 msgid "in a file called :file:`pyproject.toml`, and"
 msgstr "名为 :file:`pyproject.toml` 的文件中，并且"
 
-#: ../../extending/newtypes_tutorial.rst:210
+#: ../../extending/newtypes_tutorial.rst:203
+msgid ""
+"from setuptools import Extension, setup\n"
+"setup(ext_modules=[Extension(\"custom\", [\"custom.c\"])])"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:208
 msgid "in a file called :file:`setup.py`; then typing"
 msgstr "在名为 :file:`setup.py` 的文件中；然后输入"
 
-#: ../../extending/newtypes_tutorial.rst:216
+#: ../../extending/newtypes_tutorial.rst:210
+#: ../../extending/newtypes_tutorial.rst:525
+msgid "$ python -m pip install ."
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:214
 msgid ""
 "in a shell should produce a file :file:`custom.so` in a subdirectory and "
 "install it; now fire up Python --- you should be able to ``import custom`` "
@@ -303,21 +497,21 @@ msgstr ""
 "在 shell 中应该会在子目录下产生一个文件 :file:`custom.so` 并安装它；现在启动 Python --- 你应当能够执行 "
 "``import custom`` 并尝试使用 ``Custom`` 对象。"
 
-#: ../../extending/newtypes_tutorial.rst:220
+#: ../../extending/newtypes_tutorial.rst:218
 msgid "That wasn't so hard, was it?"
 msgstr "这并不难，对吗？"
 
-#: ../../extending/newtypes_tutorial.rst:222
+#: ../../extending/newtypes_tutorial.rst:220
 msgid ""
 "Of course, the current Custom type is pretty uninteresting. It has no data "
 "and doesn't do anything. It can't even be subclassed."
 msgstr "当然，当前的自定义类型非常无趣。它没有数据，也不做任何事情。它甚至不能被子类化。"
 
-#: ../../extending/newtypes_tutorial.rst:227
+#: ../../extending/newtypes_tutorial.rst:225
 msgid "Adding data and methods to the Basic example"
 msgstr "向基本示例添加数据和方法"
 
-#: ../../extending/newtypes_tutorial.rst:229
+#: ../../extending/newtypes_tutorial.rst:227
 msgid ""
 "Let's extend the basic example to add some data and methods.  Let's also "
 "make the type usable as a base class. We'll create a new module, "
@@ -326,11 +520,145 @@ msgstr ""
 "让我们通过添加一些数据和方法来扩展这个基本示例。 让我们再使该类型可以作为基类使用。 我们将创建一个新模块 :mod:`!custom2` "
 "来添加这些功能："
 
-#: ../../extending/newtypes_tutorial.rst:236
+#: ../../extending/newtypes_tutorial.rst:231
+msgid ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"#include <stddef.h> /* for offsetof() */\n"
+"\n"
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    PyObject *first; /* first name */\n"
+"    PyObject *last;  /* last name */\n"
+"    int number;\n"
+"} CustomObject;\n"
+"\n"
+"static void\n"
+"Custom_dealloc(CustomObject *self)\n"
+"{\n"
+"    Py_XDECREF(self->first);\n"
+"    Py_XDECREF(self->last);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}\n"
+"\n"
+"static PyObject *\n"
+"Custom_new(PyTypeObject *type, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    CustomObject *self;\n"
+"    self = (CustomObject *) type->tp_alloc(type, 0);\n"
+"    if (self != NULL) {\n"
+"        self->first = PyUnicode_FromString(\"\");\n"
+"        if (self->first == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->last = PyUnicode_FromString(\"\");\n"
+"        if (self->last == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->number = 0;\n"
+"    }\n"
+"    return (PyObject *) self;\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|OOi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        Py_XSETREF(self->first, Py_NewRef(first));\n"
+"    }\n"
+"    if (last) {\n"
+"        Py_XSETREF(self->last, Py_NewRef(last));\n"
+"    }\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyMemberDef Custom_members[] = {\n"
+"    {\"first\", Py_T_OBJECT_EX, offsetof(CustomObject, first), 0,\n"
+"     \"first name\"},\n"
+"    {\"last\", Py_T_OBJECT_EX, offsetof(CustomObject, last), 0,\n"
+"     \"last name\"},\n"
+"    {\"number\", Py_T_INT, offsetof(CustomObject, number), 0,\n"
+"     \"custom number\"},\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyObject *\n"
+"Custom_name(CustomObject *self, PyObject *Py_UNUSED(ignored))\n"
+"{\n"
+"    if (self->first == NULL) {\n"
+"        PyErr_SetString(PyExc_AttributeError, \"first\");\n"
+"        return NULL;\n"
+"    }\n"
+"    if (self->last == NULL) {\n"
+"        PyErr_SetString(PyExc_AttributeError, \"last\");\n"
+"        return NULL;\n"
+"    }\n"
+"    return PyUnicode_FromFormat(\"%S %S\", self->first, self->last);\n"
+"}\n"
+"\n"
+"static PyMethodDef Custom_methods[] = {\n"
+"    {\"name\", (PyCFunction) Custom_name, METH_NOARGS,\n"
+"     \"Return the name, combining the first and last name\"\n"
+"    },\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom2.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,\n"
+"    .tp_new = Custom_new,\n"
+"    .tp_init = (initproc) Custom_init,\n"
+"    .tp_dealloc = (destructor) Custom_dealloc,\n"
+"    .tp_members = Custom_members,\n"
+"    .tp_methods = Custom_methods,\n"
+"};\n"
+"\n"
+"static PyModuleDef custommodule = {\n"
+"    .m_base =PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"custom2\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_custom2(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    if (PyType_Ready(&CustomType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&custommodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:234
 msgid "This version of the module has a number of changes."
 msgstr "该模块的新版本包含多处修改。"
 
-#: ../../extending/newtypes_tutorial.rst:238
+#: ../../extending/newtypes_tutorial.rst:236
 msgid ""
 "The  :class:`!Custom` type now has three data attributes in its C struct, "
 "*first*, *last*, and *number*.  The *first* and *last* variables are Python "
@@ -340,21 +668,46 @@ msgstr ""
 "现在 :class:`!Custom` 类型的 C 结构体中有三个数据属性，*first*、*last* 和 *number*。 其中 *first* "
 "和 *last* 变量是包含名字和姓氏的 Python 字符串。 *number* 属性是一个 C 整数。"
 
-#: ../../extending/newtypes_tutorial.rst:242
+#: ../../extending/newtypes_tutorial.rst:240
 msgid "The object structure is updated accordingly::"
 msgstr "对象的结构将被相应地更新::"
 
-#: ../../extending/newtypes_tutorial.rst:251
+#: ../../extending/newtypes_tutorial.rst:242
+msgid ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    PyObject *first; /* first name */\n"
+"    PyObject *last;  /* last name */\n"
+"    int number;\n"
+"} CustomObject;"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:249
 msgid ""
 "Because we now have data to manage, we have to be more careful about object "
 "allocation and deallocation.  At a minimum, we need a deallocation method::"
 msgstr "因为现在我们有数据需要管理，我们必须更加小心地处理对象的分配和释放。 至少，我们需要有一个释放方法::"
 
-#: ../../extending/newtypes_tutorial.rst:262
+#: ../../extending/newtypes_tutorial.rst:252
+msgid ""
+"static void\n"
+"Custom_dealloc(CustomObject *self)\n"
+"{\n"
+"    Py_XDECREF(self->first);\n"
+"    Py_XDECREF(self->last);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:260
 msgid "which is assigned to the :c:member:`~PyTypeObject.tp_dealloc` member::"
 msgstr "它会被赋值给 :c:member:`~PyTypeObject.tp_dealloc` 成员::"
 
-#: ../../extending/newtypes_tutorial.rst:266
+#: ../../extending/newtypes_tutorial.rst:262
+msgid ".tp_dealloc = (destructor) Custom_dealloc,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:264
 msgid ""
 "This method first clears the reference counts of the two Python attributes. "
 ":c:func:`Py_XDECREF` correctly handles the case where its argument is "
@@ -369,7 +722,7 @@ msgstr ""
 "``Py_TYPE(self)`` 计算得到）来释放对象的内存。 请注意对象类型可以不是 "
 ":class:`!CustomType`，因为对象可能是一个子类的实例。"
 
-#: ../../extending/newtypes_tutorial.rst:275
+#: ../../extending/newtypes_tutorial.rst:273
 msgid ""
 "The explicit cast to ``destructor`` above is needed because we defined "
 "``Custom_dealloc`` to take a ``CustomObject *`` argument, but the "
@@ -381,17 +734,45 @@ msgstr ""
 "参数，但 ``tp_dealloc`` 函数指针预期接受一个 ``PyObject *`` 参数。 如果不这样做，编译器将发出警告。 这是 C "
 "语言中面向对象的多态性！"
 
-#: ../../extending/newtypes_tutorial.rst:281
+#: ../../extending/newtypes_tutorial.rst:279
 msgid ""
 "We want to make sure that the first and last names are initialized to empty "
 "strings, so we provide a ``tp_new`` implementation::"
 msgstr "我们希望确保头一个和末一个名称被初始化为空字符串，因此我们提供了一个 ``tp_new`` 实现::"
 
-#: ../../extending/newtypes_tutorial.rst:305
+#: ../../extending/newtypes_tutorial.rst:282
+msgid ""
+"static PyObject *\n"
+"Custom_new(PyTypeObject *type, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    CustomObject *self;\n"
+"    self = (CustomObject *) type->tp_alloc(type, 0);\n"
+"    if (self != NULL) {\n"
+"        self->first = PyUnicode_FromString(\"\");\n"
+"        if (self->first == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->last = PyUnicode_FromString(\"\");\n"
+"        if (self->last == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->number = 0;\n"
+"    }\n"
+"    return (PyObject *) self;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:303
 msgid "and install it in the :c:member:`~PyTypeObject.tp_new` member::"
 msgstr "并在 :c:member:`~PyTypeObject.tp_new` 成员中安装它::"
 
-#: ../../extending/newtypes_tutorial.rst:309
+#: ../../extending/newtypes_tutorial.rst:305
+msgid ".tp_new = Custom_new,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:307
 msgid ""
 "The ``tp_new`` handler is responsible for creating (as opposed to "
 "initializing) objects of the type.  It is exposed in Python as the "
@@ -407,7 +788,7 @@ msgstr ""
 ":class:`!Custom` 类型的第一个版本所做的那样。 在此情况下，我们使用 ``tp_new`` 处理器来将 ``first`` 和 "
 "``last`` 属性初始化为非 ``NULL`` 的默认值。"
 
-#: ../../extending/newtypes_tutorial.rst:317
+#: ../../extending/newtypes_tutorial.rst:315
 msgid ""
 "``tp_new`` is passed the type being instantiated (not necessarily "
 "``CustomType``, if a subclass is instantiated) and any arguments passed when"
@@ -421,19 +802,23 @@ msgstr ""
 "处理器总是接受位置和关键字参数，但它们总是会忽略这些参数，而将参数处理留给初始化（即 C 中的 ``tp_init`` 或 Python 中的 "
 "``__init__`` 函数）方法来执行。"
 
-#: ../../extending/newtypes_tutorial.rst:325
+#: ../../extending/newtypes_tutorial.rst:323
 msgid ""
 "``tp_new`` shouldn't call ``tp_init`` explicitly, as the interpreter will do"
 " it itself."
 msgstr "``tp_new`` 不应显式地调用 ``tp_init``，因为解释器会自行调用它。"
 
-#: ../../extending/newtypes_tutorial.rst:328
+#: ../../extending/newtypes_tutorial.rst:326
 msgid ""
 "The ``tp_new`` implementation calls the :c:member:`~PyTypeObject.tp_alloc` "
 "slot to allocate memory::"
 msgstr "``tp_new`` 实现会调用 :c:member:`~PyTypeObject.tp_alloc` 槽位来分配内存::"
 
-#: ../../extending/newtypes_tutorial.rst:333
+#: ../../extending/newtypes_tutorial.rst:329
+msgid "self = (CustomObject *) type->tp_alloc(type, 0);"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:331
 msgid ""
 "Since memory allocation may fail, we must check the "
 ":c:member:`~PyTypeObject.tp_alloc` result against ``NULL`` before "
@@ -442,7 +827,7 @@ msgstr ""
 "由于内存分配可能会失败，我们必须在继续执行之前检查 :c:member:`~PyTypeObject.tp_alloc` 结果确认其不为 "
 "``NULL``。"
 
-#: ../../extending/newtypes_tutorial.rst:337
+#: ../../extending/newtypes_tutorial.rst:335
 msgid ""
 "We didn't fill the :c:member:`~PyTypeObject.tp_alloc` slot ourselves. Rather"
 " :c:func:`PyType_Ready` fills it for us by inheriting it from our base "
@@ -452,7 +837,7 @@ msgstr ""
 "我们没有自行填充 :c:member:`~PyTypeObject.tp_alloc` 槽位。 而是由 :c:func:`PyType_Ready` "
 "通过从我们的基类继承来替我们填充它，其中默认为 :class:`object`。 大部分类型都是使用默认的分配策略。"
 
-#: ../../extending/newtypes_tutorial.rst:343
+#: ../../extending/newtypes_tutorial.rst:341
 msgid ""
 "If you are creating a co-operative :c:member:`~PyTypeObject.tp_new` (one "
 "that calls a base type's :c:member:`~PyTypeObject.tp_new` or "
@@ -472,17 +857,50 @@ msgstr ""
 "如果你不这样做，你的类型的同样继承自其它由 Python 定义的类的 Python 子类可能无法正常工作。 "
 "(具体地说，你可能无法创建这样的子类的实例而是会引发 :exc:`TypeError`。)"
 
-#: ../../extending/newtypes_tutorial.rst:353
+#: ../../extending/newtypes_tutorial.rst:351
 msgid ""
 "We also define an initialization function which accepts arguments to provide"
 " initial values for our instance::"
 msgstr "我们还定义了一个接受参数来为我们的实例提供初始值的初始化函数::"
 
-#: ../../extending/newtypes_tutorial.rst:382
+#: ../../extending/newtypes_tutorial.rst:354
+msgid ""
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL, *tmp;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|OOi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        tmp = self->first;\n"
+"        Py_INCREF(first);\n"
+"        self->first = first;\n"
+"        Py_XDECREF(tmp);\n"
+"    }\n"
+"    if (last) {\n"
+"        tmp = self->last;\n"
+"        Py_INCREF(last);\n"
+"        self->last = last;\n"
+"        Py_XDECREF(tmp);\n"
+"    }\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:380
 msgid "by filling the :c:member:`~PyTypeObject.tp_init` slot. ::"
 msgstr "通过填充 :c:member:`~PyTypeObject.tp_init` 槽位。 ::"
 
-#: ../../extending/newtypes_tutorial.rst:386
+#: ../../extending/newtypes_tutorial.rst:382
+msgid ".tp_init = (initproc) Custom_init,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:384
 msgid ""
 "The :c:member:`~PyTypeObject.tp_init` slot is exposed in Python as the "
 ":meth:`~object.__init__` method.  It is used to initialize an object after "
@@ -492,7 +910,7 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_init` 槽位在 Python 中暴露为 :meth:`~object.__init__` "
 "方法。 它被用来在创建对象后对其进行初始化。 初始化器总是接受位置和关键字参数，它们应当在成功时返回 ``0`` 而在出错时返回 ``-1``。"
 
-#: ../../extending/newtypes_tutorial.rst:391
+#: ../../extending/newtypes_tutorial.rst:389
 msgid ""
 "Unlike the ``tp_new`` handler, there is no guarantee that ``tp_init`` is "
 "called at all (for example, the :mod:`pickle` module by default doesn't call"
@@ -506,7 +924,16 @@ msgstr ""
 "模块不会在未解封的实例上调用 :meth:`~object.__init__`)。 它还可能被多次调用。 任何人都可以在我们的对象上调用 "
 ":meth:`!__init__` 方法。 因此，我们在为属性赋新值时必须格外小心。 例如像这样给 ``first`` 成员赋值::"
 
-#: ../../extending/newtypes_tutorial.rst:405
+#: ../../extending/newtypes_tutorial.rst:397
+msgid ""
+"if (first) {\n"
+"    Py_XDECREF(self->first);\n"
+"    Py_INCREF(first);\n"
+"    self->first = first;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:403
 msgid ""
 "But this would be risky.  Our type doesn't restrict the type of the "
 "``first`` member, so it could be any kind of object.  It could have a "
@@ -518,24 +945,24 @@ msgstr ""
 "但是这可能会有危险。 我们的类型没有限制 ``first`` 成员的类型，因此它可以是任何种类的对象。 它可以带有一个会执行尝试访问 ``first``"
 " 成员的代码的析构器；或者该析构器可能会释放 :term:`全局解释器锁 <GIL>` 并让任意代码在其他线程中运行来访问和修改我们的对象。"
 
-#: ../../extending/newtypes_tutorial.rst:412
+#: ../../extending/newtypes_tutorial.rst:410
 msgid ""
 "To be paranoid and protect ourselves against this possibility, we almost "
 "always reassign members before decrementing their reference counts.  When "
 "don't we have to do this?"
 msgstr "为了保持谨慎并使我们避免这种可能性，我们几乎总是要在减少成员的引用计数之前给它们重新赋值。 什么时候我们可以不必再这样做？"
 
-#: ../../extending/newtypes_tutorial.rst:416
+#: ../../extending/newtypes_tutorial.rst:414
 msgid "when we absolutely know that the reference count is greater than 1;"
 msgstr "当我们明确知道引用计数大于 1 的时候;"
 
-#: ../../extending/newtypes_tutorial.rst:418
+#: ../../extending/newtypes_tutorial.rst:416
 msgid ""
 "when we know that deallocation of the object [#]_ will neither release the "
 ":term:`GIL` nor cause any calls back into our type's code;"
 msgstr "当我们知道对象的释放 [#]_ 既不会释放 :term:`GIL` 也不会导致任何对我们的类型的代码的回调的时候;"
 
-#: ../../extending/newtypes_tutorial.rst:421
+#: ../../extending/newtypes_tutorial.rst:419
 msgid ""
 "when decrementing a reference count in a "
 ":c:member:`~PyTypeObject.tp_dealloc` handler on a type which doesn't support"
@@ -543,18 +970,35 @@ msgid ""
 msgstr ""
 "当减少一个 :c:member:`~PyTypeObject.tp_dealloc` 处理器内不支持循环垃圾回收的类型的引用计数的时候 [#]_."
 
-#: ../../extending/newtypes_tutorial.rst:424
+#: ../../extending/newtypes_tutorial.rst:422
 msgid ""
 "We want to expose our instance variables as attributes. There are a number "
 "of ways to do that. The simplest way is to define member definitions::"
 msgstr "我们可能会想将我们的实例变量暴露为属性。 有几种方式可以做到这一点。 最简单的方式是定义成员的定义::"
 
-#: ../../extending/newtypes_tutorial.rst:437
+#: ../../extending/newtypes_tutorial.rst:425
+msgid ""
+"static PyMemberDef Custom_members[] = {\n"
+"    {\"first\", Py_T_OBJECT_EX, offsetof(CustomObject, first), 0,\n"
+"     \"first name\"},\n"
+"    {\"last\", Py_T_OBJECT_EX, offsetof(CustomObject, last), 0,\n"
+"     \"last name\"},\n"
+"    {\"number\", Py_T_INT, offsetof(CustomObject, number), 0,\n"
+"     \"custom number\"},\n"
+"    {NULL}  /* Sentinel */\n"
+"};"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:435
 msgid ""
 "and put the definitions in the :c:member:`~PyTypeObject.tp_members` slot::"
 msgstr "并将定义放置到 :c:member:`~PyTypeObject.tp_members` 槽位中::"
 
-#: ../../extending/newtypes_tutorial.rst:441
+#: ../../extending/newtypes_tutorial.rst:437
+msgid ".tp_members = Custom_members,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:439
 msgid ""
 "Each member definition has a member name, type, offset, access flags and "
 "documentation string.  See the :ref:`Generic-Attribute-Management` section "
@@ -563,7 +1007,7 @@ msgstr ""
 "每个成员的定义都有成员名称、类型、偏移量、访问旗标和文档字符串。 请参阅下面的 :ref:`Generic-Attribute-Management` "
 "小节来了解详情。section below for details."
 
-#: ../../extending/newtypes_tutorial.rst:445
+#: ../../extending/newtypes_tutorial.rst:443
 msgid ""
 "A disadvantage of this approach is that it doesn't provide a way to restrict"
 " the types of objects that can be assigned to the Python attributes.  We "
@@ -577,13 +1021,30 @@ msgstr ""
 "的名称为字符串，但它们可以被赋值为任意 Python 对象。 此外，这些属性还可以被删除，并将 C 指针设为 ``NULL``。 "
 "即使我们可以保证这些成员被初始化为非 ``NULL`` 值，如果这些属性被删除这些成员仍可被设为 ``NULL``。"
 
-#: ../../extending/newtypes_tutorial.rst:452
+#: ../../extending/newtypes_tutorial.rst:450
 msgid ""
-"We define a single method, :meth:`!Custom.name()`, that outputs the objects "
+"We define a single method, :meth:`!Custom.name`, that outputs the objects "
 "name as the concatenation of the first and last names. ::"
-msgstr "我们定义了一个单独的方法，:meth:`!Custom.name()`，它将对象名称输出为 first 和 last 的拼接。 ::"
+msgstr ""
 
-#: ../../extending/newtypes_tutorial.rst:469
+#: ../../extending/newtypes_tutorial.rst:453
+msgid ""
+"static PyObject *\n"
+"Custom_name(CustomObject *self, PyObject *Py_UNUSED(ignored))\n"
+"{\n"
+"    if (self->first == NULL) {\n"
+"        PyErr_SetString(PyExc_AttributeError, \"first\");\n"
+"        return NULL;\n"
+"    }\n"
+"    if (self->last == NULL) {\n"
+"        PyErr_SetString(PyExc_AttributeError, \"last\");\n"
+"        return NULL;\n"
+"    }\n"
+"    return PyUnicode_FromFormat(\"%S %S\", self->first, self->last);\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:467
 msgid ""
 "The method is implemented as a C function that takes a :class:`!Custom` (or "
 ":class:`!Custom` subclass) instance as the first argument.  Methods always "
@@ -596,7 +1057,13 @@ msgstr ""
 "方法总是接受一个实例作为第一个参数。 方法往往也接受位置和关键字参数，但在本例中我们未接受任何参数也不需要接受位置参数元组或关键字参数字典。 "
 "该方法等价于以下 Python 方法："
 
-#: ../../extending/newtypes_tutorial.rst:481
+#: ../../extending/newtypes_tutorial.rst:474
+msgid ""
+"def name(self):\n"
+"    return \"%s %s\" % (self.first, self.last)"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:479
 msgid ""
 "Note that we have to check for the possibility that our :attr:`!first` and "
 ":attr:`!last` members are ``NULL``.  This is because they can be deleted, in"
@@ -608,23 +1075,37 @@ msgstr ""
 "这是因为它们可以被删除，在此情况下它们会被设为 ``NULL``。 更好的做法是防止删除这些属性并将属性的值限制为字符串。 "
 "我们将在下一节了解如何做到这一点。"
 
-#: ../../extending/newtypes_tutorial.rst:487
+#: ../../extending/newtypes_tutorial.rst:485
 msgid ""
 "Now that we've defined the method, we need to create an array of method "
 "definitions::"
 msgstr "现在我们已经定义好了方法，我们需要创建一个方法定义数组::"
 
-#: ../../extending/newtypes_tutorial.rst:497
+#: ../../extending/newtypes_tutorial.rst:488
+msgid ""
+"static PyMethodDef Custom_methods[] = {\n"
+"    {\"name\", (PyCFunction) Custom_name, METH_NOARGS,\n"
+"     \"Return the name, combining the first and last name\"\n"
+"    },\n"
+"    {NULL}  /* Sentinel */\n"
+"};"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:495
 msgid ""
 "(note that we used the :c:macro:`METH_NOARGS` flag to indicate that the "
 "method is expecting no arguments other than *self*)"
 msgstr "（请注意我们使用了 :c:macro:`METH_NOARGS` 旗标来指明该方法不准备接受除 *self* 以外的任何参数）"
 
-#: ../../extending/newtypes_tutorial.rst:500
+#: ../../extending/newtypes_tutorial.rst:498
 msgid "and assign it to the :c:member:`~PyTypeObject.tp_methods` slot::"
 msgstr "并将其赋给 :c:member:`~PyTypeObject.tp_methods` 槽位::"
 
-#: ../../extending/newtypes_tutorial.rst:504
+#: ../../extending/newtypes_tutorial.rst:500
+msgid ".tp_methods = Custom_methods,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:502
 msgid ""
 "Finally, we'll make our type usable as a base class for subclassing.  We've "
 "written our methods carefully so far so that they don't make any assumptions"
@@ -634,7 +1115,11 @@ msgstr ""
 "最后，我们将使我们的类型可被用作派生子类的基类。 我们精心地编写我们的方法以便它们不会随意假定被创建或使用的对象类型，所以我们需要做的就是将 "
 ":c:macro:`Py_TPFLAGS_BASETYPE` 添加到我们的类旗标定义中::"
 
-#: ../../extending/newtypes_tutorial.rst:511
+#: ../../extending/newtypes_tutorial.rst:507
+msgid ".tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:509
 msgid ""
 "We rename :c:func:`!PyInit_custom` to :c:func:`!PyInit_custom2`, update the "
 "module name in the :c:type:`PyModuleDef` struct, and update the full class "
@@ -643,20 +1128,29 @@ msgstr ""
 "我们将 :c:func:`!PyInit_custom` 重命名为 :c:func:`!PyInit_custom2`，更新 "
 ":c:type:`PyModuleDef` 结构体中的模块名称，并更新 :c:type:`PyTypeObject` 结构体中的完整类名。"
 
-#: ../../extending/newtypes_tutorial.rst:515
+#: ../../extending/newtypes_tutorial.rst:513
 msgid ""
 "Finally, we update our :file:`setup.py` file to include the new module,"
 msgstr "最后，我们更新 :file:`setup.py` 文件来包括新的模块，"
 
-#: ../../extending/newtypes_tutorial.rst:525
+#: ../../extending/newtypes_tutorial.rst:515
+msgid ""
+"from setuptools import Extension, setup\n"
+"setup(ext_modules=[\n"
+"    Extension(\"custom\", [\"custom.c\"]),\n"
+"    Extension(\"custom2\", [\"custom2.c\"]),\n"
+"])"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:523
 msgid "and then we re-install so that we can ``import custom2``:"
 msgstr "然后我们重新安装以便能够 ``import custom2``:"
 
-#: ../../extending/newtypes_tutorial.rst:532
+#: ../../extending/newtypes_tutorial.rst:530
 msgid "Providing finer control over data attributes"
 msgstr "提供对于数据属性的更精细控制"
 
-#: ../../extending/newtypes_tutorial.rst:534
+#: ../../extending/newtypes_tutorial.rst:532
 msgid ""
 "In this section, we'll provide finer control over how the :attr:`!first` and"
 " :attr:`!last` attributes are set in the :class:`!Custom` example. In the "
@@ -668,7 +1162,182 @@ msgstr ""
 " 在我们上一版本的模块中，实例变量 :attr:`!first` 和 :attr:`!last` 可以被设为非字符串值甚至被删除。 "
 "我们希望确保这些属性始终包含字符串。"
 
-#: ../../extending/newtypes_tutorial.rst:543
+#: ../../extending/newtypes_tutorial.rst:538
+msgid ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"#include <stddef.h> /* for offsetof() */\n"
+"\n"
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    PyObject *first; /* first name */\n"
+"    PyObject *last;  /* last name */\n"
+"    int number;\n"
+"} CustomObject;\n"
+"\n"
+"static void\n"
+"Custom_dealloc(CustomObject *self)\n"
+"{\n"
+"    Py_XDECREF(self->first);\n"
+"    Py_XDECREF(self->last);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}\n"
+"\n"
+"static PyObject *\n"
+"Custom_new(PyTypeObject *type, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    CustomObject *self;\n"
+"    self = (CustomObject *) type->tp_alloc(type, 0);\n"
+"    if (self != NULL) {\n"
+"        self->first = PyUnicode_FromString(\"\");\n"
+"        if (self->first == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->last = PyUnicode_FromString(\"\");\n"
+"        if (self->last == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->number = 0;\n"
+"    }\n"
+"    return (PyObject *) self;\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|UUi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        Py_SETREF(self->first, Py_NewRef(first));\n"
+"    }\n"
+"    if (last) {\n"
+"        Py_SETREF(self->last, Py_NewRef(last));\n"
+"    }\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyMemberDef Custom_members[] = {\n"
+"    {\"number\", Py_T_INT, offsetof(CustomObject, number), 0,\n"
+"     \"custom number\"},\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyObject *\n"
+"Custom_getfirst(CustomObject *self, void *closure)\n"
+"{\n"
+"    return Py_NewRef(self->first);\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_setfirst(CustomObject *self, PyObject *value, void *closure)\n"
+"{\n"
+"    if (value == NULL) {\n"
+"        PyErr_SetString(PyExc_TypeError, \"Cannot delete the first attribute\");\n"
+"        return -1;\n"
+"    }\n"
+"    if (!PyUnicode_Check(value)) {\n"
+"        PyErr_SetString(PyExc_TypeError,\n"
+"                        \"The first attribute value must be a string\");\n"
+"        return -1;\n"
+"    }\n"
+"    Py_SETREF(self->first, Py_NewRef(value));\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyObject *\n"
+"Custom_getlast(CustomObject *self, void *closure)\n"
+"{\n"
+"    return Py_NewRef(self->last);\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_setlast(CustomObject *self, PyObject *value, void *closure)\n"
+"{\n"
+"    if (value == NULL) {\n"
+"        PyErr_SetString(PyExc_TypeError, \"Cannot delete the last attribute\");\n"
+"        return -1;\n"
+"    }\n"
+"    if (!PyUnicode_Check(value)) {\n"
+"        PyErr_SetString(PyExc_TypeError,\n"
+"                        \"The last attribute value must be a string\");\n"
+"        return -1;\n"
+"    }\n"
+"    Py_SETREF(self->last, Py_NewRef(value));\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyGetSetDef Custom_getsetters[] = {\n"
+"    {\"first\", (getter) Custom_getfirst, (setter) Custom_setfirst,\n"
+"     \"first name\", NULL},\n"
+"    {\"last\", (getter) Custom_getlast, (setter) Custom_setlast,\n"
+"     \"last name\", NULL},\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyObject *\n"
+"Custom_name(CustomObject *self, PyObject *Py_UNUSED(ignored))\n"
+"{\n"
+"    return PyUnicode_FromFormat(\"%S %S\", self->first, self->last);\n"
+"}\n"
+"\n"
+"static PyMethodDef Custom_methods[] = {\n"
+"    {\"name\", (PyCFunction) Custom_name, METH_NOARGS,\n"
+"     \"Return the name, combining the first and last name\"\n"
+"    },\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom3.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,\n"
+"    .tp_new = Custom_new,\n"
+"    .tp_init = (initproc) Custom_init,\n"
+"    .tp_dealloc = (destructor) Custom_dealloc,\n"
+"    .tp_members = Custom_members,\n"
+"    .tp_methods = Custom_methods,\n"
+"    .tp_getset = Custom_getsetters,\n"
+"};\n"
+"\n"
+"static PyModuleDef custommodule = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"custom3\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_custom3(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    if (PyType_Ready(&CustomType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&custommodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:541
 msgid ""
 "To provide greater control, over the :attr:`!first` and :attr:`!last` "
 "attributes, we'll use custom getter and setter functions.  Here are the "
@@ -677,7 +1346,37 @@ msgstr ""
 "为了更好地控制 :attr:`!first` 和 :attr:`!last` 属性，我们将使用自定义的读取器和设置器函数。 以下就是用于读取和设置 "
 ":attr:`!first` 属性的函数::"
 
-#: ../../extending/newtypes_tutorial.rst:574
+#: ../../extending/newtypes_tutorial.rst:545
+msgid ""
+"static PyObject *\n"
+"Custom_getfirst(CustomObject *self, void *closure)\n"
+"{\n"
+"    Py_INCREF(self->first);\n"
+"    return self->first;\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_setfirst(CustomObject *self, PyObject *value, void *closure)\n"
+"{\n"
+"    PyObject *tmp;\n"
+"    if (value == NULL) {\n"
+"        PyErr_SetString(PyExc_TypeError, \"Cannot delete the first attribute\");\n"
+"        return -1;\n"
+"    }\n"
+"    if (!PyUnicode_Check(value)) {\n"
+"        PyErr_SetString(PyExc_TypeError,\n"
+"                        \"The first attribute value must be a string\");\n"
+"        return -1;\n"
+"    }\n"
+"    tmp = self->first;\n"
+"    Py_INCREF(value);\n"
+"    self->first = value;\n"
+"    Py_DECREF(tmp);\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:572
 msgid ""
 "The getter function is passed a :class:`!Custom` object and a \"closure\", "
 "which is a void pointer.  In this case, the closure is ignored.  (The "
@@ -689,7 +1388,7 @@ msgstr ""
 "读取器函数接受一个 :class:`!Custom` 对象和一个“闭包”，后者是一个空指针。 在本例中，该闭包将被忽略。 （闭包支持将定义数据传递给 "
 "读取器和设置器的高级用法。 例如，这可以被用来允许一组获取器和设置器函数根据闭包中的数据来决定要读取或设置的属性）。"
 
-#: ../../extending/newtypes_tutorial.rst:580
+#: ../../extending/newtypes_tutorial.rst:578
 msgid ""
 "The setter function is passed the :class:`!Custom` object, the new value, "
 "and the closure.  The new value may be ``NULL``, in which case the attribute"
@@ -699,15 +1398,30 @@ msgstr ""
 "设置器函数接受传入 :class:`!Custom` 对象、新值和闭包。 新值可能为 ``NULL``，在这种情况下属性将被删除。 "
 "在我们的设置器中，如果属性被删除或者如果其新值不是字符串则会引发一个错误。"
 
-#: ../../extending/newtypes_tutorial.rst:585
+#: ../../extending/newtypes_tutorial.rst:583
 msgid "We create an array of :c:type:`PyGetSetDef` structures::"
 msgstr "我们创建一个 :c:type:`PyGetSetDef` 结构体的数组::"
 
-#: ../../extending/newtypes_tutorial.rst:595
+#: ../../extending/newtypes_tutorial.rst:585
+msgid ""
+"static PyGetSetDef Custom_getsetters[] = {\n"
+"    {\"first\", (getter) Custom_getfirst, (setter) Custom_setfirst,\n"
+"     \"first name\", NULL},\n"
+"    {\"last\", (getter) Custom_getlast, (setter) Custom_setlast,\n"
+"     \"last name\", NULL},\n"
+"    {NULL}  /* Sentinel */\n"
+"};"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:593
 msgid "and register it in the :c:member:`~PyTypeObject.tp_getset` slot::"
 msgstr "并在 :c:member:`~PyTypeObject.tp_getset` 槽位中注册它::"
 
-#: ../../extending/newtypes_tutorial.rst:599
+#: ../../extending/newtypes_tutorial.rst:595
+msgid ".tp_getset = Custom_getsetters,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:597
 msgid ""
 "The last item in a :c:type:`PyGetSetDef` structure is the \"closure\" "
 "mentioned above.  In this case, we aren't using a closure, so we just pass "
@@ -715,17 +1429,55 @@ msgid ""
 msgstr ""
 "在 :c:type:`PyGetSetDef` 结构体中的最后一项是上面提到的“闭包”。 在本例中，我们没有使用闭包，因此我们只传入 ``NULL``。"
 
-#: ../../extending/newtypes_tutorial.rst:602
+#: ../../extending/newtypes_tutorial.rst:600
 msgid "We also remove the member definitions for these attributes::"
 msgstr "我们还移除了这些属性的成员定义::"
 
-#: ../../extending/newtypes_tutorial.rst:610
+#: ../../extending/newtypes_tutorial.rst:602
+msgid ""
+"static PyMemberDef Custom_members[] = {\n"
+"    {\"number\", Py_T_INT, offsetof(CustomObject, number), 0,\n"
+"     \"custom number\"},\n"
+"    {NULL}  /* Sentinel */\n"
+"};"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:608
 msgid ""
 "We also need to update the :c:member:`~PyTypeObject.tp_init` handler to only"
 " allow strings [#]_ to be passed::"
 msgstr "我们还需要将 :c:member:`~PyTypeObject.tp_init` 处理器更新为只允许传入字符串 [#]_::"
 
-#: ../../extending/newtypes_tutorial.rst:639
+#: ../../extending/newtypes_tutorial.rst:611
+msgid ""
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL, *tmp;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|UUi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        tmp = self->first;\n"
+"        Py_INCREF(first);\n"
+"        self->first = first;\n"
+"        Py_DECREF(tmp);\n"
+"    }\n"
+"    if (last) {\n"
+"        tmp = self->last;\n"
+"        Py_INCREF(last);\n"
+"        self->last = last;\n"
+"        Py_DECREF(tmp);\n"
+"    }\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:637
 msgid ""
 "With these changes, we can assure that the ``first`` and ``last`` members "
 "are never ``NULL`` so we can remove checks for ``NULL`` values in almost all"
@@ -738,7 +1490,7 @@ msgstr ""
 "值检查。 这意味着大部分 :c:func:`Py_XDECREF` 调用都可以被转换为 :c:func:`Py_DECREF` 调用。 "
 "我们不能更改这些调用的唯一场合是在 ``tp_dealloc`` 实现中，那里这些成员的初始化有可能在 ``tp_new`` 中失败。"
 
-#: ../../extending/newtypes_tutorial.rst:646
+#: ../../extending/newtypes_tutorial.rst:644
 msgid ""
 "We also rename the module initialization function and module name in the "
 "initialization function, as we did before, and we add an extra definition to"
@@ -746,11 +1498,11 @@ msgid ""
 msgstr ""
 "我们还重命名了模块初始化函数和初始化函数中的模块名称，就像我们之前所做的一样，我们还向 :file:`setup.py` 文件添加了一个额外的定义。"
 
-#: ../../extending/newtypes_tutorial.rst:652
+#: ../../extending/newtypes_tutorial.rst:650
 msgid "Supporting cyclic garbage collection"
 msgstr "支持循环垃圾回收"
 
-#: ../../extending/newtypes_tutorial.rst:654
+#: ../../extending/newtypes_tutorial.rst:652
 msgid ""
 "Python has a :term:`cyclic garbage collector (GC) <garbage collection>` that"
 " can identify unneeded objects even when their reference counts are not "
@@ -760,7 +1512,14 @@ msgstr ""
 "Python 具有一个可以标识不再需要的对象的 :term:`循环垃圾回收器 (GC) <garbage collection>` "
 "即使它们的引用计数并不为零。 这种情况会在对象被循环引用时发生。 例如，设想:"
 
-#: ../../extending/newtypes_tutorial.rst:664
+#: ../../extending/newtypes_tutorial.rst:656
+msgid ""
+">>> l = []\n"
+">>> l.append(l)\n"
+">>> del l"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:662
 msgid ""
 "In this example, we create a list that contains itself. When we delete it, "
 "it still has a reference from itself. Its reference count doesn't drop to "
@@ -770,7 +1529,7 @@ msgstr ""
 "在这个例子中，我们创建了一个包含其自身的列表。 当我们删除它的时候，它将仍然具有一个来自其本身的引用。 它的引用计数并未降为零。 幸运的是，Python"
 " 的循环垃圾回收器将最终发现该列表是无用的垃圾并释放它。"
 
-#: ../../extending/newtypes_tutorial.rst:669
+#: ../../extending/newtypes_tutorial.rst:667
 msgid ""
 "In the second version of the :class:`!Custom` example, we allowed any kind "
 "of object to be stored in the :attr:`!first` or :attr:`!last` attributes "
@@ -782,7 +1541,16 @@ msgstr ""
 "属性中 [#]_。 此外，在第二和第三个版本中，我们还允许子类化 :class:`!Custom`，并且子类可以添加任意属性。 "
 "出于这两个原因中的任何一个，:class:`!Custom` 对象都可以加入循环："
 
-#: ../../extending/newtypes_tutorial.rst:683
+#: ../../extending/newtypes_tutorial.rst:673
+msgid ""
+">>> import custom3\n"
+">>> class Derived(custom3.Custom): pass\n"
+"...\n"
+">>> n = Derived()\n"
+">>> n.some_attribute = n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:681
 msgid ""
 "To allow a :class:`!Custom` instance participating in a reference cycle to "
 "be properly detected and collected by the cyclic GC, our :class:`!Custom` "
@@ -792,13 +1560,226 @@ msgstr ""
 "要允许一个加入引用循环的 :class:`!Custom` 实例能被循环 GC 正确检测和收集，我们的 :class:`!Custom` "
 "类型需要填充两个额外的槽位并增加一个旗标来启用这些槽位："
 
-#: ../../extending/newtypes_tutorial.rst:690
+#: ../../extending/newtypes_tutorial.rst:685
+msgid ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"#include <stddef.h> /* for offsetof() */\n"
+"\n"
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    PyObject *first; /* first name */\n"
+"    PyObject *last;  /* last name */\n"
+"    int number;\n"
+"} CustomObject;\n"
+"\n"
+"static int\n"
+"Custom_traverse(CustomObject *self, visitproc visit, void *arg)\n"
+"{\n"
+"    Py_VISIT(self->first);\n"
+"    Py_VISIT(self->last);\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_clear(CustomObject *self)\n"
+"{\n"
+"    Py_CLEAR(self->first);\n"
+"    Py_CLEAR(self->last);\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static void\n"
+"Custom_dealloc(CustomObject *self)\n"
+"{\n"
+"    PyObject_GC_UnTrack(self);\n"
+"    Custom_clear(self);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}\n"
+"\n"
+"static PyObject *\n"
+"Custom_new(PyTypeObject *type, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    CustomObject *self;\n"
+"    self = (CustomObject *) type->tp_alloc(type, 0);\n"
+"    if (self != NULL) {\n"
+"        self->first = PyUnicode_FromString(\"\");\n"
+"        if (self->first == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->last = PyUnicode_FromString(\"\");\n"
+"        if (self->last == NULL) {\n"
+"            Py_DECREF(self);\n"
+"            return NULL;\n"
+"        }\n"
+"        self->number = 0;\n"
+"    }\n"
+"    return (PyObject *) self;\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|UUi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        Py_SETREF(self->first, Py_NewRef(first));\n"
+"    }\n"
+"    if (last) {\n"
+"        Py_SETREF(self->last, Py_NewRef(last));\n"
+"    }\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyMemberDef Custom_members[] = {\n"
+"    {\"number\", Py_T_INT, offsetof(CustomObject, number), 0,\n"
+"     \"custom number\"},\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyObject *\n"
+"Custom_getfirst(CustomObject *self, void *closure)\n"
+"{\n"
+"    return Py_NewRef(self->first);\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_setfirst(CustomObject *self, PyObject *value, void *closure)\n"
+"{\n"
+"    if (value == NULL) {\n"
+"        PyErr_SetString(PyExc_TypeError, \"Cannot delete the first attribute\");\n"
+"        return -1;\n"
+"    }\n"
+"    if (!PyUnicode_Check(value)) {\n"
+"        PyErr_SetString(PyExc_TypeError,\n"
+"                        \"The first attribute value must be a string\");\n"
+"        return -1;\n"
+"    }\n"
+"    Py_XSETREF(self->first, Py_NewRef(value));\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyObject *\n"
+"Custom_getlast(CustomObject *self, void *closure)\n"
+"{\n"
+"    return Py_NewRef(self->last);\n"
+"}\n"
+"\n"
+"static int\n"
+"Custom_setlast(CustomObject *self, PyObject *value, void *closure)\n"
+"{\n"
+"    if (value == NULL) {\n"
+"        PyErr_SetString(PyExc_TypeError, \"Cannot delete the last attribute\");\n"
+"        return -1;\n"
+"    }\n"
+"    if (!PyUnicode_Check(value)) {\n"
+"        PyErr_SetString(PyExc_TypeError,\n"
+"                        \"The last attribute value must be a string\");\n"
+"        return -1;\n"
+"    }\n"
+"    Py_XSETREF(self->last, Py_NewRef(value));\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyGetSetDef Custom_getsetters[] = {\n"
+"    {\"first\", (getter) Custom_getfirst, (setter) Custom_setfirst,\n"
+"     \"first name\", NULL},\n"
+"    {\"last\", (getter) Custom_getlast, (setter) Custom_setlast,\n"
+"     \"last name\", NULL},\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyObject *\n"
+"Custom_name(CustomObject *self, PyObject *Py_UNUSED(ignored))\n"
+"{\n"
+"    return PyUnicode_FromFormat(\"%S %S\", self->first, self->last);\n"
+"}\n"
+"\n"
+"static PyMethodDef Custom_methods[] = {\n"
+"    {\"name\", (PyCFunction) Custom_name, METH_NOARGS,\n"
+"     \"Return the name, combining the first and last name\"\n"
+"    },\n"
+"    {NULL}  /* Sentinel */\n"
+"};\n"
+"\n"
+"static PyTypeObject CustomType = {\n"
+"    .ob_base = PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"custom4.Custom\",\n"
+"    .tp_doc = PyDoc_STR(\"Custom objects\"),\n"
+"    .tp_basicsize = sizeof(CustomObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,\n"
+"    .tp_new = Custom_new,\n"
+"    .tp_init = (initproc) Custom_init,\n"
+"    .tp_dealloc = (destructor) Custom_dealloc,\n"
+"    .tp_traverse = (traverseproc) Custom_traverse,\n"
+"    .tp_clear = (inquiry) Custom_clear,\n"
+"    .tp_members = Custom_members,\n"
+"    .tp_methods = Custom_methods,\n"
+"    .tp_getset = Custom_getsetters,\n"
+"};\n"
+"\n"
+"static PyModuleDef custommodule = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"custom4\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_custom4(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    if (PyType_Ready(&CustomType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&custommodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:688
 msgid ""
 "First, the traversal method lets the cyclic GC know about subobjects that "
 "could participate in cycles::"
 msgstr "首先，遍历方法让循环 GC 知道能够参加循环的子对象::"
 
-#: ../../extending/newtypes_tutorial.rst:710
+#: ../../extending/newtypes_tutorial.rst:691
+msgid ""
+"static int\n"
+"Custom_traverse(CustomObject *self, visitproc visit, void *arg)\n"
+"{\n"
+"    int vret;\n"
+"    if (self->first) {\n"
+"        vret = visit(self->first, arg);\n"
+"        if (vret != 0)\n"
+"            return vret;\n"
+"    }\n"
+"    if (self->last) {\n"
+"        vret = visit(self->last, arg);\n"
+"        if (vret != 0)\n"
+"            return vret;\n"
+"    }\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:708
 msgid ""
 "For each subobject that can participate in cycles, we need to call the "
 ":c:func:`!visit` function, which is passed to the traversal method. The "
@@ -809,7 +1790,7 @@ msgstr ""
 "对于每个可以加入循环的子对象，我们都需要调用 :c:func:`!visit` 函数，它会被传递给遍历方法。 :c:func:`!visit` "
 "函数接受该子对象和传递给遍历方法的额外参数 *arg* 作为其参数。 它返回一个在其为非零值时必须被返回的整数值。"
 
-#: ../../extending/newtypes_tutorial.rst:716
+#: ../../extending/newtypes_tutorial.rst:714
 msgid ""
 "Python provides a :c:func:`Py_VISIT` macro that automates calling visit "
 "functions.  With :c:func:`Py_VISIT`, we can minimize the amount of "
@@ -818,7 +1799,18 @@ msgstr ""
 "Python 提供了一个可自动调用 visit 函数的 :c:func:`Py_VISIT` 宏。 使用 "
 ":c:func:`Py_VISIT`，我们可以最小化 ``Custom_traverse`` 中的准备工作量::"
 
-#: ../../extending/newtypes_tutorial.rst:729
+#: ../../extending/newtypes_tutorial.rst:718
+msgid ""
+"static int\n"
+"Custom_traverse(CustomObject *self, visitproc visit, void *arg)\n"
+"{\n"
+"    Py_VISIT(self->first);\n"
+"    Py_VISIT(self->last);\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:727
 msgid ""
 "The :c:member:`~PyTypeObject.tp_traverse` implementation must name its "
 "arguments exactly *visit* and *arg* in order to use :c:func:`Py_VISIT`."
@@ -826,13 +1818,24 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_traverse` 实现必须将其参数准确命名为 *visit* 和 *arg* 以便使用 "
 ":c:func:`Py_VISIT`。"
 
-#: ../../extending/newtypes_tutorial.rst:732
+#: ../../extending/newtypes_tutorial.rst:730
 msgid ""
 "Second, we need to provide a method for clearing any subobjects that can "
 "participate in cycles::"
 msgstr "第二，我们需要提供一个方法用来清除任何可以参加循环的子对象::"
 
-#: ../../extending/newtypes_tutorial.rst:743
+#: ../../extending/newtypes_tutorial.rst:733
+msgid ""
+"static int\n"
+"Custom_clear(CustomObject *self)\n"
+"{\n"
+"    Py_CLEAR(self->first);\n"
+"    Py_CLEAR(self->last);\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:741
 msgid ""
 "Notice the use of the :c:func:`Py_CLEAR` macro.  It is the recommended and "
 "safe way to clear data attributes of arbitrary types while decrementing "
@@ -845,11 +1848,19 @@ msgstr ""
 "``NULL`` 之间在属性上调用 :c:func:`Py_XDECREF`，则属性的析构器有可能会回调再次读取该属性的代码 (*特别是* "
 "如果存在引用循环的话)。"
 
-#: ../../extending/newtypes_tutorial.rst:751
+#: ../../extending/newtypes_tutorial.rst:749
 msgid "You could emulate :c:func:`Py_CLEAR` by writing::"
 msgstr "你可以通过以下写法来模拟 :c:func:`Py_CLEAR`::"
 
-#: ../../extending/newtypes_tutorial.rst:758
+#: ../../extending/newtypes_tutorial.rst:751
+msgid ""
+"PyObject *tmp;\n"
+"tmp = self->first;\n"
+"self->first = NULL;\n"
+"Py_XDECREF(tmp);"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:756
 msgid ""
 "Nevertheless, it is much easier and less error-prone to always use "
 ":c:func:`Py_CLEAR` when deleting an attribute.  Don't try to micro-optimize "
@@ -858,7 +1869,7 @@ msgstr ""
 "无论如何，在删除属性时始终使用Nevertheless, it is much easier and less error-prone to "
 "always use :c:func:`Py_CLEAR` 都是更简单且更不易出错的。 请不要尝试以健壮性为代价的微小优化！"
 
-#: ../../extending/newtypes_tutorial.rst:762
+#: ../../extending/newtypes_tutorial.rst:760
 msgid ""
 "The deallocator ``Custom_dealloc`` may call arbitrary code when clearing "
 "attributes.  It means the circular GC can be triggered inside the function. "
@@ -871,12 +1882,28 @@ msgstr ""
 "预期引用计数不为零，我们需要通过调用 :c:func:`PyObject_GC_UnTrack` 来让 GC 停止追踪相关的对象。 下面是我们使用 "
 ":c:func:`PyObject_GC_UnTrack` 和 ``Custom_clear`` 重新实现的释放器::"
 
-#: ../../extending/newtypes_tutorial.rst:777
+#: ../../extending/newtypes_tutorial.rst:767
+msgid ""
+"static void\n"
+"Custom_dealloc(CustomObject *self)\n"
+"{\n"
+"    PyObject_GC_UnTrack(self);\n"
+"    Custom_clear(self);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:775
 msgid ""
 "Finally, we add the :c:macro:`Py_TPFLAGS_HAVE_GC` flag to the class flags::"
 msgstr "最后，我们将 :c:macro:`Py_TPFLAGS_HAVE_GC` 旗标添加到类旗标中::"
 
-#: ../../extending/newtypes_tutorial.rst:781
+#: ../../extending/newtypes_tutorial.rst:777
+msgid ""
+".tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:779
 msgid ""
 "That's pretty much it.  If we had written custom "
 ":c:member:`~PyTypeObject.tp_alloc` or :c:member:`~PyTypeObject.tp_free` "
@@ -886,11 +1913,11 @@ msgstr ""
 "这样就差不多了。 如果我们编写了自定义的 :c:member:`~PyTypeObject.tp_alloc` 或 "
 ":c:member:`~PyTypeObject.tp_free` 处理器，则我们需要针对循环垃圾回收来修改它。 大多数扩展都将使用自动提供的版本。"
 
-#: ../../extending/newtypes_tutorial.rst:787
+#: ../../extending/newtypes_tutorial.rst:785
 msgid "Subclassing other types"
 msgstr "子类化其他类型"
 
-#: ../../extending/newtypes_tutorial.rst:789
+#: ../../extending/newtypes_tutorial.rst:787
 msgid ""
 "It is possible to create new extension types that are derived from existing "
 "types. It is easiest to inherit from the built in types, since an extension "
@@ -900,7 +1927,7 @@ msgstr ""
 "创建派生自现有类型的新类型是有可能的。 最容易的做法是从内置类型继承，因为扩展可以方便地使用它所需要的 :c:type:`PyTypeObject`。 "
 "在不同扩展模块之间共享这些 :c:type:`PyTypeObject` 结构体则是困难的。"
 
-#: ../../extending/newtypes_tutorial.rst:794
+#: ../../extending/newtypes_tutorial.rst:792
 msgid ""
 "In this example we will create a :class:`!SubList` type that inherits from "
 "the built-in :class:`list` type. The new type will be completely compatible "
@@ -910,14 +1937,106 @@ msgstr ""
 "在本例中我们将创建一个继承自内置 :class:`list` 类型的 :class:`!SubList` 类型。 "
 "这个新类型将完全兼容常规列表，但将拥有一个额外的 :meth:`!increment` 方法用于递增内部计数器的值："
 
-#: ../../extending/newtypes_tutorial.rst:814
+#: ../../extending/newtypes_tutorial.rst:797
+msgid ""
+">>> import sublist\n"
+">>> s = sublist.SubList(range(3))\n"
+">>> s.extend(s)\n"
+">>> print(len(s))\n"
+"6\n"
+">>> print(s.increment())\n"
+"1\n"
+">>> print(s.increment())\n"
+"2"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:809
+msgid ""
+"#define PY_SSIZE_T_CLEAN\n"
+"#include <Python.h>\n"
+"\n"
+"typedef struct {\n"
+"    PyListObject list;\n"
+"    int state;\n"
+"} SubListObject;\n"
+"\n"
+"static PyObject *\n"
+"SubList_increment(SubListObject *self, PyObject *unused)\n"
+"{\n"
+"    self->state++;\n"
+"    return PyLong_FromLong(self->state);\n"
+"}\n"
+"\n"
+"static PyMethodDef SubList_methods[] = {\n"
+"    {\"increment\", (PyCFunction) SubList_increment, METH_NOARGS,\n"
+"     PyDoc_STR(\"increment state counter\")},\n"
+"    {NULL},\n"
+"};\n"
+"\n"
+"static int\n"
+"SubList_init(SubListObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    if (PyList_Type.tp_init((PyObject *) self, args, kwds) < 0)\n"
+"        return -1;\n"
+"    self->state = 0;\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyTypeObject SubListType = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"sublist.SubList\",\n"
+"    .tp_doc = PyDoc_STR(\"SubList objects\"),\n"
+"    .tp_basicsize = sizeof(SubListObject),\n"
+"    .tp_itemsize = 0,\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,\n"
+"    .tp_init = (initproc) SubList_init,\n"
+"    .tp_methods = SubList_methods,\n"
+"};\n"
+"\n"
+"static PyModuleDef sublistmodule = {\n"
+"    PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"sublist\",\n"
+"    .m_doc = \"Example module that creates an extension type.\",\n"
+"    .m_size = -1,\n"
+"};\n"
+"\n"
+"PyMODINIT_FUNC\n"
+"PyInit_sublist(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"    SubListType.tp_base = &PyList_Type;\n"
+"    if (PyType_Ready(&SubListType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&sublistmodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"SubList\", (PyObject *) &SubListType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}\n"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:812
 msgid ""
 "As you can see, the source code closely resembles the :class:`!Custom` "
 "examples in previous sections. We will break down the main differences "
 "between them. ::"
 msgstr "如你所见，此源代码与之前几节中的 :class:`!Custom` 示例非常相似。 我们将逐一分析它们之间的主要区别。 ::"
 
-#: ../../extending/newtypes_tutorial.rst:822
+#: ../../extending/newtypes_tutorial.rst:815
+msgid ""
+"typedef struct {\n"
+"    PyListObject list;\n"
+"    int state;\n"
+"} SubListObject;"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:820
 msgid ""
 "The primary difference for derived type objects is that the base type's "
 "object structure must be the first value.  The base type will already "
@@ -925,7 +2044,7 @@ msgid ""
 msgstr ""
 "派生类型对象的主要差异在于基类型的对象结构体必须是第一个值。 基类型将已经在其结构体的开头包括了 :c:func:`PyObject_HEAD`。"
 
-#: ../../extending/newtypes_tutorial.rst:826
+#: ../../extending/newtypes_tutorial.rst:824
 msgid ""
 "When a Python object is a :class:`!SubList` instance, its ``PyObject *`` "
 "pointer can be safely cast to both ``PyListObject *`` and ``SubListObject "
@@ -934,13 +2053,25 @@ msgstr ""
 "当一个 Python 对象是 :class:`!SubList` 的实例时，它的 ``PyObject *`` 指针可以被安全地强制转换为 "
 "``PyListObject *`` 和 ``SubListObject *``::"
 
-#: ../../extending/newtypes_tutorial.rst:838
+#: ../../extending/newtypes_tutorial.rst:827
+msgid ""
+"static int\n"
+"SubList_init(SubListObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    if (PyList_Type.tp_init((PyObject *) self, args, kwds) < 0)\n"
+"        return -1;\n"
+"    self->state = 0;\n"
+"    return 0;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:836
 msgid ""
 "We see above how to call through to the :meth:`~object.__init__` method of "
 "the base type."
 msgstr "我们可以在上面看到如何将调用传递到基类型的 :meth:`~object.__init__` 方法。"
 
-#: ../../extending/newtypes_tutorial.rst:841
+#: ../../extending/newtypes_tutorial.rst:839
 msgid ""
 "This pattern is important when writing a type with custom "
 ":c:member:`~PyTypeObject.tp_new` and :c:member:`~PyTypeObject.tp_dealloc` "
@@ -954,7 +2085,7 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_new` 处理器不应为具有 :c:member:`~PyTypeObject.tp_alloc`"
 " 的对象实际分配内存，而是让基类通过调用自己的 :c:member:`~PyTypeObject.tp_new` 来处理它。"
 
-#: ../../extending/newtypes_tutorial.rst:847
+#: ../../extending/newtypes_tutorial.rst:845
 msgid ""
 "The :c:type:`PyTypeObject` struct supports a "
 ":c:member:`~PyTypeObject.tp_base` specifying the type's concrete base class."
@@ -965,7 +2096,30 @@ msgstr ""
 ":c:type:`PyTypeObject` 支持用 :c:member:`~PyTypeObject.tp_base` 指定类型的实体基类。 "
 "由于跨平台编译器问题，你无法使用对 :c:type:`PyList_Type` 的引用来直接填充该字段；它应当随后在模块初始化函数中完成::"
 
-#: ../../extending/newtypes_tutorial.rst:875
+#: ../../extending/newtypes_tutorial.rst:851
+msgid ""
+"PyMODINIT_FUNC\n"
+"PyInit_sublist(void)\n"
+"{\n"
+"    PyObject* m;\n"
+"    SubListType.tp_base = &PyList_Type;\n"
+"    if (PyType_Ready(&SubListType) < 0)\n"
+"        return NULL;\n"
+"\n"
+"    m = PyModule_Create(&sublistmodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    if (PyModule_AddObjectRef(m, \"SubList\", (PyObject *) &SubListType) < 0) {\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}"
+msgstr ""
+
+#: ../../extending/newtypes_tutorial.rst:871
 msgid ""
 "Before calling :c:func:`PyType_Ready`, the type structure must have the "
 ":c:member:`~PyTypeObject.tp_base` slot filled in.  When we are deriving an "
@@ -977,31 +2131,31 @@ msgstr ""
 "槽位。 当我们从现有类型派生时，它不需要将 :c:member:`~PyTypeObject.tp_alloc` 槽位填充为 "
 ":c:func:`PyType_GenericNew` -- 来自基类型的分配函数将会被继承。"
 
-#: ../../extending/newtypes_tutorial.rst:881
+#: ../../extending/newtypes_tutorial.rst:877
 msgid ""
 "After that, calling :c:func:`PyType_Ready` and adding the type object to the"
 " module is the same as with the basic :class:`!Custom` examples."
 msgstr ""
 "在那之后，调用 :c:func:`PyType_Ready` 并将类型对象添加到模块中的过程与基本的 :class:`!Custom` 示例是一样的。"
 
-#: ../../extending/newtypes_tutorial.rst:886
+#: ../../extending/newtypes_tutorial.rst:882
 msgid "Footnotes"
 msgstr "脚注"
 
-#: ../../extending/newtypes_tutorial.rst:887
+#: ../../extending/newtypes_tutorial.rst:883
 msgid ""
 "This is true when we know that the object is a basic type, like a string or "
 "a float."
 msgstr "当我们知道该对象属于基本类型，如字符串或浮点数时情况就是如此。"
 
-#: ../../extending/newtypes_tutorial.rst:890
+#: ../../extending/newtypes_tutorial.rst:886
 msgid ""
 "We relied on this in the :c:member:`~PyTypeObject.tp_dealloc` handler in "
 "this example, because our type doesn't support garbage collection."
 msgstr ""
 "在本示例中我们需要 :c:member:`~PyTypeObject.tp_dealloc` 处理器中的这一机制，因为我们的类型不支持垃圾回收。"
 
-#: ../../extending/newtypes_tutorial.rst:893
+#: ../../extending/newtypes_tutorial.rst:889
 msgid ""
 "We now know that the first and last members are strings, so perhaps we could"
 " be less careful about decrementing their reference counts, however, we "
@@ -1013,7 +2167,7 @@ msgstr ""
 "现在我们知道 first 和 last 成员都是字符串，因此也许我们可以对减少它们的引用计数不必太过小心，但是，我们还接受字符串子类的实例。 "
 "即使释放普通字符串不会对我们的对象执行回调，我们也不能保证释放一个字符串子类的实例不会对我们的对象执行回调。"
 
-#: ../../extending/newtypes_tutorial.rst:899
+#: ../../extending/newtypes_tutorial.rst:895
 msgid ""
 "Also, even with our attributes restricted to strings instances, the user "
 "could pass arbitrary :class:`str` subclasses and therefore still create "
