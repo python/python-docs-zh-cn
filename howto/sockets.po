@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2023, Python Software Foundation
+# Copyright (C) 2001-2024, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -7,17 +7,17 @@
 # ww song <sww4718168@gmail.com>, 2021
 # df2dc1c92e792f7ae8417c51df43db8f_594d92a <0f49be28017426edb1db1a2ab6e67088_717605>, 2021
 # kily zhou <keeliizhou@gmail.com>, 2021
-# Freesand Leo <yuqinju@163.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2022
+# Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.12\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-28 14:13+0000\n"
+"POT-Creation-Date: 2024-08-31 10:59+0000\n"
 "PO-Revision-Date: 2021-06-28 00:53+0000\n"
-"Last-Translator: Alpha Du <alphanow@gmail.com>, 2022\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,7 +37,7 @@ msgstr "作者"
 msgid "Gordon McMillan"
 msgstr "Gordon McMillan"
 
-#: ../../howto/sockets.rstNone
+#: ../../howto/sockets.rst-1
 msgid "Abstract"
 msgstr "摘要"
 
@@ -118,6 +118,18 @@ msgid ""
 "page, your browser did something like the following::"
 msgstr "简略地说，当你点击带你来到这个页面的链接时，你的浏览器就已经做了下面这几件事情::"
 
+#: ../../howto/sockets.rst:59
+msgid ""
+"# create an INET, STREAMing socket\n"
+"s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+"# now connect to the web server on port 80 - the normal http port\n"
+"s.connect((\"www.python.org\", 80))"
+msgstr ""
+"# 创建一个 INET, STREAMing 套接字\n"
+"s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+"# 现在连接到 web 服务器 80 端口 - 标准的 http 端口\n"
+"s.connect((\"www.python.org\", 80))"
+
 #: ../../howto/sockets.rst:64
 msgid ""
 "When the ``connect`` completes, the socket ``s`` can be used to send in a "
@@ -132,6 +144,16 @@ msgid ""
 "What happens in the web server is a bit more complex. First, the web server "
 "creates a \"server socket\"::"
 msgstr "网络服务器发生了什么这个问题就有点复杂了。首页，服务器创建一个「服务端套接字」::"
+
+#: ../../howto/sockets.rst:73
+msgid ""
+"# create an INET, STREAMing socket\n"
+"serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n"
+"# bind the socket to a public host, and a well-known port\n"
+"serversocket.bind((socket.gethostname(), 80))\n"
+"# become a server socket\n"
+"serversocket.listen(5)"
+msgstr ""
 
 #: ../../howto/sockets.rst:80
 msgid ""
@@ -170,6 +192,17 @@ msgid ""
 "Now that we have a \"server\" socket, listening on port 80, we can enter the"
 " mainloop of the web server::"
 msgstr "现在我们已经有一个「服务端」套接字，监听了 80 端口，我们可以进入网络服务器的主循环了::"
+
+#: ../../howto/sockets.rst:98
+msgid ""
+"while True:\n"
+"    # accept connections from outside\n"
+"    (clientsocket, address) = serversocket.accept()\n"
+"    # now do something with the clientsocket\n"
+"    # in this case, we'll pretend this is a threaded server\n"
+"    ct = client_thread(clientsocket)\n"
+"    ct.run()"
+msgstr ""
 
 #: ../../howto/sockets.rst:106
 msgid ""
@@ -305,6 +338,43 @@ msgid ""
 "Assuming you don't want to end the connection, the simplest solution is a "
 "fixed length message::"
 msgstr "假定你不希望结束连接，那么最简单的解决方案就是使用定长消息::"
+
+#: ../../howto/sockets.rst:183
+msgid ""
+"class MySocket:\n"
+"    \"\"\"demonstration class only\n"
+"      - coded for clarity, not efficiency\n"
+"    \"\"\"\n"
+"\n"
+"    def __init__(self, sock=None):\n"
+"        if sock is None:\n"
+"            self.sock = socket.socket(\n"
+"                            socket.AF_INET, socket.SOCK_STREAM)\n"
+"        else:\n"
+"            self.sock = sock\n"
+"\n"
+"    def connect(self, host, port):\n"
+"        self.sock.connect((host, port))\n"
+"\n"
+"    def mysend(self, msg):\n"
+"        totalsent = 0\n"
+"        while totalsent < MSGLEN:\n"
+"            sent = self.sock.send(msg[totalsent:])\n"
+"            if sent == 0:\n"
+"                raise RuntimeError(\"socket connection broken\")\n"
+"            totalsent = totalsent + sent\n"
+"\n"
+"    def myreceive(self):\n"
+"        chunks = []\n"
+"        bytes_recd = 0\n"
+"        while bytes_recd < MSGLEN:\n"
+"            chunk = self.sock.recv(min(MSGLEN - bytes_recd, 2048))\n"
+"            if chunk == b'':\n"
+"                raise RuntimeError(\"socket connection broken\")\n"
+"            chunks.append(chunk)\n"
+"            bytes_recd = bytes_recd + len(chunk)\n"
+"        return b''.join(chunks)"
+msgstr ""
 
 #: ../../howto/sockets.rst:217
 msgid ""
@@ -529,6 +599,22 @@ msgid ""
 msgstr ""
 "在 C 中，编码 ``select`` 相当复杂。 在 Python 中，它是很简单，但它与 C 版本足够接近，如果你在 Python 中理解 "
 "``select`` ，那么在 C 中你会几乎不会遇到麻烦::"
+
+#: ../../howto/sockets.rst:345
+msgid ""
+"ready_to_read, ready_to_write, in_error = \\\n"
+"               select.select(\n"
+"                  potential_readers,\n"
+"                  potential_writers,\n"
+"                  potential_errs,\n"
+"                  timeout)"
+msgstr ""
+"ready_to_read, ready_to_write, in_error = \\\n"
+"               select.select(\n"
+"                  potential_readers,\n"
+"                  potential_writers,\n"
+"                  potential_errs,\n"
+"                  timeout)"
 
 #: ../../howto/sockets.rst:352
 msgid ""
