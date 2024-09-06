@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../library/email.message.rst:2
 msgid ":mod:`!email.message`: Representing an email message"
-msgstr ""
+msgstr ":mod:`!email.message`: 表示电子邮件消息"
 
 #: ../../library/email.message.rst:10
 msgid "**Source code:** :source:`Lib/email/message.py`"
@@ -88,6 +88,9 @@ msgid ""
 "are ordered, but unlike a real dict, there can be duplicates.  Additional "
 "methods are provided for working with headers that have duplicate keys."
 msgstr ""
+":class:`EmailMessage` 字典型接口使用标头名称作为索引，它必须是 ASCII 值。 字典的值是包含一些附加方法的字符串。 "
+"标头是以保留大小写的形式存储和返回的，但字段名的匹配则是大小写不敏感的。 键是保留顺序的，但与真正字典不同的是键可以重复。 "
+"提供了一些额外的方法来处理包含重复键的标头。"
 
 #: ../../library/email.message.rst:47
 msgid ""
@@ -206,9 +209,9 @@ msgstr ""
 
 #: ../../library/email.message.rst:127
 msgid ""
-"Equivalent to :meth:`.as_bytes()`.  Allows ``bytes(msg)`` to produce a bytes"
-" object containing the serialized message."
-msgstr "与 :meth:`.as_bytes()` 等价。这将让 ``bytes(msg)`` 产生一个包含序列化信息内容的字节序列对象。"
+"Equivalent to :meth:`.as_bytes`.  Allows ``bytes(msg)`` to produce a bytes "
+"object containing the serialized message."
+msgstr ""
 
 #: ../../library/email.message.rst:133
 msgid ""
@@ -284,6 +287,12 @@ msgstr ""
 "如果消息对象中有一个名为 *name* 的字段，其返回值为 ``True`` 。匹配无视大小写差异， *name* 也不包含末尾的的冒号。  "
 "``in`` 操作符的实现中用到了这个方法，比如说："
 
+#: ../../library/email.message.rst:185
+msgid ""
+"if 'message-id' in myMessage:\n"
+"   print('Message-ID:', myMessage['message-id'])"
+msgstr ""
+
 #: ../../library/email.message.rst:191
 msgid ""
 "Return the value of the named header field.  *name* does not include the "
@@ -324,6 +333,12 @@ msgid ""
 msgstr ""
 "请注意，这个方法 *既不会* 覆盖 *也不会* 删除任何字段名重名的已有字段。如果你确实想保证新字段是整个信息头当中唯一拥有 *name* "
 "字段名的字段，你需要先把旧字段删除。例如："
+
+#: ../../library/email.message.rst:213
+msgid ""
+"del msg['subject']\n"
+"msg['subject'] = 'Python roolz!'"
+msgstr ""
 
 #: ../../library/email.message.rst:216
 msgid ""
@@ -423,13 +438,28 @@ msgstr ""
 msgid "Here is an example::"
 msgstr "例如："
 
+#: ../../library/email.message.rst:289
+msgid ""
+"msg.add_header('Content-Disposition', 'attachment', filename='bud.gif')"
+msgstr ""
+
 #: ../../library/email.message.rst:291
 msgid "This will add a header that looks like ::"
 msgstr "会添加一个形如下文的头字段："
 
+#: ../../library/email.message.rst:293
+msgid "Content-Disposition: attachment; filename=\"bud.gif\""
+msgstr ""
+
 #: ../../library/email.message.rst:295
 msgid "An example of the extended interface with non-ASCII characters::"
 msgstr "带有非ASCII字符的拓展接口："
+
+#: ../../library/email.message.rst:297
+msgid ""
+"msg.add_header('Content-Disposition', 'attachment',\n"
+"               filename=('iso-8859-1', '', 'Fußballer.ppt'))"
+msgstr ""
 
 #: ../../library/email.message.rst:303
 msgid ""
@@ -700,6 +730,19 @@ msgid ""
 "message structure:"
 msgstr "以下例子会打印出一封具有多部分结构之信息的每个部分的 MIME 类型。"
 
+#: ../../library/email.message.rst:491
+msgid ""
+">>> for part in msg.walk():\n"
+"...     print(part.get_content_type())\n"
+"multipart/report\n"
+"text/plain\n"
+"message/delivery-status\n"
+"text/plain\n"
+"text/plain\n"
+"message/rfc822\n"
+"text/plain"
+msgstr ""
+
 #: ../../library/email.message.rst:503
 msgid ""
 "``walk`` iterates over the subparts of any part where :meth:`is_multipart` "
@@ -710,6 +753,29 @@ msgstr ""
 "``walk`` 会遍历所有 :meth:`is_multipart` 方法返回 ``True`` 的部分之子部分，哪怕 "
 "``msg.get_content_maintype() == 'multipart'`` 返回的是 ``False`` 。使用 "
 "``_structure`` 除错帮助函数可以帮助我们在下面这个例子当中看清楚这一点："
+
+#: ../../library/email.message.rst:509
+msgid ""
+">>> from email.iterators import _structure\n"
+">>> for part in msg.walk():\n"
+"...     print(part.get_content_maintype() == 'multipart',\n"
+"...           part.is_multipart())\n"
+"True True\n"
+"False False\n"
+"False True\n"
+"False False\n"
+"False False\n"
+"False True\n"
+"False False\n"
+">>> _structure(msg)\n"
+"multipart/report\n"
+"    text/plain\n"
+"    message/delivery-status\n"
+"        text/plain\n"
+"        text/plain\n"
+"    message/rfc822\n"
+"        text/plain"
+msgstr ""
 
 #: ../../library/email.message.rst:531
 msgid ""

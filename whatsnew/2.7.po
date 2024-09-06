@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:49+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:34+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -356,15 +356,40 @@ msgstr ""
 ":class:`~collections.OrderedDict` API 提供与普通字典相同的接口 "
 "，但会根据键首次插入的时间，按一定顺序遍历键和值：："
 
+#: ../../whatsnew/2.7.rst:226
+msgid ""
+">>> from collections import OrderedDict\n"
+">>> d = OrderedDict([('first', 1),\n"
+"...                  ('second', 2),\n"
+"...                  ('third', 3)])\n"
+">>> d.items()\n"
+"[('first', 1), ('second', 2), ('third', 3)]"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:233
 msgid ""
 "If a new entry overwrites an existing entry, the original insertion position"
 " is left unchanged::"
 msgstr "如果新条目覆盖了现有条目，则原插入位置保持不变 ::"
 
+#: ../../whatsnew/2.7.rst:236
+msgid ""
+">>> d['second'] = 4\n"
+">>> d.items()\n"
+"[('first', 1), ('second', 4), ('third', 3)]"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:240
 msgid "Deleting an entry and reinserting it will move it to the end::"
 msgstr "删除条目并重新插入会将其移至末尾 ::"
+
+#: ../../whatsnew/2.7.rst:242
+msgid ""
+">>> del d['second']\n"
+">>> d['second'] = 5\n"
+">>> d.items()\n"
+"[('first', 1), ('third', 3), ('second', 5)]"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:247
 msgid ""
@@ -376,11 +401,40 @@ msgstr ""
 ":meth:`~collections.OrderedDict.popitem` 方法有一个可选 *last* 参数 ，默认为 ``True`` 。如果"
 " *last* 为真 ，则返回并删除最近添加的密钥；如果为 false ，则选择最旧的密钥  ::"
 
+#: ../../whatsnew/2.7.rst:252
+msgid ""
+">>> od = OrderedDict([(x,0) for x in range(20)])\n"
+">>> od.popitem()\n"
+"(19, 0)\n"
+">>> od.popitem()\n"
+"(18, 0)\n"
+">>> od.popitem(last=False)\n"
+"(0, 0)\n"
+">>> od.popitem(last=False)\n"
+"(1, 0)"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:262
 msgid ""
 "Comparing two ordered dictionaries checks both the keys and values, and "
 "requires that the insertion order was the same::"
 msgstr "比较两个有序字典会同时检查键和值，并要求插入顺序相同 ::"
+
+#: ../../whatsnew/2.7.rst:265
+msgid ""
+">>> od1 = OrderedDict([('first', 1),\n"
+"...                    ('second', 2),\n"
+"...                    ('third', 3)])\n"
+">>> od2 = OrderedDict([('third', 3),\n"
+"...                    ('first', 1),\n"
+"...                    ('second', 2)])\n"
+">>> od1 == od2\n"
+"False\n"
+">>> # Move 'third' key to the end\n"
+">>> del od2['third']; od2['third'] = 3\n"
+">>> od1 == od2\n"
+"True"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:278
 msgid ""
@@ -415,13 +469,10 @@ msgstr ""
 
 #: ../../whatsnew/2.7.rst:294
 msgid ""
-"The :meth:`~collections.somenamedtuple._asdict()` method for "
+"The :meth:`~collections.somenamedtuple._asdict` method for "
 ":func:`collections.namedtuple` now returns an ordered dictionary with the "
 "values appearing in the same order as the underlying tuple indices."
 msgstr ""
-":func:`collections.namedtuple` 的 "
-":meth:`~collections.somenamedtuple._asdict()` "
-"方法现在会返回一个有序字典，其值的出现顺序与底层元组的索引相同。"
 
 #: ../../whatsnew/2.7.rst:298
 msgid ""
@@ -475,6 +526,12 @@ msgid ""
 "point number, simply include a comma between the width and the precision::"
 msgstr ""
 "因此，在 :meth:`str.format` 方法使用的迷你语言中添加了一个简单的逗号分组机制。 在格式化浮点数时，只需在宽度和精度之间加上逗号 ::"
+
+#: ../../whatsnew/2.7.rst:330
+msgid ""
+">>> '{:20,.2f}'.format(18446744073709551616.0)\n"
+"'18,446,744,073,709,551,616.00'"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:333
 msgid "When formatting an integer, include the comma after the width:"
@@ -538,17 +595,73 @@ msgstr ""
 msgid "Here's an example::"
 msgstr "以下是为示例代码::"
 
+#: ../../whatsnew/2.7.rst:372
+msgid ""
+"import argparse\n"
+"\n"
+"parser = argparse.ArgumentParser(description='Command-line example.')\n"
+"\n"
+"# Add optional switches\n"
+"parser.add_argument('-v', action='store_true', dest='is_verbose',\n"
+"                    help='produce verbose output')\n"
+"parser.add_argument('-o', action='store', dest='output',\n"
+"                    metavar='FILE',\n"
+"                    help='direct output to FILE instead of stdout')\n"
+"parser.add_argument('-C', action='store', type=int, dest='context',\n"
+"                    metavar='NUM', default=0,\n"
+"                    help='display NUM lines of added context')\n"
+"\n"
+"# Allow any number of additional arguments.\n"
+"parser.add_argument(nargs='*', action='store', dest='inputs',\n"
+"                    help='input filenames (default is stdin)')\n"
+"\n"
+"args = parser.parse_args()\n"
+"print args.__dict__"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:393
 msgid ""
 "Unless you override it, :option:`!-h` and :option:`!--help` switches are "
 "automatically added, and produce neatly formatted output::"
 msgstr "除非你覆盖它，否则会自动添加 :option:`!-h` 和 :option:`!--help` 开关，并产生格式化良好的输出::"
 
+#: ../../whatsnew/2.7.rst:396
+msgid ""
+"-> ./python.exe argparse-example.py --help\n"
+"usage: argparse-example.py [-h] [-v] [-o FILE] [-C NUM] [inputs [inputs ...]]\n"
+"\n"
+"Command-line example.\n"
+"\n"
+"positional arguments:\n"
+"  inputs      input filenames (default is stdin)\n"
+"\n"
+"optional arguments:\n"
+"  -h, --help  show this help message and exit\n"
+"  -v          produce verbose output\n"
+"  -o FILE     direct output to FILE instead of stdout\n"
+"  -C NUM      display NUM lines of added context"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:410
 msgid ""
 "As with :mod:`optparse`, the command-line switches and arguments are "
 "returned as an object with attributes named by the *dest* parameters::"
 msgstr "与 :mod:`optparse` 一样，命令行开关和参数将返回为一个具有通过 *dest* 形参所指定的属性的对象::"
+
+#: ../../whatsnew/2.7.rst:413
+msgid ""
+"-> ./python.exe argparse-example.py -v\n"
+"{'output': None,\n"
+" 'is_verbose': True,\n"
+" 'context': 0,\n"
+" 'inputs': []}\n"
+"\n"
+"-> ./python.exe argparse-example.py -v -o /tmp/output -C 4 file1 file2\n"
+"{'output': '/tmp/output',\n"
+" 'is_verbose': True,\n"
+" 'context': 4,\n"
+" 'inputs': ['file1', 'file2']}"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:425
 msgid ""
@@ -628,6 +741,51 @@ msgid ""
 " log reaches 1MB."
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:476
+msgid ""
+"import logging\n"
+"import logging.config\n"
+"\n"
+"configdict = {\n"
+" 'version': 1,    # Configuration schema in use; must be 1 for now\n"
+" 'formatters': {\n"
+"     'standard': {\n"
+"         'format': ('%(asctime)s %(name)-15s '\n"
+"                    '%(levelname)-8s %(message)s')}},\n"
+"\n"
+" 'handlers': {'netlog': {'backupCount': 10,\n"
+"                     'class': 'logging.handlers.RotatingFileHandler',\n"
+"                     'filename': '/logs/network.log',\n"
+"                     'formatter': 'standard',\n"
+"                     'level': 'INFO',\n"
+"                     'maxBytes': 1000000},\n"
+"              'syslog': {'class': 'logging.handlers.SysLogHandler',\n"
+"                         'formatter': 'standard',\n"
+"                         'level': 'ERROR'}},\n"
+"\n"
+" # Specify all the subordinate loggers\n"
+" 'loggers': {\n"
+"             'network': {\n"
+"                         'handlers': ['netlog']\n"
+"             }\n"
+" },\n"
+" # Specify properties of the root logger\n"
+" 'root': {\n"
+"          'handlers': ['syslog']\n"
+" },\n"
+"}\n"
+"\n"
+"# Set up configuration\n"
+"logging.config.dictConfig(configdict)\n"
+"\n"
+"# As an example, log two error messages\n"
+"logger = logging.getLogger('/')\n"
+"logger.error('Database not found')\n"
+"\n"
+"netlogger = logging.getLogger('network')\n"
+"netlogger.error('Connection failed')"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:518
 msgid ""
 "Three smaller enhancements to the :mod:`logging` module, all implemented by "
@@ -691,6 +849,15 @@ msgstr ""
 ":meth:`~dict.items` 的返回值因为那会破坏大量已有代码。 作为替代 3.x 版本是以新名称 :meth:`!viewkeys`, "
 ":meth:`!viewvalues` 和 :meth:`!viewitems` 添加的。"
 
+#: ../../whatsnew/2.7.rst:562
+msgid ""
+">>> d = dict((i*10, chr(65+i)) for i in range(26))\n"
+">>> d\n"
+"{0: 'A', 130: 'N', 10: 'B', 140: 'O', 20: ..., 250: 'Z'}\n"
+">>> d.viewkeys()\n"
+"dict_keys([0, 130, 10, 140, 20, 150, 30, ..., 250])"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:568
 msgid ""
 "Views can be iterated over, but the key and item views also behave like "
@@ -698,17 +865,47 @@ msgid ""
 "union::"
 msgstr "视图可以被迭代，但键和条目视图的行为也很像是集合。 ``&`` 运算符执行交集运算，``|`` 执行并集运算::"
 
+#: ../../whatsnew/2.7.rst:572
+msgid ""
+">>> d1 = dict((i*10, chr(65+i)) for i in range(26))\n"
+">>> d2 = dict((i**.5, i) for i in range(1000))\n"
+">>> d1.viewkeys() & d2.viewkeys()\n"
+"set([0.0, 10.0, 20.0, 30.0])\n"
+">>> d1.viewkeys() | range(0, 30)\n"
+"set([0, 1, 130, 3, 4, 5, 6, ..., 120, 250])"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:579
 msgid ""
 "The view keeps track of the dictionary and its contents change as the "
 "dictionary is modified::"
 msgstr "视图会追踪字典及字典被修改时的内容变化::"
 
+#: ../../whatsnew/2.7.rst:582
+msgid ""
+">>> vk = d.viewkeys()\n"
+">>> vk\n"
+"dict_keys([0, 130, 10, ..., 250])\n"
+">>> d[260] = '&'\n"
+">>> vk\n"
+"dict_keys([0, 130, 260, 10, ..., 250])"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:589
 msgid ""
 "However, note that you can't add or remove keys while you're iterating over "
 "the view::"
 msgstr "但是，请注意在对视图进行迭代时你是不能添加或移除键的::"
+
+#: ../../whatsnew/2.7.rst:592
+msgid ""
+">>> for k in vk:\n"
+"...     d[k*2] = k\n"
+"...\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"RuntimeError: dictionary changed size during iteration"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:599
 msgid ""
@@ -738,17 +935,57 @@ msgid ""
 "content that matches the :class:`bytes` type's interface."
 msgstr ":class:`memoryview` 对象提供与 :class:`bytes` 类型的接口相匹配的另一个对象的内存内容的视图。"
 
+#: ../../whatsnew/2.7.rst:616
+msgid ""
+">>> import string\n"
+">>> m = memoryview(string.letters)\n"
+">>> m\n"
+"<memory at 0x37f850>\n"
+">>> len(m)           # Returns length of underlying object\n"
+"52\n"
+">>> m[0], m[25], m[26]   # Indexing returns one byte\n"
+"('a', 'z', 'A')\n"
+">>> m2 = m[0:26]         # Slicing returns another memoryview\n"
+">>> m2\n"
+"<memory at 0x37f080>"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:631
 msgid ""
 "The content of the view can be converted to a string of bytes or a list of "
 "integers:"
 msgstr "视图的内容可被转换为一个字节串或整数列表："
 
+#: ../../whatsnew/2.7.rst:634
+msgid ""
+">>> m2.tobytes()\n"
+"'abcdefghijklmnopqrstuvwxyz'\n"
+">>> m2.tolist()\n"
+"[97, 98, 99, 100, 101, 102, 103, ... 121, 122]\n"
+">>>"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:643
 msgid ""
 ":class:`memoryview` objects allow modifying the underlying object if it's a "
 "mutable object."
 msgstr ":class:`memoryview` 对象允许对属于可变对象的下层对象进行修改。"
+
+#: ../../whatsnew/2.7.rst:646
+msgid ""
+">>> m2[0] = 75\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: cannot modify read-only memory\n"
+">>> b = bytearray(string.letters)  # Creating a mutable object\n"
+">>> b\n"
+"bytearray(b'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')\n"
+">>> mb = memoryview(b)\n"
+">>> mb[0] = '*'         # Assign to view, changing the bytearray.\n"
+">>> b[0:5]              # The bytearray has been changed.\n"
+"bytearray(b'*bcde')\n"
+">>>"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:664
 msgid ":pep:`3137` - Immutable Bytes and Mutable Buffer"
@@ -781,6 +1018,16 @@ msgstr ""
 "已从 Python 3.x 向下移植了集合字面值语法。 使用花括号来标记可变集合的内容；集合与字典的区别在于它不包含冒号及映射的值。 ``{}`` "
 "仍然表示空字典；请使用 ``set()`` 来表示空集合。"
 
+#: ../../whatsnew/2.7.rst:683
+msgid ""
+">>> {1, 2, 3, 4, 5}\n"
+"set([1, 2, 3, 4, 5])\n"
+">>> set() # empty set\n"
+"set([])\n"
+">>> {}    # empty dict\n"
+"{}"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:693
 msgid "Backported by Alexandre Vassalotti; :issue:`2335`."
 msgstr "由 Alexandre Vassalotti 向下移植; :issue:`2335`。"
@@ -791,6 +1038,14 @@ msgid ""
 "generalizing list/generator comprehensions to use the literal syntax for "
 "sets and dictionaries."
 msgstr "字典与集合推导式是另一个从 3.x 向下移植的特性，对列表/生成器推导式进行一般化以针对集合与字典使用字面值语法。"
+
+#: ../../whatsnew/2.7.rst:699
+msgid ""
+">>> {x: x*x for x in range(6)}\n"
+"{0: 0, 1: 1, 2: 4, 3: 9, 4: 16, 5: 25}\n"
+">>> {('a'*x) for x in range(6)}\n"
+"set(['', 'a', 'aa', 'aaa', 'aaaa', 'aaaaa'])"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:707
 msgid "Backported by Alexandre Vassalotti; :issue:`2333`."
@@ -805,9 +1060,22 @@ msgstr ""
 "现在 :keyword:`with` 语句可以在一个语句中使用多个上下文管理器。 上下文管理器将按从左到右的顺序处理并且每个都会被视为开始一个新的 "
 ":keyword:`!with` 语句。 这意味着::"
 
+#: ../../whatsnew/2.7.rst:714
+msgid ""
+"with A() as a, B() as b:\n"
+"    ... suite of statements ..."
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:717
 msgid "is equivalent to::"
 msgstr "相当于::"
+
+#: ../../whatsnew/2.7.rst:719
+msgid ""
+"with A() as a:\n"
+"    with B() as b:\n"
+"        ... suite of statements ..."
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:723
 msgid ""
@@ -866,10 +1134,28 @@ msgid ""
 "following::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:767
+msgid ""
+">>> n = 295147905179352891391\n"
+">>> float(n)\n"
+"2.9514790517935283e+20\n"
+">>> n - long(float(n))\n"
+"65535L"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:773
 msgid ""
 "Python 2.7's floating-point result is larger, but much closer to the true "
 "value::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:776
+msgid ""
+">>> n = 295147905179352891391\n"
+">>> float(n)\n"
+"2.9514790517935289e+20\n"
+">>> n - long(float(n))\n"
+"-1L"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:782
@@ -894,6 +1180,14 @@ msgid ""
 "The :meth:`str.format` method now supports automatic numbering of the "
 "replacement fields.  This makes using :meth:`str.format` more closely "
 "resemble using ``%s`` formatting::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:795
+msgid ""
+">>> '{}:{}:{}'.format(2009, 04, 'Sunday')\n"
+"'2009:4:Sunday'\n"
+">>> '{}:{}:{day}'.format(2009, 4, day='Sunday')\n"
+"'2009:4:Sunday'"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:800
@@ -938,6 +1232,20 @@ msgstr ""
 msgid ""
 "The :func:`int` and :func:`!long` types gained a ``bit_length`` method that "
 "returns the number of bits necessary to represent its argument in binary::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:832
+msgid ""
+">>> n = 37\n"
+">>> bin(n)\n"
+"'0b100101'\n"
+">>> n.bit_length()\n"
+"6\n"
+">>> n = 2**123-1\n"
+">>> n.bit_length()\n"
+"123\n"
+">>> (n+1).bit_length()\n"
+"124"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:843
@@ -1050,6 +1358,10 @@ msgid ""
 "across operating systems and shells.)"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:924
+msgid "export PYTHONWARNINGS=all,error:::Cookie:0"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:930
 msgid "Optimizations"
 msgstr "性能优化"
@@ -1108,6 +1420,13 @@ msgid ""
 "new structseq :data:`!sys.long_info` that provides information about the "
 "internal format, giving the number of bits per digit and the size in bytes "
 "of the C type used to store each digit::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:974
+msgid ""
+">>> import sys\n"
+">>> sys.long_info\n"
+"sys.long_info(bits_per_digit=30, sizeof_digit=4)"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:978
@@ -1232,6 +1551,23 @@ msgid ""
 "instead of raising a :exc:`KeyError`:"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1064
+msgid ""
+">>> from collections import Counter\n"
+">>> c = Counter()\n"
+">>> for letter in 'here is a sample of english text':\n"
+"...   c[letter] += 1\n"
+"...\n"
+">>> c \n"
+"Counter({' ': 6, 'e': 5, 's': 3, 'a': 2, 'i': 2, 'h': 2,\n"
+"'l': 2, 't': 2, 'g': 1, 'f': 1, 'm': 1, 'o': 1, 'n': 1,\n"
+"'p': 1, 'r': 1, 'x': 1})\n"
+">>> c['e']\n"
+"5\n"
+">>> c['z']\n"
+"0"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1081
 msgid ""
 "There are three additional :class:`~collections.Counter` methods. "
@@ -1241,6 +1577,22 @@ msgid ""
 "count. :meth:`~collections.Counter.subtract` takes an iterable and subtracts"
 " one for each element instead of adding; if the argument is a dictionary or "
 "another :class:`Counter`, the counts are subtracted. ::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1091
+msgid ""
+">>> c.most_common(5)\n"
+"[(' ', 6), ('e', 5), ('s', 3), ('a', 2), ('i', 2)]\n"
+">>> c.elements() ->\n"
+"   'a', 'a', ' ', ' ', ' ', ' ', ' ', ' ',\n"
+"   'e', 'e', 'e', 'e', 'e', 'g', 'f', 'i', 'i',\n"
+"   'h', 'h', 'm', 'l', 'l', 'o', 'n', 'p', 's',\n"
+"   's', 's', 'r', 't', 't', 'x'\n"
+">>> c['e']\n"
+"5\n"
+">>> c.subtract('very heavy on the letter e')\n"
+">>> c['e']    # Count is now lower\n"
+"-1"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1104
@@ -1288,6 +1640,27 @@ msgid ""
 "Constructors for the parsing classes in the :mod:`ConfigParser "
 "<configparser>` module now take an *allow_no_value* parameter, defaulting to"
 " false; if true, options without values will be allowed.  For example::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1141
+msgid ""
+">>> import ConfigParser, StringIO\n"
+">>> sample_config = \"\"\"\n"
+"... [mysqld]\n"
+"... user = mysql\n"
+"... pid-file = /var/run/mysqld/mysqld.pid\n"
+"... skip-bdb\n"
+"... \"\"\"\n"
+">>> config = ConfigParser.RawConfigParser(allow_no_value=True)\n"
+">>> config.readfp(StringIO.StringIO(sample_config))\n"
+">>> config.get('mysqld', 'user')\n"
+"'mysql'\n"
+">>> print config.get('mysqld', 'skip-bdb')\n"
+"None\n"
+">>> print config.get('mysqld', 'unknown')\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"NoOptionError: No option 'unknown' in section: 'mysqld'"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1159
@@ -1545,6 +1918,22 @@ msgid ""
 "dictionary mapping argument names to their values.  For example::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1333
+msgid ""
+">>> from inspect import getcallargs\n"
+">>> def f(a, b=1, *pos, **named):\n"
+"...     pass\n"
+"...\n"
+">>> getcallargs(f, 1, 2, 3)\n"
+"{'a': 1, 'b': 2, 'pos': (3,), 'named': {}}\n"
+">>> getcallargs(f, a=2, x=4)\n"
+"{'a': 2, 'b': 1, 'pos': (), 'named': {'x': 4}}\n"
+">>> getcallargs(f)\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"TypeError: f() takes at least 1 argument (0 given)"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1346
 msgid "Contributed by George Sakkis; :issue:`3135`."
 msgstr "由 Georg Sakkis 在 :issue:`3135` 中贡献。"
@@ -1581,12 +1970,25 @@ msgid ""
 " true::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1368
+msgid ""
+"itertools.compress('ABCDEF', [1,0,1,0,1,1]) =>\n"
+"  A, C, E, F"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1373
 msgid ""
 "New function: ``itertools.combinations_with_replacement(iter, r)`` returns "
 "all the possible *r*-length combinations of elements from the iterable "
 "*iter*.  Unlike :func:`~itertools.combinations`, individual elements can be "
 "repeated in the generated combinations::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1378
+msgid ""
+"itertools.combinations_with_replacement('abc', 2) =>\n"
+"  ('a', 'a'), ('a', 'b'), ('a', 'c'),\n"
+"  ('b', 'b'), ('b', 'c'), ('c', 'c')"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1382
@@ -1872,6 +2274,17 @@ msgid ""
 "otherwise."
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1582
+msgid ""
+">>> subprocess.check_output(['df', '-h', '.'])\n"
+"'Filesystem     Size   Used  Avail Capacity  Mounted on\\n\n"
+"/dev/disk0s2    52G    49G   3.0G    94%    /\\n'\n"
+"\n"
+">>> subprocess.check_output(['df', '-h', '/bogus'])\n"
+"  ...\n"
+"subprocess.CalledProcessError: Command '['df', '-h', '/bogus']' returned non-zero exit status 1"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1590
 msgid "(Contributed by Gregory P. Smith.)"
 msgstr "（由 Gregory P. Smith 贡献）"
@@ -1969,8 +2382,22 @@ msgid ""
 "following:"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1659 ../../whatsnew/2.7.rst:2520
+msgid ""
+">>> import urlparse\n"
+">>> urlparse.urlsplit('invented://host/filename?query')\n"
+"('invented', '', '//host/filename?query', '', '')"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1666 ../../whatsnew/2.7.rst:2527
 msgid "Python 2.7 (and Python 2.6.5) will return:"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1668 ../../whatsnew/2.7.rst:2529
+msgid ""
+">>> import urlparse\n"
+">>> urlparse.urlsplit('invented://host/filename?query')\n"
+"('invented', 'host', '/filename?query', '', '')"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1675 ../../whatsnew/2.7.rst:2536
@@ -1984,6 +2411,13 @@ msgid ""
 "The :mod:`urlparse <urllib.parse>` module also supports IPv6 literal "
 "addresses as defined by :rfc:`2732` (contributed by Senthil Kumaran; "
 ":issue:`2987`)."
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1681
+msgid ""
+">>> urlparse.urlparse('http://[1080::8:800:200C:417A]/foo')\n"
+"ParseResult(scheme='http', netloc='[1080::8:800:200C:417A]',\n"
+"            path='/foo', params='', query='', fragment='')"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1688
@@ -2075,6 +2509,18 @@ msgstr ""
 #: ../../whatsnew/2.7.rst:1756
 msgid "Here are some examples::"
 msgstr "这是一些例子::"
+
+#: ../../whatsnew/2.7.rst:1758
+msgid ""
+">>> from importlib import import_module\n"
+">>> anydbm = import_module('anydbm')  # Standard absolute import\n"
+">>> anydbm\n"
+"<module 'anydbm' from '/p/python/Lib/anydbm.py'>\n"
+">>> # Relative import\n"
+">>> file_util = import_module('..file_util', 'distutils.command')\n"
+">>> file_util\n"
+"<module 'distutils.file_util' from '/python/Lib/distutils/file_util.pyc'>"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:1767
 msgid ""
@@ -2196,6 +2642,10 @@ msgid ""
 "files named ``test*.py``::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:1843
+msgid "python -m unittest discover -s test"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:1845
 msgid ""
 "Consult the :mod:`unittest` module documentation for more details. "
@@ -2270,6 +2720,12 @@ msgid ""
 "The :meth:`~unittest.TestCase.assertRaises` method now returns a context "
 "handler when called without providing a callable object to run.  For "
 "example, you can write this::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:1892
+msgid ""
+"with self.assertRaises(KeyError):\n"
+"    {}['foo']"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:1895
@@ -2484,6 +2940,12 @@ msgid ""
 " makes it possible to override the file's internal encoding::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:2024
+msgid ""
+"p = ET.XMLParser(encoding='utf-8')\n"
+"t = ET.XML(\"\"\"<root/>\"\"\", parser=p)"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:2027
 msgid ""
 "Errors in parsing XML now raise a :exc:`~xml.etree.ElementTree.ParseError` "
@@ -2524,6 +2986,20 @@ msgid ""
 "sequences, so it's easy to move children from one element to another::"
 msgstr ""
 
+#: ../../whatsnew/2.7.rst:2058
+msgid ""
+"from xml.etree import ElementTree as ET\n"
+"\n"
+"t = ET.XML(\"\"\"<list>\n"
+"  <item>1</item> <item>2</item>  <item>3</item>\n"
+"</list>\"\"\")\n"
+"new = ET.XML('<root/>')\n"
+"new.extend(t)\n"
+"\n"
+"# Outputs <root><item>1</item>...</root>\n"
+"print ET.tostring(new)"
+msgstr ""
+
 #: ../../whatsnew/2.7.rst:2069
 msgid ""
 "New :class:`~xml.etree.ElementTree.Element` method: "
@@ -2539,6 +3015,16 @@ msgid ""
 "New :class:`~xml.etree.ElementTree.Element` method: "
 ":meth:`~xml.etree.ElementTree.Element.itertext` yields all chunks of text "
 "that are descendants of the element.  For example::"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:2080
+msgid ""
+"t = ET.XML(\"\"\"<list>\n"
+"  <item>1</item> <item>2</item>  <item>3</item>\n"
+"</list>\"\"\")\n"
+"\n"
+"# Outputs ['\\n  ', '1', ' ', '2', '  ', '3', '\\n']\n"
+"print list(t.itertext())"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:2087
@@ -2825,6 +3311,18 @@ msgid ""
 "and somehow substituting it for the :c:type:`!PyCObject` in module B.   "
 "Capsules know their own name, and getting the pointer requires providing the"
 " name:"
+msgstr ""
+
+#: ../../whatsnew/2.7.rst:2299
+msgid ""
+"void *vtable;\n"
+"\n"
+"if (!PyCapsule_IsValid(capsule, \"mymodule.CAPI\") {\n"
+"        PyErr_SetString(PyExc_ValueError, \"argument type invalid\");\n"
+"        return NULL;\n"
+"}\n"
+"\n"
+"vtable = PyCapsule_GetPointer(capsule, \"mymodule.CAPI\");"
 msgstr ""
 
 #: ../../whatsnew/2.7.rst:2310
@@ -3365,6 +3863,21 @@ msgid ""
 "For applications which require the old previous behavior, they can pass an "
 "alternate context::"
 msgstr "对于需要之前版本的旧有行为的应用程序，可以传入一个替代的上下文::"
+
+#: ../../whatsnew/2.7.rst:2726
+msgid ""
+"import urllib2\n"
+"import ssl\n"
+"\n"
+"# This disables all verification\n"
+"context = ssl._create_unverified_context()\n"
+"\n"
+"# This allows using a specific certificate for the host, which doesn't need\n"
+"# to be in the trust store\n"
+"context = ssl.create_default_context(cafile=\"/path/to/file.crt\")\n"
+"\n"
+"urllib2.urlopen(\"https://invalid-cert\", context=context)"
+msgstr ""
 
 #: ../../whatsnew/2.7.rst:2740
 msgid "PEP 493: HTTPS verification migration tools for Python 2.7"

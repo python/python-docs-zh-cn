@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -23,7 +23,7 @@ msgstr ""
 
 #: ../../library/json.rst:2
 msgid ":mod:`!json` --- JSON encoder and decoder"
-msgstr ""
+msgstr ":mod:`!json` --- JSON 编码器和解码器"
 
 #: ../../library/json.rst:10
 msgid "**Source code:** :source:`Lib/json/__init__.py`"
@@ -64,29 +64,123 @@ msgstr ":mod:`json` 提供了与标准库 :mod:`marshal` 和 :mod:`pickle` 相�
 msgid "Encoding basic Python object hierarchies::"
 msgstr "对基本的 Python 对象层次结构进行编码："
 
+#: ../../library/json.rst:31
+msgid ""
+">>> import json\n"
+">>> json.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}])\n"
+"'[\"foo\", {\"bar\": [\"baz\", null, 1.0, 2]}]'\n"
+">>> print(json.dumps(\"\\\"foo\\bar\"))\n"
+"\"\\\"foo\\bar\"\n"
+">>> print(json.dumps('\\u1234'))\n"
+"\"\\u1234\"\n"
+">>> print(json.dumps('\\\\'))\n"
+"\"\\\\\"\n"
+">>> print(json.dumps({\"c\": 0, \"b\": 0, \"a\": 0}, sort_keys=True))\n"
+"{\"a\": 0, \"b\": 0, \"c\": 0}\n"
+">>> from io import StringIO\n"
+">>> io = StringIO()\n"
+">>> json.dump(['streaming API'], io)\n"
+">>> io.getvalue()\n"
+"'[\"streaming API\"]'"
+msgstr ""
+
 #: ../../library/json.rst:48
 msgid "Compact encoding::"
 msgstr "紧凑编码："
+
+#: ../../library/json.rst:50
+msgid ""
+">>> import json\n"
+">>> json.dumps([1, 2, 3, {'4': 5, '6': 7}], separators=(',', ':'))\n"
+"'[1,2,3,{\"4\":5,\"6\":7}]'"
+msgstr ""
 
 #: ../../library/json.rst:54
 msgid "Pretty printing::"
 msgstr "美化输出："
 
+#: ../../library/json.rst:56
+msgid ""
+">>> import json\n"
+">>> print(json.dumps({'4': 5, '6': 7}, sort_keys=True, indent=4))\n"
+"{\n"
+"    \"4\": 5,\n"
+"    \"6\": 7\n"
+"}"
+msgstr ""
+
 #: ../../library/json.rst:63
 msgid "Decoding JSON::"
 msgstr "JSON解码："
+
+#: ../../library/json.rst:65
+msgid ""
+">>> import json\n"
+">>> json.loads('[\"foo\", {\"bar\":[\"baz\", null, 1.0, 2]}]')\n"
+"['foo', {'bar': ['baz', None, 1.0, 2]}]\n"
+">>> json.loads('\"\\\\\"foo\\\\bar\"')\n"
+"'\"foo\\x08ar'\n"
+">>> from io import StringIO\n"
+">>> io = StringIO('[\"streaming API\"]')\n"
+">>> json.load(io)\n"
+"['streaming API']"
+msgstr ""
 
 #: ../../library/json.rst:75
 msgid "Specializing JSON object decoding::"
 msgstr "特殊 JSON 对象解码："
 
+#: ../../library/json.rst:77
+msgid ""
+">>> import json\n"
+">>> def as_complex(dct):\n"
+"...     if '__complex__' in dct:\n"
+"...         return complex(dct['real'], dct['imag'])\n"
+"...     return dct\n"
+"...\n"
+">>> json.loads('{\"__complex__\": true, \"real\": 1, \"imag\": 2}',\n"
+"...     object_hook=as_complex)\n"
+"(1+2j)\n"
+">>> import decimal\n"
+">>> json.loads('1.1', parse_float=decimal.Decimal)\n"
+"Decimal('1.1')"
+msgstr ""
+
 #: ../../library/json.rst:90
 msgid "Extending :class:`JSONEncoder`::"
 msgstr "扩展 :class:`JSONEncoder`："
 
+#: ../../library/json.rst:92
+msgid ""
+">>> import json\n"
+">>> class ComplexEncoder(json.JSONEncoder):\n"
+"...     def default(self, obj):\n"
+"...         if isinstance(obj, complex):\n"
+"...             return [obj.real, obj.imag]\n"
+"...         # Let the base class default method raise the TypeError\n"
+"...         return super().default(obj)\n"
+"...\n"
+">>> json.dumps(2 + 1j, cls=ComplexEncoder)\n"
+"'[2.0, 1.0]'\n"
+">>> ComplexEncoder().encode(2 + 1j)\n"
+"'[2.0, 1.0]'\n"
+">>> list(ComplexEncoder().iterencode(2 + 1j))\n"
+"['[2.0', ', 1.0', ']']"
+msgstr ""
+
 #: ../../library/json.rst:108
 msgid "Using :mod:`json.tool` from the shell to validate and pretty-print:"
 msgstr "从命令行使用 :mod:`json.tool` 来验证并美化输出："
+
+#: ../../library/json.rst:110
+msgid ""
+"$ echo '{\"json\":\"obj\"}' | python -m json.tool\n"
+"{\n"
+"    \"json\": \"obj\"\n"
+"}\n"
+"$ echo '{1.2:3.4}' | python -m json.tool\n"
+"Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+msgstr ""
 
 #: ../../library/json.rst:119
 msgid "See :ref:`json-commandline` for detailed documentation."
@@ -140,7 +234,7 @@ msgstr ""
 ":mod:`json` 模块始终产生 :class:`str` 对象而非 :class:`bytes` 对象。因此，``fp.write()`` "
 "必须支持 :class:`str` 输入。"
 
-#: ../../library/json.rst:154 ../../library/json.rst:433
+#: ../../library/json.rst:154 ../../library/json.rst:431
 msgid ""
 "If *ensure_ascii* is true (the default), the output is guaranteed to have "
 "all incoming non-ASCII characters escaped.  If *ensure_ascii* is false, "
@@ -170,7 +264,7 @@ msgstr ""
 "类型值（``nan``、``inf`` 和 ``-inf``）进行序列化时会引发一个 :exc:`ValueError`。如果 *allow_nan* "
 "是 true，则使用它们的 JavaScript 等价形式（``NaN``、``Infinity`` 和 ``-Infinity``）。"
 
-#: ../../library/json.rst:168 ../../library/json.rst:452
+#: ../../library/json.rst:168 ../../library/json.rst:450
 msgid ""
 "If *indent* is a non-negative integer or string, then JSON array elements "
 "and object members will be pretty-printed with that indent level.  An indent"
@@ -183,11 +277,11 @@ msgstr ""
 "``\"\"``，则只会添加换行符。 ``None`` (默认值) 选择最紧凑的表达。 使用一个正整数会让每一层缩进同样数量的空格。 如果 "
 "*indent* 是一个字符串 (比如 ``\"\\t\"``)，那个字符串会被用于缩进每一层。"
 
-#: ../../library/json.rst:175 ../../library/json.rst:459
+#: ../../library/json.rst:175 ../../library/json.rst:457
 msgid "Allow strings for *indent* in addition to integers."
 msgstr "现允许使用字符串作为 *indent* 而不再仅仅是整数。"
 
-#: ../../library/json.rst:178 ../../library/json.rst:462
+#: ../../library/json.rst:178 ../../library/json.rst:460
 msgid ""
 "If specified, *separators* should be an ``(item_separator, key_separator)`` "
 "tuple.  The default is ``(', ', ': ')`` if *indent* is ``None`` and ``(',', "
@@ -198,11 +292,11 @@ msgstr ""
 " ``None`` 时，默认值取 ``(', ', ': ')``，否则取 ``(',', ': ')``。为了得到最紧凑的 JSON "
 "表达式，你应该指定其为 ``(',', ':')`` 以消除空白字符。"
 
-#: ../../library/json.rst:183 ../../library/json.rst:467
+#: ../../library/json.rst:183 ../../library/json.rst:465
 msgid "Use ``(',', ': ')`` as default if *indent* is not ``None``."
 msgstr "现当 *indent* 不是 ``None`` 时，采用 ``(',', ': ')`` 作为默认值。"
 
-#: ../../library/json.rst:186 ../../library/json.rst:470
+#: ../../library/json.rst:186 ../../library/json.rst:468
 msgid ""
 "If specified, *default* should be a function that gets called for objects "
 "that can't otherwise be serialized.  It should return a JSON encodable "
@@ -227,7 +321,7 @@ msgstr ""
 "要使用自定义的 :class:`JSONEncoder` 子类（例如重写了 :meth:`~JSONEncoder.default` "
 "方法来序列化额外类型），请使用 *cls* 关键字参数来指定它；否则将使用 :class:`JSONEncoder`。"
 
-#: ../../library/json.rst:198 ../../library/json.rst:277
+#: ../../library/json.rst:198 ../../library/json.rst:276
 msgid ""
 "All optional parameters are now :ref:`keyword-only <keyword-"
 "only_parameter>`."
@@ -289,36 +383,29 @@ msgid ""
 "*object_pairs_hook* is an optional function that will be called with the "
 "result of any object literal decoded with an ordered list of pairs.  The "
 "return value of *object_pairs_hook* will be used instead of the "
-":class:`dict`.  This feature can be used to implement custom decoders. If "
+":class:`dict`.  This feature can be used to implement custom decoders.  If "
 "*object_hook* is also defined, the *object_pairs_hook* takes priority."
 msgstr ""
-"*object_pairs_hook* 是一个可选的函数，它会被调用于每一个有序列表对解码出的对象字面量。 *object_pairs_hook* "
-"的返回值将会取代原本的 :class:`dict` 。这一特性能够被用于实现自定义解码器。如果 *object_hook* 也被定义， "
-"*object_pairs_hook* 优先。"
 
-#: ../../library/json.rst:243 ../../library/json.rst:348
+#: ../../library/json.rst:243 ../../library/json.rst:347
 msgid "Added support for *object_pairs_hook*."
 msgstr "添加了对 *object_pairs_hook* 的支持。"
 
-#: ../../library/json.rst:246 ../../library/json.rst:351
+#: ../../library/json.rst:246 ../../library/json.rst:350
 msgid ""
-"*parse_float*, if specified, will be called with the string of every JSON "
-"float to be decoded.  By default, this is equivalent to ``float(num_str)``. "
-"This can be used to use another datatype or parser for JSON floats (e.g. "
-":class:`decimal.Decimal`)."
+"*parse_float* is an optional function that will be called with the string of"
+" every JSON float to be decoded.  By default, this is equivalent to "
+"``float(num_str)``.  This can be used to use another datatype or parser for "
+"JSON floats (e.g. :class:`decimal.Decimal`)."
 msgstr ""
-"*parse_float* ，如果指定，将与每个要解码 JSON 浮点数的字符串一同调用。默认状态下，相当于 ``float(num_str)`` "
-"。可以用于对 JSON 浮点数使用其它数据类型和语法分析程序 （比如 :class:`decimal.Decimal` ）。"
 
-#: ../../library/json.rst:251 ../../library/json.rst:356
+#: ../../library/json.rst:251 ../../library/json.rst:355
 msgid ""
-"*parse_int*, if specified, will be called with the string of every JSON int "
-"to be decoded.  By default, this is equivalent to ``int(num_str)``.  This "
-"can be used to use another datatype or parser for JSON integers (e.g. "
-":class:`float`)."
+"*parse_int* is an optional function that will be called with the string of "
+"every JSON int to be decoded.  By default, this is equivalent to "
+"``int(num_str)``.  This can be used to use another datatype or parser for "
+"JSON integers (e.g. :class:`float`)."
 msgstr ""
-"*parse_int* ，如果指定，将与每个要解码 JSON 整数的字符串一同调用。默认状态下，相当于 ``int(num_str)`` 。可以用于对 "
-"JSON 整数使用其它数据类型和语法分析程序 （比如 :class:`float` ）。"
 
 #: ../../library/json.rst:256
 msgid ""
@@ -329,21 +416,19 @@ msgstr ""
 "现在 :func:`int` 默认的 *parse_int* 会通过解释器的 :ref:`整数字符串长度上限 <int_max_str_digits>`"
 " 来限制整数字符串的最大长度以帮助避免拒绝服务攻击。"
 
-#: ../../library/json.rst:262 ../../library/json.rst:361
+#: ../../library/json.rst:262 ../../library/json.rst:360
 msgid ""
-"*parse_constant*, if specified, will be called with one of the following "
-"strings: ``'-Infinity'``, ``'Infinity'``, ``'NaN'``. This can be used to "
-"raise an exception if invalid JSON numbers are encountered."
+"*parse_constant* is an optional function that will be called with one of the"
+" following strings: ``'-Infinity'``, ``'Infinity'``, ``'NaN'``.  This can be"
+" used to raise an exception if invalid JSON numbers are encountered."
 msgstr ""
-"*parse_constant* ，如果指定，将要与以下字符串中的一个一同调用： ``'-Infinity'`` ， ``'Infinity'`` ， "
-"``'NaN'`` 。如果遇到无效的 JSON 数字则可以使用它引发异常。"
 
-#: ../../library/json.rst:267
+#: ../../library/json.rst:266
 msgid ""
 "*parse_constant* doesn't get called on 'null', 'true', 'false' anymore."
 msgstr "*parse_constant* 不再调用 'null' ， 'true' ， 'false' 。"
 
-#: ../../library/json.rst:270
+#: ../../library/json.rst:269
 msgid ""
 "To use a custom :class:`JSONDecoder` subclass, specify it with the ``cls`` "
 "kwarg; otherwise :class:`JSONDecoder` is used.  Additional keyword arguments"
@@ -352,20 +437,20 @@ msgstr ""
 "要使用自定义的 :class:`JSONDecoder` 子类，用 ``cls`` 指定他；否则使用 :class:`JSONDecoder` "
 "。额外的关键词参数会通过类的构造函数传递。"
 
-#: ../../library/json.rst:274 ../../library/json.rst:292
-#: ../../library/json.rst:371
+#: ../../library/json.rst:273 ../../library/json.rst:291
+#: ../../library/json.rst:369
 msgid ""
 "If the data being deserialized is not a valid JSON document, a "
 ":exc:`JSONDecodeError` will be raised."
 msgstr "如果反序列化的数据不是有效 JSON 文档，引发 :exc:`JSONDecodeError` 错误。"
 
-#: ../../library/json.rst:280
+#: ../../library/json.rst:279
 msgid ""
 "*fp* can now be a :term:`binary file`. The input encoding should be UTF-8, "
 "UTF-16 or UTF-32."
 msgstr "*fp* 现在可以是 :term:`binary file` 。输入编码应当是 UTF-8 ， UTF-16 或者 UTF-32 。"
 
-#: ../../library/json.rst:286
+#: ../../library/json.rst:285
 msgid ""
 "Deserialize *s* (a :class:`str`, :class:`bytes` or :class:`bytearray` "
 "instance containing a JSON document) to a Python object using this "
@@ -374,11 +459,11 @@ msgstr ""
 "使用这个 :ref:`转换表 <json-to-py-table>` 将 *s* (一个包含 JSON 文档的 :class:`str`, "
 ":class:`bytes` 或 :class:`bytearray` 实例) 反序列化为 Python 对象。"
 
-#: ../../library/json.rst:290
+#: ../../library/json.rst:289
 msgid "The other arguments have the same meaning as in :func:`load`."
 msgstr "其他参数的含义与 :func:`load` 中的相同。"
 
-#: ../../library/json.rst:295
+#: ../../library/json.rst:294
 msgid ""
 "*s* can now be of type :class:`bytes` or :class:`bytearray`. The input "
 "encoding should be UTF-8, UTF-16 or UTF-32."
@@ -386,123 +471,118 @@ msgstr ""
 "*s* 现在可以为 :class:`bytes` 或 :class:`bytearray` 类型。 输入编码应为 UTF-8, UTF-16 或 "
 "UTF-32。"
 
-#: ../../library/json.rst:299
+#: ../../library/json.rst:298
 msgid "The keyword argument *encoding* has been removed."
 msgstr "关键字参数 *encoding* 已被移除。"
 
-#: ../../library/json.rst:304
+#: ../../library/json.rst:303
 msgid "Encoders and Decoders"
 msgstr "编码器和解码器"
 
-#: ../../library/json.rst:308
+#: ../../library/json.rst:307
 msgid "Simple JSON decoder."
 msgstr "简单的JSON解码器。"
 
-#: ../../library/json.rst:310
+#: ../../library/json.rst:309
 msgid "Performs the following translations in decoding by default:"
 msgstr "默认情况下，解码执行以下翻译:"
 
-#: ../../library/json.rst:315 ../../library/json.rst:404
+#: ../../library/json.rst:314 ../../library/json.rst:402
 msgid "JSON"
 msgstr "JSON"
 
-#: ../../library/json.rst:315 ../../library/json.rst:404
+#: ../../library/json.rst:314 ../../library/json.rst:402
 msgid "Python"
 msgstr "Python"
 
-#: ../../library/json.rst:317 ../../library/json.rst:406
+#: ../../library/json.rst:316 ../../library/json.rst:404
 msgid "object"
 msgstr "object -- 对象"
 
-#: ../../library/json.rst:317 ../../library/json.rst:406
+#: ../../library/json.rst:316 ../../library/json.rst:404
 msgid "dict"
 msgstr "dict"
 
-#: ../../library/json.rst:319 ../../library/json.rst:408
+#: ../../library/json.rst:318 ../../library/json.rst:406
 msgid "array"
 msgstr "array"
 
-#: ../../library/json.rst:319
+#: ../../library/json.rst:318
 msgid "list"
 msgstr "list"
 
-#: ../../library/json.rst:321 ../../library/json.rst:410
+#: ../../library/json.rst:320 ../../library/json.rst:408
 msgid "string"
 msgstr "string"
 
-#: ../../library/json.rst:321 ../../library/json.rst:410
+#: ../../library/json.rst:320 ../../library/json.rst:408
 msgid "str"
 msgstr "str"
 
-#: ../../library/json.rst:323
+#: ../../library/json.rst:322
 msgid "number (int)"
 msgstr "number (int)"
 
-#: ../../library/json.rst:323
+#: ../../library/json.rst:322
 msgid "int"
 msgstr "int"
 
-#: ../../library/json.rst:325
+#: ../../library/json.rst:324
 msgid "number (real)"
 msgstr "number (real)"
 
-#: ../../library/json.rst:325
+#: ../../library/json.rst:324
 msgid "float"
 msgstr "float"
 
-#: ../../library/json.rst:327 ../../library/json.rst:414
+#: ../../library/json.rst:326 ../../library/json.rst:412
 msgid "true"
 msgstr "true"
 
-#: ../../library/json.rst:327 ../../library/json.rst:414
+#: ../../library/json.rst:326 ../../library/json.rst:412
 msgid "True"
 msgstr "True"
 
-#: ../../library/json.rst:329 ../../library/json.rst:416
+#: ../../library/json.rst:328 ../../library/json.rst:414
 msgid "false"
 msgstr "false"
 
-#: ../../library/json.rst:329 ../../library/json.rst:416
+#: ../../library/json.rst:328 ../../library/json.rst:414
 msgid "False"
 msgstr "False"
 
-#: ../../library/json.rst:331 ../../library/json.rst:418
+#: ../../library/json.rst:330 ../../library/json.rst:416
 msgid "null"
 msgstr "null"
 
-#: ../../library/json.rst:331 ../../library/json.rst:418
+#: ../../library/json.rst:330 ../../library/json.rst:416
 msgid "None"
 msgstr "None"
 
-#: ../../library/json.rst:334
+#: ../../library/json.rst:333
 msgid ""
 "It also understands ``NaN``, ``Infinity``, and ``-Infinity`` as their "
 "corresponding ``float`` values, which is outside the JSON spec."
 msgstr "它还将“NaN”、“Infinity”和“-Infinity”理解为它们对应的“float”值，这超出了JSON规范。"
 
-#: ../../library/json.rst:337
+#: ../../library/json.rst:336
 msgid ""
-"*object_hook*, if specified, will be called with the result of every JSON "
-"object decoded and its return value will be used in place of the given "
-":class:`dict`.  This can be used to provide custom deserializations (e.g. to"
-" support `JSON-RPC <https://www.jsonrpc.org>`_ class hinting)."
+"*object_hook* is an optional function that will be called with the result of"
+" every JSON object decoded and its return value will be used in place of the"
+" given :class:`dict`.  This can be used to provide custom deserializations "
+"(e.g. to support `JSON-RPC <https://www.jsonrpc.org>`_ class hinting)."
 msgstr ""
-"如果指定了 *object_hook*，它将附带每个已解码 JSON 对象的结果来调用并将被用于替代给定的 :class:`dict`。 "
-"这可被用于提供自定义的反序列化操作（例如支持 `JSON-RPC <https://www.jsonrpc.org>`_ 类提示）。"
 
-#: ../../library/json.rst:342
+#: ../../library/json.rst:341
 msgid ""
-"*object_pairs_hook*, if specified will be called with the result of every "
-"JSON object decoded with an ordered list of pairs.  The return value of "
-"*object_pairs_hook* will be used instead of the :class:`dict`.  This feature"
-" can be used to implement custom decoders.  If *object_hook* is also "
-"defined, the *object_pairs_hook* takes priority."
+"*object_pairs_hook* is an optional function that will be called with the "
+"result of every JSON object decoded with an ordered list of pairs.  The "
+"return value of *object_pairs_hook* will be used instead of the "
+":class:`dict`.  This feature can be used to implement custom decoders.  If "
+"*object_hook* is also defined, the *object_pairs_hook* takes priority."
 msgstr ""
-"如果指定了 *object_pairs_hook* 则它将被调用并传入以对照值有序列表进行解码的每个 JSON 对象的结果。 "
-"*object_pairs_hook* 的结果值将被用来替代 :class:`dict`。 这一特性可被用于实现自定义解码器。 如果还定义了 "
-"*object_hook*，则 *object_pairs_hook* 的优先级更高。"
 
-#: ../../library/json.rst:366
+#: ../../library/json.rst:364
 msgid ""
 "If *strict* is false (``True`` is the default), then control characters will"
 " be allowed inside strings.  Control characters in this context are those "
@@ -512,23 +592,23 @@ msgstr ""
 "如果 *strict* 为 false （默认为 ``True`` ），那么控制字符将被允许在字符串内。在此上下文中的控制字符编码在范围 0--31 "
 "内的字符，包括 ``'\\t'`` (制表符）， ``'\\n'`` ， ``'\\r'`` 和 ``'\\0'`` 。"
 
-#: ../../library/json.rst:374 ../../library/json.rst:475
+#: ../../library/json.rst:372 ../../library/json.rst:473
 msgid "All parameters are now :ref:`keyword-only <keyword-only_parameter>`."
 msgstr "所有形参现在都是 :ref:`仅限关键字参数 <keyword-only_parameter>`。"
 
-#: ../../library/json.rst:379
+#: ../../library/json.rst:377
 msgid ""
 "Return the Python representation of *s* (a :class:`str` instance containing "
 "a JSON document)."
 msgstr "返回 *s* 的 Python 表示形式（包含一个 JSON 文档的 :class:`str` 实例）。"
 
-#: ../../library/json.rst:382
+#: ../../library/json.rst:380
 msgid ""
 ":exc:`JSONDecodeError` will be raised if the given JSON document is not "
 "valid."
 msgstr "如果给定的 JSON 文档无效则将引发 :exc:`JSONDecodeError`。"
 
-#: ../../library/json.rst:387
+#: ../../library/json.rst:385
 msgid ""
 "Decode a JSON document from *s* (a :class:`str` beginning with a JSON "
 "document) and return a 2-tuple of the Python representation and the index in"
@@ -537,37 +617,37 @@ msgstr ""
 "从 *s* 中解码出 JSON 文档（以 JSON 文档开头的一个 :class:`str` 对象）并返回一个 Python 表示形式为 2 "
 "元组以及指明该文档在 *s* 中结束位置的序号。"
 
-#: ../../library/json.rst:391
+#: ../../library/json.rst:389
 msgid ""
 "This can be used to decode a JSON document from a string that may have "
 "extraneous data at the end."
 msgstr "这可以用于从一个字符串解码JSON文档，该字符串的末尾可能有无关的数据。"
 
-#: ../../library/json.rst:397
+#: ../../library/json.rst:395
 msgid "Extensible JSON encoder for Python data structures."
 msgstr "用于Python数据结构的可扩展JSON编码器。"
 
-#: ../../library/json.rst:399
+#: ../../library/json.rst:397
 msgid "Supports the following objects and types by default:"
 msgstr "默认支持以下对象和类型："
 
-#: ../../library/json.rst:408
+#: ../../library/json.rst:406
 msgid "list, tuple"
 msgstr "list, tuple"
 
-#: ../../library/json.rst:412
+#: ../../library/json.rst:410
 msgid "int, float, int- & float-derived Enums"
 msgstr "int, float, int 和 float 派生的枚举"
 
-#: ../../library/json.rst:412
+#: ../../library/json.rst:410
 msgid "number"
 msgstr "数字"
 
-#: ../../library/json.rst:421
+#: ../../library/json.rst:419
 msgid "Added support for int- and float-derived Enum classes."
 msgstr "添加了对 int 和 float 派生的枚举类的支持"
 
-#: ../../library/json.rst:424
+#: ../../library/json.rst:422
 msgid ""
 "To extend this to recognize other objects, subclass and implement a "
 ":meth:`~JSONEncoder.default` method with another method that returns a "
@@ -577,7 +657,7 @@ msgstr ""
 "要将其扩展至识别其他对象，需要子类化并实现 :meth:`~JSONEncoder.default`，如果可能还要实现另一个返回 ``o`` "
 "的可序列化对象的方法，否则它应当调用超类实现 (来引发 :exc:`TypeError`)。"
 
-#: ../../library/json.rst:429
+#: ../../library/json.rst:427
 msgid ""
 "If *skipkeys* is false (the default), a :exc:`TypeError` will be raised when"
 " trying to encode keys that are not :class:`str`, :class:`int`, "
@@ -587,7 +667,7 @@ msgstr ""
 "如果 *skipkeys* 为假值（默认），则当尝试对非 :class:`str`, :class:`int`, :class:`float` 或 "
 "``None`` 的键进行编码时将会引发 :exc:`TypeError`。 如果 *skipkeys* 为真值，这些条目将被直接跳过。"
 
-#: ../../library/json.rst:437
+#: ../../library/json.rst:435
 msgid ""
 "If *check_circular* is true (the default), then lists, dicts, and custom "
 "encoded objects will be checked for circular references during encoding to "
@@ -597,7 +677,7 @@ msgstr ""
 "如果 *check_circular* 为真值（默认），那么列表、字典和自定义的已编码对象将在编码期间进行循环引用检查以防止无限递归 (无限递归会导致 "
 ":exc:`RecursionError`)。 在其他情况下，将不会进行这种检查。"
 
-#: ../../library/json.rst:442
+#: ../../library/json.rst:440
 msgid ""
 "If *allow_nan* is true (the default), then ``NaN``, ``Infinity``, and "
 "``-Infinity`` will be encoded as such.  This behavior is not JSON "
@@ -609,7 +689,7 @@ msgstr ""
 "进行编码。此行为不符合 JSON 规范，但与大多数的基于 Javascript 的编码器和解码器一致。否则，它将是一个 "
 ":exc:`ValueError` 来编码这些浮点数。"
 
-#: ../../library/json.rst:448
+#: ../../library/json.rst:446
 msgid ""
 "If *sort_keys* is true (default: ``False``), then the output of dictionaries"
 " will be sorted by key; this is useful for regression tests to ensure that "
@@ -618,65 +698,90 @@ msgstr ""
 "如果 *sort_keys* 为 true （默认为： ``False`` ），那么字典的输出是按照键排序；这对回归测试很有用，以确保可以每天比较 "
 "JSON 序列化。"
 
-#: ../../library/json.rst:481
+#: ../../library/json.rst:479
 msgid ""
 "Implement this method in a subclass such that it returns a serializable "
 "object for *o*, or calls the base implementation (to raise a "
 ":exc:`TypeError`)."
 msgstr "在子类中实现这种方法使其返回 *o* 的可序列化对象，或者调用基础实现（引发 :exc:`TypeError` ）。"
 
-#: ../../library/json.rst:485
+#: ../../library/json.rst:483
 msgid ""
 "For example, to support arbitrary iterators, you could implement "
 ":meth:`~JSONEncoder.default` like this::"
 msgstr "例如，要支持任意的迭代器，你可以这样实现 :meth:`~JSONEncoder.default`::"
 
-#: ../../library/json.rst:501
+#: ../../library/json.rst:486
+msgid ""
+"def default(self, o):\n"
+"   try:\n"
+"       iterable = iter(o)\n"
+"   except TypeError:\n"
+"       pass\n"
+"   else:\n"
+"       return list(iterable)\n"
+"   # Let the base class default method raise the TypeError\n"
+"   return super().default(o)"
+msgstr ""
+
+#: ../../library/json.rst:499
 msgid ""
 "Return a JSON string representation of a Python data structure, *o*.  For "
 "example::"
 msgstr "返回 Python *o* 数据结构的 JSON 字符串表达方式。例如::"
 
-#: ../../library/json.rst:510
+#: ../../library/json.rst:502
+msgid ""
+">>> json.JSONEncoder().encode({\"foo\": [\"bar\", \"baz\"]})\n"
+"'{\"foo\": [\"bar\", \"baz\"]}'"
+msgstr ""
+
+#: ../../library/json.rst:508
 msgid ""
 "Encode the given object, *o*, and yield each string representation as "
 "available.  For example::"
 msgstr "编码给定对象 *o* ，并且让每个可用的字符串表达方式。例如::"
 
-#: ../../library/json.rst:518
+#: ../../library/json.rst:511
+msgid ""
+"for chunk in json.JSONEncoder().iterencode(bigobject):\n"
+"    mysocket.write(chunk)"
+msgstr ""
+
+#: ../../library/json.rst:516
 msgid "Exceptions"
 msgstr "异常"
 
-#: ../../library/json.rst:522
+#: ../../library/json.rst:520
 msgid ""
 "Subclass of :exc:`ValueError` with the following additional attributes:"
 msgstr "拥有以下附加属性的 :exc:`ValueError` 的子类："
 
-#: ../../library/json.rst:526
+#: ../../library/json.rst:524
 msgid "The unformatted error message."
 msgstr "未格式化的错误消息。"
 
-#: ../../library/json.rst:530
+#: ../../library/json.rst:528
 msgid "The JSON document being parsed."
 msgstr "正在解析的 JSON 文档。"
 
-#: ../../library/json.rst:534
+#: ../../library/json.rst:532
 msgid "The start index of *doc* where parsing failed."
 msgstr " *doc* 解析失败的起始索引位置。"
 
-#: ../../library/json.rst:538
+#: ../../library/json.rst:536
 msgid "The line corresponding to *pos*."
 msgstr " *pos* 的对应行数。"
 
-#: ../../library/json.rst:542
+#: ../../library/json.rst:540
 msgid "The column corresponding to *pos*."
 msgstr " *pos* 的对应列数。"
 
-#: ../../library/json.rst:548
+#: ../../library/json.rst:546
 msgid "Standard Compliance and Interoperability"
 msgstr "标准符合性和互操作性"
 
-#: ../../library/json.rst:550
+#: ../../library/json.rst:548
 msgid ""
 "The JSON format is specified by :rfc:`7159` and by `ECMA-404 "
 "<https://www.ecma-international.org/publications-and-"
@@ -690,42 +795,42 @@ msgstr ""
 "RFC 的级别。简单来说， :class:`JSONEncoder` 和 :class:`JSONDecoder` "
 "子类，和明确提到的参数以外的参数，不作考虑。"
 
-#: ../../library/json.rst:556
+#: ../../library/json.rst:554
 msgid ""
 "This module does not comply with the RFC in a strict fashion, implementing "
 "some extensions that are valid JavaScript but not valid JSON.  In "
 "particular:"
 msgstr "此模块不严格遵循于 RFC ，它实现了一些扩展是有效的 Javascript 但不是有效的 JSON。尤其是："
 
-#: ../../library/json.rst:559
+#: ../../library/json.rst:557
 msgid "Infinite and NaN number values are accepted and output;"
 msgstr "无限和 NaN 数值是被接受并输出；"
 
-#: ../../library/json.rst:560
+#: ../../library/json.rst:558
 msgid ""
 "Repeated names within an object are accepted, and only the value of the last"
 " name-value pair is used."
 msgstr "对象内的重复名称是接受的，并且仅使用最后一对属性-值对的值。"
 
-#: ../../library/json.rst:563
+#: ../../library/json.rst:561
 msgid ""
 "Since the RFC permits RFC-compliant parsers to accept input texts that are "
 "not RFC-compliant, this module's deserializer is technically RFC-compliant "
 "under default settings."
 msgstr "自从 RFC 允许符合 RFC 的语法分析程序接收 不符合 RFC 的输入文本以来，这个模块的解串器在默认状态下默认符合 RFC 。"
 
-#: ../../library/json.rst:568
+#: ../../library/json.rst:566
 msgid "Character Encodings"
 msgstr "字符编码"
 
-#: ../../library/json.rst:570
+#: ../../library/json.rst:568
 msgid ""
 "The RFC requires that JSON be represented using either UTF-8, UTF-16, or "
 "UTF-32, with UTF-8 being the recommended default for maximum "
 "interoperability."
 msgstr "RFC 要求使用 UTF-8 ， UTF-16 ，或 UTF-32 之一来表示 JSON ，为了最大互通性推荐使用 UTF-8 。"
 
-#: ../../library/json.rst:573
+#: ../../library/json.rst:571
 msgid ""
 "As permitted, though not required, by the RFC, this module's serializer sets"
 " *ensure_ascii=True* by default, thus escaping the output so that the "
@@ -733,7 +838,7 @@ msgid ""
 msgstr ""
 "RFC允许，尽管不是必须的，这个模块的序列化默认设置为 *ensure_ascii=True* ，这样消除输出以便结果字符串至容纳 ASCII 字符。"
 
-#: ../../library/json.rst:577
+#: ../../library/json.rst:575
 msgid ""
 "Other than the *ensure_ascii* parameter, this module is defined strictly in "
 "terms of conversion between Python objects and :class:`Unicode strings "
@@ -743,7 +848,7 @@ msgstr ""
 "*ensure_ascii* 参数以外，此模块是严格的按照在 Python 对象和 :class:`Unicode strings <str>` "
 "间的转换定义的，并且因此不能直接解决字符编码的问题。"
 
-#: ../../library/json.rst:582
+#: ../../library/json.rst:580
 msgid ""
 "The RFC prohibits adding a byte order mark (BOM) to the start of a JSON "
 "text, and this module's serializer does not add a BOM to its output. The RFC"
@@ -754,7 +859,7 @@ msgstr ""
 "RFC 禁止添加字符顺序标记（ BOM ）在 JSON 文本的开头，这个模块的序列化器不添加 BOM 标记在它的输出上。 RFC，准许 JSON "
 "反序列化器忽略它们输入中的初始 BOM 标记，但不要求。此模块的反序列化器引发 :exc:`ValueError` 当存在初始 BOM 标记。"
 
-#: ../../library/json.rst:588
+#: ../../library/json.rst:586
 msgid ""
 "The RFC does not explicitly forbid JSON strings which contain byte sequences"
 " that don't correspond to valid Unicode characters (e.g. unpaired UTF-16 "
@@ -765,11 +870,11 @@ msgstr ""
 "RFC 不会明确禁止包含字节序列的 JSON 字符串这不对应有效的 Unicode 字符（比如 不成对的 UTF-16 "
 "的替代物），但是它确实指出它们可能会导致互操作性问题。默认下，模块对这样的序列接受和输出（当在原始 :class:`str` 存在时）代码点。"
 
-#: ../../library/json.rst:596
+#: ../../library/json.rst:594
 msgid "Infinite and NaN Number Values"
 msgstr "Infinite 和 NaN 数值"
 
-#: ../../library/json.rst:598
+#: ../../library/json.rst:596
 msgid ""
 "The RFC does not permit the representation of infinite or NaN number values."
 " Despite that, by default, this module accepts and outputs ``Infinity``, "
@@ -779,18 +884,32 @@ msgstr ""
 "RFC 不允许 infinite 或者 NaN 数值的表达方式。尽管这样，默认情况下，此模块接受并且输出 ``Infinity`` ， "
 "``-Infinity``，和 ``NaN`` 好像它们是有效的JSON数字字面值 ::"
 
-#: ../../library/json.rst:613
+#: ../../library/json.rst:600
+msgid ""
+">>> # Neither of these calls raises an exception, but the results are not valid JSON\n"
+">>> json.dumps(float('-inf'))\n"
+"'-Infinity'\n"
+">>> json.dumps(float('nan'))\n"
+"'NaN'\n"
+">>> # Same when deserializing\n"
+">>> json.loads('-Infinity')\n"
+"-inf\n"
+">>> json.loads('NaN')\n"
+"nan"
+msgstr ""
+
+#: ../../library/json.rst:611
 msgid ""
 "In the serializer, the *allow_nan* parameter can be used to alter this "
 "behavior.  In the deserializer, the *parse_constant* parameter can be used "
 "to alter this behavior."
 msgstr "序列化器中， *allow_nan* 参数可用于替代这个行为。反序列化器中， *parse_constant* 参数，可用于替代这个行为。"
 
-#: ../../library/json.rst:619
+#: ../../library/json.rst:617
 msgid "Repeated Names Within an Object"
 msgstr "对象中的重复名称"
 
-#: ../../library/json.rst:621
+#: ../../library/json.rst:619
 msgid ""
 "The RFC specifies that the names within a JSON object should be unique, but "
 "does not mandate how repeated names in JSON objects should be handled.  By "
@@ -801,15 +920,22 @@ msgstr ""
 "JSON对象里的名字应该是唯一的，但没有规定如何处理JSON对象中的重复名称。默认下，此模块不引发异常；作为替代，对于给定名它将忽略除姓-"
 "值对之外的所有对::"
 
-#: ../../library/json.rst:630
+#: ../../library/json.rst:624
+msgid ""
+">>> weird_json = '{\"x\": 1, \"x\": 2, \"x\": 3}'\n"
+">>> json.loads(weird_json)\n"
+"{'x': 3}"
+msgstr ""
+
+#: ../../library/json.rst:628
 msgid "The *object_pairs_hook* parameter can be used to alter this behavior."
 msgstr " *object_pairs_hook* 参数可用于替代此行为。"
 
-#: ../../library/json.rst:634
+#: ../../library/json.rst:632
 msgid "Top-level Non-Object, Non-Array Values"
 msgstr "顶级非对象，非数组值"
 
-#: ../../library/json.rst:636
+#: ../../library/json.rst:634
 msgid ""
 "The old version of JSON specified by the obsolete :rfc:`4627` required that "
 "the top-level value of a JSON text must be either a JSON object or array "
@@ -822,43 +948,43 @@ msgstr ""
 ":class:`dict` 或 :class:`list` ），并且不能是 JSON null 值，布尔值，数值或者字符串值。 :rfc:`7159` "
 "移除这个限制，此模块没有并且从未在序列化器和反序列化器中实现这个限制。"
 
-#: ../../library/json.rst:643
+#: ../../library/json.rst:641
 msgid ""
 "Regardless, for maximum interoperability, you may wish to voluntarily adhere"
 " to the restriction yourself."
 msgstr "无论如何，为了最大化地获取互操作性，你可能希望自己遵守该原则。"
 
-#: ../../library/json.rst:648
+#: ../../library/json.rst:646
 msgid "Implementation Limitations"
 msgstr "实现限制"
 
-#: ../../library/json.rst:650
+#: ../../library/json.rst:648
 msgid "Some JSON deserializer implementations may set limits on:"
 msgstr "一些 JSON 反序列化器的实现应该在以下方面做出限制："
 
-#: ../../library/json.rst:652
+#: ../../library/json.rst:650
 msgid "the size of accepted JSON texts"
 msgstr "可接受的 JSON 文本大小"
 
-#: ../../library/json.rst:653
+#: ../../library/json.rst:651
 msgid "the maximum level of nesting of JSON objects and arrays"
 msgstr "嵌套 JSON 对象和数组的最高水平"
 
-#: ../../library/json.rst:654
+#: ../../library/json.rst:652
 msgid "the range and precision of JSON numbers"
 msgstr "JSON 数字的范围和精度"
 
-#: ../../library/json.rst:655
+#: ../../library/json.rst:653
 msgid "the content and maximum length of JSON strings"
 msgstr "JSON 字符串的内容和最大长度"
 
-#: ../../library/json.rst:657
+#: ../../library/json.rst:655
 msgid ""
 "This module does not impose any such limits beyond those of the relevant "
 "Python datatypes themselves or the Python interpreter itself."
 msgstr "此模块不强制执行任何上述限制，除了相关的 Python 数据类型本身或者 Python 解释器本身的限制以外。"
 
-#: ../../library/json.rst:660
+#: ../../library/json.rst:658
 msgid ""
 "When serializing to JSON, beware any such limitations in applications that "
 "may consume your JSON.  In particular, it is common for JSON numbers to be "
@@ -872,21 +998,21 @@ msgstr ""
 "双精度数字，从而受到该表示方式的范围和精度限制。这是特别相关的，当序列化非常大的 Python :class:`int` 值时，或者当序列化 "
 "\"exotic\" 数值类型的实例时比如 :class:`decimal.Decimal` 。"
 
-#: ../../library/json.rst:673
+#: ../../library/json.rst:671
 msgid "Command Line Interface"
 msgstr "命令行界面"
 
-#: ../../library/json.rst:678
+#: ../../library/json.rst:676
 msgid "**Source code:** :source:`Lib/json/tool.py`"
 msgstr "**源代码：** :source:`Lib/json/tool.py`"
 
-#: ../../library/json.rst:682
+#: ../../library/json.rst:680
 msgid ""
 "The :mod:`json.tool` module provides a simple command line interface to "
 "validate and pretty-print JSON objects."
 msgstr " :mod:`json.tool` 模块提供了一个简单的命令行接口验证并打印漂亮的 JSON 对象。"
 
-#: ../../library/json.rst:685
+#: ../../library/json.rst:683
 msgid ""
 "If the optional ``infile`` and ``outfile`` arguments are not specified, "
 ":data:`sys.stdin` and :data:`sys.stdout` will be used respectively:"
@@ -894,57 +1020,82 @@ msgstr ""
 "如果未指定可选的 ``infile`` 和 ``outfile`` 参数，则将分别使用 :data:`sys.stdin` 和 "
 ":data:`sys.stdout`:"
 
-#: ../../library/json.rst:697
+#: ../../library/json.rst:686
+msgid ""
+"$ echo '{\"json\": \"obj\"}' | python -m json.tool\n"
+"{\n"
+"    \"json\": \"obj\"\n"
+"}\n"
+"$ echo '{1.2:3.4}' | python -m json.tool\n"
+"Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+msgstr ""
+
+#: ../../library/json.rst:695
 msgid ""
 "The output is now in the same order as the input. Use the :option:`--sort-"
 "keys` option to sort the output of dictionaries alphabetically by key."
 msgstr "输出现在将与输入顺序保持一致。 请使用 :option:`--sort-keys` 选项来将输出按照键的字母顺序排序。"
 
-#: ../../library/json.rst:704
+#: ../../library/json.rst:702
 msgid "Command line options"
 msgstr "命令行选项"
 
-#: ../../library/json.rst:708
+#: ../../library/json.rst:706
 msgid "The JSON file to be validated or pretty-printed:"
 msgstr "要被验证或美化打印的 JSON 文件："
 
-#: ../../library/json.rst:724
+#: ../../library/json.rst:708
+msgid ""
+"$ python -m json.tool mp_films.json\n"
+"[\n"
+"    {\n"
+"        \"title\": \"And Now for Something Completely Different\",\n"
+"        \"year\": 1971\n"
+"    },\n"
+"    {\n"
+"        \"title\": \"Monty Python and the Holy Grail\",\n"
+"        \"year\": 1975\n"
+"    }\n"
+"]"
+msgstr ""
+
+#: ../../library/json.rst:722
 msgid "If *infile* is not specified, read from :data:`sys.stdin`."
 msgstr "如果未指定 *infile*，则从 :data:`sys.stdin` 读取。"
 
-#: ../../library/json.rst:728
+#: ../../library/json.rst:726
 msgid ""
 "Write the output of the *infile* to the given *outfile*. Otherwise, write it"
 " to :data:`sys.stdout`."
 msgstr "将 *infile* 输出写入到给定的 *outfile*。 在其他情况下，将写入到 :data:`sys.stdout`。"
 
-#: ../../library/json.rst:733
+#: ../../library/json.rst:731
 msgid "Sort the output of dictionaries alphabetically by key."
 msgstr "将字典输出按照键的字母顺序排序。"
 
-#: ../../library/json.rst:739
+#: ../../library/json.rst:737
 msgid ""
 "Disable escaping of non-ascii characters, see :func:`json.dumps` for more "
 "information."
 msgstr "禁用非 ASCII 字符的转义，详情参见 :func:`json.dumps`。"
 
-#: ../../library/json.rst:745
+#: ../../library/json.rst:743
 msgid "Parse every input line as separate JSON object."
 msgstr "将每个输入行解析为单独的 JSON 对象。"
 
-#: ../../library/json.rst:751
+#: ../../library/json.rst:749
 msgid "Mutually exclusive options for whitespace control."
 msgstr "用于空白符控制的互斥选项。"
 
-#: ../../library/json.rst:757
+#: ../../library/json.rst:755
 msgid "Show the help message."
 msgstr "显示帮助消息。"
 
-#: ../../library/json.rst:761
+#: ../../library/json.rst:759
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../library/json.rst:762
+#: ../../library/json.rst:760
 msgid ""
 "As noted in `the errata for RFC 7159 <https://www.rfc-"
 "editor.org/errata_search.php?rfc=7159>`_, JSON permits literal U+2028 (LINE "

@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 17:14+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:34+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -92,13 +92,51 @@ msgid ""
 "sample data for this section:"
 msgstr "我们将使用虚构的 :file:`country_data.xml` XML 文档作为本节的示例数据："
 
+#: ../../library/xml.etree.elementtree.rst:54
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<data>\n"
+"    <country name=\"Liechtenstein\">\n"
+"        <rank>1</rank>\n"
+"        <year>2008</year>\n"
+"        <gdppc>141100</gdppc>\n"
+"        <neighbor name=\"Austria\" direction=\"E\"/>\n"
+"        <neighbor name=\"Switzerland\" direction=\"W\"/>\n"
+"    </country>\n"
+"    <country name=\"Singapore\">\n"
+"        <rank>4</rank>\n"
+"        <year>2011</year>\n"
+"        <gdppc>59900</gdppc>\n"
+"        <neighbor name=\"Malaysia\" direction=\"N\"/>\n"
+"    </country>\n"
+"    <country name=\"Panama\">\n"
+"        <rank>68</rank>\n"
+"        <year>2011</year>\n"
+"        <gdppc>13600</gdppc>\n"
+"        <neighbor name=\"Costa Rica\" direction=\"W\"/>\n"
+"        <neighbor name=\"Colombia\" direction=\"E\"/>\n"
+"    </country>\n"
+"</data>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:80
 msgid "We can import this data by reading from a file::"
 msgstr "可以通过从文件中读取来导入此数据："
 
+#: ../../library/xml.etree.elementtree.rst:82
+msgid ""
+"import xml.etree.ElementTree as ET\n"
+"tree = ET.parse('country_data.xml')\n"
+"root = tree.getroot()"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:86
 msgid "Or directly from a string::"
 msgstr "或直接从字符串中解析："
+
+#: ../../library/xml.etree.elementtree.rst:88
+msgid "root = ET.fromstring(country_data_as_string)"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:90
 msgid ""
@@ -115,13 +153,37 @@ msgid ""
 "As an :class:`Element`, ``root`` has a tag and a dictionary of attributes::"
 msgstr "作为 :class:`Element` ， ``root`` 具有标签和属性字典::"
 
+#: ../../library/xml.etree.elementtree.rst:96
+msgid ""
+">>> root.tag\n"
+"'data'\n"
+">>> root.attrib\n"
+"{}"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:101
 msgid "It also has children nodes over which we can iterate::"
 msgstr "还有可以迭代的子节点："
 
+#: ../../library/xml.etree.elementtree.rst:103
+msgid ""
+">>> for child in root:\n"
+"...     print(child.tag, child.attrib)\n"
+"...\n"
+"country {'name': 'Liechtenstein'}\n"
+"country {'name': 'Singapore'}\n"
+"country {'name': 'Panama'}"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:110
 msgid "Children are nested, and we can access specific child nodes by index::"
 msgstr "子级是可以嵌套的，我们可以通过索引访问特定的子级节点："
+
+#: ../../library/xml.etree.elementtree.rst:112
+msgid ""
+">>> root[0][1].text\n"
+"'2008'"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:118
 msgid ""
@@ -167,6 +229,21 @@ msgstr ""
 ":meth:`XMLPullParser.feed` 调用来增量式地添加数据。  要获得已解析的 XML 元素，应调用 "
 ":meth:`XMLPullParser.read_events`。 下面是一个示例::"
 
+#: ../../library/xml.etree.elementtree.rst:147
+msgid ""
+">>> parser = ET.XMLPullParser(['start', 'end'])\n"
+">>> parser.feed('<mytag>sometext')\n"
+">>> list(parser.read_events())\n"
+"[('start', <Element 'mytag' at 0x7fa66db2be58>)]\n"
+">>> parser.feed(' more text</mytag>')\n"
+">>> for event, elem in parser.read_events():\n"
+"...     print(event)\n"
+"...     print(elem.tag, 'text=', elem.text)\n"
+"...\n"
+"end\n"
+"mytag text= sometext more text"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:159
 msgid ""
 "The obvious use case is applications that operate in a non-blocking fashion "
@@ -210,6 +287,18 @@ msgstr ""
 ":class:`Element` 有一些很有效的方法，可帮助递归遍历其下的所有子树（包括子级，子级的子级，等等）。例如 "
 ":meth:`Element.iter`::"
 
+#: ../../library/xml.etree.elementtree.rst:181
+msgid ""
+">>> for neighbor in root.iter('neighbor'):\n"
+"...     print(neighbor.attrib)\n"
+"...\n"
+"{'name': 'Austria', 'direction': 'E'}\n"
+"{'name': 'Switzerland', 'direction': 'W'}\n"
+"{'name': 'Malaysia', 'direction': 'N'}\n"
+"{'name': 'Costa Rica', 'direction': 'W'}\n"
+"{'name': 'Colombia', 'direction': 'E'}"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:190
 msgid ""
 ":meth:`Element.findall` finds only elements with a tag which are direct "
@@ -220,6 +309,18 @@ msgstr ""
 ":meth:`Element.findall` 仅查找当前元素的直接子元素中带有指定标签的元素。 :meth:`Element.find` "
 "找带有特定标签的 *第一个* 子级，然后可以用 :attr:`Element.text` 访问元素的文本内容。 :attr:`Element.get` "
 "访问元素的属性::"
+
+#: ../../library/xml.etree.elementtree.rst:195
+msgid ""
+">>> for country in root.findall('country'):\n"
+"...     rank = country.find('rank').text\n"
+"...     name = country.get('name')\n"
+"...     print(name, rank)\n"
+"...\n"
+"Liechtenstein 1\n"
+"Singapore 4\n"
+"Panama 68"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:204
 msgid ""
@@ -255,16 +356,64 @@ msgid ""
 "attribute to the rank element::"
 msgstr "假设我们要为每个国家/地区的中添加一个排名，并在排名元素中添加一个 ``updated`` 属性："
 
+#: ../../library/xml.etree.elementtree.rst:221
+msgid ""
+">>> for rank in root.iter('rank'):\n"
+"...     new_rank = int(rank.text) + 1\n"
+"...     rank.text = str(new_rank)\n"
+"...     rank.set('updated', 'yes')\n"
+"...\n"
+">>> tree.write('output.xml')"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:228
 #: ../../library/xml.etree.elementtree.rst:272
 msgid "Our XML now looks like this:"
 msgstr "生成的XML现在看起来像这样："
+
+#: ../../library/xml.etree.elementtree.rst:230
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<data>\n"
+"    <country name=\"Liechtenstein\">\n"
+"        <rank updated=\"yes\">2</rank>\n"
+"        <year>2008</year>\n"
+"        <gdppc>141100</gdppc>\n"
+"        <neighbor name=\"Austria\" direction=\"E\"/>\n"
+"        <neighbor name=\"Switzerland\" direction=\"W\"/>\n"
+"    </country>\n"
+"    <country name=\"Singapore\">\n"
+"        <rank updated=\"yes\">5</rank>\n"
+"        <year>2011</year>\n"
+"        <gdppc>59900</gdppc>\n"
+"        <neighbor name=\"Malaysia\" direction=\"N\"/>\n"
+"    </country>\n"
+"    <country name=\"Panama\">\n"
+"        <rank updated=\"yes\">69</rank>\n"
+"        <year>2011</year>\n"
+"        <gdppc>13600</gdppc>\n"
+"        <neighbor name=\"Costa Rica\" direction=\"W\"/>\n"
+"        <neighbor name=\"Colombia\" direction=\"E\"/>\n"
+"    </country>\n"
+"</data>"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:256
 msgid ""
 "We can remove elements using :meth:`Element.remove`.  Let's say we want to "
 "remove all countries with a rank higher than 50::"
 msgstr "可以使用 :meth:`Element.remove` 删除元素。假设我们要删除排名高于50的所有国家/地区::"
+
+#: ../../library/xml.etree.elementtree.rst:259
+msgid ""
+">>> for country in root.findall('country'):\n"
+"...     # using root.findall() to avoid removal during traversal\n"
+"...     rank = int(country.find('rank').text)\n"
+"...     if rank > 50:\n"
+"...         root.remove(country)\n"
+"...\n"
+">>> tree.write('output.xml')"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:267
 msgid ""
@@ -276,6 +425,26 @@ msgstr ""
 "请注意在迭代时进行并发修改可能会导致问题，就像在迭代并修改 Python 列表或字典时那样。 因此，这个示例先通过 ``root.findall()``"
 " 收集了所有匹配的元素，在此之后再对匹配项列表进行迭代。"
 
+#: ../../library/xml.etree.elementtree.rst:274
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<data>\n"
+"    <country name=\"Liechtenstein\">\n"
+"        <rank updated=\"yes\">2</rank>\n"
+"        <year>2008</year>\n"
+"        <gdppc>141100</gdppc>\n"
+"        <neighbor name=\"Austria\" direction=\"E\"/>\n"
+"        <neighbor name=\"Switzerland\" direction=\"W\"/>\n"
+"    </country>\n"
+"    <country name=\"Singapore\">\n"
+"        <rank updated=\"yes\">5</rank>\n"
+"        <year>2011</year>\n"
+"        <gdppc>59900</gdppc>\n"
+"        <neighbor name=\"Malaysia\" direction=\"N\"/>\n"
+"    </country>\n"
+"</data>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:294
 msgid "Building XML documents"
 msgstr "构建 XML 文档"
@@ -285,6 +454,16 @@ msgid ""
 "The :func:`SubElement` function also provides a convenient way to create new"
 " sub-elements for a given element::"
 msgstr ":func:`SubElement` 函数还提供了一种便捷方法来为给定元素创建新的子元素::"
+
+#: ../../library/xml.etree.elementtree.rst:299
+msgid ""
+">>> a = ET.Element('a')\n"
+">>> b = ET.SubElement(a, 'b')\n"
+">>> c = ET.SubElement(a, 'c')\n"
+">>> d = ET.SubElement(c, 'd')\n"
+">>> ET.dump(a)\n"
+"<a><b /><c><d /></c></a>"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:307
 msgid "Parsing XML with Namespaces"
@@ -310,6 +489,25 @@ msgid ""
 " \"fictional\" and the other serving as the default namespace:"
 msgstr "下面的 XML 示例包含两个命名空间，一个具有前缀 \"fictional\" 而另一个则作为默认命名空间:"
 
+#: ../../library/xml.etree.elementtree.rst:320
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<actors xmlns:fictional=\"http://characters.example.com\"\n"
+"        xmlns=\"http://people.example.com\">\n"
+"    <actor>\n"
+"        <name>John Cleese</name>\n"
+"        <fictional:character>Lancelot</fictional:character>\n"
+"        <fictional:character>Archie Leach</fictional:character>\n"
+"    </actor>\n"
+"    <actor>\n"
+"        <name>Eric Idle</name>\n"
+"        <fictional:character>Sir Robin</fictional:character>\n"
+"        <fictional:character>Gunther</fictional:character>\n"
+"        <fictional:character>Commander Clement</fictional:character>\n"
+"    </actor>\n"
+"</actors>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:338
 msgid ""
 "One way to search and explore this XML example is to manually add the URI to"
@@ -319,15 +517,48 @@ msgstr ""
 "搜索和探查这个 XML 示例的一种方式是手动为 :meth:`~Element.find` 或 :meth:`~Element.findall` 的 "
 "xpath 中的每个标记或属性添加 URI::"
 
+#: ../../library/xml.etree.elementtree.rst:342
+msgid ""
+"root = fromstring(xml_text)\n"
+"for actor in root.findall('{http://people.example.com}actor'):\n"
+"    name = actor.find('{http://people.example.com}name')\n"
+"    print(name.text)\n"
+"    for char in actor.findall('{http://characters.example.com}character'):\n"
+"        print(' |-->', char.text)"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:349
 msgid ""
 "A better way to search the namespaced XML example is to create a dictionary "
 "with your own prefixes and use those in the search functions::"
 msgstr "一种更好的方式是搜索带命名空间的 XML 示例创建一个字典来存放你自己的前缀并在搜索函数中使用它们::"
 
+#: ../../library/xml.etree.elementtree.rst:352
+msgid ""
+"ns = {'real_person': 'http://people.example.com',\n"
+"      'role': 'http://characters.example.com'}\n"
+"\n"
+"for actor in root.findall('real_person:actor', ns):\n"
+"    name = actor.find('real_person:name', ns)\n"
+"    print(name.text)\n"
+"    for char in actor.findall('role:character', ns):\n"
+"        print(' |-->', char.text)"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:361
 msgid "These two approaches both output::"
 msgstr "这两种方式都会输出::"
+
+#: ../../library/xml.etree.elementtree.rst:363
+msgid ""
+"John Cleese\n"
+" |--> Lancelot\n"
+" |--> Archie Leach\n"
+"Eric Idle\n"
+" |--> Sir Robin\n"
+" |--> Gunther\n"
+" |--> Commander Clement"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:375
 msgid "XPath support"
@@ -357,11 +588,40 @@ msgstr ""
 "下面是一个演示此模块的部分 XPath 功能的例子。 我们将使用来自 :ref:`解析 XML <elementtree-parsing-xml>` "
 "小节的 ``countrydata`` XML 文档::"
 
+#: ../../library/xml.etree.elementtree.rst:389
+msgid ""
+"import xml.etree.ElementTree as ET\n"
+"\n"
+"root = ET.fromstring(countrydata)\n"
+"\n"
+"# Top-level elements\n"
+"root.findall(\".\")\n"
+"\n"
+"# All 'neighbor' grand-children of 'country' children of the top-level\n"
+"# elements\n"
+"root.findall(\"./country/neighbor\")\n"
+"\n"
+"# Nodes with name='Singapore' that have a 'year' child\n"
+"root.findall(\".//year/..[@name='Singapore']\")\n"
+"\n"
+"# 'year' nodes that are children of nodes with name='Singapore'\n"
+"root.findall(\".//*[@name='Singapore']/year\")\n"
+"\n"
+"# All 'neighbor' nodes that are the second child of their parent\n"
+"root.findall(\".//neighbor[2]\")"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:409
 msgid ""
 "For XML with namespaces, use the usual qualified ``{namespace}tag`` "
 "notation::"
 msgstr "对于带有命名空间的 XML，应使用通常的限定 ``{namespace}tag`` 标记法::"
+
+#: ../../library/xml.etree.elementtree.rst:411
+msgid ""
+"# All dublin-core \"title\" tags in the document\n"
+"root.findall(\".//{http://purl.org/dc/elements/1.1/}title\")"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:416
 msgid "Supported XPath syntax"
@@ -576,6 +836,18 @@ msgstr ""
 #: ../../library/xml.etree.elementtree.rst:523
 msgid "Typical uses::"
 msgstr "典型使用::"
+
+#: ../../library/xml.etree.elementtree.rst:525
+msgid ""
+"xml_data = \"<root>...</root>\"\n"
+"print(canonicalize(xml_data))\n"
+"\n"
+"with open(\"c14n_output.xml\", mode='w', encoding='utf-8') as out_file:\n"
+"    canonicalize(xml_data, out=out_file)\n"
+"\n"
+"with open(\"c14n_output.xml\", mode='w', encoding='utf-8') as out_file:\n"
+"    canonicalize(from_file=\"inputfile.xml\", out=out_file)"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:534
 msgid "The configuration *options* are as follows:"
@@ -932,6 +1204,14 @@ msgstr ""
 "``{http://www.w3.org/2001/XInclude}include`` 元素并将 **parse** 属性设为 "
 "``\"xml\"``，并使用 **href** 属性来指定要包括的文档。"
 
+#: ../../library/xml.etree.elementtree.rst:781
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<document xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n"
+"  <xi:include href=\"source.xml\" parse=\"xml\" />\n"
+"</document>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:788
 msgid ""
 "By default, the **href** attribute is treated as a file name. You can use "
@@ -946,6 +1226,16 @@ msgid ""
 ":mod:`xml.etree.ElementTree` module:"
 msgstr "要处理这个文件，请正常加载它，并将根元素传给 :mod:`xml.etree.ElementTree` 模块:"
 
+#: ../../library/xml.etree.elementtree.rst:792
+msgid ""
+"from xml.etree import ElementTree, ElementInclude\n"
+"\n"
+"tree = ElementTree.parse(\"document.xml\")\n"
+"root = tree.getroot()\n"
+"\n"
+"ElementInclude.include(root)"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:801
 msgid ""
 "The ElementInclude module replaces the "
@@ -954,6 +1244,13 @@ msgid ""
 msgstr ""
 "ElementInclude 模块使用来自 **source.xml** 文档的根元素替代 "
 "``{http://www.w3.org/2001/XInclude}include`` 元素。 结果看起来大概是这样:"
+
+#: ../../library/xml.etree.elementtree.rst:803
+msgid ""
+"<document xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n"
+"  <para>This is a paragraph.</para>\n"
+"</document>"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:809
 msgid ""
@@ -970,9 +1267,24 @@ msgstr ""
 "要包括文本文档，请使用 ``{http://www.w3.org/2001/XInclude}include`` 元素，并将 **parse** "
 "属性设为 \"text\":"
 
+#: ../../library/xml.etree.elementtree.rst:813
+msgid ""
+"<?xml version=\"1.0\"?>\n"
+"<document xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n"
+"  Copyright (c) <xi:include href=\"year.txt\" parse=\"text\" />.\n"
+"</document>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:820
 msgid "The result might look something like:"
 msgstr "结果可能如下所示："
+
+#: ../../library/xml.etree.elementtree.rst:822
+msgid ""
+"<document xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n"
+"  Copyright (c) 2003.\n"
+"</document>"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:840
 msgid ""
@@ -1051,6 +1363,10 @@ msgstr ""
 "这些属性可被用于存放与元素相关联的额外数据。 它们的值通常为字符串但也可以是任何应用专属的对象。 如果元素是基于 XML 文件创建的，*text* "
 "属性会存放元素的开始标记及其第一个子元素或结束标记之间的文本，或者为 ``None``，而 *tail* "
 "属性会存放元素的结束标记及下一个标记之间的文本，或者为 ``None``。 对于 XML 数据"
+
+#: ../../library/xml.etree.elementtree.rst:902
+msgid "<a><b>1<c>2<d/>3</c></b>4</a>"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:906
 msgid ""
@@ -1134,11 +1450,9 @@ msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:969
 msgid ""
-"Appends *subelements* from a sequence object with zero or more elements. "
-"Raises :exc:`TypeError` if a subelement is not an :class:`Element`."
+"Appends *subelements* from an iterable of elements. Raises :exc:`TypeError` "
+"if a subelement is not an :class:`Element`."
 msgstr ""
-"使用具有零个或多个元素的序列对象添加 *subelements*。 如果某个子元素不是 :class:`Element` 则会引发 "
-":exc:`TypeError`。"
 
 #: ../../library/xml.etree.elementtree.rst:977
 msgid ""
@@ -1246,6 +1560,17 @@ msgstr ""
 "注意：没有子元素的元素测试结果将为 ``False``。 在未来的 Python 发布版中，所有元素不论是否存在子元素测试结果都将为 ``True``。"
 " 建议改用显式的 ``len(elem)`` 或 ``elem is not None`` 测试。::"
 
+#: ../../library/xml.etree.elementtree.rst:1062
+msgid ""
+"element = root.find('foo')\n"
+"\n"
+"if not element:  # careful!\n"
+"    print(\"element not found, or element has no subelements\")\n"
+"\n"
+"if element is None:\n"
+"    print(\"element not found\")"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:1070
 msgid "Testing the truth value of an Element emits :exc:`DeprecationWarning`."
 msgstr "检测元素真值将引发 :exc:`DeprecationWarning`。"
@@ -1286,6 +1611,18 @@ msgid ""
 msgstr ""
 "对于规范化输出不可用但仍然要求输出特定属性顺序的情况，代码应当设法直接按要求的顺序来创建属性，以避免代码阅读者产生不匹配的感觉。 "
 "如果这一点是难以做到的，可以在序列化之前应用以下写法来强制实现顺序不依赖于元素的创建::"
+
+#: ../../library/xml.etree.elementtree.rst:1094
+msgid ""
+"def reorder_attributes(root):\n"
+"    for el in root.iter():\n"
+"        attrib = el.attrib\n"
+"        if len(attrib) > 1:\n"
+"            # adjust attribute order, e.g. by sorting\n"
+"            attribs = sorted(attrib.items())\n"
+"            attrib.clear()\n"
+"            attrib.update(attribs)"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:1107
 msgid "ElementTree Objects"
@@ -1393,11 +1730,42 @@ msgstr ":meth:`write` 方法现在会保留用户指定的属性顺序。"
 msgid "This is the XML file that is going to be manipulated::"
 msgstr "这是将要被操作的 XML 文件::"
 
+#: ../../library/xml.etree.elementtree.rst:1204
+msgid ""
+"<html>\n"
+"    <head>\n"
+"        <title>Example page</title>\n"
+"    </head>\n"
+"    <body>\n"
+"        <p>Moved to <a href=\"http://example.org/\">example.org</a>\n"
+"        or <a href=\"http://example.com/\">example.com</a>.</p>\n"
+"    </body>\n"
+"</html>"
+msgstr ""
+
 #: ../../library/xml.etree.elementtree.rst:1214
 msgid ""
 "Example of changing the attribute \"target\" of every link in first "
 "paragraph::"
 msgstr "修改第一段中的每个链接的 \"target\"  属性的示例::"
+
+#: ../../library/xml.etree.elementtree.rst:1216
+msgid ""
+">>> from xml.etree.ElementTree import ElementTree\n"
+">>> tree = ElementTree()\n"
+">>> tree.parse(\"index.xhtml\")\n"
+"<Element 'html' at 0xb77e6fac>\n"
+">>> p = tree.find(\"body/p\")     # Finds first occurrence of tag p in body\n"
+">>> p\n"
+"<Element 'p' at 0xb77ec26c>\n"
+">>> links = list(p.iter(\"a\"))   # Returns list of all links\n"
+">>> links\n"
+"[<Element 'a' at 0xb77ec2ac>, <Element 'a' at 0xb77ec1cc>]\n"
+">>> for i in links:             # Iterates through all found links\n"
+"...     i.attrib[\"target\"] = \"blank\"\n"
+"...\n"
+">>> tree.write(\"output.xhtml\")"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:1234
 msgid "QName Objects"
@@ -1605,6 +1973,41 @@ msgstr ""
 "方法，为每个关闭的标记调用它的 ``end(tag)`` 方法，并通过 ``data(data)`` 方法来处理数据。 有关更多受支持的回调方法，请参阅"
 " :class:`TreeBuilder` 类。  :meth:`XMLParser.close` 会调用 *target* 的 ``close()``"
 " 方法。 :class:`XMLParser` 不仅仅可被用来构建树结构。 下面是一个统计 XML 文件最大深度的示例::"
+
+#: ../../library/xml.etree.elementtree.rst:1413
+msgid ""
+">>> from xml.etree.ElementTree import XMLParser\n"
+">>> class MaxDepth:                     # The target object of the parser\n"
+"...     maxDepth = 0\n"
+"...     depth = 0\n"
+"...     def start(self, tag, attrib):   # Called for each opening tag.\n"
+"...         self.depth += 1\n"
+"...         if self.depth > self.maxDepth:\n"
+"...             self.maxDepth = self.depth\n"
+"...     def end(self, tag):             # Called for each closing tag.\n"
+"...         self.depth -= 1\n"
+"...     def data(self, data):\n"
+"...         pass            # We do not need to do anything with data.\n"
+"...     def close(self):    # Called when all data has been parsed.\n"
+"...         return self.maxDepth\n"
+"...\n"
+">>> target = MaxDepth()\n"
+">>> parser = XMLParser(target=target)\n"
+">>> exampleXml = \"\"\"\n"
+"... <a>\n"
+"...   <b>\n"
+"...   </b>\n"
+"...   <b>\n"
+"...     <c>\n"
+"...       <d>\n"
+"...       </d>\n"
+"...     </c>\n"
+"...   </b>\n"
+"... </a>\"\"\"\n"
+">>> parser.feed(exampleXml)\n"
+">>> parser.close()\n"
+"4"
+msgstr ""
 
 #: ../../library/xml.etree.elementtree.rst:1449
 msgid "XMLPullParser Objects"
