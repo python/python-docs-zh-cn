@@ -8,7 +8,7 @@
 # 叶浚安 <ye.pandaaaa906@gmail.com>, 2021
 # Josh Ouyang <me@joshoy.org>, 2021
 # jaystone776 <1732865113@qq.com>, 2021
-# 安龙（asaka）, 2023
+# 安龙, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-12 14:15+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 00:48+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -336,12 +336,68 @@ msgstr ""
 msgid "For example::"
 msgstr "例如："
 
+#: ../../c-api/dict.rst:263
+msgid ""
+"PyObject *key, *value;\n"
+"Py_ssize_t pos = 0;\n"
+"\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    /* do something interesting with the values... */\n"
+"    ...\n"
+"}"
+msgstr ""
+"PyObject *key, *value;\n"
+"Py_ssize_t pos = 0;\n"
+"\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    /* 用这些值做些有趣的事... */\n"
+"    ...\n"
+"}"
+
 #: ../../c-api/dict.rst:271
 msgid ""
 "The dictionary *p* should not be mutated during iteration.  It is safe to "
 "modify the values of the keys as you iterate over the dictionary, but only "
 "so long as the set of keys does not change.  For example::"
 msgstr "字典 *p* 不应该在遍历期间发生改变。在遍历字典时，改变键中的值是安全的，但仅限于键的集合不发生改变。例如::"
+
+#: ../../c-api/dict.rst:275
+msgid ""
+"PyObject *key, *value;\n"
+"Py_ssize_t pos = 0;\n"
+"\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    long i = PyLong_AsLong(value);\n"
+"    if (i == -1 && PyErr_Occurred()) {\n"
+"        return -1;\n"
+"    }\n"
+"    PyObject *o = PyLong_FromLong(i + 1);\n"
+"    if (o == NULL)\n"
+"        return -1;\n"
+"    if (PyDict_SetItem(self->dict, key, o) < 0) {\n"
+"        Py_DECREF(o);\n"
+"        return -1;\n"
+"    }\n"
+"    Py_DECREF(o);\n"
+"}"
+msgstr ""
+"PyObject *key, *value;\n"
+"Py_ssize_t pos = 0;\n"
+"\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    long i = PyLong_AsLong(value);\n"
+"    if (i == -1 && PyErr_Occurred()) {\n"
+"        return -1;\n"
+"    }\n"
+"    PyObject *o = PyLong_FromLong(i + 1);\n"
+"    if (o == NULL)\n"
+"        return -1;\n"
+"    if (PyDict_SetItem(self->dict, key, o) < 0) {\n"
+"        Py_DECREF(o);\n"
+"        return -1;\n"
+"    }\n"
+"    Py_DECREF(o);\n"
+"}"
 
 #: ../../c-api/dict.rst:293
 msgid ""
@@ -352,6 +408,20 @@ msgid ""
 msgstr ""
 "此函数在没有外部同步的 :term:`自由线程 <free threading>` 编译版中不是线程安全的。 你可以使用 "
 ":c:macro:`Py_BEGIN_CRITICAL_SECTION` 在迭代字典时锁定它::"
+
+#: ../../c-api/dict.rst:298
+msgid ""
+"Py_BEGIN_CRITICAL_SECTION(self->dict);\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    ...\n"
+"}\n"
+"Py_END_CRITICAL_SECTION();"
+msgstr ""
+"Py_BEGIN_CRITICAL_SECTION(self->dict);\n"
+"while (PyDict_Next(self->dict, &pos, &key, &value)) {\n"
+"    ...\n"
+"}\n"
+"Py_END_CRITICAL_SECTION();"
 
 #: ../../c-api/dict.rst:307
 msgid ""
@@ -390,6 +460,18 @@ msgstr ""
 "将 *seq2* 中的键值对更新或合并到字典 *a*。 *seq2* 必须为产生长度为 2 的用作键值对的元素的可迭代对象。 当存在重复的键时，如果 "
 "*override* 真值则最后出现的键胜出。 当成功时返回 ``0`` 或者当引发异常时返回 ``-1``。 等价的 Python "
 "代码（返回值除外）::"
+
+#: ../../c-api/dict.rst:333
+msgid ""
+"def PyDict_MergeFromSeq2(a, seq2, override):\n"
+"    for key, value in seq2:\n"
+"        if override or key not in a:\n"
+"            a[key] = value"
+msgstr ""
+"def PyDict_MergeFromSeq2(a, seq2, override):\n"
+"    for key, value in seq2:\n"
+"        if override or key not in a:\n"
+"            a[key] = value"
 
 #: ../../c-api/dict.rst:340
 msgid ""
