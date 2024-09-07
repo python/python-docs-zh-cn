@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-09 17:14+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -106,6 +106,24 @@ msgstr ""
 "这是一些 Windows 下的例子。注意：``msvcrt`` 是微软 C 标准库，包含了大部分 C 标准函数，这些函数都是以 cdecl "
 "调用协议进行调用的。"
 
+#: ../../library/ctypes.rst:57
+msgid ""
+">>> from ctypes import *\n"
+">>> print(windll.kernel32)  \n"
+"<WinDLL 'kernel32', handle ... at ...>\n"
+">>> print(cdll.msvcrt)      \n"
+"<CDLL 'msvcrt', handle ... at ...>\n"
+">>> libc = cdll.msvcrt      \n"
+">>>"
+msgstr ""
+">>> from ctypes import *\n"
+">>> print(windll.kernel32)  \n"
+"<WinDLL 'kernel32', handle ... at ...>\n"
+">>> print(cdll.msvcrt)      \n"
+"<CDLL 'msvcrt', handle ... at ...>\n"
+">>> libc = cdll.msvcrt      \n"
+">>>"
+
 #: ../../library/ctypes.rst:65
 msgid "Windows appends the usual ``.dll`` file suffix automatically."
 msgstr "Windows 会自动添加通常的 ``.dll`` 文件扩展名。"
@@ -131,6 +149,22 @@ msgstr ""
 "在 Linux 中，要求指定文件名 *包括* 扩展名来加载库，因此不能使用属性访问的方式来加载库。 你应当使用 dll 加载器的 "
 ":meth:`~LibraryLoader.LoadLibrary` 方法，或是应当通过调用构造器创建 CDLL 的实例来加载库::"
 
+#: ../../library/ctypes.rst:79
+msgid ""
+">>> cdll.LoadLibrary(\"libc.so.6\")  \n"
+"<CDLL 'libc.so.6', handle ... at ...>\n"
+">>> libc = CDLL(\"libc.so.6\")       \n"
+">>> libc                           \n"
+"<CDLL 'libc.so.6', handle ... at ...>\n"
+">>>"
+msgstr ""
+">>> cdll.LoadLibrary(\"libc.so.6\")  \n"
+"<CDLL 'libc.so.6', handle ... at ...>\n"
+">>> libc = CDLL(\"libc.so.6\")       \n"
+">>> libc                           \n"
+"<CDLL 'libc.so.6', handle ... at ...>\n"
+">>>"
+
 #: ../../library/ctypes.rst:92
 msgid "Accessing functions from loaded dlls"
 msgstr "操作导入的动态链接库中的函数"
@@ -138,6 +172,32 @@ msgstr "操作导入的动态链接库中的函数"
 #: ../../library/ctypes.rst:94
 msgid "Functions are accessed as attributes of dll objects::"
 msgstr "通过操作dll对象的属性来操作这些函数。"
+
+#: ../../library/ctypes.rst:96
+msgid ""
+">>> libc.printf\n"
+"<_FuncPtr object at 0x...>\n"
+">>> print(windll.kernel32.GetModuleHandleA)  \n"
+"<_FuncPtr object at 0x...>\n"
+">>> print(windll.kernel32.MyOwnFunction)     \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"ctypes.py\", line 239, in __getattr__\n"
+"    func = _StdcallFuncPtr(name, self)\n"
+"AttributeError: function 'MyOwnFunction' not found\n"
+">>>"
+msgstr ""
+">>> libc.printf\n"
+"<_FuncPtr object at 0x...>\n"
+">>> print(windll.kernel32.GetModuleHandleA)  \n"
+"<_FuncPtr object at 0x...>\n"
+">>> print(windll.kernel32.MyOwnFunction)     \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"ctypes.py\", line 239, in __getattr__\n"
+"    func = _StdcallFuncPtr(name, self)\n"
+"AttributeError: function 'MyOwnFunction' not found\n"
+">>>"
 
 #: ../../library/ctypes.rst:108
 msgid ""
@@ -153,6 +213,18 @@ msgstr ""
 "版本。 UNICODE 版本导出时会在名称后加上 ``W``，而 ANSI 版本导出时会在名称后加上 ``A``。 win32 "
 "``GetModuleHandle`` 函数会为给定的模块名称返回一个 *模块句柄*，它具有以下的 C 原型，以及一个被用来根据是否定义了 "
 "UNICODE 将其中之一暴露为 ``GetModuleHandle`` 的宏::"
+
+#: ../../library/ctypes.rst:116
+msgid ""
+"/* ANSI version */\n"
+"HMODULE GetModuleHandleA(LPCSTR lpModuleName);\n"
+"/* UNICODE version */\n"
+"HMODULE GetModuleHandleW(LPCWSTR lpModuleName);"
+msgstr ""
+"/* ANSI version */\n"
+"HMODULE GetModuleHandleA(LPCSTR lpModuleName);\n"
+"/* UNICODE version */\n"
+"HMODULE GetModuleHandleW(LPCWSTR lpModuleName);"
 
 #: ../../library/ctypes.rst:121
 msgid ""
@@ -172,6 +244,13 @@ msgstr ""
 "有时候，dlls的导出的函数名不符合 Python 的标识符规范，比如 ``\"??2@YAPAXI@Z\"``。此时，你必须使用 "
 ":func:`getattr` 方法来获得该函数。"
 
+#: ../../library/ctypes.rst:129
+msgid ""
+">>> getattr(cdll.msvcrt, \"??2@YAPAXI@Z\")  \n"
+"<_FuncPtr object at 0x...>\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:133
 msgid ""
 "On Windows, some dlls export functions not by name but by ordinal. These "
@@ -179,6 +258,19 @@ msgid ""
 "number::"
 msgstr ""
 "Windows 下，有些 dll 导出的函数没有函数名，而是通过其顺序号调用。对此类函数，你也可以通过 dll 对象的数值索引来操作这些函数。"
+
+#: ../../library/ctypes.rst:136
+msgid ""
+">>> cdll.kernel32[1]  \n"
+"<_FuncPtr object at 0x...>\n"
+">>> cdll.kernel32[0]  \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"ctypes.py\", line 310, in __getitem__\n"
+"    func = _StdcallFuncPtr(name, self)\n"
+"AttributeError: function ordinal 0 not found\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:150
 msgid "Calling functions"
@@ -192,6 +284,12 @@ msgid ""
 msgstr ""
 "你可以像任何其它 Python 可调用对象一样调用这些函数。 这个例子使用了 ``rand()`` 函数，它不接收任何参数并返回一个伪随机整数::"
 
+#: ../../library/ctypes.rst:155
+msgid ""
+">>> print(libc.rand())  \n"
+"1804289383"
+msgstr ""
+
 #: ../../library/ctypes.rst:158
 msgid ""
 "On Windows, you can call the ``GetModuleHandleA()`` function, which returns "
@@ -201,12 +299,34 @@ msgstr ""
 "在 Windows 上，你可以调用 ``GetModuleHandleA()`` 函数，它返回一个 win32 模块句柄 (将 ``None`` "
 "作为唯一参数传入以使用 ``NULL`` 指针来调用它)::"
 
+#: ../../library/ctypes.rst:161
+msgid ""
+">>> print(hex(windll.kernel32.GetModuleHandleA(None)))  \n"
+"0x1d000000\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:165
 msgid ""
 ":exc:`ValueError` is raised when you call an ``stdcall`` function with the "
 "``cdecl`` calling convention, or vice versa::"
 msgstr ""
 "如果你用 ``cdecl`` 调用方式调用 ``stdcall`` 约定的函数，则会甩出一个异常 :exc:`ValueError`。反之亦然。"
+
+#: ../../library/ctypes.rst:168
+msgid ""
+">>> cdll.kernel32.GetModuleHandleA(None)  \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: Procedure probably called with not enough arguments (4 bytes missing)\n"
+">>>\n"
+"\n"
+">>> windll.msvcrt.printf(b\"spam\")  \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: Procedure probably called with too many arguments (4 bytes in excess)\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:180
 msgid ""
@@ -220,6 +340,15 @@ msgid ""
 "prevent crashes from general protection faults when functions are called "
 "with invalid argument values::"
 msgstr "在 Windows 中，:mod:`ctypes` 使用 win32 结构化异常处理来防止由于在调用函数时使用非法参数导致的程序崩溃。"
+
+#: ../../library/ctypes.rst:187
+msgid ""
+">>> windll.kernel32.GetModuleHandleA(32)  \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"OSError: exception: access violation reading 0x00000020\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:193
 msgid ""
@@ -493,10 +622,34 @@ msgid ""
 "of the correct type and value::"
 msgstr "所有这些类型都可以通过使用正确类型和值的可选初始值调用它们来创建::"
 
+#: ../../library/ctypes.rst:272
+msgid ""
+">>> c_int()\n"
+"c_long(0)\n"
+">>> c_wchar_p(\"Hello, World\")\n"
+"c_wchar_p(140018365411392)\n"
+">>> c_ushort(-3)\n"
+"c_ushort(65533)\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:280
 msgid ""
 "Since these types are mutable, their value can also be changed afterwards::"
 msgstr "由于这些类型是可变的，它们的值也可以在以后更改::"
+
+#: ../../library/ctypes.rst:282
+msgid ""
+">>> i = c_int(42)\n"
+">>> print(i)\n"
+"c_long(42)\n"
+">>> print(i.value)\n"
+"42\n"
+">>> i.value = -99\n"
+">>> print(i.value)\n"
+"-99\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:292
 msgid ""
@@ -508,6 +661,24 @@ msgstr ""
 "当给指针类型的对象 :class:`c_char_p`, :class:`c_wchar_p` 和 :class:`c_void_p` "
 "等赋值时，将改变它们所指向的 *内存地址*，而 *不是* 它们所指向的内存区域的 *内容* (这是理所当然的，因为 Python 的 bytes "
 "对象是不可变的)::"
+
+#: ../../library/ctypes.rst:297
+msgid ""
+">>> s = \"Hello, World\"\n"
+">>> c_s = c_wchar_p(s)\n"
+">>> print(c_s)\n"
+"c_wchar_p(139966785747344)\n"
+">>> print(c_s.value)\n"
+"Hello World\n"
+">>> c_s.value = \"Hi, there\"\n"
+">>> print(c_s)              # the memory location has changed\n"
+"c_wchar_p(139966783348904)\n"
+">>> print(c_s.value)\n"
+"Hi, there\n"
+">>> print(s)                # first object is unchanged\n"
+"Hello, World\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:312
 msgid ""
@@ -521,6 +692,26 @@ msgstr ""
 "但你要注意不能将它们传递给会改变指针所指内存的函数。如果你需要可改变的内存块，ctypes 提供了 "
 ":func:`create_string_buffer` 函数，它提供多种方式创建这种内存块。当前的内存块内容可以通过 ``raw`` "
 "属性存取，如果你希望将它作为NUL结束的字符串，请使用 ``value`` 属性::"
+
+#: ../../library/ctypes.rst:319
+msgid ""
+">>> from ctypes import *\n"
+">>> p = create_string_buffer(3)            # create a 3 byte buffer, initialized to NUL bytes\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"3 b'\\x00\\x00\\x00'\n"
+">>> p = create_string_buffer(b\"Hello\")     # create a buffer containing a NUL terminated string\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"6 b'Hello\\x00'\n"
+">>> print(repr(p.value))\n"
+"b'Hello'\n"
+">>> p = create_string_buffer(b\"Hello\", 10) # create a 10 byte buffer\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"10 b'Hello\\x00\\x00\\x00\\x00\\x00'\n"
+">>> p.value = b\"Hi\"\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"10 b'Hi\\x00lo\\x00\\x00\\x00\\x00\\x00'\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:336
 msgid ""
@@ -546,6 +737,25 @@ msgstr ""
 "注意 printf 将打印到真正标准输出设备，而*不是* :data:`sys.stdout`，因此这些实例只能在控制台提示符下工作，而不能在 "
 "*IDLE* 或 *PythonWin* 中运行。"
 
+#: ../../library/ctypes.rst:351
+msgid ""
+">>> printf = libc.printf\n"
+">>> printf(b\"Hello, %s\\n\", b\"World!\")\n"
+"Hello, World!\n"
+"14\n"
+">>> printf(b\"Hello, %S\\n\", \"World!\")\n"
+"Hello, World!\n"
+"14\n"
+">>> printf(b\"%d bottles of beer\\n\", 42)\n"
+"42 bottles of beer\n"
+"19\n"
+">>> printf(b\"%f bottles of beer\\n\", 42.5)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ArgumentError: argument 2: TypeError: Don't know how to convert parameter 2\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:367
 msgid ""
 "As has been mentioned before, all Python types except integers, strings, and"
@@ -554,6 +764,14 @@ msgid ""
 msgstr ""
 "正如前面所提到过的，除了整数、字符串以及字节串之外，所有的 Python 类型都必须使用它们对应的 :mod:`ctypes` "
 "类型包装，才能够被正确地转换为所需的C语言类型。"
+
+#: ../../library/ctypes.rst:371
+msgid ""
+">>> printf(b\"An int %d, a double %f\\n\", 1234, c_double(3.14))\n"
+"An int 1234, a double 3.140000\n"
+"31\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:379
 msgid "Calling variadic functions"
@@ -576,6 +794,10 @@ msgid ""
 "attribute for the regular, non-variadic, function arguments:"
 msgstr "在这些平台上要求为常规、非可变函数参数指定 :attr:`~_FuncPtr.argtypes` 属性:"
 
+#: ../../library/ctypes.rst:389
+msgid "libc.printf.argtypes = [ctypes.c_char_p]"
+msgstr ""
+
 #: ../../library/ctypes.rst:393
 msgid ""
 "Because specifying the attribute does not inhibit portability it is advised "
@@ -597,6 +819,19 @@ msgstr ""
 "您也可以通过自定义 :mod:`ctypes` 参数转换方式来允许将你自己的类实例作为函数参数。 :mod:`ctypes` 会寻找 "
 ":attr:`!_as_parameter_` 属性并使用它作为函数参数。 属性必须是整数、字符串、字节串、:mod:`ctypes` 实例或者带有 "
 ":attr:`!_as_parameter_` 属性的对象::"
+
+#: ../../library/ctypes.rst:408
+msgid ""
+">>> class Bottles:\n"
+"...     def __init__(self, number):\n"
+"...         self._as_parameter_ = number\n"
+"...\n"
+">>> bottles = Bottles(42)\n"
+">>> printf(b\"%d bottles of beer\\n\", bottles)\n"
+"42 bottles of beer\n"
+"19\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:418
 msgid ""
@@ -628,12 +863,33 @@ msgstr ""
 ":attr:`~_FuncPtr.argtypes` 必须是一个 C 数据类型的序列（这里 :func:`!printf` "
 "函数可能不是一个好例子，因为它会根据格式字符串的不同接受可变数量和不同类型的形参，但另一方面这对尝试此功能来说也很方便）::"
 
+#: ../../library/ctypes.rst:436
+msgid ""
+">>> printf.argtypes = [c_char_p, c_char_p, c_int, c_double]\n"
+">>> printf(b\"String '%s', Int %d, Double %f\\n\", b\"Hi\", 10, 2.2)\n"
+"String 'Hi', Int 10, Double 2.200000\n"
+"37\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:442
 msgid ""
 "Specifying a format protects against incompatible argument types (just as a "
 "prototype for a C function), and tries to convert the arguments to valid "
 "types::"
 msgstr "指定数据类型可以防止不合理的参数传递（就像 C 函数的原型），并且会自动尝试将参数转换为需要的类型::"
+
+#: ../../library/ctypes.rst:445
+msgid ""
+">>> printf(b\"%d %d %d\", 1, 2, 3)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ArgumentError: argument 2: TypeError: wrong type\n"
+">>> printf(b\"%s %d %f\\n\", b\"X\", 2, 3)\n"
+"X 2 3.000000\n"
+"13\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:454
 msgid ""
@@ -676,9 +932,17 @@ msgstr ""
 ":c:func:`time` 的 C 原型是 ``time_t time(time_t *)``。 由于 :c:type:`time_t` "
 "的类型可能不同于默认返回类型 :c:expr:`int`，你应当指定 :attr:`!restype` 属性::"
 
+#: ../../library/ctypes.rst:486
+msgid ">>> libc.time.restype = c_time_t"
+msgstr ""
+
 #: ../../library/ctypes.rst:488
 msgid "The argument types can be specified using :attr:`~_FuncPtr.argtypes`::"
 msgstr "参数类型可以使用 :attr:`~_FuncPtr.argtypes` 来指定::"
+
+#: ../../library/ctypes.rst:490
+msgid ">>> libc.time.argtypes = (POINTER(c_time_t),)"
+msgstr ""
 
 #: ../../library/ctypes.rst:492
 msgid ""
@@ -686,11 +950,30 @@ msgid ""
 "``None``::"
 msgstr "调用该函数时如果要将 ``NULL`` 指针作为第一个参数，请使用 ``None``::"
 
+#: ../../library/ctypes.rst:494
+msgid ""
+">>> print(libc.time(None))  \n"
+"1150640792"
+msgstr ""
+
 #: ../../library/ctypes.rst:497
 msgid ""
 "Here is a more advanced example, it uses the :func:`!strchr` function, which"
 " expects a string pointer and a char, and returns a pointer to a string::"
 msgstr "下面是一个更高级的示例，它使用了 :func:`!strchr` 函数，该函数接收一个字符串指针和一个字符，并返回一个字符串指针::"
+
+#: ../../library/ctypes.rst:500
+msgid ""
+">>> strchr = libc.strchr\n"
+">>> strchr(b\"abcdef\", ord(\"d\"))  \n"
+"8059983\n"
+">>> strchr.restype = c_char_p    # c_char_p is a pointer to a string\n"
+">>> strchr(b\"abcdef\", ord(\"d\"))\n"
+"b'def'\n"
+">>> print(strchr(b\"abcdef\", ord(\"x\")))\n"
+"None\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:510
 msgid ""
@@ -700,6 +983,22 @@ msgid ""
 msgstr ""
 "如果你想要避免上面的 :func:`ord(\"x\") <ord>` 调用，你可以设置 :attr:`~_FuncPtr.argtypes` "
 "属性，第二个参数将从单字符 Python 字节串对象转换为 C char:"
+
+#: ../../library/ctypes.rst:514
+msgid ""
+">>> strchr.restype = c_char_p\n"
+">>> strchr.argtypes = [c_char_p, c_char]\n"
+">>> strchr(b\"abcdef\", b\"d\")\n"
+"b'def'\n"
+">>> strchr(b\"abcdef\", b\"def\")\n"
+"Traceback (most recent call last):\n"
+"ctypes.ArgumentError: argument 2: TypeError: one character bytes, bytearray or integer expected\n"
+">>> print(strchr(b\"abcdef\", b\"x\"))\n"
+"None\n"
+">>> strchr(b\"abcdef\", b\"d\")\n"
+"b'def'\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:529
 msgid ""
@@ -712,6 +1011,26 @@ msgid ""
 msgstr ""
 "如果外部函数返回一个整数，你也可以使用一个 Python 可调用对象（例如函数或类）作为 :attr:`~_FuncPtr.restype` 属性。 "
 "可调用对象调用时将附带 C 函数返回的 *整数*，其调用结果将被用作函数调用的结果值。 这对于检查错误返回值并自动引发异常来说很有用处::"
+
+#: ../../library/ctypes.rst:535
+msgid ""
+">>> GetModuleHandle = windll.kernel32.GetModuleHandleA  \n"
+">>> def ValidHandle(value):\n"
+"...     if value == 0:\n"
+"...         raise WinError()\n"
+"...     return value\n"
+"...\n"
+">>>\n"
+">>> GetModuleHandle.restype = ValidHandle  \n"
+">>> GetModuleHandle(None)  \n"
+"486539264\n"
+">>> GetModuleHandle(\"something silly\")  \n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"<stdin>\", line 3, in ValidHandle\n"
+"OSError: [Errno 126] The specified module could not be found.\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:552
 msgid ""
@@ -756,6 +1075,21 @@ msgstr ""
 "函数也能达到同样的效果，只不过 :func:`pointer` 需要更多步骤，因为它要先构造一个真实指针对象。所以在 Python "
 "代码本身不需要使用这个指针对象的情况下，使用 :func:`byref` 效率更高。"
 
+#: ../../library/ctypes.rst:577
+msgid ""
+">>> i = c_int()\n"
+">>> f = c_float()\n"
+">>> s = create_string_buffer(b'\\000' * 32)\n"
+">>> print(i.value, f.value, repr(s.value))\n"
+"0 0.0 b''\n"
+">>> libc.sscanf(b\"1 3.14 Hello\", b\"%d %f %s\",\n"
+"...             byref(i), byref(f), s)\n"
+"3\n"
+">>> print(i.value, f.value, repr(s.value))\n"
+"1 3.1400001049 b'Hello'\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:593
 msgid "Structures and unions"
 msgstr "结构体和联合"
@@ -787,6 +1121,26 @@ msgid ""
 "constructor::"
 msgstr "这是一个简单的 POINT 结构体，它包含名称为 *x* 和 *y* 的两个变量，还展示了如何通过构造函数初始化结构体。"
 
+#: ../../library/ctypes.rst:606
+msgid ""
+">>> from ctypes import *\n"
+">>> class POINT(Structure):\n"
+"...     _fields_ = [(\"x\", c_int),\n"
+"...                 (\"y\", c_int)]\n"
+"...\n"
+">>> point = POINT(10, 20)\n"
+">>> print(point.x, point.y)\n"
+"10 20\n"
+">>> point = POINT(y=5)\n"
+">>> print(point.x, point.y)\n"
+"0 5\n"
+">>> POINT(1, 2, 3)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: too many initializers\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:623
 msgid ""
 "You can, however, build much more complicated structures.  A structure can "
@@ -799,17 +1153,46 @@ msgid ""
 "*lowerright*::"
 msgstr "这是以一个 RECT 结构体，他包含了两个 POINT ，分别叫 *upperleft* 和 *lowerright*::"
 
+#: ../../library/ctypes.rst:629
+msgid ""
+">>> class RECT(Structure):\n"
+"...     _fields_ = [(\"upperleft\", POINT),\n"
+"...                 (\"lowerright\", POINT)]\n"
+"...\n"
+">>> rc = RECT(point)\n"
+">>> print(rc.upperleft.x, rc.upperleft.y)\n"
+"0 5\n"
+">>> print(rc.lowerright.x, rc.lowerright.y)\n"
+"0 0\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:640
 msgid ""
 "Nested structures can also be initialized in the constructor in several "
 "ways::"
 msgstr "嵌套结构体可以通过几种方式构造初始化::"
 
+#: ../../library/ctypes.rst:642
+msgid ""
+">>> r = RECT(POINT(1, 2), POINT(3, 4))\n"
+">>> r = RECT((1, 2), (3, 4))"
+msgstr ""
+
 #: ../../library/ctypes.rst:645
 msgid ""
 "Field :term:`descriptor`\\s can be retrieved from the *class*, they are "
 "useful for debugging because they can provide useful information::"
 msgstr "可以通过 *类* 获取字段 :term:`descriptor` ，它能提供很多有用的调试信息。"
+
+#: ../../library/ctypes.rst:648
+msgid ""
+">>> print(POINT.x)\n"
+"<Field type=c_long, ofs=0, size=4>\n"
+">>> print(POINT.y)\n"
+"<Field type=c_long, ofs=4, size=4>\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:659
 msgid ""
@@ -862,6 +1245,19 @@ msgstr ""
 "可以创建包含位字段的结构体和联合。 位字段只适用于整数字段，位宽度是由 :attr:`~Structure._fields_` "
 "元组中的第三项来指定的::"
 
+#: ../../library/ctypes.rst:689
+msgid ""
+">>> class Int(Structure):\n"
+"...     _fields_ = [(\"first_16\", c_int, 16),\n"
+"...                 (\"second_16\", c_int, 16)]\n"
+"...\n"
+">>> print(Int.first_16)\n"
+"<Field type=c_long, ofs=0:0, bits=16>\n"
+">>> print(Int.second_16)\n"
+"<Field type=c_long, ofs=0:16, bits=16>\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:703
 msgid "Arrays"
 msgstr "数组"
@@ -878,15 +1274,42 @@ msgid ""
 " a positive integer::"
 msgstr "创建数组类型的推荐方式是使用一个类型乘以一个正数::"
 
+#: ../../library/ctypes.rst:710
+msgid "TenPointsArrayType = POINT * 10"
+msgstr ""
+
 #: ../../library/ctypes.rst:712
 msgid ""
 "Here is an example of a somewhat artificial data type, a structure "
 "containing 4 POINTs among other stuff::"
 msgstr "下面是一个构造的数据案例，结构体中包含了4个 POINT 和一些其他东西。"
 
+#: ../../library/ctypes.rst:715
+msgid ""
+">>> from ctypes import *\n"
+">>> class POINT(Structure):\n"
+"...     _fields_ = (\"x\", c_int), (\"y\", c_int)\n"
+"...\n"
+">>> class MyStruct(Structure):\n"
+"...     _fields_ = [(\"a\", c_int),\n"
+"...                 (\"b\", c_float),\n"
+"...                 (\"point_array\", POINT * 4)]\n"
+">>>\n"
+">>> print(len(MyStruct().point_array))\n"
+"4\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:728
 msgid "Instances are created in the usual way, by calling the class::"
 msgstr "和平常一样，通过调用它创建实例::"
+
+#: ../../library/ctypes.rst:730
+msgid ""
+"arr = TenPointsArrayType()\n"
+"for pt in arr:\n"
+"    print(pt.x, pt.y)"
+msgstr ""
 
 #: ../../library/ctypes.rst:734
 msgid ""
@@ -898,6 +1321,19 @@ msgstr "以上代码会打印几行 ``0 0`` ，因为数组内容被初始化为
 msgid "Initializers of the correct type can also be specified::"
 msgstr "也能通过指定正确类型的数据来初始化::"
 
+#: ../../library/ctypes.rst:739
+msgid ""
+">>> from ctypes import *\n"
+">>> TenIntegers = c_int * 10\n"
+">>> ii = TenIntegers(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)\n"
+">>> print(ii)\n"
+"<c_long_Array_10 object at 0x...>\n"
+">>> for i in ii: print(i, end=\" \")\n"
+"...\n"
+"1 2 3 4 5 6 7 8 9 10\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:753
 msgid "Pointers"
 msgstr "指针"
@@ -908,17 +1344,41 @@ msgid ""
 ":mod:`ctypes` type::"
 msgstr "可以将 :mod:`ctypes` 类型数据传入 :func:`pointer` 函数创建指针::"
 
+#: ../../library/ctypes.rst:758
+msgid ""
+">>> from ctypes import *\n"
+">>> i = c_int(42)\n"
+">>> pi = pointer(i)\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:763
 msgid ""
 "Pointer instances have a :attr:`~_Pointer.contents` attribute which returns "
 "the object to which the pointer points, the ``i`` object above::"
 msgstr "指针实例拥有 :attr:`~_Pointer.contents` 属性，它返回指针指向的真实对象，如上面的 ``i`` 对象::"
 
+#: ../../library/ctypes.rst:766
+msgid ""
+">>> pi.contents\n"
+"c_long(42)\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:770
 msgid ""
 "Note that :mod:`ctypes` does not have OOR (original object return), it "
 "constructs a new, equivalent object each time you retrieve an attribute::"
 msgstr "注意 :mod:`ctypes` 并没有 OOR （返回原始对象）, 每次访问这个属性时都会构造返回一个新的相同对象::"
+
+#: ../../library/ctypes.rst:773
+msgid ""
+">>> pi.contents is i\n"
+"False\n"
+">>> pi.contents is pi.contents\n"
+"False\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:779
 msgid ""
@@ -927,13 +1387,39 @@ msgid ""
 " is stored::"
 msgstr "将这个指针的 contents 属性赋值为另一个 :class:`c_int` 实例将会导致该指针指向该实例的内存地址::"
 
+#: ../../library/ctypes.rst:782
+msgid ""
+">>> i = c_int(99)\n"
+">>> pi.contents = i\n"
+">>> pi.contents\n"
+"c_long(99)\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:791
 msgid "Pointer instances can also be indexed with integers::"
 msgstr "指针对象也可以通过整数下标进行访问::"
 
+#: ../../library/ctypes.rst:793
+msgid ""
+">>> pi[0]\n"
+"99\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:797
 msgid "Assigning to an integer index changes the pointed to value::"
 msgstr "通过整数下标赋值可以改变指针所指向的真实内容::"
+
+#: ../../library/ctypes.rst:799
+msgid ""
+">>> print(i)\n"
+"c_long(99)\n"
+">>> pi[0] = 22\n"
+">>> print(i)\n"
+"c_long(22)\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:806
 msgid ""
@@ -956,11 +1442,33 @@ msgstr ""
 "内部细节,  :func:`pointer` 函数不只是创建了一个指针实例，它首先创建了一个指针 *类型* 。这是通过调用 "
 ":func:`POINTER` 函数实现的，它接收  :mod:`ctypes` 类型为参数，返回一个新的类型::"
 
+#: ../../library/ctypes.rst:817
+msgid ""
+">>> PI = POINTER(c_int)\n"
+">>> PI\n"
+"<class 'ctypes.LP_c_long'>\n"
+">>> PI(42)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: expected c_long instead of int\n"
+">>> PI(c_int(42))\n"
+"<ctypes.LP_c_long object at 0x...>\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:828
 msgid ""
 "Calling the pointer type without an argument creates a ``NULL`` pointer. "
 "``NULL`` pointers have a ``False`` boolean value::"
 msgstr "无参调用指针类型可以创建一个 ``NULL`` 指针。 ``NULL`` 指针的布尔值是 ``False`` ::"
+
+#: ../../library/ctypes.rst:831
+msgid ""
+">>> null_ptr = POINTER(c_int)()\n"
+">>> print(bool(null_ptr))\n"
+"False\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:836
 msgid ""
@@ -969,6 +1477,21 @@ msgid ""
 msgstr ""
 "解引用指针的时候， :mod:`ctypes` 会帮你检测是否指针为 ``NULL`` (但是解引用无效的 非 ``NULL`` 指针仍会导致 "
 "Python 崩溃)::"
+
+#: ../../library/ctypes.rst:839
+msgid ""
+">>> null_ptr[0]\n"
+"Traceback (most recent call last):\n"
+"    ....\n"
+"ValueError: NULL pointer access\n"
+">>>\n"
+"\n"
+">>> null_ptr[0] = 1234\n"
+"Traceback (most recent call last):\n"
+"    ....\n"
+"ValueError: NULL pointer access\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:855
 msgid "Type conversions"
@@ -989,6 +1512,23 @@ msgstr ""
 "ctypes 可以接受其他对象。 例如，你可以传入兼容的数组实例而不是指针类型。 因此，对于 ``POINTER(c_int)``，ctypes "
 "接受一个 c_int 数组::"
 
+#: ../../library/ctypes.rst:864
+msgid ""
+">>> class Bar(Structure):\n"
+"...     _fields_ = [(\"count\", c_int), (\"values\", POINTER(c_int))]\n"
+"...\n"
+">>> bar = Bar()\n"
+">>> bar.values = (c_int * 3)(1, 2, 3)\n"
+">>> bar.count = 3\n"
+">>> for i in range(bar.count):\n"
+"...     print(bar.values[i])\n"
+"...\n"
+"1\n"
+"2\n"
+"3\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:878
 msgid ""
 "In addition, if a function argument is explicitly declared to be a pointer "
@@ -1005,6 +1545,12 @@ msgstr ""
 msgid "To set a POINTER type field to ``NULL``, you can assign ``None``::"
 msgstr "可以给指针内容赋值为 None 将其设置为 ``Null`` ::"
 
+#: ../../library/ctypes.rst:885
+msgid ""
+">>> bar.values = None\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:890
 msgid ""
 "Sometimes you have instances of incompatible types.  In C, you can cast one "
@@ -1016,6 +1562,15 @@ msgstr ""
 "有时候你拥有一个不兼容的类型。 在 C 中，你可以将一个类型强制转换为另一个。 :mod:`ctypes` 中的 a :func:`cast` "
 "函数提供了相同的功能。 上面的结构体  ``Bar`` 的 ``value`` 字段接收  ``POINTER(c_int)`` 指针或者 "
 ":class:`c_int` 数组，但是不能接受其他类型的实例::"
+
+#: ../../library/ctypes.rst:896
+msgid ""
+">>> bar.values = (c_byte * 4)()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: incompatible types, c_byte_Array_4 instance instead of LP_c_long instance\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:902
 msgid "For these cases, the :func:`cast` function is handy."
@@ -1032,11 +1587,28 @@ msgstr ""
 ":func:`cast` 函数可以将一个指针实例强制转换为另一种 ctypes 类型。 :func:`cast` 接收两个参数，一个 ctypes "
 "指针对象或者可以被转换为指针的其他类型对象，和一个 ctypes 指针类型。 返回第二个类型的一个实例，该返回实例和第一个参数指向同一片内存空间::"
 
+#: ../../library/ctypes.rst:910
+msgid ""
+">>> a = (c_byte * 4)()\n"
+">>> cast(a, POINTER(c_int))\n"
+"<ctypes.LP_c_long object at ...>\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:915
 msgid ""
 "So, :func:`cast` can be used to assign to the ``values`` field of ``Bar`` "
 "the structure::"
 msgstr "所以  :func:`cast` 可以用来给结构体 ``Bar`` 的 ``values`` 字段赋值::"
+
+#: ../../library/ctypes.rst:918
+msgid ""
+">>> bar = Bar()\n"
+">>> bar.values = cast((c_byte * 4)(), POINTER(c_int))\n"
+">>> print(bar.values[0])\n"
+"0\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:928
 msgid "Incomplete Types"
@@ -1049,11 +1621,34 @@ msgid ""
 "defined later::"
 msgstr "*不完整类型* 即还没有定义成员的结构体、联合或者数组。在 C 中，它们通常用于前置声明，然后在后面定义::"
 
+#: ../../library/ctypes.rst:934
+msgid ""
+"struct cell; /* forward declaration */\n"
+"\n"
+"struct cell {\n"
+"    char *name;\n"
+"    struct cell *next;\n"
+"};"
+msgstr ""
+
 #: ../../library/ctypes.rst:941
 msgid ""
 "The straightforward translation into ctypes code would be this, but it does "
 "not work::"
 msgstr "直接翻译成 ctypes 的代码如下，但是这行不通::"
+
+#: ../../library/ctypes.rst:944
+msgid ""
+">>> class cell(Structure):\n"
+"...     _fields_ = [(\"name\", c_char_p),\n"
+"...                 (\"next\", POINTER(cell))]\n"
+"...\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"<stdin>\", line 2, in cell\n"
+"NameError: name 'cell' is not defined\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:954
 msgid ""
@@ -1064,11 +1659,39 @@ msgstr ""
 "因为新的 ``class cell`` 在 class 语句本身中是不可用的。 在 :mod:`ctypes` 中，我们可以定义 ``cell`` "
 "类再在 class 语句之后设置 :attr:`~Structure._fields_` 属性::"
 
+#: ../../library/ctypes.rst:958
+msgid ""
+">>> from ctypes import *\n"
+">>> class cell(Structure):\n"
+"...     pass\n"
+"...\n"
+">>> cell._fields_ = [(\"name\", c_char_p),\n"
+"...                  (\"next\", POINTER(cell))]\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:966
 msgid ""
 "Let's try it. We create two instances of ``cell``, and let them point to "
 "each other, and finally follow the pointer chain a few times::"
 msgstr "让我们试试。我们定义两个 ``cell`` 实例，让它们互相指向对方，然后通过指针链式访问几次::"
+
+#: ../../library/ctypes.rst:969
+msgid ""
+">>> c1 = cell()\n"
+">>> c1.name = b\"foo\"\n"
+">>> c2 = cell()\n"
+">>> c2.name = b\"bar\"\n"
+">>> c1.next = pointer(c2)\n"
+">>> c2.next = pointer(c1)\n"
+">>> p = c1\n"
+">>> for i in range(8):\n"
+"...     print(p.name, end=\" \")\n"
+"...     p = p.next[0]\n"
+"...\n"
+"foo bar foo bar foo bar foo bar\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:987
 msgid "Callback functions"
@@ -1114,6 +1737,15 @@ msgstr ""
 "这里展示一个使用标准 C 库的 :c:func:`!qsort` 函数例子，使用它在一个回调函数的协助下对条目进行排序。 "
 ":c:func:`!qsort` 将被用来给一个整数的数组排序::"
 
+#: ../../library/ctypes.rst:1009
+msgid ""
+">>> IntArray5 = c_int * 5\n"
+">>> ia = IntArray5(5, 1, 7, 33, 99)\n"
+">>> qsort = libc.qsort\n"
+">>> qsort.restype = None\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1015
 msgid ""
 ":func:`!qsort` must be called with a pointer to the data to sort, the number"
@@ -1132,29 +1764,96 @@ msgid ""
 "integer. First we create the ``type`` for the callback function::"
 msgstr "所以，我们的回调函数要接收两个整数指针，返回一个整数。首先我们创建回调函数的 ``类型`` ::"
 
+#: ../../library/ctypes.rst:1024
+msgid ""
+">>> CMPFUNC = CFUNCTYPE(c_int, POINTER(c_int), POINTER(c_int))\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1027
 msgid ""
 "To get started, here is a simple callback that shows the values it gets "
 "passed::"
 msgstr "首先，这是一个简单的回调，它会显示传入的值::"
 
+#: ../../library/ctypes.rst:1030
+msgid ""
+">>> def py_cmp_func(a, b):\n"
+"...     print(\"py_cmp_func\", a[0], b[0])\n"
+"...     return 0\n"
+"...\n"
+">>> cmp_func = CMPFUNC(py_cmp_func)\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1037
 msgid "The result::"
 msgstr "结果::"
+
+#: ../../library/ctypes.rst:1039
+msgid ""
+">>> qsort(ia, len(ia), sizeof(c_int), cmp_func)  \n"
+"py_cmp_func 5 1\n"
+"py_cmp_func 33 99\n"
+"py_cmp_func 7 33\n"
+"py_cmp_func 5 7\n"
+"py_cmp_func 1 7\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1047
 msgid "Now we can actually compare the two items and return a useful result::"
 msgstr "现在我们可以比较两个元素并返回有用的结果了::"
 
+#: ../../library/ctypes.rst:1049
+msgid ""
+">>> def py_cmp_func(a, b):\n"
+"...     print(\"py_cmp_func\", a[0], b[0])\n"
+"...     return a[0] - b[0]\n"
+"...\n"
+">>>\n"
+">>> qsort(ia, len(ia), sizeof(c_int), CMPFUNC(py_cmp_func)) \n"
+"py_cmp_func 5 1\n"
+"py_cmp_func 33 99\n"
+"py_cmp_func 7 33\n"
+"py_cmp_func 1 7\n"
+"py_cmp_func 5 7\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1062
 msgid "As we can easily check, our array is sorted now::"
 msgstr "我们可以轻易地验证，现在数组是有序的了::"
+
+#: ../../library/ctypes.rst:1064
+msgid ""
+">>> for i in ia: print(i, end=\" \")\n"
+"...\n"
+"1 5 7 33 99\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1069
 msgid ""
 "The function factories can be used as decorator factories, so we may as well"
 " write::"
 msgstr "这些工厂函数可以当作装饰器工厂，所以可以这样写::"
+
+#: ../../library/ctypes.rst:1072
+msgid ""
+">>> @CFUNCTYPE(c_int, POINTER(c_int), POINTER(c_int))\n"
+"... def py_cmp_func(a, b):\n"
+"...     print(\"py_cmp_func\", a[0], b[0])\n"
+"...     return a[0] - b[0]\n"
+"...\n"
+">>> qsort(ia, len(ia), sizeof(c_int), py_cmp_func)\n"
+"py_cmp_func 5 1\n"
+"py_cmp_func 33 99\n"
+"py_cmp_func 7 33\n"
+"py_cmp_func 1 7\n"
+"py_cmp_func 5 7\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1087
 msgid ""
@@ -1200,6 +1899,13 @@ msgstr ""
 ":mod:`ctypes` 可以通过类型的 :meth:`~_CData.in_dll` 类方法访问这样的值。 *pythonapi* 是一个用于访问 "
 "Python C api 预定义符号::"
 
+#: ../../library/ctypes.rst:1111
+msgid ""
+">>> version = ctypes.c_int.in_dll(ctypes.pythonapi, \"Py_Version\")\n"
+">>> print(hex(version.value))\n"
+"0x30c00a0"
+msgstr ""
+
 #: ../../library/ctypes.rst:1115
 msgid ""
 "An extended example which also demonstrates the use of pointers accesses the"
@@ -1228,11 +1934,32 @@ msgid ""
 "example size, we show only how this table can be read with :mod:`ctypes`::"
 msgstr "这足以证明修改这个指针是很有用的。为了让实例大小不至于太长，这里只展示如何使用 :mod:`ctypes` 读取这个表::"
 
+#: ../../library/ctypes.rst:1128
+msgid ""
+">>> from ctypes import *\n"
+">>>\n"
+">>> class struct_frozen(Structure):\n"
+"...     _fields_ = [(\"name\", c_char_p),\n"
+"...                 (\"code\", POINTER(c_ubyte)),\n"
+"...                 (\"size\", c_int),\n"
+"...                 (\"get_code\", POINTER(c_ubyte)),  # Function pointer\n"
+"...                ]\n"
+"...\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1139
 msgid ""
 "We have defined the :c:struct:`_frozen` data type, so we can get the pointer"
 " to the table::"
 msgstr "我们定义了 :c:struct:`_frozen` 数据类型，所以我们可以获取表的指针::"
+
+#: ../../library/ctypes.rst:1142
+msgid ""
+">>> FrozenTable = POINTER(struct_frozen)\n"
+">>> table = FrozenTable.in_dll(pythonapi, \"_PyImport_FrozenBootstrap\")\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1146
 msgid ""
@@ -1245,6 +1972,19 @@ msgstr ""
 "由于 ``table`` 是指向 ``struct_frozen`` 数组的 ``指针`` "
 "，我们可以遍历它，只不过需要自己判断循环是否结束，因为指针本身并不包含长度。它早晚会因为访问到野指针或者什么的把自己搞崩溃，所以我们最好在遇到  "
 "``NULL`` 后就让它退出循环::"
+
+#: ../../library/ctypes.rst:1152
+msgid ""
+">>> for item in table:\n"
+"...     if item.name is None:\n"
+"...         break\n"
+"...     print(item.name.decode(\"ascii\"), item.size)\n"
+"...\n"
+"_frozen_importlib 31764\n"
+"_frozen_importlib_external 41499\n"
+"zipimport 12345\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1162
 msgid ""
@@ -1269,12 +2009,41 @@ msgstr ":mod:`ctypes` 也有自己的边界，有时候会发生一些意想不�
 msgid "Consider the following example::"
 msgstr "比如下面的例子::"
 
+#: ../../library/ctypes.rst:1177
+msgid ""
+">>> from ctypes import *\n"
+">>> class POINT(Structure):\n"
+"...     _fields_ = (\"x\", c_int), (\"y\", c_int)\n"
+"...\n"
+">>> class RECT(Structure):\n"
+"...     _fields_ = (\"a\", POINT), (\"b\", POINT)\n"
+"...\n"
+">>> p1 = POINT(1, 2)\n"
+">>> p2 = POINT(3, 4)\n"
+">>> rc = RECT(p1, p2)\n"
+">>> print(rc.a.x, rc.a.y, rc.b.x, rc.b.y)\n"
+"1 2 3 4\n"
+">>> # now swap the two points\n"
+">>> rc.a, rc.b = rc.b, rc.a\n"
+">>> print(rc.a.x, rc.a.y, rc.b.x, rc.b.y)\n"
+"3 4 3 4\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1195
 msgid ""
 "Hm. We certainly expected the last statement to print ``3 4 1 2``. What "
 "happened? Here are the steps of the ``rc.a, rc.b = rc.b, rc.a`` line above::"
 msgstr ""
 "嗯。我们预想应该打印 ``3 4 1 2`` 。但是为什么呢? 这是 ``rc.a, rc.b = rc.b, rc.a`` 这行代码展开后的步骤::"
+
+#: ../../library/ctypes.rst:1198
+msgid ""
+">>> temp0, temp1 = rc.b, rc.a\n"
+">>> rc.a = temp0\n"
+">>> rc.b = temp1\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1203
 msgid ""
@@ -1300,6 +2069,17 @@ msgid ""
 "Another example that may behave differently from what one would expect is "
 "this::"
 msgstr "下面是另一个可能和预期有偏差的例子::"
+
+#: ../../library/ctypes.rst:1215
+msgid ""
+">>> s = c_char_p()\n"
+">>> s.value = b\"abc def ghi\"\n"
+">>> s.value\n"
+"b'abc def ghi'\n"
+">>> s.value is s.value\n"
+"False\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1225
 msgid ""
@@ -1340,12 +2120,40 @@ msgstr ""
 "对象内存缓冲区大小。此函数第一个参数是ctypes对象，第二个参数是要求调整后的大小，单位是字节。不能使存储块小于对象的原有大小，否则抛出 "
 ":exc:`ValueError` 异常。"
 
+#: ../../library/ctypes.rst:1248
+msgid ""
+">>> short_array = (c_short * 4)()\n"
+">>> print(sizeof(short_array))\n"
+"8\n"
+">>> resize(short_array, 4)\n"
+"Traceback (most recent call last):\n"
+"    ...\n"
+"ValueError: minimum size is 8\n"
+">>> resize(short_array, 32)\n"
+">>> sizeof(short_array)\n"
+"32\n"
+">>> sizeof(type(short_array))\n"
+"8\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1262
 msgid ""
 "This is nice and fine, but how would one access the additional elements "
 "contained in this array?  Since the type still only knows about 4 elements, "
 "we get errors accessing other elements::"
 msgstr "这非常好，但是要怎么访问数组中额外的元素呢？因为数组类型已经定义包含4个元素，导致我们访问新增元素时会产生以下错误::"
+
+#: ../../library/ctypes.rst:1266
+msgid ""
+">>> short_array[:]\n"
+"[0, 0, 0, 0]\n"
+">>> short_array[7]\n"
+"Traceback (most recent call last):\n"
+"    ...\n"
+"IndexError: invalid index\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1274
 msgid ""
@@ -1422,6 +2230,18 @@ msgstr "在Linux 上，如果其他方式找不到的话，会使用环境变量
 msgid "Here are some examples::"
 msgstr "这是一些例子::"
 
+#: ../../library/ctypes.rst:1324
+msgid ""
+">>> from ctypes.util import find_library\n"
+">>> find_library(\"m\")\n"
+"'libm.so.6'\n"
+">>> find_library(\"c\")\n"
+"'libc.so.6'\n"
+">>> find_library(\"bz2\")\n"
+"'libbz2.so.1.0'\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1333
 msgid ""
 "On macOS, :func:`~ctypes.util.find_library` tries several predefined naming "
@@ -1430,6 +2250,20 @@ msgid ""
 msgstr ""
 "在 macOS 上，:func:`~ctypes.util.find_library` "
 "会尝试几种预定义的命名方案和路径来查找库，并在成功时返回完整路径名::"
+
+#: ../../library/ctypes.rst:1336
+msgid ""
+">>> from ctypes.util import find_library\n"
+">>> find_library(\"c\")\n"
+"'/usr/lib/libc.dylib'\n"
+">>> find_library(\"m\")\n"
+"'/usr/lib/libm.dylib'\n"
+">>> find_library(\"bz2\")\n"
+"'/usr/lib/libbz2.dylib'\n"
+">>> find_library(\"AGL\")\n"
+"'/System/Library/Frameworks/AGL.framework/AGL'\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1347
 msgid ""
@@ -1650,6 +2484,16 @@ msgid ""
 " other hand, accessing it through an index returns a new object each time::"
 msgstr ""
 "这些类的实例没有共用方法。动态链接库的导出函数可以通过属性或者索引的方式访问。注意，通过属性的方式访问会缓存这个函数，因而每次访问它时返回的都是同一个对象。另一方面，通过索引访问，每次都会返回一个新的对象::"
+
+#: ../../library/ctypes.rst:1502
+msgid ""
+">>> from ctypes import CDLL\n"
+">>> libc = CDLL(\"libc.so.6\")  # On Linux\n"
+">>> libc.time == libc.time\n"
+"True\n"
+">>> libc['time'] == libc['time']\n"
+"False"
+msgstr ""
 
 #: ../../library/ctypes.rst:1509
 msgid ""
@@ -2065,13 +2909,39 @@ msgstr ""
 "下面的例子演示了如何包装 Windows 的 ``MessageBoxW`` 函数以使其支持默认形参和命名参数。 相应的 Windows 头文件的 C "
 "声明是这样的::"
 
+#: ../../library/ctypes.rst:1803
+msgid ""
+"WINUSERAPI int WINAPI\n"
+"MessageBoxW(\n"
+"    HWND hWnd,\n"
+"    LPCWSTR lpText,\n"
+"    LPCWSTR lpCaption,\n"
+"    UINT uType);"
+msgstr ""
+
 #: ../../library/ctypes.rst:1810 ../../library/ctypes.rst:1833
 msgid "Here is the wrapping with :mod:`ctypes`::"
 msgstr "这是使用 :mod:`ctypes` 的包装::"
 
+#: ../../library/ctypes.rst:1812
+msgid ""
+">>> from ctypes import c_int, WINFUNCTYPE, windll\n"
+">>> from ctypes.wintypes import HWND, LPCWSTR, UINT\n"
+">>> prototype = WINFUNCTYPE(c_int, HWND, LPCWSTR, LPCWSTR, UINT)\n"
+">>> paramflags = (1, \"hwnd\", 0), (1, \"text\", \"Hi\"), (1, \"caption\", \"Hello from ctypes\"), (1, \"flags\", 0)\n"
+">>> MessageBox = prototype((\"MessageBoxW\", windll.user32), paramflags)"
+msgstr ""
+
 #: ../../library/ctypes.rst:1818
 msgid "The ``MessageBox`` foreign function can now be called in these ways::"
 msgstr "现在 ``MessageBox`` 外部函数可以通过以下方式来调用::"
+
+#: ../../library/ctypes.rst:1820
+msgid ""
+">>> MessageBox()\n"
+">>> MessageBox(text=\"Spam, spam, spam\")\n"
+">>> MessageBox(flags=2, text=\"foo bar\")"
+msgstr ""
 
 #: ../../library/ctypes.rst:1824
 msgid ""
@@ -2082,6 +2952,24 @@ msgid ""
 msgstr ""
 "第二个例子演示了输出形参。 这个 win32 ``GetWindowRect`` 函数通过将指定窗口的维度拷贝至调用者必须提供的 ``RECT`` "
 "结构体来提取这些值。 这是相应的 C 声明::"
+
+#: ../../library/ctypes.rst:1828
+msgid ""
+"WINUSERAPI BOOL WINAPI\n"
+"GetWindowRect(\n"
+"     HWND hWnd,\n"
+"     LPRECT lpRect);"
+msgstr ""
+
+#: ../../library/ctypes.rst:1835
+msgid ""
+">>> from ctypes import POINTER, WINFUNCTYPE, windll, WinError\n"
+">>> from ctypes.wintypes import BOOL, HWND, RECT\n"
+">>> prototype = WINFUNCTYPE(BOOL, HWND, POINTER(RECT))\n"
+">>> paramflags = (1, \"hwnd\"), (2, \"lprect\")\n"
+">>> GetWindowRect = prototype((\"GetWindowRect\", windll.user32), paramflags)\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1842
 msgid ""
@@ -2105,6 +2993,17 @@ msgstr ""
 "Win32``GetWindowRect`` API 函数返回一个 ``BOOL`` 来表示成功或失败，因此该函数可以执行错误检查，并在 API "
 "调用失败时引发异常::"
 
+#: ../../library/ctypes.rst:1852
+msgid ""
+">>> def errcheck(result, func, args):\n"
+"...     if not result:\n"
+"...         raise WinError()\n"
+"...     return args\n"
+"...\n"
+">>> GetWindowRect.errcheck = errcheck\n"
+">>>"
+msgstr ""
+
 #: ../../library/ctypes.rst:1860
 msgid ""
 "If the :attr:`~_FuncPtr.errcheck` function returns the argument tuple it "
@@ -2115,6 +3014,18 @@ msgid ""
 msgstr ""
 "如果 :attr:`~_FuncPtr.errcheck` 函数原封不动地返回它所接收的参数元组，则 :mod:`ctypes` "
 "会继续对输出形参执行正常处理。 如果你希望返回一个窗口坐标的元组而非 ``RECT`` 实例，可以在函数中检索字段并返回它们，常规处理将不会再执行::"
+
+#: ../../library/ctypes.rst:1866
+msgid ""
+">>> def errcheck(result, func, args):\n"
+"...     if not result:\n"
+"...         raise WinError()\n"
+"...     rc = args[1]\n"
+"...     return rc.left, rc.top, rc.bottom, rc.right\n"
+"...\n"
+">>> GetWindowRect.errcheck = errcheck\n"
+">>>"
+msgstr ""
 
 #: ../../library/ctypes.rst:1879
 msgid "Utility functions"
@@ -2149,6 +3060,10 @@ msgstr ""
 #: ../../library/ctypes.rst:1901
 msgid "``byref(obj, offset)`` corresponds to this C code::"
 msgstr "``byref(obj, offset)`` 对应于这段 C 代码::"
+
+#: ../../library/ctypes.rst:1903
+msgid "(((char *)&obj) + offset)"
+msgstr ""
 
 #: ../../library/ctypes.rst:1905
 msgid ""
@@ -2928,6 +3843,15 @@ msgid ""
 msgstr ""
 "可以在定义 Structure 子类的类语句 *之后* 再定义 :attr:`_fields_` 类变量，这将允许创建直接或间接引用其自身的数据类型::"
 
+#: ../../library/ctypes.rst:2508
+msgid ""
+"class List(Structure):\n"
+"    pass\n"
+"List._fields_ = [(\"pnext\", POINTER(List)),\n"
+"                 ...\n"
+"                ]"
+msgstr ""
+
 #: ../../library/ctypes.rst:2514
 msgid ""
 "The :attr:`_fields_` class variable must, however, be defined before the "
@@ -2978,6 +3902,19 @@ msgstr ""
 msgid "Here is an example type (Windows)::"
 msgstr "以下是一个示例类型（Windows）::"
 
+#: ../../library/ctypes.rst:2545
+msgid ""
+"class _U(Union):\n"
+"    _fields_ = [(\"lptdesc\", POINTER(TYPEDESC)),\n"
+"                (\"lpadesc\", POINTER(ARRAYDESC)),\n"
+"                (\"hreftype\", HREFTYPE)]\n"
+"\n"
+"class TYPEDESC(Structure):\n"
+"    _anonymous_ = (\"u\",)\n"
+"    _fields_ = [(\"u\", _U),\n"
+"                (\"vt\", VARTYPE)]"
+msgstr ""
+
 #: ../../library/ctypes.rst:2556
 msgid ""
 "The ``TYPEDESC`` structure describes a COM data type, the ``vt`` field "
@@ -2990,6 +3927,14 @@ msgstr ""
 "``TYPEDESC`` 结构体描述了一个 COM 数据类型，``vt`` 字段指明哪个联合字段是有效的。 由于 ``u`` "
 "字段被定义为匿名字段，现在可以直接从 TYPEDESC 实例访问成员。 ``td.lptdesc`` 和 ``td.u.lptdesc`` "
 "是等价的，但前者速度更快，因为它不需要创建临时的联合实例::"
+
+#: ../../library/ctypes.rst:2563
+msgid ""
+"td = TYPEDESC()\n"
+"td.vt = VT_PTR\n"
+"td.lptdesc = POINTER(some_type)\n"
+"td.u.lptdesc = POINTER(some_type)"
+msgstr ""
 
 #: ../../library/ctypes.rst:2568
 msgid ""

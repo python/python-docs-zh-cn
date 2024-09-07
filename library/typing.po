@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 14:49+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -45,6 +45,14 @@ msgstr "本模块提供了对类型提示的运行时支持。"
 #: ../../library/typing.rst:28
 msgid "Consider the function below::"
 msgstr "考虑下面的函数::"
+
+#: ../../library/typing.rst:30
+msgid ""
+"def surface_area_of_cube(edge_length: float) -> str:\n"
+"    return f\"The surface area of the cube is {6 * edge_length ** 2}.\""
+msgstr ""
+"def surface_area_of_cube(edge_length: float) -> str:\n"
+"    return f\"The surface area of the cube is {6 * edge_length ** 2}.\""
 
 #: ../../library/typing.rst:33
 msgid ""
@@ -139,11 +147,42 @@ msgstr ""
 "类型别名是使用 :keyword:`type` 语句来定义的，它将创建一个 :class:`TypeAliasType` 的实例。 "
 "在这个示例中，``Vector`` 和 ``list[float]`` 将被静态类型检查器等同处理::"
 
+#: ../../library/typing.rst:79
+msgid ""
+"type Vector = list[float]\n"
+"\n"
+"def scale(scalar: float, vector: Vector) -> Vector:\n"
+"    return [scalar * num for num in vector]\n"
+"\n"
+"# passes type checking; a list of floats qualifies as a Vector.\n"
+"new_vector = scale(2.0, [1.0, -4.2, 5.4])"
+msgstr ""
+
 #: ../../library/typing.rst:87
 msgid ""
 "Type aliases are useful for simplifying complex type signatures. For "
 "example::"
 msgstr "类型别名适用于简化复杂的类型签名。例如："
+
+#: ../../library/typing.rst:89
+msgid ""
+"from collections.abc import Sequence\n"
+"\n"
+"type ConnectionOptions = dict[str, str]\n"
+"type Address = tuple[str, int]\n"
+"type Server = tuple[Address, ConnectionOptions]\n"
+"\n"
+"def broadcast_message(message: str, servers: Sequence[Server]) -> None:\n"
+"    ...\n"
+"\n"
+"# The static type checker will treat the previous type signature as\n"
+"# being exactly equivalent to this one.\n"
+"def broadcast_message(\n"
+"    message: str,\n"
+"    servers: Sequence[tuple[tuple[str, int], dict[str, str]]]\n"
+") -> None:\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:106
 msgid ""
@@ -151,11 +190,25 @@ msgid ""
 "compatibility, type aliases can also be created through simple assignment::"
 msgstr ":keyword:`type` 语句是在 Python 3.12 中新增加的。 为了向下兼容，类型别名也可以通过简单的赋值来创建::"
 
+#: ../../library/typing.rst:109
+msgid "Vector = list[float]"
+msgstr "Vector = list[float]"
+
 #: ../../library/typing.rst:111
 msgid ""
 "Or marked with :data:`TypeAlias` to make it explicit that this is a type "
 "alias, not a normal variable assignment::"
 msgstr "或者用 :data:`TypeAlias` 标记来显式说明这是一个类型别名，而非一般的变量赋值："
+
+#: ../../library/typing.rst:114
+msgid ""
+"from typing import TypeAlias\n"
+"\n"
+"Vector: TypeAlias = list[float]"
+msgstr ""
+"from typing import TypeAlias\n"
+"\n"
+"Vector: TypeAlias = list[float]"
 
 #: ../../library/typing.rst:121
 msgid "NewType"
@@ -165,11 +218,31 @@ msgstr "NewType"
 msgid "Use the :class:`NewType` helper to create distinct types::"
 msgstr "用 :class:`NewType` 助手创建与原类型不同的类型："
 
+#: ../../library/typing.rst:125
+msgid ""
+"from typing import NewType\n"
+"\n"
+"UserId = NewType('UserId', int)\n"
+"some_id = UserId(524313)"
+msgstr ""
+
 #: ../../library/typing.rst:130
 msgid ""
 "The static type checker will treat the new type as if it were a subclass of "
 "the original type. This is useful in helping catch logical errors::"
 msgstr "静态类型检查器把新类型当作原始类型的子类，这种方式适用于捕捉逻辑错误："
+
+#: ../../library/typing.rst:133
+msgid ""
+"def get_user_name(user_id: UserId) -> str:\n"
+"    ...\n"
+"\n"
+"# passes type checking\n"
+"user_a = get_user_name(UserId(42351))\n"
+"\n"
+"# fails type checking; an int is not a UserId\n"
+"user_b = get_user_name(-1)"
+msgstr ""
 
 #: ../../library/typing.rst:142
 msgid ""
@@ -180,6 +253,12 @@ msgid ""
 msgstr ""
 "``UserId`` 类型的变量可执行所有 ``int`` 操作，但返回结果都是 ``int`` 类型。这种方式允许在预期 ``int`` 时传入 "
 "``UserId``，还能防止意外创建无效的 ``UserId``："
+
+#: ../../library/typing.rst:147
+msgid ""
+"# 'output' is of type 'int', not 'UserId'\n"
+"output = UserId(23413) + UserId(54341)"
+msgstr ""
 
 #: ../../library/typing.rst:150
 msgid ""
@@ -203,11 +282,30 @@ msgstr "更确切地说，在运行时，``some_value is Derived(some_value)`` �
 msgid "It is invalid to create a subtype of ``Derived``::"
 msgstr "创建 ``Derived`` 的子类型是无效的::"
 
+#: ../../library/typing.rst:161
+msgid ""
+"from typing import NewType\n"
+"\n"
+"UserId = NewType('UserId', int)\n"
+"\n"
+"# Fails at runtime and does not pass type checking\n"
+"class AdminUserId(UserId): pass"
+msgstr ""
+
 #: ../../library/typing.rst:168
 msgid ""
 "However, it is possible to create a :class:`NewType` based on a 'derived' "
 "``NewType``::"
 msgstr "然而，我们可以在 \"派生的\" ``NewType`` 的基础上创建一个 :class:`NewType`。"
+
+#: ../../library/typing.rst:170
+msgid ""
+"from typing import NewType\n"
+"\n"
+"UserId = NewType('UserId', int)\n"
+"\n"
+"ProUserId = NewType('ProUserId', UserId)"
+msgstr ""
 
 #: ../../library/typing.rst:176
 msgid "and typechecking for ``ProUserId`` will work as expected."
@@ -273,6 +371,23 @@ msgstr ""
 msgid "For example:"
 msgstr "例如:"
 
+#: ../../library/typing.rst:217
+msgid ""
+"from collections.abc import Callable, Awaitable\n"
+"\n"
+"def feeder(get_next_item: Callable[[], str]) -> None:\n"
+"    ...  # Body\n"
+"\n"
+"def async_query(on_success: Callable[[int], None],\n"
+"                on_error: Callable[[int, Exception], None]) -> None:\n"
+"    ...  # Body\n"
+"\n"
+"async def on_update(value: str) -> None:\n"
+"    ...  # Body\n"
+"\n"
+"callback: Callable[[str], Awaitable[None]] = on_update"
+msgstr ""
+
 #: ../../library/typing.rst:233
 msgid ""
 "The subscription syntax must always be used with exactly two values: the "
@@ -289,6 +404,16 @@ msgid ""
 "that a callable with any arbitrary parameter list would be acceptable:"
 msgstr "如果将一个省略号字面值 ``...`` 作为参数列表，则表示可以接受包含任意形参列表的可调用对象:"
 
+#: ../../library/typing.rst:241
+msgid ""
+"def concat(x: str, y: str) -> str:\n"
+"    return x + y\n"
+"\n"
+"x: Callable[..., str]\n"
+"x = str     # OK\n"
+"x = concat  # Also OK"
+msgstr ""
+
 #: ../../library/typing.rst:250
 msgid ""
 "``Callable`` cannot express complex signatures such as functions that take a"
@@ -299,6 +424,28 @@ msgid ""
 msgstr ""
 "``Callable`` 无法表达复杂的签名如接受可变数量参数的函数，:ref:`重载的函数 <overload>`，或具有仅限关键字形参的函数。 "
 "但是，这些签名可通过自定义具有 :meth:`~object.__call__` 方法的 :class:`Protocol` 类来表达："
+
+#: ../../library/typing.rst:256
+msgid ""
+"from collections.abc import Iterable\n"
+"from typing import Protocol\n"
+"\n"
+"class Combiner(Protocol):\n"
+"    def __call__(self, *vals: bytes, maxlen: int | None = None) -> list[bytes]: ...\n"
+"\n"
+"def batch_proc(data: Iterable[bytes], cb_results: Combiner) -> bytes:\n"
+"    for item in data:\n"
+"        ...\n"
+"\n"
+"def good_cb(*vals: bytes, maxlen: int | None = None) -> list[bytes]:\n"
+"    ...\n"
+"def bad_cb(*vals: bytes, maxitems: int | None) -> list[bytes]:\n"
+"    ...\n"
+"\n"
+"batch_proc([], good_cb)  # OK\n"
+"batch_proc([], bad_cb)   # Error! Argument 2 has incompatible type because of\n"
+"                         # different name and kind in the callback"
+msgstr ""
 
 #: ../../library/typing.rst:277
 msgid ""
@@ -341,15 +488,48 @@ msgid ""
 "support subscription to denote the expected types of container elements."
 msgstr "由于无法以通用方式静态地推断容器中保存的对象的类型信息，标准库中的许多容器类都支持下标操作来以表示容器元素的预期类型。"
 
+#: ../../library/typing.rst:302
+msgid ""
+"from collections.abc import Mapping, Sequence\n"
+"\n"
+"class Employee: ...\n"
+"\n"
+"# Sequence[Employee] indicates that all elements in the sequence\n"
+"# must be instances of \"Employee\".\n"
+"# Mapping[str, str] indicates that all keys and all values in the mapping\n"
+"# must be strings.\n"
+"def notify_by_email(employees: Sequence[Employee],\n"
+"                    overrides: Mapping[str, str]) -> None: ..."
+msgstr ""
+
 #: ../../library/typing.rst:315
 msgid ""
 "Generic functions and classes can be parameterized by using :ref:`type "
 "parameter syntax <type-params>`::"
 msgstr "泛型函数和类可以通过使用 :ref:`类型形参语法 <type-params>` 来实现参数化::"
 
+#: ../../library/typing.rst:318
+msgid ""
+"from collections.abc import Sequence\n"
+"\n"
+"def first[T](l: Sequence[T]) -> T:  # Function is generic over the TypeVar \"T\"\n"
+"    return l[0]"
+msgstr ""
+
 #: ../../library/typing.rst:323
 msgid "Or by using the :class:`TypeVar` factory directly::"
 msgstr "或直接使用 :class:`TypeVar` 工厂："
+
+#: ../../library/typing.rst:325
+msgid ""
+"from collections.abc import Sequence\n"
+"from typing import TypeVar\n"
+"\n"
+"U = TypeVar('U')                  # Declare type variable \"U\"\n"
+"\n"
+"def second(l: Sequence[U]) -> U:  # Function is generic over the TypeVar \"U\"\n"
+"    return l[1]"
+msgstr ""
 
 #: ../../library/typing.rst:333
 msgid "Syntactic support for generics is new in Python 3.12."
@@ -364,6 +544,21 @@ msgid ""
 "For most containers in Python, the typing system assumes that all elements "
 "in the container will be of the same type. For example::"
 msgstr "对于 Python 中的大多数容器，类型系统会假定容器中的所有元素都是相同类型的。 例如::"
+
+#: ../../library/typing.rst:344
+msgid ""
+"from collections.abc import Mapping\n"
+"\n"
+"# Type checker will infer that all elements in ``x`` are meant to be ints\n"
+"x: list[int] = []\n"
+"\n"
+"# Type checker error: ``list`` only accepts a single type argument:\n"
+"y: list[int, str] = [1, 'foo']\n"
+"\n"
+"# Type checker will infer that all keys in ``z`` are meant to be strings,\n"
+"# and that all values in ``z`` are meant to be either strings or ints\n"
+"z: Mapping[str, str | int] = {}"
+msgstr ""
 
 #: ../../library/typing.rst:356
 msgid ""
@@ -386,6 +581,20 @@ msgstr ""
 "然而，与大多数其它 Python 容器不同的是，在常见的 Python 代码中，元组中元素的类型并不相同。因此，在 Python "
 "的类型系统中，元组是特殊情况。:class:`tuple` 可以接受 *任意数量* 的类型参数："
 
+#: ../../library/typing.rst:367
+msgid ""
+"# OK: ``x`` is assigned to a tuple of length 1 where the sole element is an int\n"
+"x: tuple[int] = (5,)\n"
+"\n"
+"# OK: ``y`` is assigned to a tuple of length 2;\n"
+"# element 1 is an int, element 2 is a str\n"
+"y: tuple[int, str] = (5, \"foo\")\n"
+"\n"
+"# Error: the type annotation indicates a tuple of length 1,\n"
+"# but ``z`` has been assigned to a tuple of length 3\n"
+"z: tuple[int] = (1, 2, 3)"
+msgstr ""
+
 #: ../../library/typing.rst:378
 msgid ""
 "To denote a tuple which could be of *any* length, and in which all elements "
@@ -395,6 +604,24 @@ msgid ""
 msgstr ""
 "要表示一个可以是 *任意* 长度的元组，并且其中的所有元素都是相同类型的 ``T``，请使用 ``tuple[T, ...]``。要表示空元组，请使用 "
 "``tuple[()]``。只使用 ``tuple`` 作为注解等效于使用``tuple[Any, ...]``："
+
+#: ../../library/typing.rst:383
+msgid ""
+"x: tuple[int, ...] = (1, 2)\n"
+"# These reassignments are OK: ``tuple[int, ...]`` indicates x can be of any length\n"
+"x = (1, 2, 3)\n"
+"x = ()\n"
+"# This reassignment is an error: all elements in ``x`` must be ints\n"
+"x = (\"foo\", \"bar\")\n"
+"\n"
+"# ``y`` can only ever be assigned to an empty tuple\n"
+"y: tuple[()] = ()\n"
+"\n"
+"z: tuple = (\"foo\", \"bar\")\n"
+"# These reassignments are OK: plain ``tuple`` is equivalent to ``tuple[Any, ...]``\n"
+"z = (1, 2, 3)\n"
+"z = ()"
+msgstr ""
 
 #: ../../library/typing.rst:401
 msgid "The type of class objects"
@@ -410,9 +637,33 @@ msgstr ""
 "用 ``C`` 注解的变量可以接受类型 ``C`` 的值。然而，用类型 ``type[C]`` （或者 :class:`typing.Type[C] "
 "<Type>` ）注解的变量则可以接受本身是类的值——准确地说，是接受 ``C`` 的 *类对象* 。例如："
 
+#: ../../library/typing.rst:409
+msgid ""
+"a = 3         # Has type ``int``\n"
+"b = int       # Has type ``type[int]``\n"
+"c = type(a)   # Also has type ``type[int]``"
+msgstr ""
+
 #: ../../library/typing.rst:413
 msgid "Note that ``type[C]`` is covariant::"
 msgstr "注意，``type[C]`` 是协变的："
+
+#: ../../library/typing.rst:415
+msgid ""
+"class User: ...\n"
+"class ProUser(User): ...\n"
+"class TeamUser(User): ...\n"
+"\n"
+"def make_new_user(user_class: type[User]) -> User:\n"
+"    # ...\n"
+"    return user_class()\n"
+"\n"
+"make_new_user(User)      # OK\n"
+"make_new_user(ProUser)   # Also OK: ``type[ProUser]`` is a subtype of ``type[User]``\n"
+"make_new_user(TeamUser)  # Still fine\n"
+"make_new_user(User())    # Error: expected ``type[User]`` but got ``User``\n"
+"make_new_user(int)       # Error: ``type[int]`` is not a subtype of ``type[User]``"
+msgstr ""
 
 #: ../../library/typing.rst:429
 msgid ""
@@ -422,6 +673,17 @@ msgid ""
 msgstr ""
 ":class:`type` 的合法形参只有类, :data:`Any`, :ref:`类型变量 <generics>` 以及前面这些类型的并集。 "
 "例如::"
+
+#: ../../library/typing.rst:433
+msgid ""
+"def new_non_team_user(user_class: type[BasicUser | ProUser]): ...\n"
+"\n"
+"new_non_team_user(BasicUser)  # OK\n"
+"new_non_team_user(ProUser)    # OK\n"
+"new_non_team_user(TeamUser)   # Error: ``type[TeamUser]`` is not a subtype\n"
+"                              # of ``type[BasicUser | ProUser]``\n"
+"new_non_team_user(User)       # Also an error"
+msgstr ""
 
 #: ../../library/typing.rst:441
 msgid ""
@@ -438,6 +700,28 @@ msgstr "用户定义的泛型类型"
 #: ../../library/typing.rst:449
 msgid "A user-defined class can be defined as a generic class."
 msgstr "用户定义的类可以定义为泛型类。"
+
+#: ../../library/typing.rst:453
+msgid ""
+"from logging import Logger\n"
+"\n"
+"class LoggedVar[T]:\n"
+"    def __init__(self, value: T, name: str, logger: Logger) -> None:\n"
+"        self.name = name\n"
+"        self.logger = logger\n"
+"        self.value = value\n"
+"\n"
+"    def set(self, new: T) -> None:\n"
+"        self.log('Set ' + repr(self.value))\n"
+"        self.value = new\n"
+"\n"
+"    def get(self) -> T:\n"
+"        self.log('Get ' + repr(self.value))\n"
+"        return self.value\n"
+"\n"
+"    def log(self, message: str) -> None:\n"
+"        self.logger.info('%s: %s', self.name, message)"
+msgstr ""
 
 #: ../../library/typing.rst:472
 msgid ""
@@ -457,6 +741,16 @@ msgstr ""
 "泛型类隐式继承自 :class:`Generic`。为了与 Python 3.11 及更低版本兼容，也允许显式地从 :class:`Generic` "
 "继承以表示泛型类："
 
+#: ../../library/typing.rst:480
+msgid ""
+"from typing import TypeVar, Generic\n"
+"\n"
+"T = TypeVar('T')\n"
+"\n"
+"class LoggedVar(Generic[T]):\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:487
 msgid ""
 "Generic classes have :meth:`~object.__class_getitem__` methods, meaning they"
@@ -465,11 +759,35 @@ msgstr ""
 "泛型类具有 :meth:`~object.__class_getitem__` 方法，这意味着泛型类可在运行时进行参数化（例如下面的 "
 "``LoggedVar[int]``）："
 
+#: ../../library/typing.rst:490
+msgid ""
+"from collections.abc import Iterable\n"
+"\n"
+"def zero_all_vars(vars: Iterable[LoggedVar[int]]) -> None:\n"
+"    for var in vars:\n"
+"        var.set(0)"
+msgstr ""
+
 #: ../../library/typing.rst:496
 msgid ""
 "A generic type can have any number of type variables. All varieties of "
 ":class:`TypeVar` are permissible as parameters for a generic type::"
 msgstr "一个泛型可以有任何数量的类型变量。所有种类的 :class:`TypeVar` 都可以作为泛型的参数::"
+
+#: ../../library/typing.rst:499
+msgid ""
+"from typing import TypeVar, Generic, Sequence\n"
+"\n"
+"class WeirdTrio[T, B: Sequence[bytes], S: (int, str)]:\n"
+"    ...\n"
+"\n"
+"OldT = TypeVar('OldT', contravariant=True)\n"
+"OldB = TypeVar('OldB', bound=Sequence[bytes], covariant=True)\n"
+"OldS = TypeVar('OldS', int, str)\n"
+"\n"
+"class OldWeirdTrio(Generic[OldT, OldB, OldS]):\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:511
 msgid ""
@@ -477,14 +795,44 @@ msgid ""
 "thus invalid::"
 msgstr ":class:`Generic` 类型变量的参数应各不相同。下列代码就是无效的："
 
+#: ../../library/typing.rst:514
+msgid ""
+"from typing import TypeVar, Generic\n"
+"...\n"
+"\n"
+"class Pair[M, M]:  # SyntaxError\n"
+"    ...\n"
+"\n"
+"T = TypeVar('T')\n"
+"\n"
+"class Pair(Generic[T, T]):   # INVALID\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:525
 msgid "Generic classes can also inherit from other classes::"
 msgstr "泛型类也可以从其他类继承："
+
+#: ../../library/typing.rst:527
+msgid ""
+"from collections.abc import Sized\n"
+"\n"
+"class LinkedList[T](Sized):\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:532
 msgid ""
 "When inheriting from generic classes, some type parameters could be fixed::"
 msgstr "从泛型类继承时，某些类型参数可被固定："
+
+#: ../../library/typing.rst:534
+msgid ""
+"from collections.abc import Mapping\n"
+"\n"
+"class MyDict[T](Mapping[str, T]):\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:539
 msgid "In this case ``MyDict`` has a single parameter, ``T``."
@@ -499,15 +847,48 @@ msgstr ""
 "未指定泛型类的类型参数时，会假定每个位置的类型都为 :data:`Any`。在下面的例子中，``MyIterable`` 不是泛型，但却隐式继承了 "
 "``Iterable[Any]``："
 
+#: ../../library/typing.rst:545
+msgid ""
+"from collections.abc import Iterable\n"
+"\n"
+"class MyIterable(Iterable): # Same as Iterable[Any]\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:552
 msgid "User-defined generic type aliases are also supported. Examples::"
 msgstr "用户定义的泛型类型别名也同样受到支持。例如："
+
+#: ../../library/typing.rst:554
+msgid ""
+"from collections.abc import Iterable\n"
+"\n"
+"type Response[S] = Iterable[S] | int\n"
+"\n"
+"# Return type here is same as Iterable[str] | int\n"
+"def response(query: str) -> Response[str]:\n"
+"    ...\n"
+"\n"
+"type Vec[T] = Iterable[tuple[T, T]]\n"
+"\n"
+"def inproduct[T: (int, float, complex)](v: Vec[T]) -> T: # Same as Iterable[tuple[T, T]]\n"
+"    return sum(x*y for x, y in v)"
+msgstr ""
 
 #: ../../library/typing.rst:567
 msgid ""
 "For backward compatibility, generic type aliases can also be created through"
 " a simple assignment::"
 msgstr "出于向后兼容性的考虑，也允许使用简单的赋值来创建泛型类型别名："
+
+#: ../../library/typing.rst:570
+msgid ""
+"from collections.abc import Iterable\n"
+"from typing import TypeVar\n"
+"\n"
+"S = TypeVar(\"S\")\n"
+"Response = Iterable[S] | int"
+msgstr ""
 
 #: ../../library/typing.rst:576
 msgid ":class:`Generic` no longer has a custom metaclass."
@@ -534,6 +915,14 @@ msgstr ""
 "用户定义的参数表达式的泛型也受到支持，可以采用 ``[**P]`` 形式的参数规格变量来表示。该行为与上面描述的类型变量一致，因为参数规格变量被 "
 "typing 模块视为专门的类型变量。这方面的一个例外是，类型的列表可用于替代 :class:`ParamSpec`："
 
+#: ../../library/typing.rst:590
+msgid ""
+">>> class Z[T, **P]: ...  # T is a TypeVar; P is a ParamSpec\n"
+"...\n"
+">>> Z[int, [dict, float]]\n"
+"__main__.Z[int, [dict, float]]"
+msgstr ""
+
 #: ../../library/typing.rst:595
 msgid ""
 "Classes generic over a :class:`ParamSpec` can also be created using explicit"
@@ -541,6 +930,16 @@ msgid ""
 msgstr ""
 "带有 :class:`ParamSpec` 的泛型类也可以使用从 :class:`Generic` 显式继承的方式来创建。在这种情况下，不需要使用 "
 "``**``："
+
+#: ../../library/typing.rst:598
+msgid ""
+"from typing import ParamSpec, Generic\n"
+"\n"
+"P = ParamSpec('P')\n"
+"\n"
+"class Z(Generic[P]):\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:605
 msgid ""
@@ -553,6 +952,16 @@ msgstr ""
 ":class:`TypeVar` 与 :class:`ParamSpec` 的另一个区别在于只有单个参数规格变量的泛型会接受形如 ``X[[Type1,"
 " Type2, ...]]`` 的参数列表，同时为了美观，也接受 ``X[Type1, Type2, ...]`` 这样的形式。 "
 "在内部，后者被转换为前者，所以下面的内容是等价的："
+
+#: ../../library/typing.rst:611
+msgid ""
+">>> class X[**P]: ...\n"
+"...\n"
+">>> X[int, str]\n"
+"__main__.X[[int, str]]\n"
+">>> X[[int, str]]\n"
+"__main__.X[[int, str]]"
+msgstr ""
 
 #: ../../library/typing.rst:618
 msgid ""
@@ -599,6 +1008,24 @@ msgid ""
 "value of type :data:`Any` and assign it to any variable::"
 msgstr "也就是说，可对 :data:`Any` 类型的值执行任何操作或方法调用，并赋值给任意变量："
 
+#: ../../library/typing.rst:642
+msgid ""
+"from typing import Any\n"
+"\n"
+"a: Any = None\n"
+"a = []          # OK\n"
+"a = 2           # OK\n"
+"\n"
+"s: str = ''\n"
+"s = a           # OK\n"
+"\n"
+"def foo(item: Any) -> int:\n"
+"    # Passes type checking; 'item' could be any type,\n"
+"    # and that type might have a 'bar' method\n"
+"    item.bar()\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:657
 msgid ""
 "Notice that no type checking is performed when assigning a value of type "
@@ -615,6 +1042,19 @@ msgid ""
 "Furthermore, all functions without a return type or parameter types will "
 "implicitly default to using :data:`Any`::"
 msgstr "此外，未指定返回值与参数类型的函数，都隐式地默认使用 :data:`Any`："
+
+#: ../../library/typing.rst:666
+msgid ""
+"def legacy_parser(text):\n"
+"    ...\n"
+"    return data\n"
+"\n"
+"# A static type checker will treat the above\n"
+"# as having the same signature as:\n"
+"def legacy_parser(text: Any) -> Any:\n"
+"    ...\n"
+"    return data"
+msgstr ""
 
 #: ../../library/typing.rst:676
 msgid ""
@@ -641,6 +1081,27 @@ msgid ""
 msgstr ""
 "就是说，值的类型是 :class:`object` "
 "时，类型检查器几乎会拒绝所有对它的操作，并且，把它赋给更精确的类型变量（或返回值）属于类型错误。例如："
+
+#: ../../library/typing.rst:688
+msgid ""
+"def hash_a(item: object) -> int:\n"
+"    # Fails type checking; an object does not have a 'magic' method.\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"def hash_b(item: Any) -> int:\n"
+"    # Passes type checking\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"# Passes type checking, since ints and strs are subclasses of object\n"
+"hash_a(42)\n"
+"hash_a(\"foo\")\n"
+"\n"
+"# Passes type checking, since Any is compatible with all types\n"
+"hash_b(42)\n"
+"hash_b(\"foo\")"
+msgstr ""
 
 #: ../../library/typing.rst:706
 msgid ""
@@ -673,6 +1134,16 @@ msgstr ""
 "。这种方式的问题在于，定义类时必须显式说明，既不 Pythonic，也不是动态类型式 Python 代码的惯用写法。例如，下列代码就遵从了 "
 ":pep:`484` 的规范："
 
+#: ../../library/typing.rst:723
+msgid ""
+"from collections.abc import Sized, Iterable, Iterator\n"
+"\n"
+"class Bucket(Sized, Iterable[int]):\n"
+"    ...\n"
+"    def __len__(self) -> int: ...\n"
+"    def __iter__(self) -> Iterator[int]: ..."
+msgstr ""
+
 #: ../../library/typing.rst:730
 msgid ""
 ":pep:`544` allows to solve this problem by allowing users to write the above"
@@ -683,6 +1154,19 @@ msgid ""
 msgstr ""
 ":pep:`544` 允许用户在类定义时不显式说明基类，从而解决了这一问题，静态类型检查器隐式认为 ``Bucket`` 既是 ``Sized`` "
 "的子类型，又是 ``Iterable[int]`` 的子类型。这就是 *结构子类型* （又称为静态鸭子类型）："
+
+#: ../../library/typing.rst:736
+msgid ""
+"from collections.abc import Iterator, Iterable\n"
+"\n"
+"class Bucket:  # Note: no base classes\n"
+"    ...\n"
+"    def __len__(self) -> int: ...\n"
+"    def __iter__(self) -> Iterator[int]: ...\n"
+"\n"
+"def collect(items: Iterable[int]) -> int: ...\n"
+"result = collect(Bucket())  # Passes type check"
+msgstr ""
 
 #: ../../library/typing.rst:746
 msgid ""
@@ -742,6 +1226,10 @@ msgstr ":ref:`受约束的类型变量 <typing-constrained-typevar>`。"
 msgid "Definition::"
 msgstr "定义："
 
+#: ../../library/typing.rst:782
+msgid "AnyStr = TypeVar('AnyStr', str, bytes)"
+msgstr ""
+
 #: ../../library/typing.rst:784
 msgid ""
 "``AnyStr`` is meant to be used for functions that may accept :class:`str` or"
@@ -755,6 +1243,16 @@ msgstr "``AnyStr`` 用于可接受 :class:`str` 或 :class:`bytes` 参数但不�
 msgid "For example::"
 msgstr "例如："
 
+#: ../../library/typing.rst:789
+msgid ""
+"def concat(a: AnyStr, b: AnyStr) -> AnyStr:\n"
+"    return a + b\n"
+"\n"
+"concat(\"foo\", \"bar\")    # OK, output has type 'str'\n"
+"concat(b\"foo\", b\"bar\")  # OK, output has type 'bytes'\n"
+"concat(\"foo\", b\"bar\")   # Error, cannot mix str and bytes"
+msgstr ""
+
 #: ../../library/typing.rst:796
 msgid ""
 "Note that, despite its name, ``AnyStr`` has nothing to do with the "
@@ -764,6 +1262,19 @@ msgid ""
 msgstr ""
 "请注意：尽管名为 ``AnyStr``，但它与 :class:`Any` 类型毫无关系，也不是指“任何字符串”。而且，``AnyStr`` 更是和 "
 "``str | bytes`` 彼此互不相同，各有各的使用场景："
+
+#: ../../library/typing.rst:801
+msgid ""
+"# Invalid use of AnyStr:\n"
+"# The type variable is used only once in the function signature,\n"
+"# so cannot be \"solved\" by the type checker\n"
+"def greet_bad(cond: bool) -> AnyStr:\n"
+"    return \"hi there!\" if cond else b\"greetings!\"\n"
+"\n"
+"# The better way of annotating this function:\n"
+"def greet_proper(cond: bool) -> str | bytes:\n"
+"    return \"hi there!\" if cond else b\"greetings!\""
+msgstr ""
 
 #: ../../library/typing.rst:813
 msgid "Special type that includes only literal strings."
@@ -782,6 +1293,21 @@ msgstr ""
 #: ../../library/typing.rst:821 ../../library/typing.rst:1899
 msgid "Example:"
 msgstr "示例:"
+
+#: ../../library/typing.rst:823
+msgid ""
+"def run_query(sql: LiteralString) -> None:\n"
+"    ...\n"
+"\n"
+"def caller(arbitrary_string: str, literal_string: LiteralString) -> None:\n"
+"    run_query(\"SELECT * FROM students\")  # OK\n"
+"    run_query(literal_string)  # OK\n"
+"    run_query(\"SELECT * FROM \" + literal_string)  # OK\n"
+"    run_query(arbitrary_string)  # type checker error\n"
+"    run_query(  # type checker error\n"
+"        f\"SELECT * FROM students WHERE name = {arbitrary_string}\"\n"
+"    )"
+msgstr ""
 
 #: ../../library/typing.rst:837
 msgid ""
@@ -811,11 +1337,37 @@ msgid ""
 ":func:`sys.exit`::"
 msgstr "它们可被用于指明一个函数绝不会返回，例如 :func:`sys.exit`::"
 
+#: ../../library/typing.rst:856
+msgid ""
+"from typing import Never  # or NoReturn\n"
+"\n"
+"def stop() -> Never:\n"
+"    raise RuntimeError('no way')"
+msgstr ""
+
 #: ../../library/typing.rst:861
 msgid ""
 "Or to define a function that should never be called, as there are no valid "
 "arguments, such as :func:`assert_never`::"
 msgstr "或者用于定义一个绝不应被调用的函数，因为不存在有效的参数，例如 :func:`assert_never`::"
+
+#: ../../library/typing.rst:865
+msgid ""
+"from typing import Never  # or NoReturn\n"
+"\n"
+"def never_call_me(arg: Never) -> None:\n"
+"    pass\n"
+"\n"
+"def int_or_str(arg: int | str) -> None:\n"
+"    never_call_me(arg)  # type checker error\n"
+"    match arg:\n"
+"        case int():\n"
+"            print(\"It's an int\")\n"
+"        case str():\n"
+"            print(\"It's a str\")\n"
+"        case _:\n"
+"            never_call_me(arg)  # OK, arg is of type Never (or NoReturn)"
+msgstr ""
 
 #: ../../library/typing.rst:880
 msgid ""
@@ -836,11 +1388,38 @@ msgstr "增加了 :data:`Never`。"
 msgid "Special type to represent the current enclosed class."
 msgstr "特殊类型，表示当前闭包内的类。"
 
+#: ../../library/typing.rst:897
+msgid ""
+"from typing import Self, reveal_type\n"
+"\n"
+"class Foo:\n"
+"    def return_self(self) -> Self:\n"
+"        ...\n"
+"        return self\n"
+"\n"
+"class SubclassOfFoo(Foo): pass\n"
+"\n"
+"reveal_type(Foo().return_self())  # Revealed type is \"Foo\"\n"
+"reveal_type(SubclassOfFoo().return_self())  # Revealed type is \"SubclassOfFoo\""
+msgstr ""
+
 #: ../../library/typing.rst:909
 msgid ""
 "This annotation is semantically equivalent to the following, albeit in a "
 "more succinct fashion::"
 msgstr "此注解在语法上等价于以下代码，但形式更为简洁："
+
+#: ../../library/typing.rst:912
+msgid ""
+"from typing import TypeVar\n"
+"\n"
+"Self = TypeVar(\"Self\", bound=\"Foo\")\n"
+"\n"
+"class Foo:\n"
+"    def return_self(self: Self) -> Self:\n"
+"        ...\n"
+"        return self"
+msgstr ""
 
 #: ../../library/typing.rst:921
 msgid ""
@@ -875,6 +1454,16 @@ msgid ""
 "subclassed::"
 msgstr "如果不能保证在子类中方法会返回子类的实例（而非父类的实例），则不应使用 ``Self`` 作为返回值注解："
 
+#: ../../library/typing.rst:937
+msgid ""
+"class Eggs:\n"
+"    # Self would be an incorrect return annotation here,\n"
+"    # as the object returned is always an instance of Eggs,\n"
+"    # even in subclasses\n"
+"    def returns_eggs(self) -> \"Eggs\":\n"
+"        return Eggs()"
+msgstr ""
+
 #: ../../library/typing.rst:944
 msgid "See :pep:`673` for more details."
 msgstr "更多细节请参见 :pep:`673`。"
@@ -885,6 +1474,13 @@ msgid ""
 "aliases>`."
 msgstr "特殊注解，用于显式声明 :ref:`类型别名 <type-aliases>`."
 
+#: ../../library/typing.rst:954
+msgid ""
+"from typing import TypeAlias\n"
+"\n"
+"Factors: TypeAlias = list[int]"
+msgstr ""
+
 #: ../../library/typing.rst:958
 msgid ""
 "``TypeAlias`` is particularly useful on older Python versions for annotating"
@@ -893,6 +1489,23 @@ msgid ""
 msgstr ""
 "在较早的 Python 版本上，``TypeAlias`` "
 "对注解使用前向引用的别名时特别有用，因为类型检查器可能很难将这些别名与正常的变量赋值区分开来："
+
+#: ../../library/typing.rst:962
+msgid ""
+"from typing import Generic, TypeAlias, TypeVar\n"
+"\n"
+"T = TypeVar(\"T\")\n"
+"\n"
+"# \"Box\" does not exist yet,\n"
+"# so we have to use quotes for the forward reference on Python <3.12.\n"
+"# Using ``TypeAlias`` tells the type checker that this is a type alias declaration,\n"
+"# not a variable assignment to a string.\n"
+"BoxOfStrings: TypeAlias = \"Box[str]\"\n"
+"\n"
+"class Box(Generic[T]):\n"
+"    @classmethod\n"
+"    def make_box_of_strings(cls) -> BoxOfStrings: ..."
+msgstr ""
 
 #: ../../library/typing.rst:978
 msgid "See :pep:`613` for more details."
@@ -943,17 +1556,33 @@ msgstr "参数必须是某种类型，且至少有一个。"
 msgid "Unions of unions are flattened, e.g.::"
 msgstr "联合类型之联合类型会被展平，例如："
 
+#: ../../library/typing.rst:1008
+msgid "Union[Union[int, str], float] == Union[int, str, float]"
+msgstr ""
+
 #: ../../library/typing.rst:1010
 msgid "Unions of a single argument vanish, e.g.::"
 msgstr "单参数之联合类型就是该参数自身，例如："
+
+#: ../../library/typing.rst:1012
+msgid "Union[int] == int  # The constructor actually returns int"
+msgstr ""
 
 #: ../../library/typing.rst:1014
 msgid "Redundant arguments are skipped, e.g.::"
 msgstr "冗余的参数会被跳过，例如："
 
+#: ../../library/typing.rst:1016
+msgid "Union[int, str, int] == Union[int, str] == int | str"
+msgstr ""
+
 #: ../../library/typing.rst:1018
 msgid "When comparing unions, the argument order is ignored, e.g.::"
 msgstr "比较联合类型，不涉及参数顺序，例如："
+
+#: ../../library/typing.rst:1020
+msgid "Union[int, str] == Union[str, int]"
+msgstr ""
 
 #: ../../library/typing.rst:1022
 msgid "You cannot subclass or instantiate a ``Union``."
@@ -986,12 +1615,24 @@ msgid ""
 msgstr ""
 "注意，可选类型与含默认值的可选参数不同。含默认值的可选参数不需要在类型注解上添加 ``Optional`` 限定符，因为它仅是可选的。例如："
 
+#: ../../library/typing.rst:1042
+msgid ""
+"def foo(arg: int = 0) -> None:\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:1045
 msgid ""
 "On the other hand, if an explicit value of ``None`` is allowed, the use of "
 "``Optional`` is appropriate, whether the argument is optional or not. For "
 "example::"
 msgstr "另一方面，显式应用 ``None`` 值时，不管该参数是否可选， ``Optional`` 都适用。例如："
+
+#: ../../library/typing.rst:1049
+msgid ""
+"def foo(arg: Optional[int] = None) -> None:\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:1052
 msgid ""
@@ -1034,6 +1675,33 @@ msgstr ""
 "期望一个可调用对象，该对象接收一个 ``Lock`` 作为第一个参数，并返回一个具有不同类型签名的可调用对象。 "
 "在这种情况下，:class:`ParamSpec` 表示返回的可调用对象的参数类型取决于被传入的可调用程序的参数类型::"
 
+#: ../../library/typing.rst:1077
+msgid ""
+"from collections.abc import Callable\n"
+"from threading import Lock\n"
+"from typing import Concatenate\n"
+"\n"
+"# Use this lock to ensure that only one thread is executing a function\n"
+"# at any time.\n"
+"my_lock = Lock()\n"
+"\n"
+"def with_lock[**P, R](f: Callable[Concatenate[Lock, P], R]) -> Callable[P, R]:\n"
+"    '''A type-safe decorator which provides a lock.'''\n"
+"    def inner(*args: P.args, **kwargs: P.kwargs) -> R:\n"
+"        # Provide the lock as the first argument.\n"
+"        return f(my_lock, *args, **kwargs)\n"
+"    return inner\n"
+"\n"
+"@with_lock\n"
+"def sum_threadsafe(lock: Lock, numbers: list[float]) -> float:\n"
+"    '''Add a list of numbers together in a thread-safe manner.'''\n"
+"    with lock:\n"
+"        return sum(numbers)\n"
+"\n"
+"# We don't need to pass in the lock ourselves thanks to the decorator.\n"
+"sum_threadsafe([1.1, 2.2, 3.3])"
+msgstr ""
+
 #: ../../library/typing.rst:1105 ../../library/typing.rst:1867
 msgid ""
 ":pep:`612` -- Parameter Specification Variables (the PEP which introduced "
@@ -1057,6 +1725,19 @@ msgid ""
 "``Literal`` can be used to indicate to type checkers that the annotated "
 "object has a value equivalent to one of the provided literals."
 msgstr "``Literal`` 可以用来向类型检查器说明被注解的对象具有与所提供的字面量之一相同的值。"
+
+#: ../../library/typing.rst:1120
+msgid ""
+"def validate_simple(data: Any) -> Literal[True]:  # always returns True\n"
+"    ...\n"
+"\n"
+"type Mode = Literal['r', 'rb', 'w', 'wb']\n"
+"def open_helper(file: str, mode: Mode) -> str:\n"
+"    ...\n"
+"\n"
+"open_helper('/some/path', 'r')      # Passes type check\n"
+"open_helper('/other/path', 'typo')  # Error in type checker"
+msgstr ""
 
 #: ../../library/typing.rst:1130
 msgid ""
@@ -1088,6 +1769,13 @@ msgid ""
 "and should not be set on instances of that class. Usage::"
 msgstr "如 :pep:`526` 所述，打包在 ClassVar 内的变量注解是指，给定属性应当用作类变量，而不应设置在类实例上。用法如下："
 
+#: ../../library/typing.rst:1150
+msgid ""
+"class Starship:\n"
+"    stats: ClassVar[dict[str, int]] = {} # class variable\n"
+"    damage: int = 10                     # instance variable"
+msgstr ""
+
 #: ../../library/typing.rst:1154
 msgid ":data:`ClassVar` accepts only types and cannot be further subscribed."
 msgstr ":data:`ClassVar` 仅接受类型，也不能使用下标。"
@@ -1103,6 +1791,13 @@ msgstr ""
 ":func:`issubclass`。:data:`ClassVar` 不改变 Python "
 "运行时行为，但可以用于第三方类型检查器。例如，类型检查器会认为以下代码有错："
 
+#: ../../library/typing.rst:1162
+msgid ""
+"enterprise_d = Starship(3000)\n"
+"enterprise_d.stats = {} # Error, setting class variable on instance\n"
+"Starship.stats = {}     # This is OK"
+msgstr ""
+
 #: ../../library/typing.rst:1170
 msgid "Special typing construct to indicate final names to type checkers."
 msgstr "特殊类型注解构造，用于向类型检查器表示最终名称。"
@@ -1112,6 +1807,18 @@ msgid ""
 "Final names cannot be reassigned in any scope. Final names declared in class"
 " scopes cannot be overridden in subclasses."
 msgstr "不能在任何作用域中重新分配最终名称。类作用域中声明的最终名称不能在子类中重写。"
+
+#: ../../library/typing.rst:1177
+msgid ""
+"MAX_SIZE: Final = 9000\n"
+"MAX_SIZE += 1  # Error reported by type checker\n"
+"\n"
+"class Connection:\n"
+"    TIMEOUT: Final[int] = 10\n"
+"\n"
+"class FastConnector(Connection):\n"
+"    TIMEOUT = 1  # Error reported by type checker"
+msgstr ""
 
 #: ../../library/typing.rst:1186 ../../library/typing.rst:2787
 msgid ""
@@ -1195,6 +1902,17 @@ msgid ""
 "type annotations if you were doing range analysis:"
 msgstr "以下示例演示在进行区间范围分析时使用 ``Annotated`` 将元数据添加到类型注解的方法："
 
+#: ../../library/typing.rst:1242
+msgid ""
+"@dataclass\n"
+"class ValueRange:\n"
+"    lo: int\n"
+"    hi: int\n"
+"\n"
+"T1 = Annotated[int, ValueRange(-10, 5)]\n"
+"T2 = Annotated[T1, ValueRange(-20, 3)]"
+msgstr ""
+
 #: ../../library/typing.rst:1252
 msgid "Details of the syntax:"
 msgstr "语法细节："
@@ -1208,6 +1926,15 @@ msgid ""
 "Multiple metadata elements can be supplied (``Annotated`` supports variadic "
 "arguments)::"
 msgstr "可提供多个元数据的元素（ ``Annotated`` 支持可变参数）："
+
+#: ../../library/typing.rst:1259
+msgid ""
+"@dataclass\n"
+"class ctype:\n"
+"    kind: str\n"
+"\n"
+"Annotated[int, ValueRange(3, 10), ctype(\"char\")]"
+msgstr ""
 
 #: ../../library/typing.rst:1265
 msgid ""
@@ -1228,27 +1955,69 @@ msgid ""
 "checks::"
 msgstr "元数据元素的顺序会被保留，且影响等价检查："
 
+#: ../../library/typing.rst:1275
+msgid ""
+"assert Annotated[int, ValueRange(3, 10), ctype(\"char\")] != Annotated[\n"
+"    int, ctype(\"char\"), ValueRange(3, 10)\n"
+"]"
+msgstr ""
+
 #: ../../library/typing.rst:1279
 msgid ""
 "Nested ``Annotated`` types are flattened. The order of the metadata elements"
 " starts with the innermost annotation::"
 msgstr "嵌套的 ``Annotated`` 类型会被展平。元数据元素从最内层的注解开始依次展开："
 
+#: ../../library/typing.rst:1282
+msgid ""
+"assert Annotated[Annotated[int, ValueRange(3, 10)], ctype(\"char\")] == Annotated[\n"
+"    int, ValueRange(3, 10), ctype(\"char\")\n"
+"]"
+msgstr ""
+
 #: ../../library/typing.rst:1286
 msgid "Duplicated metadata elements are not removed::"
 msgstr "元数据中的重复元素不会被移除："
+
+#: ../../library/typing.rst:1288
+msgid ""
+"assert Annotated[int, ValueRange(3, 10)] != Annotated[\n"
+"    int, ValueRange(3, 10), ValueRange(3, 10)\n"
+"]"
+msgstr ""
 
 #: ../../library/typing.rst:1292
 msgid "``Annotated`` can be used with nested and generic aliases:"
 msgstr "``Annotated`` 可以与嵌套别名和泛型别名一起使用："
 
+#: ../../library/typing.rst:1294
+msgid ""
+"@dataclass\n"
+"class MaxLen:\n"
+"    value: int\n"
+"\n"
+"type Vec[T] = Annotated[list[tuple[T, T]], MaxLen(10)]\n"
+"\n"
+"# When used in a type annotation, a type checker will treat \"V\" the same as\n"
+"# ``Annotated[list[tuple[int, int]], MaxLen(10)]``:\n"
+"type V = Vec[int]"
+msgstr ""
+
 #: ../../library/typing.rst:1306
 msgid "``Annotated`` cannot be used with an unpacked :class:`TypeVarTuple`::"
 msgstr "``Annotated`` 不能与已解包的 :class:`TypeVarTuple` 一起使用::"
 
+#: ../../library/typing.rst:1308
+msgid "type Variadic[*Ts] = Annotated[*Ts, Ann1]  # NOT valid"
+msgstr ""
+
 #: ../../library/typing.rst:1310
 msgid "This would be equivalent to::"
 msgstr "这等价于："
+
+#: ../../library/typing.rst:1312
+msgid "Annotated[T1, T2, T3, ..., Ann1]"
+msgstr ""
 
 #: ../../library/typing.rst:1314
 msgid ""
@@ -1265,11 +2034,32 @@ msgid ""
 msgstr ""
 "默认情况下， :func:`get_type_hints` 会去除注解中的元数据。传入 ``include_extras=True`` 可以保留元数据："
 
+#: ../../library/typing.rst:1320
+msgid ""
+">>> from typing import Annotated, get_type_hints\n"
+">>> def func(x: Annotated[int, \"metadata\"]) -> None: pass\n"
+"...\n"
+">>> get_type_hints(func)\n"
+"{'x': <class 'int'>, 'return': <class 'NoneType'>}\n"
+">>> get_type_hints(func, include_extras=True)\n"
+"{'x': typing.Annotated[int, 'metadata'], 'return': <class 'NoneType'>}"
+msgstr ""
+
 #: ../../library/typing.rst:1330
 msgid ""
 "At runtime, the metadata associated with an ``Annotated`` type can be "
 "retrieved via the :attr:`!__metadata__` attribute:"
 msgstr "在运行时，与特定 ``Annotated`` 类型相关联的元数据可通过 :attr:`!__metadata__` 属性来获取："
+
+#: ../../library/typing.rst:1333
+msgid ""
+">>> from typing import Annotated\n"
+">>> X = Annotated[int, \"very\", \"important\", \"metadata\"]\n"
+">>> X\n"
+"typing.Annotated[int, 'very', 'important', 'metadata']\n"
+">>> X.__metadata__\n"
+"('very', 'important', 'metadata')"
+msgstr ""
 
 #: ../../library/typing.rst:1344
 msgid ":pep:`593` - Flexible function and variable annotations"
@@ -1305,6 +2095,18 @@ msgstr ""
 "受益——这是静态类型检查器用以确定表达式在代码流中的较精确类型的一种技术。通常，类型收窄是以分析条件代码流并将收窄应用于一个代码块来完成的，涉及到的条件表达式有时即被称为“type"
 " guard”。"
 
+#: ../../library/typing.rst:1364
+msgid ""
+"def is_str(val: str | float):\n"
+"    # \"isinstance\" type guard\n"
+"    if isinstance(val, str):\n"
+"        # Type of ``val`` is narrowed to ``str``\n"
+"        ...\n"
+"    else:\n"
+"        # Else, type of ``val`` is narrowed to ``float``.\n"
+"        ..."
+msgstr ""
+
 #: ../../library/typing.rst:1373
 msgid ""
 "Sometimes it would be convenient to use a user-defined boolean function as a"
@@ -1329,6 +2131,21 @@ msgid ""
 "If the return value is ``True``, the type of its argument is the type inside"
 " ``TypeGuard``."
 msgstr "如果返回值是 ``True``，那么其参数的类型是 ``TypeGuard`` 内的类型。"
+
+#: ../../library/typing.rst:1386
+msgid ""
+"def is_str_list(val: list[object]) -> TypeGuard[list[str]]:\n"
+"    '''Determines whether all objects in the list are strings'''\n"
+"    return all(isinstance(x, str) for x in val)\n"
+"\n"
+"def func1(val: list[object]):\n"
+"    if is_str_list(val):\n"
+"        # Type of ``val`` is narrowed to ``list[str]``.\n"
+"        print(\" \".join(val))\n"
+"    else:\n"
+"        # Type of ``val`` remains as ``list[object]``.\n"
+"        print(\"Not a list of strings!\")"
+msgstr ""
 
 #: ../../library/typing.rst:1398
 msgid ""
@@ -1377,6 +2194,14 @@ msgstr ""
 "例如，在一个 :ref:`类型变量元组 <typevartuple>` 上使用解包运算符 ``*`` 就等价于使用 ``Unpack`` "
 "来将该类型变量元组标记为已被解包::"
 
+#: ../../library/typing.rst:1427
+msgid ""
+"Ts = TypeVarTuple('Ts')\n"
+"tup: tuple[*Ts]\n"
+"# Effectively does:\n"
+"tup: tuple[Unpack[Ts]]"
+msgstr ""
+
 #: ../../library/typing.rst:1432
 msgid ""
 "In fact, ``Unpack`` can be used interchangeably with ``*`` in the context of"
@@ -1388,6 +2213,17 @@ msgstr ""
 ":class:`builtins.tuple <tuple>` 类型的上下文中可以和 ``*`` 互换使用。 你可能会看到 ``Unpack`` "
 "在较旧版本的 Python 中被显式地使用，这时 ``*`` 在特定场合则是无法使用的::"
 
+#: ../../library/typing.rst:1438
+msgid ""
+"# In older versions of Python, TypeVarTuple and Unpack\n"
+"# are located in the `typing_extensions` backports package.\n"
+"from typing_extensions import TypeVarTuple, Unpack\n"
+"\n"
+"Ts = TypeVarTuple('Ts')\n"
+"tup: tuple[*Ts]         # Syntax error on Python <= 3.10!\n"
+"tup: tuple[Unpack[Ts]]  # Semantically equivalent, and backwards-compatible"
+msgstr ""
+
 #: ../../library/typing.rst:1446
 msgid ""
 "``Unpack`` can also be used along with :class:`typing.TypedDict` for typing "
@@ -1395,6 +2231,19 @@ msgid ""
 msgstr ""
 "``Unpack`` 也可以与 :class:`typing.TypedDict` 一起使用以便在函数签名中对 ``**kwargs`` "
 "进行类型标注::"
+
+#: ../../library/typing.rst:1449
+msgid ""
+"from typing import TypedDict, Unpack\n"
+"\n"
+"class Movie(TypedDict):\n"
+"    name: str\n"
+"    year: int\n"
+"\n"
+"# This function expects two keyword arguments - `name` of type `str`\n"
+"# and `year` of type `int`.\n"
+"def foo(**kwargs: Unpack[Movie]): ..."
+msgstr ""
 
 #: ../../library/typing.rst:1459
 msgid ""
@@ -1432,6 +2281,14 @@ msgid ""
 "after the class name::"
 msgstr "泛型类型通常是通过在类名后添加一个类型形参列表来声明的::"
 
+#: ../../library/typing.rst:1482
+msgid ""
+"class Mapping[KT, VT]:\n"
+"    def __getitem__(self, key: KT) -> VT:\n"
+"        ...\n"
+"        # Etc."
+msgstr ""
+
 #: ../../library/typing.rst:1487
 msgid ""
 "Such a class implicitly inherits from ``Generic``. The runtime semantics of "
@@ -1443,6 +2300,15 @@ msgstr ""
 #: ../../library/typing.rst:1491
 msgid "This class can then be used as follows::"
 msgstr "该类的用法如下："
+
+#: ../../library/typing.rst:1493
+msgid ""
+"def lookup_name[X, Y](mapping: Mapping[X, Y], key: X, default: Y) -> Y:\n"
+"    try:\n"
+"        return mapping[key]\n"
+"    except KeyError:\n"
+"        return default"
+msgstr ""
 
 #: ../../library/typing.rst:1499
 msgid ""
@@ -1457,6 +2323,17 @@ msgid ""
 "must be declared separately::"
 msgstr "为了保持向下兼容性，泛型类也可通过显式地继承自 ``Generic`` 来声明。 在此情况下，类型形参必须单独声明::"
 
+#: ../../library/typing.rst:1507
+msgid ""
+"KT = TypeVar('KT')\n"
+"VT = TypeVar('VT')\n"
+"\n"
+"class Mapping(Generic[KT, VT]):\n"
+"    def __getitem__(self, key: KT) -> VT:\n"
+"        ...\n"
+"        # Etc."
+msgstr ""
+
 #: ../../library/typing.rst:1519
 msgid "Type variable."
 msgstr "类型变量。"
@@ -1470,17 +2347,40 @@ msgstr ""
 "构造类型变量的推荐方式是使用针对 :ref:`泛型函数 <generic-functions>`, :ref:`泛型类 <generic-"
 "classes>` 和 :ref:`泛型类型别名 <generic-type-aliases>` 的专门语法::"
 
+#: ../../library/typing.rst:1526
+msgid ""
+"class Sequence[T]:  # T is a TypeVar\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:1529
 msgid ""
 "This syntax can also be used to create bound and constrained type "
 "variables::"
 msgstr "此语法也可被用于创建绑定和带约束的类型变量::"
 
+#: ../../library/typing.rst:1532
+msgid ""
+"class StrSequence[S: str]:  # S is a TypeVar bound to str\n"
+"    ...\n"
+"\n"
+"\n"
+"class StrOrBytesSequence[A: (str, bytes)]:  # A is a TypeVar constrained to str or bytes\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:1539
 msgid ""
 "However, if desired, reusable type variables can also be constructed "
 "manually, like so::"
 msgstr "不过，如有需要，也可通过手动方式来构造可重用的类型变量，就像这样::"
+
+#: ../../library/typing.rst:1541
+msgid ""
+"T = TypeVar('T')  # Can be anything\n"
+"S = TypeVar('S', bound=str)  # Can be any subtype of str\n"
+"A = TypeVar('A', str, bytes)  # Must be exactly str or bytes"
+msgstr ""
 
 #: ../../library/typing.rst:1545
 msgid ""
@@ -1491,6 +2391,24 @@ msgid ""
 msgstr ""
 "类型变量的主要用处是为静态类型检查器提供支持。 它们可作为泛型类型以及泛型函数和类型别名定义的形参。 请参阅 :class:`Generic` "
 "了解有关泛型类型的更多信息。 泛型函数的作用方式如下::"
+
+#: ../../library/typing.rst:1551
+msgid ""
+"def repeat[T](x: T, n: int) -> Sequence[T]:\n"
+"    \"\"\"Return a list containing n references to x.\"\"\"\n"
+"    return [x]*n\n"
+"\n"
+"\n"
+"def print_capitalized[S: str](x: S) -> S:\n"
+"    \"\"\"Print x capitalized, and return x.\"\"\"\n"
+"    print(x.capitalize())\n"
+"    return x\n"
+"\n"
+"\n"
+"def concatenate[A: (str, bytes)](x: A, y: A) -> A:\n"
+"    \"\"\"Add two strings or bytes objects together.\"\"\"\n"
+"    return x + y"
+msgstr ""
 
 #: ../../library/typing.rst:1566
 msgid ""
@@ -1519,17 +2437,52 @@ msgid ""
 msgstr ""
 "绑定类型变量和约束类型变量在几个重要方面具有不同的主义。 使用 *绑定* 类型变量意味着 ``TypeVar`` 将尽可能使用最为专属的类型来解析::"
 
+#: ../../library/typing.rst:1581
+msgid ""
+"x = print_capitalized('a string')\n"
+"reveal_type(x)  # revealed type is str\n"
+"\n"
+"class StringSubclass(str):\n"
+"    pass\n"
+"\n"
+"y = print_capitalized(StringSubclass('another string'))\n"
+"reveal_type(y)  # revealed type is StringSubclass\n"
+"\n"
+"z = print_capitalized(45)  # error: int is not a subtype of str"
+msgstr ""
+
 #: ../../library/typing.rst:1592
 msgid ""
 "Type variables can be bound to concrete types, abstract types (ABCs or "
 "protocols), and even unions of types::"
 msgstr "类型变量可以被绑定到具体类型、抽象类型（ ABC 或 protocol ），甚至是类型的联合::"
 
+#: ../../library/typing.rst:1595
+msgid ""
+"# Can be anything with an __abs__ method\n"
+"def print_abs[T: SupportsAbs](arg: T) -> None:\n"
+"    print(\"Absolute value:\", abs(arg))\n"
+"\n"
+"U = TypeVar('U', bound=str|bytes)  # Can be any subtype of the union str|bytes\n"
+"V = TypeVar('V', bound=SupportsAbs)  # Can be anything with an __abs__ method"
+msgstr ""
+
 #: ../../library/typing.rst:1604
 msgid ""
 "Using a *constrained* type variable, however, means that the ``TypeVar`` can"
 " only ever be solved as being exactly one of the constraints given::"
 msgstr "但是，如果使用 *约束* 类型变量，则意味着 ``TypeVar`` 只能被解析为恰好是给定的约束之一::"
+
+#: ../../library/typing.rst:1607
+msgid ""
+"a = concatenate('one', 'two')\n"
+"reveal_type(a)  # revealed type is str\n"
+"\n"
+"b = concatenate(StringSubclass('one'), StringSubclass('two'))\n"
+"reveal_type(b)  # revealed type is str, despite StringSubclass being passed in\n"
+"\n"
+"c = concatenate('one', b'two')  # error: type variable 'A' can be either str or bytes in a function call, but not both"
+msgstr ""
 
 #: ../../library/typing.rst:1615
 msgid "At runtime, ``isinstance(x, T)`` will raise :exc:`TypeError`."
@@ -1601,9 +2554,24 @@ msgid ""
 "params>` using a single asterisk (``*``) before the name::"
 msgstr "类型变量元组可以通过在 :ref:`类型形参列表 <type-params>` 中使用名称前的单个星号 (``*``) 来声明::"
 
+#: ../../library/typing.rst:1671
+msgid ""
+"def move_first_element_to_last[T, *Ts](tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
+"    return (*tup[1:], tup[0])"
+msgstr ""
+
 #: ../../library/typing.rst:1674
 msgid "Or by explicitly invoking the ``TypeVarTuple`` constructor::"
 msgstr "或者通过显式地发起调用 ``TypeVarTuple`` 构造器::"
+
+#: ../../library/typing.rst:1676
+msgid ""
+"T = TypeVar(\"T\")\n"
+"Ts = TypeVarTuple(\"Ts\")\n"
+"\n"
+"def move_first_element_to_last(tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
+"    return (*tup[1:], tup[0])"
+msgstr ""
 
 #: ../../library/typing.rst:1682
 msgid ""
@@ -1614,6 +2582,26 @@ msgid ""
 msgstr ""
 "一个普通类型变量将启用单个类型的形参化。 作为对比，一个类型变量元组通过将 *任意* 数量的类型变量封包在一个元组中来允许 *任意* 数量类型的形参化。"
 " 例如::"
+
+#: ../../library/typing.rst:1687
+msgid ""
+"# T is bound to int, Ts is bound to ()\n"
+"# Return value is (1,), which has type tuple[int]\n"
+"move_first_element_to_last(tup=(1,))\n"
+"\n"
+"# T is bound to int, Ts is bound to (str,)\n"
+"# Return value is ('spam', 1), which has type tuple[str, int]\n"
+"move_first_element_to_last(tup=(1, 'spam'))\n"
+"\n"
+"# T is bound to int, Ts is bound to (str, float)\n"
+"# Return value is ('spam', 3.0, 1), which has type tuple[str, float, int]\n"
+"move_first_element_to_last(tup=(1, 'spam', 3.0))\n"
+"\n"
+"# This fails to type check (and fails at runtime)\n"
+"# because tuple[()] is not compatible with tuple[T, *Ts]\n"
+"# (at least one element is required)\n"
+"move_first_element_to_last(tup=())"
+msgstr ""
 
 #: ../../library/typing.rst:1704
 msgid ""
@@ -1635,16 +2623,46 @@ msgid ""
 "variable tuples from normal type variables::"
 msgstr "类型变量元组 *总是* 要被解包。 这有助于区分类型变量元组和普通类型变量::"
 
+#: ../../library/typing.rst:1715
+msgid ""
+"x: Ts          # Not valid\n"
+"x: tuple[Ts]   # Not valid\n"
+"x: tuple[*Ts]  # The correct way to do it"
+msgstr ""
+
 #: ../../library/typing.rst:1719
 msgid ""
 "Type variable tuples can be used in the same contexts as normal type "
 "variables. For example, in class definitions, arguments, and return types::"
 msgstr "类型变量元组可被用在与普通类型变量相同的上下文中。 例如，在类定义、参数和返回类型中::"
 
+#: ../../library/typing.rst:1722
+msgid ""
+"class Array[*Shape]:\n"
+"    def __getitem__(self, key: tuple[*Shape]) -> float: ...\n"
+"    def __abs__(self) -> \"Array[*Shape]\": ...\n"
+"    def get_shape(self) -> tuple[*Shape]: ..."
+msgstr ""
+
 #: ../../library/typing.rst:1727
 msgid ""
 "Type variable tuples can be happily combined with normal type variables:"
 msgstr "类型变量元组可以很好地与普通类型变量结合在一起："
+
+#: ../../library/typing.rst:1729
+msgid ""
+"class Array[DType, *Shape]:  # This is fine\n"
+"    pass\n"
+"\n"
+"class Array2[*Shape, DType]:  # This would also be fine\n"
+"    pass\n"
+"\n"
+"class Height: ...\n"
+"class Width: ...\n"
+"\n"
+"float_array_1d: Array[float, Height] = Array()     # Totally fine\n"
+"int_array_2d: Array[int, Height, Width] = Array()  # Yup, fine too"
+msgstr ""
 
 #: ../../library/typing.rst:1743
 msgid ""
@@ -1652,11 +2670,28 @@ msgid ""
 "list of type arguments or type parameters::"
 msgstr "但是，请注意在一个类型参数或类型形参列表中最多只能有一个类型变量元组::"
 
+#: ../../library/typing.rst:1746
+msgid ""
+"x: tuple[*Ts, *Ts]            # Not valid\n"
+"class Array[*Shape, *Shape]:  # Not valid\n"
+"    pass"
+msgstr ""
+
 #: ../../library/typing.rst:1750
 msgid ""
 "Finally, an unpacked type variable tuple can be used as the type annotation "
 "of ``*args``::"
 msgstr "最后，一个已解包的类型变量元组可以被用作 ``*args`` 的类型标注::"
+
+#: ../../library/typing.rst:1753
+msgid ""
+"def call_soon[*Ts](\n"
+"    callback: Callable[[*Ts], None],\n"
+"    *args: *Ts\n"
+") -> None:\n"
+"    ...\n"
+"    callback(*args)"
+msgstr ""
 
 #: ../../library/typing.rst:1760
 msgid ""
@@ -1696,11 +2731,19 @@ msgid ""
 "be declared with two asterisks (``**``)::"
 msgstr "In :ref:`类型形参列表 <type-params>`，形参规格可以使用两个星号 (``**``) 来声明::"
 
+#: ../../library/typing.rst:1788
+msgid "type IntFunc[**P] = Callable[P, int]"
+msgstr ""
+
 #: ../../library/typing.rst:1790
 msgid ""
 "For compatibility with Python 3.11 and earlier, ``ParamSpec`` objects can "
 "also be created as follows::"
 msgstr "为了保持与 Python 3.11 及更早版本的兼容性，``ParamSpec`` 对象也可以这样创建::"
+
+#: ../../library/typing.rst:1793
+msgid "P = ParamSpec('P')"
+msgstr ""
 
 #: ../../library/typing.rst:1795
 msgid ""
@@ -1725,6 +2768,24 @@ msgid ""
 msgstr ""
 "例如，为了给一个函数添加基本的日志记录，我们可以创建一个装饰器 ``add_logging`` 来记录函数调用。 "
 "参数规范变量告诉类型检查器，传入装饰器的可调用对象和由其返回的新可调用对象有相互依赖的类型参数::"
+
+#: ../../library/typing.rst:1807
+msgid ""
+"from collections.abc import Callable\n"
+"import logging\n"
+"\n"
+"def add_logging[T, **P](f: Callable[P, T]) -> Callable[P, T]:\n"
+"    '''A type-safe decorator to add logging to a function.'''\n"
+"    def inner(*args: P.args, **kwargs: P.kwargs) -> T:\n"
+"        logging.info(f'{f.__name__} was called')\n"
+"        return f(*args, **kwargs)\n"
+"    return inner\n"
+"\n"
+"@add_logging\n"
+"def add_two(x: float, y: float) -> float:\n"
+"    '''Add two numbers together.'''\n"
+"    return x + y"
+msgstr ""
 
 #: ../../library/typing.rst:1822
 msgid ""
@@ -1817,24 +2878,65 @@ msgid ""
 "original ``ParamSpec``:"
 msgstr "在这些对象中的任何一个上调用 :func:`get_origin` 将返回原始的 ``ParamSpec``:"
 
+#: ../../library/typing.rst:1883
+msgid ""
+">>> from typing import ParamSpec, get_origin\n"
+">>> P = ParamSpec(\"P\")\n"
+">>> get_origin(P.args) is P\n"
+"True\n"
+">>> get_origin(P.kwargs) is P\n"
+"True"
+msgstr ""
+
 #: ../../library/typing.rst:1897
 msgid ""
 "The type of type aliases created through the :keyword:`type` statement."
 msgstr "通过 :keyword:`type` 语句创建的类型别名的类型。"
 
+#: ../../library/typing.rst:1901
+msgid ""
+">>> type Alias = int\n"
+">>> type(Alias)\n"
+"<class 'typing.TypeAliasType'>"
+msgstr ""
+
 #: ../../library/typing.rst:1911
 msgid "The name of the type alias:"
 msgstr "类型别名的名称："
 
+#: ../../library/typing.rst:1913
+msgid ""
+">>> type Alias = int\n"
+">>> Alias.__name__\n"
+"'Alias'"
+msgstr ""
+
 #: ../../library/typing.rst:1921
 msgid "The module in which the type alias was defined::"
 msgstr "类型别名定义所在的模块名称::"
+
+#: ../../library/typing.rst:1923
+msgid ""
+">>> type Alias = int\n"
+">>> Alias.__module__\n"
+"'__main__'"
+msgstr ""
 
 #: ../../library/typing.rst:1929
 msgid ""
 "The type parameters of the type alias, or an empty tuple if the alias is not"
 " generic:"
 msgstr "类型别名的类型形参，或者如果别名不属于泛型则为一个空元组:"
+
+#: ../../library/typing.rst:1932
+msgid ""
+">>> type ListOrSet[T] = list[T] | set[T]\n"
+">>> ListOrSet.__type_params__\n"
+"(T,)\n"
+">>> type NotGeneric = int\n"
+">>> NotGeneric.__type_params__\n"
+"()"
+msgstr ""
 
 #: ../../library/typing.rst:1943
 msgid ""
@@ -1844,6 +2946,20 @@ msgid ""
 msgstr ""
 "类型别名的值。 它将被 :ref:`惰性求值 <lazy-evaluation>`，因此别名定义中使用的名称将直到 ``__value__`` "
 "属性被访问时才会被解析:"
+
+#: ../../library/typing.rst:1947
+msgid ""
+">>> type Mutually = Recursive\n"
+">>> type Recursive = Mutually\n"
+">>> Mutually\n"
+"Mutually\n"
+">>> Recursive\n"
+"Recursive\n"
+">>> Mutually.__value__\n"
+"Recursive\n"
+">>> Recursive.__value__\n"
+"Mutually"
+msgstr ""
 
 #: ../../library/typing.rst:1961
 msgid "Other special directives"
@@ -1865,14 +2981,35 @@ msgstr ":func:`collections.namedtuple` 的类型版本。"
 msgid "Usage::"
 msgstr "用法："
 
+#: ../../library/typing.rst:1973
+msgid ""
+"class Employee(NamedTuple):\n"
+"    name: str\n"
+"    id: int"
+msgstr ""
+
 #: ../../library/typing.rst:1977
 msgid "This is equivalent to::"
 msgstr "这相当于："
+
+#: ../../library/typing.rst:1979
+msgid "Employee = collections.namedtuple('Employee', ['name', 'id'])"
+msgstr ""
 
 #: ../../library/typing.rst:1981
 msgid ""
 "To give a field a default value, you can assign to it in the class body::"
 msgstr "为字段提供默认值，要在类体内赋值："
+
+#: ../../library/typing.rst:1983
+msgid ""
+"class Employee(NamedTuple):\n"
+"    name: str\n"
+"    id: int = 3\n"
+"\n"
+"employee = Employee('Guido')\n"
+"assert employee.id == 3"
+msgstr ""
 
 #: ../../library/typing.rst:1990
 msgid ""
@@ -1895,13 +3032,42 @@ msgstr ""
 msgid "``NamedTuple`` subclasses can also have docstrings and methods::"
 msgstr "``NamedTuple`` 子类也支持文档字符串与方法："
 
+#: ../../library/typing.rst:2000
+msgid ""
+"class Employee(NamedTuple):\n"
+"    \"\"\"Represents an employee.\"\"\"\n"
+"    name: str\n"
+"    id: int = 3\n"
+"\n"
+"    def __repr__(self) -> str:\n"
+"        return f'<Employee {self.name}, id={self.id}>'"
+msgstr ""
+
 #: ../../library/typing.rst:2008
 msgid "``NamedTuple`` subclasses can be generic::"
 msgstr "``NamedTuple`` 子类也可以为泛型："
 
+#: ../../library/typing.rst:2010
+msgid ""
+"class Group[T](NamedTuple):\n"
+"    key: T\n"
+"    group: list[T]"
+msgstr ""
+
 #: ../../library/typing.rst:2014
 msgid "Backward-compatible usage::"
 msgstr "反向兼容用法："
+
+#: ../../library/typing.rst:2016
+msgid ""
+"# For creating a generic NamedTuple on Python 3.11 or lower\n"
+"class Group(NamedTuple, Generic[T]):\n"
+"    key: T\n"
+"    group: list[T]\n"
+"\n"
+"# A functional syntax is also supported\n"
+"Employee = NamedTuple('Employee', [('name', str), ('id', int)])"
+msgstr ""
 
 #: ../../library/typing.rst:2024
 msgid "Added support for :pep:`526` variable annotation syntax."
@@ -1938,6 +3104,12 @@ msgid ""
 "however, calling a ``NewType`` returns its argument unchanged."
 msgstr "``NewType`` 将被类型检查器视为一个独有类型。 但是，在运行时，调用 ``NewType`` 将原样返回其参数。"
 
+#: ../../library/typing.rst:2050
+msgid ""
+"UserId = NewType('UserId', int)  # Declare the NewType \"UserId\"\n"
+"first_user = UserId(1)  # \"UserId\" returns the argument unchanged at runtime"
+msgstr ""
+
 #: ../../library/typing.rst:2055
 msgid "The module in which the new type is defined."
 msgstr "新类型定义所在的模块。"
@@ -1962,11 +3134,30 @@ msgstr "协议类的基类。"
 msgid "Protocol classes are defined like this::"
 msgstr "协议类是这样定义的::"
 
+#: ../../library/typing.rst:2076
+msgid ""
+"class Proto(Protocol):\n"
+"    def meth(self) -> int:\n"
+"        ..."
+msgstr ""
+
 #: ../../library/typing.rst:2080
 msgid ""
 "Such classes are primarily used with static type checkers that recognize "
 "structural subtyping (static duck-typing), for example::"
 msgstr "这些类主要与静态类型检查器搭配使用，用来识别结构子类型（静态鸭子类型），例如："
+
+#: ../../library/typing.rst:2083
+msgid ""
+"class C:\n"
+"    def meth(self) -> int:\n"
+"        return 0\n"
+"\n"
+"def func(x: Proto) -> int:\n"
+"    return x.meth()\n"
+"\n"
+"func(C())  # Passes static type check"
+msgstr ""
 
 #: ../../library/typing.rst:2092
 msgid ""
@@ -1982,11 +3173,27 @@ msgstr ""
 msgid "Protocol classes can be generic, for example::"
 msgstr "Protocol 类可以是泛型，例如："
 
+#: ../../library/typing.rst:2099
+msgid ""
+"class GenProto[T](Protocol):\n"
+"    def meth(self) -> T:\n"
+"        ..."
+msgstr ""
+
 #: ../../library/typing.rst:2103
 msgid ""
 "In code that needs to be compatible with Python 3.11 or older, generic "
 "Protocols can be written as follows::"
 msgstr "在需要兼容 Python 3.11 或更早版本的代码中，可以这样编写泛型协议::"
+
+#: ../../library/typing.rst:2106
+msgid ""
+"T = TypeVar(\"T\")\n"
+"\n"
+"class GenProto(Protocol[T]):\n"
+"    def meth(self) -> T:\n"
+"        ..."
+msgstr ""
 
 #: ../../library/typing.rst:2116
 msgid "Mark a protocol class as a runtime protocol."
@@ -2003,6 +3210,22 @@ msgstr ""
 "该协议可以与 :func:`isinstance` 和 :func:`issubclass` 一起使用。应用于非协议的类时，会触发 "
 ":exc:`TypeError`。该指令支持简易结构检查，与 :mod:`collections.abc` 的 "
 ":class:`~collections.abc.Iterable` 非常类似，只擅长做一件事。  例如："
+
+#: ../../library/typing.rst:2123
+msgid ""
+"@runtime_checkable\n"
+"class Closable(Protocol):\n"
+"    def close(self): ...\n"
+"\n"
+"assert isinstance(open('/some/file'), Closable)\n"
+"\n"
+"@runtime_checkable\n"
+"class Named(Protocol):\n"
+"    name: str\n"
+"\n"
+"import threading\n"
+"assert isinstance(threading.Thread(name='Bob'), Named)"
+msgstr ""
 
 #: ../../library/typing.rst:2138
 msgid ""
@@ -2071,6 +3294,19 @@ msgstr ""
 "``TypedDict`` "
 "声明一个字典类型，该类型预期所有实例都具有一组键集，其中，每个键都与对应类型的值关联。运行时不检查此预期，而是由类型检查器强制执行。用法如下："
 
+#: ../../library/typing.rst:2186
+msgid ""
+"class Point2D(TypedDict):\n"
+"    x: int\n"
+"    y: int\n"
+"    label: str\n"
+"\n"
+"a: Point2D = {'x': 1, 'y': 2, 'label': 'good'}  # OK\n"
+"b: Point2D = {'z': 3, 'label': 'bad'}           # Fails type check\n"
+"\n"
+"assert Point2D(x=1, y=2, label='first') == dict(x=1, y=2, label='first')"
+msgstr ""
+
 #: ../../library/typing.rst:2196
 msgid ""
 "To allow using this feature with older versions of Python that do not "
@@ -2082,11 +3318,19 @@ msgstr "为了在不支持 :pep:`526` 的旧版 Python 中使用此特性，``Ty
 msgid "Using a literal :class:`dict` as the second argument::"
 msgstr "使用字面量 :class:`dict` 作为第二个参数："
 
+#: ../../library/typing.rst:2202
+msgid "Point2D = TypedDict('Point2D', {'x': int, 'y': int, 'label': str})"
+msgstr ""
+
 #: ../../library/typing.rst:2204
 msgid "Using keyword arguments::"
 msgstr "使用关键字参数："
 
-#: ../../library/typing.rst:2211
+#: ../../library/typing.rst:2206
+msgid "Point2D = TypedDict('Point2D', x=int, y=int, label=str)"
+msgstr ""
+
+#: ../../library/typing.rst:2208
 msgid ""
 "The keyword-argument syntax is deprecated in 3.11 and will be removed in "
 "3.13. It may also be unsupported by static type checkers."
@@ -2100,12 +3344,34 @@ msgid ""
 msgstr ""
 "当任何一个键不是有效的 :ref:`标识符 <identifiers>` 时，例如因为它们是关键字或包含连字符，也应该使用函数式语法。例子::"
 
+#: ../../library/typing.rst:2216
+msgid ""
+"# raises SyntaxError\n"
+"class Point2D(TypedDict):\n"
+"    in: int  # 'in' is a keyword\n"
+"    x-y: int  # name with hyphens\n"
+"\n"
+"# OK, functional syntax\n"
+"Point2D = TypedDict('Point2D', {'in': int, 'x-y': int})"
+msgstr ""
+
 #: ../../library/typing.rst:2224
 msgid ""
 "By default, all keys must be present in a ``TypedDict``. It is possible to "
 "mark individual keys as non-required using :data:`NotRequired`::"
 msgstr ""
 "默认情况下，所有的键都必须出现在一个 ``TypedDict`` 中。 可以使用 :data:`NotRequired` 将单独的键标记为非必要的::"
+
+#: ../../library/typing.rst:2227
+msgid ""
+"class Point2D(TypedDict):\n"
+"    x: int\n"
+"    y: int\n"
+"    label: NotRequired[str]\n"
+"\n"
+"# Alternative syntax\n"
+"Point2D = TypedDict('Point2D', {'x': int, 'y': int, 'label': NotRequired[str]})"
+msgstr ""
 
 #: ../../library/typing.rst:2235
 msgid ""
@@ -2118,6 +3384,16 @@ msgid ""
 "It is also possible to mark all keys as non-required by default by "
 "specifying a totality of ``False``::"
 msgstr "也可以通过全部指定 ``False`` 将所有键都标记为默认非必要的::"
+
+#: ../../library/typing.rst:2241
+msgid ""
+"class Point2D(TypedDict, total=False):\n"
+"    x: int\n"
+"    y: int\n"
+"\n"
+"# Alternative syntax\n"
+"Point2D = TypedDict('Point2D', {'x': int, 'y': int}, total=False)"
+msgstr ""
 
 #: ../../library/typing.rst:2248
 msgid ""
@@ -2135,11 +3411,32 @@ msgid ""
 " using :data:`Required`::"
 msgstr "一个 ``total=False`` ``TypedDict`` 中单独的键可以使用 :data:`Required` 标记为必要的::"
 
+#: ../../library/typing.rst:2256
+msgid ""
+"class Point2D(TypedDict, total=False):\n"
+"    x: Required[int]\n"
+"    y: Required[int]\n"
+"    label: str\n"
+"\n"
+"# Alternative syntax\n"
+"Point2D = TypedDict('Point2D', {\n"
+"    'x': Required[int],\n"
+"    'y': Required[int],\n"
+"    'label': str\n"
+"}, total=False)"
+msgstr ""
+
 #: ../../library/typing.rst:2268
 msgid ""
 "It is possible for a ``TypedDict`` type to inherit from one or more other "
 "``TypedDict`` types using the class-based syntax. Usage::"
 msgstr "一个 ``TypedDict`` 类型有可能使用基于类的语法从一个或多个其他 ``TypedDict`` 类型继承。用法::"
+
+#: ../../library/typing.rst:2272
+msgid ""
+"class Point3D(Point2D):\n"
+"    z: int"
+msgstr ""
 
 #: ../../library/typing.rst:2275
 msgid ""
@@ -2147,21 +3444,60 @@ msgid ""
 "this definition::"
 msgstr "``Point3D`` 有三个项目 : ``x`` , ``y`` 和 ``z`` 。 其等价于定义::"
 
+#: ../../library/typing.rst:2278
+msgid ""
+"class Point3D(TypedDict):\n"
+"    x: int\n"
+"    y: int\n"
+"    z: int"
+msgstr ""
+
 #: ../../library/typing.rst:2283
 msgid ""
 "A ``TypedDict`` cannot inherit from a non-\\ ``TypedDict`` class, except for"
 " :class:`Generic`. For example::"
 msgstr "``TypedDict`` 不能从非 ``TypedDict`` 类继承，除了 :class:`Generic`。 例如::"
 
+#: ../../library/typing.rst:2286
+msgid ""
+"class X(TypedDict):\n"
+"    x: int\n"
+"\n"
+"class Y(TypedDict):\n"
+"    y: int\n"
+"\n"
+"class Z(object): pass  # A non-TypedDict class\n"
+"\n"
+"class XY(X, Y): pass  # OK\n"
+"\n"
+"class XZ(X, Z): pass  # raises TypeError"
+msgstr ""
+
 #: ../../library/typing.rst:2298
 msgid "A ``TypedDict`` can be generic::"
 msgstr "``TypedDict`` 也可以为泛型的："
+
+#: ../../library/typing.rst:2300
+msgid ""
+"class Group[T](TypedDict):\n"
+"    key: T\n"
+"    group: list[T]"
+msgstr ""
 
 #: ../../library/typing.rst:2304
 msgid ""
 "To create a generic ``TypedDict`` that is compatible with Python 3.11 or "
 "lower, inherit from :class:`Generic` explicitly:"
 msgstr "要创建与 Python 3.11 或更低版本兼容的泛型 ``TypedDict``，请显式地从 :class:`Generic` 继承："
+
+#: ../../library/typing.rst:2307
+msgid ""
+"T = TypeVar(\"T\")\n"
+"\n"
+"class Group(TypedDict, Generic[T]):\n"
+"    key: T\n"
+"    group: list[T]"
+msgstr ""
 
 #: ../../library/typing.rst:2315
 msgid ""
@@ -2178,6 +3514,20 @@ msgstr ""
 msgid ""
 "``Point2D.__total__`` gives the value of the ``total`` argument. Example:"
 msgstr "``Point2D.__total__`` 给出了 ``total`` 参数的值。 例如："
+
+#: ../../library/typing.rst:2324
+msgid ""
+">>> from typing import TypedDict\n"
+">>> class Point2D(TypedDict): pass\n"
+">>> Point2D.__total__\n"
+"True\n"
+">>> class Point2D(TypedDict, total=False): pass\n"
+">>> Point2D.__total__\n"
+"False\n"
+">>> class Point3D(Point2D): pass\n"
+">>> Point3D.__total__\n"
+"True"
+msgstr ""
 
 #: ../../library/typing.rst:2337
 msgid ""
@@ -2222,6 +3572,21 @@ msgstr ""
 "为了向下兼容 Python 3.10 及更老的版本，还可以使用继承机制在同一个 ``TypedDict`` 中同时声明必要和非必要的键。 "
 "这是通过声明一个具有 ``total`` 参数值的 ``TypedDict`` 然后在另一个 ``TypedDict`` 中继承它并使用不同的 "
 "``total`` 值来实现的："
+
+#: ../../library/typing.rst:2363
+msgid ""
+">>> class Point2D(TypedDict, total=False):\n"
+"...     x: int\n"
+"...     y: int\n"
+"...\n"
+">>> class Point3D(Point2D):\n"
+"...     z: int\n"
+"...\n"
+">>> Point3D.__required_keys__ == frozenset({'z'})\n"
+"True\n"
+">>> Point3D.__optional_keys__ == frozenset({'x', 'y'})\n"
+"True"
+msgstr ""
 
 #: ../../library/typing.rst:2381
 msgid ""
@@ -2339,11 +3704,28 @@ msgid ""
 "an error if the value is not of the specified type::"
 msgstr "当静态类型检查器遇到对 ``assert_type()`` 的调用时，如果该值不是指定的类型则会报错::"
 
+#: ../../library/typing.rst:2470
+msgid ""
+"def greet(name: str) -> None:\n"
+"    assert_type(name, str)  # OK, inferred type of `name` is `str`\n"
+"    assert_type(name, int)  # type checker error"
+msgstr ""
+
 #: ../../library/typing.rst:2474
 msgid ""
 "This function is useful for ensuring the type checker's understanding of a "
 "script is in line with the developer's intentions::"
 msgstr "此函数适用于确保类型检查器对脚本的理解符合开发者的意图::"
+
+#: ../../library/typing.rst:2477
+msgid ""
+"def complex_function(arg: object):\n"
+"    # Do some complex type-narrowing logic,\n"
+"    # after which we hope the inferred type will be `int`\n"
+"    ...\n"
+"    # Test whether the type checker correctly understands our function\n"
+"    assert_type(arg, int)"
+msgstr ""
 
 #: ../../library/typing.rst:2488
 msgid ""
@@ -2353,6 +3735,18 @@ msgstr "让静态类型检查器确认一行代码是不可达的。"
 #: ../../library/typing.rst:2490
 msgid "Example::"
 msgstr "示例::"
+
+#: ../../library/typing.rst:2492
+msgid ""
+"def int_or_str(arg: int | str) -> None:\n"
+"    match arg:\n"
+"        case int():\n"
+"            print(\"It's an int\")\n"
+"        case str():\n"
+"            print(\"It's a str\")\n"
+"        case _ as unreachable:\n"
+"            assert_never(unreachable)"
+msgstr ""
 
 #: ../../library/typing.rst:2501
 msgid ""
@@ -2401,6 +3795,12 @@ msgid ""
 "diagnostic with the inferred type of the argument. For example::"
 msgstr "当静态类型检查器遇到一个对此函数的调用时，它将发出带有所推测参数类型的诊断信息。 例如::"
 
+#: ../../library/typing.rst:2530
+msgid ""
+"x: int = 1\n"
+"reveal_type(x)  # Revealed type is \"builtins.int\""
+msgstr ""
+
 #: ../../library/typing.rst:2533
 msgid ""
 "This can be useful when you want to debug how your type checker handles a "
@@ -2413,6 +3813,12 @@ msgid ""
 ":data:`sys.stderr` and returns the argument unchanged (allowing the call to "
 "be used within an expression)::"
 msgstr "在运行时，此函数会将其参数类型打印到 :data:`sys.stderr` 并不加修改地返回该参数 (以允许该调用在表达式中使用)::"
+
+#: ../../library/typing.rst:2540
+msgid ""
+"x = reveal_type(1)  # prints \"Runtime type is int\"\n"
+"print(x)  # prints \"1\""
+msgstr ""
 
 #: ../../library/typing.rst:2543
 msgid ""
@@ -2452,13 +3858,48 @@ msgstr ""
 msgid "Example usage with a decorator function:"
 msgstr "装饰器函数使用方式的例子："
 
+#: ../../library/typing.rst:2569
+msgid ""
+"@dataclass_transform()\n"
+"def create_model[T](cls: type[T]) -> type[T]:\n"
+"    ...\n"
+"    return cls\n"
+"\n"
+"@create_model\n"
+"class CustomerModel:\n"
+"    id: int\n"
+"    name: str"
+msgstr ""
+
 #: ../../library/typing.rst:2581
 msgid "On a base class::"
 msgstr "在基类上::"
 
+#: ../../library/typing.rst:2583
+msgid ""
+"@dataclass_transform()\n"
+"class ModelBase: ...\n"
+"\n"
+"class CustomerModel(ModelBase):\n"
+"    id: int\n"
+"    name: str"
+msgstr ""
+
 #: ../../library/typing.rst:2590
 msgid "On a metaclass::"
 msgstr "在元类上::"
+
+#: ../../library/typing.rst:2592
+msgid ""
+"@dataclass_transform()\n"
+"class ModelMeta(type): ...\n"
+"\n"
+"class ModelBase(metaclass=ModelMeta): ...\n"
+"\n"
+"class CustomerModel(ModelBase):\n"
+"    id: int\n"
+"    name: str"
+msgstr ""
 
 #: ../../library/typing.rst:2601
 msgid ""
@@ -2671,6 +4112,21 @@ msgid ""
 "using a union or a type variable:"
 msgstr "一个提供了比使用联合或类型变量更精确的类型的重载的示例："
 
+#: ../../library/typing.rst:2715
+msgid ""
+"@overload\n"
+"def process(response: None) -> None:\n"
+"    ...\n"
+"@overload\n"
+"def process(response: int) -> tuple[int, str]:\n"
+"    ...\n"
+"@overload\n"
+"def process(response: bytes) -> str:\n"
+"    ...\n"
+"def process(response):\n"
+"    ...  # actual implementation goes here"
+msgstr ""
+
 #: ../../library/typing.rst:2729
 msgid ""
 "See :pep:`484` for more details and comparison with other typing semantics."
@@ -2726,6 +4182,23 @@ msgid ""
 "``@final`` indicates that it cannot be subclassed."
 msgstr ""
 "以 ``@final`` 装饰一个方法将向类型检查器指明该方法不可在子类中被重载。 以 ``@final`` 装饰一个类表示它不可被子类化。"
+
+#: ../../library/typing.rst:2773
+msgid ""
+"class Base:\n"
+"    @final\n"
+"    def done(self) -> None:\n"
+"        ...\n"
+"class Sub(Base):\n"
+"    def done(self) -> None:  # Error reported by type checker\n"
+"        ...\n"
+"\n"
+"@final\n"
+"class Leaf:\n"
+"    ...\n"
+"class Other(Leaf):  # Error reported by type checker\n"
+"    ..."
+msgstr ""
 
 #: ../../library/typing.rst:2792
 msgid ""
@@ -2783,6 +4256,22 @@ msgstr ""
 "如果一个以 ``@override`` 装饰的方法实际未重载任何东西则类型检查器应当报告错误。 "
 "这有助于防止当基类发生修改而子类未进行相应修改而导致的问题。"
 
+#: ../../library/typing.rst:2833
+msgid ""
+"class Base:\n"
+"    def log_status(self) -> None:\n"
+"        ...\n"
+"\n"
+"class Sub(Base):\n"
+"    @override\n"
+"    def log_status(self) -> None:  # Okay: overrides Base.log_status\n"
+"        ...\n"
+"\n"
+"    @override\n"
+"    def done(self) -> None:  # Error reported by type checker\n"
+"        ..."
+msgstr ""
+
 #: ../../library/typing.rst:2848
 msgid "There is no runtime checking of this property."
 msgstr "没有对此特征属性的运行时检查。"
@@ -2814,6 +4303,16 @@ msgid ""
 "mark classes that are defined in type stub files if an implementation "
 "returns an instance of a private class::"
 msgstr "在运行时，该装饰器本身不可用。实现返回的是私有类实例时，它主要是用于标记在类型存根文件中定义的类。"
+
+#: ../../library/typing.rst:2870
+msgid ""
+"@type_check_only\n"
+"class Response:  # private or not available at runtime\n"
+"    code: int\n"
+"    def get_header(self, name: str) -> str: ...\n"
+"\n"
+"def fetch_response() -> Response: ..."
+msgstr ""
 
 #: ../../library/typing.rst:2877
 msgid ""
@@ -2934,6 +4433,16 @@ msgstr ""
 msgid "Examples:"
 msgstr "示例："
 
+#: ../../library/typing.rst:2942
+msgid ""
+"assert get_origin(str) is None\n"
+"assert get_origin(Dict[str, int]) is dict\n"
+"assert get_origin(Union[int, str]) is Union\n"
+"P = ParamSpec('P')\n"
+"assert get_origin(P.args) is P\n"
+"assert get_origin(P.kwargs) is P"
+msgstr ""
+
 #: ../../library/typing.rst:2955
 msgid ""
 "Get type arguments with all substitutions performed: for a typing object of "
@@ -2950,9 +4459,30 @@ msgstr ""
 "如果 ``X`` 是一个并集或是包含在另一个泛型类型中的 :class:`Literal`，则 ``(Y, Z, ...)`` "
 "的顺序可能因类型缓存而与原始参数 ``[Y, Z, ...]`` 存在差异。 对于不受支持的对象将返回 ``()``。"
 
+#: ../../library/typing.rst:2965
+msgid ""
+"assert get_args(int) == ()\n"
+"assert get_args(Dict[int, str]) == (int, str)\n"
+"assert get_args(Union[int, str]) == (int, str)"
+msgstr ""
+
 #: ../../library/typing.rst:2975
 msgid "Check if a type is a :class:`TypedDict`."
 msgstr "检查一个类型是否为 :class:`TypedDict`。"
+
+#: ../../library/typing.rst:2979
+msgid ""
+"class Film(TypedDict):\n"
+"    title: str\n"
+"    year: int\n"
+"\n"
+"assert is_typeddict(Film)\n"
+"assert not is_typeddict(list | str)\n"
+"\n"
+"# TypedDict is a factory for creating typed dicts,\n"
+"# not a typed dict itself\n"
+"assert not is_typeddict(TypedDict)"
+msgstr ""
 
 #: ../../library/typing.rst:2996
 msgid ""
@@ -2986,6 +4516,15 @@ msgid ""
 "A special constant that is assumed to be ``True`` by 3rd party static type "
 "checkers. It is ``False`` at runtime."
 msgstr "会被第 3 方静态类型检查器假定为 ``True`` 的特殊常量。 在运行时将为 ``False``。"
+
+#: ../../library/typing.rst:3019
+msgid ""
+"if TYPE_CHECKING:\n"
+"    import expensive_mod\n"
+"\n"
+"def fun(arg: 'expensive_mod.SomeType') -> None:\n"
+"    local_var: expensive_mod.AnotherType = other_fun()"
+msgstr ""
 
 #: ../../library/typing.rst:3025
 msgid ""
@@ -3069,6 +4608,12 @@ msgstr ""
 msgid "This type can be used as follows::"
 msgstr "该类型用法如下："
 
+#: ../../library/typing.rst:3081
+msgid ""
+"def count_words(text: str) -> Dict[str, int]:\n"
+"    ..."
+msgstr ""
+
 #: ../../library/typing.rst:3084
 msgid ""
 ":class:`builtins.dict <dict>` now supports subscripting (``[]``). See "
@@ -3093,6 +4638,15 @@ msgstr ""
 #: ../../library/typing.rst:3096
 msgid "This type may be used as follows::"
 msgstr "该类型用法如下："
+
+#: ../../library/typing.rst:3098
+msgid ""
+"def vec2[T: (int, float)](x: T, y: T) -> List[T]:\n"
+"    return [x, y]\n"
+"\n"
+"def keep_positives[T: (int, float)](vector: Sequence[T]) -> List[T]:\n"
+"    return [item for item in vector if item > 0]"
+msgstr ""
 
 #: ../../library/typing.rst:3104
 msgid ""
@@ -3242,7 +4796,7 @@ msgstr ""
 msgid "Aliases to other concrete types"
 msgstr "其他具体类型的别名"
 
-#: ../../library/typing.rst:3216
+#: ../../library/typing.rst:3213
 msgid ""
 "The ``typing.io`` namespace is deprecated and will be removed. These types "
 "should be directly imported from ``typing`` instead."
@@ -3264,7 +4818,7 @@ msgstr ""
 "这些类型（与对应的函数）是 :data:`AnyStr` 上的泛型。 ``Pattern`` 可以被特化为 ``Pattern[str]`` 或 "
 "``Pattern[bytes]``；``Match`` 可以被特化为 ``Match[str]`` 或 ``Match[bytes]``。"
 
-#: ../../library/typing.rst:3231
+#: ../../library/typing.rst:3228
 msgid ""
 "The ``typing.re`` namespace is deprecated and will be removed. These types "
 "should be directly imported from ``typing`` instead."
@@ -3294,6 +4848,12 @@ msgid ""
 "Use ``Text`` to indicate that a value must contain a unicode string in a "
 "manner that is compatible with both Python 2 and Python 3::"
 msgstr "使用 ``Text`` 时，值中必须包含 unicode 字符串，以兼容 Python 2 和 Python 3："
+
+#: ../../library/typing.rst:3247
+msgid ""
+"def add_unicode_checkmark(text: Text) -> Text:\n"
+"    return text + u' \\u2713'"
+msgstr ""
 
 #: ../../library/typing.rst:3252
 msgid ""
@@ -3326,7 +4886,7 @@ msgid ""
 ":class:`memoryview` of byte sequences."
 msgstr "该类型代表了 :class:`bytes`、:class:`bytearray`、:class:`memoryview` 等字节序列类型。"
 
-#: ../../library/typing.rst:3278
+#: ../../library/typing.rst:3277
 msgid ""
 "Prefer :class:`collections.abc.Buffer`, or a union like ``bytes | bytearray "
 "| memoryview``."
@@ -3385,6 +4945,12 @@ msgstr ""
 #: ../../library/typing.rst:3316
 msgid "Deprecated alias to :class:`collections.abc.Mapping`."
 msgstr ":class:`collections.abc.Mapping` 的已弃用的别名。"
+
+#: ../../library/typing.rst:3320
+msgid ""
+"def get_position_in_index(word_list: Mapping[str, int], word: str) -> int:\n"
+"    return word_list[word]"
+msgstr ""
 
 #: ../../library/typing.rst:3323
 msgid ""
@@ -3480,6 +5046,15 @@ msgid ""
 ":class:`Generator`, for example::"
 msgstr "类型变量的变化形式和顺序与 :class:`Generator` 的相对应，例如::"
 
+#: ../../library/typing.rst:3389
+msgid ""
+"from collections.abc import Coroutine\n"
+"c: Coroutine[list[str], str, int]  # Some coroutine defined elsewhere\n"
+"x = c.send('hi')                   # Inferred type of 'x' is list[str]\n"
+"async def bar() -> None:\n"
+"    y = await c                    # Inferred type of 'y' is int"
+msgstr ""
+
 #: ../../library/typing.rst:3397
 msgid ""
 ":class:`collections.abc.Coroutine` now supports subscripting (``[]``). See "
@@ -3498,6 +5073,15 @@ msgid ""
 "``AsyncGenerator[YieldType, SendType]``. For example::"
 msgstr "异步生成器可由泛型类型 ``AsyncGenerator[YieldType, SendType]`` 注解。例如："
 
+#: ../../library/typing.rst:3408
+msgid ""
+"async def echo_round() -> AsyncGenerator[int, float]:\n"
+"    sent = yield 0\n"
+"    while sent >= 0.0:\n"
+"        rounded = await round(sent)\n"
+"        sent = yield rounded"
+msgstr ""
+
 #: ../../library/typing.rst:3414
 msgid ""
 "Unlike normal generators, async generators cannot return a value, so there "
@@ -3512,6 +5096,14 @@ msgid ""
 "If your generator will only yield values, set the ``SendType`` to ``None``::"
 msgstr "如果生成器只产生值，可将 ``SendType`` 设置为 ``None``："
 
+#: ../../library/typing.rst:3421
+msgid ""
+"async def infinite_stream(start: int) -> AsyncGenerator[int, None]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start = await increment(start)"
+msgstr ""
+
 #: ../../library/typing.rst:3426
 msgid ""
 "Alternatively, annotate your generator as having a return type of either "
@@ -3519,6 +5111,14 @@ msgid ""
 msgstr ""
 "此外，可用 ``AsyncIterable[YieldType]`` 或 ``AsyncIterator[YieldType]`` "
 "注解生成器的返回类型："
+
+#: ../../library/typing.rst:3429
+msgid ""
+"async def infinite_stream(start: int) -> AsyncIterator[int]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start = await increment(start)"
+msgstr ""
 
 #: ../../library/typing.rst:3436
 msgid ""
@@ -3623,6 +5223,15 @@ msgid ""
 "SendType, ReturnType]``. For example::"
 msgstr "生成器可以由泛型类型 ``Generator[YieldType, SendType, ReturnType]`` 注解。例如："
 
+#: ../../library/typing.rst:3514
+msgid ""
+"def echo_round() -> Generator[int, float, str]:\n"
+"    sent = yield 0\n"
+"    while sent >= 0:\n"
+"        sent = yield round(sent)\n"
+"    return 'Done'"
+msgstr ""
+
 #: ../../library/typing.rst:3520
 msgid ""
 "Note that unlike many other generics in the typing module, the ``SendType`` "
@@ -3637,11 +5246,27 @@ msgid ""
 "``ReturnType`` to ``None``::"
 msgstr "如果生成器只产生值，可将 ``SendType`` 与 ``ReturnType`` 设为 ``None``："
 
+#: ../../library/typing.rst:3527
+msgid ""
+"def infinite_stream(start: int) -> Generator[int, None, None]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start += 1"
+msgstr ""
+
 #: ../../library/typing.rst:3532
 msgid ""
 "Alternatively, annotate your generator as having a return type of either "
 "``Iterable[YieldType]`` or ``Iterator[YieldType]``::"
 msgstr "此外，还可以把生成器的返回类型注解为 ``Iterable[YieldType]`` 或 ``Iterator[YieldType]``："
+
+#: ../../library/typing.rst:3535
+msgid ""
+"def infinite_stream(start: int) -> Iterator[int]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start += 1"
+msgstr ""
 
 #: ../../library/typing.rst:3540
 msgid ""

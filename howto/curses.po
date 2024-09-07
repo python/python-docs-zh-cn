@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:32+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -166,6 +166,14 @@ msgstr ""
 "函数来完成的，它将确定终端的类型，向终端发送任何必须的设置代码，并创建多种内部数据结构。 如果执行成功，:func:`!initscr` "
 "将返回一个代表整个屏幕的窗口对象；它通常会按照对应的 C 变量被称为 ``stdscr``。 ::"
 
+#: ../../howto/curses.rst:90
+msgid ""
+"import curses\n"
+"stdscr = curses.initscr()"
+msgstr ""
+"import curses\n"
+"stdscr = curses.initscr()"
+
 #: ../../howto/curses.rst:93
 msgid ""
 "Usually curses applications turn off automatic echoing of keys to the "
@@ -176,12 +184,20 @@ msgstr ""
 "使用 curses 的应用程序通常会关闭按键自动上屏，目的是读取按键并只在特定情况下展示它们。这需要调用函数 "
 ":func:`~curses.noecho`："
 
+#: ../../howto/curses.rst:98
+msgid "curses.noecho()"
+msgstr ""
+
 #: ../../howto/curses.rst:100
 msgid ""
 "Applications will also commonly need to react to keys instantly, without "
 "requiring the Enter key to be pressed; this is called cbreak mode, as "
 "opposed to the usual buffered input mode. ::"
 msgstr "应用程序也会广泛地需要立即响应按键，而不需要按下回车键；这被称为 “cbreak” 模式，与通常的缓冲输入模式相对："
+
+#: ../../howto/curses.rst:104
+msgid "curses.cbreak()"
+msgstr ""
 
 #: ../../howto/curses.rst:106
 msgid ""
@@ -196,11 +212,22 @@ msgstr ""
 "键。尽管你可以编写你的程序来应对这些序列，curses 能够代替你做到这件事，返回一个特殊值比如 "
 ":const:`curses.KEY_LEFT`。为了让 curses 做这项工作，你需要启用 keypad 模式："
 
+#: ../../howto/curses.rst:113
+msgid "stdscr.keypad(True)"
+msgstr ""
+
 #: ../../howto/curses.rst:115
 msgid ""
 "Terminating a curses application is much easier than starting one. You'll "
 "need to call::"
 msgstr "终止一个 curses 应用程序比建立一个容易得多，你只需要调用："
+
+#: ../../howto/curses.rst:118
+msgid ""
+"curses.nocbreak()\n"
+"stdscr.keypad(False)\n"
+"curses.echo()"
+msgstr ""
 
 #: ../../howto/curses.rst:122
 msgid ""
@@ -208,6 +235,10 @@ msgid ""
 ":func:`~curses.endwin` function to restore the terminal to its original "
 "operating mode. ::"
 msgstr "来还原对终端作出的 curses 友好设置。然后，调用函数 :func:`~curses.endwin` 来将终端还原到它的原始操作模式："
+
+#: ../../howto/curses.rst:126
+msgid "curses.endwin()"
+msgstr ""
 
 #: ../../howto/curses.rst:128
 msgid ""
@@ -226,6 +257,25 @@ msgid ""
 "by importing the :func:`curses.wrapper` function and using it like this::"
 msgstr ""
 "在 Python 中你可以避免这些复杂问题并让调试变得更简单，只需要导入 :func:`curses.wrapper` 函数并像这样使用它："
+
+#: ../../howto/curses.rst:137
+msgid ""
+"from curses import wrapper\n"
+"\n"
+"def main(stdscr):\n"
+"    # Clear screen\n"
+"    stdscr.clear()\n"
+"\n"
+"    # This raises ZeroDivisionError when i == 10.\n"
+"    for i in range(0, 11):\n"
+"        v = i-10\n"
+"        stdscr.addstr(i, 0, '10 divided by {} is {}'.format(v, 10/v))\n"
+"\n"
+"    stdscr.refresh()\n"
+"    stdscr.getkey()\n"
+"\n"
+"wrapper(main)"
+msgstr ""
 
 #: ../../howto/curses.rst:153
 msgid ""
@@ -267,6 +317,13 @@ msgstr ""
 "函数 :func:`~curses.initscr` 返回的 ``stdscr`` "
 "对象覆盖整个屏幕。许多程序可能只需要这一个窗口，但你可能希望把屏幕分割为多个更小的窗口，来分别重绘或者清除它们。函数 "
 ":func:`~curses.newwin` 根据给定的尺寸创建一个新窗口，并返回这个新的窗口对象："
+
+#: ../../howto/curses.rst:178
+msgid ""
+"begin_x = 20; begin_y = 7\n"
+"height = 5; width = 40\n"
+"win = curses.newwin(height, width, begin_y, begin_x)"
+msgstr ""
 
 #: ../../howto/curses.rst:182
 msgid ""
@@ -337,6 +394,24 @@ msgid ""
 "will be displayed.  ::"
 msgstr ""
 "一个面板是一种特殊的窗口，它可以比实际的显示屏幕更大，并且能只显示它的一部分。创建面板需要指定面板的高度和宽度，但刷新一个面板需要给出屏幕坐标和面板的需要显示的局部。"
+
+#: ../../howto/curses.rst:223
+msgid ""
+"pad = curses.newpad(100, 100)\n"
+"# These loops fill the pad with letters; addch() is\n"
+"# explained in the next section\n"
+"for y in range(0, 99):\n"
+"    for x in range(0, 99):\n"
+"        pad.addch(y,x, ord('a') + (x*x+y*y) % 26)\n"
+"\n"
+"# Displays a section of the pad in the middle of the screen.\n"
+"# (0,0) : coordinate of upper-left corner of pad area to display.\n"
+"# (5,5) : coordinate of upper-left corner of window area to be filled\n"
+"#         with pad content.\n"
+"# (20, 75) : coordinate of lower-right corner of window area to be\n"
+"#          : filled with pad content.\n"
+"pad.refresh( 0,0, 5,5, 20,75)"
+msgstr ""
 
 #: ../../howto/curses.rst:238
 msgid ""
@@ -597,6 +672,13 @@ msgid ""
 "you could code::"
 msgstr "所以，为了在屏幕顶部显示一个反相的状态行，你可以这么编写："
 
+#: ../../howto/curses.rst:364
+msgid ""
+"stdscr.addstr(0, 0, \"Current mode: Typing mode\",\n"
+"              curses.A_REVERSE)\n"
+"stdscr.refresh()"
+msgstr ""
+
 #: ../../howto/curses.rst:368
 msgid ""
 "The curses library also supports color on those terminals that provide it. "
@@ -638,6 +720,12 @@ msgstr ""
 msgid "An example, which displays a line of text using color pair 1::"
 msgstr "一个样例，用 1 号颜色对显示一行文本："
 
+#: ../../howto/curses.rst:391
+msgid ""
+"stdscr.addstr(\"Pretty text\", curses.color_pair(1))\n"
+"stdscr.refresh()"
+msgstr ""
+
 #: ../../howto/curses.rst:394
 msgid ""
 "As I said before, a color pair consists of a foreground and background "
@@ -667,12 +755,20 @@ msgid ""
 "background, you would call::"
 msgstr "让我们来做个综合练习。 要将颜色 1 改为红色文本白色背景，你应当调用::"
 
+#: ../../howto/curses.rst:408
+msgid "curses.init_pair(1, curses.COLOR_RED, curses.COLOR_WHITE)"
+msgstr ""
+
 #: ../../howto/curses.rst:410
 msgid ""
 "When you change a color pair, any text already displayed using that color "
 "pair will change to the new colors.  You can also display new text in this "
 "color with::"
 msgstr "当你改变一个颜色对时，任何已经使用该颜色对来显示的文本将会更改为新的颜色。 你还可以这样来显示新颜色的文本::"
+
+#: ../../howto/curses.rst:414
+msgid "stdscr.addstr(0,0, \"RED ALERT!\", curses.color_pair(1))"
+msgstr ""
 
 #: ../../howto/curses.rst:416
 msgid ""
@@ -759,6 +855,18 @@ msgstr ""
 ":const:`curses.KEY_HOME` 或 :const:`curses.KEY_LEFT` 等常量做比较。 "
 "你的程序的主循环看起来可能会像这样::"
 
+#: ../../howto/curses.rst:462
+msgid ""
+"while True:\n"
+"    c = stdscr.getch()\n"
+"    if c == ord('p'):\n"
+"        PrintDocument()\n"
+"    elif c == ord('q'):\n"
+"        break  # Exit the while loop\n"
+"    elif c == curses.KEY_HOME:\n"
+"        x = y = 0"
+msgstr ""
+
 #: ../../howto/curses.rst:471
 msgid ""
 "The :mod:`curses.ascii` module supplies ASCII class membership functions "
@@ -783,6 +891,14 @@ msgstr ""
 "还有一个可以提取整个字符串的方法 :meth:`~curses.window.getstr`。 它并不经常被使用，因为它的功能相当受限；可用的编辑键只有"
 " Backspace 和 Enter 键，它们会结束字符串。 也可以选择限制为固定数量的字符。 ::"
 
+#: ../../howto/curses.rst:484
+msgid ""
+"curses.echo()            # Enable echoing of characters\n"
+"\n"
+"# Get a 15-character string, with the cursor on the top line\n"
+"s = stdscr.getstr(0,0, 15)"
+msgstr ""
+
 #: ../../howto/curses.rst:489
 msgid ""
 "The :mod:`curses.textpad` module supplies a text box that supports an Emacs-"
@@ -794,6 +910,27 @@ msgstr ""
 ":mod:`curses.textpad` 模块提供了一个文本框，它支持类似 Emacs 的键绑定集。 "
 ":class:`~curses.textpad.Textbox` 类的各种方法支持带输入验证的编辑及包含或不包含末尾空格地收集编辑结果。 "
 "下面是一个例子::"
+
+#: ../../howto/curses.rst:495
+msgid ""
+"import curses\n"
+"from curses.textpad import Textbox, rectangle\n"
+"\n"
+"def main(stdscr):\n"
+"    stdscr.addstr(0, 0, \"Enter IM message: (hit Ctrl-G to send)\")\n"
+"\n"
+"    editwin = curses.newwin(5,30, 2,1)\n"
+"    rectangle(stdscr, 1,0, 1+5+1, 1+30+1)\n"
+"    stdscr.refresh()\n"
+"\n"
+"    box = Textbox(editwin)\n"
+"\n"
+"    # Let the user edit until Ctrl-G is struck.\n"
+"    box.edit()\n"
+"\n"
+"    # Get resulting contents\n"
+"    message = box.gather()"
+msgstr ""
 
 #: ../../howto/curses.rst:513
 msgid ""

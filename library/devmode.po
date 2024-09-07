@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
+"POT-Creation-Date: 2024-09-06 15:04+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -56,6 +56,12 @@ msgid ""
 "Enabling the Python Development Mode is similar to the following command, "
 "but with additional effects described below::"
 msgstr "启用 Python 开发模式后的效果，与以下命令类似，不过还有下面的额外效果："
+
+#: ../../library/devmode.rst:24
+msgid ""
+"PYTHONMALLOC=debug PYTHONASYNCIODEBUG=1 python -W default -X faulthandler"
+msgstr ""
+"PYTHONMALLOC=debug PYTHONASYNCIODEBUG=1 python -W default -X faulthandler"
 
 #: ../../library/devmode.rst:26
 msgid "Effects of the Python Development Mode:"
@@ -257,11 +263,43 @@ msgid ""
 "in the command line::"
 msgstr "以下示例将统计由命令行指定的文本文件的行数："
 
+#: ../../library/devmode.rst:116
+msgid ""
+"import sys\n"
+"\n"
+"def main():\n"
+"    fp = open(sys.argv[1])\n"
+"    nlines = len(fp.readlines())\n"
+"    print(nlines)\n"
+"    # The file is closed implicitly\n"
+"\n"
+"if __name__ == \"__main__\":\n"
+"    main()"
+msgstr ""
+"import sys\n"
+"\n"
+"def main():\n"
+"    fp = open(sys.argv[1])\n"
+"    nlines = len(fp.readlines())\n"
+"    print(nlines)\n"
+"    # 文件将隐式地关闭\n"
+"\n"
+"if __name__ == \"__main__\":\n"
+"    main()"
+
 #: ../../library/devmode.rst:127
 msgid ""
 "The script does not close the file explicitly. By default, Python does not "
 "emit any warning. Example using README.txt, which has 269 lines:"
 msgstr "上述代码没有显式关闭文件。默认情况下，Python 不会触发任何警告。下面用 README.txt 文件测试下，有 269 行："
+
+#: ../../library/devmode.rst:130
+msgid ""
+"$ python script.py README.txt\n"
+"269"
+msgstr ""
+"$ python script.py README.txt\n"
+"269"
 
 #: ../../library/devmode.rst:135
 msgid ""
@@ -269,16 +307,61 @@ msgid ""
 "warning:"
 msgstr "启用 Python 开发模式后，则会显示一条 :exc:`ResourceWarning` 警告："
 
+#: ../../library/devmode.rst:137
+msgid ""
+"$ python -X dev script.py README.txt\n"
+"269\n"
+"script.py:10: ResourceWarning: unclosed file <_io.TextIOWrapper name='README.rst' mode='r' encoding='UTF-8'>\n"
+"  main()\n"
+"ResourceWarning: Enable tracemalloc to get the object allocation traceback"
+msgstr ""
+"$ python -X dev script.py README.txt\n"
+"269\n"
+"script.py:10: ResourceWarning: unclosed file <_io.TextIOWrapper name='README.rst' mode='r' encoding='UTF-8'>\n"
+"  main()\n"
+"ResourceWarning: Enable tracemalloc to get the object allocation traceback"
+
 #: ../../library/devmode.rst:145
 msgid ""
 "In addition, enabling :mod:`tracemalloc` shows the line where the file was "
 "opened:"
 msgstr "启用 :mod:`tracemalloc` 后，则还会显示打开文件的那行代码："
 
+#: ../../library/devmode.rst:148
+msgid ""
+"$ python -X dev -X tracemalloc=5 script.py README.rst\n"
+"269\n"
+"script.py:10: ResourceWarning: unclosed file <_io.TextIOWrapper name='README.rst' mode='r' encoding='UTF-8'>\n"
+"  main()\n"
+"Object allocated at (most recent call last):\n"
+"  File \"script.py\", lineno 10\n"
+"    main()\n"
+"  File \"script.py\", lineno 4\n"
+"    fp = open(sys.argv[1])"
+msgstr ""
+"$ python -X dev -X tracemalloc=5 script.py README.rst\n"
+"269\n"
+"script.py:10: ResourceWarning: unclosed file <_io.TextIOWrapper name='README.rst' mode='r' encoding='UTF-8'>\n"
+"  main()\n"
+"Object allocated at (most recent call last):\n"
+"  File \"script.py\", lineno 10\n"
+"    main()\n"
+"  File \"script.py\", lineno 4\n"
+"    fp = open(sys.argv[1])"
+
 #: ../../library/devmode.rst:160
 msgid ""
 "The fix is to close explicitly the file. Example using a context manager::"
 msgstr "修正方案就是显式关闭文件。下面用上下文管理器作为示例："
+
+#: ../../library/devmode.rst:162
+msgid ""
+"def main():\n"
+"    # Close the file explicitly when exiting the with block\n"
+"    with open(sys.argv[1]) as fp:\n"
+"        nlines = len(fp.readlines())\n"
+"    print(nlines)"
+msgstr ""
 
 #: ../../library/devmode.rst:168
 msgid ""
@@ -298,9 +381,29 @@ msgstr "文件描述符错误示例"
 msgid "Script displaying the first line of itself::"
 msgstr "显示自身的第一行代码："
 
+#: ../../library/devmode.rst:179
+msgid ""
+"import os\n"
+"\n"
+"def main():\n"
+"    fp = open(__file__)\n"
+"    firstline = fp.readline()\n"
+"    print(firstline.rstrip())\n"
+"    os.close(fp.fileno())\n"
+"    # The file is closed implicitly\n"
+"\n"
+"main()"
+msgstr ""
+
 #: ../../library/devmode.rst:190
 msgid "By default, Python does not emit any warning:"
 msgstr "默认情况下，Python 不会触发任何警告："
+
+#: ../../library/devmode.rst:192
+msgid ""
+"$ python script.py\n"
+"import os"
+msgstr ""
 
 #: ../../library/devmode.rst:197
 msgid ""
@@ -309,6 +412,20 @@ msgid ""
 msgstr ""
 "在 Python 开发模式下，会在析构文件对象时显示 :exc:`ResourceWarning` 并记录 “Bad file descriptor” "
 "错误。"
+
+#: ../../library/devmode.rst:200
+msgid ""
+"$ python -X dev script.py\n"
+"import os\n"
+"script.py:10: ResourceWarning: unclosed file <_io.TextIOWrapper name='script.py' mode='r' encoding='UTF-8'>\n"
+"  main()\n"
+"ResourceWarning: Enable tracemalloc to get the object allocation traceback\n"
+"Exception ignored in: <_io.TextIOWrapper name='script.py' mode='r' encoding='UTF-8'>\n"
+"Traceback (most recent call last):\n"
+"  File \"script.py\", line 10, in <module>\n"
+"    main()\n"
+"OSError: [Errno 9] Bad file descriptor"
+msgstr ""
 
 #: ../../library/devmode.rst:213
 msgid ""
