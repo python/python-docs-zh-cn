@@ -8,7 +8,7 @@
 # nick <2330458484@qq.com>, 2021
 # ppcfish <ppcfish@gmail.com>, 2021
 # Sean Chao <seanchao0804@gmail.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:15+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -90,6 +90,28 @@ msgstr ""
 ":c:func:`calloc`, :c:func:`realloc` 和 :c:func:`free`。这将导致 C 分配器和 Python "
 "内存管理器之间的混用，引发严重后果，这是由于它们实现了不同的算法，并在不同的堆上操作。但是，我们可以安全地使用 C "
 "库分配器为单独的目的分配和释放内存块，如下例所示："
+
+#: ../../c-api/memory.rst:58
+msgid ""
+"PyObject *res;\n"
+"char *buf = (char *) malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"...Do some I/O operation involving buf...\n"
+"res = PyBytes_FromString(buf);\n"
+"free(buf); /* malloc'ed */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = (char *) malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"...执行一些涉及 buf 的 I/O 操作...\n"
+"res = PyBytes_FromString(buf);\n"
+"free(buf); /* 已分配的 */\n"
+"return res;"
 
 #: ../../c-api/memory.rst:68
 msgid ""
@@ -1209,9 +1231,53 @@ msgid ""
 msgstr ""
 "以下是来自 :ref:`memoryoverview` 小节的示例，经过重写以使 I/O 缓冲区是通过使用第一个函数集从 Python 堆中分配的::"
 
+#: ../../c-api/memory.rst:718
+msgid ""
+"PyObject *res;\n"
+"char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...Do some I/O operation involving buf... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Free(buf); /* allocated with PyMem_Malloc */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...执行一些涉及 buf 的 I/O 操作... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Free(buf); /* 使用 PyMem_Malloc 分配的 */\n"
+"return res;"
+
 #: ../../c-api/memory.rst:728
 msgid "The same code using the type-oriented function set::"
 msgstr "使用面向类型函数集的相同代码::"
+
+#: ../../c-api/memory.rst:730
+msgid ""
+"PyObject *res;\n"
+"char *buf = PyMem_New(char, BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...Do some I/O operation involving buf... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Del(buf); /* allocated with PyMem_New */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = PyMem_New(char, BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...执行一些涉及 buf 的 I/O 操作... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Del(buf); /* 使用 PyMem_New 分配的 */\n"
+"return res;"
 
 #: ../../c-api/memory.rst:740
 msgid ""
@@ -1225,6 +1291,24 @@ msgstr ""
 "请注意在以上两个示例中，缓冲区总是通过归属于相同集的函数来操纵的。 事实上，对于一个给定的内存块必须使用相同的内存 API "
 "族，以便使得混合不同分配器的风险减至最低。 以下代码序列包含两处错误，其中一个被标记为 *fatal* 因为它混合了两种在不同堆上操作的不同分配器。 "
 "::"
+
+#: ../../c-api/memory.rst:747
+msgid ""
+"char *buf1 = PyMem_New(char, BUFSIZ);\n"
+"char *buf2 = (char *) malloc(BUFSIZ);\n"
+"char *buf3 = (char *) PyMem_Malloc(BUFSIZ);\n"
+"...\n"
+"PyMem_Del(buf3);  /* Wrong -- should be PyMem_Free() */\n"
+"free(buf2);       /* Right -- allocated via malloc() */\n"
+"free(buf1);       /* Fatal -- should be PyMem_Del()  */"
+msgstr ""
+"char *buf1 = PyMem_New(char, BUFSIZ);\n"
+"char *buf2 = (char *) malloc(BUFSIZ);\n"
+"char *buf3 = (char *) PyMem_Malloc(BUFSIZ);\n"
+"...\n"
+"PyMem_Del(buf3);  /* 错误 -- 应为 PyMem_Free() */\n"
+"free(buf2);       /* 正确 -- 通过 malloc() 分配的 */\n"
+"free(buf1);       /* 致命 -- 应为 PyMem_Del()  */"
 
 #: ../../c-api/memory.rst:755
 msgid ""

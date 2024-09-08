@@ -9,7 +9,7 @@
 # Yifan Sun, 2022
 # 高乐喆 <gaolezhe@outlook.com>, 2023
 # Shan Su, 2023
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # WH-2099 <wh2099@outlook.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -554,11 +554,11 @@ msgstr "这个模块可以在不激活 GIL 的情况下安全运行。"
 msgid ""
 "This slot is ignored by Python builds not configured with "
 ":option:`--disable-gil`.  Otherwise, it determines whether or not importing "
-"this module will cause the GIL to be automatically enabled. See :ref:`free-"
-"threaded-cpython` for more detail."
+"this module will cause the GIL to be automatically enabled. See "
+":ref:`whatsnew313-free-threaded-cpython` for more detail."
 msgstr ""
-"这个槽位会被未配置 :option:`--disable-gil` 的 Python 编译版本所忽略。 在其他情况下，它将决定导入此模块是否会导致 "
-"GIL 被自动启用。 请参阅 :ref:`free-threaded-cpython` 了解详情。"
+"这个槽位会被未配置 :option:`--disable-gil` 的 Python 构建版所忽略。 在其他情况下，它将决定导入此模块是否会导致 GIL"
+" 被自动启用。 请参阅 :ref:`whatsnew313-free-threaded-cpython` 了解详情。"
 
 #: ../../c-api/module.rst:438
 msgid ""
@@ -679,11 +679,57 @@ msgstr "如果 *value* 为 ``NULL`` 则返回 ``-1``。 在此情况下调用它
 msgid "Example usage::"
 msgstr "用法示例："
 
+#: ../../c-api/module.rst:527
+msgid ""
+"static int\n"
+"add_spam(PyObject *module, int value)\n"
+"{\n"
+"    PyObject *obj = PyLong_FromLong(value);\n"
+"    if (obj == NULL) {\n"
+"        return -1;\n"
+"    }\n"
+"    int res = PyModule_AddObjectRef(module, \"spam\", obj);\n"
+"    Py_DECREF(obj);\n"
+"    return res;\n"
+" }"
+msgstr ""
+"static int\n"
+"add_spam(PyObject *module, int value)\n"
+"{\n"
+"    PyObject *obj = PyLong_FromLong(value);\n"
+"    if (obj == NULL) {\n"
+"        return -1;\n"
+"    }\n"
+"    int res = PyModule_AddObjectRef(module, \"spam\", obj);\n"
+"    Py_DECREF(obj);\n"
+"    return res;\n"
+" }"
+
 #: ../../c-api/module.rst:539
 msgid ""
 "The example can also be written without checking explicitly if *obj* is "
 "``NULL``::"
 msgstr "这个例子也可以写成不显式地检查 *obj* 是否为 ``NULL``::"
+
+#: ../../c-api/module.rst:542
+msgid ""
+"static int\n"
+"add_spam(PyObject *module, int value)\n"
+"{\n"
+"    PyObject *obj = PyLong_FromLong(value);\n"
+"    int res = PyModule_AddObjectRef(module, \"spam\", obj);\n"
+"    Py_XDECREF(obj);\n"
+"    return res;\n"
+" }"
+msgstr ""
+"static int\n"
+"add_spam(PyObject *module, int value)\n"
+"{\n"
+"    PyObject *obj = PyLong_FromLong(value);\n"
+"    int res = PyModule_AddObjectRef(module, \"spam\", obj);\n"
+"    Py_XDECREF(obj);\n"
+"    return res;\n"
+" }"
 
 #: ../../c-api/module.rst:551
 msgid ""
@@ -716,6 +762,16 @@ msgstr ""
 "类似于 :c:func:`PyModule_AddObjectRef`，但会“偷取”一个指向 *value* 的引用。 "
 "它在被调用时可附带一个返回新引用的函数的结果而无需检查其结果或是将其保存到一个变量。"
 
+#: ../../c-api/module.rst:574
+msgid ""
+"if (PyModule_Add(module, \"spam\", PyBytes_FromString(value)) < 0) {\n"
+"    goto error;\n"
+"}"
+msgstr ""
+"if (PyModule_Add(module, \"spam\", PyBytes_FromString(value)) < 0) {\n"
+"    goto error;\n"
+"}"
+
 #: ../../c-api/module.rst:583
 msgid ""
 "Similar to :c:func:`PyModule_AddObjectRef`, but steals a reference to "
@@ -743,6 +799,30 @@ msgid ""
 "This means that its return value must be checked, and calling code must "
 ":c:func:`Py_XDECREF` *value* manually on error."
 msgstr "这意味着必须检查它的返回值，调用方代码必须在发生错误时手动为 *value* 执行 :c:func:`Py_XDECREF`。"
+
+#: ../../c-api/module.rst:601
+msgid ""
+"PyObject *obj = PyBytes_FromString(value);\n"
+"if (PyModule_AddObject(module, \"spam\", obj) < 0) {\n"
+"    // If 'obj' is not NULL and PyModule_AddObject() failed,\n"
+"    // 'obj' strong reference must be deleted with Py_XDECREF().\n"
+"    // If 'obj' is NULL, Py_XDECREF() does nothing.\n"
+"    Py_XDECREF(obj);\n"
+"    goto error;\n"
+"}\n"
+"// PyModule_AddObject() stole a reference to obj:\n"
+"// Py_XDECREF(obj) is not needed here."
+msgstr ""
+"PyObject *obj = PyBytes_FromString(value);\n"
+"if (PyModule_AddObject(module, \"spam\", obj) < 0) {\n"
+"    // 如果 'obj' 不为 NULL 且 PyModule_AddObject() 执行失败，\n"
+"    // 则 'obj' 强引用必须使 Py_XDECREF() 来删除。\n"
+"    // 如果 'obj' 为 NULL，则 Py_XDECREF() 不做任何操作。\n"
+"    Py_XDECREF(obj);\n"
+"    goto error;\n"
+"}\n"
+"// PyModule_AddObject() 会偷取一个对 obj 的引用：\n"
+"// 这里不需要 Py_XDECREF(obj)。"
 
 #: ../../c-api/module.rst:614
 msgid ":c:func:`PyModule_AddObject` is :term:`soft deprecated`."
