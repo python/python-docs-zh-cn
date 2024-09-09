@@ -11,7 +11,7 @@
 # meowmeowcat <meowmeowcat1211@gmail.com>, 2021
 # CCXXXI <ccxxxi@qq.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2021
-# Bryan不可思议, 2023
+# ProgramRipper, 2023
 # sunsol s <sunsolzn@gmail.com>, 2023
 # LeeWendao <LeeWendao@outlook.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 14:16+0000\n"
+"POT-Creation-Date: 2024-09-06 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 01:04+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -72,11 +72,77 @@ msgstr "为一个包写指导性的文档，用输入输出的例子来说明。
 msgid "Here's a complete but small example module::"
 msgstr "下面是一个小却完整的示例模块::"
 
+#: ../../library/doctest.rst:33
+msgid ""
+"\"\"\"\n"
+"This is the \"example\" module.\n"
+"\n"
+"The example module supplies one function, factorial().  For example,\n"
+"\n"
+">>> factorial(5)\n"
+"120\n"
+"\"\"\"\n"
+"\n"
+"def factorial(n):\n"
+"    \"\"\"Return the factorial of n, an exact integer >= 0.\n"
+"\n"
+"    >>> [factorial(n) for n in range(6)]\n"
+"    [1, 1, 2, 6, 24, 120]\n"
+"    >>> factorial(30)\n"
+"    265252859812191058636308480000000\n"
+"    >>> factorial(-1)\n"
+"    Traceback (most recent call last):\n"
+"        ...\n"
+"    ValueError: n must be >= 0\n"
+"\n"
+"    Factorials of floats are OK, but the float must be an exact integer:\n"
+"    >>> factorial(30.1)\n"
+"    Traceback (most recent call last):\n"
+"        ...\n"
+"    ValueError: n must be exact integer\n"
+"    >>> factorial(30.0)\n"
+"    265252859812191058636308480000000\n"
+"\n"
+"    It must also not be ridiculously large:\n"
+"    >>> factorial(1e100)\n"
+"    Traceback (most recent call last):\n"
+"        ...\n"
+"    OverflowError: n too large\n"
+"    \"\"\"\n"
+"\n"
+"    import math\n"
+"    if not n >= 0:\n"
+"        raise ValueError(\"n must be >= 0\")\n"
+"    if math.floor(n) != n:\n"
+"        raise ValueError(\"n must be exact integer\")\n"
+"    if n+1 == n:  # catch a value like 1e300\n"
+"        raise OverflowError(\"n too large\")\n"
+"    result = 1\n"
+"    factor = 2\n"
+"    while factor <= n:\n"
+"        result *= factor\n"
+"        factor += 1\n"
+"    return result\n"
+"\n"
+"\n"
+"if __name__ == \"__main__\":\n"
+"    import doctest\n"
+"    doctest.testmod()"
+msgstr ""
+
 #: ../../library/doctest.rst:88
 msgid ""
 "If you run :file:`example.py` directly from the command line, :mod:`doctest`"
 " works its magic:"
 msgstr "如果你直接在命令行里运行 :file:`example.py` ， :mod:`doctest` 将发挥它的作用。"
+
+#: ../../library/doctest.rst:91
+msgid ""
+"$ python example.py\n"
+"$"
+msgstr ""
+"$ python example.py\n"
+"$"
 
 #: ../../library/doctest.rst:96
 msgid ""
@@ -87,9 +153,67 @@ msgstr ""
 "没有输出！ 这很正常，这意味着所有的例子都成功了。 把 ``-v`` 传给脚本，:mod:`doctest` "
 "会打印出它所尝试的详细日志，并在最后打印出一个总结。"
 
+#: ../../library/doctest.rst:100
+msgid ""
+"$ python example.py -v\n"
+"Trying:\n"
+"    factorial(5)\n"
+"Expecting:\n"
+"    120\n"
+"ok\n"
+"Trying:\n"
+"    [factorial(n) for n in range(6)]\n"
+"Expecting:\n"
+"    [1, 1, 2, 6, 24, 120]\n"
+"ok"
+msgstr ""
+"$ python example.py -v\n"
+"Trying:\n"
+"    factorial(5)\n"
+"Expecting:\n"
+"    120\n"
+"ok\n"
+"Trying:\n"
+"    [factorial(n) for n in range(6)]\n"
+"Expecting:\n"
+"    [1, 1, 2, 6, 24, 120]\n"
+"ok"
+
 #: ../../library/doctest.rst:114
 msgid "And so on, eventually ending with:"
 msgstr "以此类推，最终以："
+
+#: ../../library/doctest.rst:116
+msgid ""
+"Trying:\n"
+"    factorial(1e100)\n"
+"Expecting:\n"
+"    Traceback (most recent call last):\n"
+"        ...\n"
+"    OverflowError: n too large\n"
+"ok\n"
+"2 items passed all tests:\n"
+"   1 test in __main__\n"
+"   6 tests in __main__.factorial\n"
+"7 tests in 2 items.\n"
+"7 passed.\n"
+"Test passed.\n"
+"$"
+msgstr ""
+"Trying:\n"
+"    factorial(1e100)\n"
+"Expecting:\n"
+"    Traceback (most recent call last):\n"
+"        ...\n"
+"    OverflowError: n too large\n"
+"ok\n"
+"2 items passed all tests:\n"
+"   1 test in __main__\n"
+"   6 tests in __main__.factorial\n"
+"7 tests in 2 items.\n"
+"7 passed.\n"
+"Test passed.\n"
+"$"
 
 #: ../../library/doctest.rst:133
 msgid ""
@@ -113,6 +237,16 @@ msgid ""
 "continue to do it) is to end each module :mod:`!M` with::"
 msgstr "开始使用 doctest 的最简单方式（但不一定是你今后沿用的方式）是这样结束每个模块 :mod:`!M`::"
 
+#: ../../library/doctest.rst:148
+msgid ""
+"if __name__ == \"__main__\":\n"
+"    import doctest\n"
+"    doctest.testmod()"
+msgstr ""
+"if __name__ == \"__main__\":\n"
+"    import doctest\n"
+"    doctest.testmod()"
+
 #: ../../library/doctest.rst:152
 msgid ":mod:`!doctest` then examines docstrings in module :mod:`!M`."
 msgstr ":mod:`!doctest` 会随后检查模块 :mod:`!M` 中的文档字符串。"
@@ -122,6 +256,10 @@ msgid ""
 "Running the module as a script causes the examples in the docstrings to get "
 "executed and verified::"
 msgstr "以脚本形式运行该模块会使文档中的例子得到执行和验证::"
+
+#: ../../library/doctest.rst:157
+msgid "python M.py"
+msgstr "python M.py"
 
 #: ../../library/doctest.rst:159
 msgid ""
@@ -136,6 +274,10 @@ msgstr ""
 #: ../../library/doctest.rst:164
 msgid "Run it with the ``-v`` switch instead::"
 msgstr "用 ``-v`` 来运行它来切换，而不是::"
+
+#: ../../library/doctest.rst:166
+msgid "python M.py -v"
+msgstr ""
 
 #: ../../library/doctest.rst:168
 msgid ""
@@ -163,6 +305,10 @@ msgstr ""
 "还有一个命令行快捷方式用于运行 :func:`testmod`。 "
 "你可以指示Python解释器直接从标准库中运行doctest模块，并在命令行中传递模块名称::"
 
+#: ../../library/doctest.rst:180
+msgid "python -m doctest -v example.py"
+msgstr ""
+
 #: ../../library/doctest.rst:182
 msgid ""
 "This will import :file:`example.py` as a standalone module and run "
@@ -188,6 +334,12 @@ msgid ""
 "text file.  This can be done with the :func:`testfile` function::"
 msgstr "doctest 的另一个简单应用是测试文本文件中的交互式例子。 这可以用 :func:`testfile` 函数来完成::"
 
+#: ../../library/doctest.rst:197
+msgid ""
+"import doctest\n"
+"doctest.testfile(\"example.txt\")"
+msgstr ""
+
 #: ../../library/doctest.rst:200
 msgid ""
 "That short script executes and verifies any interactive Python examples "
@@ -198,11 +350,41 @@ msgstr ""
 "这个简短的脚本执行并验证文件 :file:`example.txt` 中包含的任何交互式 Python "
 "示例。该文件的内容被当作一个巨大的文档串来处理；该文件不需要包含一个Python程序！例如，也许 :file:`example.txt` 包含以下内容:"
 
+#: ../../library/doctest.rst:205
+msgid ""
+"The ``example`` module\n"
+"======================\n"
+"\n"
+"Using ``factorial``\n"
+"-------------------\n"
+"\n"
+"This is an example text file in reStructuredText format.  First import\n"
+"``factorial`` from the ``example`` module:\n"
+"\n"
+"    >>> from example import factorial\n"
+"\n"
+"Now use it:\n"
+"\n"
+"    >>> factorial(6)\n"
+"    120"
+msgstr ""
+
 #: ../../library/doctest.rst:223
 msgid ""
 "Running ``doctest.testfile(\"example.txt\")`` then finds the error in this "
 "documentation::"
 msgstr "运行 ``doctest.testfile(\"example.txt\")``，然后发现这个文档中的错误::"
+
+#: ../../library/doctest.rst:226
+msgid ""
+"File \"./example.txt\", line 14, in example.txt\n"
+"Failed example:\n"
+"    factorial(6)\n"
+"Expected:\n"
+"    120\n"
+"Got:\n"
+"    720"
+msgstr ""
 
 #: ../../library/doctest.rst:234
 msgid ""
@@ -240,6 +422,10 @@ msgid ""
 msgstr ""
 "还有一个命令行快捷方式用于运行 :func:`testfile`。 "
 "你可以指示Python解释器直接从标准库中运行doctest模块，并在命令行中传递文件名::"
+
+#: ../../library/doctest.rst:251
+msgid "python -m doctest -v example.txt"
+msgstr ""
 
 #: ../../library/doctest.rst:253
 msgid ""
@@ -303,6 +489,19 @@ msgid ""
 "For example, place this block of code at the top of :file:`example.py`:"
 msgstr "例如，将这段代码放在 :file:`example.py` 的开头:"
 
+#: ../../library/doctest.rst:291
+msgid ""
+"__test__ = {\n"
+"    'numbers': \"\"\"\n"
+">>> factorial(6)\n"
+"720\n"
+"\n"
+">>> [factorial(n) for n in range(6)]\n"
+"[1, 1, 2, 6, 24, 120]\n"
+"\"\"\"\n"
+"}"
+msgstr ""
+
 #: ../../library/doctest.rst:303
 msgid ""
 "The value of ``example.__test__[\"numbers\"]`` will be treated as a "
@@ -332,6 +531,25 @@ msgid ""
 "shell."
 msgstr ""
 "在大多数情况下，对交互式控制台会话的复制和粘贴功能工作得很好，但是 doctest 并不试图对任何特定的 Python shell 进行精确的模拟。"
+
+#: ../../library/doctest.rst:323
+msgid ""
+">>> # comments are ignored\n"
+">>> x = 12\n"
+">>> x\n"
+"12\n"
+">>> if x == 13:\n"
+"...     print(\"yes\")\n"
+"... else:\n"
+"...     print(\"no\")\n"
+"...     print(\"NO\")\n"
+"...     print(\"NO!!!\")\n"
+"...\n"
+"no\n"
+"NO\n"
+"NO!!!\n"
+">>>"
+msgstr ""
 
 #: ../../library/doctest.rst:343
 msgid ""
@@ -389,6 +607,15 @@ msgid ""
 " preserve your backslashes exactly as you type them::"
 msgstr "如果你在交互式会话中通过反斜线续行，或出于任何其他原因使用反斜线，你应该使用原始文件串，它将完全保留你输入的反斜线::"
 
+#: ../../library/doctest.rst:373
+msgid ""
+">>> def f(x):\n"
+"...     r'''Backslashes in a raw docstring: m\\n'''\n"
+"...\n"
+">>> print(f.__doc__)\n"
+"Backslashes in a raw docstring: m\\n"
+msgstr ""
+
 #: ../../library/doctest.rst:379
 msgid ""
 "Otherwise, the backslash will be interpreted as part of the string. For "
@@ -399,9 +626,26 @@ msgstr ""
 "否则，反斜杠将被解释为字符串的一部分。例如，上面的 ``\\n`` 会被解释为一个换行符。 "
 "另外，你可以在doctest版本中把每个反斜杠加倍（而不使用原始字符串）::"
 
+#: ../../library/doctest.rst:383
+msgid ""
+">>> def f(x):\n"
+"...     '''Backslashes in a raw docstring: m\\\\n'''\n"
+"...\n"
+">>> print(f.__doc__)\n"
+"Backslashes in a raw docstring: m\\n"
+msgstr ""
+
 #: ../../library/doctest.rst:389
 msgid "The starting column doesn't matter::"
 msgstr "起始列并不重要::"
+
+#: ../../library/doctest.rst:391
+msgid ""
+">>> assert \"Easy!\"\n"
+"      >>> import math\n"
+"          >>> math.floor(1.9)\n"
+"          1"
+msgstr ""
 
 #: ../../library/doctest.rst:396
 msgid ""
@@ -455,6 +699,14 @@ msgstr ""
 msgid "Simple example::"
 msgstr "简单实例::"
 
+#: ../../library/doctest.rst:430
+msgid ""
+">>> [1, 2, 3].remove(42)\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: list.remove(x): x not in list"
+msgstr ""
+
 #: ../../library/doctest.rst:435
 msgid ""
 "That doctest succeeds if :exc:`ValueError` is raised, with the "
@@ -468,6 +720,12 @@ msgid ""
 "which may be either of the following two lines, indented the same as the "
 "first line of the example::"
 msgstr "异常的预期输出必须以回溯头开始，可以是以下两行中的任何一行，缩进程度与例子中的第一行相同::"
+
+#: ../../library/doctest.rst:442
+msgid ""
+"Traceback (most recent call last):\n"
+"Traceback (innermost last):"
+msgstr ""
 
 #: ../../library/doctest.rst:445
 msgid ""
@@ -484,6 +742,16 @@ msgid ""
 "multi-line detail::"
 msgstr "回溯堆栈的后面是最有用的部分：包含异常类型和细节的一行（几行）。 这通常是回溯的最后一行，但如果异常有多行细节，则可以延伸到多行::"
 
+#: ../../library/doctest.rst:454
+msgid ""
+">>> raise ValueError('multi\\n    line\\ndetail')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"ValueError: multi\n"
+"    line\n"
+"detail"
+msgstr ""
+
 #: ../../library/doctest.rst:461
 msgid ""
 "The last three lines (starting with :exc:`ValueError`) are compared against "
@@ -496,6 +764,16 @@ msgid ""
 "documentation value to the example.  So the last example is probably better "
 "as::"
 msgstr "最佳实践是省略回溯栈，除非它为这个例子增加了重要的文档价值。 因此，最后一个例子可能更好，因为::"
+
+#: ../../library/doctest.rst:467
+msgid ""
+">>> raise ValueError('multi\\n    line\\ndetail')\n"
+"Traceback (most recent call last):\n"
+"    ...\n"
+"ValueError: multi\n"
+"    line\n"
+"detail"
+msgstr ""
 
 #: ../../library/doctest.rst:474
 msgid ""
@@ -563,6 +841,15 @@ msgid ""
 "markers and tildes::"
 msgstr "对于某些异常，Python 会使用 ``^`` 标记和波浪号来显示错误位置::"
 
+#: ../../library/doctest.rst:510
+msgid ""
+">>> 1 + None\n"
+"  File \"<stdin>\", line 1\n"
+"    1 + None\n"
+"    ~~^~~~~~\n"
+"TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'"
+msgstr ""
+
 #: ../../library/doctest.rst:516
 msgid ""
 "Since the lines showing the position of the error come before the exception "
@@ -571,6 +858,15 @@ msgid ""
 " location::"
 msgstr ""
 "由于显示错误位置的行在异常类型和细节之前，它们不被doctest检查。 例如，下面的测试会通过，尽管它把 ``^`` 标记放在了错误的位置::"
+
+#: ../../library/doctest.rst:520
+msgid ""
+">>> 1 + None\n"
+"  File \"<stdin>\", line 1\n"
+"    1 + None\n"
+"    ^~~~~~~~\n"
+"TypeError: unsupported operand type(s) for +: 'int' and 'NoneType'"
+msgstr ""
 
 #: ../../library/doctest.rst:531
 msgid "Option Flags"
@@ -671,6 +967,21 @@ msgstr ""
 "举例来说，一个预期 ``ValueError: 42`` 的用例在实际引发的异常为 ``ValueError: 3*14`` 将会通过，但是如果是引发 "
 ":exc:`TypeError` 则将会失败。 它也将忽略任何包括在异常类前面的完整限定名称，该名称在所使用的不同 Python "
 "版本和代码/库中可能会不同。 因此，以下三种形式对于指定的旗标均有效:"
+
+#: ../../library/doctest.rst:601
+msgid ""
+">>> raise Exception('message')\n"
+"Traceback (most recent call last):\n"
+"Exception: message\n"
+"\n"
+">>> raise Exception('message')\n"
+"Traceback (most recent call last):\n"
+"builtins.Exception: message\n"
+"\n"
+">>> raise Exception('message')\n"
+"Traceback (most recent call last):\n"
+"__main__.Exception: message"
+msgstr ""
 
 #: ../../library/doctest.rst:615
 msgid ""
@@ -786,6 +1097,10 @@ msgstr ""
 ":class:`OutputChecker` 或 :class:`DocTestRunner` 时使用，以创建子类支持的新选项。 "
 ":func:`register_optionflag` 应始终使用以下方式调用::"
 
+#: ../../library/doctest.rst:704
+msgid "MY_FLAG = register_optionflag('MY_FLAG')"
+msgstr ""
+
 #: ../../library/doctest.rst:714
 msgid "Directives"
 msgstr "指令"
@@ -817,6 +1132,13 @@ msgstr ""
 msgid "For example, this test passes:"
 msgstr "例如，这个测试将会通过:"
 
+#: ../../library/doctest.rst:736
+msgid ""
+">>> print(list(range(20)))  # doctest: +NORMALIZE_WHITESPACE\n"
+"[0,   1,  2,  3,  4,  5,  6,  7,  8,  9,\n"
+"10,  11, 12, 13, 14, 15, 16, 17, 18, 19]"
+msgstr ""
+
 #: ../../library/doctest.rst:743
 msgid ""
 "Without the directive it would fail, both because the actual output doesn't "
@@ -826,11 +1148,23 @@ msgid ""
 msgstr ""
 "如果没有这个指令则它将失败，因为实际的输出在只有个位数的列表元素前没有两个空格，也因为实际的输出是单行的。 这个测试也会通过，并且也需要一个指令来完成:"
 
+#: ../../library/doctest.rst:748
+msgid ""
+">>> print(list(range(20)))  # doctest: +ELLIPSIS\n"
+"[0, 1, ..., 18, 19]"
+msgstr ""
+
 #: ../../library/doctest.rst:754
 msgid ""
 "Multiple directives can be used on a single physical line, separated by "
 "commas:"
 msgstr "在单个物理行中可以使用多条指令，以逗号分隔:"
+
+#: ../../library/doctest.rst:757
+msgid ""
+">>> print(list(range(20)))  # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE\n"
+"[0,    1, ...,   18,    19]"
+msgstr ""
 
 #: ../../library/doctest.rst:763
 msgid ""
@@ -838,12 +1172,26 @@ msgid ""
 "combined:"
 msgstr "如果在单个用例中使用了多条指令注释，则它们会被合并:"
 
+#: ../../library/doctest.rst:766
+msgid ""
+">>> print(list(range(20)))  # doctest: +ELLIPSIS\n"
+"...                         # doctest: +NORMALIZE_WHITESPACE\n"
+"[0,    1, ...,   18,    19]"
+msgstr ""
+
 #: ../../library/doctest.rst:773
 msgid ""
 "As the previous example shows, you can add ``...`` lines to your example "
 "containing only directives.  This can be useful when an example is too long "
 "for a directive to comfortably fit on the same line:"
 msgstr "正如前面的例子所示，你可以在你的用例中添加只包含指令的行 ``...``。 当一个用例太长以至于不能方便地放到同一行时这将会很有用:"
+
+#: ../../library/doctest.rst:777
+msgid ""
+">>> print(list(range(5)) + list(range(10, 20)) + list(range(30, 40)))\n"
+"... # doctest: +ELLIPSIS\n"
+"[0, ..., 4, 10, ..., 19, 30, ..., 39]"
+msgstr ""
 
 #: ../../library/doctest.rst:784
 msgid ""
@@ -873,13 +1221,32 @@ msgstr ""
 ":mod:`doctest` 是严格地要求在预期输出中完全匹配。 如果哪怕只有一个字符不匹配，测试就会失败。 这可能会让你吃惊几次，在你确切地了解到 "
 "Python 对输出的保证和不保证之前。 例如，当打印一个集合时，Python 不保证元素以任何特定的顺序被打印出来，所以像::"
 
+#: ../../library/doctest.rst:802
+msgid ""
+">>> foo()\n"
+"{\"spam\", \"eggs\"}"
+msgstr ""
+
 #: ../../library/doctest.rst:805
 msgid "is vulnerable!  One workaround is to do ::"
 msgstr "是不可靠的！一个变通方法是用::"
 
+#: ../../library/doctest.rst:807
+msgid ""
+">>> foo() == {\"spam\", \"eggs\"}\n"
+"True"
+msgstr ""
+
 #: ../../library/doctest.rst:810
 msgid "instead.  Another is to do ::"
 msgstr "来取代。另一个是使用"
+
+#: ../../library/doctest.rst:812
+msgid ""
+">>> d = sorted(foo())\n"
+">>> d\n"
+"['eggs', 'spam']"
+msgstr ""
 
 #: ../../library/doctest.rst:816
 msgid "There are others, but you get the idea."
@@ -889,10 +1256,25 @@ msgstr "还有其他的问题，但你会明白的。"
 msgid "Another bad idea is to print things that embed an object address, like"
 msgstr "另一个不好的做法是打印嵌入了对象地址的值，例如"
 
+#: ../../library/doctest.rst:820
+msgid ""
+">>> id(1.0)  # certain to fail some of the time  \n"
+"7948648\n"
+">>> class C: pass\n"
+">>> C()  # the default repr() for instances embeds an address   \n"
+"<C object at 0x00AC18F0>"
+msgstr ""
+
 #: ../../library/doctest.rst:828
 msgid ""
 "The :const:`ELLIPSIS` directive gives a nice approach for the last example:"
 msgstr ":const:`ELLIPSIS` 指令为之前的例子提供了一个不错的方案:"
+
+#: ../../library/doctest.rst:830
+msgid ""
+">>> C()  # doctest: +ELLIPSIS\n"
+"<C object at 0x...>"
+msgstr ""
 
 #: ../../library/doctest.rst:836
 msgid ""
@@ -901,11 +1283,27 @@ msgid ""
 "formatting, and C libraries vary widely in quality here. ::"
 msgstr "浮点数在不同的平台上也会有小的输出变化，因为Python在浮点数的格式化上依赖于平台的C库，而C库在这个问题上的质量差异很大。::"
 
+#: ../../library/doctest.rst:840
+msgid ""
+">>> 1./7  # risky\n"
+"0.14285714285714285\n"
+">>> print(1./7) # safer\n"
+"0.142857142857\n"
+">>> print(round(1./7, 6)) # much safer\n"
+"0.142857"
+msgstr ""
+
 #: ../../library/doctest.rst:847
 msgid ""
 "Numbers of the form ``I/2.**J`` are safe across all platforms, and I often "
 "contrive doctest examples to produce numbers of that form::"
 msgstr "形式 ``I/2.**J`` 的数字在所有的平台上都是安全的，我经常设计一些测试的用例来产生该形式的数::"
+
+#: ../../library/doctest.rst:850
+msgid ""
+">>> 3./4  # utterly safe\n"
+"0.75"
+msgstr ""
 
 #: ../../library/doctest.rst:853
 msgid ""
@@ -1188,6 +1586,17 @@ msgstr ""
 "随着你带有文档测试的模块不断增加，你会希望以系统性地方式运行所有的文档测试。 :mod:`doctest` "
 "提供了两个函数可用来根据模块和包含文档测试的文本文件创建 :mod:`unittest` 测试套件。 要与 :mod:`unittest` "
 "测试发现功能实现集成，请在你的测试模块中包括一个 :ref:`load_tests <load_tests-protocol>` 函数::"
+
+#: ../../library/doctest.rst:1003
+msgid ""
+"import unittest\n"
+"import doctest\n"
+"import my_module_with_doctests\n"
+"\n"
+"def load_tests(loader, tests, ignore):\n"
+"    tests.addTests(doctest.DocTestSuite(my_module_with_doctests))\n"
+"    return tests"
+msgstr ""
 
 #: ../../library/doctest.rst:1011
 msgid ""
@@ -1536,6 +1945,18 @@ msgid ""
 "The relationships among these processing classes are summarized in the "
 "following diagram::"
 msgstr "这些处理类之间的关系总结在下图中::"
+
+#: ../../library/doctest.rst:1207
+msgid ""
+"                            list of:\n"
+"+------+                   +---------+\n"
+"|module| --DocTestFinder-> | DocTest | --DocTestRunner-> results\n"
+"+------+    |        ^     +---------+     |       ^    (printed)\n"
+"            |        |     | Example |     |       |\n"
+"            v        |     |   ...   |     v       |\n"
+"           DocTestParser   | Example |   OutputChecker\n"
+"                           +---------+"
+msgstr ""
 
 #: ../../library/doctest.rst:1220
 msgid "DocTest Objects"
@@ -2152,9 +2573,55 @@ msgstr ""
 "你可以在 doctest 的用例中加入对 :func:`pdb.set_trace` 的调用，当这一行被执行时，你会进入 Python 调试器。 "
 "然后你可以检查变量的当前值，等等。 例如，假设 :file:`a.py` 只包含这个模块 docstring ::"
 
+#: ../../library/doctest.rst:1657
+msgid ""
+"\"\"\"\n"
+">>> def f(x):\n"
+"...     g(x*2)\n"
+">>> def g(x):\n"
+"...     print(x+3)\n"
+"...     import pdb; pdb.set_trace()\n"
+">>> f(3)\n"
+"9\n"
+"\"\"\""
+msgstr ""
+
 #: ../../library/doctest.rst:1667
 msgid "Then an interactive Python session may look like this::"
 msgstr "那么一个交互式Python会话可能是这样的::"
+
+#: ../../library/doctest.rst:1669
+msgid ""
+">>> import a, doctest\n"
+">>> doctest.testmod(a)\n"
+"--Return--\n"
+"> <doctest a[1]>(3)g()->None\n"
+"-> import pdb; pdb.set_trace()\n"
+"(Pdb) list\n"
+"  1     def g(x):\n"
+"  2         print(x+3)\n"
+"  3  ->     import pdb; pdb.set_trace()\n"
+"[EOF]\n"
+"(Pdb) p x\n"
+"6\n"
+"(Pdb) step\n"
+"--Return--\n"
+"> <doctest a[0]>(2)f()->None\n"
+"-> g(x*2)\n"
+"(Pdb) list\n"
+"  1     def f(x):\n"
+"  2  ->     g(x*2)\n"
+"[EOF]\n"
+"(Pdb) p x\n"
+"3\n"
+"(Pdb) step\n"
+"--Return--\n"
+"> <doctest a[2]>(1)?()->None\n"
+"-> f(3)\n"
+"(Pdb) cont\n"
+"(0, 3)\n"
+">>>"
+msgstr ""
 
 #: ../../library/doctest.rst:1700
 msgid ""
@@ -2176,9 +2643,33 @@ msgstr ""
 "参数 *s* 是一个包含测试用例的字符串。 该字符串被转换为 Python 脚本，其中 *s* 中的 doctest "
 "用例被转换为常规代码，其他的都被转换为 Python 注释。 生成的脚本将以字符串的形式返回。例如， ::"
 
+#: ../../library/doctest.rst:1713
+msgid ""
+"import doctest\n"
+"print(doctest.script_from_examples(r\"\"\"\n"
+"    Set x and y to 1 and 2.\n"
+"    >>> x, y = 1, 2\n"
+"\n"
+"    Print their sum:\n"
+"    >>> print(x+y)\n"
+"    3\n"
+"\"\"\"))"
+msgstr ""
+
 #: ../../library/doctest.rst:1723
 msgid "displays::"
 msgstr "显示::"
+
+#: ../../library/doctest.rst:1725
+msgid ""
+"# Set x and y to 1 and 2.\n"
+"x, y = 1, 2\n"
+"#\n"
+"# Print their sum:\n"
+"print(x+y)\n"
+"# Expected:\n"
+"## 3"
+msgstr ""
 
 #: ../../library/doctest.rst:1733
 msgid ""
@@ -2204,6 +2695,12 @@ msgstr ""
 "是文档测试需要的对象（在模块中）的名称。 结果是一个字符串，包含该对象的文档字符串转换成的 Python 脚本，如上面 "
 ":func:`script_from_examples` 所描述的。 举例来说，如果模块 :file:`a.py` 包含一个最高层级的函数 "
 ":func:`!f`，那么 ::"
+
+#: ../../library/doctest.rst:1749
+msgid ""
+"import a, doctest\n"
+"print(doctest.testsource(a, \"a.f\"))"
+msgstr ""
 
 #: ../../library/doctest.rst:1752
 msgid ""
@@ -2467,6 +2964,24 @@ msgid ""
 msgstr ""
 "当你把你的测试放在一个模块中时，这个模块本身就可以成为测试运行器。 当一个测试失败时，你可以安排你的测试运行器只重新运行失败的测试，同时调试问题。 "
 "下面是这样一个测试运行器的最小例子::"
+
+#: ../../library/doctest.rst:1925
+msgid ""
+"if __name__ == '__main__':\n"
+"    import doctest\n"
+"    flags = doctest.REPORT_NDIFF|doctest.FAIL_FAST\n"
+"    if len(sys.argv) > 1:\n"
+"        name = sys.argv[1]\n"
+"        if name in globals():\n"
+"            obj = globals()[name]\n"
+"        else:\n"
+"            obj = __test__[name]\n"
+"        doctest.run_docstring_examples(obj, globals(), name=name,\n"
+"                                       optionflags=flags)\n"
+"    else:\n"
+"        fail, total = doctest.testmod(optionflags=flags)\n"
+"        print(f\"{fail} failures out of {total} tests\")"
+msgstr ""
 
 #: ../../library/doctest.rst:1942
 msgid "Footnotes"
