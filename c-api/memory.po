@@ -4,21 +4,16 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Alpha Du <alphanow@gmail.com>, 2021
-# nick <2330458484@qq.com>, 2021
-# ppcfish <ppcfish@gmail.com>, 2021
-# Sean Chao <seanchao0804@gmail.com>, 2021
-# Bryan不可思议, 2023
-# Freesand Leo <yuqinju@163.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 14:13+0000\n"
-"PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"POT-Creation-Date: 2024-09-13 14:48+0000\n"
+"PO-Revision-Date: 2024-05-11 00:32+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,6 +85,28 @@ msgstr ""
 ":c:func:`calloc`, :c:func:`realloc` 和 :c:func:`free`。这将导致 C 分配器和 Python "
 "内存管理器之间的混用，引发严重后果，这是由于它们实现了不同的算法，并在不同的堆上操作。但是，我们可以安全地使用 C "
 "库分配器为单独的目的分配和释放内存块，如下例所示："
+
+#: ../../c-api/memory.rst:58
+msgid ""
+"PyObject *res;\n"
+"char *buf = (char *) malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"...Do some I/O operation involving buf...\n"
+"res = PyBytes_FromString(buf);\n"
+"free(buf); /* malloc'ed */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = (char *) malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"...执行一些涉及 buf 的 I/O 操作...\n"
+"res = PyBytes_FromString(buf);\n"
+"free(buf); /* 已分配的 */\n"
+"return res;"
 
 #: ../../c-api/memory.rst:68
 msgid ""
@@ -930,7 +947,7 @@ msgstr ""
 "内存的布局像是这样，其中 p 代表由类似 malloc 或类似 realloc 的函数所返回的地址 (``p[i:j]`` 表示从 ``*(p+i)``"
 " 左侧开始到 ``*(p+j)`` 左侧止的字节数据切片；请注意对负索引号的处理与 Python 切片是不同的）:"
 
-#: ../../c-api/memory.rst:563
+#: ../../c-api/memory.rst:562
 msgid "``p[-2*S:-S]``"
 msgstr "``p[-2*S:-S]``"
 
@@ -940,7 +957,7 @@ msgid ""
 "to read in a memory dump)."
 msgstr "最初所要求的字节数。 这是一个 size_t，为大端序（易于在内存转储中读取）。"
 
-#: ../../c-api/memory.rst:570
+#: ../../c-api/memory.rst:565
 msgid "``p[-S]``"
 msgstr "``p[-S]``"
 
@@ -960,7 +977,7 @@ msgstr "``'m'`` 表示 :c:macro:`PYMEM_DOMAIN_MEM`。"
 msgid "``'o'`` for :c:macro:`PYMEM_DOMAIN_OBJ`."
 msgstr "``'o'`` 表示 :c:macro:`PYMEM_DOMAIN_OBJ`。"
 
-#: ../../c-api/memory.rst:573
+#: ../../c-api/memory.rst:572
 msgid "``p[-S+1:0]``"
 msgstr "``p[-S+1:0]``"
 
@@ -968,7 +985,7 @@ msgstr "``p[-S+1:0]``"
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch under- writes and reads."
 msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获下层的写入和读取。"
 
-#: ../../c-api/memory.rst:582
+#: ../../c-api/memory.rst:575
 msgid "``p[0:N]``"
 msgstr "``p[0:N]``"
 
@@ -987,7 +1004,7 @@ msgstr ""
 "PYMEM_DEADBYTE 来重写，以捕获对已释放内存的引用。 当调用 realloc 之类的函数来请求更小的内存块时，多余的旧字节也会用 "
 "PYMEM_DEADBYTE 来填充。"
 
-#: ../../c-api/memory.rst:585
+#: ../../c-api/memory.rst:584
 msgid "``p[N:N+S]``"
 msgstr "``p[N:N+S]``"
 
@@ -995,7 +1012,7 @@ msgstr "``p[N:N+S]``"
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch over- writes and reads."
 msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获超限的写入和读取。"
 
-#: ../../c-api/memory.rst:596
+#: ../../c-api/memory.rst:587
 msgid "``p[N+S:N+2*S]``"
 msgstr "``p[N+S:N+2*S]``"
 
@@ -1187,9 +1204,53 @@ msgid ""
 msgstr ""
 "以下是来自 :ref:`memoryoverview` 小节的示例，经过重写以使 I/O 缓冲区是通过使用第一个函数集从 Python 堆中分配的::"
 
+#: ../../c-api/memory.rst:706
+msgid ""
+"PyObject *res;\n"
+"char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...Do some I/O operation involving buf... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Free(buf); /* allocated with PyMem_Malloc */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...执行一些涉及 buf 的 I/O 操作... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Free(buf); /* 使用 PyMem_Malloc 分配的 */\n"
+"return res;"
+
 #: ../../c-api/memory.rst:716
 msgid "The same code using the type-oriented function set::"
 msgstr "使用面向类型函数集的相同代码::"
+
+#: ../../c-api/memory.rst:718
+msgid ""
+"PyObject *res;\n"
+"char *buf = PyMem_New(char, BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...Do some I/O operation involving buf... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Del(buf); /* allocated with PyMem_New */\n"
+"return res;"
+msgstr ""
+"PyObject *res;\n"
+"char *buf = PyMem_New(char, BUFSIZ); /* for I/O */\n"
+"\n"
+"if (buf == NULL)\n"
+"    return PyErr_NoMemory();\n"
+"/* ...执行一些涉及 buf 的 I/O 操作... */\n"
+"res = PyBytes_FromString(buf);\n"
+"PyMem_Del(buf); /* 使用 PyMem_New 分配的 */\n"
+"return res;"
 
 #: ../../c-api/memory.rst:728
 msgid ""
@@ -1203,6 +1264,24 @@ msgstr ""
 "请注意在以上两个示例中，缓冲区总是通过归属于相同集的函数来操纵的。 事实上，对于一个给定的内存块必须使用相同的内存 API "
 "族，以便使得混合不同分配器的风险减至最低。 以下代码序列包含两处错误，其中一个被标记为 *fatal* 因为它混合了两种在不同堆上操作的不同分配器。 "
 "::"
+
+#: ../../c-api/memory.rst:735
+msgid ""
+"char *buf1 = PyMem_New(char, BUFSIZ);\n"
+"char *buf2 = (char *) malloc(BUFSIZ);\n"
+"char *buf3 = (char *) PyMem_Malloc(BUFSIZ);\n"
+"...\n"
+"PyMem_Del(buf3);  /* Wrong -- should be PyMem_Free() */\n"
+"free(buf2);       /* Right -- allocated via malloc() */\n"
+"free(buf1);       /* Fatal -- should be PyMem_Del()  */"
+msgstr ""
+"char *buf1 = PyMem_New(char, BUFSIZ);\n"
+"char *buf2 = (char *) malloc(BUFSIZ);\n"
+"char *buf3 = (char *) PyMem_Malloc(BUFSIZ);\n"
+"...\n"
+"PyMem_Del(buf3);  /* 错误 -- 应为 PyMem_Free() */\n"
+"free(buf2);       /* 正确 -- 通过 malloc() 分配的 */\n"
+"free(buf1);       /* 致命 -- 应为 PyMem_Del()  */"
 
 #: ../../c-api/memory.rst:743
 msgid ""
