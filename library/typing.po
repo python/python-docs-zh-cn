@@ -423,6 +423,9 @@ msgid ""
 "``Callable[[int], str]`` signifies a function that takes a single parameter "
 "of type :class:`int` and returns a :class:`str`."
 msgstr ""
+"函数 -- 或是其他 :term:`callable` 对象 -- 可以使用 :class:`collections.abc.Callable` "
+"或已被弃用的 :data:`typing.Callable` 来标注。 ``Callable[[int], str]`` 表示一个接受 "
+":class:`int` 类型的单个形参并返回一个 :class:`str` 的函数。"
 
 #: ../../library/typing.rst:215 ../../library/typing.rst:3109
 #: ../../library/typing.rst:3287
@@ -786,6 +789,9 @@ msgid ""
 "themselves -- specifically, it will accept the *class object* of ``C``. For "
 "example::"
 msgstr ""
+"带有 ``C`` 标注的变量可接受 ``C`` 类型的值。 反之，带有 ``type[C]`` (或已被弃用的 "
+":class:`typing.Type[C] <Type>`) 标注的变量则可接受本身是类的值 -- 准确地说，它将接受 ``C`` 的 *类对象*。 "
+"例如::"
 
 #: ../../library/typing.rst:409
 msgid ""
@@ -868,7 +874,7 @@ msgstr ""
 
 #: ../../library/typing.rst:448
 msgid "Annotating generators and coroutines"
-msgstr ""
+msgstr "标注生成器和协程"
 
 #: ../../library/typing.rst:450
 msgid ""
@@ -905,6 +911,10 @@ msgid ""
 "        yield start\n"
 "        start += 1"
 msgstr ""
+"def infinite_stream(start: int) -> Generator[int]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start += 1"
 
 #: ../../library/typing.rst:471
 msgid "It is also possible to set these types explicitly::"
@@ -917,6 +927,10 @@ msgid ""
 "        yield start\n"
 "        start += 1"
 msgstr ""
+"def infinite_stream(start: int) -> Generator[int, None, None]:\n"
+"    while True:\n"
+"        yield start\n"
+"        start += 1"
 
 #: ../../library/typing.rst:478
 msgid ""
@@ -985,6 +999,11 @@ msgid ""
 "async def bar() -> None:\n"
 "    y = await c                    # Inferred type of 'y' is int"
 msgstr ""
+"from collections.abc import Coroutine\n"
+"c: Coroutine[list[str], str, int]  # 在其他地方定义的协程\n"
+"x = c.send('hi')                   # 推断 'x' 的类型为 list[str]\n"
+"async def bar() -> None:\n"
+"    y = await c                    # 推断 'y' 的类型为 int"
 
 #: ../../library/typing.rst:528
 msgid "User-defined generic types"
@@ -1316,6 +1335,12 @@ msgid ""
 "class Z(Generic[P]):\n"
 "    ..."
 msgstr ""
+"from typing import ParamSpec, Generic\n"
+"\n"
+"P = ParamSpec('P')\n"
+"\n"
+"class Z(Generic[P]):\n"
+"    ..."
 
 #: ../../library/typing.rst:686
 msgid ""
@@ -1338,6 +1363,12 @@ msgid ""
 ">>> X[[int, str]]\n"
 "__main__.X[[int, str]]"
 msgstr ""
+">>> class X[**P]: ...\n"
+"...\n"
+">>> X[int, str]\n"
+"__main__.X[[int, str]]\n"
+">>> X[[int, str]]\n"
+"__main__.X[[int, str]]"
 
 #: ../../library/typing.rst:699
 msgid ""
@@ -1401,6 +1432,20 @@ msgid ""
 "    item.bar()\n"
 "    ..."
 msgstr ""
+"from typing import Any\n"
+"\n"
+"a: Any = None\n"
+"a = []          # 可以\n"
+"a = 2           # 可以\n"
+"\n"
+"s: str = ''\n"
+"s = a           # 可以\n"
+"\n"
+"def foo(item: Any) -> int:\n"
+"    # 通过类型检查；'item' 可以为任意类型，\n"
+"    # 并且其类型会具有 'bar' 方法\n"
+"    item.bar()\n"
+"    ..."
 
 #: ../../library/typing.rst:738
 msgid ""
@@ -1431,6 +1476,15 @@ msgid ""
 "    ...\n"
 "    return data"
 msgstr ""
+"def legacy_parser(text):\n"
+"    ...\n"
+"    return data\n"
+"\n"
+"# 静态类型检查器将认为上面的函数\n"
+"# 具有与下面的函数相同的签名：\n"
+"def legacy_parser(text: Any) -> Any:\n"
+"    ...\n"
+"    return data"
 
 #: ../../library/typing.rst:757
 msgid ""
@@ -1954,7 +2008,7 @@ msgstr "联合类型之联合类型会被展平，例如："
 
 #: ../../library/typing.rst:1099
 msgid "Union[Union[int, str], float] == Union[int, str, float]"
-msgstr ""
+msgstr "Union[Union[int, str], float] == Union[int, str, float]"
 
 #: ../../library/typing.rst:1101
 msgid "Unions of a single argument vanish, e.g.::"
@@ -1962,7 +2016,7 @@ msgstr "单参数之联合类型就是该参数自身，例如："
 
 #: ../../library/typing.rst:1103
 msgid "Union[int] == int  # The constructor actually returns int"
-msgstr ""
+msgstr "Union[int] == int  # 该构造器确实返回 int"
 
 #: ../../library/typing.rst:1105
 msgid "Redundant arguments are skipped, e.g.::"
@@ -1970,7 +2024,7 @@ msgstr "冗余的参数会被跳过，例如："
 
 #: ../../library/typing.rst:1107
 msgid "Union[int, str, int] == Union[int, str] == int | str"
-msgstr ""
+msgstr "Union[int, str, int] == Union[int, str] == int | str"
 
 #: ../../library/typing.rst:1109
 msgid "When comparing unions, the argument order is ignored, e.g.::"
@@ -1978,7 +2032,7 @@ msgstr "比较联合类型，不涉及参数顺序，例如："
 
 #: ../../library/typing.rst:1111
 msgid "Union[int, str] == Union[str, int]"
-msgstr ""
+msgstr "Union[int, str] == Union[str, int]"
 
 #: ../../library/typing.rst:1113
 msgid "You cannot subclass or instantiate a ``Union``."
@@ -2016,6 +2070,8 @@ msgid ""
 "def foo(arg: int = 0) -> None:\n"
 "    ..."
 msgstr ""
+"def foo(arg: int = 0) -> None:\n"
+"    ..."
 
 #: ../../library/typing.rst:1136
 msgid ""
@@ -2029,6 +2085,8 @@ msgid ""
 "def foo(arg: Optional[int] = None) -> None:\n"
 "    ..."
 msgstr ""
+"def foo(arg: Optional[int] = None) -> None:\n"
+"    ..."
 
 #: ../../library/typing.rst:1143
 msgid ""
@@ -2171,6 +2229,9 @@ msgid ""
 "    stats: ClassVar[dict[str, int]] = {} # class variable\n"
 "    damage: int = 10                     # instance variable"
 msgstr ""
+"class Starship:\n"
+"    stats: ClassVar[dict[str, int]] = {} # 类变量\n"
+"    damage: int = 10                     # 实例变量"
 
 #: ../../library/typing.rst:1245
 msgid ":data:`ClassVar` accepts only types and cannot be further subscribed."
@@ -2193,6 +2254,9 @@ msgid ""
 "enterprise_d.stats = {} # Error, setting class variable on instance\n"
 "Starship.stats = {}     # This is OK"
 msgstr ""
+"enterprise_d = Starship(3000)\n"
+"enterprise_d.stats = {} # 错误，在实例上设置类变量\n"
+"Starship.stats = {}     # 这是可以的"
 
 #: ../../library/typing.rst:1261
 msgid ":data:`ClassVar` can now be nested in :data:`Final` and vice versa."
@@ -2219,6 +2283,14 @@ msgid ""
 "class FastConnector(Connection):\n"
 "    TIMEOUT = 1  # Error reported by type checker"
 msgstr ""
+"MAX_SIZE: Final = 9000\n"
+"MAX_SIZE += 1  # 类型检查器将报告错误\n"
+"\n"
+"class Connection:\n"
+"    TIMEOUT: Final[int] = 10\n"
+"\n"
+"class FastConnector(Connection):\n"
+"    TIMEOUT = 1  # 类型检查器将报告错误"
 
 #: ../../library/typing.rst:1281 ../../library/typing.rst:3062
 msgid ""
@@ -2268,6 +2340,13 @@ msgid ""
 "   m[\"year\"] = 1992  # allowed\n"
 "   m[\"title\"] = \"The Matrix\"  # typechecker error"
 msgstr ""
+"class Movie(TypedDict):\n"
+"   title: ReadOnly[str]\n"
+"   year: int\n"
+"\n"
+"def mutate_movie(m: Movie) -> None:\n"
+"   m[\"year\"] = 1992  # 允许\n"
+"   m[\"title\"] = \"The Matrix\"  # 类型检查器错误"
 
 #: ../../library/typing.rst:1322
 msgid "There is no runtime checking for this property."
@@ -2341,6 +2420,13 @@ msgid ""
 "T1 = Annotated[int, ValueRange(-10, 5)]\n"
 "T2 = Annotated[T1, ValueRange(-20, 3)]"
 msgstr ""
+"@dataclass\n"
+"class ValueRange:\n"
+"    lo: int\n"
+"    hi: int\n"
+"\n"
+"T1 = Annotated[int, ValueRange(-10, 5)]\n"
+"T2 = Annotated[T1, ValueRange(-20, 3)]"
 
 #: ../../library/typing.rst:1371
 msgid "Details of the syntax:"
@@ -2364,6 +2450,11 @@ msgid ""
 "\n"
 "Annotated[int, ValueRange(3, 10), ctype(\"char\")]"
 msgstr ""
+"@dataclass\n"
+"class ctype:\n"
+"    kind: str\n"
+"\n"
+"Annotated[int, ValueRange(3, 10), ctype(\"char\")]"
 
 #: ../../library/typing.rst:1384
 msgid ""
@@ -2390,6 +2481,9 @@ msgid ""
 "    int, ctype(\"char\"), ValueRange(3, 10)\n"
 "]"
 msgstr ""
+"assert Annotated[int, ValueRange(3, 10), ctype(\"char\")] != Annotated[\n"
+"    int, ctype(\"char\"), ValueRange(3, 10)\n"
+"]"
 
 #: ../../library/typing.rst:1398
 msgid ""
@@ -2403,6 +2497,9 @@ msgid ""
 "    int, ValueRange(3, 10), ctype(\"char\")\n"
 "]"
 msgstr ""
+"assert Annotated[Annotated[int, ValueRange(3, 10)], ctype(\"char\")] == Annotated[\n"
+"    int, ValueRange(3, 10), ctype(\"char\")\n"
+"]"
 
 #: ../../library/typing.rst:1405
 msgid "Duplicated metadata elements are not removed::"
@@ -2414,6 +2511,9 @@ msgid ""
 "    int, ValueRange(3, 10), ValueRange(3, 10)\n"
 "]"
 msgstr ""
+"assert Annotated[int, ValueRange(3, 10)] != Annotated[\n"
+"    int, ValueRange(3, 10), ValueRange(3, 10)\n"
+"]"
 
 #: ../../library/typing.rst:1411
 msgid "``Annotated`` can be used with nested and generic aliases:"
@@ -2438,7 +2538,7 @@ msgstr "``Annotated`` 不能与已解包的 :class:`TypeVarTuple` 一起使用::
 
 #: ../../library/typing.rst:1427
 msgid "type Variadic[*Ts] = Annotated[*Ts, Ann1]  # NOT valid"
-msgstr ""
+msgstr "type Variadic[*Ts] = Annotated[*Ts, Ann1]  # 不可用"
 
 #: ../../library/typing.rst:1429
 msgid "This would be equivalent to::"
@@ -2446,7 +2546,7 @@ msgstr "这等价于："
 
 #: ../../library/typing.rst:1431
 msgid "Annotated[T1, T2, T3, ..., Ann1]"
-msgstr ""
+msgstr "Annotated[T1, T2, T3, ..., Ann1]"
 
 #: ../../library/typing.rst:1433
 msgid ""
@@ -2473,6 +2573,13 @@ msgid ""
 ">>> get_type_hints(func, include_extras=True)\n"
 "{'x': typing.Annotated[int, 'metadata'], 'return': <class 'NoneType'>}"
 msgstr ""
+">>> from typing import Annotated, get_type_hints\n"
+">>> def func(x: Annotated[int, \"metadata\"]) -> None: pass\n"
+"...\n"
+">>> get_type_hints(func)\n"
+"{'x': <class 'int'>, 'return': <class 'NoneType'>}\n"
+">>> get_type_hints(func, include_extras=True)\n"
+"{'x': typing.Annotated[int, 'metadata'], 'return': <class 'NoneType'>}"
 
 #: ../../library/typing.rst:1449
 msgid ""
@@ -2489,6 +2596,12 @@ msgid ""
 ">>> X.__metadata__\n"
 "('very', 'important', 'metadata')"
 msgstr ""
+">>> from typing import Annotated\n"
+">>> X = Annotated[int, \"very\", \"important\", \"metadata\"]\n"
+">>> X\n"
+"typing.Annotated[int, 'very', 'important', 'metadata']\n"
+">>> X.__metadata__\n"
+"('very', 'important', 'metadata')"
 
 #: ../../library/typing.rst:1463
 msgid ":pep:`593` - Flexible function and variable annotations"
@@ -2819,6 +2932,10 @@ msgid ""
 "        ...\n"
 "        # Etc."
 msgstr ""
+"class Mapping[KT, VT]:\n"
+"    def __getitem__(self, key: KT) -> VT:\n"
+"        ...\n"
+"        # 其他"
 
 #: ../../library/typing.rst:1670
 msgid ""
@@ -2840,6 +2957,11 @@ msgid ""
 "    except KeyError:\n"
 "        return default"
 msgstr ""
+"def lookup_name[X, Y](mapping: Mapping[X, Y], key: X, default: Y) -> Y:\n"
+"    try:\n"
+"        return mapping[key]\n"
+"    except KeyError:\n"
+"        return default"
 
 #: ../../library/typing.rst:1682
 msgid ""
@@ -2864,6 +2986,13 @@ msgid ""
 "        ...\n"
 "        # Etc."
 msgstr ""
+"KT = TypeVar('KT')\n"
+"VT = TypeVar('VT')\n"
+"\n"
+"class Mapping(Generic[KT, VT]):\n"
+"    def __getitem__(self, key: KT) -> VT:\n"
+"        ...\n"
+"        # 其他"
 
 #: ../../library/typing.rst:1702
 msgid "Type variable."
@@ -2883,6 +3012,8 @@ msgid ""
 "class Sequence[T]:  # T is a TypeVar\n"
 "    ..."
 msgstr ""
+"class Sequence[T]:  # T 是一个 TypeVar\n"
+"    ..."
 
 #: ../../library/typing.rst:1712
 msgid ""
@@ -2899,6 +3030,12 @@ msgid ""
 "class StrOrBytesSequence[A: (str, bytes)]:  # A is a TypeVar constrained to str or bytes\n"
 "    ..."
 msgstr ""
+"class StrSequence[S: str]:  # S 是一个绑定到 str 的 TypeVar\n"
+"    ...\n"
+"\n"
+"\n"
+"class StrOrBytesSequence[A: (str, bytes)]:  # A 是一个 TypeVar constrained to str or bytes\n"
+"    ..."
 
 #: ../../library/typing.rst:1722
 msgid ""
@@ -2912,6 +3049,9 @@ msgid ""
 "S = TypeVar('S', bound=str)  # Can be any subtype of str\n"
 "A = TypeVar('A', str, bytes)  # Must be exactly str or bytes"
 msgstr ""
+"T = TypeVar('T')  # 可以是任意类型\n"
+"S = TypeVar('S', bound=str)  # 可以是任意 str 的子类型\n"
+"A = TypeVar('A', str, bytes)  # 必须是 str 或 bytes"
 
 #: ../../library/typing.rst:1728
 msgid ""
@@ -3111,6 +3251,8 @@ msgid ""
 "def move_first_element_to_last[T, *Ts](tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
 "    return (*tup[1:], tup[0])"
 msgstr ""
+"def move_first_element_to_last[T, *Ts](tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
+"    return (*tup[1:], tup[0])"
 
 #: ../../library/typing.rst:1877
 msgid "Or by explicitly invoking the ``TypeVarTuple`` constructor::"
@@ -3124,6 +3266,11 @@ msgid ""
 "def move_first_element_to_last(tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
 "    return (*tup[1:], tup[0])"
 msgstr ""
+"T = TypeVar(\"T\")\n"
+"Ts = TypeVarTuple(\"Ts\")\n"
+"\n"
+"def move_first_element_to_last(tup: tuple[T, *Ts]) -> tuple[*Ts, T]:\n"
+"    return (*tup[1:], tup[0])"
 
 #: ../../library/typing.rst:1885
 msgid ""
@@ -3181,6 +3328,9 @@ msgid ""
 "x: tuple[Ts]   # Not valid\n"
 "x: tuple[*Ts]  # The correct way to do it"
 msgstr ""
+"x: Ts          # 不可用\n"
+"x: tuple[Ts]   # 不可用\n"
+"x: tuple[*Ts]  # 正确的做法"
 
 #: ../../library/typing.rst:1922
 msgid ""
@@ -3195,6 +3345,10 @@ msgid ""
 "    def __abs__(self) -> \"Array[*Shape]\": ...\n"
 "    def get_shape(self) -> tuple[*Shape]: ..."
 msgstr ""
+"class Array[*Shape]:\n"
+"    def __getitem__(self, key: tuple[*Shape]) -> float: ...\n"
+"    def __abs__(self) -> \"Array[*Shape]\": ...\n"
+"    def get_shape(self) -> tuple[*Shape]: ..."
 
 #: ../../library/typing.rst:1930
 msgid ""
@@ -3215,6 +3369,17 @@ msgid ""
 "float_array_1d: Array[float, Height] = Array()     # Totally fine\n"
 "int_array_2d: Array[int, Height, Width] = Array()  # Yup, fine too"
 msgstr ""
+"class Array[DType, *Shape]:  # 这样可以\n"
+"    pass\n"
+"\n"
+"class Array2[*Shape, DType]:  # 这样也可以\n"
+"    pass\n"
+"\n"
+"class Height: ...\n"
+"class Width: ...\n"
+"\n"
+"float_array_1d: Array[float, Height] = Array()     # 完全可以\n"
+"int_array_2d: Array[int, Height, Width] = Array()  # 是的，同样可以"
 
 #: ../../library/typing.rst:1946
 msgid ""
@@ -3228,6 +3393,9 @@ msgid ""
 "class Array[*Shape, *Shape]:  # Not valid\n"
 "    pass"
 msgstr ""
+"x: tuple[*Ts, *Ts]            # 不可用\n"
+"class Array[*Shape, *Shape]:  # 不可用\n"
+"    pass"
 
 #: ../../library/typing.rst:1953
 msgid ""
@@ -3244,6 +3412,12 @@ msgid ""
 "    ...\n"
 "    callback(*args)"
 msgstr ""
+"def call_soon[*Ts](\n"
+"    callback: Callable[[*Ts], None],\n"
+"    *args: *Ts\n"
+") -> None:\n"
+"    ...\n"
+"    callback(*args)"
 
 #: ../../library/typing.rst:1963
 msgid ""
@@ -3301,7 +3475,7 @@ msgstr "In :ref:`类型形参列表 <type-params>`，形参规格可以使用两
 
 #: ../../library/typing.rst:2011
 msgid "type IntFunc[**P] = Callable[P, int]"
-msgstr ""
+msgstr "type IntFunc[**P] = Callable[P, int]"
 
 #: ../../library/typing.rst:2013
 msgid ""
@@ -3311,7 +3485,7 @@ msgstr "为了保持与 Python 3.11 及更早版本的兼容性，``ParamSpec`` 
 
 #: ../../library/typing.rst:2016
 msgid "P = ParamSpec('P')"
-msgstr ""
+msgstr "P = ParamSpec('P')"
 
 #: ../../library/typing.rst:2018
 msgid ""
@@ -3471,6 +3645,12 @@ msgid ""
 ">>> get_origin(P.kwargs) is P\n"
 "True"
 msgstr ""
+">>> from typing import ParamSpec, get_origin\n"
+">>> P = ParamSpec(\"P\")\n"
+">>> get_origin(P.args) is P\n"
+"True\n"
+">>> get_origin(P.kwargs) is P\n"
+"True"
 
 #: ../../library/typing.rst:2140
 msgid ""
@@ -3483,6 +3663,9 @@ msgid ""
 ">>> type(Alias)\n"
 "<class 'typing.TypeAliasType'>"
 msgstr ""
+">>> type Alias = int\n"
+">>> type(Alias)\n"
+"<class 'typing.TypeAliasType'>"
 
 #: ../../library/typing.rst:2154
 msgid "The name of the type alias:"
@@ -3494,6 +3677,9 @@ msgid ""
 ">>> Alias.__name__\n"
 "'Alias'"
 msgstr ""
+">>> type Alias = int\n"
+">>> Alias.__name__\n"
+"'Alias'"
 
 #: ../../library/typing.rst:2164
 msgid "The module in which the type alias was defined::"
@@ -3505,6 +3691,9 @@ msgid ""
 ">>> Alias.__module__\n"
 "'__main__'"
 msgstr ""
+">>> type Alias = int\n"
+">>> Alias.__module__\n"
+"'__main__'"
 
 #: ../../library/typing.rst:2172
 msgid ""
@@ -3521,6 +3710,12 @@ msgid ""
 ">>> NotGeneric.__type_params__\n"
 "()"
 msgstr ""
+">>> type ListOrSet[T] = list[T] | set[T]\n"
+">>> ListOrSet.__type_params__\n"
+"(T,)\n"
+">>> type NotGeneric = int\n"
+">>> NotGeneric.__type_params__\n"
+"()"
 
 #: ../../library/typing.rst:2186
 msgid ""
@@ -3544,6 +3739,16 @@ msgid ""
 ">>> Recursive.__value__\n"
 "Mutually"
 msgstr ""
+">>> type Mutually = Recursive\n"
+">>> type Recursive = Mutually\n"
+">>> Mutually\n"
+"Mutually\n"
+">>> Recursive\n"
+"Recursive\n"
+">>> Mutually.__value__\n"
+"Recursive\n"
+">>> Recursive.__value__\n"
+"Mutually"
 
 #: ../../library/typing.rst:2204
 msgid "Other special directives"
