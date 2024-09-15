@@ -1499,6 +1499,15 @@ msgid ""
 "...\n"
 "Catching an argumentError"
 msgstr ""
+">>> parser = argparse.ArgumentParser(exit_on_error=False)\n"
+">>> parser.add_argument('--integers', type=int)\n"
+"_StoreAction(option_strings=['--integers'], dest='integers', nargs=None, const=None, default=None, type=<class 'int'>, choices=None, help=None, metavar=None)\n"
+">>> try:\n"
+"...     parser.parse_args('--integers a'.split())\n"
+"... except argparse.ArgumentError:\n"
+"...     print('Catching an argumentError')\n"
+"...\n"
+"Catching an argumentError"
 
 #: ../../library/argparse.rst:744
 msgid "The add_argument() method"
@@ -1592,7 +1601,7 @@ msgstr "例如，可以这样创建可选参数::"
 
 #: ../../library/argparse.rst:798
 msgid ">>> parser.add_argument('-f', '--foo')"
-msgstr ""
+msgstr ">>> parser.add_argument('-f', '--foo')"
 
 #: ../../library/argparse.rst:800
 msgid "while a positional argument could be created like::"
@@ -1600,7 +1609,7 @@ msgstr "而位置参数可以这么创建::"
 
 #: ../../library/argparse.rst:802
 msgid ">>> parser.add_argument('bar')"
-msgstr ""
+msgstr ">>> parser.add_argument('bar')"
 
 #: ../../library/argparse.rst:804
 msgid ""
@@ -1623,6 +1632,16 @@ msgid ""
 "usage: PROG [-h] [-f FOO] bar\n"
 "PROG: error: the following arguments are required: bar"
 msgstr ""
+">>> parser = argparse.ArgumentParser(prog='PROG')\n"
+">>> parser.add_argument('-f', '--foo')\n"
+">>> parser.add_argument('bar')\n"
+">>> parser.parse_args(['BAR'])\n"
+"Namespace(bar='BAR', foo=None)\n"
+">>> parser.parse_args(['BAR', '--foo', 'FOO'])\n"
+"Namespace(bar='BAR', foo='FOO')\n"
+">>> parser.parse_args(['--foo', 'FOO'])\n"
+"usage: PROG [-h] [-f FOO] bar\n"
+"PROG: error: the following arguments are required: bar"
 
 #: ../../library/argparse.rst:823
 msgid "action"
@@ -1654,6 +1673,10 @@ msgid ""
 ">>> parser.parse_args('--foo 1'.split())\n"
 "Namespace(foo='1')"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--foo')\n"
+">>> parser.parse_args('--foo 1'.split())\n"
+"Namespace(foo='1')"
 
 #: ../../library/argparse.rst:839
 msgid ""
@@ -1672,6 +1695,10 @@ msgid ""
 ">>> parser.parse_args(['--foo'])\n"
 "Namespace(foo=42)"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--foo', action='store_const', const=42)\n"
+">>> parser.parse_args(['--foo'])\n"
+"Namespace(foo=42)"
 
 #: ../../library/argparse.rst:849
 msgid ""
@@ -1692,6 +1719,12 @@ msgid ""
 ">>> parser.parse_args('--foo --bar'.split())\n"
 "Namespace(foo=True, bar=False, baz=True)"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--foo', action='store_true')\n"
+">>> parser.add_argument('--bar', action='store_false')\n"
+">>> parser.add_argument('--baz', action='store_false')\n"
+">>> parser.parse_args('--foo --bar'.split())\n"
+"Namespace(foo=True, bar=False, baz=True)"
 
 #: ../../library/argparse.rst:861
 msgid ""
@@ -1711,6 +1744,10 @@ msgid ""
 ">>> parser.parse_args('--foo 1 --foo 2'.split())\n"
 "Namespace(foo=['1', '2'])"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--foo', action='append')\n"
+">>> parser.parse_args('--foo 1 --foo 2'.split())\n"
+"Namespace(foo=['1', '2'])"
 
 #: ../../library/argparse.rst:872
 msgid ""
@@ -1731,6 +1768,11 @@ msgid ""
 ">>> parser.parse_args('--str --int'.split())\n"
 "Namespace(types=[<class 'str'>, <class 'int'>])"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--str', dest='types', action='append_const', const=str)\n"
+">>> parser.add_argument('--int', dest='types', action='append_const', const=int)\n"
+">>> parser.parse_args('--str --int'.split())\n"
+"Namespace(types=[<class 'str'>, <class 'int'>])"
 
 #: ../../library/argparse.rst:884
 msgid ""
@@ -1745,6 +1787,10 @@ msgid ""
 ">>> parser.parse_args(['-vvv'])\n"
 "Namespace(verbose=3)"
 msgstr ""
+">>> parser = argparse.ArgumentParser()\n"
+">>> parser.add_argument('--verbose', '-v', action='count', default=0)\n"
+">>> parser.parse_args(['-vvv'])\n"
+"Namespace(verbose=3)"
 
 #: ../../library/argparse.rst:892
 msgid "Note, the *default* will be ``None`` unless explicitly set to *0*."
