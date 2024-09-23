@@ -18,6 +18,7 @@
 # ppcfish <ppcfish@gmail.com>, 2023
 # Nyuan Zhang, 2023
 # Kevin Deng <kevindeng55+transifex@gmail.com>, 2024
+# Wulian233 <xiguawulian@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -25,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 14:16+0000\n"
+"POT-Creation-Date: 2024-09-20 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1638,6 +1639,11 @@ msgid ""
 "    Py_TYPE(self)->tp_free((PyObject *)self);\n"
 "}"
 msgstr ""
+"static void foo_dealloc(foo_object *self) {\n"
+"    PyObject_GC_UnTrack(self);\n"
+"    Py_CLEAR(self->ref);\n"
+"    Py_TYPE(self)->tp_free((PyObject *)self);\n"
+"}"
 
 #: ../../c-api/typeobj.rst:670
 msgid ""
@@ -1658,6 +1664,12 @@ msgid ""
 "    Py_DECREF(tp);\n"
 "}"
 msgstr ""
+"static void foo_dealloc(foo_object *self) {\n"
+"    PyTypeObject *tp = Py_TYPE(self);\n"
+"    // free references and buffers here\n"
+"    tp->tp_free(self);\n"
+"    Py_DECREF(tp);\n"
+"}"
 
 #: ../../c-api/typeobj.rst:693
 msgid ""
@@ -2072,7 +2084,7 @@ msgstr "其签名与 :c:func:`PyObject_SetAttr` 的相同::"
 
 #: ../../c-api/typeobj.rst:959
 msgid "int tp_setattro(PyObject *self, PyObject *attr, PyObject *value);"
-msgstr ""
+msgstr "int tp_setattro(PyObject *self, PyObject *attr, PyObject *value);"
 
 #: ../../c-api/typeobj.rst:961
 msgid ""
@@ -2566,7 +2578,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1351
 msgid "int tp_traverse(PyObject *self, visitproc visit, void *arg);"
-msgstr ""
+msgstr "int tp_traverse(PyObject *self, visitproc visit, void *arg);"
 
 #: ../../c-api/typeobj.rst:1353 ../../c-api/typeobj.rst:1497
 msgid ""
@@ -2599,6 +2611,14 @@ msgid ""
 "    return 0;\n"
 "}"
 msgstr ""
+"static int\n"
+"local_traverse(localobject *self, visitproc visit, void *arg)\n"
+"{\n"
+"    Py_VISIT(self->args);\n"
+"    Py_VISIT(self->kw);\n"
+"    Py_VISIT(self->dict);\n"
+"    return 0;\n"
+"}"
 
 #: ../../c-api/typeobj.rst:1371
 msgid ""
@@ -2626,7 +2646,7 @@ msgstr "堆类型 (:c:macro:`Py_TPFLAGS_HEAPTYPE`) 必须这样访问其类型::
 
 #: ../../c-api/typeobj.rst:1381
 msgid "Py_VISIT(Py_TYPE(self));"
-msgstr ""
+msgstr "Py_VISIT(Py_TYPE(self));"
 
 #: ../../c-api/typeobj.rst:1383
 msgid ""
@@ -2640,6 +2660,9 @@ msgid ""
 "    Py_VISIT(Py_TYPE(self));\n"
 "#endif"
 msgstr ""
+"#if PY_VERSION_HEX >= 0x03090000\n"
+"    Py_VISIT(Py_TYPE(self));\n"
+"#endif"
 
 #: ../../c-api/typeobj.rst:1390
 msgid ""
@@ -2653,7 +2676,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1394
 msgid "PyObject_VisitManagedDict((PyObject*)self, visit, arg);"
-msgstr ""
+msgstr "PyObject_VisitManagedDict((PyObject*)self, visit, arg);"
 
 #: ../../c-api/typeobj.rst:1397
 msgid ""
@@ -2728,7 +2751,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1441
 msgid "int tp_clear(PyObject *);"
-msgstr ""
+msgstr "int tp_clear(PyObject *);"
 
 #: ../../c-api/typeobj.rst:1443
 msgid ""
@@ -2774,6 +2797,15 @@ msgid ""
 "    return 0;\n"
 "}"
 msgstr ""
+"static int\n"
+"local_clear(localobject *self)\n"
+"{\n"
+"    Py_CLEAR(self->key);\n"
+"    Py_CLEAR(self->args);\n"
+"    Py_CLEAR(self->kw);\n"
+"    Py_CLEAR(self->dict);\n"
+"    return 0;\n"
+"}"
 
 #: ../../c-api/typeobj.rst:1467
 msgid ""
@@ -2807,7 +2839,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1483
 msgid "PyObject_ClearManagedDict((PyObject*)self);"
-msgstr ""
+msgstr "PyObject_ClearManagedDict((PyObject*)self);"
 
 #: ../../c-api/typeobj.rst:1485
 msgid ""
@@ -2853,7 +2885,7 @@ msgstr "一个可选的指向富比较函数的指针，函数的签名为::"
 
 #: ../../c-api/typeobj.rst:1514
 msgid "PyObject *tp_richcompare(PyObject *self, PyObject *other, int op);"
-msgstr ""
+msgstr "PyObject *tp_richcompare(PyObject *self, PyObject *other, int op);"
 
 #: ../../c-api/typeobj.rst:1516
 msgid ""
@@ -3032,7 +3064,7 @@ msgstr "此函数的签名与 :c:func:`PyObject_GetIter` 的相同::"
 
 #: ../../c-api/typeobj.rst:1620
 msgid "PyObject *tp_iter(PyObject *self);"
-msgstr ""
+msgstr "PyObject *tp_iter(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:1629
 msgid ""
@@ -3042,7 +3074,7 @@ msgstr "一个可选的指向函数的指针，该函数返回 :term:`iterator` 
 
 #: ../../c-api/typeobj.rst:1632
 msgid "PyObject *tp_iternext(PyObject *self);"
-msgstr ""
+msgstr "PyObject *tp_iternext(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:1634
 msgid ""
@@ -3242,6 +3274,7 @@ msgstr "函数的签名为::"
 msgid ""
 "PyObject * tp_descr_get(PyObject *self, PyObject *obj, PyObject *type);"
 msgstr ""
+"PyObject * tp_descr_get(PyObject *self, PyObject *obj, PyObject *type);"
 
 #: ../../c-api/typeobj.rst:1782
 msgid ""
@@ -3251,7 +3284,7 @@ msgstr "一个指向用于设置和删除描述器值的函数的选项指针。
 
 #: ../../c-api/typeobj.rst:1787
 msgid "int tp_descr_set(PyObject *self, PyObject *obj, PyObject *value);"
-msgstr ""
+msgstr "int tp_descr_set(PyObject *self, PyObject *obj, PyObject *value);"
 
 #: ../../c-api/typeobj.rst:1789
 msgid "The *value* argument is set to ``NULL`` to delete the value."
@@ -3352,7 +3385,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1851
 msgid "int tp_init(PyObject *self, PyObject *args, PyObject *kwds);"
-msgstr ""
+msgstr "int tp_init(PyObject *self, PyObject *args, PyObject *kwds);"
 
 #: ../../c-api/typeobj.rst:1853
 msgid ""
@@ -3397,7 +3430,7 @@ msgstr "指向一个实例分配函数的可选指针。"
 
 #: ../../c-api/typeobj.rst:1881
 msgid "PyObject *tp_alloc(PyTypeObject *self, Py_ssize_t nitems);"
-msgstr ""
+msgstr "PyObject *tp_alloc(PyTypeObject *self, Py_ssize_t nitems);"
 
 #: ../../c-api/typeobj.rst:1885
 msgid ""
@@ -3428,6 +3461,7 @@ msgstr "一个可选的指向实例创建函数的指针。"
 msgid ""
 "PyObject *tp_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds);"
 msgstr ""
+"PyObject *tp_new(PyTypeObject *subtype, PyObject *args, PyObject *kwds);"
 
 #: ../../c-api/typeobj.rst:1907
 msgid ""
@@ -3492,7 +3526,7 @@ msgstr "一个可选的指向实例释放函数的指针。 函数的签名为::
 
 #: ../../c-api/typeobj.rst:1942
 msgid "void tp_free(void *self);"
-msgstr ""
+msgstr "void tp_free(void *self);"
 
 #: ../../c-api/typeobj.rst:1944
 msgid ""
@@ -3543,7 +3577,7 @@ msgstr ""
 
 #: ../../c-api/typeobj.rst:1972
 msgid "int tp_is_gc(PyObject *self);"
-msgstr ""
+msgstr "int tp_is_gc(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:1974
 msgid ""
@@ -3662,7 +3696,7 @@ msgstr "一个可选的指向实例最终化函数的指针。 函数的签名�
 
 #: ../../c-api/typeobj.rst:2086
 msgid "void tp_finalize(PyObject *self);"
-msgstr ""
+msgstr "void tp_finalize(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:2088
 msgid ""
@@ -3885,6 +3919,48 @@ msgid ""
 "     binaryfunc nb_inplace_matrix_multiply;\n"
 "} PyNumberMethods;"
 msgstr ""
+"typedef struct {\n"
+"     binaryfunc nb_add;\n"
+"     binaryfunc nb_subtract;\n"
+"     binaryfunc nb_multiply;\n"
+"     binaryfunc nb_remainder;\n"
+"     binaryfunc nb_divmod;\n"
+"     ternaryfunc nb_power;\n"
+"     unaryfunc nb_negative;\n"
+"     unaryfunc nb_positive;\n"
+"     unaryfunc nb_absolute;\n"
+"     inquiry nb_bool;\n"
+"     unaryfunc nb_invert;\n"
+"     binaryfunc nb_lshift;\n"
+"     binaryfunc nb_rshift;\n"
+"     binaryfunc nb_and;\n"
+"     binaryfunc nb_xor;\n"
+"     binaryfunc nb_or;\n"
+"     unaryfunc nb_int;\n"
+"     void *nb_reserved;\n"
+"     unaryfunc nb_float;\n"
+"\n"
+"     binaryfunc nb_inplace_add;\n"
+"     binaryfunc nb_inplace_subtract;\n"
+"     binaryfunc nb_inplace_multiply;\n"
+"     binaryfunc nb_inplace_remainder;\n"
+"     ternaryfunc nb_inplace_power;\n"
+"     binaryfunc nb_inplace_lshift;\n"
+"     binaryfunc nb_inplace_rshift;\n"
+"     binaryfunc nb_inplace_and;\n"
+"     binaryfunc nb_inplace_xor;\n"
+"     binaryfunc nb_inplace_or;\n"
+"\n"
+"     binaryfunc nb_floor_divide;\n"
+"     binaryfunc nb_true_divide;\n"
+"     binaryfunc nb_inplace_floor_divide;\n"
+"     binaryfunc nb_inplace_true_divide;\n"
+"\n"
+"     unaryfunc nb_index;\n"
+"\n"
+"     binaryfunc nb_matrix_multiply;\n"
+"     binaryfunc nb_inplace_matrix_multiply;\n"
+"} PyNumberMethods;"
 
 #: ../../c-api/typeobj.rst:2262
 msgid ""
@@ -4092,7 +4168,7 @@ msgstr "此函数的签名为::"
 
 #: ../../c-api/typeobj.rst:2449
 msgid "int (PyObject *exporter, Py_buffer *view, int flags);"
-msgstr ""
+msgstr "int (PyObject *exporter, Py_buffer *view, int flags);"
 
 #: ../../c-api/typeobj.rst:2451
 msgid ""
@@ -4181,7 +4257,7 @@ msgstr ":c:func:`PyObject_GetBuffer` 是针对包装此函数的消费方的接�
 
 #: ../../c-api/typeobj.rst:2498
 msgid "void (PyObject *exporter, Py_buffer *view);"
-msgstr ""
+msgstr "void (PyObject *exporter, Py_buffer *view);"
 
 #: ../../c-api/typeobj.rst:2500
 msgid ""
@@ -4246,10 +4322,16 @@ msgid ""
 "    sendfunc am_send;\n"
 "} PyAsyncMethods;"
 msgstr ""
+"typedef struct {\n"
+"    unaryfunc am_await;\n"
+"    unaryfunc am_aiter;\n"
+"    unaryfunc am_anext;\n"
+"    sendfunc am_send;\n"
+"} PyAsyncMethods;"
 
 #: ../../c-api/typeobj.rst:2552
 msgid "PyObject *am_await(PyObject *self);"
-msgstr ""
+msgstr "PyObject *am_await(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:2554
 msgid ""
@@ -4264,7 +4346,7 @@ msgstr "如果一个对象不是 :term:`awaitable` 则此槽位可被设为 ``NU
 
 #: ../../c-api/typeobj.rst:2563
 msgid "PyObject *am_aiter(PyObject *self);"
-msgstr ""
+msgstr "PyObject *am_aiter(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:2565
 msgid ""
@@ -4281,7 +4363,7 @@ msgstr "如果一个对象没有实现异步迭代协议则此槽位可被设为
 
 #: ../../c-api/typeobj.rst:2575
 msgid "PyObject *am_anext(PyObject *self);"
-msgstr ""
+msgstr "PyObject *am_anext(PyObject *self);"
 
 #: ../../c-api/typeobj.rst:2577
 msgid ""
@@ -4295,6 +4377,7 @@ msgstr ""
 msgid ""
 "PySendResult am_send(PyObject *self, PyObject *arg, PyObject **result);"
 msgstr ""
+"PySendResult am_send(PyObject *self, PyObject *arg, PyObject **result);"
 
 #: ../../c-api/typeobj.rst:2587
 msgid ""
@@ -4431,6 +4514,20 @@ msgid ""
 "    .tp_repr = (reprfunc)myobj_repr,\n"
 "};"
 msgstr ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    const char *data;\n"
+"} MyObject;\n"
+"\n"
+"static PyTypeObject MyObject_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"mymod.MyObject\",\n"
+"    .tp_basicsize = sizeof(MyObject),\n"
+"    .tp_doc = PyDoc_STR(\"My objects\"),\n"
+"    .tp_new = myobj_new,\n"
+"    .tp_dealloc = (destructor)myobj_dealloc,\n"
+"    .tp_repr = (reprfunc)myobj_repr,\n"
+"};"
 
 #: ../../c-api/typeobj.rst:2729
 msgid ""
@@ -4481,6 +4578,46 @@ msgid ""
 "    myobj_new,                      /* tp_new */\n"
 "};"
 msgstr ""
+"static PyTypeObject MyObject_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    \"mymod.MyObject\",               /* tp_name */\n"
+"    sizeof(MyObject),               /* tp_basicsize */\n"
+"    0,                              /* tp_itemsize */\n"
+"    (destructor)myobj_dealloc,      /* tp_dealloc */\n"
+"    0,                              /* tp_vectorcall_offset */\n"
+"    0,                              /* tp_getattr */\n"
+"    0,                              /* tp_setattr */\n"
+"    0,                              /* tp_as_async */\n"
+"    (reprfunc)myobj_repr,           /* tp_repr */\n"
+"    0,                              /* tp_as_number */\n"
+"    0,                              /* tp_as_sequence */\n"
+"    0,                              /* tp_as_mapping */\n"
+"    0,                              /* tp_hash */\n"
+"    0,                              /* tp_call */\n"
+"    0,                              /* tp_str */\n"
+"    0,                              /* tp_getattro */\n"
+"    0,                              /* tp_setattro */\n"
+"    0,                              /* tp_as_buffer */\n"
+"    0,                              /* tp_flags */\n"
+"    PyDoc_STR(\"My objects\"),        /* tp_doc */\n"
+"    0,                              /* tp_traverse */\n"
+"    0,                              /* tp_clear */\n"
+"    0,                              /* tp_richcompare */\n"
+"    0,                              /* tp_weaklistoffset */\n"
+"    0,                              /* tp_iter */\n"
+"    0,                              /* tp_iternext */\n"
+"    0,                              /* tp_methods */\n"
+"    0,                              /* tp_members */\n"
+"    0,                              /* tp_getset */\n"
+"    0,                              /* tp_base */\n"
+"    0,                              /* tp_dict */\n"
+"    0,                              /* tp_descr_get */\n"
+"    0,                              /* tp_descr_set */\n"
+"    0,                              /* tp_dictoffset */\n"
+"    0,                              /* tp_init */\n"
+"    0,                              /* tp_alloc */\n"
+"    myobj_new,                      /* tp_new */\n"
+"};"
 
 #: ../../c-api/typeobj.rst:2773
 msgid "A type that supports weakrefs, instance dicts, and hashing::"
@@ -4511,6 +4648,28 @@ msgid ""
 "    .tp_richcompare = PyBaseObject_Type.tp_richcompare,\n"
 "};"
 msgstr ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"    const char *data;\n"
+"} MyObject;\n"
+"\n"
+"static PyTypeObject MyObject_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"mymod.MyObject\",\n"
+"    .tp_basicsize = sizeof(MyObject),\n"
+"    .tp_doc = PyDoc_STR(\"My objects\"),\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE |\n"
+"         Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_MANAGED_DICT |\n"
+"         Py_TPFLAGS_MANAGED_WEAKREF,\n"
+"    .tp_new = myobj_new,\n"
+"    .tp_traverse = (traverseproc)myobj_traverse,\n"
+"    .tp_clear = (inquiry)myobj_clear,\n"
+"    .tp_alloc = PyType_GenericNew,\n"
+"    .tp_dealloc = (destructor)myobj_dealloc,\n"
+"    .tp_repr = (reprfunc)myobj_repr,\n"
+"    .tp_hash = (hashfunc)myobj_hash,\n"
+"    .tp_richcompare = PyBaseObject_Type.tp_richcompare,\n"
+"};"
 
 #: ../../c-api/typeobj.rst:2798
 msgid ""
@@ -4538,6 +4697,20 @@ msgid ""
 "    .tp_repr = (reprfunc)myobj_repr,\n"
 "};"
 msgstr ""
+"typedef struct {\n"
+"    PyUnicodeObject raw;\n"
+"    char *extra;\n"
+"} MyStr;\n"
+"\n"
+"static PyTypeObject MyStr_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"mymod.MyStr\",\n"
+"    .tp_basicsize = sizeof(MyStr),\n"
+"    .tp_base = NULL,  // set to &PyUnicode_Type in module init\n"
+"    .tp_doc = PyDoc_STR(\"my custom str\"),\n"
+"    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION,\n"
+"    .tp_repr = (reprfunc)myobj_repr,\n"
+"};"
 
 #: ../../c-api/typeobj.rst:2817
 msgid ""
@@ -4555,6 +4728,14 @@ msgid ""
 "    .tp_name = \"mymod.MyObject\",\n"
 "};"
 msgstr ""
+"typedef struct {\n"
+"    PyObject_HEAD\n"
+"} MyObject;\n"
+"\n"
+"static PyTypeObject MyObject_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"mymod.MyObject\",\n"
+"};"
 
 #: ../../c-api/typeobj.rst:2828
 msgid ""
@@ -4576,6 +4757,17 @@ msgid ""
 "    .tp_itemsize = sizeof(char *),\n"
 "};"
 msgstr ""
+"typedef struct {\n"
+"    PyObject_VAR_HEAD\n"
+"    const char *data[1];\n"
+"} MyObject;\n"
+"\n"
+"static PyTypeObject MyObject_Type = {\n"
+"    PyVarObject_HEAD_INIT(NULL, 0)\n"
+"    .tp_name = \"mymod.MyObject\",\n"
+"    .tp_basicsize = sizeof(MyObject) - sizeof(char *),\n"
+"    .tp_itemsize = sizeof(char *),\n"
+"};"
 
 #: ../../c-api/typeobj.rst:787 ../../c-api/typeobj.rst:852
 msgid "built-in function"
