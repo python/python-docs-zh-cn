@@ -14,15 +14,16 @@
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # 稀饭~~ <wangwhai@qq.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
+# Wulian233 <xiguawulian@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-20 00:52+0000\n"
+"POT-Creation-Date: 2024-09-20 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Wulian233 <xiguawulian@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -504,6 +505,36 @@ msgstr "值将总是作为二的补码被拷贝。"
 msgid "Usage example::"
 msgstr "用法示例::"
 
+#: ../../c-api/long.rst:392
+msgid ""
+"int32_t value;\n"
+"Py_ssize_t bytes = PyLong_AsNativeBytes(pylong, &value, sizeof(value), -1);\n"
+"if (bytes < 0) {\n"
+"    // Failed. A Python exception was set with the reason.\n"
+"    return NULL;\n"
+"}\n"
+"else if (bytes <= (Py_ssize_t)sizeof(value)) {\n"
+"    // Success!\n"
+"}\n"
+"else {\n"
+"    // Overflow occurred, but 'value' contains the truncated\n"
+"    // lowest bits of pylong.\n"
+"}"
+msgstr ""
+"int32_t value;\n"
+"Py_ssize_t bytes = PyLong_AsNativeBytes(pylong, &value, sizeof(value), -1);\n"
+"if (bytes < 0) {\n"
+"    // 失败。 设置一个提示失败原因的 Python 异常。\n"
+"    return NULL;\n"
+"}\n"
+"else if (bytes <= (Py_ssize_t)sizeof(value)) {\n"
+"    // 成功！\n"
+"}\n"
+"else {\n"
+"    // 发生溢出，但 'value' 包含了截断后的\n"
+"    // pylong 的低比特位部分。\n"
+"}"
+
 #: ../../c-api/long.rst:406
 msgid ""
 "Passing zero to *n_bytes* will return the size of a buffer that would be "
@@ -525,6 +556,64 @@ msgid ""
 "To get at the entire Python value of an unknown size, the function can be "
 "called twice: first to determine the buffer size, then to fill it::"
 msgstr "要获取一个大小未知的完整 Python 值，可以调用此函数两次：首先确定缓冲区大小，然后填充它::"
+
+#: ../../c-api/long.rst:419
+msgid ""
+"// Ask how much space we need.\n"
+"Py_ssize_t expected = PyLong_AsNativeBytes(pylong, NULL, 0, -1);\n"
+"if (expected < 0) {\n"
+"    // Failed. A Python exception was set with the reason.\n"
+"    return NULL;\n"
+"}\n"
+"assert(expected != 0);  // Impossible per the API definition.\n"
+"uint8_t *bignum = malloc(expected);\n"
+"if (!bignum) {\n"
+"    PyErr_SetString(PyExc_MemoryError, \"bignum malloc failed.\");\n"
+"    return NULL;\n"
+"}\n"
+"// Safely get the entire value.\n"
+"Py_ssize_t bytes = PyLong_AsNativeBytes(pylong, bignum, expected, -1);\n"
+"if (bytes < 0) {  // Exception has been set.\n"
+"    free(bignum);\n"
+"    return NULL;\n"
+"}\n"
+"else if (bytes > expected) {  // This should not be possible.\n"
+"    PyErr_SetString(PyExc_RuntimeError,\n"
+"        \"Unexpected bignum truncation after a size check.\");\n"
+"    free(bignum);\n"
+"    return NULL;\n"
+"}\n"
+"// The expected success given the above pre-check.\n"
+"// ... use bignum ...\n"
+"free(bignum);"
+msgstr ""
+"// 询问我们需要多少空间。\n"
+"Py_ssize_t expected = PyLong_AsNativeBytes(pylong, NULL, 0, -1);\n"
+"if (expected < 0) {\n"
+"    // 失败。Python 已设置异常，并提供了原因\n"
+"    return NULL;\n"
+"}\n"
+"assert(expected != 0);  // 根据 API 定义，不可能为 0\n"
+"uint8_t *bignum = malloc(expected);\n"
+"if (!bignum) {\n"
+"    PyErr_SetString(PyExc_MemoryError, \"bignum malloc failed.\");\n"
+"    return NULL;\n"
+"}\n"
+"// 安全地获取整个值\n"
+"Py_ssize_t bytes = PyLong_AsNativeBytes(pylong, bignum, expected, -1);\n"
+"if (bytes < 0) {  // 已设置异常\n"
+"    free(bignum);\n"
+"    return NULL;\n"
+"}\n"
+"else if (bytes > expected) {  // 这种情况不应该发生\n"
+"    PyErr_SetString(PyExc_RuntimeError,\n"
+"        \"Unexpected bignum truncation after a size check.\");\n"
+"    free(bignum);\n"
+"    return NULL;\n"
+"}\n"
+"// 上述预检查成功的预期情况\n"
+"// ... 使用 bignum ...\n"
+"free(bignum);"
 
 #: ../../c-api/long.rst:447
 msgid ""
@@ -645,10 +734,23 @@ msgstr ""
 "强制转换行为相匹配。"
 
 #: ../../c-api/long.rst:506
+msgid ""
+"On success, return a read only :term:`named tuple`, that holds information "
+"about Python's internal representation of integers. See :data:`sys.int_info`"
+" for description of individual fields."
+msgstr ""
+"成功时，返回一个只读的 :term:`named tuple`，它保存着有关 Python 内部整数表示形式的信息。 请参阅 "
+":data:`sys.int_info` 了解关于单独字段的描述。"
+
+#: ../../c-api/long.rst:510
+msgid "On failure, return ``NULL`` with an exception set."
+msgstr "当失败时，将返回 ``NULL`` 并设置一个异常。"
+
+#: ../../c-api/long.rst:517
 msgid "Return 1 if *op* is compact, 0 otherwise."
 msgstr "如果 *op* 为紧凑形式则返回 1，否则返回 0。"
 
-#: ../../c-api/long.rst:508
+#: ../../c-api/long.rst:519
 msgid ""
 "This function makes it possible for performance-critical code to implement a"
 " “fast path” for small integers. For compact values use "
@@ -660,23 +762,23 @@ msgstr ""
 ":c:func:`PyUnstable_Long_CompactValue`；对于其他值则回退为 :c:func:`PyLong_As* "
 "<PyLong_AsSize_t>` 函数或者 :c:func:`PyLong_AsNativeBytes`。"
 
-#: ../../c-api/long.rst:514
+#: ../../c-api/long.rst:525
 msgid "The speedup is expected to be negligible for most users."
 msgstr "此项加速对于大多数用户来说是可以忽略的。"
 
-#: ../../c-api/long.rst:516
+#: ../../c-api/long.rst:527
 msgid ""
 "Exactly what values are considered compact is an implementation detail and "
 "is subject to change."
 msgstr "具体有哪些值会被视为紧凑形式属于实现细节并可能发生改变。"
 
-#: ../../c-api/long.rst:521
+#: ../../c-api/long.rst:532
 msgid ""
 "If *op* is compact, as determined by :c:func:`PyUnstable_Long_IsCompact`, "
 "return its value."
 msgstr "如果 *op* 为紧凑形式，如 :c:func:`PyUnstable_Long_IsCompact` 所确定的，则返回它的值。"
 
-#: ../../c-api/long.rst:524
+#: ../../c-api/long.rst:535
 msgid "Otherwise, the return value is undefined."
 msgstr "在其他情况下，返回值是未定义的。"
 
