@@ -338,6 +338,10 @@ msgid ""
 "  File \"<stdin>\", line 1, in <module>\n"
 "TypeError: can only concatenate str (not \"custom.Custom\") to str"
 msgstr ""
+">>> \"\" + custom.Custom()\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"TypeError: can only concatenate str (not \"custom.Custom\") to str"
 
 #: ../../extending/newtypes_tutorial.rst:129
 msgid ""
@@ -428,7 +432,7 @@ msgstr ""
 
 #: ../../extending/newtypes_tutorial.rst:171
 msgid ".tp_new = PyType_GenericNew,"
-msgstr ""
+msgstr ".tp_new = PyType_GenericNew,"
 
 #: ../../extending/newtypes_tutorial.rst:173
 msgid ""
@@ -460,6 +464,10 @@ msgid ""
 "    return NULL;\n"
 "}"
 msgstr ""
+"if (PyModule_AddObjectRef(m, \"Custom\", (PyObject *) &CustomType) < 0) {\n"
+"    Py_DECREF(m);\n"
+"    return NULL;\n"
+"}"
 
 #: ../../extending/newtypes_tutorial.rst:188
 msgid ""
@@ -489,6 +497,13 @@ msgid ""
 "name = \"custom\"\n"
 "version = \"1\"\n"
 msgstr ""
+"[build-system]\n"
+"requires = [\"setuptools\"]\n"
+"build-backend = \"setuptools.build_meta\"\n"
+"\n"
+"[project]\n"
+"name = \"custom\"\n"
+"version = \"1\"\n"
 
 #: ../../extending/newtypes_tutorial.rst:201
 msgid "in a file called :file:`pyproject.toml`, and"
@@ -499,6 +514,8 @@ msgid ""
 "from setuptools import Extension, setup\n"
 "setup(ext_modules=[Extension(\"custom\", [\"custom.c\"])])"
 msgstr ""
+"from setuptools import Extension, setup\n"
+"setup(ext_modules=[Extension(\"custom\", [\"custom.c\"])])"
 
 #: ../../extending/newtypes_tutorial.rst:208
 msgid "in a file called :file:`setup.py`; then typing"
@@ -844,7 +861,7 @@ msgstr "``tp_new`` 实现会调用 :c:member:`~PyTypeObject.tp_alloc` 槽位来�
 
 #: ../../extending/newtypes_tutorial.rst:329
 msgid "self = (CustomObject *) type->tp_alloc(type, 0);"
-msgstr ""
+msgstr "self = (CustomObject *) type->tp_alloc(type, 0);"
 
 #: ../../extending/newtypes_tutorial.rst:331
 msgid ""
@@ -919,6 +936,31 @@ msgid ""
 "    return 0;\n"
 "}"
 msgstr ""
+"static int\n"
+"Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    static char *kwlist[] = {\"first\", \"last\", \"number\", NULL};\n"
+"    PyObject *first = NULL, *last = NULL, *tmp;\n"
+"\n"
+"    if (!PyArg_ParseTupleAndKeywords(args, kwds, \"|OOi\", kwlist,\n"
+"                                     &first, &last,\n"
+"                                     &self->number))\n"
+"        return -1;\n"
+"\n"
+"    if (first) {\n"
+"        tmp = self->first;\n"
+"        Py_INCREF(first);\n"
+"        self->first = first;\n"
+"        Py_XDECREF(tmp);\n"
+"    }\n"
+"    if (last) {\n"
+"        tmp = self->last;\n"
+"        Py_INCREF(last);\n"
+"        self->last = last;\n"
+"        Py_XDECREF(tmp);\n"
+"    }\n"
+"    return 0;\n"
+"}"
 
 #: ../../extending/newtypes_tutorial.rst:380
 msgid "by filling the :c:member:`~PyTypeObject.tp_init` slot. ::"
@@ -926,7 +968,7 @@ msgstr "通过填充 :c:member:`~PyTypeObject.tp_init` 槽位。 ::"
 
 #: ../../extending/newtypes_tutorial.rst:382
 msgid ".tp_init = (initproc) Custom_init,"
-msgstr ""
+msgstr ".tp_init = (initproc) Custom_init,"
 
 #: ../../extending/newtypes_tutorial.rst:384
 msgid ""
