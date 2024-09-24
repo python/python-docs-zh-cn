@@ -12,15 +12,16 @@
 # ProgramRipper, 2023
 # Dai Xu <daixu61@hotmail.com>, 2023
 # Freesand Leo <yuqinju@163.com>, 2024
+# Wulian233 <xiguawulian@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-31 10:59+0000\n"
+"POT-Creation-Date: 2024-09-20 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 01:14+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Wulian233 <xiguawulian@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -666,6 +667,9 @@ msgid ""
 "    if check():\n"
 "        break"
 msgstr ""
+"for _ in support.busy_retry(support.SHORT_TIMEOUT):\n"
+"    if check():\n"
+"        break"
 
 #: ../../library/test.rst:432 ../../library/test.rst:456
 msgid "Example of error=False usage::"
@@ -679,6 +683,11 @@ msgid ""
 "else:\n"
 "    raise RuntimeError('my custom error')"
 msgstr ""
+"for _ in support.busy_retry(support.SHORT_TIMEOUT, error=False):\n"
+"    if check():\n"
+"        break\n"
+"else:\n"
+"    raise RuntimeError('my custom error')"
 
 #: ../../library/test.rst:442
 msgid "Wait strategy that applies exponential backoff."
@@ -707,6 +716,9 @@ msgid ""
 "    if check():\n"
 "        break"
 msgstr ""
+"for _ in support.sleeping_retry(support.SHORT_TIMEOUT):\n"
+"    if check():\n"
+"        break"
 
 #: ../../library/test.rst:458
 msgid ""
@@ -716,6 +728,11 @@ msgid ""
 "else:\n"
 "    raise RuntimeError('my custom error')"
 msgstr ""
+"for _ in support.sleeping_retry(support.SHORT_TIMEOUT, error=False):\n"
+"    if check():\n"
+"        break\n"
+"else:\n"
+"    raise RuntimeError('my custom error')"
 
 #: ../../library/test.rst:466
 msgid ""
@@ -840,6 +857,11 @@ msgid ""
 "assert stdout.getvalue() == \"hello\\n\"\n"
 "assert stderr.getvalue() == \"error\\n\""
 msgstr ""
+"with captured_stdout() as stdout, captured_stderr() as stderr:\n"
+"    print(\"hello\")\n"
+"    print(\"error\", file=sys.stderr)\n"
+"assert stdout.getvalue() == \"hello\\n\"\n"
+"assert stderr.getvalue() == \"error\\n\""
 
 #: ../../library/test.rst:574
 msgid "Example use with input stream::"
@@ -889,6 +911,8 @@ msgid ""
 "with swap_attr(obj, \"attr\", 5):\n"
 "    ..."
 msgstr ""
+"with swap_attr(obj, \"attr\", 5):\n"
+"    ..."
 
 #: ../../library/test.rst:612
 msgid ""
@@ -914,6 +938,8 @@ msgid ""
 "with swap_item(obj, \"item\", 5):\n"
 "    ..."
 msgstr ""
+"with swap_item(obj, \"item\", 5):\n"
+"    ..."
 
 #: ../../library/test.rst:630
 msgid ""
@@ -1213,6 +1239,11 @@ msgid ""
 "def load_tests(*args):\n"
 "    return load_package_tests(os.path.dirname(__file__), *args)"
 msgstr ""
+"import os\n"
+"from test.support import load_package_tests\n"
+"\n"
+"def load_tests(*args):\n"
+"    return load_package_tests(os.path.dirname(__file__), *args)"
 
 #: ../../library/test.rst:898
 msgid ""
@@ -2117,6 +2148,8 @@ msgid ""
 "with CleanImport('foo'):\n"
 "    importlib.import_module('foo')  # New reference."
 msgstr ""
+"with CleanImport('foo'):\n"
+"    importlib.import_module('foo')  # 新引用"
 
 #: ../../library/test.rst:1644
 msgid "A context manager to temporarily add directories to :data:`sys.path`."
@@ -2165,6 +2198,9 @@ msgid ""
 "def test_suppress_warning():\n"
 "    # do something"
 msgstr ""
+"@warning_helper.ignore_warnings(category=DeprecationWarning)\n"
+"def test_suppress_warning():\n"
+"    # 做些什么"
 
 #: ../../library/test.rst:1683
 msgid ""
@@ -2223,7 +2259,7 @@ msgstr "如果未指定任何参数，则默认为::"
 
 #: ../../library/test.rst:1721
 msgid "check_warnings((\"\", Warning), quiet=True)"
-msgstr ""
+msgstr "check_warnings((\"\", Warning), quiet=True)"
 
 #: ../../library/test.rst:1723
 msgid "In this case all warnings are caught and no errors are raised."
@@ -2287,6 +2323,15 @@ msgid ""
 "    w.reset()\n"
 "    assert len(w.warnings) == 0"
 msgstr ""
+"with check_warnings(quiet=True) as w:\n"
+"    warnings.warn(\"foo\")\n"
+"    assert str(w.args[0]) == \"foo\"\n"
+"    warnings.warn(\"bar\")\n"
+"    assert str(w.args[0]) == \"bar\"\n"
+"    assert str(w.warnings[0].args[0]) == \"foo\"\n"
+"    assert str(w.warnings[1].args[0]) == \"bar\"\n"
+"    w.reset()\n"
+"    assert len(w.warnings) == 0"
 
 #: ../../library/test.rst:1761
 msgid ""
