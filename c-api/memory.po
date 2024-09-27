@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 14:16+0000\n"
+"POT-Creation-Date: 2024-09-27 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -170,62 +170,63 @@ msgid ""
 " details on how every domain allocates memory or what internal functions "
 "each domain calls is considered an implementation detail, but for debugging "
 "purposes a simplified table can be found at :ref:`here <default-memory-"
-"allocators>`. There is no hard requirement to use the memory returned by the"
-" allocation functions belonging to a given domain for only the purposes "
-"hinted by that domain (although this is the recommended practice). For "
-"example, one could use the memory returned by :c:func:`PyMem_RawMalloc` for "
-"allocating Python objects or the memory returned by "
-":c:func:`PyObject_Malloc` for allocating memory for buffers."
+"allocators>`. The APIs used to allocate and free a block of memory must be "
+"from the same domain. For example, :c:func:`PyMem_Free` must be used to free"
+" memory allocated using :c:func:`PyMem_Malloc`."
 msgstr ""
-"所有分配函数都属于三个不同的“分配器域”之一（见 "
-":c:type:`PyMemAllocatorDomain`）。这些域代表了不同的分配策略，并为不同目的进行了优化。每个域如何分配内存和每个域调用哪些内部函数的具体细节被认为是实现细节，但是出于调试目的，可以在"
-" :ref:`此处<default-memory-allocators>` "
-"找到一张简化的表格。没有硬性要求将属于给定域的分配函数返回的内存，仅用于该域提示的目的（虽然这是推荐的做法）。例如，你可以将 "
-":c:func:`PyMem_RawMalloc` 返回的内存用于分配 Python 对象，或者将 :c:func:`PyObject_Malloc` "
-"返回的内存用作缓冲区。"
 
-#: ../../c-api/memory.rst:112
+#: ../../c-api/memory.rst:109
 msgid "The three allocation domains are:"
 msgstr "三个分配域分别是："
 
-#: ../../c-api/memory.rst:114
+#: ../../c-api/memory.rst:111
 msgid ""
 "Raw domain: intended for allocating memory for general-purpose memory "
 "buffers where the allocation *must* go to the system allocator or where the "
 "allocator can operate without the :term:`GIL`. The memory is requested "
-"directly to the system."
+"directly from the system. See :ref:`Raw Memory Interface <raw-"
+"memoryinterface>`."
 msgstr ""
-"原始域：用于为通用内存缓冲区分配内存，分配*必须*转到系统分配器并且分配器可以在没有 :term:`GIL` 的情况下运行。内存直接请求自系统。"
 
-#: ../../c-api/memory.rst:119
+#: ../../c-api/memory.rst:116
 msgid ""
 "\"Mem\" domain: intended for allocating memory for Python buffers and "
 "general-purpose memory buffers where the allocation must be performed with "
-"the :term:`GIL` held. The memory is taken from the Python private heap."
+"the :term:`GIL` held. The memory is taken from the Python private heap. See "
+":ref:`Memory Interface <memoryinterface>`."
 msgstr ""
-"\"Mem\" 域：用于为 Python 缓冲区和通用内存缓冲区分配内存，分配时必须持有 :term:`GIL`。内存取自于 Python 私有堆。"
 
-#: ../../c-api/memory.rst:123
+#: ../../c-api/memory.rst:121
 msgid ""
-"Object domain: intended for allocating memory belonging to Python objects. "
-"The memory is taken from the Python private heap."
-msgstr "对象域：用于分配属于 Python 对象的内存。内存取自于 Python 私有堆。"
+"Object domain: intended for allocating memory for Python objects. The memory"
+" is taken from the Python private heap. See :ref:`Object allocators "
+"<objectinterface>`."
+msgstr ""
 
 #: ../../c-api/memory.rst:126
 msgid ""
-"When freeing memory previously allocated by the allocating functions "
-"belonging to a given domain,the matching specific deallocating functions "
-"must be used. For example, :c:func:`PyMem_Free` must be used to free memory "
-"allocated using :c:func:`PyMem_Malloc`."
+"The :term:`free-threaded <free threading>` build requires that only Python "
+"objects are allocated using the \"object\" domain and that all Python "
+"objects are allocated using that domain. This differs from the prior Python "
+"versions, where this was only a best practice and not a hard requirement."
 msgstr ""
-"当释放属于给定域的分配函数先前分配的内存时，必须使用对应的释放函数。例如，:c:func:`PyMem_Free` 来释放 "
-":c:func:`PyMem_Malloc` 分配的内存。"
 
-#: ../../c-api/memory.rst:131
+#: ../../c-api/memory.rst:130
+msgid ""
+"For example, buffers (non-Python objects) should be allocated using "
+":c:func:`PyMem_Malloc`, :c:func:`PyMem_RawMalloc`, or :c:func:`malloc`, but "
+"not :c:func:`PyObject_Malloc`."
+msgstr ""
+
+#: ../../c-api/memory.rst:133
+msgid "See :ref:`Memory Allocation APIs <free-threaded-memory-allocation>`."
+msgstr ""
+
+#: ../../c-api/memory.rst:139
 msgid "Raw Memory Interface"
 msgstr "原始内存接口"
 
-#: ../../c-api/memory.rst:133
+#: ../../c-api/memory.rst:141
 msgid ""
 "The following function sets are wrappers to the system allocator. These "
 "functions are thread-safe, the :term:`GIL <global interpreter lock>` does "
@@ -233,7 +234,7 @@ msgid ""
 msgstr ""
 "以下函数集封装了系统分配器。这些函数是线程安全的，不需要持有 :term:`全局解释器锁 <global interpreter lock>`。"
 
-#: ../../c-api/memory.rst:137
+#: ../../c-api/memory.rst:145
 msgid ""
 "The :ref:`default raw memory allocator <default-memory-allocators>` uses the"
 " following functions: :c:func:`malloc`, :c:func:`calloc`, :c:func:`realloc` "
@@ -244,14 +245,14 @@ msgstr ""
 ":c:func:`calloc`, :c:func:`realloc` 和 :c:func:`!free`；当请求零个字节时则调用 "
 "``malloc(1)`` (或 ``calloc(1, 1)``)。"
 
-#: ../../c-api/memory.rst:146 ../../c-api/memory.rst:217
-#: ../../c-api/memory.rst:325
+#: ../../c-api/memory.rst:154 ../../c-api/memory.rst:225
+#: ../../c-api/memory.rst:335
 msgid ""
 "Allocates *n* bytes and returns a pointer of type :c:expr:`void*` to the "
 "allocated memory, or ``NULL`` if the request fails."
 msgstr "分配 *n* 个字节并返回一个指向所分配内存的 :c:expr:`void*` 类型指针，如果请求失败则返回 ``NULL``。"
 
-#: ../../c-api/memory.rst:149
+#: ../../c-api/memory.rst:157
 msgid ""
 "Requesting zero bytes returns a distinct non-``NULL`` pointer if possible, "
 "as if ``PyMem_RawMalloc(1)`` had been called instead. The memory will not "
@@ -259,8 +260,8 @@ msgid ""
 msgstr ""
 "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyMem_RawMalloc(1)`` 一样。但是内存不会以任何方式被初始化。"
 
-#: ../../c-api/memory.rst:156 ../../c-api/memory.rst:227
-#: ../../c-api/memory.rst:335
+#: ../../c-api/memory.rst:164 ../../c-api/memory.rst:235
+#: ../../c-api/memory.rst:345
 msgid ""
 "Allocates *nelem* elements each whose size in bytes is *elsize* and returns "
 "a pointer of type :c:expr:`void*` to the allocated memory, or ``NULL`` if "
@@ -269,21 +270,21 @@ msgstr ""
 "分配 *nelem* 个元素，每个元素的大小为 *elsize* 个字节，并返回指向所分配的内存的 :c:expr:`void*` "
 "类型指针，如果请求失败则返回 ``NULL``。 内存会被初始化为零。"
 
-#: ../../c-api/memory.rst:160
+#: ../../c-api/memory.rst:168
 msgid ""
 "Requesting zero elements or elements of size zero bytes returns a distinct "
 "non-``NULL`` pointer if possible, as if ``PyMem_RawCalloc(1, 1)`` had been "
 "called instead."
 msgstr "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyMem_RawCalloc(1, 1)`` 一样。"
 
-#: ../../c-api/memory.rst:169 ../../c-api/memory.rst:240
-#: ../../c-api/memory.rst:348
+#: ../../c-api/memory.rst:177 ../../c-api/memory.rst:248
+#: ../../c-api/memory.rst:358
 msgid ""
 "Resizes the memory block pointed to by *p* to *n* bytes. The contents will "
 "be unchanged to the minimum of the old and the new sizes."
 msgstr "将 *p* 指向的内存块大小调整为 *n* 字节。以新旧内存块大小中的最小值为准，其中内容保持不变，"
 
-#: ../../c-api/memory.rst:172
+#: ../../c-api/memory.rst:180
 msgid ""
 "If *p* is ``NULL``, the call is equivalent to ``PyMem_RawMalloc(n)``; else "
 "if *n* is equal to zero, the memory block is resized but is not freed, and "
@@ -292,7 +293,7 @@ msgstr ""
 "如果 *p* 是 ``NULL`` ，则相当于调用 ``PyMem_RawMalloc(n)`` ；如果 *n* 等于 "
 "0，则内存块大小会被调整，但不会被释放，返回非 ``NULL`` 指针。"
 
-#: ../../c-api/memory.rst:176
+#: ../../c-api/memory.rst:184
 msgid ""
 "Unless *p* is ``NULL``, it must have been returned by a previous call to "
 ":c:func:`PyMem_RawMalloc`, :c:func:`PyMem_RawRealloc` or "
@@ -301,13 +302,13 @@ msgstr ""
 "除非 *p* 是 ``NULL`` ，否则它必须是之前调用 :c:func:`PyMem_RawMalloc` 、 "
 ":c:func:`PyMem_RawRealloc` 或 :c:func:`PyMem_RawCalloc` 所返回的。"
 
-#: ../../c-api/memory.rst:180
+#: ../../c-api/memory.rst:188
 msgid ""
 "If the request fails, :c:func:`PyMem_RawRealloc` returns ``NULL`` and *p* "
 "remains a valid pointer to the previous memory area."
 msgstr "如果请求失败，:c:func:`PyMem_RawRealloc` 返回 ``NULL`` ， *p* 仍然是指向先前内存区域的有效指针。"
 
-#: ../../c-api/memory.rst:186
+#: ../../c-api/memory.rst:194
 msgid ""
 "Frees the memory block pointed to by *p*, which must have been returned by a"
 " previous call to :c:func:`PyMem_RawMalloc`, :c:func:`PyMem_RawRealloc` or "
@@ -318,23 +319,23 @@ msgstr ""
 ":c:func:`PyMem_RawRealloc` 或 :c:func:`PyMem_RawCalloc` 所返回的指针。否则，或在 "
 "``PyMem_RawFree(p)`` 之前已经调用过的情况下，未定义的行为会发生。"
 
-#: ../../c-api/memory.rst:191 ../../c-api/memory.rst:261
-#: ../../c-api/memory.rst:369
+#: ../../c-api/memory.rst:199 ../../c-api/memory.rst:269
+#: ../../c-api/memory.rst:379
 msgid "If *p* is ``NULL``, no operation is performed."
 msgstr "如果 *p* 是 ``NULL``, 那么什么操作也不会进行。"
 
-#: ../../c-api/memory.rst:197
+#: ../../c-api/memory.rst:205
 msgid "Memory Interface"
 msgstr "内存接口"
 
-#: ../../c-api/memory.rst:199 ../../c-api/memory.rst:305
+#: ../../c-api/memory.rst:207 ../../c-api/memory.rst:315
 msgid ""
 "The following function sets, modeled after the ANSI C standard, but "
 "specifying behavior when requesting zero bytes, are available for allocating"
 " and releasing memory from the Python heap."
 msgstr "以下函数集，仿照 ANSI C 标准，并指定了请求零字节时的行为，可用于从Python堆分配和释放内存。"
 
-#: ../../c-api/memory.rst:203
+#: ../../c-api/memory.rst:211
 msgid ""
 "The :ref:`default memory allocator <default-memory-allocators>` uses the "
 ":ref:`pymalloc memory allocator <pymalloc>`."
@@ -342,18 +343,18 @@ msgstr ""
 ":ref:`默认内存分配器 <default-memory-allocators>` 使用了 :ref:`pymalloc 内存分配器 "
 "<pymalloc>`."
 
-#: ../../c-api/memory.rst:208 ../../c-api/memory.rst:320
+#: ../../c-api/memory.rst:216 ../../c-api/memory.rst:330
 msgid ""
 "The :term:`GIL <global interpreter lock>` must be held when using these "
 "functions."
 msgstr "在使用这些函数时，必须持有 :term:`全局解释器锁（GIL） <global interpreter lock>` 。"
 
-#: ../../c-api/memory.rst:213
+#: ../../c-api/memory.rst:221
 msgid ""
 "The default allocator is now pymalloc instead of system :c:func:`malloc`."
 msgstr "现在默认的分配器是 pymalloc 而非系统的 :c:func:`malloc` 。"
 
-#: ../../c-api/memory.rst:220
+#: ../../c-api/memory.rst:228
 msgid ""
 "Requesting zero bytes returns a distinct non-``NULL`` pointer if possible, "
 "as if ``PyMem_Malloc(1)`` had been called instead. The memory will not have "
@@ -361,14 +362,14 @@ msgid ""
 msgstr ""
 "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyMem_Malloc(1)`` 一样。但是内存不会以任何方式被初始化。"
 
-#: ../../c-api/memory.rst:231
+#: ../../c-api/memory.rst:239
 msgid ""
 "Requesting zero elements or elements of size zero bytes returns a distinct "
 "non-``NULL`` pointer if possible, as if ``PyMem_Calloc(1, 1)`` had been "
 "called instead."
 msgstr "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyMem_Calloc(1, 1)`` 一样。"
 
-#: ../../c-api/memory.rst:243
+#: ../../c-api/memory.rst:251
 msgid ""
 "If *p* is ``NULL``, the call is equivalent to ``PyMem_Malloc(n)``; else if "
 "*n* is equal to zero, the memory block is resized but is not freed, and the "
@@ -377,7 +378,7 @@ msgstr ""
 "如果 *p* 是 ``NULL`` ，则相当于调用 ``PyMem_Malloc(n)`` ；如果 *n* 等于 "
 "0，则内存块大小会被调整，但不会被释放，返回非 ``NULL`` 指针。"
 
-#: ../../c-api/memory.rst:247
+#: ../../c-api/memory.rst:255
 msgid ""
 "Unless *p* is ``NULL``, it must have been returned by a previous call to "
 ":c:func:`PyMem_Malloc`, :c:func:`PyMem_Realloc` or :c:func:`PyMem_Calloc`."
@@ -385,13 +386,13 @@ msgstr ""
 "除非 *p* 是 ``NULL`` ，否则它必须是之前调用 :c:func:`PyMem_Malloc` 、 "
 ":c:func:`PyMem_Realloc` 或 :c:func:`PyMem_Calloc` 所返回的。"
 
-#: ../../c-api/memory.rst:250
+#: ../../c-api/memory.rst:258
 msgid ""
 "If the request fails, :c:func:`PyMem_Realloc` returns ``NULL`` and *p* "
 "remains a valid pointer to the previous memory area."
 msgstr "如果请求失败，:c:func:`PyMem_Realloc` 返回 ``NULL`` ， *p* 仍然是指向先前内存区域的有效指针。"
 
-#: ../../c-api/memory.rst:256
+#: ../../c-api/memory.rst:264
 msgid ""
 "Frees the memory block pointed to by *p*, which must have been returned by a"
 " previous call to :c:func:`PyMem_Malloc`, :c:func:`PyMem_Realloc` or "
@@ -402,13 +403,13 @@ msgstr ""
 "或 :c:func:`PyMem_Calloc` 所返回的指针。否则，或在 ``PyMem_Free(p)`` "
 "之前已经调用过的情况下，未定义的行为会发生。"
 
-#: ../../c-api/memory.rst:263
+#: ../../c-api/memory.rst:271
 msgid ""
 "The following type-oriented macros are provided for convenience.  Note  that"
 " *TYPE* refers to any C type."
 msgstr "以下面向类型的宏为方便而提供。 注意 *TYPE* 可以指任何 C 类型。"
 
-#: ../../c-api/memory.rst:269
+#: ../../c-api/memory.rst:277
 msgid ""
 "Same as :c:func:`PyMem_Malloc`, but allocates ``(n * sizeof(TYPE))`` bytes "
 "of memory.  Returns a pointer cast to ``TYPE*``.  The memory will not have "
@@ -417,7 +418,7 @@ msgstr ""
 "与 :c:func:`PyMem_Malloc` 相同，但会分配 ``(n * sizeof(TYPE))`` 字节的内存。 返回一个转换为 "
 "``TYPE*`` 的指针。 内存不会以任何方式被初始化。"
 
-#: ../../c-api/memory.rst:276
+#: ../../c-api/memory.rst:284
 msgid ""
 "Same as :c:func:`PyMem_Realloc`, but the memory block is resized to ``(n * "
 "sizeof(TYPE))`` bytes.  Returns a pointer cast to ``TYPE*``. On return, *p* "
@@ -427,17 +428,17 @@ msgstr ""
 "与 :c:func:`PyMem_Realloc` 类似，但内存块的大小被调整为 ``(n * sizeof(TYPE))`` 个字节。 返回一个转换为"
 " ``TYPE*`` 的指针。 在返回时，*p* 将是一个指向新内存区域的指针，或者如果执行失败则为 ``NULL``。"
 
-#: ../../c-api/memory.rst:281
+#: ../../c-api/memory.rst:289
 msgid ""
 "This is a C preprocessor macro; *p* is always reassigned.  Save the original"
 " value of *p* to avoid losing memory when handling errors."
 msgstr "这是一个 C 预处理宏， *p* 总是被重新赋值。请保存 *p* 的原始值，以避免在处理错误时丢失内存。"
 
-#: ../../c-api/memory.rst:287
+#: ../../c-api/memory.rst:295
 msgid "Same as :c:func:`PyMem_Free`."
 msgstr "与 :c:func:`PyMem_Free` 相同"
 
-#: ../../c-api/memory.rst:289
+#: ../../c-api/memory.rst:297
 msgid ""
 "In addition, the following macro sets are provided for calling the Python "
 "memory allocator directly, without involving the C API functions listed "
@@ -447,35 +448,35 @@ msgstr ""
 "此外，我们还提供了以下宏集用于直接调用 Python 内存分配器，而不涉及上面列出的 C API 函数。但是请注意，使用它们并不能保证跨 Python "
 "版本的二进制兼容性，因此在扩展模块被弃用。"
 
-#: ../../c-api/memory.rst:294
+#: ../../c-api/memory.rst:302
 msgid "``PyMem_MALLOC(size)``"
 msgstr "``PyMem_MALLOC(size)``"
 
-#: ../../c-api/memory.rst:295
+#: ../../c-api/memory.rst:303
 msgid "``PyMem_NEW(type, size)``"
 msgstr "``PyMem_NEW(type, size)``"
 
-#: ../../c-api/memory.rst:296
+#: ../../c-api/memory.rst:304
 msgid "``PyMem_REALLOC(ptr, size)``"
 msgstr "``PyMem_REALLOC(ptr, size)``"
 
-#: ../../c-api/memory.rst:297
+#: ../../c-api/memory.rst:305
 msgid "``PyMem_RESIZE(ptr, type, size)``"
 msgstr "``PyMem_RESIZE(ptr, type, size)``"
 
-#: ../../c-api/memory.rst:298
+#: ../../c-api/memory.rst:306
 msgid "``PyMem_FREE(ptr)``"
 msgstr "``PyMem_FREE(ptr)``"
 
-#: ../../c-api/memory.rst:299
+#: ../../c-api/memory.rst:307
 msgid "``PyMem_DEL(ptr)``"
 msgstr "``PyMem_DEL(ptr)``"
 
-#: ../../c-api/memory.rst:303
+#: ../../c-api/memory.rst:313
 msgid "Object allocators"
 msgstr "对象分配器"
 
-#: ../../c-api/memory.rst:310
+#: ../../c-api/memory.rst:320
 msgid ""
 "There is no guarantee that the memory returned by these allocators can be "
 "successfully cast to a Python object when intercepting the allocating "
@@ -485,7 +486,7 @@ msgstr ""
 "当通过 :ref:`自定义内存分配器 <customize-memory-allocators>` "
 "部分描述的方法拦截该域中的分配函数时，无法保证这些分配器返回的内存可以被成功地转换成 Python 对象。"
 
-#: ../../c-api/memory.rst:315
+#: ../../c-api/memory.rst:325
 msgid ""
 "The :ref:`default object allocator <default-memory-allocators>` uses the "
 ":ref:`pymalloc memory allocator <pymalloc>`."
@@ -493,7 +494,7 @@ msgstr ""
 ":ref:`默认对象分配器 <default-memory-allocators>` 使用 :ref:`pymalloc 内存分配器 "
 "<pymalloc>`."
 
-#: ../../c-api/memory.rst:328
+#: ../../c-api/memory.rst:338
 msgid ""
 "Requesting zero bytes returns a distinct non-``NULL`` pointer if possible, "
 "as if ``PyObject_Malloc(1)`` had been called instead. The memory will not "
@@ -501,14 +502,14 @@ msgid ""
 msgstr ""
 "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyObject_Malloc(1)`` 一样。但是内存不会以任何方式被初始化。"
 
-#: ../../c-api/memory.rst:339
+#: ../../c-api/memory.rst:349
 msgid ""
 "Requesting zero elements or elements of size zero bytes returns a distinct "
 "non-``NULL`` pointer if possible, as if ``PyObject_Calloc(1, 1)`` had been "
 "called instead."
 msgstr "请求零字节可能返回一个独特的非 ``NULL`` 指针，就像调用了 ``PyObject_Calloc(1, 1)`` 一样。"
 
-#: ../../c-api/memory.rst:351
+#: ../../c-api/memory.rst:361
 msgid ""
 "If *p* is ``NULL``, the call is equivalent to ``PyObject_Malloc(n)``; else "
 "if *n* is equal to zero, the memory block is resized but is not freed, and "
@@ -517,7 +518,7 @@ msgstr ""
 "如果*p*是 ``NULL``，则相当于调用 ``PyObject_Malloc(n)`` ；如果 *n* 等于 "
 "0，则内存块大小会被调整，但不会被释放，返回非 ``NULL`` 指针。"
 
-#: ../../c-api/memory.rst:355
+#: ../../c-api/memory.rst:365
 msgid ""
 "Unless *p* is ``NULL``, it must have been returned by a previous call to "
 ":c:func:`PyObject_Malloc`, :c:func:`PyObject_Realloc` or "
@@ -526,13 +527,13 @@ msgstr ""
 "除非 *p* 是 ``NULL`` ，否则它必须是之前调用 :c:func:`PyObject_Malloc` 、 "
 ":c:func:`PyObject_Realloc` 或 :c:func:`PyObject_Calloc` 所返回的。"
 
-#: ../../c-api/memory.rst:358
+#: ../../c-api/memory.rst:368
 msgid ""
 "If the request fails, :c:func:`PyObject_Realloc` returns ``NULL`` and *p* "
 "remains a valid pointer to the previous memory area."
 msgstr "如果请求失败，:c:func:`PyObject_Realloc` 返回 ``NULL`` ， *p* 仍然是指向先前内存区域的有效指针。"
 
-#: ../../c-api/memory.rst:364
+#: ../../c-api/memory.rst:374
 msgid ""
 "Frees the memory block pointed to by *p*, which must have been returned by a"
 " previous call to :c:func:`PyObject_Malloc`, :c:func:`PyObject_Realloc` or "
@@ -543,91 +544,91 @@ msgstr ""
 ":c:func:`PyObject_Realloc` 或 :c:func:`PyObject_Calloc` 所返回的指针。否则，或在 "
 "``PyObject_Free(p)`` 之前已经调用过的情况下，未定义行为会发生。"
 
-#: ../../c-api/memory.rst:375
+#: ../../c-api/memory.rst:385
 msgid "Default Memory Allocators"
 msgstr "默认内存分配器"
 
-#: ../../c-api/memory.rst:377
+#: ../../c-api/memory.rst:387
 msgid "Default memory allocators:"
 msgstr "默认内存分配器："
 
-#: ../../c-api/memory.rst:380
+#: ../../c-api/memory.rst:390
 msgid "Configuration"
 msgstr "配置"
 
-#: ../../c-api/memory.rst:380
+#: ../../c-api/memory.rst:390
 msgid "Name"
 msgstr "名称"
 
-#: ../../c-api/memory.rst:380
+#: ../../c-api/memory.rst:390
 msgid "PyMem_RawMalloc"
 msgstr "PyMem_RawMalloc"
 
-#: ../../c-api/memory.rst:380
+#: ../../c-api/memory.rst:390
 msgid "PyMem_Malloc"
 msgstr "PyMem_Malloc"
 
-#: ../../c-api/memory.rst:380
+#: ../../c-api/memory.rst:390
 msgid "PyObject_Malloc"
 msgstr "PyObject_Malloc"
 
-#: ../../c-api/memory.rst:382
+#: ../../c-api/memory.rst:392
 msgid "Release build"
 msgstr "发布版本"
 
-#: ../../c-api/memory.rst:382
+#: ../../c-api/memory.rst:392
 msgid "``\"pymalloc\"``"
 msgstr "``\"pymalloc\"``"
 
-#: ../../c-api/memory.rst:382 ../../c-api/memory.rst:384
+#: ../../c-api/memory.rst:392 ../../c-api/memory.rst:394
 msgid "``malloc``"
 msgstr "``malloc``"
 
-#: ../../c-api/memory.rst:382
+#: ../../c-api/memory.rst:392
 msgid "``pymalloc``"
 msgstr "``pymalloc``"
 
-#: ../../c-api/memory.rst:383
+#: ../../c-api/memory.rst:393
 msgid "Debug build"
 msgstr "调试构建"
 
-#: ../../c-api/memory.rst:383
+#: ../../c-api/memory.rst:393
 msgid "``\"pymalloc_debug\"``"
 msgstr "``\"pymalloc_debug\"``"
 
-#: ../../c-api/memory.rst:383 ../../c-api/memory.rst:385
+#: ../../c-api/memory.rst:393 ../../c-api/memory.rst:395
 msgid "``malloc`` + debug"
 msgstr "``malloc`` + debug"
 
-#: ../../c-api/memory.rst:383
+#: ../../c-api/memory.rst:393
 msgid "``pymalloc`` + debug"
 msgstr "``pymalloc`` + debug"
 
-#: ../../c-api/memory.rst:384
+#: ../../c-api/memory.rst:394
 msgid "Release build, without pymalloc"
 msgstr "没有 pymalloc 的发布版本"
 
-#: ../../c-api/memory.rst:384
+#: ../../c-api/memory.rst:394
 msgid "``\"malloc\"``"
 msgstr "``\"malloc\"``"
 
-#: ../../c-api/memory.rst:385
+#: ../../c-api/memory.rst:395
 msgid "Debug build, without pymalloc"
 msgstr "没有 pymalloc 的调试构建"
 
-#: ../../c-api/memory.rst:385
+#: ../../c-api/memory.rst:395
 msgid "``\"malloc_debug\"``"
 msgstr "``\"malloc_debug\"``"
 
-#: ../../c-api/memory.rst:388
+#: ../../c-api/memory.rst:398
 msgid "Legend:"
 msgstr "说明："
 
-#: ../../c-api/memory.rst:390
+#: ../../c-api/memory.rst:400
 msgid "Name: value for :envvar:`PYTHONMALLOC` environment variable."
 msgstr "名称：:envvar:`PYTHONMALLOC` 环境变量的值。"
 
-#: ../../c-api/memory.rst:391
+#: ../../c-api/memory.rst:401
 msgid ""
 "``malloc``: system allocators from the standard C library, C functions: "
 ":c:func:`malloc`, :c:func:`calloc`, :c:func:`realloc` and :c:func:`free`."
@@ -635,11 +636,11 @@ msgstr ""
 "``malloc``：来自 C 标准库的系统分配器，C "
 "函数：:c:func:`malloc`、:c:func:`calloc`、:c:func:`realloc` 和 :c:func:`free`。"
 
-#: ../../c-api/memory.rst:393
+#: ../../c-api/memory.rst:403
 msgid "``pymalloc``: :ref:`pymalloc memory allocator <pymalloc>`."
 msgstr "``pymalloc``：:ref:`pymalloc 内存分配器 <pymalloc>`."
 
-#: ../../c-api/memory.rst:394
+#: ../../c-api/memory.rst:404
 msgid ""
 "``mimalloc``: :ref:`mimalloc memory allocator <mimalloc>`.  The pymalloc "
 "allocator will be used if mimalloc support isn't available."
@@ -647,75 +648,75 @@ msgstr ""
 "``mimalloc``: :ref:`mimalloc 内存分配器 <mimalloc>`。 如果 mimalloc 不受支持则将使用 "
 "pymalloc 分配器。"
 
-#: ../../c-api/memory.rst:396
+#: ../../c-api/memory.rst:406
 msgid ""
 "\"+ debug\": with :ref:`debug hooks on the Python memory allocators <pymem-"
 "debug-hooks>`."
 msgstr "\"+ debug\": 附带 :ref:`Python 内存分配器的调试钩子 <pymem-debug-hooks>`."
 
-#: ../../c-api/memory.rst:398
+#: ../../c-api/memory.rst:408
 msgid "\"Debug build\": :ref:`Python build in debug mode <debug-build>`."
 msgstr "“调试构建”：:ref:`调试模式下的 Python 构建 <debug-build>`。"
 
-#: ../../c-api/memory.rst:403
+#: ../../c-api/memory.rst:413
 msgid "Customize Memory Allocators"
 msgstr "自定义内存分配器"
 
-#: ../../c-api/memory.rst:409
+#: ../../c-api/memory.rst:419
 msgid ""
 "Structure used to describe a memory block allocator. The structure has the "
 "following fields:"
 msgstr "用于描述内存块分配器的结构体。 该结构体下列字段:"
 
-#: ../../c-api/memory.rst:413 ../../c-api/memory.rst:660
+#: ../../c-api/memory.rst:423 ../../c-api/memory.rst:670
 msgid "Field"
 msgstr "域"
 
-#: ../../c-api/memory.rst:413 ../../c-api/memory.rst:660
+#: ../../c-api/memory.rst:423 ../../c-api/memory.rst:670
 msgid "Meaning"
 msgstr "含意"
 
-#: ../../c-api/memory.rst:415 ../../c-api/memory.rst:662
+#: ../../c-api/memory.rst:425 ../../c-api/memory.rst:672
 msgid "``void *ctx``"
 msgstr "``void *ctx``"
 
-#: ../../c-api/memory.rst:415 ../../c-api/memory.rst:662
+#: ../../c-api/memory.rst:425 ../../c-api/memory.rst:672
 msgid "user context passed as first argument"
 msgstr "作为第一个参数传入的用户上下文"
 
-#: ../../c-api/memory.rst:417
+#: ../../c-api/memory.rst:427
 msgid "``void* malloc(void *ctx, size_t size)``"
 msgstr "``void* malloc(void *ctx, size_t size)``"
 
-#: ../../c-api/memory.rst:417
+#: ../../c-api/memory.rst:427
 msgid "allocate a memory block"
 msgstr "分配一个内存块"
 
-#: ../../c-api/memory.rst:419
+#: ../../c-api/memory.rst:429
 msgid "``void* calloc(void *ctx, size_t nelem, size_t elsize)``"
 msgstr "``void* calloc(void *ctx, size_t nelem, size_t elsize)``"
 
-#: ../../c-api/memory.rst:419
+#: ../../c-api/memory.rst:429
 msgid "allocate a memory block initialized with zeros"
 msgstr "分配一个初始化为 0 的内存块"
 
-#: ../../c-api/memory.rst:422
+#: ../../c-api/memory.rst:432
 msgid "``void* realloc(void *ctx, void *ptr, size_t new_size)``"
 msgstr "``void* realloc(void *ctx, void *ptr, size_t new_size)``"
 
-#: ../../c-api/memory.rst:422
+#: ../../c-api/memory.rst:432
 msgid "allocate or resize a memory block"
 msgstr "分配一个内存块或调整其大小"
 
-#: ../../c-api/memory.rst:424
+#: ../../c-api/memory.rst:434
 msgid "``void free(void *ctx, void *ptr)``"
 msgstr "``void free(void *ctx, void *ptr)``"
 
-#: ../../c-api/memory.rst:424
+#: ../../c-api/memory.rst:434
 msgid "free a memory block"
 msgstr "释放一个内存块"
 
-#: ../../c-api/memory.rst:427
+#: ../../c-api/memory.rst:437
 msgid ""
 "The :c:type:`!PyMemAllocator` structure was renamed to "
 ":c:type:`PyMemAllocatorEx` and a new ``calloc`` field was added."
@@ -723,78 +724,78 @@ msgstr ""
 ":c:type:`!PyMemAllocator` 结构被重命名为 :c:type:`PyMemAllocatorEx` 并新增了一个 "
 "``calloc`` 字段。"
 
-#: ../../c-api/memory.rst:434
+#: ../../c-api/memory.rst:444
 msgid "Enum used to identify an allocator domain. Domains:"
 msgstr "用来识别分配器域的枚举类。域有："
 
-#: ../../c-api/memory.rst:440 ../../c-api/memory.rst:449
-#: ../../c-api/memory.rst:458
+#: ../../c-api/memory.rst:450 ../../c-api/memory.rst:459
+#: ../../c-api/memory.rst:468
 msgid "Functions:"
 msgstr "函数"
 
-#: ../../c-api/memory.rst:442
+#: ../../c-api/memory.rst:452
 msgid ":c:func:`PyMem_RawMalloc`"
 msgstr ":c:func:`PyMem_RawMalloc`"
 
-#: ../../c-api/memory.rst:443
+#: ../../c-api/memory.rst:453
 msgid ":c:func:`PyMem_RawRealloc`"
 msgstr ":c:func:`PyMem_RawRealloc`"
 
-#: ../../c-api/memory.rst:444
+#: ../../c-api/memory.rst:454
 msgid ":c:func:`PyMem_RawCalloc`"
 msgstr ":c:func:`PyMem_RawCalloc`"
 
-#: ../../c-api/memory.rst:445
+#: ../../c-api/memory.rst:455
 msgid ":c:func:`PyMem_RawFree`"
 msgstr ":c:func:`PyMem_RawFree`"
 
-#: ../../c-api/memory.rst:451
+#: ../../c-api/memory.rst:461
 msgid ":c:func:`PyMem_Malloc`,"
 msgstr ":c:func:`PyMem_Malloc`,"
 
-#: ../../c-api/memory.rst:452
+#: ../../c-api/memory.rst:462
 msgid ":c:func:`PyMem_Realloc`"
 msgstr ":c:func:`PyMem_Realloc`"
 
-#: ../../c-api/memory.rst:453
+#: ../../c-api/memory.rst:463
 msgid ":c:func:`PyMem_Calloc`"
 msgstr ":c:func:`PyMem_Calloc`"
 
-#: ../../c-api/memory.rst:454
+#: ../../c-api/memory.rst:464
 msgid ":c:func:`PyMem_Free`"
 msgstr ":c:func:`PyMem_Free`"
 
-#: ../../c-api/memory.rst:460
+#: ../../c-api/memory.rst:470
 msgid ":c:func:`PyObject_Malloc`"
 msgstr ":c:func:`PyObject_Malloc`"
 
-#: ../../c-api/memory.rst:461
+#: ../../c-api/memory.rst:471
 msgid ":c:func:`PyObject_Realloc`"
 msgstr ":c:func:`PyObject_Realloc`"
 
-#: ../../c-api/memory.rst:462
+#: ../../c-api/memory.rst:472
 msgid ":c:func:`PyObject_Calloc`"
 msgstr ":c:func:`PyObject_Calloc`"
 
-#: ../../c-api/memory.rst:463
+#: ../../c-api/memory.rst:473
 msgid ":c:func:`PyObject_Free`"
 msgstr ":c:func:`PyObject_Free`"
 
-#: ../../c-api/memory.rst:467
+#: ../../c-api/memory.rst:477
 msgid "Get the memory block allocator of the specified domain."
 msgstr "获取指定域的内存块分配器。"
 
-#: ../../c-api/memory.rst:472
+#: ../../c-api/memory.rst:482
 msgid "Set the memory block allocator of the specified domain."
 msgstr "设置指定域的内存块分配器。"
 
-#: ../../c-api/memory.rst:474
+#: ../../c-api/memory.rst:484
 msgid ""
 "The new allocator must return a distinct non-``NULL`` pointer when "
 "requesting zero bytes."
 msgstr "当请求零字节时，新的分配器必须返回一个独特的非 ``NULL`` 指针。"
 
-#: ../../c-api/memory.rst:477
+#: ../../c-api/memory.rst:487
 msgid ""
 "For the :c:macro:`PYMEM_DOMAIN_RAW` domain, the allocator must be thread-"
 "safe: the :term:`GIL <global interpreter lock>` is not held when the "
@@ -803,14 +804,14 @@ msgstr ""
 "对于 :c:macro:`PYMEM_DOMAIN_RAW` 域，分配器必须是线程安全的：当分配器被调用时将不持有 :term:`GIL <global"
 " interpreter lock>`。"
 
-#: ../../c-api/memory.rst:481
+#: ../../c-api/memory.rst:491
 msgid ""
 "For the remaining domains, the allocator must also be thread-safe: the "
 "allocator may be called in different interpreters that do not share a "
 "``GIL``."
 msgstr "对于其余的域，分配器也必须是线程安全的：分配器可以在不共享 ``GIL`` 的不同解释器中被调用。"
 
-#: ../../c-api/memory.rst:485
+#: ../../c-api/memory.rst:495
 msgid ""
 "If the new allocator is not a hook (does not call the previous allocator), "
 "the :c:func:`PyMem_SetupDebugHooks` function must be called to reinstall the"
@@ -819,7 +820,7 @@ msgstr ""
 "如果新的分配器不是钩子（不调用之前的分配器），必须调用 :c:func:`PyMem_SetupDebugHooks` "
 "函数在新分配器上重新安装调试钩子。"
 
-#: ../../c-api/memory.rst:489
+#: ../../c-api/memory.rst:499
 msgid ""
 "See also :c:member:`PyPreConfig.allocator` and :ref:`Preinitialize Python "
 "with PyPreConfig <c-preinit>`."
@@ -827,11 +828,11 @@ msgstr ""
 "另请参阅 :c:member:`PyPreConfig.allocator` 和 :ref:`Preinitialize Python with "
 "PyPreConfig <c-preinit>`。"
 
-#: ../../c-api/memory.rst:494
+#: ../../c-api/memory.rst:504
 msgid ":c:func:`PyMem_SetAllocator` does have the following contract:"
 msgstr ":c:func:`PyMem_SetAllocator` 没有以下合约:"
 
-#: ../../c-api/memory.rst:496
+#: ../../c-api/memory.rst:506
 msgid ""
 "It can be called after :c:func:`Py_PreInitialize` and before "
 ":c:func:`Py_InitializeFromConfig` to install a custom memory allocator. "
@@ -844,7 +845,7 @@ msgstr ""
 "之前调用它来安装自定义的内存分配器。 对于所安装的分配器除了域的规定以外没有任何其他限制（例如 Raw Domain 允许分配器在不持有 GIL "
 "的情况下被调用）。 请参阅 :ref:`有关分配器域的章节 <allocator-domains>` 来了解详情。"
 
-#: ../../c-api/memory.rst:504
+#: ../../c-api/memory.rst:514
 msgid ""
 "If called after Python has finish initializing (after "
 ":c:func:`Py_InitializeFromConfig` has been called) the allocator **must** "
@@ -854,21 +855,21 @@ msgstr ""
 "如果在 Python 已完成初始化之后（即 :c:func:`Py_InitializeFromConfig` 被调用之后）被调用则自定义分配器 "
 "**must** 必须包装现有的分配器。 将现有分配器替换为任意的其他分配器是 **不受支持的**。"
 
-#: ../../c-api/memory.rst:509
+#: ../../c-api/memory.rst:519
 msgid "All allocators must be thread-safe."
 msgstr "所有分配器都必须是线程安全的。"
 
-#: ../../c-api/memory.rst:515
+#: ../../c-api/memory.rst:525
 msgid ""
 "Setup :ref:`debug hooks in the Python memory allocators <pymem-debug-hooks>`"
 " to detect memory errors."
 msgstr "设置 :ref:`Python 内存分配器的调试钩子 <pymem-debug-hooks>` 以检测内存错误。"
 
-#: ../../c-api/memory.rst:522
+#: ../../c-api/memory.rst:532
 msgid "Debug hooks on the Python memory allocators"
 msgstr "Python 内存分配器的调试钩子"
 
-#: ../../c-api/memory.rst:524
+#: ../../c-api/memory.rst:534
 msgid ""
 "When :ref:`Python is built in debug mode <debug-build>`, the "
 ":c:func:`PyMem_SetupDebugHooks` function is called at the :ref:`Python "
@@ -878,7 +879,7 @@ msgstr ""
 "当 :ref:`Python 在调试模式下构建 <debug-build>`，:c:func:`PyMem_SetupDebugHooks` 函数在 "
 ":ref:`Python 预初始化 <c-preinit>` 时被调用，以在 Python 内存分配器上设置调试钩子以检测内存错误。"
 
-#: ../../c-api/memory.rst:529
+#: ../../c-api/memory.rst:539
 msgid ""
 "The :envvar:`PYTHONMALLOC` environment variable can be used to install debug"
 " hooks on a Python compiled in release mode (ex: ``PYTHONMALLOC=debug``)."
@@ -886,7 +887,7 @@ msgstr ""
 ":envvar:`PYTHONMALLOC` 环境变量可被用于在以发行模式下编译的 Python "
 "上安装调试钩子（例如：``PYTHONMALLOC=debug``）。"
 
-#: ../../c-api/memory.rst:532
+#: ../../c-api/memory.rst:542
 msgid ""
 "The :c:func:`PyMem_SetupDebugHooks` function can be used to set debug hooks "
 "after calling :c:func:`PyMem_SetAllocator`."
@@ -894,7 +895,7 @@ msgstr ""
 ":c:func:`PyMem_SetupDebugHooks` 函数可被用于在调用了 :c:func:`PyMem_SetAllocator` "
 "之后设置调试钩子。"
 
-#: ../../c-api/memory.rst:535
+#: ../../c-api/memory.rst:545
 msgid ""
 "These debug hooks fill dynamically allocated memory blocks with special, "
 "recognizable bit patterns. Newly allocated memory is filled with the byte "
@@ -907,26 +908,26 @@ msgstr ""
 "）填充，释放的内存用字节 ``0xDD`` （``PYMEM_DEADBYTE`` ）填充。内存块被填充了字节 ``0xFD`` "
 "（``PYMEM_FORBIDDENBYTE`` ）的“禁止字节”包围。这些字节串不太可能是合法的地址、浮点数或ASCII字符串"
 
-#: ../../c-api/memory.rst:542
+#: ../../c-api/memory.rst:552
 msgid "Runtime checks:"
 msgstr "运行时检查："
 
-#: ../../c-api/memory.rst:544
+#: ../../c-api/memory.rst:554
 msgid ""
 "Detect API violations. For example, detect if :c:func:`PyObject_Free` is "
 "called on a memory block allocated by :c:func:`PyMem_Malloc`."
 msgstr ""
 "检测对 API 的违反。例如：检测对 :c:func:`PyMem_Malloc` 分配的内存块调用 :c:func:`PyObject_Free`。"
 
-#: ../../c-api/memory.rst:546
+#: ../../c-api/memory.rst:556
 msgid "Detect write before the start of the buffer (buffer underflow)."
 msgstr "检测缓冲区起始位置前的写入（缓冲区下溢）。"
 
-#: ../../c-api/memory.rst:547
+#: ../../c-api/memory.rst:557
 msgid "Detect write after the end of the buffer (buffer overflow)."
 msgstr "检测缓冲区终止位置后的写入（缓冲区溢出）。"
 
-#: ../../c-api/memory.rst:548
+#: ../../c-api/memory.rst:558
 msgid ""
 "Check that the :term:`GIL <global interpreter lock>` is held when allocator "
 "functions of :c:macro:`PYMEM_DOMAIN_OBJ` (ex: :c:func:`PyObject_Malloc`) and"
@@ -937,7 +938,7 @@ msgstr ""
 ":c:macro:`PYMEM_DOMAIN_MEM` (如: :c:func:`PyMem_Malloc`) 域的分配器函数时是否持有 "
 ":term:`GIL <global interpreter lock>`。"
 
-#: ../../c-api/memory.rst:553
+#: ../../c-api/memory.rst:563
 msgid ""
 "On error, the debug hooks use the :mod:`tracemalloc` module to get the "
 "traceback where a memory block was allocated. The traceback is only "
@@ -947,7 +948,7 @@ msgstr ""
 "在出错时，调试钩子使用 :mod:`tracemalloc` 模块来回溯内存块被分配的位置。只有当 :mod:`tracemalloc` 正在追踪 "
 "Python 内存分配，并且内存块被追踪时，才会显示回溯。"
 
-#: ../../c-api/memory.rst:558
+#: ../../c-api/memory.rst:568
 msgid ""
 "Let *S* = ``sizeof(size_t)``. ``2*S`` bytes are added at each end of each "
 "block of *N* bytes requested.  The memory layout is like so, where p "
@@ -960,49 +961,49 @@ msgstr ""
 "内存的布局像是这样，其中 p 代表由类似 malloc 或类似 realloc 的函数所返回的地址 (``p[i:j]`` 表示从 ``*(p+i)``"
 " 左侧开始到 ``*(p+j)`` 左侧止的字节数据切片；请注意对负索引号的处理与 Python 切片是不同的）:"
 
-#: ../../c-api/memory.rst:564
+#: ../../c-api/memory.rst:574
 msgid "``p[-2*S:-S]``"
 msgstr "``p[-2*S:-S]``"
 
-#: ../../c-api/memory.rst:565
+#: ../../c-api/memory.rst:575
 msgid ""
 "Number of bytes originally asked for.  This is a size_t, big-endian (easier "
 "to read in a memory dump)."
 msgstr "最初所要求的字节数。 这是一个 size_t，为大端序（易于在内存转储中读取）。"
 
-#: ../../c-api/memory.rst:567
+#: ../../c-api/memory.rst:577
 msgid "``p[-S]``"
 msgstr "``p[-S]``"
 
-#: ../../c-api/memory.rst:568
+#: ../../c-api/memory.rst:578
 msgid "API identifier (ASCII character):"
 msgstr "API 标识符（ASCII 字符）:"
 
-#: ../../c-api/memory.rst:570
+#: ../../c-api/memory.rst:580
 msgid "``'r'`` for :c:macro:`PYMEM_DOMAIN_RAW`."
 msgstr "``'r'`` 表示 :c:macro:`PYMEM_DOMAIN_RAW`。"
 
-#: ../../c-api/memory.rst:571
+#: ../../c-api/memory.rst:581
 msgid "``'m'`` for :c:macro:`PYMEM_DOMAIN_MEM`."
 msgstr "``'m'`` 表示 :c:macro:`PYMEM_DOMAIN_MEM`。"
 
-#: ../../c-api/memory.rst:572
+#: ../../c-api/memory.rst:582
 msgid "``'o'`` for :c:macro:`PYMEM_DOMAIN_OBJ`."
 msgstr "``'o'`` 表示 :c:macro:`PYMEM_DOMAIN_OBJ`。"
 
-#: ../../c-api/memory.rst:574
+#: ../../c-api/memory.rst:584
 msgid "``p[-S+1:0]``"
 msgstr "``p[-S+1:0]``"
 
-#: ../../c-api/memory.rst:575
+#: ../../c-api/memory.rst:585
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch under- writes and reads."
 msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获下层的写入和读取。"
 
-#: ../../c-api/memory.rst:577
+#: ../../c-api/memory.rst:587
 msgid "``p[0:N]``"
 msgstr "``p[0:N]``"
 
-#: ../../c-api/memory.rst:578
+#: ../../c-api/memory.rst:588
 msgid ""
 "The requested memory, filled with copies of PYMEM_CLEANBYTE, used to catch "
 "reference to uninitialized memory.  When a realloc-like function is called "
@@ -1017,25 +1018,25 @@ msgstr ""
 "PYMEM_DEADBYTE 来重写，以捕获对已释放内存的引用。 当调用 realloc 之类的函数来请求更小的内存块时，多余的旧字节也会用 "
 "PYMEM_DEADBYTE 来填充。"
 
-#: ../../c-api/memory.rst:586
+#: ../../c-api/memory.rst:596
 msgid "``p[N:N+S]``"
 msgstr "``p[N:N+S]``"
 
-#: ../../c-api/memory.rst:587
+#: ../../c-api/memory.rst:597
 msgid "Copies of PYMEM_FORBIDDENBYTE.  Used to catch over- writes and reads."
 msgstr "PYMEM_FORBIDDENBYTE 的副本。 用于捕获超限的写入和读取。"
 
-#: ../../c-api/memory.rst:589
+#: ../../c-api/memory.rst:599
 msgid "``p[N+S:N+2*S]``"
 msgstr "``p[N+S:N+2*S]``"
 
-#: ../../c-api/memory.rst:590
+#: ../../c-api/memory.rst:600
 msgid ""
 "Only used if the ``PYMEM_DEBUG_SERIALNO`` macro is defined (not defined by "
 "default)."
 msgstr "仅当定义了 ``PYMEM_DEBUG_SERIALNO`` 宏时会被使用（默认情况下将不定义）。"
 
-#: ../../c-api/memory.rst:593
+#: ../../c-api/memory.rst:603
 msgid ""
 "A serial number, incremented by 1 on each call to a malloc-like or realloc-"
 "like function.  Big-endian :c:type:`size_t`.  If \"bad memory\" is detected "
@@ -1048,7 +1049,7 @@ msgstr ""
 "如果之后检测到了“被破坏的内存”，此序列号提供了一个很好的手段用来在下次运行时设置中断点，以捕获该内存块被破坏的瞬间。 obmalloc.c "
 "中的静态函数 bumpserialno() 是唯一会递增序列号的函数，它的存在让你可以轻松地设置这样的中断点。"
 
-#: ../../c-api/memory.rst:600
+#: ../../c-api/memory.rst:610
 msgid ""
 "A realloc-like or free-like function first checks that the "
 "PYMEM_FORBIDDENBYTE bytes at each end are intact.  If they've been altered, "
@@ -1065,7 +1066,7 @@ msgstr ""
 "另一种主要的失败模式是当程序读到某种特殊的比特模式并试图将其用作地址时触发内存错误。 如果你随即进入调试器并查看该对象，你很可能会看到它已完全被填充为 "
 "PYMEM_DEADBYTE (意味着已释放的内存被使用) 或 PYMEM_CLEANBYTE (意味着未初始货摊内存被使用)。"
 
-#: ../../c-api/memory.rst:609
+#: ../../c-api/memory.rst:619
 msgid ""
 "The :c:func:`PyMem_SetupDebugHooks` function now also works on Python "
 "compiled in release mode.  On error, the debug hooks now use "
@@ -1079,7 +1080,7 @@ msgstr ""
 ":c:macro:`PYMEM_DOMAIN_OBJ` 和 :c:macro:`PYMEM_DOMAIN_MEM` 作用域的函数被调用时检查是否持有 "
 "GIL。"
 
-#: ../../c-api/memory.rst:617
+#: ../../c-api/memory.rst:627
 msgid ""
 "Byte patterns ``0xCB`` (``PYMEM_CLEANBYTE``), ``0xDB`` (``PYMEM_DEADBYTE``) "
 "and ``0xFB`` (``PYMEM_FORBIDDENBYTE``) have been replaced with ``0xCD``, "
@@ -1090,11 +1091,11 @@ msgstr ""
 "``0xFB`` (``PYMEM_FORBIDDENBYTE``) 已被 ``0xCD`` 、 ``0xDD`` 和 ``0xFD`` 替代以使用与 "
 "Windows CRT 调试 ``malloc()`` 和 ``free()`` 相同的值。"
 
-#: ../../c-api/memory.rst:627
+#: ../../c-api/memory.rst:637
 msgid "The pymalloc allocator"
 msgstr "pymalloc 分配器"
 
-#: ../../c-api/memory.rst:629
+#: ../../c-api/memory.rst:639
 msgid ""
 "Python has a *pymalloc* allocator optimized for small objects (smaller or "
 "equal to 512 bytes) with a short lifetime. It uses memory mappings called "
@@ -1106,7 +1107,7 @@ msgstr ""
 "它使用名为“arena”的内存映射，在 32 位平台上的固定大小为 256 KiB，在 64 位平台上的固定大小为 1 MiB。 对于大于 512 "
 "字节的分配，它会回退为 :c:func:`PyMem_RawMalloc` 和 :c:func:`PyMem_RawRealloc`。"
 
-#: ../../c-api/memory.rst:635
+#: ../../c-api/memory.rst:645
 msgid ""
 "*pymalloc* is the :ref:`default allocator <default-memory-allocators>` of "
 "the :c:macro:`PYMEM_DOMAIN_MEM` (ex: :c:func:`PyMem_Malloc`) and "
@@ -1116,23 +1117,23 @@ msgstr ""
 ":c:macro:`PYMEM_DOMAIN_OBJ` (例如: :c:func:`PyObject_Malloc`) 域的 :ref:`默认分配器 "
 "<default-memory-allocators>`。"
 
-#: ../../c-api/memory.rst:639
+#: ../../c-api/memory.rst:649
 msgid "The arena allocator uses the following functions:"
 msgstr "arena 分配器使用以下函数："
 
-#: ../../c-api/memory.rst:641
+#: ../../c-api/memory.rst:651
 msgid ":c:func:`!VirtualAlloc` and :c:func:`!VirtualFree` on Windows,"
 msgstr "Windows 上的 :c:func:`!VirtualAlloc` 和 :c:func:`!VirtualFree`，"
 
-#: ../../c-api/memory.rst:642
+#: ../../c-api/memory.rst:652
 msgid ":c:func:`!mmap` and :c:func:`!munmap` if available,"
 msgstr ":c:func:`!mmap` 和 :c:func:`!munmap`，如果可用的话，"
 
-#: ../../c-api/memory.rst:643
+#: ../../c-api/memory.rst:653
 msgid ":c:func:`malloc` and :c:func:`free` otherwise."
 msgstr "否则， :c:func:`malloc` 和 :c:func:`free` 。"
 
-#: ../../c-api/memory.rst:645
+#: ../../c-api/memory.rst:655
 msgid ""
 "This allocator is disabled if Python is configured with the "
 ":option:`--without-pymalloc` option. It can also be disabled at runtime "
@@ -1142,45 +1143,45 @@ msgstr ""
 "如果 Python 配置了 :option:`--without-pymalloc` 选项，那么此分配器将被禁用。也可以在运行时使用 "
 ":envvar:`PYTHONMALLOC`（例如：``PYTHONMALLOC=malloc``）环境变量来禁用它。"
 
-#: ../../c-api/memory.rst:650
+#: ../../c-api/memory.rst:660
 msgid "Customize pymalloc Arena Allocator"
 msgstr "自定义 pymalloc Arena 分配器"
 
-#: ../../c-api/memory.rst:656
+#: ../../c-api/memory.rst:666
 msgid ""
 "Structure used to describe an arena allocator. The structure has three "
 "fields:"
 msgstr "用来描述一个 arena 分配器的结构体。这个结构体有三个字段："
 
-#: ../../c-api/memory.rst:664
+#: ../../c-api/memory.rst:674
 msgid "``void* alloc(void *ctx, size_t size)``"
 msgstr "``void* alloc(void *ctx, size_t size)``"
 
-#: ../../c-api/memory.rst:664
+#: ../../c-api/memory.rst:674
 msgid "allocate an arena of size bytes"
 msgstr "分配一块 size 字节的区域"
 
-#: ../../c-api/memory.rst:666
+#: ../../c-api/memory.rst:676
 msgid "``void free(void *ctx, void *ptr, size_t size)``"
 msgstr "``void free(void *ctx, void *ptr, size_t size)``"
 
-#: ../../c-api/memory.rst:666
+#: ../../c-api/memory.rst:676
 msgid "free an arena"
 msgstr "释放一块区域"
 
-#: ../../c-api/memory.rst:671
+#: ../../c-api/memory.rst:681
 msgid "Get the arena allocator."
 msgstr "获取 arena 分配器"
 
-#: ../../c-api/memory.rst:675
+#: ../../c-api/memory.rst:685
 msgid "Set the arena allocator."
 msgstr "设置 arena 分配器"
 
-#: ../../c-api/memory.rst:680
+#: ../../c-api/memory.rst:690
 msgid "The mimalloc allocator"
 msgstr "mimalloc 分配器"
 
-#: ../../c-api/memory.rst:684
+#: ../../c-api/memory.rst:694
 msgid ""
 "Python supports the mimalloc allocator when the underlying platform support "
 "is available. mimalloc \"is a general purpose allocator with excellent "
@@ -1190,40 +1191,40 @@ msgstr ""
 "Python 会在下层平台提供支持的情况下支持 mimalloc 分配器。 mimalloc \"是一个具有优良运行效率特性的通用分配器。 它最初由 "
 "Daan Leijen 针对 Koka 和 Lean 语言运行时系统开发。\""
 
-#: ../../c-api/memory.rst:689
+#: ../../c-api/memory.rst:699
 msgid "tracemalloc C API"
 msgstr "tracemalloc C API"
 
-#: ../../c-api/memory.rst:695
+#: ../../c-api/memory.rst:705
 msgid "Track an allocated memory block in the :mod:`tracemalloc` module."
 msgstr "在 :mod:`tracemalloc` 模块中跟踪一个已分配的内存块。"
 
-#: ../../c-api/memory.rst:697
+#: ../../c-api/memory.rst:707
 msgid ""
 "Return ``0`` on success, return ``-1`` on error (failed to allocate memory "
 "to store the trace). Return ``-2`` if tracemalloc is disabled."
 msgstr ""
 "成功时返回 ``0``，出错时返回 ``-1`` (无法分配内存来保存跟踪信息)。 如果禁用了 tracemalloc 则返回 ``-2``。"
 
-#: ../../c-api/memory.rst:700
+#: ../../c-api/memory.rst:710
 msgid "If memory block is already tracked, update the existing trace."
 msgstr "如果内存块已被跟踪，则更新现有跟踪信息。"
 
-#: ../../c-api/memory.rst:704
+#: ../../c-api/memory.rst:714
 msgid ""
 "Untrack an allocated memory block in the :mod:`tracemalloc` module. Do "
 "nothing if the block was not tracked."
 msgstr "在 :mod:`tracemalloc` 模块中取消跟踪一个已分配的内存块。 如果内存块未被跟踪则不执行任何操作。"
 
-#: ../../c-api/memory.rst:707
+#: ../../c-api/memory.rst:717
 msgid "Return ``-2`` if tracemalloc is disabled, otherwise return ``0``."
 msgstr "如果 tracemalloc 被禁用则返回 ``-2``，否则返回 ``0``。"
 
-#: ../../c-api/memory.rst:713
+#: ../../c-api/memory.rst:723
 msgid "Examples"
 msgstr "例子"
 
-#: ../../c-api/memory.rst:715
+#: ../../c-api/memory.rst:725
 msgid ""
 "Here is the example from section :ref:`memoryoverview`, rewritten so that "
 "the I/O buffer is allocated from the Python heap by using the first function"
@@ -1231,7 +1232,7 @@ msgid ""
 msgstr ""
 "以下是来自 :ref:`memoryoverview` 小节的示例，经过重写以使 I/O 缓冲区是通过使用第一个函数集从 Python 堆中分配的::"
 
-#: ../../c-api/memory.rst:718
+#: ../../c-api/memory.rst:728
 msgid ""
 "PyObject *res;\n"
 "char *buf = (char *) PyMem_Malloc(BUFSIZ); /* for I/O */\n"
@@ -1253,11 +1254,11 @@ msgstr ""
 "PyMem_Free(buf); /* 使用 PyMem_Malloc 分配的 */\n"
 "return res;"
 
-#: ../../c-api/memory.rst:728
+#: ../../c-api/memory.rst:738
 msgid "The same code using the type-oriented function set::"
 msgstr "使用面向类型函数集的相同代码::"
 
-#: ../../c-api/memory.rst:730
+#: ../../c-api/memory.rst:740
 msgid ""
 "PyObject *res;\n"
 "char *buf = PyMem_New(char, BUFSIZ); /* for I/O */\n"
@@ -1279,7 +1280,7 @@ msgstr ""
 "PyMem_Del(buf); /* 使用 PyMem_New 分配的 */\n"
 "return res;"
 
-#: ../../c-api/memory.rst:740
+#: ../../c-api/memory.rst:750
 msgid ""
 "Note that in the two examples above, the buffer is always manipulated via "
 "functions belonging to the same set. Indeed, it is required to use the same "
@@ -1292,7 +1293,7 @@ msgstr ""
 "族，以便使得混合不同分配器的风险减至最低。 以下代码序列包含两处错误，其中一个被标记为 *fatal* 因为它混合了两种在不同堆上操作的不同分配器。 "
 "::"
 
-#: ../../c-api/memory.rst:747
+#: ../../c-api/memory.rst:757
 msgid ""
 "char *buf1 = PyMem_New(char, BUFSIZ);\n"
 "char *buf2 = (char *) malloc(BUFSIZ);\n"
@@ -1310,7 +1311,7 @@ msgstr ""
 "free(buf2);       /* 正确 -- 通过 malloc() 分配的 */\n"
 "free(buf1);       /* 致命 -- 应为 PyMem_Del()  */"
 
-#: ../../c-api/memory.rst:755
+#: ../../c-api/memory.rst:765
 msgid ""
 "In addition to the functions aimed at handling raw memory blocks from the "
 "Python heap, objects in Python are allocated and released with "
@@ -1321,7 +1322,7 @@ msgstr ""
 ":c:macro:`PyObject_New`、:c:macro:`PyObject_NewVar` 和 :c:func:`PyObject_Del` "
 "进行分配和释放。"
 
-#: ../../c-api/memory.rst:759
+#: ../../c-api/memory.rst:769
 msgid ""
 "These will be explained in the next chapter on defining and implementing new"
 " object types in C."

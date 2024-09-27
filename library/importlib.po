@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-06 14:16+0000\n"
+"POT-Creation-Date: 2024-09-27 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 01:08+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -2208,46 +2208,53 @@ msgid "Importing a source file directly"
 msgstr "直接导入源码文件。"
 
 #: ../../library/importlib.rst:1587
-msgid "To import a Python source file directly, use the following recipe::"
-msgstr "要直接导入 Python 源文件，请使用以下写法::"
+msgid ""
+"This recipe should be used with caution: it is an approximation of an import"
+" statement where the file path is specified directly, rather than "
+":data:`sys.path` being searched. Alternatives should first be considered "
+"first, such as modifying :data:`sys.path` when a proper module is required, "
+"or using :func:`runpy.run_path` when the global namespace resulting from "
+"running a Python file is appropriate."
+msgstr ""
 
-#: ../../library/importlib.rst:1589
+#: ../../library/importlib.rst:1594
+msgid ""
+"To import a Python source file directly from a path, use the following "
+"recipe::"
+msgstr ""
+
+#: ../../library/importlib.rst:1596
 msgid ""
 "import importlib.util\n"
 "import sys\n"
 "\n"
-"# For illustrative purposes.\n"
-"import tokenize\n"
-"file_path = tokenize.__file__\n"
-"module_name = tokenize.__name__\n"
 "\n"
-"spec = importlib.util.spec_from_file_location(module_name, file_path)\n"
-"module = importlib.util.module_from_spec(spec)\n"
-"sys.modules[module_name] = module\n"
-"spec.loader.exec_module(module)"
+"def import_from_path(module_name, file_path):\n"
+"    spec = importlib.util.spec_from_file_location(module_name, file_path)\n"
+"    module = importlib.util.module_from_spec(spec)\n"
+"    sys.modules[module_name] = module\n"
+"    spec.loader.exec_module(module)\n"
+"    return module\n"
+"\n"
+"\n"
+"# For illustrative purposes only (use of `json` is arbitrary).\n"
+"import json\n"
+"file_path = json.__file__\n"
+"module_name = json.__name__\n"
+"\n"
+"# Similar outcome as `import json`.\n"
+"json = import_from_path(module_name, file_path)"
 msgstr ""
-"import importlib.util\n"
-"import sys\n"
-"\n"
-"# 用于展示的目的。\n"
-"import tokenize\n"
-"file_path = tokenize.__file__\n"
-"module_name = tokenize.__name__\n"
-"\n"
-"spec = importlib.util.spec_from_file_location(module_name, file_path)\n"
-"module = importlib.util.module_from_spec(spec)\n"
-"sys.modules[module_name] = module\n"
-"spec.loader.exec_module(module)"
 
-#: ../../library/importlib.rst:1604
+#: ../../library/importlib.rst:1618
 msgid "Implementing lazy imports"
 msgstr "实现延迟导入"
 
-#: ../../library/importlib.rst:1606
+#: ../../library/importlib.rst:1620
 msgid "The example below shows how to implement lazy imports::"
 msgstr "以下例子展示了如何实现延迟导入："
 
-#: ../../library/importlib.rst:1608
+#: ../../library/importlib.rst:1622
 msgid ""
 ">>> import importlib.util\n"
 ">>> import sys\n"
@@ -2283,11 +2290,11 @@ msgstr ""
 ">>> lazy_typing.TYPE_CHECKING\n"
 "False"
 
-#: ../../library/importlib.rst:1628
+#: ../../library/importlib.rst:1641
 msgid "Setting up an importer"
 msgstr "导入器的配置"
 
-#: ../../library/importlib.rst:1630
+#: ../../library/importlib.rst:1643
 msgid ""
 "For deep customizations of import, you typically want to implement an "
 ":term:`importer`. This means managing both the :term:`finder` and "
@@ -2307,7 +2314,7 @@ msgstr ""
 "entry hook` 在 :data:`sys.path_hooks` 上创建并与 :data:`sys.path` 条目一起创建一个潜在的查找器。 "
 "下面的例子将向你演示如何注册自己的导入器供导入机制使用 (关于自行创建导入器，请阅读在本包内定义的相应类的文档)::"
 
-#: ../../library/importlib.rst:1641
+#: ../../library/importlib.rst:1654
 msgid ""
 "import importlib.machinery\n"
 "import sys\n"
@@ -2345,11 +2352,11 @@ msgstr ""
 "# 确保根据优先级别将路径钩子放在列表中正确的位置上。\n"
 "sys.path_hooks.append(SpamPathEntryFinder.path_hook(loader_details))"
 
-#: ../../library/importlib.rst:1662
+#: ../../library/importlib.rst:1675
 msgid "Approximating :func:`importlib.import_module`"
 msgstr ":func:`importlib.import_module` 的近似实现"
 
-#: ../../library/importlib.rst:1664
+#: ../../library/importlib.rst:1677
 msgid ""
 "Import itself is implemented in Python code, making it possible to expose "
 "most of the import machinery through importlib. The following helps "
@@ -2359,7 +2366,7 @@ msgstr ""
 "导入过程本身是用 Python 代码实现的，这样就有可能通过 importlib 来对外公开大部分导入机制。 以下代码通过提供 "
 ":func:`importlib.import_module` 的近似实现来说明 importlib 所公开的几种 API::"
 
-#: ../../library/importlib.rst:1670
+#: ../../library/importlib.rst:1683
 msgid ""
 "import importlib.util\n"
 "import sys\n"

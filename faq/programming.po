@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-13 14:16+0000\n"
+"POT-Creation-Date: 2024-09-27 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:52+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -3062,24 +3062,36 @@ msgstr ""
 
 #: ../../faq/programming.rst:1616
 msgid ""
-"Most :meth:`!__setattr__` implementations must modify :meth:`self.__dict__ "
-"<object.__dict__>` to store local state for self without causing an infinite"
-" recursion."
+"Many :meth:`~object.__setattr__` implementations call "
+":meth:`!object.__setattr__` to set an attribute on self without causing "
+"infinite recursion::"
 msgstr ""
-"大多数 :meth:`!__setattr__` 实现都必须修改 :meth:`self.__dict__ <object.__dict__>` "
-"来为自身保存局部状态而不至于造成无限递归。"
 
-#: ../../faq/programming.rst:1622
+#: ../../faq/programming.rst:1619
+msgid ""
+"class X:\n"
+"    def __setattr__(self, name, value):\n"
+"        # Custom logic here...\n"
+"        object.__setattr__(self, name, value)"
+msgstr ""
+
+#: ../../faq/programming.rst:1624
+msgid ""
+"Alternatively, it is possible to set attributes by inserting entries into "
+":attr:`self.__dict__ <object.__dict__>` directly."
+msgstr ""
+
+#: ../../faq/programming.rst:1629
 msgid ""
 "How do I call a method defined in a base class from a derived class that "
 "extends it?"
 msgstr "如何在扩展基类的派生类中调用基类中定义的方法？"
 
-#: ../../faq/programming.rst:1624
+#: ../../faq/programming.rst:1631
 msgid "Use the built-in :func:`super` function::"
 msgstr "使用内置的 :func:`super` 函数："
 
-#: ../../faq/programming.rst:1626
+#: ../../faq/programming.rst:1633
 msgid ""
 "class Derived(Base):\n"
 "    def meth(self):\n"
@@ -3089,7 +3101,7 @@ msgstr ""
 "    def meth(self):\n"
 "        super().meth()  # 调用 Base.meth"
 
-#: ../../faq/programming.rst:1630
+#: ../../faq/programming.rst:1637
 msgid ""
 "In the example, :func:`super` will automatically determine the instance from"
 " which it was called (the ``self`` value), look up the :term:`method "
@@ -3100,11 +3112,11 @@ msgstr ""
 "``type(self).__mro__`` 查找 :term:`method resolution order` (MRO)，并返回 MRO 中位于 "
 "``Derived`` 之后的项: ``Base``。"
 
-#: ../../faq/programming.rst:1637
+#: ../../faq/programming.rst:1644
 msgid "How can I organize my code to make it easier to change the base class?"
 msgstr "如何让代码更容易对基类进行修改？"
 
-#: ../../faq/programming.rst:1639
+#: ../../faq/programming.rst:1646
 msgid ""
 "You could assign the base class to an alias and derive from the alias.  Then"
 " all you have to change is the value assigned to the alias.  Incidentally, "
@@ -3113,7 +3125,7 @@ msgid ""
 msgstr ""
 "可以为基类赋一个别名并基于该别名进行派生。这样只要修改赋给该别名的值即可。顺便提一下，如要动态地确定（例如根据可用的资源）该使用哪个基类，这个技巧也非常方便。例如："
 
-#: ../../faq/programming.rst:1644
+#: ../../faq/programming.rst:1651
 msgid ""
 "class Base:\n"
 "    ...\n"
@@ -3131,23 +3143,23 @@ msgstr ""
 "class Derived(BaseAlias):\n"
 "    ..."
 
-#: ../../faq/programming.rst:1654
+#: ../../faq/programming.rst:1661
 msgid "How do I create static class data and static class methods?"
 msgstr "如何创建静态类数据和静态类方法？"
 
-#: ../../faq/programming.rst:1656
+#: ../../faq/programming.rst:1663
 msgid ""
 "Both static data and static methods (in the sense of C++ or Java) are "
 "supported in Python."
 msgstr "Python 支持静态数据和静态方法（以 C++ 或 Java 的定义而言）。"
 
-#: ../../faq/programming.rst:1659
+#: ../../faq/programming.rst:1666
 msgid ""
 "For static data, simply define a class attribute.  To assign a new value to "
 "the attribute, you have to explicitly use the class name in the assignment::"
 msgstr "静态数据只需定义一个类属性即可。若要为属性赋新值，则必须在赋值时显式使用类名："
 
-#: ../../faq/programming.rst:1662
+#: ../../faq/programming.rst:1669
 msgid ""
 "class C:\n"
 "    count = 0   # number of times C.__init__ called\n"
@@ -3159,7 +3171,7 @@ msgid ""
 "        return C.count  # or return self.count"
 msgstr ""
 
-#: ../../faq/programming.rst:1671
+#: ../../faq/programming.rst:1678
 msgid ""
 "``c.count`` also refers to ``C.count`` for any ``c`` such that "
 "``isinstance(c, C)`` holds, unless overridden by ``c`` itself or by some "
@@ -3168,7 +3180,7 @@ msgstr ""
 "对于所有符合 ``isinstance(c, C)`` 的 ``c``， ``c.count`` 也同样指向 ``C.count`` ，除非被 "
 "``c`` 自身或者被从 ``c.__class__`` 回溯到基类 ``C`` 的搜索路径上的某个类所覆盖。"
 
-#: ../../faq/programming.rst:1675
+#: ../../faq/programming.rst:1682
 msgid ""
 "Caution: within a method of C, an assignment like ``self.count = 42`` "
 "creates a new and unrelated instance named \"count\" in ``self``'s own dict."
@@ -3178,15 +3190,15 @@ msgstr ""
 "注意：在 C 的某个方法内部，像 ``self.count = 42`` 这样的赋值将在 ``self`` 自身的字典中新建一个名为 \"count\""
 " 的不相关实例。 想要重新绑定类静态数据名称就必须总是指明类名，无论是在方法内部还是外部::"
 
-#: ../../faq/programming.rst:1680
+#: ../../faq/programming.rst:1687
 msgid "C.count = 314"
 msgstr "C.count = 314"
 
-#: ../../faq/programming.rst:1682
+#: ../../faq/programming.rst:1689
 msgid "Static methods are possible::"
 msgstr "Python 支持静态方法："
 
-#: ../../faq/programming.rst:1684
+#: ../../faq/programming.rst:1691
 msgid ""
 "class C:\n"
 "    @staticmethod\n"
@@ -3200,13 +3212,13 @@ msgstr ""
 "        # 没有 'self' 形参！\n"
 "        ..."
 
-#: ../../faq/programming.rst:1690
+#: ../../faq/programming.rst:1697
 msgid ""
 "However, a far more straightforward way to get the effect of a static method"
 " is via a simple module-level function::"
 msgstr "不过为了获得静态方法的效果，还有一种做法直接得多，也即使用模块级函数即可："
 
-#: ../../faq/programming.rst:1693
+#: ../../faq/programming.rst:1700
 msgid ""
 "def getcount():\n"
 "    return C.count"
@@ -3214,27 +3226,27 @@ msgstr ""
 "def getcount():\n"
 "    return C.count"
 
-#: ../../faq/programming.rst:1696
+#: ../../faq/programming.rst:1703
 msgid ""
 "If your code is structured so as to define one class (or tightly related "
 "class hierarchy) per module, this supplies the desired encapsulation."
 msgstr "如果代码的结构化比较充分，每个模块只定义了一个类（或者多个类的层次关系密切相关），那就具备了应有的封装。"
 
-#: ../../faq/programming.rst:1701
+#: ../../faq/programming.rst:1708
 msgid "How can I overload constructors (or methods) in Python?"
 msgstr "在 Python 中如何重载构造函数（或方法）？"
 
-#: ../../faq/programming.rst:1703
+#: ../../faq/programming.rst:1710
 msgid ""
 "This answer actually applies to all methods, but the question usually comes "
 "up first in the context of constructors."
 msgstr "这个答案实际上适用于所有方法，但问题通常首先出现于构造函数的应用场景中。"
 
-#: ../../faq/programming.rst:1706
+#: ../../faq/programming.rst:1713
 msgid "In C++ you'd write"
 msgstr "在 C++ 中，代码会如下所示："
 
-#: ../../faq/programming.rst:1708
+#: ../../faq/programming.rst:1715
 msgid ""
 "class C {\n"
 "    C() { cout << \"No arguments\\n\"; }\n"
@@ -3246,13 +3258,13 @@ msgstr ""
 "    C(int i) { cout << \"Argument is \" << i << \"\\n\"; }\n"
 "}"
 
-#: ../../faq/programming.rst:1715
+#: ../../faq/programming.rst:1722
 msgid ""
 "In Python you have to write a single constructor that catches all cases "
 "using default arguments.  For example::"
 msgstr "在 Python 中，只能编写一个构造函数，并用默认参数捕获所有情况。例如："
 
-#: ../../faq/programming.rst:1718
+#: ../../faq/programming.rst:1725
 msgid ""
 "class C:\n"
 "    def __init__(self, i=None):\n"
@@ -3268,15 +3280,15 @@ msgstr ""
 "        else:\n"
 "            print(\"Argument is\", i)"
 
-#: ../../faq/programming.rst:1725
+#: ../../faq/programming.rst:1732
 msgid "This is not entirely equivalent, but close enough in practice."
 msgstr "这不完全等同，但在实践中足够接近。"
 
-#: ../../faq/programming.rst:1727
+#: ../../faq/programming.rst:1734
 msgid "You could also try a variable-length argument list, e.g. ::"
 msgstr "也可以试试采用变长参数列表，例如："
 
-#: ../../faq/programming.rst:1729
+#: ../../faq/programming.rst:1736
 msgid ""
 "def __init__(self, *args):\n"
 "    ..."
@@ -3284,15 +3296,15 @@ msgstr ""
 "def __init__(self, *args):\n"
 "    ..."
 
-#: ../../faq/programming.rst:1732
+#: ../../faq/programming.rst:1739
 msgid "The same approach works for all method definitions."
 msgstr "上述做法同样适用于所有方法定义。"
 
-#: ../../faq/programming.rst:1736
+#: ../../faq/programming.rst:1743
 msgid "I try to use __spam and I get an error about _SomeClassName__spam."
 msgstr "在用 __spam 的时候得到一个类似 _SomeClassName__spam 的错误信息。"
 
-#: ../../faq/programming.rst:1738
+#: ../../faq/programming.rst:1745
 msgid ""
 "Variable names with double leading underscores are \"mangled\" to provide a "
 "simple but effective way to define class private variables.  Any identifier "
@@ -3305,13 +3317,13 @@ msgstr ""
 "的标识符（至少前缀两个下划线，至多后缀一个下划线）文本均会被替换为 ``_classname__spam``，其中 ``classname`` "
 "为去除了全部前缀下划线的当前类名称。"
 
-#: ../../faq/programming.rst:1744
+#: ../../faq/programming.rst:1751
 msgid ""
 "The identifier can be used unchanged within the class, but to access it "
 "outside the class, the mangled name must be used:"
 msgstr "标识符可以在类的内部不加改变地使用，但要在类的外部访问它，就必须使用被混淆的名称："
 
-#: ../../faq/programming.rst:1747
+#: ../../faq/programming.rst:1754
 msgid ""
 "class A:\n"
 "    def __one(self):\n"
@@ -3337,29 +3349,29 @@ msgstr ""
 "\n"
 "four = 4 * A()._A__one()"
 
-#: ../../faq/programming.rst:1761
+#: ../../faq/programming.rst:1768
 msgid ""
 "In particular, this does not guarantee privacy since an outside user can "
 "still deliberately access the private attribute; many Python programmers "
 "never bother to use private variable names at all."
 msgstr "需要特别指出，这并不能保证私密性因为外部用户仍然可以有意地访问私有属性；许多 Python 程序员根本就不屑于使用私有变量名。"
 
-#: ../../faq/programming.rst:1767
+#: ../../faq/programming.rst:1774
 msgid ""
 "The :ref:`private name mangling specifications <private-name-mangling>` for "
 "details and special cases."
 msgstr ":ref:`私有名称调整规范说明 <private-name-mangling>` 了解相关详情和特例。"
 
-#: ../../faq/programming.rst:1771
+#: ../../faq/programming.rst:1778
 msgid ""
 "My class defines __del__ but it is not called when I delete the object."
 msgstr "类定义了 __del__ 方法，但是删除对象时没有调用它。"
 
-#: ../../faq/programming.rst:1773
+#: ../../faq/programming.rst:1780
 msgid "There are several possible reasons for this."
 msgstr "这有几个可能的原因。"
 
-#: ../../faq/programming.rst:1775
+#: ../../faq/programming.rst:1782
 msgid ""
 "The :keyword:`del` statement does not necessarily call "
 ":meth:`~object.__del__` -- it simply decrements the object's reference "
@@ -3368,7 +3380,7 @@ msgstr ""
 ":keyword:`del` 语句不一定要调用 :meth:`~object.__del__` -- 它只是减少对象的引用计数，如果计数达到零才会调用 "
 ":meth:`!__del__`。"
 
-#: ../../faq/programming.rst:1779
+#: ../../faq/programming.rst:1786
 msgid ""
 "If your data structures contain circular links (e.g. a tree where each child"
 " has a parent reference and each parent has a list of children) the "
@@ -3387,7 +3399,7 @@ msgstr ""
 "方法是以随机顺序执行的。 虽然你可以运行 :func:`gc.collect` 来强制执行垃圾回收操作，但 *仍会存在* "
 "一些对象永远不会被回收的失控情况。"
 
-#: ../../faq/programming.rst:1790
+#: ../../faq/programming.rst:1797
 msgid ""
 "Despite the cycle collector, it's still a good idea to define an explicit "
 "``close()`` method on objects to be called whenever you're done with them.  "
@@ -3400,7 +3412,7 @@ msgstr ""
 "方法可以随后移除引用子对象的属性。 请不要直接调用 :meth:`!__del__` -- :meth:`!__del__` 应当调用 "
 "``close()`` 并且 ``close()`` 应当确保被可以被同一对象多次调用。"
 
-#: ../../faq/programming.rst:1797
+#: ../../faq/programming.rst:1804
 msgid ""
 "Another way to avoid cyclical references is to use the :mod:`weakref` "
 "module, which allows you to point to objects without incrementing their "
@@ -3410,28 +3422,28 @@ msgstr ""
 "另一种避免循环引用的做法是利用 :mod:`weakref` "
 "模块，该模块允许指向对象但不增加其引用计数。例如，树状数据结构应该对父节点和同级节点使用弱引用（如果真要用的话！）"
 
-#: ../../faq/programming.rst:1810
+#: ../../faq/programming.rst:1817
 msgid ""
 "Finally, if your :meth:`!__del__` method raises an exception, a warning "
 "message is printed to :data:`sys.stderr`."
 msgstr "最后，如果你的 :meth:`!__del__` 方法引发了异常，会将警告消息打印到 :data:`sys.stderr`。"
 
-#: ../../faq/programming.rst:1815
+#: ../../faq/programming.rst:1822
 msgid "How do I get a list of all instances of a given class?"
 msgstr "如何获取给定类的所有实例的列表？"
 
-#: ../../faq/programming.rst:1817
+#: ../../faq/programming.rst:1824
 msgid ""
 "Python does not keep track of all instances of a class (or of a built-in "
 "type). You can program the class's constructor to keep track of all "
 "instances by keeping a list of weak references to each instance."
 msgstr "Python 不会记录类（或内置类型）的实例。可以在类的构造函数中编写代码，通过保留每个实例的弱引用列表来跟踪所有实例。"
 
-#: ../../faq/programming.rst:1823
+#: ../../faq/programming.rst:1830
 msgid "Why does the result of ``id()`` appear to be not unique?"
 msgstr "为什么 ``id()`` 的结果看起来不是唯一的？"
 
-#: ../../faq/programming.rst:1825
+#: ../../faq/programming.rst:1832
 msgid ""
 "The :func:`id` builtin returns an integer that is guaranteed to be unique "
 "during the lifetime of the object.  Since in CPython, this is the object's "
@@ -3442,7 +3454,7 @@ msgstr ""
 ":func:`id` 返回一个整数，该整数在对象的生命周期内保证是唯一的。 因为在 CPython "
 "中，这是对象的内存地址，所以经常发生在从内存中删除对象之后，下一个新创建的对象被分配在内存中的相同位置。 这个例子说明了这一点："
 
-#: ../../faq/programming.rst:1836
+#: ../../faq/programming.rst:1843
 msgid ""
 "The two ids belong to different integer objects that are created before, and"
 " deleted immediately after execution of the ``id()`` call.  To be sure that "
@@ -3452,17 +3464,17 @@ msgstr ""
 "这两个 id 属于不同的整数对象，之前先创建了对象，执行 ``id()`` 调用后又立即被删除了。若要确保检测 id "
 "时的对象仍处于活动状态，请再创建一个对该对象的引用："
 
-#: ../../faq/programming.rst:1849
+#: ../../faq/programming.rst:1856
 msgid "When can I rely on identity tests with the *is* operator?"
 msgstr "什么情况下可以依靠 *is* 运算符进行对象的身份相等性测试？"
 
-#: ../../faq/programming.rst:1851
+#: ../../faq/programming.rst:1858
 msgid ""
 "The ``is`` operator tests for object identity.  The test ``a is b`` is "
 "equivalent to ``id(a) == id(b)``."
 msgstr "``is`` 运算符可用于测试对象的身份相等性。``a is b`` 等价于 ``id(a) == id(b)``。"
 
-#: ../../faq/programming.rst:1854
+#: ../../faq/programming.rst:1861
 msgid ""
 "The most important property of an identity test is that an object is always "
 "identical to itself, ``a is a`` always returns ``True``.  Identity tests are"
@@ -3473,20 +3485,20 @@ msgstr ""
 "``True``。身份相等性测试的速度通常比相等性测试要快。而且与相等性测试不一样，身份相等性测试会确保返回布尔值 ``True`` 或 "
 "``False``。"
 
-#: ../../faq/programming.rst:1859
+#: ../../faq/programming.rst:1866
 msgid ""
 "However, identity tests can *only* be substituted for equality tests when "
 "object identity is assured.  Generally, there are three circumstances where "
 "identity is guaranteed:"
 msgstr "但是，身份相等性测试 *只能* 在对象身份确定的场景下才可替代相等性测试。一般来说，有以下3种情况对象身份是可以确定的："
 
-#: ../../faq/programming.rst:1863
+#: ../../faq/programming.rst:1870
 msgid ""
 "1) Assignments create new names but do not change object identity.  After "
 "the assignment ``new = old``, it is guaranteed that ``new is old``."
 msgstr "1） 赋值操作创建了新的名称但没有改变对象身份。 在赋值操作 ``new = old`` 之后，可以保证 ``new is old``。"
 
-#: ../../faq/programming.rst:1866
+#: ../../faq/programming.rst:1873
 msgid ""
 "2) Putting an object in a container that stores object references does not "
 "change object identity.  After the list assignment ``s[0] = x``, it is "
@@ -3494,7 +3506,7 @@ msgid ""
 msgstr ""
 "2） 将对象置入存放对象引用的容器，对象身份不会改变。在列表赋值操作 ``s[0] = x`` 之后，可以保证 ``s[0] is x``。"
 
-#: ../../faq/programming.rst:1870
+#: ../../faq/programming.rst:1877
 msgid ""
 "3) If an object is a singleton, it means that only one instance of that "
 "object can exist.  After the assignments ``a = None`` and ``b = None``, it "
@@ -3503,7 +3515,7 @@ msgstr ""
 "3） 单例对象，也即该对象只能存在一个实例。在赋值操作 ``a = None`` 和 ``b = None`` 之后，可以保证 ``a is "
 "b``，因为 ``None`` 是单例对象。"
 
-#: ../../faq/programming.rst:1874
+#: ../../faq/programming.rst:1881
 msgid ""
 "In most other circumstances, identity tests are inadvisable and equality "
 "tests are preferred.  In particular, identity tests should not be used to "
@@ -3513,7 +3525,7 @@ msgstr ""
 "其他大多数情况下，都不建议使用身份相等性测试，而应采用相等性测试。尤其是不应将身份相等性测试用于检测常量值，例如 :class:`int` 和 "
 ":class:`str`，因为他们并不一定是单例对象："
 
-#: ../../faq/programming.rst:1879
+#: ../../faq/programming.rst:1886
 msgid ""
 ">>> a = 1000\n"
 ">>> b = 500\n"
@@ -3528,11 +3540,11 @@ msgid ""
 "False"
 msgstr ""
 
-#: ../../faq/programming.rst:1891
+#: ../../faq/programming.rst:1898
 msgid "Likewise, new instances of mutable containers are never identical::"
 msgstr "同样地，可变容器的新实例，对象身份一定不同："
 
-#: ../../faq/programming.rst:1893
+#: ../../faq/programming.rst:1900
 msgid ""
 ">>> a = []\n"
 ">>> b = []\n"
@@ -3540,13 +3552,13 @@ msgid ""
 "False"
 msgstr ""
 
-#: ../../faq/programming.rst:1898
+#: ../../faq/programming.rst:1905
 msgid ""
 "In the standard library code, you will see several common patterns for "
 "correctly using identity tests:"
 msgstr "在标准库代码中，给出了一些正确使用对象身份测试的常见模式："
 
-#: ../../faq/programming.rst:1901
+#: ../../faq/programming.rst:1908
 msgid ""
 "1) As recommended by :pep:`8`, an identity test is the preferred way to "
 "check for ``None``.  This reads like plain English in code and avoids "
@@ -3556,7 +3568,7 @@ msgstr ""
 "1） 正如 :pep:`8` 所推荐的，对象身份测试是 ``None`` "
 "值的推荐检测方式。这样的代码读起来就像自然的英文，并可以避免与其他可能为布尔值且计算结果为 False 的对象相混淆。"
 
-#: ../../faq/programming.rst:1905
+#: ../../faq/programming.rst:1912
 msgid ""
 "2) Detecting optional arguments can be tricky when ``None`` is a valid input"
 " value.  In those situations, you can create a singleton sentinel object "
@@ -3566,7 +3578,7 @@ msgstr ""
 "2) 当 ``None`` 是一个有效的输入值时，检测可选参数可能很棘手。 在这些情况下，你可以创建一个单例哨兵对象，保证与其他对象不同。 "
 "例如，这里是如何实现一个方法，其行为类似于 :meth:`dict.pop` ："
 
-#: ../../faq/programming.rst:1910
+#: ../../faq/programming.rst:1917
 msgid ""
 "_sentinel = object()\n"
 "\n"
@@ -3580,7 +3592,7 @@ msgid ""
 "    return default"
 msgstr ""
 
-#: ../../faq/programming.rst:1921
+#: ../../faq/programming.rst:1928
 msgid ""
 "3) Container implementations sometimes need to augment equality tests with "
 "identity tests.  This prevents the code from being confused by objects such "
@@ -3588,13 +3600,13 @@ msgid ""
 msgstr ""
 "3） 编写容器的实现代码时，有时需要用对象身份测试来加强相等性检测。这样代码就不会被 ``float('NaN')`` 这类与自身不相等的对象所干扰。"
 
-#: ../../faq/programming.rst:1925
+#: ../../faq/programming.rst:1932
 msgid ""
 "For example, here is the implementation of "
 ":meth:`!collections.abc.Sequence.__contains__`::"
 msgstr "例如，以下是 :meth:`!collections.abc.Sequence.__contains__` 的实现代码::"
 
-#: ../../faq/programming.rst:1928
+#: ../../faq/programming.rst:1935
 msgid ""
 "def __contains__(self, value):\n"
 "    for v in self:\n"
@@ -3603,12 +3615,12 @@ msgid ""
 "    return False"
 msgstr ""
 
-#: ../../faq/programming.rst:1936
+#: ../../faq/programming.rst:1943
 msgid ""
 "How can a subclass control what data is stored in an immutable instance?"
 msgstr "一个子类如何控制哪些数据被存储在一个不可变的实例中？"
 
-#: ../../faq/programming.rst:1938
+#: ../../faq/programming.rst:1945
 msgid ""
 "When subclassing an immutable type, override the :meth:`~object.__new__` "
 "method instead of the :meth:`~object.__init__` method.  The latter only runs"
@@ -3618,13 +3630,13 @@ msgstr ""
 "当子类化一个不可变类型时，请重写 :meth:`~object.__new__` 方法而不是 :meth:`~object.__init__` 方法。 "
 "后者只在一个实例被创建 *之后* 运行，这对于改变不可变实例中的数据来说太晚了。"
 
-#: ../../faq/programming.rst:1943
+#: ../../faq/programming.rst:1950
 msgid ""
 "All of these immutable classes have a different signature than their parent "
 "class:"
 msgstr "所有这些不可变的类都有一个与它们的父类不同的签名:"
 
-#: ../../faq/programming.rst:1946
+#: ../../faq/programming.rst:1953
 msgid ""
 "from datetime import date\n"
 "\n"
@@ -3648,11 +3660,11 @@ msgid ""
 "        return super().__new__(cls, s)"
 msgstr ""
 
-#: ../../faq/programming.rst:1969
+#: ../../faq/programming.rst:1976
 msgid "The classes can be used like this:"
 msgstr "这些类可以这样使用:"
 
-#: ../../faq/programming.rst:1971
+#: ../../faq/programming.rst:1978
 msgid ""
 ">>> FirstOfMonthDate(2012, 2, 14)\n"
 "FirstOfMonthDate(2012, 2, 1)\n"
@@ -3664,11 +3676,11 @@ msgid ""
 "'blog-why-python-rocks'"
 msgstr ""
 
-#: ../../faq/programming.rst:1986
+#: ../../faq/programming.rst:1993
 msgid "How do I cache method calls?"
 msgstr "我该如何缓存方法调用？"
 
-#: ../../faq/programming.rst:1988
+#: ../../faq/programming.rst:1995
 msgid ""
 "The two principal tools for caching methods are "
 ":func:`functools.cached_property` and :func:`functools.lru_cache`.  The "
@@ -3678,7 +3690,7 @@ msgstr ""
 "缓存方法的两个主要工具是 :func:`functools.cached_property` 和 "
 ":func:`functools.lru_cache`。 前者在实例层级上存储结果而后者在类层级上存储结果。"
 
-#: ../../faq/programming.rst:1993
+#: ../../faq/programming.rst:2000
 msgid ""
 "The *cached_property* approach only works with methods that do not take any "
 "arguments.  It does not create a reference to the instance.  The cached "
@@ -3686,7 +3698,7 @@ msgid ""
 msgstr ""
 "*cached_property* 方式仅适用于不接受任何参数的方法。 它不会创建对实例的引用。 被缓存的方法结果将仅在实例的生存其内被保留。"
 
-#: ../../faq/programming.rst:1997
+#: ../../faq/programming.rst:2004
 msgid ""
 "The advantage is that when an instance is no longer used, the cached method "
 "result will be released right away.  The disadvantage is that if instances "
@@ -3694,25 +3706,25 @@ msgid ""
 "without bound."
 msgstr "其优点是，当一个实例不再被使用时，缓存的方法结果将被立即释放。缺点是，如果实例累积起来，累积的方法结果也会增加。它们可以无限制地增长。"
 
-#: ../../faq/programming.rst:2002
+#: ../../faq/programming.rst:2009
 msgid ""
 "The *lru_cache* approach works with methods that have :term:`hashable` "
 "arguments.  It creates a reference to the instance unless special efforts "
 "are made to pass in weak references."
 msgstr "*lru_cache* 方式适用于具有 :term:`hashable` 参数的方法。 它会创建对实例的引用，除非特别设置了传入弱引用。"
 
-#: ../../faq/programming.rst:2006
+#: ../../faq/programming.rst:2013
 msgid ""
 "The advantage of the least recently used algorithm is that the cache is "
 "bounded by the specified *maxsize*.  The disadvantage is that instances are "
 "kept alive until they age out of the cache or until the cache is cleared."
 msgstr "最少近期使用算法的优点是缓存会受指定的 *maxsize* 限制。 它的缺点是实例会保持存活，直到其达到生存期或者缓存被清空。"
 
-#: ../../faq/programming.rst:2011
+#: ../../faq/programming.rst:2018
 msgid "This example shows the various techniques::"
 msgstr "这个例子演示了几种不同的方式::"
 
-#: ../../faq/programming.rst:2013
+#: ../../faq/programming.rst:2020
 msgid ""
 "class Weather:\n"
 "    \"Lookup weather information on a government website\"\n"
@@ -3737,7 +3749,7 @@ msgid ""
 "        # Depends on the station_id, date, and units."
 msgstr ""
 
-#: ../../faq/programming.rst:2035
+#: ../../faq/programming.rst:2042
 msgid ""
 "The above example assumes that the *station_id* never changes.  If the "
 "relevant instance attributes are mutable, the *cached_property* approach "
@@ -3746,7 +3758,7 @@ msgstr ""
 "上面的例子假定 *station_id* 从不改变。 如果相关实例属性是可变对象，则 *cached_property* "
 "方式就不再适用，因为它无法检测到属性的改变。"
 
-#: ../../faq/programming.rst:2040
+#: ../../faq/programming.rst:2047
 msgid ""
 "To make the *lru_cache* approach work when the *station_id* is mutable, the "
 "class needs to define the :meth:`~object.__eq__` and "
@@ -3756,7 +3768,7 @@ msgstr ""
 "要让 *lru_cache* 方式在 *station_id* 可变时仍然适用，类需要定义 :meth:`~object.__eq__` 和 "
 ":meth:`~object.__hash__` 方法以便缓存能检测到相关属性的更新::"
 
-#: ../../faq/programming.rst:2044
+#: ../../faq/programming.rst:2051
 msgid ""
 "class Weather:\n"
 "    \"Example with a mutable station identifier\"\n"
@@ -3779,15 +3791,15 @@ msgid ""
 "        # Depends on the station_id, date, and units."
 msgstr ""
 
-#: ../../faq/programming.rst:2066
+#: ../../faq/programming.rst:2073
 msgid "Modules"
 msgstr "模块"
 
-#: ../../faq/programming.rst:2069
+#: ../../faq/programming.rst:2076
 msgid "How do I create a .pyc file?"
 msgstr "如何创建 .pyc 文件？"
 
-#: ../../faq/programming.rst:2071
+#: ../../faq/programming.rst:2078
 msgid ""
 "When a module is imported for the first time (or when the source file has "
 "changed since the current compiled file was created) a ``.pyc`` file "
@@ -3802,7 +3814,7 @@ msgstr ""
 "子目录下会创建一个包含已编译代码的 ``.pyc`` 文件。该 ``.pyc`` 文件的名称开头部分将与 ``.py`` 文件名相同，并以 "
 "``.pyc`` 为后缀，中间部分则依据创建它的 ``python`` 版本而各不相同。（详见 :pep:`3147`。）"
 
-#: ../../faq/programming.rst:2079
+#: ../../faq/programming.rst:2086
 msgid ""
 "One reason that a ``.pyc`` file may not be created is a permissions problem "
 "with the directory containing the source file, meaning that the "
@@ -3813,7 +3825,7 @@ msgstr ""
 "``.pyc`` 文件有可能会无法创建，原因之一是源码文件所在的目录存在权限问题，这样就无法创建 ``__pycache__`` "
 "子目录。假如以某个用户开发程序而以另一用户运行程序，就有可能发生权限问题，测试 Web 服务器就属于这种情况。"
 
-#: ../../faq/programming.rst:2084
+#: ../../faq/programming.rst:2091
 msgid ""
 "Unless the :envvar:`PYTHONDONTWRITEBYTECODE` environment variable is set, "
 "creation of a .pyc file is automatic if you're importing a module and Python"
@@ -3824,7 +3836,7 @@ msgstr ""
 "除非设置了 :envvar:`PYTHONDONTWRITEBYTECODE` 环境变量，否则导入模块并且 Python 能够创建 "
 "``__pycache__`` 子目录并把已编译模块写入该子目录（权限、存储空间等等）时，.pyc 文件就将自动创建。"
 
-#: ../../faq/programming.rst:2089
+#: ../../faq/programming.rst:2096
 msgid ""
 "Running Python on a top level script is not considered an import and no "
 "``.pyc`` will be created.  For example, if you have a top-level module "
@@ -3838,7 +3850,7 @@ msgstr ""
 "foo.py`` ），则会为 ``xyz`` 创建一个 ``.pyc``，因为 ``xyz`` 是被导入的，但不会为 ``foo`` 创建 "
 "``.pyc`` 文件，因为 ``foo.py`` 不是被导入的。"
 
-#: ../../faq/programming.rst:2096
+#: ../../faq/programming.rst:2103
 msgid ""
 "If you need to create a ``.pyc`` file for ``foo`` -- that is, to create a "
 "``.pyc`` file for a module that is not imported -- you can, using the "
@@ -3847,19 +3859,19 @@ msgstr ""
 "若要为 ``foo`` 创建 ``.pyc`` 文件 —— 即为未做导入的模块创建 ``.pyc`` 文件 —— 可以利用 "
 ":mod:`py_compile` 和 :mod:`compileall` 模块。"
 
-#: ../../faq/programming.rst:2100
+#: ../../faq/programming.rst:2107
 msgid ""
 "The :mod:`py_compile` module can manually compile any module.  One way is to"
 " use the ``compile()`` function in that module interactively::"
 msgstr ":mod:`py_compile` 模块能够手动编译任意模块。 一种做法是交互式地使用该模块中的 ``compile()`` 函数::"
 
-#: ../../faq/programming.rst:2103
+#: ../../faq/programming.rst:2110
 msgid ""
 ">>> import py_compile\n"
 ">>> py_compile.compile('foo.py')                 "
 msgstr ""
 
-#: ../../faq/programming.rst:2106
+#: ../../faq/programming.rst:2113
 msgid ""
 "This will write the ``.pyc`` to a ``__pycache__`` subdirectory in the same "
 "location as ``foo.py`` (or you can override that with the optional parameter"
@@ -3868,7 +3880,7 @@ msgstr ""
 "这将会将  ``.pyc`` 文件写入与 ``foo.py`` 相同位置下的 ``__pycache__`` 子目录（或者你也可以通过可选参数 "
 "``cfile`` 来重写该行为）。"
 
-#: ../../faq/programming.rst:2110
+#: ../../faq/programming.rst:2117
 msgid ""
 "You can also automatically compile all files in a directory or directories "
 "using the :mod:`compileall` module.  You can do it from the shell prompt by "
@@ -3878,15 +3890,15 @@ msgstr ""
 "还可以用 :mod:`compileall` 模块自动编译一个或多个目录下的所有文件。只要在命令行提示符中运行 ``compileall.py`` "
 "并给出要编译的 Python 文件所在目录路径即可："
 
-#: ../../faq/programming.rst:2115
+#: ../../faq/programming.rst:2122
 msgid "python -m compileall ."
 msgstr ""
 
-#: ../../faq/programming.rst:2119
+#: ../../faq/programming.rst:2126
 msgid "How do I find the current module name?"
 msgstr "如何找到当前模块名称？"
 
-#: ../../faq/programming.rst:2121
+#: ../../faq/programming.rst:2128
 msgid ""
 "A module can find out its own module name by looking at the predefined "
 "global variable ``__name__``.  If this has the value ``'__main__'``, the "
@@ -3897,7 +3909,7 @@ msgstr ""
 "模块可以查看预定义的全局变量 ``__name__`` 获悉自己的名称。如其值为 ``'__main__'`` "
 "，程序将作为脚本运行。通常，许多通过导入使用的模块同时也提供命令行接口或自检代码，这些代码只在检测到处于 ``__name__`` 之后才会执行："
 
-#: ../../faq/programming.rst:2127
+#: ../../faq/programming.rst:2134
 msgid ""
 "def main():\n"
 "    print('Running test...')\n"
@@ -3907,91 +3919,91 @@ msgid ""
 "    main()"
 msgstr ""
 
-#: ../../faq/programming.rst:2136
+#: ../../faq/programming.rst:2143
 msgid "How can I have modules that mutually import each other?"
 msgstr "如何让模块相互导入？"
 
-#: ../../faq/programming.rst:2138
+#: ../../faq/programming.rst:2145
 msgid "Suppose you have the following modules:"
 msgstr "假设有以下模块："
 
-#: ../../faq/programming.rst:2140
+#: ../../faq/programming.rst:2147
 msgid ":file:`foo.py`::"
 msgstr ":file:`foo.py`::"
 
-#: ../../faq/programming.rst:2142
+#: ../../faq/programming.rst:2149
 msgid ""
 "from bar import bar_var\n"
 "foo_var = 1"
 msgstr ""
 
-#: ../../faq/programming.rst:2145
+#: ../../faq/programming.rst:2152
 msgid ":file:`bar.py`::"
 msgstr ":file:`bar.py`::"
 
-#: ../../faq/programming.rst:2147
+#: ../../faq/programming.rst:2154
 msgid ""
 "from foo import foo_var\n"
 "bar_var = 2"
 msgstr ""
 
-#: ../../faq/programming.rst:2150
+#: ../../faq/programming.rst:2157
 msgid "The problem is that the interpreter will perform the following steps:"
 msgstr "问题是解释器将执行以下步骤："
 
-#: ../../faq/programming.rst:2152
+#: ../../faq/programming.rst:2159
 msgid "main imports ``foo``"
 msgstr "首先导入  ``foo``"
 
-#: ../../faq/programming.rst:2153
+#: ../../faq/programming.rst:2160
 msgid "Empty globals for ``foo`` are created"
 msgstr "为 ``foo``  创建空的全局变量"
 
-#: ../../faq/programming.rst:2154
+#: ../../faq/programming.rst:2161
 msgid "``foo`` is compiled and starts executing"
 msgstr "编译 ``foo`` 并开始执行"
 
-#: ../../faq/programming.rst:2155
+#: ../../faq/programming.rst:2162
 msgid "``foo`` imports ``bar``"
 msgstr "``foo`` 导入 ``bar``"
 
-#: ../../faq/programming.rst:2156
+#: ../../faq/programming.rst:2163
 msgid "Empty globals for ``bar`` are created"
 msgstr "为 ``bar`` 创建空的全局变量"
 
-#: ../../faq/programming.rst:2157
+#: ../../faq/programming.rst:2164
 msgid "``bar`` is compiled and starts executing"
 msgstr "编译 ``bar``  并开始执行"
 
-#: ../../faq/programming.rst:2158
+#: ../../faq/programming.rst:2165
 msgid ""
 "``bar`` imports ``foo`` (which is a no-op since there already is a module "
 "named ``foo``)"
 msgstr "``bar`` 导入 ``foo`` (该步骤无操作，因为已经有一个名为 ``foo`` 的模块)。"
 
-#: ../../faq/programming.rst:2159
+#: ../../faq/programming.rst:2166
 msgid ""
 "The import mechanism tries to read ``foo_var`` from ``foo`` globals, to set "
 "``bar.foo_var = foo.foo_var``"
 msgstr "导入机制尝试从 ``foo_var`` 全局变量读取 ``foo``，用来设置 ``bar.foo_var = foo.foo_var``"
 
-#: ../../faq/programming.rst:2161
+#: ../../faq/programming.rst:2168
 msgid ""
 "The last step fails, because Python isn't done with interpreting ``foo`` yet"
 " and the global symbol dictionary for ``foo`` is still empty."
 msgstr "最后一步失败了，因为 Python 还没有完成对 foo 的解释，foo 的全局符号字典仍然是空的。"
 
-#: ../../faq/programming.rst:2164
+#: ../../faq/programming.rst:2171
 msgid ""
 "The same thing happens when you use ``import foo``, and then try to access "
 "``foo.foo_var`` in global code."
 msgstr "当你使用 ``import foo`` ，然后尝试在全局代码中访问 ``foo.foo_var`` 时，会发生同样的事情。"
 
-#: ../../faq/programming.rst:2167
+#: ../../faq/programming.rst:2174
 msgid "There are (at least) three possible workarounds for this problem."
 msgstr "这个问题有（至少）三种可能的解决方法。"
 
-#: ../../faq/programming.rst:2169
+#: ../../faq/programming.rst:2176
 msgid ""
 "Guido van Rossum recommends avoiding all uses of ``from <module> import "
 "...``, and placing all code inside functions.  Initializations of global "
@@ -4003,63 +4015,63 @@ msgstr ""
 "，并将所有代码放在函数中。全局变量和类变量的初始化只应使用常量或内置函数。这意味着导入模块中的所有内容都以 ``<module>.<name>`` "
 "的形式引用。"
 
-#: ../../faq/programming.rst:2174
+#: ../../faq/programming.rst:2181
 msgid ""
 "Jim Roskind suggests performing steps in the following order in each module:"
 msgstr "Jim Roskind 建议每个模块都应遵循以下顺序："
 
-#: ../../faq/programming.rst:2176
+#: ../../faq/programming.rst:2183
 msgid ""
 "exports (globals, functions, and classes that don't need imported base "
 "classes)"
 msgstr "导出（全局变量、函数和不需要导入基类的类）"
 
-#: ../../faq/programming.rst:2178
+#: ../../faq/programming.rst:2185
 msgid "``import`` statements"
 msgstr "``import`` 语句"
 
-#: ../../faq/programming.rst:2179
+#: ../../faq/programming.rst:2186
 msgid ""
 "active code (including globals that are initialized from imported values)."
 msgstr "本模块的功能代码（包括根据导入值进行初始化的全局变量）。"
 
-#: ../../faq/programming.rst:2181
+#: ../../faq/programming.rst:2188
 msgid ""
 "Van Rossum doesn't like this approach much because the imports appear in a "
 "strange place, but it does work."
 msgstr "Van Rossum 不太喜欢这种方法，因为import出现在一个奇怪的地方，但它确实有效。"
 
-#: ../../faq/programming.rst:2184
+#: ../../faq/programming.rst:2191
 msgid ""
 "Matthias Urlichs recommends restructuring your code so that the recursive "
 "import is not necessary in the first place."
 msgstr "Matthias Urlichs 建议对代码进行重构，使得递归导入根本就没必要发生。"
 
-#: ../../faq/programming.rst:2187
+#: ../../faq/programming.rst:2194
 msgid "These solutions are not mutually exclusive."
 msgstr "这些解决方案并不相互排斥。"
 
-#: ../../faq/programming.rst:2191
+#: ../../faq/programming.rst:2198
 msgid "__import__('x.y.z') returns <module 'x'>; how do I get z?"
 msgstr "__import__('x.y.z') 返回的是 <module 'x'> ；该如何得到 z 呢？"
 
-#: ../../faq/programming.rst:2193
+#: ../../faq/programming.rst:2200
 msgid ""
 "Consider using the convenience function :func:`~importlib.import_module` "
 "from :mod:`importlib` instead::"
 msgstr "不妨考虑换用 :mod:`importlib` 中的函数 :func:`~importlib.import_module` ："
 
-#: ../../faq/programming.rst:2196
+#: ../../faq/programming.rst:2203
 msgid "z = importlib.import_module('x.y.z')"
 msgstr ""
 
-#: ../../faq/programming.rst:2200
+#: ../../faq/programming.rst:2207
 msgid ""
 "When I edit an imported module and reimport it, the changes don't show up.  "
 "Why does this happen?"
 msgstr "对已导入的模块进行了编辑并重新导入，但变动没有得以体现。这是为什么？"
 
-#: ../../faq/programming.rst:2202
+#: ../../faq/programming.rst:2209
 msgid ""
 "For reasons of efficiency as well as consistency, Python only reads the "
 "module file on the first time a module is imported.  If it didn't, in a "
@@ -4070,24 +4082,24 @@ msgstr ""
 "出于效率和一致性的原因，Python "
 "仅在第一次导入模块时读取模块文件。否则，在一个多模块的程序中，每个模块都会导入相同的基础模块，那么基础模块将会被一而再、再而三地解析。如果要强行重新读取已更改的模块，请执行以下操作："
 
-#: ../../faq/programming.rst:2208
+#: ../../faq/programming.rst:2215
 msgid ""
 "import importlib\n"
 "import modname\n"
 "importlib.reload(modname)"
 msgstr ""
 
-#: ../../faq/programming.rst:2212
+#: ../../faq/programming.rst:2219
 msgid ""
 "Warning: this technique is not 100% fool-proof.  In particular, modules "
 "containing statements like ::"
 msgstr "警告：这种技术并非万无一失。尤其是模块包含了以下语句时："
 
-#: ../../faq/programming.rst:2215
+#: ../../faq/programming.rst:2222
 msgid "from modname import some_objects"
 msgstr ""
 
-#: ../../faq/programming.rst:2217
+#: ../../faq/programming.rst:2224
 msgid ""
 "will continue to work with the old version of the imported objects.  If the "
 "module contains class definitions, existing class instances will *not* be "
@@ -4095,7 +4107,7 @@ msgid ""
 "paradoxical behaviour::"
 msgstr "仍将继续使用前一版的导入对象。如果模块包含了类的定义，并 *不会* 用新的类定义更新现有的类实例。这样可能会导致以下矛盾的行为："
 
-#: ../../faq/programming.rst:2222
+#: ../../faq/programming.rst:2229
 msgid ""
 ">>> import importlib\n"
 ">>> import cls\n"
@@ -4106,13 +4118,13 @@ msgid ""
 "False"
 msgstr ""
 
-#: ../../faq/programming.rst:2230
+#: ../../faq/programming.rst:2237
 msgid ""
 "The nature of the problem is made clear if you print out the \"identity\" of"
 " the class objects::"
 msgstr "只要把类对象的 id 打印出来，问题的性质就会一目了然："
 
-#: ../../faq/programming.rst:2233
+#: ../../faq/programming.rst:2240
 msgid ""
 ">>> hex(id(c.__class__))\n"
 "'0x7352a0'\n"
