@@ -3573,6 +3573,8 @@ msgid ""
 ">>> manager.list([1,2,3]) == [1,2,3]\n"
 "False"
 msgstr ""
+">>> manager.list([1,2,3]) == [1,2,3]\n"
+"False"
 
 #: ../../library/multiprocessing.rst:2139
 msgid ""
@@ -3594,7 +3596,7 @@ msgstr "如果 ``proxy`` 是一个代理且其指涉的是 ``obj`` , 那么下�
 
 #: ../../library/multiprocessing.rst:2151
 msgid "proxy._callmethod(methodname, args, kwds)"
-msgstr ""
+msgstr "proxy._callmethod(methodname, args, kwds)"
 
 #: ../../library/multiprocessing.rst:2153
 msgid "will evaluate the expression ::"
@@ -3602,7 +3604,7 @@ msgstr "相当于求取以下表达式的值::"
 
 #: ../../library/multiprocessing.rst:2155
 msgid "getattr(obj, methodname)(*args, **kwds)"
-msgstr ""
+msgstr "getattr(obj, methodname)(*args, **kwds)"
 
 #: ../../library/multiprocessing.rst:2157
 msgid "in the manager's process."
@@ -3649,6 +3651,15 @@ msgid ""
 "...\n"
 "IndexError: list index out of range"
 msgstr ""
+">>> l = manager.list(range(10))\n"
+">>> l._callmethod('__len__')\n"
+"10\n"
+">>> l._callmethod('__getitem__', (slice(2, 7),)) # 等价于 l[2:7]\n"
+"[2, 3, 4, 5, 6]\n"
+">>> l._callmethod('__getitem__', (20,))          # 等价于 l[20]\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"IndexError: list index out of range"
 
 #: ../../library/multiprocessing.rst:2187
 msgid "Return a copy of the referent."
@@ -4730,6 +4741,17 @@ msgid ""
 "    p.join()                    # this deadlocks\n"
 "    obj = queue.get()"
 msgstr ""
+"from multiprocessing import Process, Queue\n"
+"\n"
+"def f(q):\n"
+"    q.put('X' * 1000000)\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    queue = Queue()\n"
+"    p = Process(target=f, args=(queue,))\n"
+"    p.start()\n"
+"    p.join()                    # 这将死锁\n"
+"    obj = queue.get()"
 
 #: ../../library/multiprocessing.rst:2907
 msgid ""
@@ -4778,6 +4800,15 @@ msgid ""
 "    for i in range(10):\n"
 "        Process(target=f).start()"
 msgstr ""
+"from multiprocessing import Process, Lock\n"
+"\n"
+"def f():\n"
+"    ... 使用锁进行一些操作 ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    lock = Lock()\n"
+"    for i in range(10):\n"
+"        Process(target=f).start()"
 
 #: ../../library/multiprocessing.rst:2936
 msgid "should be rewritten as ::"
@@ -4795,6 +4826,15 @@ msgid ""
 "    for i in range(10):\n"
 "        Process(target=f, args=(lock,)).start()"
 msgstr ""
+"from multiprocessing import Process, Lock\n"
+"\n"
+"def f(l):\n"
+"    ... 使用 \"l\" 进行一些操作 ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    lock = Lock()\n"
+"    for i in range(10):\n"
+"        Process(target=f, args=(lock,)).start()"
 
 #: ../../library/multiprocessing.rst:2948
 msgid "Beware of replacing :data:`sys.stdin` with a \"file like object\""
@@ -4806,7 +4846,7 @@ msgstr ":mod:`multiprocessing` 原本会无条件地这样调用::"
 
 #: ../../library/multiprocessing.rst:2952
 msgid "os.close(sys.stdin.fileno())"
-msgstr ""
+msgstr "os.close(sys.stdin.fileno())"
 
 #: ../../library/multiprocessing.rst:2954
 msgid ""
@@ -4821,6 +4861,8 @@ msgid ""
 "sys.stdin.close()\n"
 "sys.stdin = open(os.open(os.devnull, os.O_RDONLY), closefd=False)"
 msgstr ""
+"sys.stdin.close()\n"
+"sys.stdin = open(os.open(os.devnull, os.O_RDONLY), closefd=False)"
 
 #: ../../library/multiprocessing.rst:2960
 msgid ""
