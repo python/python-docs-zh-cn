@@ -659,6 +659,10 @@ msgid ""
 " which has provided significant engineering resources to support this "
 "project."
 msgstr ""
+"这项工作成为可能要感谢许多个人和组织，包括针对 Python 和第三方项目测试并启用自由线程支持的庞大的贡献者社区。 重要的贡献者包括：Sam "
+"Gross, Ken Jin, Donghee Na, Itamar Oren, Matt Page, Brett Simmers, Dino "
+"Viehland, Carl Meyer, Nathan Goldbaum, Ralf Gommers, Lysandros Nikolaou "
+"及其他许多人。 有许多贡献者受雇于 Meta，该公司提供了大量的工程资源来支持此项目。"
 
 #: ../../whatsnew/3.13.rst:367
 msgid ""
@@ -811,6 +815,9 @@ msgid ""
 "snapshots of the currently assigned local variables, including locally "
 "referenced nonlocal variables captured in closures."
 msgstr ""
+"在历史上，改变 :func:`locals` 的返回值的预期结果是留给具体的 Python 实现来定义的。 从 Python 3.13 "
+"开始，:pep:`667` 标准化了 CPython 对于大多数代码执行作用域的历史行为，但也将 :term:`已优化作用域 <optimized "
+"scope>` (函数、生成器、协程、推导式和生成器表达式) 修改为显式地返回当前已赋值的局部变量的独立快照，包括局部引用的在闭包中捕获的非局部变量。"
 
 #: ../../whatsnew/3.13.rst:444
 msgid ""
@@ -832,6 +839,13 @@ msgid ""
 "execution namespace (e.g. :func:`runpy.run_path` when executing Python files"
 " from disk)."
 msgstr ""
+"在已优化作用域中对 :func:`locals` 语义的这项修改也会影响隐式地以 :func:`!locals` "
+"为目标的代码执行函数的默认行为，如果没有提供显式命名空间的话（例如 :func:`exec` 和 :func:`eval` 等）。 "
+"在之前的版本中，在调用代码执行函数后是否可以通过调用 :func:`!locals` 访问更改情况取决于具体的实现。 具体到 CPython "
+"而言，此类代码通常会按预期工作，但有时可能会在基于其他代码（包括调试器和代码执行跟踪工具）的已优化作用域中失败，因为代码有可能重置该作用域中的共享快照。"
+" 现在，代码在已优化作用域中将始终针对局部变量的独立快照运行，因为在后续调用 :func:`!locals` 时将永远看不到更改。 "
+"要访问在这些情况下所做的更改，现在必须将一个显式命名空间引用传递给相关的函数。 或者，也可以更新受影响的代码以使用更高层级的代码执行 API "
+"返回结果代码命名空间（例如，当执行磁盘上的 Python 文件时使用 :func:`runpy.run_path` 函数）。"
 
 #: ../../whatsnew/3.13.rst:463
 msgid ""
@@ -895,6 +909,10 @@ msgid ""
 "not tier 3 supported platforms, but will have best-effort support. (PEP "
 "written and implementation contributed by Malcolm Smith in :gh:`116622`.)"
 msgstr ""
+":pep:`738`: Android 现在是 :pep:`11` 所支持的平台，包括位于第 3 层级的 ``aarch64-linux-"
+"android`` 和 ``x86_64-linux-android`` 等目标。 32 位的目标 ``arm-linux-androideabi`` "
+"和 ``i686-linux-android`` 不是第 3 层级的受支持平台，但也将尽可能地支持。 （PEP 撰写及实现由 Malcolm Smith"
+" 在 :gh:`116622` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:501
 msgid ":pep:`730`, :pep:`738`"
@@ -928,7 +946,7 @@ msgstr ":func:`!gc.collect` 的行为略有变化："
 msgid ""
 "``gc.collect(1)``: Performs an increment of garbage collection, rather than "
 "collecting generation 1."
-msgstr ""
+msgstr "``gc.collect(1)``: 执行一次垃圾收集的增量，而不是回收第 1 代。"
 
 #: ../../whatsnew/3.13.rst:523 ../../whatsnew/3.13.rst:2622
 msgid "Other calls to :func:`!gc.collect` are unchanged."
@@ -1064,6 +1082,9 @@ msgid ""
 "are assigned through ``self.<name>`` from any function in its body. "
 "(Contributed by Irit Katriel in :gh:`115775`.)"
 msgstr ""
+"类新增了一个 :attr:`~type.__static_attributes__` 属性。 "
+"这由编译器以类属性名称的元组来填充，这些名称是从类体中的任何函数通过 ``self.<name>`` 来赋值的。 （由 Irit Katriel 在 "
+":gh:`115775` 中贡献。）.)"
 
 #: ../../whatsnew/3.13.rst:597
 msgid ""
@@ -1222,7 +1243,7 @@ msgid ""
 "The constructors of node types in the :mod:`ast` module are now stricter in "
 "the arguments they accept, with more intuitive behavior when arguments are "
 "omitted."
-msgstr ""
+msgstr "现在 :mod:`ast` 模块中节点类型的构造器对其接受的参数要求更为严格，并在参数被省略时有更易理解的行为。"
 
 #: ../../whatsnew/3.13.rst:681
 msgid ""
@@ -4275,19 +4296,19 @@ msgstr ":c:func:`PyMonitoring_FirePyUnwindEvent`"
 
 #: ../../whatsnew/3.13.rst:2029
 msgid ":c:func:`PyMonitoring_FireStopIterationEvent`"
-msgstr ""
+msgstr ":c:func:`PyMonitoring_FireStopIterationEvent`"
 
 #: ../../whatsnew/3.13.rst:2030
 msgid ":c:func:`PyMonitoring_EnterScope`"
-msgstr ""
+msgstr ":c:func:`PyMonitoring_EnterScope`"
 
 #: ../../whatsnew/3.13.rst:2031
 msgid ":c:func:`PyMonitoring_ExitScope`"
-msgstr ""
+msgstr ":c:func:`PyMonitoring_ExitScope`"
 
 #: ../../whatsnew/3.13.rst:2033
 msgid "(Contributed by Irit Katriel in :gh:`111997`)."
-msgstr ""
+msgstr "（由 Irit Katriel 在 :gh:`111997` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2035
 msgid ""
@@ -4296,6 +4317,9 @@ msgid ""
 ":c:func:`!PyMutex_Lock` will release the :term:`GIL` (if currently held) if "
 "the operation needs to block. (Contributed by Sam Gross in :gh:`108724`.)"
 msgstr ""
+"增加了 :c:type:`PyMutex`，它是占用一个字节的轻量级互斥锁，以及新的 :c:func:`PyMutex_Lock` 和 "
+":c:func:`PyMutex_Unlock` 函数。 如果操作需要阻塞则 :c:func:`!PyMutex_Lock` 将释放 (当前持有的) "
+":term:`GIL`。 （由 Sam Gross 在 :gh:`108724` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2041
 msgid ""
