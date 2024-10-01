@@ -12,8 +12,8 @@
 # meowmeowcat <meowmeowcat1211@gmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2022
 # ProgramRipper, 2023
-# Freesand Leo <yuqinju@163.com>, 2024
 # Wulian233 <xiguawulian@gmail.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-27 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:53+0000\n"
-"Last-Translator: Wulian233 <xiguawulian@gmail.com>, 2024\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -454,6 +454,12 @@ msgid ""
 ">>> \"\\U00000394\"                      # Using a 32-bit hex value\n"
 "'\\u0394'"
 msgstr ""
+">>> \"\\N{GREEK CAPITAL LETTER DELTA}\"  # 使用字符名称\n"
+"'\\u0394'\n"
+">>> \"\\u0394\"                          # 使用 16 比特位十六进制数值\n"
+"'\\u0394'\n"
+">>> \"\\U00000394\"                      # 使用 32 比特位十六进制数值\n"
+"'\\u0394'"
 
 #: ../../howto/unicode.rst:224
 msgid ""
@@ -647,6 +653,12 @@ msgid ""
 ">>> [ord(c) for c in s]\n"
 "[97, 172, 4660, 8364, 32768]"
 msgstr ""
+">>> s = \"a\\xac\\u1234\\u20ac\\U00008000\"\n"
+"... #     ^^^^ 两位十六进制数转义\n"
+"... #         ^^^^^^ 四位 Unicode 转义\n"
+"... #                     ^^^^^^^^^^ 八位 Unicode 转义\n"
+">>> [ord(c) for c in s]\n"
+"[97, 172, 4660, 8364, 32768]"
 
 #: ../../howto/unicode.rst:324
 msgid ""
@@ -921,6 +933,19 @@ msgid ""
 "\n"
 "print(compare_caseless(single_char, multiple_chars))"
 msgstr ""
+"import unicodedata\n"
+"\n"
+"def compare_caseless(s1, s2):\n"
+"    def NFD(s):\n"
+"        return unicodedata.normalize('NFD', s)\n"
+"\n"
+"    return NFD(NFD(s1).casefold()) == NFD(NFD(s2).casefold())\n"
+"\n"
+"# 使用示例\n"
+"single_char = 'ê'\n"
+"multiple_chars = '\\N{LATIN CAPITAL LETTER E}\\N{COMBINING CIRCUMFLEX ACCENT}'\n"
+"\n"
+"print(compare_caseless(single_char, multiple_chars))"
 
 #: ../../howto/unicode.rst:477
 msgid ""
@@ -964,6 +989,12 @@ msgid ""
 "m = p.search(s)\n"
 "print(repr(m.group()))"
 msgstr ""
+"import re\n"
+"p = re.compile(r'\\d+')\n"
+"\n"
+"s = \"Over \\u0e55\\u0e57 57 flavours\"\n"
+"m = p.search(s)\n"
+"print(repr(m.group()))"
 
 #: ../../howto/unicode.rst:503
 msgid ""
