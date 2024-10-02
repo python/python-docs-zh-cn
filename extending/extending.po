@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-31 10:59+0000\n"
+"POT-Creation-Date: 2024-09-27 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:51+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -430,6 +430,24 @@ msgid ""
 "    return m;\n"
 "}"
 msgstr ""
+"PyMODINIT_FUNC\n"
+"PyInit_spam(void)\n"
+"{\n"
+"    PyObject *m;\n"
+"\n"
+"    m = PyModule_Create(&spammodule);\n"
+"    if (m == NULL)\n"
+"        return NULL;\n"
+"\n"
+"    SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);\n"
+"    if (PyModule_AddObjectRef(m, \"error\", SpamError) < 0) {\n"
+"        Py_CLEAR(SpamError);\n"
+"        Py_DECREF(m);\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    return m;\n"
+"}"
 
 #: ../../extending/extending.rst:233
 msgid ""
@@ -486,6 +504,21 @@ msgid ""
 "    return PyLong_FromLong(sts);\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *args)\n"
+"{\n"
+"    const char *command;\n"
+"    int sts;\n"
+"\n"
+"    if (!PyArg_ParseTuple(args, \"s\", &command))\n"
+"        return NULL;\n"
+"    sts = system(command);\n"
+"    if (sts < 0) {\n"
+"        PyErr_SetString(SpamError, \"System command failed\");\n"
+"        return NULL;\n"
+"    }\n"
+"    return PyLong_FromLong(sts);\n"
+"}"
 
 #: ../../extending/extending.rst:271
 msgid "Back to the Example"
@@ -502,6 +535,8 @@ msgid ""
 "if (!PyArg_ParseTuple(args, \"s\", &command))\n"
 "    return NULL;"
 msgstr ""
+"if (!PyArg_ParseTuple(args, \"s\", &command))\n"
+"    return NULL;"
 
 #: ../../extending/extending.rst:279
 msgid ""
@@ -528,7 +563,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:290
 msgid "sts = system(command);"
-msgstr ""
+msgstr "sts = system(command);"
 
 #: ../../extending/extending.rst:292
 msgid ""
@@ -541,7 +576,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:295
 msgid "return PyLong_FromLong(sts);"
-msgstr ""
+msgstr "return PyLong_FromLong(sts);"
 
 #: ../../extending/extending.rst:297
 msgid ""
@@ -564,6 +599,8 @@ msgid ""
 "Py_INCREF(Py_None);\n"
 "return Py_None;"
 msgstr ""
+"Py_INCREF(Py_None);\n"
+"return Py_None;"
 
 #: ../../extending/extending.rst:308
 msgid ""
@@ -596,6 +633,13 @@ msgid ""
 "    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
 "};"
 msgstr ""
+"static PyMethodDef SpamMethods[] = {\n"
+"    ...\n"
+"    {\"system\",  spam_system, METH_VARARGS,\n"
+"     \"Execute a shell command.\"},\n"
+"    ...\n"
+"    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
+"};"
 
 #: ../../extending/extending.rst:329
 msgid ""
@@ -666,6 +710,11 @@ msgid ""
 "    return PyModule_Create(&spammodule);\n"
 "}"
 msgstr ""
+"PyMODINIT_FUNC\n"
+"PyInit_spam(void)\n"
+"{\n"
+"    return PyModule_Create(&spammodule);\n"
+"}"
 
 #: ../../extending/extending.rst:366
 msgid ""
@@ -821,7 +870,7 @@ msgstr ""
 
 #: ../../extending/extending.rst:473
 msgid "spam spammodule.o"
-msgstr ""
+msgstr "spam spammodule.o"
 
 #: ../../extending/extending.rst:477
 msgid ""
@@ -843,7 +892,7 @@ msgstr "如果你的模块需要额外的链接，这些内容可以列出在配
 
 #: ../../extending/extending.rst:486
 msgid "spam spammodule.o -lX11"
-msgstr ""
+msgstr "spam spammodule.o -lX11"
 
 #: ../../extending/extending.rst:494
 msgid "Calling Python Functions from C"
