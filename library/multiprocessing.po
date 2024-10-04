@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-20 14:57+0000\n"
+"POT-Creation-Date: 2024-10-04 14:53+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -3440,6 +3440,17 @@ msgid ""
 ">>> l[2:5]\n"
 "[4, 9, 16]"
 msgstr ""
+">>> mp_context = multiprocessing.get_context('spawn')\n"
+">>> manager = mp_context.Manager()\n"
+">>> l = manager.list([i*i for i in range(10)])\n"
+">>> print(l)\n"
+"[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]\n"
+">>> print(repr(l))\n"
+"<ListProxy object, typeid 'list' at 0x...>\n"
+">>> l[4]\n"
+"16\n"
+">>> l[2:5]\n"
+"[4, 9, 16]"
 
 #: ../../library/multiprocessing.rst:2066
 msgid ""
@@ -3538,6 +3549,8 @@ msgid ""
 ">>> manager.list([1,2,3]) == [1,2,3]\n"
 "False"
 msgstr ""
+">>> manager.list([1,2,3]) == [1,2,3]\n"
+"False"
 
 #: ../../library/multiprocessing.rst:2132
 msgid ""
@@ -3559,7 +3572,7 @@ msgstr "如果 ``proxy`` 是一个代理且其指涉的是 ``obj`` , 那么下�
 
 #: ../../library/multiprocessing.rst:2144
 msgid "proxy._callmethod(methodname, args, kwds)"
-msgstr ""
+msgstr "proxy._callmethod(methodname, args, kwds)"
 
 #: ../../library/multiprocessing.rst:2146
 msgid "will evaluate the expression ::"
@@ -3567,7 +3580,7 @@ msgstr "相当于求取以下表达式的值::"
 
 #: ../../library/multiprocessing.rst:2148
 msgid "getattr(obj, methodname)(*args, **kwds)"
-msgstr ""
+msgstr "getattr(obj, methodname)(*args, **kwds)"
 
 #: ../../library/multiprocessing.rst:2150
 msgid "in the manager's process."
@@ -3614,6 +3627,15 @@ msgid ""
 "...\n"
 "IndexError: list index out of range"
 msgstr ""
+">>> l = manager.list(range(10))\n"
+">>> l._callmethod('__len__')\n"
+"10\n"
+">>> l._callmethod('__getitem__', (slice(2, 7),)) # 等价于 l[2:7]\n"
+"[2, 3, 4, 5, 6]\n"
+">>> l._callmethod('__getitem__', (20,))          # 等价于 l[20]\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"IndexError: list index out of range"
 
 #: ../../library/multiprocessing.rst:2180
 msgid "Return a copy of the referent."
@@ -4688,6 +4710,17 @@ msgid ""
 "    p.join()                    # this deadlocks\n"
 "    obj = queue.get()"
 msgstr ""
+"from multiprocessing import Process, Queue\n"
+"\n"
+"def f(q):\n"
+"    q.put('X' * 1000000)\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    queue = Queue()\n"
+"    p = Process(target=f, args=(queue,))\n"
+"    p.start()\n"
+"    p.join()                    # 这将死锁\n"
+"    obj = queue.get()"
 
 #: ../../library/multiprocessing.rst:2897
 msgid ""
@@ -4736,6 +4769,15 @@ msgid ""
 "    for i in range(10):\n"
 "        Process(target=f).start()"
 msgstr ""
+"from multiprocessing import Process, Lock\n"
+"\n"
+"def f():\n"
+"    ... 使用锁进行一些操作 ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    lock = Lock()\n"
+"    for i in range(10):\n"
+"        Process(target=f).start()"
 
 #: ../../library/multiprocessing.rst:2926
 msgid "should be rewritten as ::"
@@ -4753,6 +4795,15 @@ msgid ""
 "    for i in range(10):\n"
 "        Process(target=f, args=(lock,)).start()"
 msgstr ""
+"from multiprocessing import Process, Lock\n"
+"\n"
+"def f(l):\n"
+"    ... 使用 \"l\" 进行一些操作 ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    lock = Lock()\n"
+"    for i in range(10):\n"
+"        Process(target=f, args=(lock,)).start()"
 
 #: ../../library/multiprocessing.rst:2938
 msgid "Beware of replacing :data:`sys.stdin` with a \"file like object\""
@@ -4764,7 +4815,7 @@ msgstr ":mod:`multiprocessing` 原本会无条件地这样调用::"
 
 #: ../../library/multiprocessing.rst:2942
 msgid "os.close(sys.stdin.fileno())"
-msgstr ""
+msgstr "os.close(sys.stdin.fileno())"
 
 #: ../../library/multiprocessing.rst:2944
 msgid ""
@@ -4779,6 +4830,8 @@ msgid ""
 "sys.stdin.close()\n"
 "sys.stdin = open(os.open(os.devnull, os.O_RDONLY), closefd=False)"
 msgstr ""
+"sys.stdin.close()\n"
+"sys.stdin = open(os.open(os.devnull, os.O_RDONLY), closefd=False)"
 
 #: ../../library/multiprocessing.rst:2950
 msgid ""

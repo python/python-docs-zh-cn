@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
+"POT-Creation-Date: 2024-10-04 14:53+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -29,7 +29,7 @@ msgstr ":mod:`cgi` --- 通用网关接口支持"
 msgid "**Source code:** :source:`Lib/cgi.py`"
 msgstr "**源代码：** :source:`Lib/cgi.py`"
 
-#: ../../library/cgi.rst:27
+#: ../../library/cgi.rst:18
 msgid ""
 "The :mod:`cgi` module is deprecated (see :pep:`PEP 594 <594#cgi>` for "
 "details and alternatives)."
@@ -127,6 +127,12 @@ msgstr ""
 "CGI 脚本的输出应当由两部分组成，并由一个空行分隔。 前一部分包含一些标头，它们告诉客户端后面会提供何种数据。 生成一个最小化标头部分的 Python"
 " 代码如下所示::"
 
+#: ../../library/cgi.rst:68
+msgid ""
+"print(\"Content-Type: text/html\")    # HTML is following\n"
+"print()                             # blank line, end of headers"
+msgstr ""
+
 #: ../../library/cgi.rst:71
 msgid ""
 "The second section is usually HTML, which allows the client software to "
@@ -134,6 +140,13 @@ msgid ""
 "Python code that prints a simple piece of HTML::"
 msgstr ""
 "后一部分通常为 HTML，提供给客户端软件来显示格式良好包含标题的文本、内联图片等内容。 下面是打印一段简单 HTML 的 Python 代码::"
+
+#: ../../library/cgi.rst:75
+msgid ""
+"print(\"<TITLE>CGI script output</TITLE>\")\n"
+"print(\"<H1>This is my first CGI script</H1>\")\n"
+"print(\"Hello, world!\")"
+msgstr ""
 
 #: ../../library/cgi.rst:83
 msgid "Using the cgi module"
@@ -147,6 +160,12 @@ msgstr "先在开头添加 ``import cgi``。"
 msgid "When you write a new script, consider adding these lines::"
 msgstr "当你在编写一个新脚本时，请考虑加上这些语句::"
 
+#: ../../library/cgi.rst:89 ../../library/cgi.rst:505
+msgid ""
+"import cgitb\n"
+"cgitb.enable()"
+msgstr ""
+
 #: ../../library/cgi.rst:92
 msgid ""
 "This activates a special exception handler that will display detailed "
@@ -156,6 +175,12 @@ msgid ""
 msgstr ""
 "这会激活一个特殊的异常处理器，它将在发生任何错误时将详细错误报告显示到 web 浏览器中。 "
 "如果你不希望向你的脚本的用户显示你的程序的内部细节，你可以改为将报告保存到文件中，使用这样的代码即可::"
+
+#: ../../library/cgi.rst:97
+msgid ""
+"import cgitb\n"
+"cgitb.enable(display=0, logdir=\"/path/to/logdir\")"
+msgstr ""
 
 #: ../../library/cgi.rst:100
 msgid ""
@@ -208,6 +233,18 @@ msgstr ""
 "举例来说，下面的代码（假定 :mailheader:`Content-Type` 标头和空行已经被打印）会检查字段 ``name`` 和 "
 "``addr`` 是否均被设为非空字符串::"
 
+#: ../../library/cgi.rst:127
+msgid ""
+"form = cgi.FieldStorage()\n"
+"if \"name\" not in form or \"addr\" not in form:\n"
+"    print(\"<H1>Error</H1>\")\n"
+"    print(\"Please fill in the name and addr fields.\")\n"
+"    return\n"
+"print(\"<p>name:\", form[\"name\"].value)\n"
+"print(\"<p>addr:\", form[\"addr\"].value)\n"
+"...further form processing here..."
+msgstr ""
+
 #: ../../library/cgi.rst:136
 msgid ""
 "Here the fields, accessed through ``form[key]``, are themselves instances of"
@@ -240,6 +277,12 @@ msgstr ""
 ":meth:`~FieldStorage.getlist` 方法，它总是返回一个值的列表（这样你就不需要对只有单个项的情况进行特别处理）。 "
 "例如，这段代码拼接了任意数量的 username 字段，以逗号进行分隔::"
 
+#: ../../library/cgi.rst:153
+msgid ""
+"value = form.getlist(\"username\")\n"
+"usernames = \",\".join(value)"
+msgstr ""
+
 #: ../../library/cgi.rst:156
 msgid ""
 "If a field represents an uploaded file, accessing the value via the "
@@ -257,6 +300,18 @@ msgstr ""
 ":attr:`~FieldStorage.filename` 属性或 :attr:`~FieldStorage.file` 属性来检测上传的文件。 "
 "然后你可以从 :attr:`!file` 属性读取数据，直到它作为 :class:`FieldStorage` 实例的垃圾回收的一部分被自动关闭 "
 "(:func:`~io.RawIOBase.read` 和 :func:`~io.IOBase.readline` 方法将返回字节数据)::"
+
+#: ../../library/cgi.rst:167
+msgid ""
+"fileitem = form[\"userfile\"]\n"
+"if fileitem.file:\n"
+"    # It's an uploaded file; count lines\n"
+"    linecount = 0\n"
+"    while True:\n"
+"        line = fileitem.file.readline()\n"
+"        if not line: break\n"
+"        linecount = linecount + 1"
+msgstr ""
 
 #: ../../library/cgi.rst:176
 msgid ""
@@ -353,11 +408,26 @@ msgid ""
 "expected a user to post more than one value under one name::"
 msgstr "在前面的部分中，你已学会当你预期用户在一个名称下提交超过一个值的时候编写以下代码::"
 
+#: ../../library/cgi.rst:228
+msgid ""
+"item = form.getvalue(\"item\")\n"
+"if isinstance(item, list):\n"
+"    # The user is requesting more than one item.\n"
+"else:\n"
+"    # The user is requesting only one item."
+msgstr ""
+
 #: ../../library/cgi.rst:234
 msgid ""
 "This situation is common for example when a form contains a group of "
 "multiple checkboxes with the same name::"
 msgstr "这种情况很常见，例如当一个表单包含具有相同名称的一组复选框的时候::"
+
+#: ../../library/cgi.rst:237
+msgid ""
+"<input type=\"checkbox\" name=\"item\" value=\"1\" />\n"
+"<input type=\"checkbox\" name=\"item\" value=\"2\" />"
+msgstr ""
 
 #: ../../library/cgi.rst:240
 msgid ""
@@ -365,6 +435,10 @@ msgid ""
 " name in a form and then you expect and need only one value associated with "
 "this name.  So you write a script containing for example this code::"
 msgstr "但是在多数情况下，一个表单中的一个特定名称只对应一个表单控件。 因此你可能会编写包含以下代码的脚本::"
+
+#: ../../library/cgi.rst:244
+msgid "user = form.getvalue(\"user\").upper()"
+msgstr ""
 
 #: ../../library/cgi.rst:246
 msgid ""
@@ -424,6 +498,15 @@ msgstr ""
 msgid "Using these methods you can write nice compact code::"
 msgstr "使用这两个方法你将能写出优雅简洁的代码::"
 
+#: ../../library/cgi.rst:281
+msgid ""
+"import cgi\n"
+"form = cgi.FieldStorage()\n"
+"user = form.getfirst(\"user\", \"\").upper()    # This way it's safe.\n"
+"for item in form.getlist(\"item\"):\n"
+"    do_something(item)"
+msgstr ""
+
 #: ../../library/cgi.rst:291
 msgid "Functions"
 msgstr "函数"
@@ -443,7 +526,7 @@ msgstr ""
 "在环境中或从某个文件中解析一个查询 (文件默认为 ``sys.stdin``)。 *keep_blank_values*, "
 "*strict_parsing* 和 *separator* 形参会被原样传给 :func:`urllib.parse.parse_qs`。"
 
-#: ../../library/cgi.rst:307
+#: ../../library/cgi.rst:303
 msgid ""
 "This function, like the rest of the :mod:`cgi` module, is deprecated. It can"
 " be replaced by calling :func:`urllib.parse.parse_qs` directly on the "
@@ -491,7 +574,7 @@ msgstr "增加了 *encoding* 和 *errors* 形参。 对于非文件字段，其�
 msgid "Added the *separator* parameter."
 msgstr "增加了 *separator* 形参。"
 
-#: ../../library/cgi.rst:337
+#: ../../library/cgi.rst:332
 msgid ""
 "This function, like the rest of the :mod:`cgi` module, is deprecated. It can"
 " be replaced with the functionality in the :mod:`email` package (e.g. "
@@ -508,7 +591,7 @@ msgid ""
 "and a dictionary of parameters."
 msgstr "将一个 MIME 标头 (例如 :mailheader:`Content-Type`) 解析为一个主值和一个参数字典。"
 
-#: ../../library/cgi.rst:355
+#: ../../library/cgi.rst:345
 msgid ""
 "This function, like the rest of the :mod:`cgi` module, is deprecated. It can"
 " be replaced with the functionality in the :mod:`email` package, which "
@@ -519,6 +602,14 @@ msgstr ""
 #: ../../library/cgi.rst:350
 msgid "For example, with :class:`email.message.EmailMessage`::"
 msgstr "例如，使用 :class:`email.message.EmailMessage`::"
+
+#: ../../library/cgi.rst:352
+msgid ""
+"from email.message import EmailMessage\n"
+"msg = EmailMessage()\n"
+"msg['content-type'] = 'application/json; charset=\"utf8\"'\n"
+"main, params = msg.get_content_type(), msg['content-type'].params"
+msgstr ""
 
 #: ../../library/cgi.rst:360
 msgid ""
@@ -591,6 +682,10 @@ msgstr ""
 "请确保你的脚本可被“其他人”读取和执行；Unix 文件模式应为八进制数 ``0o755`` (使用 ``chmod 0755 filename``)。 "
 "请确保脚本的第一行包含 ``#!`` 且位置是从第 1 列开始，后面带有 Python 解释器的路径名，例如::"
 
+#: ../../library/cgi.rst:416
+msgid "#!/usr/local/bin/python"
+msgstr "#!/usr/local/bin/python"
+
 #: ../../library/cgi.rst:418
 msgid "Make sure the Python interpreter exists and is executable by \"others\"."
 msgstr "请确保该 Python 解释器存在并且可被“其他人”执行。"
@@ -621,6 +716,13 @@ msgid ""
 "default module search path, you can change the path in your script, before "
 "importing other modules.  For example::"
 msgstr "如果你需要从 Python 的默认模块搜索路径之外的目录载入模块，你可以在导入其他模块之前在你的脚本中改变路径。 例如::"
+
+#: ../../library/cgi.rst:435
+msgid ""
+"import sys\n"
+"sys.path.insert(0, \"/usr/home/joe/lib/python\")\n"
+"sys.path.insert(0, \"/usr/local/lib/python\")"
+msgstr ""
 
 #: ../../library/cgi.rst:439
 msgid "(This way, the directory inserted last will be searched first!)"
@@ -676,6 +778,10 @@ msgstr ""
 "当作为脚本被发起调用时，该文件将以 HTML 格式转储其环境和表单内容。 请给它赋予正确的模式等，并向它发送一个请求。 如果它是安装在标准的 "
 ":file:`cgi-bin` 目录下，应该可以通过在你的浏览器中输入表单的 URL 来向它发送请求。"
 
+#: ../../library/cgi.rst:473
+msgid "http://yourhostname/cgi-bin/cgi.py?name=Joe+Blow&addr=At+Home"
+msgstr ""
+
 #: ../../library/cgi.rst:477
 msgid ""
 "If this gives an error of type 404, the server cannot find the script -- "
@@ -697,6 +803,10 @@ msgid ""
 "The next step could be to call the :mod:`cgi` module's :func:`test` function"
 " from your script: replace its main code with the single statement ::"
 msgstr "下一步骤可以是在你的脚本中调用 :mod:`cgi` 模块的 :func:`test` 函数：用这一条语句替换它的主代码 ::"
+
+#: ../../library/cgi.rst:489
+msgid "cgi.test()"
+msgstr ""
 
 #: ../../library/cgi.rst:491
 msgid ""
@@ -737,6 +847,15 @@ msgid ""
 "module, you can use an even more robust approach (which only uses built-in "
 "modules)::"
 msgstr "如果怀疑是 :mod:`cgitb` 模块导入的问题，可以采用一个功能更强的方法（只用到内置模块）："
+
+#: ../../library/cgi.rst:515
+msgid ""
+"import sys\n"
+"sys.stderr = sys.stdout\n"
+"print(\"Content-Type: text/plain\")\n"
+"print()\n"
+"...your code here..."
+msgstr ""
 
 #: ../../library/cgi.rst:521
 msgid ""
