@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 14:53+0000\n"
+"POT-Creation-Date: 2024-10-11 14:48+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -452,7 +452,7 @@ msgstr "如果提供了 *initial* 值，将从该值开始累积并且输出将�
 #: ../../library/itertools.rst:236 ../../library/itertools.rst:279
 #: ../../library/itertools.rst:476 ../../library/itertools.rst:507
 #: ../../library/itertools.rst:542 ../../library/itertools.rst:615
-#: ../../library/itertools.rst:676 ../../library/itertools.rst:718
+#: ../../library/itertools.rst:676 ../../library/itertools.rst:731
 msgid "Roughly equivalent to::"
 msgstr "大致相当于："
 
@@ -1375,32 +1375,40 @@ msgstr "从一个可迭代对象中返回 *n* 个独立的迭代器。"
 #: ../../library/itertools.rst:678
 msgid ""
 "def tee(iterable, n=2):\n"
-"    iterator = iter(iterable)\n"
-"    shared_link = [None, None]\n"
-"    return tuple(_tee(iterator, shared_link) for _ in range(n))\n"
+"    if n < 0:\n"
+"        raise ValueError\n"
+"    if n == 0:\n"
+"        return ()\n"
+"    iterator = _tee(iterable)\n"
+"    result = [iterator]\n"
+"    for _ in range(n - 1):\n"
+"        result.append(_tee(iterator))\n"
+"    return tuple(result)\n"
 "\n"
-"def _tee(iterator, link):\n"
-"    try:\n"
-"        while True:\n"
-"            if link[1] is None:\n"
-"                link[0] = next(iterator)\n"
-"                link[1] = [None, None]\n"
-"            value, link = link\n"
-"            yield value\n"
-"    except StopIteration:\n"
-"        return"
+"class _tee:\n"
+"\n"
+"    def __init__(self, iterable):\n"
+"        it = iter(iterable)\n"
+"        if isinstance(it, _tee):\n"
+"            self.iterator = it.iterator\n"
+"            self.link = it.link\n"
+"        else:\n"
+"            self.iterator = it\n"
+"            self.link = [None, None]\n"
+"\n"
+"    def __iter__(self):\n"
+"        return self\n"
+"\n"
+"    def __next__(self):\n"
+"        link = self.link\n"
+"        if link[1] is None:\n"
+"            link[0] = next(self.iterator)\n"
+"            link[1] = [None, None]\n"
+"        value, self.link = link\n"
+"        return value"
 msgstr ""
 
-#: ../../library/itertools.rst:694
-msgid ""
-"Once a :func:`tee` has been created, the original *iterable* should not be "
-"used anywhere else; otherwise, the *iterable* could get advanced without the"
-" tee objects being informed."
-msgstr ""
-"一旦 :func:`tee` 已被创建，原有的 *iterable* 就不应在任何其他地方使用；否则，*iterable* 可能会被向下执行而不通知 "
-"tee 对象。"
-
-#: ../../library/itertools.rst:698
+#: ../../library/itertools.rst:711
 msgid ""
 "``tee`` iterators are not threadsafe. A :exc:`RuntimeError` may be raised "
 "when simultaneously using iterators returned by the same :func:`tee` call, "
@@ -1409,7 +1417,7 @@ msgstr ""
 "``tee`` 迭代器不是线程安全的。 当同时使用由同一个 :func:`tee` 调用所返回的迭代器时可能引发 "
 ":exc:`RuntimeError`，即使原本的 *iterable* 是线程安全的。is threadsafe."
 
-#: ../../library/itertools.rst:702
+#: ../../library/itertools.rst:715
 msgid ""
 "This itertool may require significant auxiliary storage (depending on how "
 "much temporary data needs to be stored). In general, if one iterator uses "
@@ -1419,12 +1427,12 @@ msgstr ""
 "该迭代工具可能需要相当大的辅助存储空间（这取决于要保存多少临时数据）。通常，如果一个迭代器在另一个迭代器开始之前就要使用大部份或全部数据，使用 "
 ":func:`list` 会比 :func:`tee` 更快。"
 
-#: ../../library/itertools.rst:710
+#: ../../library/itertools.rst:723
 msgid ""
 "Make an iterator that aggregates elements from each of the *iterables*."
 msgstr "创建一个迭代器，它聚合了来自 *iterables* 中每一项的对应元素。"
 
-#: ../../library/itertools.rst:713
+#: ../../library/itertools.rst:726
 msgid ""
 "If the iterables are of uneven length, missing values are filled-in with "
 "*fillvalue*.  If not specified, *fillvalue* defaults to ``None``."
@@ -1432,11 +1440,11 @@ msgstr ""
 "如果 iterables 中每一项的长度不同，则缺失的值将以 *fillvalue* 填充。 如果未指定，则 *fillvalue* 默认为 "
 "``None``。"
 
-#: ../../library/itertools.rst:716
+#: ../../library/itertools.rst:729
 msgid "Iteration continues until the longest iterable is exhausted."
 msgstr "迭代将持续进行直至其中最长的可迭代对象被耗尽。"
 
-#: ../../library/itertools.rst:720
+#: ../../library/itertools.rst:733
 msgid ""
 "def zip_longest(*iterables, fillvalue=None):\n"
 "    # zip_longest('ABCD', 'xy', fillvalue='-') → Ax By C- D-\n"
@@ -1461,7 +1469,7 @@ msgid ""
 "        yield tuple(values)"
 msgstr ""
 
-#: ../../library/itertools.rst:742
+#: ../../library/itertools.rst:755
 msgid ""
 "If one of the iterables is potentially infinite, then the "
 ":func:`zip_longest` function should be wrapped with something that limits "
@@ -1470,17 +1478,17 @@ msgstr ""
 "如果 iterables 中的每一项可能有无限长度，则 :func:`zip_longest` 函数应当用限制调用次数的代码进行包装（例如 "
 ":func:`islice` 或 :func:`takewhile` 等）。"
 
-#: ../../library/itertools.rst:750
+#: ../../library/itertools.rst:763
 msgid "Itertools Recipes"
 msgstr "itertools 配方"
 
-#: ../../library/itertools.rst:752
+#: ../../library/itertools.rst:765
 msgid ""
 "This section shows recipes for creating an extended toolset using the "
 "existing itertools as building blocks."
 msgstr "本节将展示如何使用现有的 itertools 作为基础构件来创建扩展的工具集。"
 
-#: ../../library/itertools.rst:755
+#: ../../library/itertools.rst:768
 msgid ""
 "The primary purpose of the itertools recipes is educational.  The recipes "
 "show various ways of thinking about individual tools — for example, that "
@@ -1497,7 +1505,7 @@ msgstr ""
 "模块以及内置迭代工具如 ``map()``, ``filter()``, ``reversed()`` 和 ``enumerate()`` "
 "相互配合的使用模式。"
 
-#: ../../library/itertools.rst:764
+#: ../../library/itertools.rst:777
 msgid ""
 "A secondary purpose of the recipes is to serve as an incubator.  The "
 "``accumulate()``, ``compress()``, and ``pairwise()`` itertools started out "
@@ -1508,7 +1516,7 @@ msgstr ""
 "等迭代工具最初就是作为例程引入的。 目前，``sliding_window()``, ``iter_index()`` 和 ``sieve()`` "
 "例程正在被测试以确定它们是否堪当大任。"
 
-#: ../../library/itertools.rst:769
+#: ../../library/itertools.rst:782
 msgid ""
 "Substantially all of these recipes and many, many others can be installed "
 "from the :pypi:`more-itertools` project found on the Python Package Index::"
@@ -1516,11 +1524,11 @@ msgstr ""
 "基本上所有这些配方和许许多多其他配方都可以通过 Python Package Index 上的 :pypi:`more-itertools` "
 "项目来安装::"
 
-#: ../../library/itertools.rst:773
+#: ../../library/itertools.rst:786
 msgid "python -m pip install more-itertools"
 msgstr ""
 
-#: ../../library/itertools.rst:775
+#: ../../library/itertools.rst:788
 msgid ""
 "Many of the recipes offer the same high performance as the underlying "
 "toolset. Superior memory performance is kept by processing elements one at a"
@@ -1536,7 +1544,7 @@ msgstr ""
 "来链接工具来实现的。 运行的早速度是通过选择使用“矢量化”构件来取代会导致较大解释器开销的 for 循环和 :term:`生成器 "
 "<generator>` 来达成的。"
 
-#: ../../library/itertools.rst:783
+#: ../../library/itertools.rst:796
 msgid ""
 "import collections\n"
 "import contextlib\n"
@@ -1709,11 +1717,11 @@ msgid ""
 "            yield func()"
 msgstr ""
 
-#: ../../library/itertools.rst:956
+#: ../../library/itertools.rst:969
 msgid "The following recipes have a more mathematical flavor:"
 msgstr "下面的例程具有更数学化的风格:"
 
-#: ../../library/itertools.rst:958
+#: ../../library/itertools.rst:971
 msgid ""
 "def powerset(iterable):\n"
 "    \"powerset([1,2,3]) → () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)\"\n"

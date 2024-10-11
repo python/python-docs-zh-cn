@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-16 14:48+0000\n"
+"POT-Creation-Date: 2024-10-11 14:48+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -92,11 +92,28 @@ msgstr "因此，:opcode:`CACHE` 指令的存在对前向跳转是透明的但�
 msgid "Example: Given the function :func:`!myfunc`::"
 msgstr "示例：给定函数 :func:`!myfunc`::"
 
+#: ../../library/dis.rst:56
+msgid ""
+"def myfunc(alist):\n"
+"    return len(alist)"
+msgstr ""
+
 #: ../../library/dis.rst:59
 msgid ""
 "the following command can be used to display the disassembly of "
 ":func:`!myfunc`:"
 msgstr "可以使用以下命令显示 :func:`!myfunc` 的反汇编："
+
+#: ../../library/dis.rst:62
+msgid ""
+">>> dis.dis(myfunc)\n"
+"  2           0 RESUME                   0\n"
+"\n"
+"  3           2 LOAD_GLOBAL              1 (NULL + len)\n"
+"             12 LOAD_FAST                0 (alist)\n"
+"             14 CALL                     1\n"
+"             22 RETURN_VALUE"
+msgstr ""
 
 #: ../../library/dis.rst:72
 msgid "(The \"2\" is a line number)."
@@ -110,6 +127,10 @@ msgstr "命令行接口"
 msgid ""
 "The :mod:`dis` module can be invoked as a script from the command line:"
 msgstr ":mod:`dis` 模块可以在命令行下作为一个脚本来发起调用："
+
+#: ../../library/dis.rst:81
+msgid "python -m dis [-h] [infile]"
+msgstr ""
 
 #: ../../library/dis.rst:85
 msgid "The following options are accepted:"
@@ -224,6 +245,19 @@ msgstr "增加了 *show_caches* 和 *adaptive* 形参。"
 #: ../../library/dis.rst:160
 msgid "Example:"
 msgstr "示例:"
+
+#: ../../library/dis.rst:162
+msgid ""
+">>> bytecode = dis.Bytecode(myfunc)\n"
+">>> for instr in bytecode:\n"
+"...     print(instr.opname)\n"
+"...\n"
+"RESUME\n"
+"LOAD_GLOBAL\n"
+"LOAD_FAST\n"
+"CALL\n"
+"RETURN_VALUE"
+msgstr ""
 
 #: ../../library/dis.rst:176
 msgid "Analysis functions"
@@ -525,6 +559,10 @@ msgstr "无操作代码。 被字节码优化器用作占位符，以及生成�
 msgid "Removes the top-of-stack item::"
 msgstr "移除除堆栈顶部的项："
 
+#: ../../library/dis.rst:451
+msgid "STACK.pop()"
+msgstr ""
+
 #: ../../library/dis.rst:456
 msgid ""
 "Removes the top two values from the stack. Equivalent to ``POP_TOP``; "
@@ -541,9 +579,19 @@ msgid ""
 "original location::"
 msgstr "将第 *i* 项推入栈顶，并不移除原项："
 
+#: ../../library/dis.rst:476
+msgid ""
+"assert i > 0\n"
+"STACK.append(STACK[-i])"
+msgstr ""
+
 #: ../../library/dis.rst:484
 msgid "Swap the top of the stack with the i-th element::"
 msgstr "将栈顶的项与栈中第 *i* 项互换："
+
+#: ../../library/dis.rst:486
+msgid "STACK[-i], STACK[-1] = STACK[-1], STACK[-i]"
+msgstr ""
 
 #: ../../library/dis.rst:493
 msgid ""
@@ -629,15 +677,61 @@ msgid ""
 "*op*)::"
 msgstr "实现双目和原地操作运算符（取决于 *op* 的值）："
 
+#: ../../library/dis.rst:558
+msgid ""
+"rhs = STACK.pop()\n"
+"lhs = STACK.pop()\n"
+"STACK.append(lhs op rhs)"
+msgstr ""
+
 #: ../../library/dis.rst:567 ../../library/dis.rst:576
 #: ../../library/dis.rst:586 ../../library/dis.rst:594
 #: ../../library/dis.rst:606 ../../library/dis.rst:694
 #: ../../library/dis.rst:704 ../../library/dis.rst:714
-#: ../../library/dis.rst:934 ../../library/dis.rst:945
-#: ../../library/dis.rst:1049 ../../library/dis.rst:1061
-#: ../../library/dis.rst:1073
+#: ../../library/dis.rst:935 ../../library/dis.rst:946
+#: ../../library/dis.rst:1050 ../../library/dis.rst:1062
+#: ../../library/dis.rst:1074
 msgid "Implements::"
 msgstr "实现："
+
+#: ../../library/dis.rst:569
+msgid ""
+"key = STACK.pop()\n"
+"container = STACK.pop()\n"
+"STACK.append(container[key])"
+msgstr ""
+
+#: ../../library/dis.rst:578
+msgid ""
+"key = STACK.pop()\n"
+"container = STACK.pop()\n"
+"value = STACK.pop()\n"
+"container[key] = value"
+msgstr ""
+
+#: ../../library/dis.rst:588
+msgid ""
+"key = STACK.pop()\n"
+"container = STACK.pop()\n"
+"del container[key]"
+msgstr ""
+
+#: ../../library/dis.rst:596
+msgid ""
+"end = STACK.pop()\n"
+"start = STACK.pop()\n"
+"container = STACK.pop()\n"
+"STACK.append(container[start:end])"
+msgstr ""
+
+#: ../../library/dis.rst:608
+msgid ""
+"end = STACK.pop()\n"
+"start = STACK.pop()\n"
+"container = STACK.pop()\n"
+"values = STACK.pop()\n"
+"container[start:end] = value"
+msgstr ""
 
 #: ../../library/dis.rst:617
 msgid "**Coroutine opcodes**"
@@ -723,17 +817,40 @@ msgstr ""
 "从 ``STACK[-1]`` 解析 ``__aenter__`` 和 ``__aexit__`` 。 将 ``__aexit__`` 和 "
 "``__aenter__()`` 的结果推入栈中："
 
+#: ../../library/dis.rst:684
+msgid "STACK.extend((__aexit__, __aenter__())"
+msgstr ""
+
 #: ../../library/dis.rst:690
 msgid "**Miscellaneous opcodes**"
 msgstr "**其他操作码**"
+
+#: ../../library/dis.rst:696
+msgid ""
+"item = STACK.pop()\n"
+"set.add(STACK[-i], item)"
+msgstr ""
 
 #: ../../library/dis.rst:699
 msgid "Used to implement set comprehensions."
 msgstr "用于实现集合推导式。"
 
+#: ../../library/dis.rst:706
+msgid ""
+"item = STACK.pop()\n"
+"list.append(STACK[-i], item)"
+msgstr ""
+
 #: ../../library/dis.rst:709
 msgid "Used to implement list comprehensions."
 msgstr "用于实现列表推导式。"
+
+#: ../../library/dis.rst:716
+msgid ""
+"value = STACK.pop()\n"
+"key = STACK.pop()\n"
+"dict.__setitem__(STACK[-i], key, value)"
+msgstr ""
 
 #: ../../library/dis.rst:720
 msgid "Used to implement dict comprehensions."
@@ -873,10 +990,12 @@ msgstr ""
 "``__enter__()`` 方法的结果推入栈顶。"
 
 #: ../../library/dis.rst:853
-msgid "Perform ``STACK.append(len(STACK[-1]))``."
-msgstr "执行 ``STACK.append(len(STACK[-1]))`` 。"
+msgid ""
+"Perform ``STACK.append(len(STACK[-1]))``. Used in :keyword:`match` "
+"statements where comparison with structure of pattern is needed."
+msgstr ""
 
-#: ../../library/dis.rst:860
+#: ../../library/dis.rst:861
 msgid ""
 "If ``STACK[-1]`` is an instance of :class:`collections.abc.Mapping` (or, "
 "more technically: if it has the :c:macro:`Py_TPFLAGS_MAPPING` flag set in "
@@ -887,7 +1006,7 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_flags` 中设置了 :c:macro:`Py_TPFLAGS_MAPPING` 旗标），则将"
 " ``True`` 推入栈顶。 否则，推入 ``False``。"
 
-#: ../../library/dis.rst:870
+#: ../../library/dis.rst:871
 msgid ""
 "If ``STACK[-1]`` is an instance of :class:`collections.abc.Sequence` and is "
 "*not* an instance of :class:`str`/:class:`bytes`/:class:`bytearray` (or, "
@@ -900,7 +1019,7 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_flags` 中设置了 :c:macro:`Py_TPFLAGS_SEQUENCE` "
 "旗标），则将 ``True`` 推入栈顶。 否则 ，推入 ``False``。"
 
-#: ../../library/dis.rst:880
+#: ../../library/dis.rst:881
 msgid ""
 "``STACK[-1]`` is a tuple of mapping keys, and ``STACK[-2]`` is the match "
 "subject. If ``STACK[-2]`` contains all of the keys in ``STACK[-1]``, push a "
@@ -910,13 +1029,13 @@ msgstr ""
 "``STACK[-1]`` 是一个映射键的元组，而 ``STACK[-2]`` 是匹配目标。 如果 ``STACK[-2]`` 包含 "
 "``STACK[-1]`` 中的所有键，则推入一个包含对应值的 :class:`tuple`。 在其他情况下，推入 ``None``。"
 
-#: ../../library/dis.rst:886 ../../library/dis.rst:1520
+#: ../../library/dis.rst:887 ../../library/dis.rst:1521
 msgid ""
 "Previously, this instruction also pushed a boolean value indicating success "
 "(``True``) or failure (``False``)."
 msgstr "在之前的版本中，该指令还会推入一个表示成功 (``True``) 或失败 (``False``) 的布尔值。"
 
-#: ../../library/dis.rst:893
+#: ../../library/dis.rst:894
 msgid ""
 "Implements ``name = STACK.pop()``. *namei* is the index of *name* in the "
 "attribute :attr:`~codeobject.co_names` of the :ref:`code object <code-"
@@ -927,7 +1046,7 @@ msgstr ""
 ":attr:`~codeobject.co_names` 属性中的索引。 在可能的情况下编译器会尝试使用 :opcode:`STORE_FAST` 或 "
 ":opcode:`STORE_GLOBAL`。"
 
-#: ../../library/dis.rst:900
+#: ../../library/dis.rst:901
 msgid ""
 "Implements ``del name``, where *namei* is the index into "
 ":attr:`~codeobject.co_names` attribute of the :ref:`code object <code-"
@@ -936,13 +1055,19 @@ msgstr ""
 "实现 ``del name``，其中 *namei* 是 :ref:`代码对象 <code-objects>` 的 "
 ":attr:`~codeobject.co_names` 属性的索引。"
 
-#: ../../library/dis.rst:906
+#: ../../library/dis.rst:907
 msgid ""
 "Unpacks ``STACK[-1]`` into *count* individual values, which are put onto the"
 " stack right-to-left. Require there to be exactly *count* values.::"
 msgstr "将 ``STACK[-1]`` 解包为 *count* 个单独的值，然后自右向左放入栈中。要求有确切的 *count* 值："
 
-#: ../../library/dis.rst:915
+#: ../../library/dis.rst:910
+msgid ""
+"assert(len(STACK[-1]) == count)\n"
+"STACK.extend(STACK.pop()[:-count-1:-1])"
+msgstr ""
+
+#: ../../library/dis.rst:916
 msgid ""
 "Implements assignment with a starred target: Unpacks an iterable in "
 "``STACK[-1]`` into individual values, where the total number of values can "
@@ -952,12 +1077,12 @@ msgstr ""
 "实现带星号目标的赋值：将 ``STACK[-1]`` 中的可迭代对象解包为各个单独的值。 "
 "值的总数可以小于可迭代对象的项数：其中会有一个值是存放剩下的项的列表。"
 
-#: ../../library/dis.rst:920
+#: ../../library/dis.rst:921
 msgid ""
 "The number of values before and after the list value is limited to 255."
 msgstr "在列表前后的值的数量被限制在255。"
 
-#: ../../library/dis.rst:922
+#: ../../library/dis.rst:923
 msgid ""
 "The number of values before the list value is encoded in the argument of the"
 " opcode. The number of values after the list if any is encoded using an "
@@ -968,7 +1093,7 @@ msgstr ""
 "列表前的值的数量被编码在操作码的参数之中。 如果列表后有值，则其数量会被用 ``EXTENDED_ARG`` 编码。 "
 "因此参数可以被认为是一个双字节值，其中低位字节代表列表前的值的数量，高位字节代表其后的值的数量。"
 
-#: ../../library/dis.rst:928
+#: ../../library/dis.rst:929
 msgid ""
 "The extracted values are put onto the stack right-to-left, i.e. ``a, *b, c ="
 " d`` will be stored after execution as ``STACK.extend((a, b, c))``."
@@ -976,7 +1101,14 @@ msgstr ""
 "提取出来的值被自右向左放入栈中，也就是说 ``a, *b, c = d`` 在执行完成之后会被这样储存： ``STACK.extend((a, b, "
 "c))`` 。"
 
-#: ../../library/dis.rst:940
+#: ../../library/dis.rst:937
+msgid ""
+"obj = STACK.pop()\n"
+"value = STACK.pop()\n"
+"obj.name = value"
+msgstr ""
+
+#: ../../library/dis.rst:941
 msgid ""
 "where *namei* is the index of name in :attr:`~codeobject.co_names` of the "
 ":ref:`code object <code-objects>`."
@@ -984,7 +1116,13 @@ msgstr ""
 "其中 *namei* 是 name 在 :ref:`代码对象 <code-objects>` 的 "
 ":attr:`~codeobject.co_names` 中的索引。"
 
-#: ../../library/dis.rst:950
+#: ../../library/dis.rst:948
+msgid ""
+"obj = STACK.pop()\n"
+"del obj.name"
+msgstr ""
+
+#: ../../library/dis.rst:951
 msgid ""
 "where *namei* is the index of name into :attr:`~codeobject.co_names` of the "
 ":ref:`code object <code-objects>`."
@@ -992,25 +1130,25 @@ msgstr ""
 "其中 *namei* 是 name 在 :ref:`代码对象 <code-objects>` 的 "
 ":attr:`~codeobject.co_names` 中的索引。"
 
-#: ../../library/dis.rst:956
+#: ../../library/dis.rst:957
 msgid "Works as :opcode:`STORE_NAME`, but stores the name as a global."
 msgstr "类似于 :opcode:`STORE_NAME` 但会将 name 存储为全局变量。"
 
-#: ../../library/dis.rst:961
+#: ../../library/dis.rst:962
 msgid "Works as :opcode:`DELETE_NAME`, but deletes a global name."
 msgstr "类似于 :opcode:`DELETE_NAME` 但会删除一个全局变量。"
 
-#: ../../library/dis.rst:966
+#: ../../library/dis.rst:967
 msgid "Pushes ``co_consts[consti]`` onto the stack."
 msgstr "将 ``co_consts[consti]`` 推入栈顶。"
 
-#: ../../library/dis.rst:971
+#: ../../library/dis.rst:972
 msgid ""
 "Pushes the value associated with ``co_names[namei]`` onto the stack. The "
 "name is looked up within the locals, then the globals, then the builtins."
 msgstr "将 ``co_names[namei]`` 关联的值压入栈中。 名称的查找范围包括局部变量，然后是全局变量，然后是内置量。"
 
-#: ../../library/dis.rst:977
+#: ../../library/dis.rst:978
 msgid ""
 "Pushes a reference to the locals dictionary onto the stack.  This is used to"
 " prepare namespace dictionaries for :opcode:`LOAD_FROM_DICT_OR_DEREF` and "
@@ -1019,7 +1157,7 @@ msgstr ""
 "将一个局部变量字典的引用压入栈中。 被用于为 :opcode:`LOAD_FROM_DICT_OR_DEREF` 和 "
 ":opcode:`LOAD_FROM_DICT_OR_GLOBALS` 准备命名空间字典。"
 
-#: ../../library/dis.rst:986
+#: ../../library/dis.rst:987
 msgid ""
 "Pops a mapping off the stack and looks up the value for ``co_names[namei]``."
 " If the name is not found there, looks it up in the globals and then the "
@@ -1030,21 +1168,32 @@ msgstr ""
 "从栈中弹出一个映射，在其中查找 ``co_names[namei]``。 如果在此没有找到相应的名称，则在全局变量和内置量中查找，类似 "
 ":opcode:`LOAD_GLOBAL` 。 被用于在类定义中的 :ref:`标注作用域 <annotation-scopes>` 中加载全局变量。"
 
-#: ../../library/dis.rst:997
+#: ../../library/dis.rst:998
 msgid ""
 "Creates a tuple consuming *count* items from the stack, and pushes the "
 "resulting tuple onto the stack::"
 msgstr "创建一个使用来自栈的 *count* 个条目的元组，并将结果元组推入栈顶::"
 
-#: ../../library/dis.rst:1011
+#: ../../library/dis.rst:1001
+msgid ""
+"if count == 0:\n"
+"    value = ()\n"
+"else:\n"
+"    value = tuple(STACK[-count:])\n"
+"    STACK = STACK[:-count]\n"
+"\n"
+"STACK.append(value)"
+msgstr ""
+
+#: ../../library/dis.rst:1012
 msgid "Works as :opcode:`BUILD_TUPLE`, but creates a list."
 msgstr "类似于 :opcode:`BUILD_TUPLE` 但会创建一个列表。"
 
-#: ../../library/dis.rst:1016
+#: ../../library/dis.rst:1017
 msgid "Works as :opcode:`BUILD_TUPLE`, but creates a set."
 msgstr "类似于 :opcode:`BUILD_TUPLE` 但会创建一个集合。"
 
-#: ../../library/dis.rst:1021
+#: ../../library/dis.rst:1022
 msgid ""
 "Pushes a new dictionary object onto the stack.  Pops ``2 * count`` items so "
 "that the dictionary holds *count* entries: ``{..., STACK[-4]: STACK[-3], "
@@ -1053,13 +1202,13 @@ msgstr ""
 "将一个新字典对象推入栈顶。 弹出 ``2 * count`` 项使得字典包含 *count* 个条目: ``{..., STACK[-4]: "
 "STACK[-3], STACK[-2]: STACK[-1]}`` 。"
 
-#: ../../library/dis.rst:1025
+#: ../../library/dis.rst:1026
 msgid ""
 "The dictionary is created from stack items instead of creating an empty "
 "dictionary pre-sized to hold *count* items."
 msgstr "字典是根据栈中的项创建而不是创建一个预设大小包含 *count* 项的空字典。"
 
-#: ../../library/dis.rst:1032
+#: ../../library/dis.rst:1033
 msgid ""
 "The version of :opcode:`BUILD_MAP` specialized for constant keys. Pops the "
 "top element on the stack which contains a tuple of keys, then starting from "
@@ -1068,29 +1217,47 @@ msgstr ""
 ":opcode:`BUILD_MAP` 版本专用于常量键。 弹出的栈顶元素包含一个由键构成的元组，然后从 ``STACK[-2]`` "
 "开始从构建字典的值中弹出 *count* 个值。"
 
-#: ../../library/dis.rst:1041
+#: ../../library/dis.rst:1042
 msgid ""
 "Concatenates *count* strings from the stack and pushes the resulting string "
 "onto the stack."
 msgstr "拼接 *count* 个来自栈的字符串并将结果字符串推入栈顶。"
 
-#: ../../library/dis.rst:1054
+#: ../../library/dis.rst:1052
+msgid ""
+"seq = STACK.pop()\n"
+"list.extend(STACK[-i], seq)"
+msgstr ""
+
+#: ../../library/dis.rst:1055
 msgid "Used to build lists."
 msgstr "用于构建列表。"
 
-#: ../../library/dis.rst:1066
+#: ../../library/dis.rst:1064
+msgid ""
+"seq = STACK.pop()\n"
+"set.update(STACK[-i], seq)"
+msgstr ""
+
+#: ../../library/dis.rst:1067
 msgid "Used to build sets."
 msgstr "用于构建集合。"
 
-#: ../../library/dis.rst:1078
+#: ../../library/dis.rst:1076
+msgid ""
+"map = STACK.pop()\n"
+"dict.update(STACK[-i], map)"
+msgstr ""
+
+#: ../../library/dis.rst:1079
 msgid "Used to build dicts."
 msgstr "用于构建字典。"
 
-#: ../../library/dis.rst:1085
+#: ../../library/dis.rst:1086
 msgid "Like :opcode:`DICT_UPDATE` but raises an exception for duplicate keys."
 msgstr "类似于 :opcode:`DICT_UPDATE` 但对于重复的键会引发异常。"
 
-#: ../../library/dis.rst:1092
+#: ../../library/dis.rst:1093
 msgid ""
 "If the low bit of ``namei`` is not set, this replaces ``STACK[-1]`` with "
 "``getattr(STACK[-1], co_names[namei>>1])``."
@@ -1098,7 +1265,7 @@ msgstr ""
 "如果 ``namei`` 的低位未设置，则将 ``STACK[-1]`` 替换为 ``getattr(STACK[-1], "
 "co_names[namei>>1])``。"
 
-#: ../../library/dis.rst:1095
+#: ../../library/dis.rst:1096
 msgid ""
 "If the low bit of ``namei`` is set, this will attempt to load a method named"
 " ``co_names[namei>>1]`` from the ``STACK[-1]`` object. ``STACK[-1]`` is "
@@ -1113,13 +1280,13 @@ msgstr ""
 "``STACK[-1]``。 ``STACK[-1]`` 将被 :opcode:`CALL` 用作调用未绑定方法时的第一个参数 (``self``)。 "
 "否则，将推入 ``NULL`` 和属性查询所返回的对象。"
 
-#: ../../library/dis.rst:1103
+#: ../../library/dis.rst:1104
 msgid ""
 "If the low bit of ``namei`` is set, then a ``NULL`` or ``self`` is pushed to"
 " the stack before the attribute or unbound method respectively."
 msgstr "如果 ``namei`` 的低位已置，则会在属性或未绑定方法之前分别将 ``NULL`` 或 ``self`` 推入栈。"
 
-#: ../../library/dis.rst:1110
+#: ../../library/dis.rst:1111
 msgid ""
 "This opcode implements :func:`super`, both in its zero-argument and two-"
 "argument forms (e.g. ``super().method()``, ``super().attr`` and ``super(cls,"
@@ -1128,7 +1295,7 @@ msgstr ""
 "该操作码实现了 :func:`super`，包括零参数和双参数形式 (例如 ``super().method()``, ``super().attr``"
 " 和 ``super(cls, self).method()``, ``super(cls, self).attr``)。"
 
-#: ../../library/dis.rst:1114
+#: ../../library/dis.rst:1115
 msgid ""
 "It pops three values from the stack (from top of stack down): - ``self``: "
 "the first argument to the current method -  ``cls``: the class within which "
@@ -1137,13 +1304,13 @@ msgstr ""
 "它会从栈中弹出三个值（从栈顶向下）: - ``self``: 当前方法的第一个参数 - ``cls``: 当前方法定义所在的类 - 全局 "
 "``super``"
 
-#: ../../library/dis.rst:1119
+#: ../../library/dis.rst:1120
 msgid ""
 "With respect to its argument, it works similarly to :opcode:`LOAD_ATTR`, "
 "except that ``namei`` is shifted left by 2 bits instead of 1."
 msgstr "对应于其参数，它的操作类似于 :opcode:`LOAD_ATTR`，区别在于 ``namei`` 左移了 2 位而不是 1 位。"
 
-#: ../../library/dis.rst:1122
+#: ../../library/dis.rst:1123
 msgid ""
 "The low bit of ``namei`` signals to attempt a method load, as with "
 ":opcode:`LOAD_ATTR`, which results in pushing ``NULL`` and the loaded "
@@ -1152,33 +1319,33 @@ msgstr ""
 "``namei`` 的低位发出尝试加载方法的信号，与 :opcode:`LOAD_ATTR` 一样，其结果是推入 ``NULL`` 和所加载的方法。 "
 "当其被取消设置时会将单个值推入栈。"
 
-#: ../../library/dis.rst:1126
+#: ../../library/dis.rst:1127
 msgid ""
 "The second-low bit of ``namei``, if set, means that this was a two-argument "
 "call to :func:`super` (unset means zero-argument)."
 msgstr "``namei`` 的次低比特位如果被设置，表示这是对 :func:`super` 附带两个参数的调用（未设置则表示附带零个参数）。"
 
-#: ../../library/dis.rst:1134
+#: ../../library/dis.rst:1135
 msgid ""
 "Performs a Boolean operation.  The operation name can be found in "
 "``cmp_op[opname >> 4]``."
 msgstr ""
 
-#: ../../library/dis.rst:1137
+#: ../../library/dis.rst:1138
 msgid ""
 "The cmp_op index is now stored in the four-highest bits of oparg instead of "
 "the four-lowest bits of oparg."
 msgstr ""
 
-#: ../../library/dis.rst:1143
+#: ../../library/dis.rst:1144
 msgid "Performs ``is`` comparison, or ``is not`` if ``invert`` is 1."
 msgstr "执行 ``is`` 比较，或者如果 ``invert`` 为 1 则执行 ``is not``。"
 
-#: ../../library/dis.rst:1150
+#: ../../library/dis.rst:1151
 msgid "Performs ``in`` comparison, or ``not in`` if ``invert`` is 1."
 msgstr "执行 ``in`` 比较，或者如果 ``invert`` 为 1 则执行 ``not in``。"
 
-#: ../../library/dis.rst:1157
+#: ../../library/dis.rst:1158
 msgid ""
 "Imports the module ``co_names[namei]``.  ``STACK[-1]`` and ``STACK[-2]`` are"
 " popped and provide the *fromlist* and *level* arguments of "
@@ -1190,7 +1357,7 @@ msgstr ""
 " *level* 参数给 :func:`__import__` 。 模块对象会被推入栈顶。 当前命名空间不受影响：对于一条标准 import "
 "语句，会执行后续的 :opcode:`STORE_FAST` 指令来修改命名空间。"
 
-#: ../../library/dis.rst:1165
+#: ../../library/dis.rst:1166
 msgid ""
 "Loads the attribute ``co_names[namei]`` from the module found in "
 "``STACK[-1]``. The resulting object is pushed onto the stack, to be "
@@ -1199,25 +1366,25 @@ msgstr ""
 "从在 ``STACK[-1]`` 内找到的模块中加载属性 ``co_names[namei]``。 结果对象会被推入栈顶，以便由后续的 "
 ":opcode:`STORE_FAST` 指令来保存。"
 
-#: ../../library/dis.rst:1172
+#: ../../library/dis.rst:1173
 msgid "Increments bytecode counter by *delta*."
 msgstr "将字节码计数器的值增加 *delta*。"
 
-#: ../../library/dis.rst:1177
+#: ../../library/dis.rst:1178
 msgid "Decrements bytecode counter by *delta*. Checks for interrupts."
 msgstr "将字节码计数器减少 *delta*。 检查中断。"
 
-#: ../../library/dis.rst:1184
+#: ../../library/dis.rst:1185
 msgid "Decrements bytecode counter by *delta*. Does not check for interrupts."
 msgstr "将字节码计数器减少 *delta*。 不检查中断。"
 
-#: ../../library/dis.rst:1191
+#: ../../library/dis.rst:1192
 msgid ""
 "If ``STACK[-1]`` is true, increments the bytecode counter by *delta*. "
 "``STACK[-1]`` is popped."
 msgstr "如果 ``STACK[-1]`` 为真值，则将字节码计数器增加 *delta*。 ``STACK[-1]`` 将被弹出。"
 
-#: ../../library/dis.rst:1194 ../../library/dis.rst:1207
+#: ../../library/dis.rst:1195 ../../library/dis.rst:1208
 msgid ""
 "The oparg is now a relative delta rather than an absolute target. This "
 "opcode is a pseudo-instruction, replaced in final bytecode by the directed "
@@ -1226,36 +1393,36 @@ msgstr ""
 "操作符的参数现在是一个相对的差值而不是一个绝对的目标量。 此操作码是一个伪指令，在最终的字节码里被定向的版本（ forward/backward "
 "）取代。"
 
-#: ../../library/dis.rst:1199 ../../library/dis.rst:1212
-#: ../../library/dis.rst:1225 ../../library/dis.rst:1239
+#: ../../library/dis.rst:1200 ../../library/dis.rst:1213
+#: ../../library/dis.rst:1226 ../../library/dis.rst:1240
 msgid "This is no longer a pseudo-instruction."
 msgstr "该操作码现在不再是伪指令。"
 
-#: ../../library/dis.rst:1204
+#: ../../library/dis.rst:1205
 msgid ""
 "If ``STACK[-1]`` is false, increments the bytecode counter by *delta*. "
 "``STACK[-1]`` is popped."
 msgstr "如果 ``STACK[-1]`` 为假值，则将字节码计数器增加 *delta*。 ``STACK[-1]`` 将被弹出。"
 
-#: ../../library/dis.rst:1217
+#: ../../library/dis.rst:1218
 msgid ""
 "If ``STACK[-1]`` is not ``None``, increments the bytecode counter by "
 "*delta*. ``STACK[-1]`` is popped."
 msgstr "如果 ``STACK[-1]`` 不为 ``None`` ，则将字节码计数器增加 *delta*。 ``STACK[-1]`` 将被弹出。"
 
-#: ../../library/dis.rst:1220 ../../library/dis.rst:1234
+#: ../../library/dis.rst:1221 ../../library/dis.rst:1235
 msgid ""
 "This opcode is a pseudo-instruction, replaced in final bytecode by the "
 "directed versions (forward/backward)."
 msgstr "此操作码是一个伪指令，在最终的字节码里被定向的版本（ forward/backward ）取代。"
 
-#: ../../library/dis.rst:1231
+#: ../../library/dis.rst:1232
 msgid ""
 "If ``STACK[-1]`` is ``None``, increments the bytecode counter by *delta*. "
 "``STACK[-1]`` is popped."
 msgstr "如果 ``STACK[-1]`` 为 ``None`` ，则将字节码计数器增加 *delta*。 ``STACK[-1]`` 将被弹出。"
 
-#: ../../library/dis.rst:1244
+#: ../../library/dis.rst:1245
 msgid ""
 "``STACK[-1]`` is an :term:`iterator`.  Call its :meth:`~iterator.__next__` "
 "method. If this yields a new value, push it on the stack (leaving the "
@@ -1265,32 +1432,32 @@ msgstr ""
 "``STACK[-1]`` 是一个 :term:`iterator`。 调用其 :meth:`~iterator.__next__` 方法。 "
 "如果产生一个新的值则压入栈中 （把迭代器压下去）。 如果迭代器已耗尽，则将字节码计数器增加 *delta* 。"
 
-#: ../../library/dis.rst:1249
+#: ../../library/dis.rst:1250
 msgid "Up until 3.11 the iterator was popped when it was exhausted."
 msgstr "直到 3.11 ，当迭代器耗尽时，它会被从栈中弹出。"
 
-#: ../../library/dis.rst:1254
+#: ../../library/dis.rst:1255
 msgid "Loads the global named ``co_names[namei>>1]`` onto the stack."
 msgstr "将名为 ``co_names[namei>>1]`` 的全局对象加载到栈顶。"
 
-#: ../../library/dis.rst:1256
+#: ../../library/dis.rst:1257
 msgid ""
 "If the low bit of ``namei`` is set, then a ``NULL`` is pushed to the stack "
 "before the global variable."
 msgstr "如果设置了 ``namei`` 的低比特位，则会在全局变量前将一个 ``NULL`` 推入栈。"
 
-#: ../../library/dis.rst:1262
+#: ../../library/dis.rst:1263
 msgid ""
 "Pushes a reference to the local ``co_varnames[var_num]`` onto the stack."
 msgstr "将指向局部对象 ``co_varnames[var_num]`` 的引用推入栈顶。"
 
-#: ../../library/dis.rst:1264
+#: ../../library/dis.rst:1265
 msgid ""
 "This opcode is now only used in situations where the local variable is "
 "guaranteed to be initialized. It cannot raise :exc:`UnboundLocalError`."
 msgstr "这个操作码目前只用在保证局部变量被初始化的情况下使用。它不能引发 :exc:`UnboundLocalError` 。"
 
-#: ../../library/dis.rst:1270
+#: ../../library/dis.rst:1271
 msgid ""
 "Pushes a reference to the local ``co_varnames[var_num]`` onto the stack, "
 "raising an :exc:`UnboundLocalError` if the local variable has not been "
@@ -1299,7 +1466,7 @@ msgstr ""
 "将一个指向局部变量 ``co_varnames[var_num]`` 的引用推入栈中，如果该局部变量未被初始化，引发一个 "
 ":exc:`UnboundLocalError` 。"
 
-#: ../../library/dis.rst:1278
+#: ../../library/dis.rst:1279
 msgid ""
 "Pushes a reference to the local ``co_varnames[var_num]`` onto the stack (or "
 "pushes ``NULL`` onto the stack if the local variable has not been "
@@ -1308,21 +1475,21 @@ msgstr ""
 "将一个指向局部变量 ``co_varnames[var_num]`` 的引用推入栈中（如果该局部变量未被初始化，则推入一个 ``NULL`` ）然后将 "
 "``co_varnames[var_num]`` 设为 ``NULL`` 。"
 
-#: ../../library/dis.rst:1286
+#: ../../library/dis.rst:1287
 msgid "Stores ``STACK.pop()`` into the local ``co_varnames[var_num]``."
 msgstr "将 ``STACK.pop()`` 存放到局部变量 ``co_varnames[var_num]`` 。"
 
-#: ../../library/dis.rst:1291
+#: ../../library/dis.rst:1292
 msgid "Deletes local ``co_varnames[var_num]``."
 msgstr "移除局部对象 ``co_varnames[var_num]``。"
 
-#: ../../library/dis.rst:1296
+#: ../../library/dis.rst:1297
 msgid ""
 "Creates a new cell in slot ``i``.  If that slot is nonempty then that value "
 "is stored into the new cell."
 msgstr "在槽位 ``i`` 中创建一个新单元。 如果该槽位为非空则该值将存储到新单元中。"
 
-#: ../../library/dis.rst:1304
+#: ../../library/dis.rst:1305
 msgid ""
 "Pushes a reference to the cell contained in slot ``i`` of the \"fast "
 "locals\" storage.  The name of the variable is ``co_fastlocalnames[i]``."
@@ -1330,29 +1497,29 @@ msgstr ""
 "推入一个指向包含在 \"fast locals\" 存储的 ``i`` 号槽位的单元的引用。 变量名为 "
 "``co_fastlocalnames[i]``。"
 
-#: ../../library/dis.rst:1307
+#: ../../library/dis.rst:1308
 msgid ""
 "Note that ``LOAD_CLOSURE`` is effectively an alias for ``LOAD_FAST``. It "
 "exists to keep bytecode a little more readable."
 msgstr "注意 ``LOAD_CLOSURE`` 实际上是 ``LOAD_FAST`` 的一个别名。 它的存在是为了让字节码的可读性更好一些。"
 
-#: ../../library/dis.rst:1310
+#: ../../library/dis.rst:1311
 msgid "``i`` is no longer offset by the length of ``co_varnames``."
 msgstr "``i`` 不再是长度为 ``co_varnames`` 的偏移量。"
 
-#: ../../library/dis.rst:1316
+#: ../../library/dis.rst:1317
 msgid ""
 "Loads the cell contained in slot ``i`` of the \"fast locals\" storage. "
 "Pushes a reference to the object the cell contains on the stack."
 msgstr "加载包含在 \"fast locals\" 存储的 ``i`` 号槽位中的单元。 将一个指向该单元所包含对象的引用推入栈。"
 
-#: ../../library/dis.rst:1319 ../../library/dis.rst:1341
-#: ../../library/dis.rst:1352
+#: ../../library/dis.rst:1320 ../../library/dis.rst:1342
+#: ../../library/dis.rst:1353
 msgid ""
 "``i`` is no longer offset by the length of :attr:`~codeobject.co_varnames`."
 msgstr "``i`` 不再是 :attr:`~codeobject.co_varnames` 的长度的偏移量。"
 
-#: ../../library/dis.rst:1325
+#: ../../library/dis.rst:1326
 msgid ""
 "Pops a mapping off the stack and looks up the name associated with slot "
 "``i`` of the \"fast locals\" storage in this mapping. If the name is not "
@@ -1365,40 +1532,40 @@ msgstr ""
 "中包含的单元中加载它，与 :opcode:`LOAD_DEREF` 类似。 这被用于加载类语句体中的自由变量 (在此之前使用是 "
 ":opcode:`!LOAD_CLASSDEREF`) 和类语句体中的 :ref:`标注作用域 <annotation-scopes>`。"
 
-#: ../../library/dis.rst:1338
+#: ../../library/dis.rst:1339
 msgid ""
 "Stores ``STACK.pop()`` into the cell contained in slot ``i`` of the \"fast "
 "locals\" storage."
 msgstr "将 ``STACK.pop()`` 存放到 \"fast locals\" 存储中包含在 ``i`` 号槽位的单元内。"
 
-#: ../../library/dis.rst:1347
+#: ../../library/dis.rst:1348
 msgid ""
 "Empties the cell contained in slot ``i`` of the \"fast locals\" storage. "
 "Used by the :keyword:`del` statement."
 msgstr "清空 \"fast locals\" 存储中包含在 ``i`` 号槽位的单元。 被用于 :keyword:`del` 语句。"
 
-#: ../../library/dis.rst:1358
+#: ../../library/dis.rst:1359
 msgid ""
 "Copies the ``n`` free variables from the closure into the frame. Removes the"
 " need for special code on the caller's side when calling closures."
 msgstr "将 ``n`` 个自由变量从闭包拷贝到帧中。 当调用闭包时不再需要调用方添加特殊的代码。"
 
-#: ../../library/dis.rst:1367
+#: ../../library/dis.rst:1368
 msgid ""
 "Raises an exception using one of the 3 forms of the ``raise`` statement, "
 "depending on the value of *argc*:"
 msgstr "使用 ``raise`` 语句的 3 种形式之一引发异常，具体形式取决于 *argc* 的值："
 
-#: ../../library/dis.rst:1370
+#: ../../library/dis.rst:1371
 msgid "0: ``raise`` (re-raise previous exception)"
 msgstr "0: ``raise`` (重新引发之前的异常)"
 
-#: ../../library/dis.rst:1371
+#: ../../library/dis.rst:1372
 msgid ""
 "1: ``raise STACK[-1]`` (raise exception instance or type at ``STACK[-1]``)"
 msgstr "1: ``raise STACK[-1]`` （在 ``STACK[-1]`` 上引发异常实例或类型）"
 
-#: ../../library/dis.rst:1372
+#: ../../library/dis.rst:1373
 msgid ""
 "2: ``raise STACK[-2] from STACK[-1]`` (raise exception instance or type at "
 "``STACK[-2]`` with ``__cause__`` set to ``STACK[-1]``)"
@@ -1406,7 +1573,7 @@ msgstr ""
 "2: ``raise STACK[-2] from STACK[-1]`` （在 ``STACK[-2]`` 上引发异常实例或类型并将 "
 "``__cause__`` 设为 ``STACK[-1]`` ）"
 
-#: ../../library/dis.rst:1378
+#: ../../library/dis.rst:1379
 msgid ""
 "Calls a callable object with the number of arguments specified by ``argc``, "
 "including the named arguments specified by the preceding :opcode:`KW_NAMES`,"
@@ -1415,48 +1582,48 @@ msgstr ""
 "调用一个可调用对象并传入由 ``argc`` 所指定数量的参数，包括之前的 :opcode:`KW_NAMES` 所指定的关键字参数，如果有的话。 "
 "在栈上（按升序排列），可以是:"
 
-#: ../../library/dis.rst:1383
+#: ../../library/dis.rst:1384
 msgid "NULL"
 msgstr "NULL"
 
-#: ../../library/dis.rst:1384 ../../library/dis.rst:1390
+#: ../../library/dis.rst:1385 ../../library/dis.rst:1391
 msgid "The callable"
 msgstr "可调用对象"
 
-#: ../../library/dis.rst:1385
+#: ../../library/dis.rst:1386
 msgid "The positional arguments"
 msgstr "位置参数"
 
-#: ../../library/dis.rst:1386 ../../library/dis.rst:1393
+#: ../../library/dis.rst:1387 ../../library/dis.rst:1394
 msgid "The named arguments"
 msgstr "关键字参数"
 
-#: ../../library/dis.rst:1388
+#: ../../library/dis.rst:1389
 msgid "or:"
 msgstr "或者:"
 
-#: ../../library/dis.rst:1391
+#: ../../library/dis.rst:1392
 msgid "``self``"
 msgstr "``self``"
 
-#: ../../library/dis.rst:1392
+#: ../../library/dis.rst:1393
 msgid "The remaining positional arguments"
 msgstr "其余的位置参数"
 
-#: ../../library/dis.rst:1395
+#: ../../library/dis.rst:1396
 msgid ""
 "``argc`` is the total of the positional and named arguments, excluding "
 "``self`` when a ``NULL`` is not present."
 msgstr "``argc`` 是位置和关键字参数的总和，当未提供 ``NULL`` 时将排除 ``self``。"
 
-#: ../../library/dis.rst:1398
+#: ../../library/dis.rst:1399
 msgid ""
 "``CALL`` pops all arguments and the callable object off the stack, calls the"
 " callable object with those arguments, and pushes the return value returned "
 "by the callable object."
 msgstr "``CALL`` 将把所有参数和可调用对象弹出栈，附带这些参数调用该可调用对象，并将该可调用对象的返回值推入栈。"
 
-#: ../../library/dis.rst:1407
+#: ../../library/dis.rst:1408
 msgid ""
 "Calls a callable object with variable set of positional and keyword "
 "arguments.  If the lowest bit of *flags* is set, the top of the stack "
@@ -1471,14 +1638,14 @@ msgstr ""
 "在调用该可调用对象之前，映射对象和可迭代对象会被分别“解包”并将它们的内容分别作为关键字参数和位置参数传入。 ``CALL_FUNCTION_EX`` "
 "会中栈中弹出所有参数及可调用对象，附带这些参数调用该可调用对象，并将可调用对象所返回的返回值推入栈顶。"
 
-#: ../../library/dis.rst:1422
+#: ../../library/dis.rst:1423
 msgid ""
 "Pushes a ``NULL`` to the stack. Used in the call sequence to match the "
 "``NULL`` pushed by :opcode:`LOAD_METHOD` for non-method calls."
 msgstr ""
 "将一个 ``NULL`` 推入栈。 在调用序列中用来匹配 :opcode:`LOAD_METHOD` 针对非方法调用推入栈的 ``NULL``。"
 
-#: ../../library/dis.rst:1431
+#: ../../library/dis.rst:1432
 msgid ""
 "Prefixes :opcode:`CALL`. Stores a reference to ``co_consts[consti]`` into an"
 " internal variable for use by :opcode:`CALL`. ``co_consts[consti]`` must be "
@@ -1487,57 +1654,72 @@ msgstr ""
 "向 :opcode:`CALL` 添加前缀。 将指向 ``co_consts[consti]`` 的引用存入一个内部变量供 :opcode:`CALL`"
 " 使用。 ``co_consts[consti]`` 必须为一个字符串元组。"
 
-#: ../../library/dis.rst:1440
+#: ../../library/dis.rst:1441
 msgid ""
 "Pushes a new function object on the stack.  From bottom to top, the consumed"
 " stack must consist of values if the argument carries a specified flag value"
 msgstr "将一个新函数对象推入栈顶。 从底端到顶端，如果参数带有指定的旗标值则所使用的栈必须由这些值组成。"
 
-#: ../../library/dis.rst:1443
+#: ../../library/dis.rst:1444
 msgid ""
 "``0x01`` a tuple of default values for positional-only and positional-or-"
 "keyword parameters in positional order"
 msgstr "``0x01`` 一个默认值的元组，用于按位置排序的仅限位置形参以及位置或关键字形参"
 
-#: ../../library/dis.rst:1445
+#: ../../library/dis.rst:1446
 msgid "``0x02`` a dictionary of keyword-only parameters' default values"
 msgstr "``0x02`` 一个仅限关键字形参的默认值的字典"
 
-#: ../../library/dis.rst:1446
+#: ../../library/dis.rst:1447
 msgid "``0x04`` a tuple of strings containing parameters' annotations"
 msgstr "``0x04`` 一个包含形参标注的字符串元组。"
 
-#: ../../library/dis.rst:1447
+#: ../../library/dis.rst:1448
 msgid "``0x08`` a tuple containing cells for free variables, making a closure"
 msgstr "``0x08`` 一个包含用于自由变量的单元的元组，生成一个闭包"
 
-#: ../../library/dis.rst:1448
+#: ../../library/dis.rst:1449
 msgid "the code associated with the function (at ``STACK[-1]``)"
 msgstr "与函数 (在 ``STACK[-1]`` ) 相关联的代码"
 
-#: ../../library/dis.rst:1450
+#: ../../library/dis.rst:1451
 msgid "Flag value ``0x04`` is a tuple of strings instead of dictionary"
 msgstr "旗标值 ``0x04`` 是一个字符串元组而非字典。"
 
-#: ../../library/dis.rst:1453
+#: ../../library/dis.rst:1454
 msgid "Qualified name at ``STACK[-1]`` was removed."
 msgstr "位于 ``STACK[-1]`` 的限定名称已被移除。"
 
-#: ../../library/dis.rst:1461
+#: ../../library/dis.rst:1462
 msgid ""
 "Pushes a slice object on the stack.  *argc* must be 2 or 3.  If it is 2, "
 "implements::"
 msgstr "将一个切片对象推入栈中， *argc* 必须为2或3。 如果其为2，则实现："
 
-#: ../../library/dis.rst:1467
+#: ../../library/dis.rst:1464
+msgid ""
+"end = STACK.pop()\n"
+"start = STACK.pop()\n"
+"STACK.append(slice(start, end))"
+msgstr ""
+
+#: ../../library/dis.rst:1468
 msgid "if it is 3, implements::"
 msgstr "如果其为3，则实现："
 
-#: ../../library/dis.rst:1474
+#: ../../library/dis.rst:1470
+msgid ""
+"step = STACK.pop()\n"
+"end = STACK.pop()\n"
+"start = STACK.pop()\n"
+"STACK.append(slice(start, end, step))"
+msgstr ""
+
+#: ../../library/dis.rst:1475
 msgid "See the :func:`slice` built-in function for more information."
 msgstr "详见内置函数 :func:`slice` 。"
 
-#: ../../library/dis.rst:1479
+#: ../../library/dis.rst:1480
 msgid ""
 "Prefixes any opcode which has an argument too big to fit into the default "
 "one byte. *ext* holds an additional byte which act as higher bits in the "
@@ -1547,7 +1729,7 @@ msgstr ""
 "为任意带有大到无法放入默认的单字节的参数的操作码添加前缀。 *ext* 存放一个附加字节作为参数中的高比特位。 对于每个操作码，最多允许三个 "
 "``EXTENDED_ARG`` 前缀，构成两字节到三字节的参数。"
 
-#: ../../library/dis.rst:1487
+#: ../../library/dis.rst:1488
 msgid ""
 "Used for implementing formatted literal strings (f-strings).  Pops an "
 "optional *fmt_spec* from the stack, then a required *value*. *flags* is "
@@ -1556,41 +1738,41 @@ msgstr ""
 "用于实现格式化字面值字符串（f-字符串）。 从栈中弹出一个可选的 *fmt_spec*，然后是一个必须的 *value*。 *flags* "
 "的解读方式如下："
 
-#: ../../library/dis.rst:1491
+#: ../../library/dis.rst:1492
 msgid "``(flags & 0x03) == 0x00``: *value* is formatted as-is."
 msgstr "``(flags & 0x03) == 0x00``: *value* 按原样格式化。"
 
-#: ../../library/dis.rst:1492
+#: ../../library/dis.rst:1493
 msgid ""
 "``(flags & 0x03) == 0x01``: call :func:`str` on *value* before formatting "
 "it."
 msgstr "``(flags & 0x03) == 0x01``: 在格式化 *value* 之前调用其 :func:`str`。"
 
-#: ../../library/dis.rst:1494
+#: ../../library/dis.rst:1495
 msgid ""
 "``(flags & 0x03) == 0x02``: call :func:`repr` on *value* before formatting "
 "it."
 msgstr "``(flags & 0x03) == 0x02``: 在格式化 *value* 之前调用其 :func:`repr`。"
 
-#: ../../library/dis.rst:1496
+#: ../../library/dis.rst:1497
 msgid ""
 "``(flags & 0x03) == 0x03``: call :func:`ascii` on *value* before formatting "
 "it."
 msgstr "``(flags & 0x03) == 0x03``: 在格式化 *value* 之前调用其 :func:`ascii`。"
 
-#: ../../library/dis.rst:1498
+#: ../../library/dis.rst:1499
 msgid ""
 "``(flags & 0x04) == 0x04``: pop *fmt_spec* from the stack and use it, else "
 "use an empty *fmt_spec*."
 msgstr "``(flags & 0x04) == 0x04``: 从栈中弹出 *fmt_spec* 并使用它，否则使用空的 *fmt_spec*。"
 
-#: ../../library/dis.rst:1501
+#: ../../library/dis.rst:1502
 msgid ""
 "Formatting is performed using :c:func:`PyObject_Format`.  The result is "
 "pushed on the stack."
 msgstr "使用 :c:func:`PyObject_Format` 执行格式化。 结果会被推入栈顶。"
 
-#: ../../library/dis.rst:1509
+#: ../../library/dis.rst:1510
 msgid ""
 "``STACK[-1]`` is a tuple of keyword attribute names, ``STACK[-2]`` is the "
 "class being matched against, and ``STACK[-3]`` is the match subject.  "
@@ -1599,7 +1781,7 @@ msgstr ""
 "``STACK[-1]`` 是一个由关键字属性名称组成的元组，``STACK[-2]`` 是要匹配的类， 而 ``STACK[-3]`` "
 "是匹配的目标主题。 *count* 是位置子模式的数量。"
 
-#: ../../library/dis.rst:1513
+#: ../../library/dis.rst:1514
 msgid ""
 "Pop ``STACK[-1]``, ``STACK[-2]``, and ``STACK[-3]``. If ``STACK[-3]`` is an "
 "instance of ``STACK[-2]`` and has the positional and keyword attributes "
@@ -1610,40 +1792,40 @@ msgstr ""
 "``STACK[-2]`` 的实例并且具有 *count* 和 ``STACK[-1]`` 所要求的位置和关键字属性，则推入一个由已提取属性组成的元组。"
 " 在其他情况下，则推入 ``None``。"
 
-#: ../../library/dis.rst:1527
+#: ../../library/dis.rst:1528
 msgid "A no-op. Performs internal tracing, debugging and optimization checks."
 msgstr "空操作。 执行内部追踪、调试和优化检查。"
 
-#: ../../library/dis.rst:1529
+#: ../../library/dis.rst:1530
 msgid "The ``where`` operand marks where the ``RESUME`` occurs:"
 msgstr "``where`` 操作数标记 ``RESUME`` 在哪里发生:"
 
-#: ../../library/dis.rst:1531
+#: ../../library/dis.rst:1532
 msgid ""
 "``0`` The start of a function, which is neither a generator, coroutine nor "
 "an async generator"
 msgstr "``0`` 在函数的开头。 函数不能是生成器、协程或者异步生成器。"
 
-#: ../../library/dis.rst:1533
+#: ../../library/dis.rst:1534
 msgid "``1`` After a ``yield`` expression"
 msgstr "``1`` 在 ``yield`` 表达式之后"
 
-#: ../../library/dis.rst:1534
+#: ../../library/dis.rst:1535
 msgid "``2`` After a ``yield from`` expression"
 msgstr "``2`` 在 ``yield from`` 表达式之后"
 
-#: ../../library/dis.rst:1535
+#: ../../library/dis.rst:1536
 msgid "``3`` After an ``await`` expression"
 msgstr "``3`` 在 ``await`` 表达式之后"
 
-#: ../../library/dis.rst:1542
+#: ../../library/dis.rst:1543
 msgid ""
 "Create a generator, coroutine, or async generator from the current frame. "
 "Used as first opcode of in code object for the above mentioned callables. "
 "Clear the current frame and return the newly created generator."
 msgstr "从当前帧中创建一个生成器，协程，或者异步生成器。 被用作上述可调用对象的代码对象第一个操作码。 清除当前帧，返回新创建的生成器。"
 
-#: ../../library/dis.rst:1551
+#: ../../library/dis.rst:1552
 msgid ""
 "Equivalent to ``STACK[-1] = STACK[-2].send(STACK[-1])``. Used in ``yield "
 "from`` and ``await`` statements."
@@ -1651,7 +1833,7 @@ msgstr ""
 "等价于 ``STACK[-1] = STACK[-2].send(STACK[-1])`` 。 被用于 ``yield from`` 和 "
 "``await`` 语句。"
 
-#: ../../library/dis.rst:1554
+#: ../../library/dis.rst:1555
 msgid ""
 "If the call raises :exc:`StopIteration`, pop the top value from the stack, "
 "push the exception's ``value`` attribute, and increment the bytecode counter"
@@ -1660,7 +1842,7 @@ msgstr ""
 "如果调用引发了 :exc:`StopIteration`，则从栈中弹出最上面的值，推入异常的 ``value`` 属性，并将字节码计数器值递增 "
 "*delta*。"
 
-#: ../../library/dis.rst:1563
+#: ../../library/dis.rst:1564
 msgid ""
 "This is not really an opcode.  It identifies the dividing line between "
 "opcodes in the range [0,255] which don't use their argument and those that "
@@ -1669,13 +1851,13 @@ msgstr ""
 "这不是一个真正的操作码。 它是 [0,255] 范围内使用与不使用参数的操作码（分别是 ``< HAVE_ARGUMENT`` 和 ``>= "
 "HAVE_ARGUMENT`` ）的分界线。"
 
-#: ../../library/dis.rst:1567
+#: ../../library/dis.rst:1568
 msgid ""
 "If your application uses pseudo instructions, use the :data:`hasarg` "
 "collection instead."
 msgstr "如果你的应用程序使用了伪指令，请使用 :data:`hasarg` 作为替代。"
 
-#: ../../library/dis.rst:1570
+#: ../../library/dis.rst:1571
 msgid ""
 "Now every instruction has an argument, but opcodes ``< HAVE_ARGUMENT`` "
 "ignore it. Before, only opcodes ``>= HAVE_ARGUMENT`` had an argument."
@@ -1683,14 +1865,14 @@ msgstr ""
 "现在每条指令都带有参数，但操作码 ``< HAVE_ARGUMENT`` 会忽略它。 之前仅限操作码 ``>= HAVE_ARGUMENT`` "
 "带有参数。"
 
-#: ../../library/dis.rst:1574
+#: ../../library/dis.rst:1575
 msgid ""
 "Pseudo instructions were added to the :mod:`dis` module, and for them it is "
 "not true that comparison with ``HAVE_ARGUMENT`` indicates whether they use "
 "their arg."
 msgstr "伪指令被添加到 :mod:`dis` 模块中，对于它们来说，“比较 ``HAVE_ARGUMENT`` 以确定其是否使用参数”不再有效。"
 
-#: ../../library/dis.rst:1582
+#: ../../library/dis.rst:1583
 msgid ""
 "Calls an intrinsic function with one argument. Passes ``STACK[-1]`` as the "
 "argument and sets ``STACK[-1]`` to the result. Used to implement "
@@ -1698,111 +1880,111 @@ msgid ""
 msgstr ""
 "调用内联的函数并附带一个参数。 传入 ``STACK[-1]`` 作为参数并将 ``STACK[-1]`` 设为结果。 用于实现对性能不敏感的功能。"
 
-#: ../../library/dis.rst:1586 ../../library/dis.rst:1640
+#: ../../library/dis.rst:1587 ../../library/dis.rst:1641
 msgid "The operand determines which intrinsic function is called:"
 msgstr "调用哪个内置函数取决于操作数："
 
-#: ../../library/dis.rst:1589 ../../library/dis.rst:1643
+#: ../../library/dis.rst:1590 ../../library/dis.rst:1644
 msgid "Operand"
 msgstr "操作数"
 
-#: ../../library/dis.rst:1589 ../../library/dis.rst:1643
+#: ../../library/dis.rst:1590 ../../library/dis.rst:1644
 msgid "Description"
 msgstr "描述"
 
-#: ../../library/dis.rst:1591
+#: ../../library/dis.rst:1592
 msgid "``INTRINSIC_1_INVALID``"
 msgstr "``INTRINSIC_1_INVALID``"
 
-#: ../../library/dis.rst:1591 ../../library/dis.rst:1645
+#: ../../library/dis.rst:1592 ../../library/dis.rst:1646
 msgid "Not valid"
 msgstr "无效"
 
-#: ../../library/dis.rst:1593
+#: ../../library/dis.rst:1594
 msgid "``INTRINSIC_PRINT``"
 msgstr "``INTRINSIC_PRINT``"
 
-#: ../../library/dis.rst:1593
+#: ../../library/dis.rst:1594
 msgid "Prints the argument to standard out. Used in the REPL."
 msgstr "将参数打印到标准输出。 被用于 REPL 。"
 
-#: ../../library/dis.rst:1596
+#: ../../library/dis.rst:1597
 msgid "``INTRINSIC_IMPORT_STAR``"
 msgstr "``INTRINSIC_IMPORT_STAR``"
 
-#: ../../library/dis.rst:1596
+#: ../../library/dis.rst:1597
 msgid "Performs ``import *`` for the named module."
 msgstr "为指定模块执行 ``import *`` 。"
 
-#: ../../library/dis.rst:1599
+#: ../../library/dis.rst:1600
 msgid "``INTRINSIC_STOPITERATION_ERROR``"
 msgstr "``INTRINSIC_STOPITERATION_ERROR``"
 
-#: ../../library/dis.rst:1599
+#: ../../library/dis.rst:1600
 msgid "Extracts the return value from a ``StopIteration`` exception."
 msgstr "从 ``StopIteration`` 异常中提取返回值。"
 
-#: ../../library/dis.rst:1602
+#: ../../library/dis.rst:1603
 msgid "``INTRINSIC_ASYNC_GEN_WRAP``"
 msgstr "``INTRINSIC_ASYNC_GEN_WRAP``"
 
-#: ../../library/dis.rst:1602
+#: ../../library/dis.rst:1603
 msgid "Wraps an async generator value"
 msgstr "包裹一个异常生成器值"
 
-#: ../../library/dis.rst:1604
+#: ../../library/dis.rst:1605
 msgid "``INTRINSIC_UNARY_POSITIVE``"
 msgstr "``INTRINSIC_UNARY_POSITIVE``"
 
-#: ../../library/dis.rst:1604
+#: ../../library/dis.rst:1605
 msgid "Performs the unary ``+`` operation"
 msgstr "执行单目运算符 ``+`` "
 
-#: ../../library/dis.rst:1607
+#: ../../library/dis.rst:1608
 msgid "``INTRINSIC_LIST_TO_TUPLE``"
 msgstr "``INTRINSIC_LIST_TO_TUPLE``"
 
-#: ../../library/dis.rst:1607
+#: ../../library/dis.rst:1608
 msgid "Converts a list to a tuple"
 msgstr "将一个列表转换为元组"
 
-#: ../../library/dis.rst:1609
+#: ../../library/dis.rst:1610
 msgid "``INTRINSIC_TYPEVAR``"
 msgstr "``INTRINSIC_TYPEVAR``"
 
-#: ../../library/dis.rst:1609
+#: ../../library/dis.rst:1610
 msgid "Creates a :class:`typing.TypeVar`"
 msgstr "创建一个 :class:`typing.TypeVar` "
 
-#: ../../library/dis.rst:1611
+#: ../../library/dis.rst:1612
 msgid "``INTRINSIC_PARAMSPEC``"
 msgstr "``INTRINSIC_PARAMSPEC``"
 
-#: ../../library/dis.rst:1611
+#: ../../library/dis.rst:1612
 msgid "Creates a :class:`typing.ParamSpec`"
 msgstr "创建一个 :class:`typing.ParamSpec`"
 
-#: ../../library/dis.rst:1614
+#: ../../library/dis.rst:1615
 msgid "``INTRINSIC_TYPEVARTUPLE``"
 msgstr "``INTRINSIC_TYPEVARTUPLE``"
 
-#: ../../library/dis.rst:1614
+#: ../../library/dis.rst:1615
 msgid "Creates a :class:`typing.TypeVarTuple`"
 msgstr "创建一个 :class:`typing.TypeVarTuple`"
 
-#: ../../library/dis.rst:1617
+#: ../../library/dis.rst:1618
 msgid "``INTRINSIC_SUBSCRIPT_GENERIC``"
 msgstr "``INTRINSIC_SUBSCRIPT_GENERIC``"
 
-#: ../../library/dis.rst:1617
+#: ../../library/dis.rst:1618
 msgid "Returns :class:`typing.Generic` subscripted with the argument"
 msgstr "返回 :class:`typing.Generic` 取参数下标。"
 
-#: ../../library/dis.rst:1620
+#: ../../library/dis.rst:1621
 msgid "``INTRINSIC_TYPEALIAS``"
 msgstr "``INTRINSIC_TYPEALIAS``"
 
-#: ../../library/dis.rst:1620
+#: ../../library/dis.rst:1621
 msgid ""
 "Creates a :class:`typing.TypeAliasType`; used in the :keyword:`type` "
 "statement. The argument is a tuple of the type alias's name, type "
@@ -1811,67 +1993,75 @@ msgstr ""
 "创建一个 :class:`typing.TypeAliasType` ；被用于 :keyword:`type` 语句。 "
 "参数是一个由类型别名的名称、类型形参和值组成的元组。"
 
-#: ../../library/dis.rst:1632
+#: ../../library/dis.rst:1633
 msgid ""
 "Calls an intrinsic function with two arguments. Used to implement "
 "functionality that is not performance critical::"
 msgstr "调用内联的函数并附带两个参数。 用于实现对性能不敏感的功能::"
 
-#: ../../library/dis.rst:1645
+#: ../../library/dis.rst:1636
+msgid ""
+"arg2 = STACK.pop()\n"
+"arg1 = STACK.pop()\n"
+"result = intrinsic2(arg1, arg2)\n"
+"STACK.push(result)"
+msgstr ""
+
+#: ../../library/dis.rst:1646
 msgid "``INTRINSIC_2_INVALID``"
 msgstr "``INTRINSIC_2_INVALID``"
 
-#: ../../library/dis.rst:1647
+#: ../../library/dis.rst:1648
 msgid "``INTRINSIC_PREP_RERAISE_STAR``"
 msgstr "``INTRINSIC_PREP_RERAISE_STAR``"
 
-#: ../../library/dis.rst:1647
+#: ../../library/dis.rst:1648
 msgid "Calculates the :exc:`ExceptionGroup` to raise from a ``try-except*``."
 msgstr "计算 :exc:`ExceptionGroup` 以从 ``try-except*`` 中引发异常。"
 
-#: ../../library/dis.rst:1651
+#: ../../library/dis.rst:1652
 msgid "``INTRINSIC_TYPEVAR_WITH_BOUND``"
 msgstr "``INTRINSIC_TYPEVAR_WITH_BOUND``"
 
-#: ../../library/dis.rst:1651
+#: ../../library/dis.rst:1652
 msgid "Creates a :class:`typing.TypeVar` with a bound."
 msgstr "创建一个带范围的 :class:`typing.TypeVar` 。"
 
-#: ../../library/dis.rst:1654
+#: ../../library/dis.rst:1655
 msgid "``INTRINSIC_TYPEVAR_WITH_CONSTRAINTS``"
 msgstr "``INTRINSIC_TYPEVAR_WITH_CONSTRAINTS``"
 
-#: ../../library/dis.rst:1654
+#: ../../library/dis.rst:1655
 msgid "Creates a :class:`typing.TypeVar` with constraints."
 msgstr "创建一个带约束的 :class:`typing.TypeVar` 。"
 
-#: ../../library/dis.rst:1658
+#: ../../library/dis.rst:1659
 msgid "``INTRINSIC_SET_FUNCTION_TYPE_PARAMS``"
 msgstr "``INTRINSIC_SET_FUNCTION_TYPE_PARAMS``"
 
-#: ../../library/dis.rst:1658
+#: ../../library/dis.rst:1659
 msgid "Sets the ``__type_params__`` attribute of a function."
 msgstr "为一个函数设置 ``__type_params__`` 属性。"
 
-#: ../../library/dis.rst:1665
+#: ../../library/dis.rst:1666
 msgid "**Pseudo-instructions**"
 msgstr "**伪指令**"
 
-#: ../../library/dis.rst:1667
+#: ../../library/dis.rst:1668
 msgid ""
 "These opcodes do not appear in Python bytecode. They are used by the "
 "compiler but are replaced by real opcodes or removed before bytecode is "
 "generated."
 msgstr "这些操作码并不出现在 Python 的字节码之中。 它们被编译器所使用，但在生成字节码之前会被替代成真正的操作码。"
 
-#: ../../library/dis.rst:1672
+#: ../../library/dis.rst:1673
 msgid ""
 "Set up an exception handler for the following code block. If an exception "
 "occurs, the value stack level is restored to its current state and control "
 "is transferred to the exception handler at ``target``."
 msgstr "为下面的代码块设置一个异常处理器。 如果发生异常，值栈的级别将恢复到当前状态并将控制权移交给位于 ``target`` 的异常处理器。"
 
-#: ../../library/dis.rst:1679
+#: ../../library/dis.rst:1680
 msgid ""
 "Like ``SETUP_FINALLY``, but in case of an exception also pushes the last "
 "instruction (``lasti``) to the stack so that ``RERAISE`` can restore it. If "
@@ -1882,7 +2072,7 @@ msgstr ""
 "与 ``SETUP_FINALLY`` 类似，但在出现异常的情况下也会将最后一条指令 (``lasti``) 推入栈以便 ``RERAISE`` "
 "能恢复它。 如果出现异常，栈级别值和帧上的最后一条指令将恢复为其当前状态，控制权将转移到 ``target`` 上的异常处理器。"
 
-#: ../../library/dis.rst:1688
+#: ../../library/dis.rst:1689
 msgid ""
 "Like ``SETUP_CLEANUP``, but in case of an exception one more item is popped "
 "from the stack before control is transferred to the exception handler at "
@@ -1890,7 +2080,7 @@ msgid ""
 msgstr ""
 "与 ``SETUP_CLEANUP`` 类似，但在出现异常的情况下会从栈中再弹出一项然后将控制权转移到 ``target`` 上的异常处理器。"
 
-#: ../../library/dis.rst:1692
+#: ../../library/dis.rst:1693
 msgid ""
 "This variant is used in :keyword:`with` and :keyword:`async with` "
 "constructs, which push the return value of the context manager's "
@@ -1899,36 +2089,36 @@ msgstr ""
 "该变体形式用于 :keyword:`with` 和 :keyword:`async with` 结构，它们会将上下文管理器的 "
 ":meth:`~object.__enter__` 或 :meth:`~object.__aenter__` 的返回值推入栈。"
 
-#: ../../library/dis.rst:1699
+#: ../../library/dis.rst:1700
 msgid ""
 "Marks the end of the code block associated with the last ``SETUP_FINALLY``, "
 "``SETUP_CLEANUP`` or ``SETUP_WITH``."
 msgstr ""
 "标记与最后一个 ``SETUP_FINALLY``、``SETUP_CLEANUP`` 或 ``SETUP_WITH`` 相关联的代码块的结束。"
 
-#: ../../library/dis.rst:1705
+#: ../../library/dis.rst:1706
 msgid ""
 "Undirected relative jump instructions which are replaced by their directed "
 "(forward/backward) counterparts by the assembler."
 msgstr "非定向相对跳转指令会被汇编器转换为它们定向版本（ forward/backward ）"
 
-#: ../../library/dis.rst:1710
+#: ../../library/dis.rst:1711
 msgid ""
 "Optimized unbound method lookup. Emitted as a ``LOAD_ATTR`` opcode with a "
 "flag set in the arg."
 msgstr "经优化的非绑定方法查找。 以在 arg 中设置了旗标的 ``LOAD_ATTR`` 操作码的形式发出。"
 
-#: ../../library/dis.rst:1717
+#: ../../library/dis.rst:1718
 msgid "Opcode collections"
 msgstr "操作码集合"
 
-#: ../../library/dis.rst:1719
+#: ../../library/dis.rst:1720
 msgid ""
 "These collections are provided for automatic introspection of bytecode "
 "instructions:"
 msgstr "提供这些集合用于字节码指令的自动内省："
 
-#: ../../library/dis.rst:1722
+#: ../../library/dis.rst:1723
 msgid ""
 "The collections now contain pseudo instructions and instrumented "
 "instructions as well. These are opcodes with values ``>= MIN_PSEUDO_OPCODE``"
@@ -1937,27 +2127,27 @@ msgstr ""
 "现在此集合还包含一些伪指令和工具化指令。 这些操作码的值 ``>= MIN_PSEUDO_OPCODE`` 和 ``>= "
 "MIN_INSTRUMENTED_OPCODE``。"
 
-#: ../../library/dis.rst:1729
+#: ../../library/dis.rst:1730
 msgid "Sequence of operation names, indexable using the bytecode."
 msgstr "操作名称的序列，可使用字节码来索引。"
 
-#: ../../library/dis.rst:1734
+#: ../../library/dis.rst:1735
 msgid "Dictionary mapping operation names to bytecodes."
 msgstr "映射操作名称到字节码的字典"
 
-#: ../../library/dis.rst:1739
+#: ../../library/dis.rst:1740
 msgid "Sequence of all compare operation names."
 msgstr "所有比较操作名称的序列。"
 
-#: ../../library/dis.rst:1744
+#: ../../library/dis.rst:1745
 msgid "Sequence of bytecodes that use their argument."
 msgstr "所有使用参数的字节码的序列"
 
-#: ../../library/dis.rst:1751
+#: ../../library/dis.rst:1752
 msgid "Sequence of bytecodes that access a constant."
 msgstr "访问常量的字节码序列。"
 
-#: ../../library/dis.rst:1756
+#: ../../library/dis.rst:1757
 msgid ""
 "Sequence of bytecodes that access a free variable. 'free' in this context "
 "refers to names in the current scope that are referenced by inner scopes or "
@@ -1967,34 +2157,34 @@ msgstr ""
 "访问了 free 变量的字节码的序列。 这里的 ‘free’ 指的是当前作用域中被内层作用域引用的名称或外层作用域被当前作用域引用的名称。 它 "
 "*不包括* 全局或内置作用域的引用。"
 
-#: ../../library/dis.rst:1764
+#: ../../library/dis.rst:1765
 msgid "Sequence of bytecodes that access an attribute by name."
 msgstr "按名称访问属性的字节码序列。"
 
-#: ../../library/dis.rst:1769
+#: ../../library/dis.rst:1770
 msgid "Sequence of bytecodes that have a relative jump target."
 msgstr "具有相对跳转目标的字节码序列。"
 
-#: ../../library/dis.rst:1774
+#: ../../library/dis.rst:1775
 msgid "Sequence of bytecodes that have an absolute jump target."
 msgstr "具有绝对跳转目标的字节码序列。"
 
-#: ../../library/dis.rst:1779
+#: ../../library/dis.rst:1780
 msgid "Sequence of bytecodes that access a local variable."
 msgstr "访问局部变量的字节码序列。"
 
-#: ../../library/dis.rst:1784
+#: ../../library/dis.rst:1785
 msgid "Sequence of bytecodes of Boolean operations."
 msgstr "布尔运算的字节码序列。"
 
-#: ../../library/dis.rst:1788
+#: ../../library/dis.rst:1789
 msgid "Sequence of bytecodes that set an exception handler."
 msgstr "设置一个异常处理器的字节码序列。"
 
-#: ../../library/dis.rst:1459
+#: ../../library/dis.rst:1460
 msgid "built-in function"
 msgstr "内置函数"
 
-#: ../../library/dis.rst:1459
+#: ../../library/dis.rst:1460
 msgid "slice"
 msgstr "slice -- 切片"
