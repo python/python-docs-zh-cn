@@ -9,9 +9,9 @@
 # WH-2099 <wh2099@outlook.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
 # ppcfish <ppcfish@gmail.com>, 2021
-# Alpha Du <alphanow@gmail.com>, 2022
 # Xie Yanbo <xieyanbo@gmail.com>, 2023
 # ProgramRipper, 2023
+# Alpha Du <alphanow@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 14:17+0000\n"
+"POT-Creation-Date: 2024-10-11 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 00:52+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1918,6 +1918,9 @@ msgid ""
 "parameter which is useful if the line uses something other than whitespace "
 "as a separator."
 msgstr ""
+"对于简单的输入解析，最简单的方法通常是使用字符串对象的 :meth:`~str.split` 方法将行分割为空白符分隔的单词，然后使用 "
+":func:`int` 或 :func:`float` 将十进制字符串转换为数字值 。 :meth:`!split` 支持可选的 \"sep\" 形参 "
+"，如果行中使用空白符以外的其他分隔符，可以使用该参数。"
 
 #: ../../faq/programming.rst:1019
 msgid ""
@@ -3066,6 +3069,8 @@ msgid ""
 ":meth:`!object.__setattr__` to set an attribute on self without causing "
 "infinite recursion::"
 msgstr ""
+"许多 :meth:`~object.__setattr__` 实现都会调用 :meth:`!object.__setattr__` 在 self "
+"上设置属性 ，而不会导致无限递归::"
 
 #: ../../faq/programming.rst:1619
 msgid ""
@@ -3083,7 +3088,7 @@ msgstr ""
 msgid ""
 "Alternatively, it is possible to set attributes by inserting entries into "
 ":attr:`self.__dict__ <object.__dict__>` directly."
-msgstr ""
+msgstr "另外，也可以通过直接在 :attr:`self.__dict__<object.__dict__>` 中插入条目来设置属性 。"
 
 #: ../../faq/programming.rst:1629
 msgid ""
@@ -3574,6 +3579,10 @@ msgid ""
 ">>> a is b\n"
 "False"
 msgstr ""
+">>> a = []\n"
+">>> b = []\n"
+">>> a is b\n"
+"False"
 
 #: ../../faq/programming.rst:1905
 msgid ""
@@ -3614,6 +3623,16 @@ msgid ""
 "        raise KeyError(key)\n"
 "    return default"
 msgstr ""
+"_sentinel = object()\n"
+"\n"
+"def pop(self, key, default=_sentinel):\n"
+"    if key in self:\n"
+"        value = self[key]\n"
+"        del self[key]\n"
+"        return value\n"
+"    if default is _sentinel:\n"
+"        raise KeyError(key)\n"
+"    return default"
 
 #: ../../faq/programming.rst:1928
 msgid ""
@@ -3637,6 +3656,11 @@ msgid ""
 "            return True\n"
 "    return False"
 msgstr ""
+"def __contains__(self, value):\n"
+"    for v in self:\n"
+"        if v is value or v == value:\n"
+"            return True\n"
+"    return False"
 
 #: ../../faq/programming.rst:1943
 msgid ""
@@ -3682,6 +3706,26 @@ msgid ""
 "        s = ''.join([c for c in s if c.isalnum() or c == '-'])\n"
 "        return super().__new__(cls, s)"
 msgstr ""
+"from datetime import date\n"
+"\n"
+"class FirstOfMonthDate(date):\n"
+"    \"Always choose the first day of the month\"\n"
+"    def __new__(cls, year, month, day):\n"
+"        return super().__new__(cls, year, month, 1)\n"
+"\n"
+"class NamedInt(int):\n"
+"    \"Allow text names for some numbers\"\n"
+"    xlat = {'zero': 0, 'one': 1, 'ten': 10}\n"
+"    def __new__(cls, value):\n"
+"        value = cls.xlat.get(value, value)\n"
+"        return super().__new__(cls, value)\n"
+"\n"
+"class TitleStr(str):\n"
+"    \"Convert str to name suitable for a URL path\"\n"
+"    def __new__(cls, s):\n"
+"        s = s.lower().replace(' ', '-')\n"
+"        s = ''.join([c for c in s if c.isalnum() or c == '-'])\n"
+"        return super().__new__(cls, s)"
 
 #: ../../faq/programming.rst:1976
 msgid "The classes can be used like this:"
@@ -3698,6 +3742,14 @@ msgid ""
 ">>> TitleStr('Blog: Why Python Rocks')\n"
 "'blog-why-python-rocks'"
 msgstr ""
+">>> FirstOfMonthDate(2012, 2, 14)\n"
+"FirstOfMonthDate(2012, 2, 1)\n"
+">>> NamedInt('ten')\n"
+"10\n"
+">>> NamedInt(20)\n"
+"20\n"
+">>> TitleStr('Blog: Why Python Rocks')\n"
+"'blog-why-python-rocks'"
 
 #: ../../faq/programming.rst:1993
 msgid "How do I cache method calls?"
@@ -3771,6 +3823,27 @@ msgid ""
 "        \"Rainfall on a given date\"\n"
 "        # Depends on the station_id, date, and units."
 msgstr ""
+"class Weather:\n"
+"    \"Lookup weather information on a government website\"\n"
+"\n"
+"    def __init__(self, station_id):\n"
+"        self._station_id = station_id\n"
+"        # The _station_id is private and immutable\n"
+"\n"
+"    def current_temperature(self):\n"
+"        \"Latest hourly observation\"\n"
+"        # Do not cache this because old results\n"
+"        # can be out of date.\n"
+"\n"
+"    @cached_property\n"
+"    def location(self):\n"
+"        \"Return the longitude/latitude coordinates of the station\"\n"
+"        # Result only depends on the station_id\n"
+"\n"
+"    @lru_cache(maxsize=20)\n"
+"    def historic_rainfall(self, date, units='mm'):\n"
+"        \"Rainfall on a given date\"\n"
+"        # 取决于 station_id、date 和 unit"
 
 #: ../../faq/programming.rst:2042
 msgid ""
@@ -3813,6 +3886,25 @@ msgid ""
 "        'Rainfall on a given date'\n"
 "        # Depends on the station_id, date, and units."
 msgstr ""
+"class Weather:\n"
+"    \"Example with a mutable station identifier\"\n"
+"\n"
+"    def __init__(self, station_id):\n"
+"        self.station_id = station_id\n"
+"\n"
+"    def change_station(self, station_id):\n"
+"        self.station_id = station_id\n"
+"\n"
+"    def __eq__(self, other):\n"
+"        return self.station_id == other.station_id\n"
+"\n"
+"    def __hash__(self):\n"
+"        return hash(self.station_id)\n"
+"\n"
+"    @lru_cache(maxsize=20)\n"
+"    def historic_rainfall(self, date, units='cm'):\n"
+"        'Rainfall on a given date'\n"
+"        # 取决于 station_id、date 和 unit"
 
 #: ../../faq/programming.rst:2073
 msgid "Modules"
@@ -3893,6 +3985,8 @@ msgid ""
 ">>> import py_compile\n"
 ">>> py_compile.compile('foo.py')                 "
 msgstr ""
+">>> import py_compile\n"
+">>> py_compile.compile('foo.py')                 "
 
 #: ../../faq/programming.rst:2113
 msgid ""
@@ -3915,7 +4009,7 @@ msgstr ""
 
 #: ../../faq/programming.rst:2122
 msgid "python -m compileall ."
-msgstr ""
+msgstr "python -m compileall ."
 
 #: ../../faq/programming.rst:2126
 msgid "How do I find the current module name?"
@@ -3941,6 +4035,12 @@ msgid ""
 "if __name__ == '__main__':\n"
 "    main()"
 msgstr ""
+"def main():\n"
+"    print('Running test...')\n"
+"    ...\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    main()"
 
 #: ../../faq/programming.rst:2143
 msgid "How can I have modules that mutually import each other?"
@@ -3959,6 +4059,8 @@ msgid ""
 "from bar import bar_var\n"
 "foo_var = 1"
 msgstr ""
+"from bar import bar_var\n"
+"foo_var = 1"
 
 #: ../../faq/programming.rst:2152
 msgid ":file:`bar.py`::"
@@ -3969,6 +4071,8 @@ msgid ""
 "from foo import foo_var\n"
 "bar_var = 2"
 msgstr ""
+"from foo import foo_var\n"
+"bar_var = 2"
 
 #: ../../faq/programming.rst:2157
 msgid "The problem is that the interpreter will perform the following steps:"
@@ -4086,7 +4190,7 @@ msgstr "不妨考虑换用 :mod:`importlib` 中的函数 :func:`~importlib.impor
 
 #: ../../faq/programming.rst:2203
 msgid "z = importlib.import_module('x.y.z')"
-msgstr ""
+msgstr "z = importlib.import_module('x.y.z')"
 
 #: ../../faq/programming.rst:2207
 msgid ""
@@ -4111,6 +4215,9 @@ msgid ""
 "import modname\n"
 "importlib.reload(modname)"
 msgstr ""
+"import importlib\n"
+"import modname\n"
+"importlib.reload(modname)"
 
 #: ../../faq/programming.rst:2219
 msgid ""
@@ -4120,7 +4227,7 @@ msgstr "警告：这种技术并非万无一失。尤其是模块包含了以下
 
 #: ../../faq/programming.rst:2222
 msgid "from modname import some_objects"
-msgstr ""
+msgstr "from modname import some_objects"
 
 #: ../../faq/programming.rst:2224
 msgid ""
@@ -4140,6 +4247,13 @@ msgid ""
 ">>> isinstance(c, cls.C)       # isinstance is false?!?\n"
 "False"
 msgstr ""
+">>> import importlib\n"
+">>> import cls\n"
+">>> c = cls.C()                # Create an instance of C\n"
+">>> importlib.reload(cls)\n"
+"<module 'cls' from 'cls.py'>\n"
+">>> isinstance(c, cls.C)       # isinstance is false?!?\n"
+"False"
 
 #: ../../faq/programming.rst:2237
 msgid ""
@@ -4154,6 +4268,10 @@ msgid ""
 ">>> hex(id(cls.C))\n"
 "'0x4198d0'"
 msgstr ""
+">>> hex(id(c.__class__))\n"
+"'0x7352a0'\n"
+">>> hex(id(cls.C))\n"
+"'0x4198d0'"
 
 #: ../../faq/programming.rst:408
 msgid "argument"

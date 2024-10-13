@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-26 14:15+0000\n"
+"POT-Creation-Date: 2024-10-11 14:17+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -80,6 +80,29 @@ msgstr ""
 "具有特殊的比较语义，它们会在数据排序或计数等统计函数中产生怪异或未定义的行为。 受影响的函数有 ``median()``, "
 "``median_low()``, ``median_high()``, ``median_grouped()``, ``mode()``, "
 "``multimode()`` 和 ``quantiles()``。 ``NaN`` 值应当在调用这些函数之前被去除::"
+
+#: ../../library/statistics.rst:47
+msgid ""
+">>> from statistics import median\n"
+">>> from math import isnan\n"
+">>> from itertools import filterfalse\n"
+"\n"
+">>> data = [20.7, float('NaN'),19.2, 18.3, float('NaN'), 14.4]\n"
+">>> sorted(data)  # This has surprising behavior\n"
+"[20.7, nan, 14.4, 18.3, 19.2, nan]\n"
+">>> median(data)  # This result is unexpected\n"
+"16.35\n"
+"\n"
+">>> sum(map(isnan, data))    # Number of missing values\n"
+"2\n"
+">>> clean = list(filterfalse(isnan, data))  # Strip NaN values\n"
+">>> clean\n"
+"[20.7, 19.2, 18.3, 14.4]\n"
+">>> sorted(clean)  # Sorting now works as expected\n"
+"[14.4, 18.3, 19.2, 20.7]\n"
+">>> median(clean)       # This result is now well defined\n"
+"18.75"
+msgstr ""
 
 #: ../../library/statistics.rst:69
 msgid "Averages and measures of central location"
@@ -303,6 +326,22 @@ msgstr "若 *data* 为空，将会引发 :exc:`StatisticsError`。"
 msgid "Some examples of use:"
 msgstr "一些用法示例："
 
+#: ../../library/statistics.rst:134
+msgid ""
+">>> mean([1, 2, 3, 4, 4])\n"
+"2.8\n"
+">>> mean([-1.0, 2.5, 3.25, 5.75])\n"
+"2.625\n"
+"\n"
+">>> from fractions import Fraction as F\n"
+">>> mean([F(3, 7), F(1, 21), F(5, 3), F(1, 3)])\n"
+"Fraction(13, 21)\n"
+"\n"
+">>> from decimal import Decimal as D\n"
+">>> mean([D(\"0.5\"), D(\"0.75\"), D(\"0.625\"), D(\"0.375\")])\n"
+"Decimal('0.5625')"
+msgstr ""
+
 #: ../../library/statistics.rst:151
 msgid ""
 "The mean is strongly affected by `outliers "
@@ -339,12 +378,26 @@ msgstr ""
 "此函数的运行速度比 :func:`mean` 函数快并且它总是返回一个 :class:`float`。 *data* 可以为序列或可迭代对象。 "
 "如果输入数据集为空，则会引发 :exc:`StatisticsError`。"
 
+#: ../../library/statistics.rst:172
+msgid ""
+">>> fmean([3.5, 4.0, 5.25])\n"
+"4.25"
+msgstr ""
+
 #: ../../library/statistics.rst:177
 msgid ""
 "Optional weighting is supported.  For example, a professor assigns a grade "
 "for a course by weighting quizzes at 20%, homework at 20%, a midterm exam at"
 " 30%, and a final exam at 30%:"
 msgstr "支持可选的权重参数。 例如，某位教授在为课程打分时可设置权重为测验 20%, 作业 20%, 期中考试 30%, 期末考试 30%:"
+
+#: ../../library/statistics.rst:181
+msgid ""
+">>> grades = [85, 92, 83, 91]\n"
+">>> weights = [0.20, 0.20, 0.30, 0.30]\n"
+">>> fmean(grades, weights)\n"
+"87.6"
+msgstr ""
 
 #: ../../library/statistics.rst:188
 msgid ""
@@ -380,6 +433,12 @@ msgid ""
 "change in the future.)"
 msgstr "无需做出特殊努力即可获得准确的结果。（但是，将来或许会修改。）"
 
+#: ../../library/statistics.rst:212
+msgid ""
+">>> round(geometric_mean([54, 24, 36]), 1)\n"
+"36.0"
+msgstr ""
+
 #: ../../library/statistics.rst:222
 msgid ""
 "Return the harmonic mean of *data*, a sequence or iterable of real-valued "
@@ -411,6 +470,12 @@ msgid ""
 msgstr ""
 "假设一辆车在 40 km/hr 的速度下行驶了 10 km ，然后又以 60 km/hr 的速度行驶了 10 km 。车辆的平均速率是多少？"
 
+#: ../../library/statistics.rst:238
+msgid ""
+">>> harmonic_mean([40, 60])\n"
+"48.0"
+msgstr ""
+
 #: ../../library/statistics.rst:243
 msgid ""
 "Suppose a car travels 40 km/hr for 5 km, and when traffic clears, speeds-up "
@@ -418,6 +483,12 @@ msgid ""
 "speed?"
 msgstr ""
 "假设一辆汽车以速度 40 公里/小时行驶了 5 公里，当道路变得畅通后，提速到 60 公里/小时行驶了行程中剩余的 30 km。 请问其平均速度是多少？"
+
+#: ../../library/statistics.rst:247
+msgid ""
+">>> harmonic_mean([40, 60], weights=[5, 30])\n"
+"56.0"
+msgstr ""
 
 #: ../../library/statistics.rst:252
 msgid ""
@@ -502,6 +573,14 @@ msgstr ""
 "<https://en.wikipedia.org/wiki/Kernel_density_estimation#Example>`_ 中我们可以使用 "
 ":func:`kde` 来生成并绘制从小样本中估算出的概率密度函数："
 
+#: ../../library/statistics.rst:300
+msgid ""
+">>> sample = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2]\n"
+">>> f_hat = kde(sample, h=1.5)\n"
+">>> xarr = [i/100 for i in range(-750, 1100)]\n"
+">>> yarr = [f_hat(x) for x in xarr]"
+msgstr ""
+
 #: ../../library/statistics.rst:307
 msgid "The points in ``xarr`` and ``yarr`` can be used to make a PDF plot:"
 msgstr "``xarr`` 和 ``yarr`` 中的点可被用来绘制一个 PDF 图形:"
@@ -548,11 +627,23 @@ msgid ""
 " data point is returned:"
 msgstr "中位数是衡量中间位置的可靠方式，并且较少受到极端值的影响。 当数据点的总数为奇数时，将返回中间数据点："
 
+#: ../../library/statistics.rst:349
+msgid ""
+">>> median([1, 3, 5])\n"
+"3"
+msgstr ""
+
 #: ../../library/statistics.rst:354
 msgid ""
 "When the number of data points is even, the median is interpolated by taking"
 " the average of the two middle values:"
 msgstr "当数据点的总数为偶数时，中位数将通过对两个中间值求平均进行插值得出："
+
+#: ../../library/statistics.rst:357
+msgid ""
+">>> median([1, 3, 5, 7])\n"
+"4.0"
+msgstr ""
 
 #: ../../library/statistics.rst:362
 msgid ""
@@ -582,6 +673,14 @@ msgid ""
 "of the two middle values is returned."
 msgstr "低中位数一定是数据集的成员。 当数据点总数为奇数时，将返回中间值。 当其为偶数时，将返回两个中间值中较小的那个。"
 
+#: ../../library/statistics.rst:378
+msgid ""
+">>> median_low([1, 3, 5])\n"
+"3\n"
+">>> median_low([1, 3, 5, 7])\n"
+"3"
+msgstr ""
+
 #: ../../library/statistics.rst:385
 msgid ""
 "Use the low median when your data are discrete and you prefer the median to "
@@ -601,6 +700,14 @@ msgid ""
 " points is odd, the middle value is returned.  When it is even, the larger "
 "of the two middle values is returned."
 msgstr "高中位数一定是数据集的成员。 当数据点总数为奇数时，将返回中间值。 当其为偶数时，将返回两个中间值中较大的那个。"
+
+#: ../../library/statistics.rst:398
+msgid ""
+">>> median_high([1, 3, 5])\n"
+"3\n"
+">>> median_high([1, 3, 5, 7])\n"
+"5"
+msgstr ""
 
 #: ../../library/statistics.rst:405
 msgid ""
@@ -634,6 +741,19 @@ msgid ""
 "5-year midpoints of the intervals:"
 msgstr "例如，人口信息可能被归纳为按 10 年划分的连续年龄分组，每个分组由各区间的 5 年中点来表示："
 
+#: ../../library/statistics.rst:424
+msgid ""
+">>> from collections import Counter\n"
+">>> demographics = Counter({\n"
+"...    25: 172,   # 20 to 30 years old\n"
+"...    35: 484,   # 30 to 40 years old\n"
+"...    45: 387,   # 40 to 50 years old\n"
+"...    55:  22,   # 50 to 60 years old\n"
+"...    65:   6,   # 60 to 70 years old\n"
+"... })\n"
+"..."
+msgstr ""
+
 #: ../../library/statistics.rst:436
 msgid ""
 "The 50th percentile (median) is the 536th person out of the 1071 member "
@@ -649,6 +769,15 @@ msgid ""
 msgstr ""
 "常规的 :func:`median` 函数会假定三十至四十岁年龄组中的每个人都正好是 35 岁。 一个更站得住脚的假设则是该年龄组的 484 "
 "名成员均匀分布在 30 岁到 40 岁之间。 为此，我们会使用 :func:`median_grouped`:"
+
+#: ../../library/statistics.rst:445
+msgid ""
+">>> data = list(demographics.elements())\n"
+">>> median(data)\n"
+"35\n"
+">>> round(median_grouped(data, interval=10), 1)\n"
+"37.5"
+msgstr ""
 
 #: ../../library/statistics.rst:453
 msgid ""
@@ -687,11 +816,23 @@ msgid ""
 "standard treatment of the mode as commonly taught in schools:"
 msgstr "``mode`` 将假定是离散数据并返回一个单一的值。 这是通常的学校教学中标准的处理方式："
 
+#: ../../library/statistics.rst:475
+msgid ""
+">>> mode([1, 1, 2, 3, 3, 3, 3, 4])\n"
+"3"
+msgstr ""
+
 #: ../../library/statistics.rst:480
 msgid ""
 "The mode is unique in that it is the only statistic in this package that "
 "also applies to nominal (non-numeric) data:"
 msgstr "此众数的独特之处在于它是这个包中唯一还可应用于标称（非数字）数据的统计信息："
+
+#: ../../library/statistics.rst:483
+msgid ""
+">>> mode([\"red\", \"blue\", \"blue\", \"red\", \"green\", \"red\", \"red\"])\n"
+"'red'"
+msgstr ""
 
 #: ../../library/statistics.rst:488
 msgid ""
@@ -721,11 +862,25 @@ msgstr ""
 "返回最频繁出现的值的列表，并按它们在 *data* 中首次出现的位置排序。 如果存在多个众数则将返回一个以上的众数，或者如果 *data* "
 "为空则将返回空列表："
 
+#: ../../library/statistics.rst:506
+msgid ""
+">>> multimode('aabbbbccddddeeffffgg')\n"
+"['b', 'd', 'f']\n"
+">>> multimode('')\n"
+"[]"
+msgstr ""
+
 #: ../../library/statistics.rst:518
 msgid ""
 "Return the population standard deviation (the square root of the population "
 "variance).  See :func:`pvariance` for arguments and other details."
 msgstr "返回总体标准差（总体方差的平方根）。 请参阅 :func:`pvariance` 了解参数和其他细节。"
+
+#: ../../library/statistics.rst:521
+msgid ""
+">>> pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])\n"
+"0.986893273527251"
+msgstr ""
 
 #: ../../library/statistics.rst:529
 msgid ""
@@ -764,15 +919,40 @@ msgstr "如果 *data* 为空则会引发 :exc:`StatisticsError`。"
 msgid "Examples:"
 msgstr "示例："
 
+#: ../../library/statistics.rst:548
+msgid ""
+">>> data = [0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]\n"
+">>> pvariance(data)\n"
+"1.25"
+msgstr ""
+
 #: ../../library/statistics.rst:554
 msgid ""
 "If you have already calculated the mean of your data, you can pass it as the"
 " optional second argument *mu* to avoid recalculation:"
 msgstr "如果你已经计算过数据的平均值，你可以将其作为可选的第二个参数 *mu* 传入以避免重复计算："
 
+#: ../../library/statistics.rst:557
+msgid ""
+">>> mu = mean(data)\n"
+">>> pvariance(data, mu)\n"
+"1.25"
+msgstr ""
+
 #: ../../library/statistics.rst:563
 msgid "Decimals and Fractions are supported:"
 msgstr "同样也支持使用 Decimal 和 Fraction 值："
+
+#: ../../library/statistics.rst:565
+msgid ""
+">>> from decimal import Decimal as D\n"
+">>> pvariance([D(\"27.5\"), D(\"30.25\"), D(\"30.25\"), D(\"34.5\"), D(\"41.75\")])\n"
+"Decimal('24.815')\n"
+"\n"
+">>> from fractions import Fraction as F\n"
+">>> pvariance([F(1, 4), F(5, 4), F(1, 2)])\n"
+"Fraction(13, 72)"
+msgstr ""
 
 #: ../../library/statistics.rst:577
 msgid ""
@@ -798,6 +978,12 @@ msgid ""
 "Return the sample standard deviation (the square root of the sample "
 "variance).  See :func:`variance` for arguments and other details."
 msgstr "返回样本标准差（样本方差的平方根）。 请参阅 :func:`variance` 了解参数和其他细节。"
+
+#: ../../library/statistics.rst:593
+msgid ""
+">>> stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])\n"
+"1.0810874155219827"
+msgstr ""
 
 #: ../../library/statistics.rst:601
 msgid ""
@@ -829,11 +1015,25 @@ msgstr "当你的数据是总体数据的样本时请使用此函数。 要根�
 msgid "Raises :exc:`StatisticsError` if *data* has fewer than two values."
 msgstr "如果 *data* 包含的值少于两个则会引发 :exc:`StatisticsError`。"
 
+#: ../../library/statistics.rst:618
+msgid ""
+">>> data = [2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]\n"
+">>> variance(data)\n"
+"1.3720238095238095"
+msgstr ""
+
 #: ../../library/statistics.rst:624
 msgid ""
 "If you have already calculated the sample mean of your data, you can pass it"
 " as the optional second argument *xbar* to avoid recalculation:"
 msgstr "如果你已经计算过数据的平均值，你可以将其作为可选的第二个参数 *xbar* 传入以避免重复计算："
+
+#: ../../library/statistics.rst:627
+msgid ""
+">>> m = mean(data)\n"
+">>> variance(data, m)\n"
+"1.3720238095238095"
+msgstr ""
 
 #: ../../library/statistics.rst:633
 msgid ""
@@ -845,6 +1045,17 @@ msgstr "此函数不会试图检查你所传入的 *xbar* 是否为真实的平�
 #: ../../library/statistics.rst:637
 msgid "Decimal and Fraction values are supported:"
 msgstr "同样也支持使用 Decimal 和 Fraction 值："
+
+#: ../../library/statistics.rst:639
+msgid ""
+">>> from decimal import Decimal as D\n"
+">>> variance([D(\"27.5\"), D(\"30.25\"), D(\"30.25\"), D(\"34.5\"), D(\"41.75\")])\n"
+"Decimal('31.01875')\n"
+"\n"
+">>> from fractions import Fraction as F\n"
+">>> variance([F(1, 6), F(1, 2), F(5, 3)])\n"
+"Fraction(67, 108)"
+msgstr ""
 
 #: ../../library/statistics.rst:651
 msgid ""
@@ -933,6 +1144,18 @@ msgstr ""
 "``(i - 1) / (m - 1)`` 来计算。 给定 11 个样本值，该方法会对它们进行排序并赋予以下百分位: 0%, 10%, 20%, "
 "30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%。"
 
+#: ../../library/statistics.rst:699
+msgid ""
+"# Decile cut points for empirically sampled data\n"
+">>> data = [105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110,\n"
+"...         100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129,\n"
+"...         106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86,\n"
+"...         111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95,\n"
+"...         103, 107, 101, 81, 109, 104]\n"
+">>> [round(q, 1) for q in quantiles(data, n=10)]\n"
+"[81.0, 86.2, 89.0, 99.4, 102.5, 103.6, 106.0, 109.8, 111.0]"
+msgstr ""
+
 #: ../../library/statistics.rst:712
 msgid ""
 "No longer raises an exception for an input with only a single data point. "
@@ -951,6 +1174,19 @@ msgid ""
 "Both inputs must be of the same length (no less than two), otherwise "
 ":exc:`StatisticsError` is raised."
 msgstr "两个输入必须具有相同的长度（不少于两个元素），否则会引发 :exc:`StatisticsError`。"
+
+#: ../../library/statistics.rst:727
+msgid ""
+">>> x = [1, 2, 3, 4, 5, 6, 7, 8, 9]\n"
+">>> y = [1, 2, 3, 1, 2, 3, 1, 2, 3]\n"
+">>> covariance(x, y)\n"
+"0.75\n"
+">>> z = [9, 8, 7, 6, 5, 4, 3, 2, 1]\n"
+">>> covariance(x, z)\n"
+"-7.5\n"
+">>> covariance(z, x)\n"
+"-7.5"
+msgstr ""
 
 #: ../../library/statistics.rst:743
 msgid ""
@@ -995,6 +1231,29 @@ msgid ""
 msgstr ""
 "使用 `开普勒行星运动定律 "
 "<https://en.wikipedia.org/wiki/Kepler's_laws_of_planetary_motion>`_ 的示例:"
+
+#: ../../library/statistics.rst:765
+msgid ""
+">>> # Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and  Neptune\n"
+">>> orbital_period = [88, 225, 365, 687, 4331, 10_756, 30_687, 60_190]    # days\n"
+">>> dist_from_sun = [58, 108, 150, 228, 778, 1_400, 2_900, 4_500] # million km\n"
+"\n"
+">>> # Show that a perfect monotonic relationship exists\n"
+">>> correlation(orbital_period, dist_from_sun, method='ranked')\n"
+"1.0\n"
+"\n"
+">>> # Observe that a linear relationship is imperfect\n"
+">>> round(correlation(orbital_period, dist_from_sun), 4)\n"
+"0.9882\n"
+"\n"
+">>> # Demonstrate Kepler's third law: There is a linear correlation\n"
+">>> # between the square of the orbital period and the cube of the\n"
+">>> # distance from the sun.\n"
+">>> period_squared = [p * p for p in orbital_period]\n"
+">>> dist_cubed = [d * d * d for d in dist_from_sun]\n"
+">>> round(correlation(period_squared, dist_cubed), 4)\n"
+"1.0"
+msgstr ""
 
 #: ../../library/statistics.rst:789
 msgid "Added support for Spearman's rank correlation coefficient."
@@ -1044,6 +1303,15 @@ msgstr ""
 "<https://en.wikipedia.org/wiki/Monty_Python#Films>`_ 在假定出品方保持现有步调的情况下预测到 "
 "2019 年时产出的 Monty Python 电影的累计数量。"
 
+#: ../../library/statistics.rst:818
+msgid ""
+">>> year = [1971, 1975, 1979, 1982, 1983]\n"
+">>> films_total = [1, 2, 3, 4, 5]\n"
+">>> slope, intercept = linear_regression(year, films_total)\n"
+">>> round(slope * 2019 + intercept)\n"
+"16"
+msgstr ""
+
 #: ../../library/statistics.rst:826
 msgid ""
 "If *proportional* is true, the independent variable *x* and the dependent "
@@ -1064,6 +1332,21 @@ msgid ""
 "model based on major planets can predict the orbital distances for dwarf "
 "planets:"
 msgstr "继续 :func:`correlation` 的例子，我们来看看基于大行星的模型是否能很好地预测矮行星的轨道距离："
+
+#: ../../library/statistics.rst:838
+msgid ""
+">>> model = linear_regression(period_squared, dist_cubed, proportional=True)\n"
+">>> slope = model.slope\n"
+"\n"
+">>> # Dwarf planets:   Pluto,  Eris,    Makemake, Haumea, Ceres\n"
+">>> orbital_periods = [90_560, 204_199, 111_845, 103_410, 1_680]  # days\n"
+">>> predicted_dist = [math.cbrt(slope * (p * p)) for p in orbital_periods]\n"
+">>> list(map(round, predicted_dist))\n"
+"[5912, 10166, 6806, 6459, 414]\n"
+"\n"
+">>> [5_906, 10_152, 6_796, 6_450, 414]  # actual distance in million km\n"
+"[5906, 10152, 6796, 6450, 414]"
+msgstr ""
 
 #: ../../library/statistics.rst:854
 msgid "Added support for *proportional*."
@@ -1294,6 +1577,13 @@ msgid ""
 "translation and scaling.  For example:"
 msgstr ":class:`NormalDist` 的实例支持加上、减去、乘以或除以一个常量。 这些运算被用于转换和缩放。 例如："
 
+#: ../../library/statistics.rst:1007
+msgid ""
+">>> temperature_february = NormalDist(5, 2.5)             # Celsius\n"
+">>> temperature_february * (9/5) + 32                     # Fahrenheit\n"
+"NormalDist(mu=41.0, sigma=4.5)"
+msgstr ""
+
 #: ../../library/statistics.rst:1013
 msgid ""
 "Dividing a constant by an instance of :class:`NormalDist` is not supported "
@@ -1311,6 +1601,17 @@ msgstr ""
 "由于正态分布是由独立变量的累加效应产生的，因此允许表示为 :class:`NormalDist` 实例的 `两组独立正态分布的随机变量相加和相减 "
 "<https://en.wikipedia.org/wiki/Sum_of_normally_distributed_random_variables>`_。"
 " 例如："
+
+#: ../../library/statistics.rst:1022
+msgid ""
+">>> birth_weights = NormalDist.from_samples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5])\n"
+">>> drug_effects = NormalDist(0.4, 0.15)\n"
+">>> combined = birth_weights + drug_effects\n"
+">>> round(combined.mean, 1)\n"
+"3.1\n"
+">>> round(combined.stdev, 1)\n"
+"0.5"
+msgstr ""
 
 #: ../../library/statistics.rst:1036
 msgid "Examples and Recipes"
@@ -1336,6 +1637,14 @@ msgstr ""
 "<https://nces.ed.gov/programs/digest/d17/tables/dt17_226.40.asp>`_ 显示分数呈平均值为"
 " 1060 且标准差为 195 的正态分布，则可以确定考试分数处于 1100 和 1200 之间的学生的百分比舍入到最接近的整数应为："
 
+#: ../../library/statistics.rst:1050
+msgid ""
+">>> sat = NormalDist(1060, 195)\n"
+">>> fraction = sat.cdf(1200 + 0.5) - sat.cdf(1100 - 0.5)\n"
+">>> round(fraction * 100.0, 1)\n"
+"18.4"
+msgstr ""
+
 #: ../../library/statistics.rst:1057
 msgid ""
 "Find the `quartiles <https://en.wikipedia.org/wiki/Quartile>`_ and `deciles "
@@ -1343,6 +1652,14 @@ msgid ""
 msgstr ""
 "求 SAT 分数的 `四分位 <https://en.wikipedia.org/wiki/Quartile>`_ 和 `十分位 "
 "<https://en.wikipedia.org/wiki/Decile>`_："
+
+#: ../../library/statistics.rst:1060
+msgid ""
+">>> list(map(round, sat.quantiles()))\n"
+"[928, 1060, 1192]\n"
+">>> list(map(round, sat.quantiles(n=10)))\n"
+"[810, 896, 958, 1011, 1060, 1109, 1162, 1224, 1310]"
+msgstr ""
 
 #: ../../library/statistics.rst:1069
 msgid "Monte Carlo inputs for simulations"
@@ -1356,6 +1673,19 @@ msgid ""
 msgstr ""
 "为了估算一个不易获得解析解的模型分布，:class:`NormalDist` 可以生成用于 `蒙特卡洛模拟 "
 "<https://en.wikipedia.org/wiki/Monte_Carlo_method>`_ 的输入样本："
+
+#: ../../library/statistics.rst:1075
+msgid ""
+">>> def model(x, y, z):\n"
+"...     return (3*x + 7*x*y - 5*y) / (11 * z)\n"
+"...\n"
+">>> n = 100_000\n"
+">>> X = NormalDist(10, 2.5).samples(n, seed=3652260728)\n"
+">>> Y = NormalDist(15, 1.75).samples(n, seed=4582495471)\n"
+">>> Z = NormalDist(50, 1.25).samples(n, seed=6582483453)\n"
+">>> quantiles(map(model, X, Y, Z))       \n"
+"[1.4591308524824727, 1.8035946855390597, 2.175091447274739]"
+msgstr ""
 
 #: ../../library/statistics.rst:1088
 msgid "Approximating binomial distributions"
@@ -1381,6 +1711,30 @@ msgstr ""
 "例如，一次开源会议有 750 名与会者和两个可分别容纳 500 人的会议厅。 会上有一场关于 Python 的演讲和一场关于 Ruby 的演讲。 "
 "在往届会议中，65% 的与会者更愿意去听关于 Python 的演讲。 假定人群的偏好没有发生改变，那么 Python "
 "演讲的会议厅不超出其容量上限的可能性是多少？"
+
+#: ../../library/statistics.rst:1101
+msgid ""
+">>> n = 750             # Sample size\n"
+">>> p = 0.65            # Preference for Python\n"
+">>> q = 1.0 - p         # Preference for Ruby\n"
+">>> k = 500             # Room capacity\n"
+"\n"
+">>> # Approximation using the cumulative normal distribution\n"
+">>> from math import sqrt\n"
+">>> round(NormalDist(mu=n*p, sigma=sqrt(n*p*q)).cdf(k + 0.5), 4)\n"
+"0.8402\n"
+"\n"
+">>> # Exact solution using the cumulative binomial distribution\n"
+">>> from math import comb, fsum\n"
+">>> round(fsum(comb(n, r) * p**r * q**(n-r) for r in range(k+1)), 4)\n"
+"0.8402\n"
+"\n"
+">>> # Approximation using a simulation\n"
+">>> from random import seed, binomialvariate\n"
+">>> seed(8675309)\n"
+">>> mean(binomialvariate(n, p) <= k for i in range(10_000))\n"
+"0.8406"
+msgstr ""
 
 #: ../../library/statistics.rst:1126
 msgid "Naive bayesian classifier"
@@ -1408,11 +1762,28 @@ msgid ""
 "data with :class:`NormalDist`:"
 msgstr "我们得到了由八个人的测量值组成的训练数据集。 假定这些测量值是正态分布的，因此我们用 :class:`NormalDist` 来总结数据："
 
+#: ../../library/statistics.rst:1139
+msgid ""
+">>> height_male = NormalDist.from_samples([6, 5.92, 5.58, 5.92])\n"
+">>> height_female = NormalDist.from_samples([5, 5.5, 5.42, 5.75])\n"
+">>> weight_male = NormalDist.from_samples([180, 190, 170, 165])\n"
+">>> weight_female = NormalDist.from_samples([100, 150, 130, 150])\n"
+">>> foot_size_male = NormalDist.from_samples([12, 11, 12, 10])\n"
+">>> foot_size_female = NormalDist.from_samples([6, 8, 7, 9])"
+msgstr ""
+
 #: ../../library/statistics.rst:1148
 msgid ""
 "Next, we encounter a new person whose feature measurements are known but "
 "whose gender is unknown:"
 msgstr "接下来，我们遇到一个特征测量值已知但性别未知的新人："
+
+#: ../../library/statistics.rst:1151
+msgid ""
+">>> ht = 6.0        # height\n"
+">>> wt = 130        # weight\n"
+">>> fs = 8          # foot size"
+msgstr ""
 
 #: ../../library/statistics.rst:1157
 msgid ""
@@ -1424,6 +1795,17 @@ msgstr ""
 "从是男是女各 50% 的 `先验概率 <https://en.wikipedia.org/wiki/Prior_probability>`_ "
 "出发，我们通过将该先验概率乘以给定性别的特征度量值的可能性累积值来计算后验概率："
 
+#: ../../library/statistics.rst:1162
+msgid ""
+">>> prior_male = 0.5\n"
+">>> prior_female = 0.5\n"
+">>> posterior_male = (prior_male * height_male.pdf(ht) *\n"
+"...                   weight_male.pdf(wt) * foot_size_male.pdf(fs))\n"
+"\n"
+">>> posterior_female = (prior_female * height_female.pdf(ht) *\n"
+"...                     weight_female.pdf(wt) * foot_size_female.pdf(fs))"
+msgstr ""
+
 #: ../../library/statistics.rst:1172
 msgid ""
 "The final prediction goes to the largest posterior. This is known as the "
@@ -1432,3 +1814,9 @@ msgid ""
 msgstr ""
 "最终预测值应为最大后验概率值。 这种算法被称为 `maximum a posteriori "
 "<https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation>`_ 或 MAP："
+
+#: ../../library/statistics.rst:1176
+msgid ""
+">>> 'male' if posterior_male > posterior_female else 'female'\n"
+"'female'"
+msgstr ""
