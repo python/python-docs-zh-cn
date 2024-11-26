@@ -4,17 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-11 14:48+0000\n"
+"POT-Creation-Date: 2024-11-12 09:11+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -948,6 +948,8 @@ msgid ""
 "value in ``gr_gid`` will be used. If the value is an integer, it will be "
 "passed verbatim. (POSIX only)"
 msgstr ""
+"如果 *group* 不为 ``None``，则 setregid() 系统调用将在子进程执行之前在下级进程中进行。 如果所提供的值是一个字符串，将通过"
+" :func:`grp.getgrnam` 来查找它并将使用 ``gr_gid`` 中的值。 如果该值是一个整数，它将被原样传递。 （POSIX 专属）"
 
 #: ../../library/subprocess.rst:618
 msgid ""
@@ -957,6 +959,9 @@ msgid ""
 "the values in ``gr_gid`` will be used. Integer values will be passed "
 "verbatim. (POSIX only)"
 msgstr ""
+"如果 *extra_groups* 不为 ``None``，则 setgroups() 系统调用将在子进程执行之前在下级进程中进行。 在 "
+"*extra_groups* 中提供的字符串将通过 :func:`grp.getgrnam` 来查找并将使用 ``gr_gid`` 中的值。 "
+"整数值将被原样传递。 （POSIX 专属）"
 
 #: ../../library/subprocess.rst:627
 msgid ""
@@ -966,6 +971,8 @@ msgid ""
 "value in ``pw_uid`` will be used. If the value is an integer, it will be "
 "passed verbatim. (POSIX only)"
 msgstr ""
+"如果 *user* 不为 ``None``，则 setreuid() 系统调用将在子进程执行之前 在下级进程中进行。 如果所提供的值是一个字符串，将通过"
+" :func:`pwd.getpwnam` 来查找它并将使用 ``pw_uid`` 中的值。 如果该值是一个整数，它将被原样传递。 （POSIX 专属）"
 
 #: ../../library/subprocess.rst:636
 msgid ""
@@ -2174,6 +2181,17 @@ msgid ""
 "if process.wait() != 0:\n"
 "    print(\"There were some errors\")"
 msgstr ""
+"pipe = os.popen(cmd, 'w')\n"
+"...\n"
+"rc = pipe.close()\n"
+"if rc is not None and rc >> 8:\n"
+"    print(\"There were some errors\")\n"
+"==>\n"
+"process = Popen(cmd, stdin=PIPE)\n"
+"...\n"
+"process.stdin.close()\n"
+"if process.wait() != 0:\n"
+"    print(\"There were some errors\")"
 
 #: ../../library/subprocess.rst:1477
 msgid "Replacing functions from the :mod:`!popen2` module"
@@ -2193,6 +2211,11 @@ msgid ""
 "          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
 "(child_stdout, child_stdin) = (p.stdout, p.stdin)"
 msgstr ""
+"(child_stdout, child_stdin) = popen2.popen2(\"somestring\", bufsize, mode)\n"
+"==>\n"
+"p = Popen(\"somestring\", shell=True, bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
+"(child_stdout, child_stdin) = (p.stdout, p.stdin)"
 
 #: ../../library/subprocess.rst:1494
 msgid ""
@@ -2202,6 +2225,11 @@ msgid ""
 "          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
 "(child_stdout, child_stdin) = (p.stdout, p.stdin)"
 msgstr ""
+"(child_stdout, child_stdin) = popen2.popen2([\"mycmd\", \"myarg\"], bufsize, mode)\n"
+"==>\n"
+"p = Popen([\"mycmd\", \"myarg\"], bufsize=bufsize,\n"
+"          stdin=PIPE, stdout=PIPE, close_fds=True)\n"
+"(child_stdout, child_stdin) = (p.stdout, p.stdin)"
 
 #: ../../library/subprocess.rst:1500
 msgid ""
@@ -2278,6 +2306,14 @@ msgid ""
 ">>> subprocess.getstatusoutput('/bin/kill $$')\n"
 "(-15, '')"
 msgstr ""
+">>> subprocess.getstatusoutput('ls /bin/ls')\n"
+"(0, '/bin/ls')\n"
+">>> subprocess.getstatusoutput('cat /bin/junk')\n"
+"(1, 'cat: /bin/junk: No such file or directory')\n"
+">>> subprocess.getstatusoutput('/bin/junk')\n"
+"(127, 'sh: /bin/junk: not found')\n"
+">>> subprocess.getstatusoutput('/bin/kill $$')\n"
+"(-15, '')"
 
 #: ../../library/subprocess.rst:1546
 msgid "Windows support was added."
@@ -2307,6 +2343,8 @@ msgid ""
 ">>> subprocess.getoutput('ls /bin/ls')\n"
 "'/bin/ls'"
 msgstr ""
+">>> subprocess.getoutput('ls /bin/ls')\n"
+"'/bin/ls'"
 
 #: ../../library/subprocess.rst:1568
 msgid "Windows support added"
@@ -2393,7 +2431,7 @@ msgstr ""
 
 #: ../../library/subprocess.rst:1630
 msgid "subprocess._USE_VFORK = False  # See CPython issue gh-NNNNNN."
-msgstr ""
+msgstr "subprocess._USE_VFORK = False  # 参见 CPython 程序问题 gh-NNNNNN。"
 
 #: ../../library/subprocess.rst:1632
 msgid ""
@@ -2407,7 +2445,7 @@ msgstr ""
 
 #: ../../library/subprocess.rst:1639
 msgid "subprocess._USE_POSIX_SPAWN = False  # See CPython issue gh-NNNNNN."
-msgstr ""
+msgstr "subprocess._USE_POSIX_SPAWN = False  # 参见 CPython 程序问题 gh-NNNNNN。"
 
 #: ../../library/subprocess.rst:1641
 msgid ""

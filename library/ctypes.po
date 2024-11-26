@@ -5,17 +5,17 @@
 # 
 # Translators:
 # lit, 2024
-# Freesand Leo <yuqinju@163.com>, 2024
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 14:53+0000\n"
+"POT-Creation-Date: 2024-11-22 14:56+0000\n"
 "PO-Revision-Date: 2024-05-11 00:33+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -414,7 +414,7 @@ msgid ""
 "learn more about :mod:`ctypes` data types."
 msgstr "在我们开始调用函数前，我们必须先了解作为函数参数的 :mod:`ctypes` 数据类型。"
 
-#: ../../library/ctypes.rst:212 ../../library/ctypes.rst:2198
+#: ../../library/ctypes.rst:212 ../../library/ctypes.rst:2237
 msgid "Fundamental data types"
 msgstr "基础数据类型"
 
@@ -775,6 +775,22 @@ msgid ""
 "10 b'Hi\\x00lo\\x00\\x00\\x00\\x00\\x00'\n"
 ">>>"
 msgstr ""
+">>> from ctypes import *\n"
+">>> p = create_string_buffer(3)            # 创建一个 3 字节的缓冲区，初始化为 NUL 字节\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"3 b'\\x00\\x00\\x00'\n"
+">>> p = create_string_buffer(b\"Hello\")     # 创建一个包含以 NUL 结束的字符串的缓冲区\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"6 b'Hello\\x00'\n"
+">>> print(repr(p.value))\n"
+"b'Hello'\n"
+">>> p = create_string_buffer(b\"Hello\", 10) # 创建一个 10 字节的缓冲区\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"10 b'Hello\\x00\\x00\\x00\\x00\\x00'\n"
+">>> p.value = b\"Hi\"\n"
+">>> print(sizeof(p), repr(p.raw))\n"
+"10 b'Hi\\x00lo\\x00\\x00\\x00\\x00\\x00'\n"
+">>>"
 
 #: ../../library/ctypes.rst:336
 msgid ""
@@ -857,9 +873,9 @@ msgstr ""
 
 #: ../../library/ctypes.rst:386
 msgid ""
-"On those platforms it is required to specify the :attr:`~_FuncPtr.argtypes` "
-"attribute for the regular, non-variadic, function arguments:"
-msgstr "在这些平台上要求为常规、非可变函数参数指定 :attr:`~_FuncPtr.argtypes` 属性:"
+"On those platforms it is required to specify the :attr:`~_CFuncPtr.argtypes`"
+" attribute for the regular, non-variadic, function arguments:"
+msgstr ""
 
 #: ../../library/ctypes.rst:389
 msgid "libc.printf.argtypes = [ctypes.c_char_p]"
@@ -868,8 +884,8 @@ msgstr "libc.printf.argtypes = [ctypes.c_char_p]"
 #: ../../library/ctypes.rst:393
 msgid ""
 "Because specifying the attribute does not inhibit portability it is advised "
-"to always specify :attr:`~_FuncPtr.argtypes` for all variadic functions."
-msgstr "因为指定该属性不会影响可移植性所以建议总是为所有可变函数指定 :attr:`~_FuncPtr.argtypes`。"
+"to always specify :attr:`~_CFuncPtr.argtypes` for all variadic functions."
+msgstr ""
 
 #: ../../library/ctypes.rst:400
 msgid "Calling functions with your own custom data types"
@@ -925,19 +941,17 @@ msgstr "指定必选参数的类型(函数原型)"
 #: ../../library/ctypes.rst:428
 msgid ""
 "It is possible to specify the required argument types of functions exported "
-"from DLLs by setting the :attr:`~_FuncPtr.argtypes` attribute."
-msgstr "可以通过设置 :attr:`~_FuncPtr.argtypes` 属性来指定从 DLL 导出函数的必选参数类型。"
+"from DLLs by setting the :attr:`~_CFuncPtr.argtypes` attribute."
+msgstr ""
 
 #: ../../library/ctypes.rst:431
 msgid ""
-":attr:`~_FuncPtr.argtypes` must be a sequence of C data types (the "
+":attr:`~_CFuncPtr.argtypes` must be a sequence of C data types (the "
 ":func:`!printf` function is probably not a good example here, because it "
 "takes a variable number and different types of parameters depending on the "
 "format string, on the other hand this is quite handy to experiment with this"
 " feature)::"
 msgstr ""
-":attr:`~_FuncPtr.argtypes` 必须是一个 C 数据类型的序列（这里 :func:`!printf` "
-"函数可能不是一个好例子，因为它会根据格式字符串的不同接受可变数量和不同类型的形参，但另一方面这对尝试此功能来说也很方便）::"
 
 #: ../../library/ctypes.rst:436
 msgid ""
@@ -976,7 +990,7 @@ msgstr ""
 msgid ""
 "If you have defined your own classes which you pass to function calls, you "
 "have to implement a :meth:`~_CData.from_param` class method for them to be "
-"able to use them in the :attr:`~_FuncPtr.argtypes` sequence. The "
+"able to use them in the :attr:`~_CFuncPtr.argtypes` sequence. The "
 ":meth:`~_CData.from_param` class method receives the Python object passed to"
 " the function call, it should do a typecheck or whatever is needed to make "
 "sure this object is acceptable, and then return the object itself, its "
@@ -985,11 +999,6 @@ msgid ""
 "string, bytes, a :mod:`ctypes` instance, or an object with an "
 ":attr:`!_as_parameter_` attribute."
 msgstr ""
-"如果你定义了自己的类并将其传递给函数调用，则你必须为它们实现 :meth:`~_CData.from_param` 类方法才能够在 "
-":attr:`~_FuncPtr.argtypes` 序列中使用它们。 :meth:`~_CData.from_param` "
-"类方法将接受传递给函数调用的 Python 对象，它应该进行类型检查或者其他必要的操作以确保这个对象是可接受的，然后返回对象本身、它的 "
-":attr:`!_as_parameter_` 属性或在此情况下作为 C 函数参数传入的任何东西。 "
-"同样，结果应该是整数、字符串、字节串、:mod:`ctypes` 实例或具有 :attr:`!_as_parameter_` 属性的对象。"
 
 #: ../../library/ctypes.rst:468
 msgid "Return types"
@@ -998,11 +1007,9 @@ msgstr "返回类型"
 #: ../../library/ctypes.rst:478
 msgid ""
 "By default functions are assumed to return the C :c:expr:`int` type.  Other "
-"return types can be specified by setting the :attr:`~_FuncPtr.restype` "
+"return types can be specified by setting the :attr:`~_CFuncPtr.restype` "
 "attribute of the function object."
 msgstr ""
-"默认情况下都会假定函数返回 C :c:expr:`int` 类型。 其他返回类型可通过设置函数对象的 :attr:`~_FuncPtr.restype`"
-" 属性来指定。"
 
 #: ../../library/ctypes.rst:482
 msgid ""
@@ -1018,8 +1025,9 @@ msgid ">>> libc.time.restype = c_time_t"
 msgstr ">>> libc.time.restype = c_time_t"
 
 #: ../../library/ctypes.rst:488
-msgid "The argument types can be specified using :attr:`~_FuncPtr.argtypes`::"
-msgstr "参数类型可以使用 :attr:`~_FuncPtr.argtypes` 来指定::"
+msgid ""
+"The argument types can be specified using :attr:`~_CFuncPtr.argtypes`::"
+msgstr ""
 
 #: ../../library/ctypes.rst:490
 msgid ">>> libc.time.argtypes = (POINTER(c_time_t),)"
@@ -1070,11 +1078,9 @@ msgstr ""
 #: ../../library/ctypes.rst:510
 msgid ""
 "If you want to avoid the :func:`ord(\"x\") <ord>` calls above, you can set "
-"the :attr:`~_FuncPtr.argtypes` attribute, and the second argument will be "
+"the :attr:`~_CFuncPtr.argtypes` attribute, and the second argument will be "
 "converted from a single character Python bytes object into a C char:"
 msgstr ""
-"如果你想要避免上面的 :func:`ord(\"x\") <ord>` 调用，你可以设置 :attr:`~_FuncPtr.argtypes` "
-"属性，第二个参数将从单字符 Python 字节串对象转换为 C char:"
 
 #: ../../library/ctypes.rst:514
 msgid ""
@@ -1107,14 +1113,12 @@ msgstr ""
 #: ../../library/ctypes.rst:529
 msgid ""
 "You can also use a callable Python object (a function or a class for "
-"example) as the :attr:`~_FuncPtr.restype` attribute, if the foreign function"
-" returns an integer.  The callable will be called with the *integer* the C "
-"function returns, and the result of this call will be used as the result of "
-"your function call. This is useful to check for error return values and "
-"automatically raise an exception::"
+"example) as the :attr:`~_CFuncPtr.restype` attribute, if the foreign "
+"function returns an integer.  The callable will be called with the *integer*"
+" the C function returns, and the result of this call will be used as the "
+"result of your function call. This is useful to check for error return "
+"values and automatically raise an exception::"
 msgstr ""
-"如果外部函数返回一个整数，你也可以使用一个 Python 可调用对象（例如函数或类）作为 :attr:`~_FuncPtr.restype` 属性。 "
-"可调用对象调用时将附带 C 函数返回的 *整数*，其调用结果将被用作函数调用的结果值。 这对于检查错误返回值并自动引发异常来说很有用处::"
 
 #: ../../library/ctypes.rst:535
 msgid ""
@@ -1165,9 +1169,9 @@ msgstr ""
 #: ../../library/ctypes.rst:557
 msgid ""
 "Please note that a much more powerful error checking mechanism is available "
-"through the :attr:`~_FuncPtr.errcheck` attribute; see the reference manual "
+"through the :attr:`~_CFuncPtr.errcheck` attribute; see the reference manual "
 "for details."
-msgstr "请注意使用 :attr:`~_FuncPtr.errcheck` 属性可提供更强大的错误检查机制；详情参见参考手册。"
+msgstr ""
 
 #: ../../library/ctypes.rst:565
 msgid "Passing pointers (or: passing parameters by reference)"
@@ -1748,17 +1752,13 @@ msgstr "类型转换"
 #: ../../library/ctypes.rst:857
 msgid ""
 "Usually, ctypes does strict type checking.  This means, if you have "
-"``POINTER(c_int)`` in the :attr:`~_FuncPtr.argtypes` list of a function or "
+"``POINTER(c_int)`` in the :attr:`~_CFuncPtr.argtypes` list of a function or "
 "as the type of a member field in a structure definition, only instances of "
 "exactly the same type are accepted.  There are some exceptions to this rule,"
 " where ctypes accepts other objects.  For example, you can pass compatible "
 "array instances instead of pointer types.  So, for ``POINTER(c_int)``, "
 "ctypes accepts an array of c_int::"
 msgstr ""
-"通常，ctypes 会进行严格的类型检查。 这意味着，如果在函数的 :attr:`~_FuncPtr.argtypes` 列表中有 "
-"``POINTER(c_int)`` 或在结构体定义中将其用作成员字段的类型，则只接受完全相同类型的实例。 此规则也有一些例外情况，在这些情况下 "
-"ctypes 可以接受其他对象。 例如，你可以传入兼容的数组实例而不是指针类型。 因此，对于 ``POINTER(c_int)``，ctypes "
-"接受一个 c_int 数组::"
 
 #: ../../library/ctypes.rst:864
 msgid ""
@@ -1793,14 +1793,11 @@ msgstr ""
 #: ../../library/ctypes.rst:878
 msgid ""
 "In addition, if a function argument is explicitly declared to be a pointer "
-"type (such as ``POINTER(c_int)``) in :attr:`~_FuncPtr.argtypes`, an object "
+"type (such as ``POINTER(c_int)``) in :attr:`~_CFuncPtr.argtypes`, an object "
 "of the pointed type (``c_int`` in this case) can be passed to the function."
 "  ctypes will apply the required :func:`byref` conversion in this case "
 "automatically."
 msgstr ""
-"此外，如果函数参数在 :attr:`~_FuncPtr.argtypes` 中明确声明为指针类型 "
-"(如``POINTER(c_int)``)，则可以向函数传递所指向的类型的对象 (在本例中为 ``c_int``)。 在这种情况下，ctypes "
-"将自动应用所需的 :func:`byref` 转换。"
 
 #: ../../library/ctypes.rst:883
 msgid "To set a POINTER type field to ``NULL``, you can assign ``None``::"
@@ -2639,7 +2636,7 @@ msgstr ""
 "尝试寻找一个库然后返回其路径名， *name* 是库名称, 且去除了 *lib* 等前缀和 ``.so`` 、 ``.dylib`` "
 "、版本号等后缀(这是 posix 连接器 :option:`!-l` 选项使用的格式)。如果没有找到对应的库，则返回 ``None`` 。"
 
-#: ../../library/ctypes.rst:1312 ../../library/ctypes.rst:1972
+#: ../../library/ctypes.rst:1312 ../../library/ctypes.rst:1997
 msgid "The exact functionality is system dependent."
 msgstr "确切的功能取决于系统。"
 
@@ -2771,8 +2768,8 @@ msgstr ""
 " not be found\".* 此错误消息不包含缺失 DLL 的名称，因为 Windows API 并不会返回此类信息，这使得此错误难以诊断。 "
 "要解决此错误并确定是哪一个 DLL 未找到，你需要找出所依赖的 DLL 列表并使用 Windows 调试与跟踪工具确定是哪一个未找到。"
 
-#: ../../library/ctypes.rst:1383 ../../library/ctypes.rst:1406
-#: ../../library/ctypes.rst:1417 ../../library/ctypes.rst:1434
+#: ../../library/ctypes.rst:1383 ../../library/ctypes.rst:1408
+#: ../../library/ctypes.rst:1421 ../../library/ctypes.rst:1439
 msgid "The *name* parameter can now be a :term:`path-like object`."
 msgstr "现在 *name* 形参可以是一个 :term:`path-like object`。"
 
@@ -2788,39 +2785,44 @@ msgstr ""
 
 #: ../../library/ctypes.rst:1393
 msgid ""
-"Windows only: Instances of this class represent loaded shared libraries, "
-"functions in these libraries use the ``stdcall`` calling convention, and are"
-" assumed to return the windows specific :class:`HRESULT` code.  "
-":class:`HRESULT` values contain information specifying whether the function "
-"call failed or succeeded, together with additional error code.  If the "
-"return value signals a failure, an :class:`OSError` is automatically raised."
+"Instances of this class represent loaded shared libraries, functions in "
+"these libraries use the ``stdcall`` calling convention, and are assumed to "
+"return the windows specific :class:`HRESULT` code.  :class:`HRESULT` values "
+"contain information specifying whether the function call failed or "
+"succeeded, together with additional error code.  If the return value signals"
+" a failure, an :class:`OSError` is automatically raised."
 msgstr ""
-"仅 Windows : 此类的实例即加载好的动态链接库，其中的函数使用 ``stdcall`` 调用约定，并且假定返回 windows 指定的 "
-":class:`HRESULT` 返回码。 :class:`HRESULT` 的值包含的信息说明函数调用成功还是失败，以及额外错误码。 "
-"如果返回值表示失败，会自动抛出 :class:`OSError` 异常。"
 
-#: ../../library/ctypes.rst:1400
+#: ../../library/ctypes.rst:1400 ../../library/ctypes.rst:1417
+#: ../../library/ctypes.rst:1561 ../../library/ctypes.rst:1569
+#: ../../library/ctypes.rst:1746 ../../library/ctypes.rst:1977
+#: ../../library/ctypes.rst:1986 ../../library/ctypes.rst:2011
+#: ../../library/ctypes.rst:2020 ../../library/ctypes.rst:2029
+#: ../../library/ctypes.rst:2044 ../../library/ctypes.rst:2101
+#: ../../library/ctypes.rst:2129 ../../library/ctypes.rst:2473
+msgid "Availability"
+msgstr "Availability"
+
+#: ../../library/ctypes.rst:1402
 msgid ""
 ":exc:`WindowsError` used to be raised, which is now an alias of "
 ":exc:`OSError`."
 msgstr "过去会引发 :exc:`WindowsError`，现在它是 :exc:`OSError` 的别名。"
 
-#: ../../library/ctypes.rst:1411
+#: ../../library/ctypes.rst:1413
 msgid ""
-"Windows only: Instances of this class represent loaded shared libraries, "
-"functions in these libraries use the ``stdcall`` calling convention, and are"
-" assumed to return :c:expr:`int` by default."
+"Instances of this class represent loaded shared libraries, functions in "
+"these libraries use the ``stdcall`` calling convention, and are assumed to "
+"return :c:expr:`int` by default."
 msgstr ""
-"仅限 Windows：该类的实例代表已加载的共享库，这些库中的函数使用 ``stdcall`` 调用约定，并被预期默认会返回 "
-":c:expr:`int`。"
 
-#: ../../library/ctypes.rst:1419
+#: ../../library/ctypes.rst:1424
 msgid ""
 "The Python :term:`global interpreter lock` is released before calling any "
 "function exported by these libraries, and reacquired afterwards."
 msgstr "调用动态库导出的函数之前，Python会释放 :term:`global interpreter lock` ，并在调用后重新获取。"
 
-#: ../../library/ctypes.rst:1425
+#: ../../library/ctypes.rst:1430
 msgid ""
 "Instances of this class behave like :class:`CDLL` instances, except that the"
 " Python GIL is *not* released during the function call, and after the "
@@ -2830,11 +2832,11 @@ msgstr ""
 "这个类实例的行为与 :class:`CDLL` 类似，只不过 *不会* 在调用函数的时候释放 GIL 锁，且调用结束后会检查 Python 错误码。 "
 "如果错误码被设置，会抛出一个 Python 异常。"
 
-#: ../../library/ctypes.rst:1430
+#: ../../library/ctypes.rst:1435
 msgid "Thus, this is only useful to call Python C api functions directly."
 msgstr "所以，它只在直接调用 Python C 接口函数的时候有用。"
 
-#: ../../library/ctypes.rst:1436
+#: ../../library/ctypes.rst:1441
 msgid ""
 "All these classes can be instantiated by calling them with at least one "
 "argument, the pathname of the shared library.  If you have an existing "
@@ -2847,7 +2849,7 @@ msgstr ""
 "参数传递，否则，底层平台的 :c:func:`!dlopen` 或 :c:func:`!LoadLibrary` "
 "函数将用于将库加载到进程中，并获取其句柄。"
 
-#: ../../library/ctypes.rst:1443
+#: ../../library/ctypes.rst:1448
 msgid ""
 "The *mode* parameter can be used to specify how the library is loaded.  For "
 "details, consult the :manpage:`dlopen(3)` manpage.  On Windows, *mode* is "
@@ -2857,7 +2859,7 @@ msgstr ""
 "*mode* 可以指定库加载方式。详情请参见  :manpage:`dlopen(3)` 手册页。 在 Windows 上， 会忽略 *mode* ，在"
 " posix 系统上， 总是会加上 RTLD_NOW ，且无法配置。"
 
-#: ../../library/ctypes.rst:1448
+#: ../../library/ctypes.rst:1453
 msgid ""
 "The *use_errno* parameter, when set to true, enables a ctypes mechanism that"
 " allows accessing the system :data:`errno` error number in a safe way. "
@@ -2870,7 +2872,7 @@ msgstr ""
 ":mod:`ctypes` 维护有系统 :data:`errno`  的一个线程局部副本；如果调用传入了 ``use_errno=True`` "
 "的外部函数，函数调用前 :data:`errno` 的值将与 ctypes 的私有副本交换，函数调用后也进行同样的交换。"
 
-#: ../../library/ctypes.rst:1455
+#: ../../library/ctypes.rst:1460
 msgid ""
 "The function :func:`ctypes.get_errno` returns the value of the ctypes "
 "private copy, and the function :func:`ctypes.set_errno` changes the ctypes "
@@ -2879,7 +2881,7 @@ msgstr ""
 " :func:`ctypes.get_errno` 返回 ctypes 自己维护的那份拷贝的值，  :func:`ctypes.set_errno` "
 "函数可以修改它并返回之前的值。"
 
-#: ../../library/ctypes.rst:1459
+#: ../../library/ctypes.rst:1464
 msgid ""
 "The *use_last_error* parameter, when set to true, enables the same mechanism"
 " for the Windows error code which is managed by the :func:`GetLastError` and"
@@ -2891,7 +2893,7 @@ msgstr ""
 ":func:`!SetLastError` Windows API 函数管理相同的机制；:func:`ctypes.get_last_error` 和 "
 ":func:`ctypes.set_last_error` 会被用于请求和更改 Windows 错误代码的 ctypes 私有副本。"
 
-#: ../../library/ctypes.rst:1465
+#: ../../library/ctypes.rst:1470
 msgid ""
 "The *winmode* parameter is used on Windows to specify how the library is "
 "loaded (since *mode* is ignored). It takes any value that is valid for the "
@@ -2904,29 +2906,29 @@ msgstr ""
 "``LoadLibraryEx`` 旗标形参来说合法的值。 当被省略时，默认使用表示最安全的 DLL 加载的旗标，这将避免 DLL 劫持等问题。 传入 "
 "DLL 的完整路径是确保正确加载库及其依赖的最安全的方式。"
 
-#: ../../library/ctypes.rst:1472
+#: ../../library/ctypes.rst:1477
 msgid "Added *winmode* parameter."
 msgstr "增加了  *winmode* 参数。"
 
-#: ../../library/ctypes.rst:1479
+#: ../../library/ctypes.rst:1484
 msgid ""
 "Flag to use as *mode* parameter.  On platforms where this flag is not "
 "available, it is defined as the integer zero."
 msgstr "用于 *mode* 参数的标识值。在此标识不可用的系统上，它被定义为整数0。"
 
-#: ../../library/ctypes.rst:1486
+#: ../../library/ctypes.rst:1491
 msgid ""
 "Flag to use as *mode* parameter.  On platforms where this is not available, "
 "it is the same as *RTLD_GLOBAL*."
 msgstr " 用于 *mode* 参数的标识值。在此标识不可用的系统上，它和  *RTLD_GLOBAL* 一样。"
 
-#: ../../library/ctypes.rst:1493
+#: ../../library/ctypes.rst:1498
 msgid ""
 "The default mode which is used to load shared libraries.  On OSX 10.3, this "
 "is *RTLD_GLOBAL*, otherwise it is the same as *RTLD_LOCAL*."
 msgstr "加载动态链接库的默认模式。在 OSX 10.3 上，它是 *RTLD_GLOBAL* ，其余系统上是 *RTLD_LOCAL* 。"
 
-#: ../../library/ctypes.rst:1496
+#: ../../library/ctypes.rst:1501
 msgid ""
 "Instances of these classes have no public methods.  Functions exported by "
 "the shared library can be accessed as attributes or by index.  Please note "
@@ -2936,7 +2938,7 @@ msgid ""
 msgstr ""
 "这些类的实例没有共用方法。动态链接库的导出函数可以通过属性或者索引的方式访问。注意，通过属性的方式访问会缓存这个函数，因而每次访问它时返回的都是同一个对象。另一方面，通过索引访问，每次都会返回一个新的对象::"
 
-#: ../../library/ctypes.rst:1502
+#: ../../library/ctypes.rst:1507
 msgid ""
 ">>> from ctypes import CDLL\n"
 ">>> libc = CDLL(\"libc.so.6\")  # On Linux\n"
@@ -2952,21 +2954,21 @@ msgstr ""
 ">>> libc['time'] == libc['time']\n"
 "False"
 
-#: ../../library/ctypes.rst:1509
+#: ../../library/ctypes.rst:1514
 msgid ""
 "The following public attributes are available, their name starts with an "
 "underscore to not clash with exported function names:"
 msgstr "还有下面这些属性可用，他们的名称以下划线开头，以避免和导出函数重名:"
 
-#: ../../library/ctypes.rst:1515
+#: ../../library/ctypes.rst:1520
 msgid "The system handle used to access the library."
 msgstr "用于访问库的系统句柄。"
 
-#: ../../library/ctypes.rst:1520
+#: ../../library/ctypes.rst:1525
 msgid "The name of the library passed in the constructor."
 msgstr "传入构造函数的库名称。"
 
-#: ../../library/ctypes.rst:1522
+#: ../../library/ctypes.rst:1527
 msgid ""
 "Shared libraries can also be loaded by using one of the prefabricated "
 "objects, which are instances of the :class:`LibraryLoader` class, either by "
@@ -2976,7 +2978,7 @@ msgstr ""
 "共享库也可以通过使用一个预制对象来加载，这种对象是 :class:`LibraryLoader` 类的实例，具体做法是调用 "
 ":meth:`~LibraryLoader.LoadLibrary` 方法，或是将库作为加载器实例的属性来提取。"
 
-#: ../../library/ctypes.rst:1530
+#: ../../library/ctypes.rst:1535
 msgid ""
 "Class which loads shared libraries.  *dlltype* should be one of the "
 ":class:`CDLL`, :class:`PyDLL`, :class:`WinDLL`, or :class:`OleDLL` types."
@@ -2984,7 +2986,7 @@ msgstr ""
 "加载共享库的类。 *dlltype* 应当为 :class:`CDLL`, :class:`PyDLL`, :class:`WinDLL` 或 "
 ":class:`OleDLL` 类型之一。"
 
-#: ../../library/ctypes.rst:1533
+#: ../../library/ctypes.rst:1538
 msgid ""
 ":meth:`!__getattr__` has special behavior: It allows loading a shared "
 "library by accessing it as attribute of a library loader instance.  The "
@@ -2994,39 +2996,39 @@ msgstr ""
 ":meth:`!__getattr__` 具有特殊的行为：它允许通过一个作为库加载器实例的属性访问共享库来加载它。 "
 "访问结果会被缓存，因此每次重复的属性访问都会返回相同的库。"
 
-#: ../../library/ctypes.rst:1539
+#: ../../library/ctypes.rst:1544
 msgid ""
 "Load a shared library into the process and return it.  This method always "
 "returns a new instance of the library."
 msgstr "加载一个共享库到进程中并将其返回。 此方法总是返回一个新的库实例。"
 
-#: ../../library/ctypes.rst:1543
+#: ../../library/ctypes.rst:1548
 msgid "These prefabricated library loaders are available:"
 msgstr "可用的预制库加载器有如下这些:"
 
-#: ../../library/ctypes.rst:1548
+#: ../../library/ctypes.rst:1553
 msgid "Creates :class:`CDLL` instances."
 msgstr "创建 :class:`CDLL` 实例。"
 
-#: ../../library/ctypes.rst:1554
-msgid "Windows only: Creates :class:`WinDLL` instances."
-msgstr "仅限 Windows：创建 :class:`WinDLL` 实例."
+#: ../../library/ctypes.rst:1559
+msgid "Creates :class:`WinDLL` instances."
+msgstr ""
 
-#: ../../library/ctypes.rst:1560
-msgid "Windows only: Creates :class:`OleDLL` instances."
-msgstr "仅限 Windows：创建 :class:`OleDLL` 实例。"
+#: ../../library/ctypes.rst:1567
+msgid "Creates :class:`OleDLL` instances."
+msgstr ""
 
-#: ../../library/ctypes.rst:1566
+#: ../../library/ctypes.rst:1575
 msgid "Creates :class:`PyDLL` instances."
 msgstr "创建 :class:`PyDLL` 实例。"
 
-#: ../../library/ctypes.rst:1569
+#: ../../library/ctypes.rst:1578
 msgid ""
 "For accessing the C Python api directly, a ready-to-use Python shared "
 "library object is available:"
 msgstr "要直接访问 C Python api，可以使用一个现成的 Python 共享库对象:"
 
-#: ../../library/ctypes.rst:1575
+#: ../../library/ctypes.rst:1584
 msgid ""
 "An instance of :class:`PyDLL` that exposes Python C API functions as "
 "attributes.  Note that all these functions are assumed to return C "
@@ -3036,7 +3038,7 @@ msgstr ""
 "一个将 Python C API 函数作为属性公开出来的 :class:`PyDLL` 实例。 请注意所有这些函数都应返回 C "
 ":c:expr:`int`，当然也并非总是如此，因此您必须分配正确的 :attr:`!restype` 属性才能使用这些函数。"
 
-#: ../../library/ctypes.rst:1580 ../../library/ctypes.rst:1582
+#: ../../library/ctypes.rst:1589 ../../library/ctypes.rst:1591
 msgid ""
 "Loading a library through any of these objects raises an :ref:`auditing "
 "event <auditing>` ``ctypes.dlopen`` with string argument ``name``, the name "
@@ -3045,7 +3047,7 @@ msgstr ""
 "通过这些对象中的任何一个加载库都将引发一个 :ref:`审计事件 <auditing>` ``ctypes.dlopen`` 并附带字符串参数 "
 "``name``，即用于加载库的名称。"
 
-#: ../../library/ctypes.rst:1586 ../../library/ctypes.rst:1588
+#: ../../library/ctypes.rst:1595 ../../library/ctypes.rst:1597
 msgid ""
 "Accessing a function on a loaded library raises an auditing event "
 "``ctypes.dlsym`` with arguments ``library`` (the library object) and "
@@ -3054,7 +3056,7 @@ msgstr ""
 "在加载的库上访问一个函数将引发一个审计事件 ``ctypes.dlsym`` 并附带参数 ``library`` (库对象) 和 ``name`` "
 "(以字符串或整数表示的符号名称)."
 
-#: ../../library/ctypes.rst:1592 ../../library/ctypes.rst:1594
+#: ../../library/ctypes.rst:1601 ../../library/ctypes.rst:1603
 msgid ""
 "In cases when only the library handle is available rather than the object, "
 "accessing a function raises an auditing event ``ctypes.dlsym/handle`` with "
@@ -3063,45 +3065,59 @@ msgstr ""
 "在只有库句柄而非对象可用的情况下，访问函数会引发一个审计事件 ``ctypes.dlsym/handle`` 并附带参数 ``handle`` "
 "(原始库句柄) 和 ``name``。"
 
-#: ../../library/ctypes.rst:1601
+#: ../../library/ctypes.rst:1610
 msgid "Foreign functions"
 msgstr "外部函数"
 
-#: ../../library/ctypes.rst:1603
+#: ../../library/ctypes.rst:1612
 msgid ""
 "As explained in the previous section, foreign functions can be accessed as "
 "attributes of loaded shared libraries.  The function objects created in this"
 " way by default accept any number of arguments, accept any ctypes data "
 "instances as arguments, and return the default result type specified by the "
-"library loader. They are instances of a private class:"
+"library loader."
 msgstr ""
-"正如之前小节的说明，外部函数可作为被加载共享库的属性来访问。 用此方式创建的函数对象默认接受任意数量的参数，接受任意 ctypes "
-"数据实例作为参数，并且返回库加载器所指定的默认结果类型。 它们是一个私有类的实例:"
 
-#: ../../library/ctypes.rst:1612
+#: ../../library/ctypes.rst:1617
+msgid ""
+"They are instances of a private local class :class:`!_FuncPtr` (not exposed "
+"in :mod:`!ctypes`) which inherits from the private :class:`_CFuncPtr` class:"
+msgstr ""
+
+#: ../../library/ctypes.rst:1620
+msgid ""
+">>> import ctypes\n"
+">>> lib = ctypes.CDLL(None)\n"
+">>> issubclass(lib._FuncPtr, ctypes._CFuncPtr)\n"
+"True\n"
+">>> lib._FuncPtr is ctypes._CFuncPtr\n"
+"False"
+msgstr ""
+
+#: ../../library/ctypes.rst:1631
 msgid "Base class for C callable foreign functions."
 msgstr "C 可调用外部函数的基类。"
 
-#: ../../library/ctypes.rst:1614
+#: ../../library/ctypes.rst:1633
 msgid ""
 "Instances of foreign functions are also C compatible data types; they "
 "represent C function pointers."
 msgstr "外部函数的实例也是兼容 C 的数据类型；它们代表 C 函数指针。"
 
-#: ../../library/ctypes.rst:1617
+#: ../../library/ctypes.rst:1636
 msgid ""
 "This behavior can be customized by assigning to special attributes of the "
 "foreign function object."
 msgstr "此行为可通过对外部函数对象的特殊属性赋值来自定义。"
 
-#: ../../library/ctypes.rst:1622
+#: ../../library/ctypes.rst:1641
 msgid ""
 "Assign a ctypes type to specify the result type of the foreign function. Use"
 " ``None`` for :c:expr:`void`, a function not returning anything."
 msgstr ""
 "分配一个 ctypes 类型来指定外部函数的结果类型。 使用 ``None`` 来表示 :c:expr:`void`，即不返回任何结果的函数。"
 
-#: ../../library/ctypes.rst:1625
+#: ../../library/ctypes.rst:1644
 msgid ""
 "It is possible to assign a callable Python object that is not a ctypes type,"
 " in this case the function is assumed to return a C :c:expr:`int`, and the "
@@ -3115,7 +3131,7 @@ msgstr ""
 "这种用法已被弃用，为了更灵活地进行后续处理或错误检查请使用 ctypes 数据类型作为 :attr:`!restype` 并将 "
 ":attr:`errcheck` 属性赋值为一个可调用对象。"
 
-#: ../../library/ctypes.rst:1634
+#: ../../library/ctypes.rst:1653
 msgid ""
 "Assign a tuple of ctypes types to specify the argument types that the "
 "function accepts.  Functions using the ``stdcall`` calling convention can "
@@ -3126,7 +3142,7 @@ msgstr ""
 "赋值为一个 ctypes 类型的元组来指定函数所接受的参数类型。 使用 ``stdcall`` "
 "调用规范的函数只能附带与此元组长度相同数量的参数进行调用；使用 C 调用规范的函数还可接受额外的未指明参数。"
 
-#: ../../library/ctypes.rst:1640
+#: ../../library/ctypes.rst:1659
 msgid ""
 "When a foreign function is called, each actual argument is passed to the "
 ":meth:`~_CData.from_param` class method of the items in the :attr:`argtypes`"
@@ -3139,7 +3155,7 @@ msgstr ""
 "类方法，该方法允许将实际参数适配为此外部函数所接受的对象。 例如，:attr:`argtypes` 元组中的 :class:`c_char_p` "
 "条目将使用 ctypes 转换规则把作为参数传入的字符串转换为字节串对象。"
 
-#: ../../library/ctypes.rst:1647
+#: ../../library/ctypes.rst:1666
 msgid ""
 "New: It is now possible to put items in argtypes which are not ctypes types,"
 " but each item must have a :meth:`~_CData.from_param` method which returns a"
@@ -3149,44 +3165,44 @@ msgstr ""
 "新特性：现在可以在 argtypes 中放入非 ctypes 类型的条目，但每个条目必须具有 :meth:`~_CData.from_param` "
 "方法用于返回一个可作为参数的值（整数、字符串、ctypes 实例）。 这样就允许定义可将将自定义对象适配为函数参数的适配器。"
 
-#: ../../library/ctypes.rst:1654
+#: ../../library/ctypes.rst:1673
 msgid ""
 "Assign a Python function or another callable to this attribute. The callable"
 " will be called with three or more arguments:"
 msgstr "将一个 Python 函数或其他可调用对象赋值给此属性。 该可调用对象将附带三个及以上的参数被调用。"
 
-#: ../../library/ctypes.rst:1661
+#: ../../library/ctypes.rst:1680
 msgid ""
 "*result* is what the foreign function returns, as specified by the "
 ":attr:`!restype` attribute."
 msgstr "*result* 是外部函数返回的结果，由 :attr:`!restype` 属性指明。"
 
-#: ../../library/ctypes.rst:1664
+#: ../../library/ctypes.rst:1683
 msgid ""
 "*func* is the foreign function object itself, this allows reusing the same "
 "callable object to check or post process the results of several functions."
 msgstr "*func* 是外部函数对象本身，这样就允许重新使用相同的可调用对象来对多个函数进行检查或后续处理。"
 
-#: ../../library/ctypes.rst:1668
+#: ../../library/ctypes.rst:1687
 msgid ""
 "*arguments* is a tuple containing the parameters originally passed to the "
 "function call, this allows specializing the behavior on the arguments used."
 msgstr "*arguments* 是一个包含最初传递给函数调用的形参的元组，这样就允许对所用参数的行为进行特别处理。"
 
-#: ../../library/ctypes.rst:1672
+#: ../../library/ctypes.rst:1691
 msgid ""
 "The object that this function returns will be returned from the foreign "
 "function call, but it can also check the result value and raise an exception"
 " if the foreign function call failed."
 msgstr "此函数所返回的对象将会由外部函数调用返回，但它还可以在外部函数调用失败时检查结果并引发异常。"
 
-#: ../../library/ctypes.rst:1679
+#: ../../library/ctypes.rst:1698
 msgid ""
 "This exception is raised when a foreign function call cannot convert one of "
 "the passed arguments."
 msgstr "此异常会在外部函数无法对某个传入参数执行转换时被引发。"
 
-#: ../../library/ctypes.rst:1683 ../../library/ctypes.rst:1685
+#: ../../library/ctypes.rst:1702 ../../library/ctypes.rst:1704
 msgid ""
 "On Windows, when a foreign function call raises a system exception (for "
 "example, due to an access violation), it will be captured and replaced with "
@@ -3197,7 +3213,7 @@ msgstr ""
 "在 Windows 上，当外部函数调用引发一个系统异常时（例如由于访问冲突），它将被捕获并被替换为适当的 Python 异常。 "
 "此外，还将引发一个审计事件 ``ctypes.set_exception`` 并附带参数 ``code``，以允许审计钩子将原异常替换为它自己的异常。"
 
-#: ../../library/ctypes.rst:1691 ../../library/ctypes.rst:1693
+#: ../../library/ctypes.rst:1710 ../../library/ctypes.rst:1712
 msgid ""
 "Some ways to invoke foreign function calls may raise an auditing event "
 "``ctypes.call_function`` with arguments ``function pointer`` and "
@@ -3206,11 +3222,11 @@ msgstr ""
 "某些发起外部函数调用的方式可能会引发一个审计事件 ``ctypes.call_function`` 并附带参数 ``function pointer``"
 " 和 ``arguments``。"
 
-#: ../../library/ctypes.rst:1699
+#: ../../library/ctypes.rst:1718
 msgid "Function prototypes"
 msgstr "函数原型"
 
-#: ../../library/ctypes.rst:1701
+#: ../../library/ctypes.rst:1720
 msgid ""
 "Foreign functions can also be created by instantiating function prototypes. "
 "Function prototypes are similar to function prototypes in C; they describe a"
@@ -3224,7 +3240,7 @@ msgstr ""
 "工厂函数必须使用函数所需要的结果类型和参数类型来调用，并可被用作装饰器工厂函数，在此情况下可以通过 ``@wrapper`` 语法应用于函数。 请参阅 "
 ":ref:`ctypes-callback-functions` 了解有关示例。"
 
-#: ../../library/ctypes.rst:1712
+#: ../../library/ctypes.rst:1731
 msgid ""
 "The returned function prototype creates functions that use the standard C "
 "calling convention.  The function will release the GIL during the call.  If "
@@ -3237,41 +3253,39 @@ msgstr ""
 ":data:`errno` 变量的 ctypes 私有副本会与真正的 :data:`errno` 值进行交换；*use_last_error* 会为 "
 "Windows 错误码执行同样的操作。"
 
-#: ../../library/ctypes.rst:1722
+#: ../../library/ctypes.rst:1741
 msgid ""
-"Windows only: The returned function prototype creates functions that use the"
-" ``stdcall`` calling convention.  The function will release the GIL during "
-"the call.  *use_errno* and *use_last_error* have the same meaning as above."
+"The returned function prototype creates functions that use the ``stdcall`` "
+"calling convention.  The function will release the GIL during the call.  "
+"*use_errno* and *use_last_error* have the same meaning as above."
 msgstr ""
-"仅限 Windows：返回的函数原型会创建使用 ``stdcall`` 调用约定的函数。 该函数在调用过程中将会释放 GIL。 *use_errno* "
-"和 *use_last_error* 具有与上文中相同的含义。"
 
-#: ../../library/ctypes.rst:1730
+#: ../../library/ctypes.rst:1751
 msgid ""
 "The returned function prototype creates functions that use the Python "
 "calling convention.  The function will *not* release the GIL during the "
 "call."
 msgstr "返回的函数原型会创建使用 Python 调用约定的函数。 该函数在调用过程中将 *不会* 释放 GIL。"
 
-#: ../../library/ctypes.rst:1733
+#: ../../library/ctypes.rst:1754
 msgid ""
 "Function prototypes created by these factory functions can be instantiated "
 "in different ways, depending on the type and number of the parameters in the"
 " call:"
 msgstr "这些工厂函数所创建的函数原型可通过不同的方式来实例化，具体取决于调用中的类型与数量:"
 
-#: ../../library/ctypes.rst:1740
+#: ../../library/ctypes.rst:1761
 msgid ""
 "Returns a foreign function at the specified address which must be an "
 "integer."
 msgstr "在指定地址上返回一个外部函数，地址值必须为整数。"
 
-#: ../../library/ctypes.rst:1747
+#: ../../library/ctypes.rst:1768
 msgid ""
 "Create a C callable function (a callback function) from a Python *callable*."
 msgstr "基于 Python *callable* 创建一个 C 可调用函数（回调函数）。"
 
-#: ../../library/ctypes.rst:1754
+#: ../../library/ctypes.rst:1775
 msgid ""
 "Returns a foreign function exported by a shared library. *func_spec* must be"
 " a 2-tuple ``(name_or_ordinal, library)``. The first item is the name of the"
@@ -3281,7 +3295,7 @@ msgstr ""
 "返回由一个共享库导出的外部函数。 *func_spec* 必须为一个 2 元组 ``(name_or_ordinal, library)``。 "
 "第一项是字符串形式的所导出函数名称，或小整数形式的所导出函数序号。 第二项是该共享库实例。"
 
-#: ../../library/ctypes.rst:1764
+#: ../../library/ctypes.rst:1785
 msgid ""
 "Returns a foreign function that will call a COM method. *vtbl_index* is the "
 "index into the virtual function table, a small non-negative integer. *name* "
@@ -3291,7 +3305,7 @@ msgstr ""
 "返回将调用一个 COM 方法的外部函数。 *vtbl_index* 虚拟函数表中的索引。 *name* 是 COM 方法的名称。 *iid* "
 "是可选的指向接口标识符的指针，它被用于扩展的错误报告。"
 
-#: ../../library/ctypes.rst:1769
+#: ../../library/ctypes.rst:1790
 msgid ""
 "COM methods use a special calling convention: They require a pointer to the "
 "COM interface as first argument, in addition to those parameters that are "
@@ -3299,65 +3313,65 @@ msgid ""
 msgstr ""
 "COM 方法使用特殊的调用约定：除了在 :attr:`!argtypes` 元组中指定的形参，它们还要求一个指向 COM 接口的指针作为第一个参数。"
 
-#: ../../library/ctypes.rst:1773
+#: ../../library/ctypes.rst:1794
 msgid ""
 "The optional *paramflags* parameter creates foreign function wrappers with "
 "much more functionality than the features described above."
 msgstr "可选的 *paramflags* 形参会创建相比上述特性具有更多功能的外部函数包装器。"
 
-#: ../../library/ctypes.rst:1776
+#: ../../library/ctypes.rst:1797
 msgid ""
 "*paramflags* must be a tuple of the same length as "
-":attr:`~_FuncPtr.argtypes`."
-msgstr "*paramflags* 必须为一个与 :attr:`~_FuncPtr.argtypes` 长度相同的元组。"
+":attr:`~_CFuncPtr.argtypes`."
+msgstr ""
 
-#: ../../library/ctypes.rst:1778
+#: ../../library/ctypes.rst:1799
 msgid ""
 "Each item in this tuple contains further information about a parameter, it "
 "must be a tuple containing one, two, or three items."
 msgstr "此元组中的每一项都包含有关形参的更多信息，它必须为包含一个、两个或更多条目的元组。"
 
-#: ../../library/ctypes.rst:1781
+#: ../../library/ctypes.rst:1802
 msgid ""
 "The first item is an integer containing a combination of direction flags for"
 " the parameter:"
 msgstr "第一项是包含形参指令旗标组合的整数。"
 
-#: ../../library/ctypes.rst:1784
+#: ../../library/ctypes.rst:1805
 msgid "1"
 msgstr "1"
 
-#: ../../library/ctypes.rst:1785
+#: ../../library/ctypes.rst:1806
 msgid "Specifies an input parameter to the function."
 msgstr "指定函数的一个输入形参。"
 
-#: ../../library/ctypes.rst:1787
+#: ../../library/ctypes.rst:1808
 msgid "2"
 msgstr "2"
 
-#: ../../library/ctypes.rst:1788
+#: ../../library/ctypes.rst:1809
 msgid "Output parameter.  The foreign function fills in a value."
 msgstr "输出形参。 外部函数会填入一个值。"
 
-#: ../../library/ctypes.rst:1790
+#: ../../library/ctypes.rst:1811
 msgid "4"
 msgstr "4"
 
-#: ../../library/ctypes.rst:1791
+#: ../../library/ctypes.rst:1812
 msgid "Input parameter which defaults to the integer zero."
 msgstr "默认为整数零值的输入形参。"
 
-#: ../../library/ctypes.rst:1793
+#: ../../library/ctypes.rst:1814
 msgid ""
 "The optional second item is the parameter name as string.  If this is "
 "specified, the foreign function can be called with named parameters."
 msgstr "可选的第二项是字符串形式的形参名称。 如果指定此项，则可以使用该形参名称来调用外部函数。"
 
-#: ../../library/ctypes.rst:1796
+#: ../../library/ctypes.rst:1817
 msgid "The optional third item is the default value for this parameter."
 msgstr "可选的第三项是该形参的默认值。"
 
-#: ../../library/ctypes.rst:1799
+#: ../../library/ctypes.rst:1820
 msgid ""
 "The following example demonstrates how to wrap the Windows ``MessageBoxW`` "
 "function so that it supports default parameters and named arguments. The C "
@@ -3366,7 +3380,7 @@ msgstr ""
 "下面的例子演示了如何包装 Windows 的 ``MessageBoxW`` 函数以使其支持默认形参和命名参数。 相应的 Windows 头文件的 C "
 "声明是这样的::"
 
-#: ../../library/ctypes.rst:1803
+#: ../../library/ctypes.rst:1824
 msgid ""
 "WINUSERAPI int WINAPI\n"
 "MessageBoxW(\n"
@@ -3382,11 +3396,11 @@ msgstr ""
 "    LPCWSTR lpCaption,\n"
 "    UINT uType);"
 
-#: ../../library/ctypes.rst:1810 ../../library/ctypes.rst:1833
+#: ../../library/ctypes.rst:1831 ../../library/ctypes.rst:1854
 msgid "Here is the wrapping with :mod:`ctypes`::"
 msgstr "这是使用 :mod:`ctypes` 的包装::"
 
-#: ../../library/ctypes.rst:1812
+#: ../../library/ctypes.rst:1833
 msgid ""
 ">>> from ctypes import c_int, WINFUNCTYPE, windll\n"
 ">>> from ctypes.wintypes import HWND, LPCWSTR, UINT\n"
@@ -3400,11 +3414,11 @@ msgstr ""
 ">>> paramflags = (1, \"hwnd\", 0), (1, \"text\", \"Hi\"), (1, \"caption\", \"Hello from ctypes\"), (1, \"flags\", 0)\n"
 ">>> MessageBox = prototype((\"MessageBoxW\", windll.user32), paramflags)"
 
-#: ../../library/ctypes.rst:1818
+#: ../../library/ctypes.rst:1839
 msgid "The ``MessageBox`` foreign function can now be called in these ways::"
 msgstr "现在 ``MessageBox`` 外部函数可以通过以下方式来调用::"
 
-#: ../../library/ctypes.rst:1820
+#: ../../library/ctypes.rst:1841
 msgid ""
 ">>> MessageBox()\n"
 ">>> MessageBox(text=\"Spam, spam, spam\")\n"
@@ -3414,7 +3428,7 @@ msgstr ""
 ">>> MessageBox(text=\"Spam, spam, spam\")\n"
 ">>> MessageBox(flags=2, text=\"foo bar\")"
 
-#: ../../library/ctypes.rst:1824
+#: ../../library/ctypes.rst:1845
 msgid ""
 "A second example demonstrates output parameters.  The win32 "
 "``GetWindowRect`` function retrieves the dimensions of a specified window by"
@@ -3424,7 +3438,7 @@ msgstr ""
 "第二个例子演示了输出形参。 这个 win32 ``GetWindowRect`` 函数通过将指定窗口的维度拷贝至调用者必须提供的 ``RECT`` "
 "结构体来提取这些值。 这是相应的 C 声明::"
 
-#: ../../library/ctypes.rst:1828
+#: ../../library/ctypes.rst:1849
 msgid ""
 "WINUSERAPI BOOL WINAPI\n"
 "GetWindowRect(\n"
@@ -3436,7 +3450,7 @@ msgstr ""
 "     HWND hWnd,\n"
 "     LPRECT lpRect);"
 
-#: ../../library/ctypes.rst:1835
+#: ../../library/ctypes.rst:1856
 msgid ""
 ">>> from ctypes import POINTER, WINFUNCTYPE, windll, WinError\n"
 ">>> from ctypes.wintypes import BOOL, HWND, RECT\n"
@@ -3452,7 +3466,7 @@ msgstr ""
 ">>> GetWindowRect = prototype((\"GetWindowRect\", windll.user32), paramflags)\n"
 ">>>"
 
-#: ../../library/ctypes.rst:1842
+#: ../../library/ctypes.rst:1863
 msgid ""
 "Functions with output parameters will automatically return the output "
 "parameter value if there is a single one, or a tuple containing the output "
@@ -3462,19 +3476,16 @@ msgstr ""
 "带有输出形参的函数如果输出形参存在单一值则会自动返回该值，或是当输出形参存在多个值时返回包含这些值的元组，因此当 GetWindowRect "
 "被调用时现在将返回一个 RECT 实例。"
 
-#: ../../library/ctypes.rst:1847
+#: ../../library/ctypes.rst:1868
 msgid ""
-"Output parameters can be combined with the :attr:`~_FuncPtr.errcheck` "
+"Output parameters can be combined with the :attr:`~_CFuncPtr.errcheck` "
 "protocol to do further output processing and error checking.  The win32 "
 "``GetWindowRect`` api function returns a ``BOOL`` to signal success or "
 "failure, so this function could do the error checking, and raises an "
 "exception when the api call failed::"
 msgstr ""
-"输出形参数可以与 :attr:`~_FuncPtr.errcheck` 协议相结合以执行进一步的输出处理和错误检查。  "
-"Win32``GetWindowRect`` API 函数返回一个 ``BOOL`` 来表示成功或失败，因此该函数可以执行错误检查，并在 API "
-"调用失败时引发异常::"
 
-#: ../../library/ctypes.rst:1852
+#: ../../library/ctypes.rst:1873
 msgid ""
 ">>> def errcheck(result, func, args):\n"
 "...     if not result:\n"
@@ -3492,18 +3503,16 @@ msgstr ""
 ">>> GetWindowRect.errcheck = errcheck\n"
 ">>>"
 
-#: ../../library/ctypes.rst:1860
+#: ../../library/ctypes.rst:1881
 msgid ""
-"If the :attr:`~_FuncPtr.errcheck` function returns the argument tuple it "
+"If the :attr:`~_CFuncPtr.errcheck` function returns the argument tuple it "
 "receives unchanged, :mod:`ctypes` continues the normal processing it does on"
 " the output parameters.  If you want to return a tuple of window coordinates"
 " instead of a ``RECT`` instance, you can retrieve the fields in the function"
 " and return them instead, the normal processing will no longer take place::"
 msgstr ""
-"如果 :attr:`~_FuncPtr.errcheck` 函数原封不动地返回它所接收的参数元组，则 :mod:`ctypes` "
-"会继续对输出形参执行正常处理。 如果你希望返回一个窗口坐标的元组而非 ``RECT`` 实例，可以在函数中检索字段并返回它们，常规处理将不会再执行::"
 
-#: ../../library/ctypes.rst:1866
+#: ../../library/ctypes.rst:1887
 msgid ""
 ">>> def errcheck(result, func, args):\n"
 "...     if not result:\n"
@@ -3523,29 +3532,29 @@ msgstr ""
 ">>> GetWindowRect.errcheck = errcheck\n"
 ">>>"
 
-#: ../../library/ctypes.rst:1879
+#: ../../library/ctypes.rst:1900
 msgid "Utility functions"
 msgstr "工具函数"
 
-#: ../../library/ctypes.rst:1883
+#: ../../library/ctypes.rst:1904
 msgid ""
 "Returns the address of the memory buffer as integer.  *obj* must be an "
 "instance of a ctypes type."
 msgstr "以整数形式返回内存缓冲区地址。 *obj* 必须为一个 ctypes 类型的实例。"
 
-#: ../../library/ctypes.rst:1886
+#: ../../library/ctypes.rst:1907
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.addressof`` with "
 "argument ``obj``."
 msgstr "引发一个 :ref:`审计事件 <auditing>` ``ctypes.addressof`` 并附带参数 ``obj``。"
 
-#: ../../library/ctypes.rst:1891
+#: ../../library/ctypes.rst:1912
 msgid ""
 "Returns the alignment requirements of a ctypes type. *obj_or_type* must be a"
 " ctypes type or instance."
 msgstr "返回一个 ctypes 类型的对齐要求。 *obj_or_type* 必须为一个 ctypes 类型或实例。"
 
-#: ../../library/ctypes.rst:1897
+#: ../../library/ctypes.rst:1918
 msgid ""
 "Returns a light-weight pointer to *obj*, which must be an instance of a "
 "ctypes type.  *offset* defaults to zero, and must be an integer that will be"
@@ -3553,22 +3562,22 @@ msgid ""
 msgstr ""
 "返回指向 *obj* 的轻量指针，该对象必须为一个 ctypes 类型的实例。 *offset* 默认值为零，且必须为一个将被添加到内部指针值的整数。"
 
-#: ../../library/ctypes.rst:1901
+#: ../../library/ctypes.rst:1922
 msgid "``byref(obj, offset)`` corresponds to this C code::"
 msgstr "``byref(obj, offset)`` 对应于这段 C 代码::"
 
-#: ../../library/ctypes.rst:1903
+#: ../../library/ctypes.rst:1924
 msgid "(((char *)&obj) + offset)"
 msgstr "(((char *)&obj) + offset)"
 
-#: ../../library/ctypes.rst:1905
+#: ../../library/ctypes.rst:1926
 msgid ""
 "The returned object can only be used as a foreign function call parameter. "
 "It behaves similar to ``pointer(obj)``, but the construction is a lot "
 "faster."
 msgstr "返回的对象只能被用作外部函数调用形参。 它的行为类似于 ``pointer(obj)``，但构造起来要快很多。"
 
-#: ../../library/ctypes.rst:1911
+#: ../../library/ctypes.rst:1932
 msgid ""
 "This function is similar to the cast operator in C. It returns a new "
 "instance of *type* which points to the same memory block as *obj*.  *type* "
@@ -3578,19 +3587,19 @@ msgstr ""
 "此函数类似于 C 的强制转换运算符。 它返回一个 *type* 的新实例，该实例指向与 *obj* 相同的内存块。 *type* 必须为指针类型，而 "
 "*obj* 必须为可以被作为指针来解读的对象。"
 
-#: ../../library/ctypes.rst:1919
+#: ../../library/ctypes.rst:1940
 msgid ""
 "This function creates a mutable character buffer. The returned object is a "
 "ctypes array of :class:`c_char`."
 msgstr "此函数会创建一个可变的字符缓冲区。 返回的对象是一个 :class:`c_char` 的 ctypes 数组。"
 
-#: ../../library/ctypes.rst:1922
+#: ../../library/ctypes.rst:1943
 msgid ""
 "*init_or_size* must be an integer which specifies the size of the array, or "
 "a bytes object which will be used to initialize the array items."
 msgstr "*init_or_size* 必须是一个指明数组大小的整数，或者是一个将被用来初始化数组条目的字节串对象。"
 
-#: ../../library/ctypes.rst:1925
+#: ../../library/ctypes.rst:1946
 msgid ""
 "If a bytes object is specified as first argument, the buffer is made one "
 "item larger than its length so that the last element in the array is a NUL "
@@ -3601,7 +3610,7 @@ msgstr ""
 "如果将一个字节串对象指定为第一个参数，则将使缓冲区大小比其长度多一项以便数组的最后一项为一个 NUL 终结符。 "
 "可以传入一个整数作为第二个参数以允许在不使用字节串长度的情况下指定数组大小。"
 
-#: ../../library/ctypes.rst:1930
+#: ../../library/ctypes.rst:1951
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.create_string_buffer`` "
 "with arguments ``init``, ``size``."
@@ -3609,19 +3618,19 @@ msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.create_string_buffer`` 并附带参数 ``init``, "
 "``size``。"
 
-#: ../../library/ctypes.rst:1935
+#: ../../library/ctypes.rst:1956
 msgid ""
 "This function creates a mutable unicode character buffer. The returned "
 "object is a ctypes array of :class:`c_wchar`."
 msgstr "此函数会创建一个可变的 unicode 字符缓冲区。 返回的对象是一个 :class:`c_wchar` 的 ctypes 数组。"
 
-#: ../../library/ctypes.rst:1938
+#: ../../library/ctypes.rst:1959
 msgid ""
 "*init_or_size* must be an integer which specifies the size of the array, or "
 "a string which will be used to initialize the array items."
 msgstr "*init_or_size* 必须是一个指明数组大小的整数，或者是一个将被用来初始化数组条目的字符串。"
 
-#: ../../library/ctypes.rst:1941
+#: ../../library/ctypes.rst:1962
 msgid ""
 "If a string is specified as first argument, the buffer is made one item "
 "larger than the length of the string so that the last element in the array "
@@ -3632,7 +3641,7 @@ msgstr ""
 "如果将一个字符串指定为第一个参数，则将使缓冲区大小比其长度多一项以便数组的最后一项为一个 NUL 终结符。 "
 "可以传入一个整数作为第二个参数以允许在不使用字符串长度的情况下指定数组大小。"
 
-#: ../../library/ctypes.rst:1947
+#: ../../library/ctypes.rst:1968
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.create_unicode_buffer`` "
 "with arguments ``init``, ``size``."
@@ -3640,25 +3649,21 @@ msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.create_unicode_buffer`` 并附带参数 ``init``,"
 " ``size``。"
 
-#: ../../library/ctypes.rst:1952
+#: ../../library/ctypes.rst:1973
 msgid ""
-"Windows only: This function is a hook which allows implementing in-process "
-"COM servers with ctypes.  It is called from the DllCanUnloadNow function "
-"that the _ctypes extension dll exports."
+"This function is a hook which allows implementing in-process COM servers "
+"with ctypes.  It is called from the DllCanUnloadNow function that the "
+"_ctypes extension dll exports."
 msgstr ""
-"仅限 Windows：此函数是一个允许使用 ctypes 实现进程内 COM 服务的钩子。 它将由 _ctypes 扩展 dll 所导出的 "
-"DllCanUnloadNow 函数来调用。"
 
-#: ../../library/ctypes.rst:1959
+#: ../../library/ctypes.rst:1982
 msgid ""
-"Windows only: This function is a hook which allows implementing in-process "
-"COM servers with ctypes.  It is called from the DllGetClassObject function "
-"that the ``_ctypes`` extension dll exports."
+"This function is a hook which allows implementing in-process COM servers "
+"with ctypes.  It is called from the DllGetClassObject function that the "
+"``_ctypes`` extension dll exports."
 msgstr ""
-"仅限 Windows：此函数是一个允许使用 ctypes 实现进程内 COM 服务的钩子。 它将由 ``_ctypes`` 扩展 dll 所导出的 "
-"DllGetClassObject 函数来调用。"
 
-#: ../../library/ctypes.rst:1967
+#: ../../library/ctypes.rst:1992
 msgid ""
 "Try to find a library and return a pathname.  *name* is the library name "
 "without any prefix like ``lib``, suffix like ``.so``, ``.dylib`` or version "
@@ -3668,14 +3673,14 @@ msgstr ""
 "尝试寻找一个库并返回路径名称。 *name* 是库名称并且不带任何前缀如 ``lib`` 以及后缀如 ``.so``，``.dylib`` "
 "或版本号（形式与 posix 链接器选项 :option:`!-l` 所用的一致）。 如果找不到库，则返回 ``None``。"
 
-#: ../../library/ctypes.rst:1978
+#: ../../library/ctypes.rst:2003
 msgid ""
-"Windows only: return the filename of the VC runtime library used by Python, "
-"and by the extension modules.  If the name of the library cannot be "
-"determined, ``None`` is returned."
-msgstr "仅限 Windows：返回 Python 以及扩展模块所使用的 VC 运行时库的文件名。 如果无法确定库名称，则返回 ``None``。"
+"Returns the filename of the VC runtime library used by Python, and by the "
+"extension modules.  If the name of the library cannot be determined, "
+"``None`` is returned."
+msgstr ""
 
-#: ../../library/ctypes.rst:1982
+#: ../../library/ctypes.rst:2007
 msgid ""
 "If you need to free memory, for example, allocated by an extension module "
 "with a call to the ``free(void *)``, it is important that you use the "
@@ -3683,49 +3688,45 @@ msgid ""
 msgstr ""
 "如果你需要通过调用 ``free(void *)`` 来释放内存，例如某个扩展模块所分配的内存，重要的一点是你应当使用分配内存的库中的函数。"
 
-#: ../../library/ctypes.rst:1989
+#: ../../library/ctypes.rst:2016
 msgid ""
-"Windows only: Returns a textual description of the error code *code*.  If no"
-" error code is specified, the last error code is used by calling the Windows"
-" api function GetLastError."
+"Returns a textual description of the error code *code*.  If no error code is"
+" specified, the last error code is used by calling the Windows api function "
+"GetLastError."
 msgstr ""
-"仅限 Windows：返回错误码 *code* 的文本描述。 如果未指定错误码，则会通过调用 Windows api 函数 GetLastError "
-"来获得最新的错误码。"
 
-#: ../../library/ctypes.rst:1996
+#: ../../library/ctypes.rst:2025
 msgid ""
-"Windows only: Returns the last error code set by Windows in the calling "
-"thread. This function calls the Windows ``GetLastError()`` function "
-"directly, it does not return the ctypes-private copy of the error code."
+"Returns the last error code set by Windows in the calling thread. This "
+"function calls the Windows ``GetLastError()`` function directly, it does not"
+" return the ctypes-private copy of the error code."
 msgstr ""
-"仅限 Windows：返回 Windows 在调用线程中设置的最新错误码。 此函数会直接调用 Windows ``GetLastError()`` "
-"函数，它并不返回错误码的 ctypes 私有副本。"
 
-#: ../../library/ctypes.rst:2002
+#: ../../library/ctypes.rst:2034
 msgid ""
 "Returns the current value of the ctypes-private copy of the system "
 ":data:`errno` variable in the calling thread."
 msgstr "返回调用线程中系统 :data:`errno` 变量的 ctypes 私有副本的当前值。"
 
-#: ../../library/ctypes.rst:2005
+#: ../../library/ctypes.rst:2037
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.get_errno`` with no "
 "arguments."
 msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``ctypes.get_errno``。"
 
-#: ../../library/ctypes.rst:2009
+#: ../../library/ctypes.rst:2041
 msgid ""
-"Windows only: returns the current value of the ctypes-private copy of the "
-"system :data:`!LastError` variable in the calling thread."
-msgstr "仅限 Windows：返回调用线程中系统 :data:`!LastError` 变量的 ctypes 私有副本的当前值。"
+"Returns the current value of the ctypes-private copy of the system "
+":data:`!LastError` variable in the calling thread."
+msgstr ""
 
-#: ../../library/ctypes.rst:2012
+#: ../../library/ctypes.rst:2046
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.get_last_error`` with no"
 " arguments."
 msgstr "引发一个不带参数的 :ref:`审计事件 <auditing>` ``ctypes.get_last_error``。"
 
-#: ../../library/ctypes.rst:2016
+#: ../../library/ctypes.rst:2051
 msgid ""
 "Same as the standard C memmove library function: copies *count* bytes from "
 "*src* to *dst*. *dst* and *src* must be integers or ctypes instances that "
@@ -3734,7 +3735,7 @@ msgstr ""
 "与标准 C memmove 库函数相同：将 *count* 个字节从 *src* 拷贝到 *dst*。 *dst* 和 *src* "
 "必须为整数或可被转换为指针的 ctypes 实例。"
 
-#: ../../library/ctypes.rst:2023
+#: ../../library/ctypes.rst:2058
 msgid ""
 "Same as the standard C memset library function: fills the memory block at "
 "address *dst* with *count* bytes of value *c*. *dst* must be an integer "
@@ -3743,7 +3744,7 @@ msgstr ""
 "与标准 C memset 库函数相同：将位于地址 *dst* 的内存块用 *count* 个字节的 *c* 值填充。 *dst* 必须为指定地址的整数或"
 " ctypes 实例。"
 
-#: ../../library/ctypes.rst:2030
+#: ../../library/ctypes.rst:2065
 msgid ""
 "Create and return a new ctypes pointer type. Pointer types are cached and "
 "reused internally, so calling this function repeatedly is cheap. *type* must"
@@ -3751,19 +3752,19 @@ msgid ""
 msgstr ""
 "创建并返回一个新的 ctypes 指针类型。 指针类型会被缓存并在内部重复使用，因此重复调用此函数耗费不大。 *type* 必须为 ctypes 类型。"
 
-#: ../../library/ctypes.rst:2037
+#: ../../library/ctypes.rst:2072
 msgid ""
 "Create a new pointer instance, pointing to *obj*. The returned object is of "
 "the type ``POINTER(type(obj))``."
 msgstr "创建一个新的指针实例，指向 *obj*。 返回的对象类型为 ``POINTER(type(obj))``。"
 
-#: ../../library/ctypes.rst:2040
+#: ../../library/ctypes.rst:2075
 msgid ""
 "Note: If you just want to pass a pointer to an object to a foreign function "
 "call, you should use ``byref(obj)`` which is much faster."
 msgstr "注意：如果你只是想向外部函数调用传递一个对象指针，你应当使用更为快速的 ``byref(obj)``。"
 
-#: ../../library/ctypes.rst:2046
+#: ../../library/ctypes.rst:2081
 msgid ""
 "This function resizes the internal memory buffer of *obj*, which must be an "
 "instance of a ctypes type.  It is not possible to make the buffer smaller "
@@ -3773,90 +3774,84 @@ msgstr ""
 "此函数可改变 *obj* 的内部内存缓冲区大小，其参数必须为 ctypes 类型的实例。 没有可能将缓冲区设为小于对象类型的本机大小值，该值由 "
 "``sizeof(type(obj))`` 给出，但将缓冲区加大则是可能的。"
 
-#: ../../library/ctypes.rst:2054
+#: ../../library/ctypes.rst:2089
 msgid ""
 "Set the current value of the ctypes-private copy of the system :data:`errno`"
 " variable in the calling thread to *value* and return the previous value."
 msgstr "设置调用线程中系统 :data:`errno` 变量的 ctypes 私有副本的当前值为 *value* 并返回原来的值。"
 
-#: ../../library/ctypes.rst:2057
+#: ../../library/ctypes.rst:2092
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.set_errno`` with "
 "argument ``errno``."
 msgstr "引发一个 :ref:`审计事件 <auditing>` ``ctypes.set_errno`` 并附带参数 ``errno``。"
 
-#: ../../library/ctypes.rst:2062
+#: ../../library/ctypes.rst:2097
 msgid ""
-"Windows only: set the current value of the ctypes-private copy of the system"
-" :data:`!LastError` variable in the calling thread to *value* and return the"
-" previous value."
+"Sets the current value of the ctypes-private copy of the system "
+":data:`!LastError` variable in the calling thread to *value* and return the "
+"previous value."
 msgstr ""
-"仅限 Windows：设置调用线程中系统 :data:`!LastError` 变量的 ctypes 私有副本的当前值为 *value* "
-"并返回原来的值。"
 
-#: ../../library/ctypes.rst:2066
+#: ../../library/ctypes.rst:2103
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.set_last_error`` with "
 "argument ``error``."
 msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.set_last_error`` 并附带参数 ``error``。"
 
-#: ../../library/ctypes.rst:2071
+#: ../../library/ctypes.rst:2108
 msgid ""
 "Returns the size in bytes of a ctypes type or instance memory buffer. Does "
 "the same as the C ``sizeof`` operator."
 msgstr "返回 ctypes 类型或实例的内存缓冲区以字节表示的大小。 其功能与 C ``sizeof`` 运算符相同。"
 
-#: ../../library/ctypes.rst:2077
+#: ../../library/ctypes.rst:2114
 msgid ""
 "Return the byte string at *void \\*ptr*. If *size* is specified, it is used "
 "as size, otherwise the string is assumed to be zero-terminated."
 msgstr "返回位于 *void \\*ptr* 的字节串。 如果指定了 *size*，它将被用作字节串的大小，否则将假定字节串以零值结尾。"
 
-#: ../../library/ctypes.rst:2081
+#: ../../library/ctypes.rst:2118
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.string_at`` with "
 "arguments ``ptr``, ``size``."
 msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.string_at`` 并附带参数 ``ptr``, ``size``。"
 
-#: ../../library/ctypes.rst:2086
+#: ../../library/ctypes.rst:2123
 msgid ""
-"Windows only: this function is probably the worst-named thing in ctypes. It "
-"creates an instance of :exc:`OSError`.  If *code* is not specified, "
-"``GetLastError`` is called to determine the error code. If *descr* is not "
-"specified, :func:`FormatError` is called to get a textual description of the"
-" error."
+"This function is probably the worst-named thing in ctypes. It creates an "
+"instance of :exc:`OSError`.  If *code* is not specified, ``GetLastError`` is"
+" called to determine the error code. If *descr* is not specified, "
+":func:`FormatError` is called to get a textual description of the error."
 msgstr ""
-"仅限 Windows：此函数可能是 ctypes 中命名得最糟糕的。 它会创建一个 :exc:`OSError` 的实例。 如果未指定 "
-"*code*，则会调用 ``GetLastError`` 来确定错误码。 如果未指定 *descr*，则会调用 :func:`FormatError` "
-"来获取错误的文本描述。"
 
-#: ../../library/ctypes.rst:2092
+#: ../../library/ctypes.rst:2131
 msgid ""
 "An instance of :exc:`WindowsError` used to be created, which is now an alias"
 " of :exc:`OSError`."
 msgstr "过去会创建 :exc:`WindowsError` 的实例，现在它是 :exc:`OSError` 的别名。"
 
-#: ../../library/ctypes.rst:2099
+#: ../../library/ctypes.rst:2138
 msgid ""
 "Return the wide-character string at *void \\*ptr*. If *size* is specified, "
 "it is used as the number of characters of the string, otherwise the string "
 "is assumed to be zero-terminated."
 msgstr "返回位于 *void \\*ptr* 的宽字符串。 如果指定了 *size*，它将被用作字符串的字符数量，否则将假定字符串以零值结尾。"
 
-#: ../../library/ctypes.rst:2104
+#: ../../library/ctypes.rst:2143
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.wstring_at`` with "
 "arguments ``ptr``, ``size``."
 msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.wstring_at`` 并附带参数 ``ptr``, ``size``。"
 
-#: ../../library/ctypes.rst:2110
+#: ../../library/ctypes.rst:2149
 msgid "Data types"
 msgstr "数据类型"
 
-#: ../../library/ctypes.rst:2115
+#: ../../library/ctypes.rst:2154
 msgid ""
 "This non-public class is the common base class of all ctypes data types. "
 "Among other things, all ctypes type instances contain a memory block that "
@@ -3869,13 +3864,13 @@ msgstr ""
 ":func:`addressof` 辅助函数返回。 还有一个实例变量被公开为 "
 ":attr:`_objects`；此变量包含其他在内存块包含指针的情况下需要保持存活的 Python 对象。"
 
-#: ../../library/ctypes.rst:2122
+#: ../../library/ctypes.rst:2161
 msgid ""
 "Common methods of ctypes data types, these are all class methods (to be "
 "exact, they are methods of the :term:`metaclass`):"
 msgstr "ctypes 数据类型的通用方法，它们都是类方法（严谨地说，它们是 :term:`metaclass` 的方法）:"
 
-#: ../../library/ctypes.rst:2127
+#: ../../library/ctypes.rst:2166
 msgid ""
 "This method returns a ctypes instance that shares the buffer of the *source*"
 " object.  The *source* object must support the writeable buffer interface.  "
@@ -3886,7 +3881,7 @@ msgstr ""
 "此方法返回一个共享 *source* 对象缓冲区的 ctypes 实例。 *source* 对象必须支持可写缓冲区接口。 可选的 *offset* "
 "形参指定以字节表示的源缓冲区内偏移量；默认值为零。 如果源缓冲区不够大则会引发 :exc:`ValueError`。"
 
-#: ../../library/ctypes.rst:2133 ../../library/ctypes.rst:2143
+#: ../../library/ctypes.rst:2172 ../../library/ctypes.rst:2182
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.cdata/buffer`` with "
 "arguments ``pointer``, ``size``, ``offset``."
@@ -3894,7 +3889,7 @@ msgstr ""
 "引发一个 :ref:`审计事件 <auditing>` ``ctypes.cdata/buffer`` 并附带参数 ``pointer``, "
 "``size``, ``offset``。"
 
-#: ../../library/ctypes.rst:2137
+#: ../../library/ctypes.rst:2176
 msgid ""
 "This method creates a ctypes instance, copying the buffer from the *source* "
 "object buffer which must be readable.  The optional *offset* parameter "
@@ -3904,13 +3899,13 @@ msgstr ""
 "此方法创建一个 ctypes 实例，从 *source* 对象缓冲区拷贝缓冲区，该对象必须是可读的。 可选的 *offset* "
 "形参指定以字节表示的源缓冲区内偏移量；默认值为零。 如果源缓冲区不够大则会引发 :exc:`ValueError`。"
 
-#: ../../library/ctypes.rst:2147
+#: ../../library/ctypes.rst:2186
 msgid ""
 "This method returns a ctypes type instance using the memory specified by "
 "*address* which must be an integer."
 msgstr "此方法会使用 *address* 所指定的内存返回一个 ctypes 类型的实例，该参数必须为一个整数。"
 
-#: ../../library/ctypes.rst:2150 ../../library/ctypes.rst:2152
+#: ../../library/ctypes.rst:2189 ../../library/ctypes.rst:2191
 msgid ""
 "This method, and others that indirectly call this method, raises an "
 ":ref:`auditing event <auditing>` ``ctypes.cdata`` with argument ``address``."
@@ -3918,17 +3913,15 @@ msgstr ""
 "这个方法以及其他间接调用了它的方法会引发一个 :ref:`审计事件 <auditing>` ``ctypes.cdata``，附带参数 "
 "``address``。"
 
-#: ../../library/ctypes.rst:2158
+#: ../../library/ctypes.rst:2197
 msgid ""
 "This method adapts *obj* to a ctypes type.  It is called with the actual "
 "object used in a foreign function call when the type is present in the "
-"foreign function's :attr:`~_FuncPtr.argtypes` tuple; it must return an "
+"foreign function's :attr:`~_CFuncPtr.argtypes` tuple; it must return an "
 "object that can be used as a function call parameter."
 msgstr ""
-"此方法会将 *obj* 适配为一个 ctypes 类型。 当该类型出现在外部函数的 :attr:`~_FuncPtr.argtypes` "
-"元组中时它将会被调用并传入在该外部函数中使用的实际对象；它必须返回一个可被用作函数调用参数的对象。"
 
-#: ../../library/ctypes.rst:2163
+#: ../../library/ctypes.rst:2202
 msgid ""
 "All ctypes data types have a default implementation of this classmethod that"
 " normally returns *obj* if that is an instance of the type.  Some types "
@@ -3936,18 +3929,18 @@ msgid ""
 msgstr ""
 "所有 ctypes 数据类型都带有这个类方法的默认实现，它通常会返回 *obj*，如果该对象是此类型的实例的话。 某些类型也能接受其他对象。"
 
-#: ../../library/ctypes.rst:2169
+#: ../../library/ctypes.rst:2208
 msgid ""
 "This method returns a ctypes type instance exported by a shared library. "
 "*name* is the name of the symbol that exports the data, *library* is the "
 "loaded shared library."
 msgstr "此方法返回一个由共享库导出的 ctypes 类型。 *name* 为导出数据的符号名称，*library* 为所加载的共享库。"
 
-#: ../../library/ctypes.rst:2173
+#: ../../library/ctypes.rst:2212
 msgid "Common instance variables of ctypes data types:"
 msgstr "ctypes 数据类型的通用实例变量:"
 
-#: ../../library/ctypes.rst:2177
+#: ../../library/ctypes.rst:2216
 msgid ""
 "Sometimes ctypes data instances do not own the memory block they contain, "
 "instead they share part of the memory block of a base object.  The "
@@ -3957,13 +3950,13 @@ msgstr ""
 "有时 ctypes 数据实例并不拥有它们所包含的内存块，它们只是共享了某个基对象的部分内存块。 :attr:`_b_base_` "
 "只读成员是拥有内存块的根 ctypes 对象。"
 
-#: ../../library/ctypes.rst:2184
+#: ../../library/ctypes.rst:2223
 msgid ""
 "This read-only variable is true when the ctypes data instance has allocated "
 "the memory block itself, false otherwise."
 msgstr "这个只读变量在 ctypes 数据实例自身已分配了内存块时为真值，否则为假值。"
 
-#: ../../library/ctypes.rst:2189
+#: ../../library/ctypes.rst:2228
 msgid ""
 "This member is either ``None`` or a dictionary containing Python objects "
 "that need to be kept alive so that the memory block contents is kept valid."
@@ -3973,7 +3966,7 @@ msgstr ""
 "这个成员或者为 ``None``，或者为一个包含需要保持存活以使内存块的内存保持有效的 Python 对象的字典。 "
 "这个对象只是出于调试目的而对外公开；绝对不要修改此字典的内容。"
 
-#: ../../library/ctypes.rst:2202
+#: ../../library/ctypes.rst:2241
 msgid ""
 "This non-public class is the base class of all fundamental ctypes data "
 "types. It is mentioned here because it contains the common attributes of the"
@@ -3985,11 +3978,11 @@ msgstr ""
 ":class:`_SimpleCData` 是 :class:`_CData` 的子类，因此继承了其方法和属性。 非指针及不包含指针的 ctypes "
 "数据类型现在将可以被封存。"
 
-#: ../../library/ctypes.rst:2208
+#: ../../library/ctypes.rst:2247
 msgid "Instances have a single attribute:"
 msgstr "实例拥有一个属性:"
 
-#: ../../library/ctypes.rst:2212
+#: ../../library/ctypes.rst:2251
 msgid ""
 "This attribute contains the actual value of the instance. For integer and "
 "pointer types, it is an integer, for character types, it is a single "
@@ -3999,7 +3992,7 @@ msgstr ""
 "这个属性包含实例的实际值。 对于整数和指针类型，它是一个整数，对于字符类型，它是一个单字符字符串对象或字符串，对于字符指针类型，它是一个 Python "
 "字节串对象或字符串。"
 
-#: ../../library/ctypes.rst:2217
+#: ../../library/ctypes.rst:2256
 msgid ""
 "When the ``value`` attribute is retrieved from a ctypes instance, usually a "
 "new object is returned each time.  :mod:`ctypes` does *not* implement "
@@ -4009,20 +4002,17 @@ msgstr ""
 "当从 ctypes 实例提取 ``value`` 属性时，通常每次会返回一个新的对象。 :mod:`ctypes` 并 *没有* "
 "实现原始对象返回，它总是会构造一个新的对象。 所有其他 ctypes 对象实例也同样如此。"
 
-#: ../../library/ctypes.rst:2223
+#: ../../library/ctypes.rst:2262
 msgid ""
 "Fundamental data types, when returned as foreign function call results, or, "
 "for example, by retrieving structure field members or array items, are "
 "transparently converted to native Python types.  In other words, if a "
-"foreign function has a :attr:`~_FuncPtr.restype` of :class:`c_char_p`, you "
+"foreign function has a :attr:`~_CFuncPtr.restype` of :class:`c_char_p`, you "
 "will always receive a Python bytes object, *not* a :class:`c_char_p` "
 "instance."
 msgstr ""
-"基本数据类型当作为外部函数调用结果被返回或者作为结构字段成员或数组项被提取时，会被透明地转换为原生 Python 类型。 换句话说，如果某个外来函数的 "
-":attr:`~_FuncPtr.restype` 是 :class:`c_char_p`，那么你将总是得到一个 Python 字节串对象，而 *不是*"
-" 一个 :class:`c_char_p` 实例。"
 
-#: ../../library/ctypes.rst:2231
+#: ../../library/ctypes.rst:2270
 msgid ""
 "Subclasses of fundamental data types do *not* inherit this behavior. So, if "
 "a foreign functions :attr:`!restype` is a subclass of :class:`c_void_p`, you"
@@ -4033,11 +4023,11 @@ msgstr ""
 "基本数据类型的子类 *不会* 继承这种行为。 因此，如果一个外部函数的 :attr:`!restype` 是 :class:`c_void_p` "
 "的子类，则你将从函数调用得到一个该子类的实例。 当然，你可以通过访问 ``value`` 属性来获取指针的值。"
 
-#: ../../library/ctypes.rst:2236
+#: ../../library/ctypes.rst:2275
 msgid "These are the fundamental ctypes data types:"
 msgstr "这些是基本 ctypes 数据类型:"
 
-#: ../../library/ctypes.rst:2240
+#: ../../library/ctypes.rst:2279
 msgid ""
 "Represents the C :c:expr:`signed char` datatype, and interprets the value as"
 " small integer.  The constructor accepts an optional integer initializer; no"
@@ -4045,7 +4035,7 @@ msgid ""
 msgstr ""
 "代表 C :c:expr:`signed char` 数据类型，并将值解读为一个小整数。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2247
+#: ../../library/ctypes.rst:2286
 msgid ""
 "Represents the C :c:expr:`char` datatype, and interprets the value as a "
 "single character.  The constructor accepts an optional string initializer, "
@@ -4053,7 +4043,7 @@ msgid ""
 msgstr ""
 "代表 C :c:expr:`char` 数据类型，并将值解读为单个字符。 该构造器接受一个可选的字符串初始值，字符串的长度必须恰好为一个字符。"
 
-#: ../../library/ctypes.rst:2254
+#: ../../library/ctypes.rst:2293
 msgid ""
 "Represents the C :c:expr:`char *` datatype when it points to a zero-"
 "terminated string.  For a general character pointer that may also point to "
@@ -4063,13 +4053,13 @@ msgstr ""
 "当指向一个以零为结束符的字符串时代表 C :c:expr:`char *` 数据类型。 对于通用字符指针来说也可能指向二进制数据，必须要使用 "
 "``POINTER(c_char)``。 该构造器接受一个整数地址，或者一个字节串对象。"
 
-#: ../../library/ctypes.rst:2262
+#: ../../library/ctypes.rst:2301
 msgid ""
 "Represents the C :c:expr:`double` datatype.  The constructor accepts an "
 "optional float initializer."
 msgstr "代表 C :c:expr:`double` 数据类型。 该构造器接受一个可选的浮点数初始值。"
 
-#: ../../library/ctypes.rst:2268
+#: ../../library/ctypes.rst:2307
 msgid ""
 "Represents the C :c:expr:`long double` datatype.  The constructor accepts an"
 " optional float initializer.  On platforms where ``sizeof(long double) == "
@@ -4078,7 +4068,7 @@ msgstr ""
 "代表 C :c:expr:`long double` 数据类型。 该构造器接受一个可选的浮点数初始值。 在 ``sizeof(long double) "
 "== sizeof(double)`` 的平台上它是 :class:`c_double` 的一个别名。"
 
-#: ../../library/ctypes.rst:2274
+#: ../../library/ctypes.rst:2313
 msgid ""
 "Represents the C :c:expr:`float` datatype.  The constructor accepts an "
 "optional float initializer."
@@ -4086,7 +4076,7 @@ msgstr ""
 "代表 C :c:expr:`float` 数据类型。 该构造器接受一个可选的浮点数初始值。datatype.  The constructor "
 "accepts an optional float initializer."
 
-#: ../../library/ctypes.rst:2280
+#: ../../library/ctypes.rst:2319
 msgid ""
 "Represents the C :c:expr:`signed int` datatype.  The constructor accepts an "
 "optional integer initializer; no overflow checking is done.  On platforms "
@@ -4095,61 +4085,61 @@ msgstr ""
 "代表 C :c:expr:`signed int` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。 在 ``sizeof(int) "
 "== sizeof(long)`` 的平台上它是 :class:`c_long` 的一个别名。"
 
-#: ../../library/ctypes.rst:2287
+#: ../../library/ctypes.rst:2326
 msgid ""
 "Represents the C 8-bit :c:expr:`signed int` datatype.  Usually an alias for "
 ":class:`c_byte`."
 msgstr "代表 C 8 位 :c:expr:`signed int` 数据类型。 通常是 :class:`c_byte` 的一个别名。"
 
-#: ../../library/ctypes.rst:2293
+#: ../../library/ctypes.rst:2332
 msgid ""
 "Represents the C 16-bit :c:expr:`signed int` datatype.  Usually an alias for"
 " :class:`c_short`."
 msgstr "代表 C 16 位 :c:expr:`signed int` 数据类型。 通常是 :class:`c_short` 的一个别名。"
 
-#: ../../library/ctypes.rst:2299
+#: ../../library/ctypes.rst:2338
 msgid ""
 "Represents the C 32-bit :c:expr:`signed int` datatype.  Usually an alias for"
 " :class:`c_int`."
 msgstr "代表 C 32 位 :c:expr:`signed int` 数据类型。 通常是 :class:`c_int` 的一个别名。"
 
-#: ../../library/ctypes.rst:2305
+#: ../../library/ctypes.rst:2344
 msgid ""
 "Represents the C 64-bit :c:expr:`signed int` datatype.  Usually an alias for"
 " :class:`c_longlong`."
 msgstr "代表 C 64 位 :c:expr:`signed int` 数据类型。 通常是 :class:`c_longlong` 的一个别名。"
 
-#: ../../library/ctypes.rst:2311
+#: ../../library/ctypes.rst:2350
 msgid ""
 "Represents the C :c:expr:`signed long` datatype.  The constructor accepts an"
 " optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`signed long` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2317
+#: ../../library/ctypes.rst:2356
 msgid ""
 "Represents the C :c:expr:`signed long long` datatype.  The constructor "
 "accepts an optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`signed long long` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2323
+#: ../../library/ctypes.rst:2362
 msgid ""
 "Represents the C :c:expr:`signed short` datatype.  The constructor accepts "
 "an optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`signed short` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2329
+#: ../../library/ctypes.rst:2368
 msgid "Represents the C :c:type:`size_t` datatype."
 msgstr "代表 C :c:type:`size_t` 数据类型。"
 
-#: ../../library/ctypes.rst:2334
+#: ../../library/ctypes.rst:2373
 msgid "Represents the C :c:type:`ssize_t` datatype."
 msgstr "代表 C :c:type:`ssize_t` 数据类型。"
 
-#: ../../library/ctypes.rst:2341
+#: ../../library/ctypes.rst:2380
 msgid "Represents the C :c:type:`time_t` datatype."
 msgstr "代表 C :c:type:`time_t` 数据类型。"
 
-#: ../../library/ctypes.rst:2348
+#: ../../library/ctypes.rst:2387
 msgid ""
 "Represents the C :c:expr:`unsigned char` datatype, it interprets the value "
 "as small integer.  The constructor accepts an optional integer initializer; "
@@ -4157,7 +4147,7 @@ msgid ""
 msgstr ""
 "代表 C :c:expr:`unsigned char` 数据类型，它将值解读为一个小整数。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2355
+#: ../../library/ctypes.rst:2394
 msgid ""
 "Represents the C :c:expr:`unsigned int` datatype.  The constructor accepts "
 "an optional integer initializer; no overflow checking is done.  On platforms"
@@ -4166,56 +4156,56 @@ msgstr ""
 "代表 C :c:expr:`unsigned int` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。 在 ``sizeof(int)"
 " == sizeof(long)`` 的平台上它是 :class:`c_ulong` 的一个别名。"
 
-#: ../../library/ctypes.rst:2362
+#: ../../library/ctypes.rst:2401
 msgid ""
 "Represents the C 8-bit :c:expr:`unsigned int` datatype.  Usually an alias "
 "for :class:`c_ubyte`."
 msgstr "代表 C 8 位 :c:expr:`unsigned int` 类型。 通常是 :class:`c_ubyte` 的一个别名。."
 
-#: ../../library/ctypes.rst:2368
+#: ../../library/ctypes.rst:2407
 msgid ""
 "Represents the C 16-bit :c:expr:`unsigned int` datatype.  Usually an alias "
 "for :class:`c_ushort`."
 msgstr "代表 C 16 位 :c:expr:`unsigned int` 数据类型。 通常是 :class:`c_ushort` 的一个别名。."
 
-#: ../../library/ctypes.rst:2374
+#: ../../library/ctypes.rst:2413
 msgid ""
 "Represents the C 32-bit :c:expr:`unsigned int` datatype.  Usually an alias "
 "for :class:`c_uint`."
 msgstr "代表 C 32 位 :c:expr:`unsigned int` 数据类型。 通常是 :class:`c_uint` 的一个别名。"
 
-#: ../../library/ctypes.rst:2380
+#: ../../library/ctypes.rst:2419
 msgid ""
 "Represents the C 64-bit :c:expr:`unsigned int` datatype.  Usually an alias "
 "for :class:`c_ulonglong`."
 msgstr ""
 "代表 C 64 位 :c:expr:`unsigned int` 数据类型。 通常是 :class:`c_ulonglong` 的一个别名。"
 
-#: ../../library/ctypes.rst:2386
+#: ../../library/ctypes.rst:2425
 msgid ""
 "Represents the C :c:expr:`unsigned long` datatype.  The constructor accepts "
 "an optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`unsigned long` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2392
+#: ../../library/ctypes.rst:2431
 msgid ""
 "Represents the C :c:expr:`unsigned long long` datatype.  The constructor "
 "accepts an optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`unsigned long long` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2398
+#: ../../library/ctypes.rst:2437
 msgid ""
 "Represents the C :c:expr:`unsigned short` datatype.  The constructor accepts"
 " an optional integer initializer; no overflow checking is done."
 msgstr "代表 C :c:expr:`unsigned short` 数据类型。 该构造器接受一个可选的整数初始值；不会执行溢出检查。"
 
-#: ../../library/ctypes.rst:2404
+#: ../../library/ctypes.rst:2443
 msgid ""
 "Represents the C :c:expr:`void *` type.  The value is represented as "
 "integer. The constructor accepts an optional integer initializer."
 msgstr "代表 C :c:expr:`void *` 类型。 该值被表示为整数形式。 该构造器接受一个可选的整数初始值。"
 
-#: ../../library/ctypes.rst:2410
+#: ../../library/ctypes.rst:2449
 msgid ""
 "Represents the C :c:type:`wchar_t` datatype, and interprets the value as a "
 "single character unicode string.  The constructor accepts an optional string"
@@ -4224,7 +4214,7 @@ msgstr ""
 "代表 C :c:type:`wchar_t` 数据类型，并将值解读为一单个字符的 unicode 字符串。 "
 "该构造器接受一个可选的字符串初始化器，字符串的长度必须恰好为一个字符。"
 
-#: ../../library/ctypes.rst:2417
+#: ../../library/ctypes.rst:2456
 msgid ""
 "Represents the C :c:expr:`wchar_t *` datatype, which must be a pointer to a "
 "zero-terminated wide character string.  The constructor accepts an integer "
@@ -4232,7 +4222,7 @@ msgid ""
 msgstr ""
 "代表 C :c:expr:`wchar_t *` 数据类型，它必须为指向以零为续签符的宽字符串的指针。 该构造器接受一个整数地址，或一个字符串。"
 
-#: ../../library/ctypes.rst:2424
+#: ../../library/ctypes.rst:2463
 msgid ""
 "Represent the C :c:expr:`bool` datatype (more accurately, :c:expr:`_Bool` "
 "from C99).  Its value can be ``True`` or ``False``, and the constructor "
@@ -4241,13 +4231,13 @@ msgstr ""
 "代表 C :c:expr:`bool` 数据类型 (更准确地说，是 C99 :c:expr:`_Bool`)。 它的值可以为 ``True`` 或 "
 "``False``，并且该构造器接受任何具有逻辑值的对象。"
 
-#: ../../library/ctypes.rst:2431
+#: ../../library/ctypes.rst:2470
 msgid ""
-"Windows only: Represents a :c:type:`!HRESULT` value, which contains success "
-"or error information for a function or method call."
-msgstr "仅限 Windows：代表一个 :c:type:`!HRESULT` 值，它包含某个函数或方法调用的成功或错误信息。"
+"Represents a :c:type:`!HRESULT` value, which contains success or error "
+"information for a function or method call."
+msgstr ""
 
-#: ../../library/ctypes.rst:2437
+#: ../../library/ctypes.rst:2478
 msgid ""
 "Represents the C :c:expr:`PyObject *` datatype.  Calling this without an "
 "argument creates a ``NULL`` :c:expr:`PyObject *` pointer."
@@ -4255,7 +4245,7 @@ msgstr ""
 "代表 C :c:expr:`PyObject *` 数据类型。 不带参数地调用此构造器将创建一个 ``NULL`` :c:expr:`PyObject "
 "*` 指针。"
 
-#: ../../library/ctypes.rst:2440
+#: ../../library/ctypes.rst:2481
 msgid ""
 "The :mod:`!ctypes.wintypes` module provides quite some other Windows "
 "specific data types, for example :c:type:`!HWND`, :c:type:`!WPARAM`, or "
@@ -4266,41 +4256,41 @@ msgstr ""
 ":c:type:`!WPARAM` 或 :c:type:`!DWORD`。 还定义了一些有用的结构体如 :c:type:`!MSG` 或 "
 ":c:type:`!RECT`。"
 
-#: ../../library/ctypes.rst:2448
+#: ../../library/ctypes.rst:2489
 msgid "Structured data types"
 msgstr "结构化数据类型"
 
-#: ../../library/ctypes.rst:2453
+#: ../../library/ctypes.rst:2494
 msgid "Abstract base class for unions in native byte order."
 msgstr "本机字节序的联合所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2458
+#: ../../library/ctypes.rst:2499
 msgid "Abstract base class for unions in *big endian* byte order."
 msgstr "*大端* 字节序的联合所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2464
+#: ../../library/ctypes.rst:2505
 msgid "Abstract base class for unions in *little endian* byte order."
 msgstr "*小端* 字节序的联合所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2470
+#: ../../library/ctypes.rst:2511
 msgid "Abstract base class for structures in *big endian* byte order."
 msgstr "*大端* 字节序的结构体所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2475
+#: ../../library/ctypes.rst:2516
 msgid "Abstract base class for structures in *little endian* byte order."
 msgstr "*小端* 字节序的结构体所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2477
+#: ../../library/ctypes.rst:2518
 msgid ""
 "Structures and unions with non-native byte order cannot contain pointer type"
 " fields, or any other data types containing pointer type fields."
 msgstr "非本机字节序的结构体和联合不能包含指针类型字段，或任何其他包含指针类型字段的数据类型。"
 
-#: ../../library/ctypes.rst:2483
+#: ../../library/ctypes.rst:2524
 msgid "Abstract base class for structures in *native* byte order."
 msgstr "*本机* 字节序的结构体所对应的抽象基类。"
 
-#: ../../library/ctypes.rst:2485
+#: ../../library/ctypes.rst:2526
 msgid ""
 "Concrete structure and union types must be created by subclassing one of "
 "these types, and at least define a :attr:`_fields_` class variable. "
@@ -4310,7 +4300,7 @@ msgstr ""
 "实际的结构体和联合类型必须通过子类化这些类型之一来创建，并且至少要定义一个 :attr:`_fields_` 类变量。 :mod:`ctypes` "
 "将创建 :term:`descriptor`，它允许通过直接属性访问来读取和写入字段。 这些是"
 
-#: ../../library/ctypes.rst:2493
+#: ../../library/ctypes.rst:2534
 msgid ""
 "A sequence defining the structure fields.  The items must be 2-tuples or "
 "3-tuples.  The first item is the name of the field, the second item "
@@ -4318,20 +4308,20 @@ msgid ""
 msgstr ""
 "一个定义结构体字段的序列。 其中的条目必须为 2 元组或 3 元组。 元组的第一项是字段名称，第二项指明字段类型；它可以是任何 ctypes 数据类型。"
 
-#: ../../library/ctypes.rst:2497
+#: ../../library/ctypes.rst:2538
 msgid ""
 "For integer type fields like :class:`c_int`, a third optional item can be "
 "given.  It must be a small positive integer defining the bit width of the "
 "field."
 msgstr "对于整数类型字段例如 :class:`c_int`，可以给定第三个可选项。 它必须是一个定义字段比特位宽度的小正整数。"
 
-#: ../../library/ctypes.rst:2501
+#: ../../library/ctypes.rst:2542
 msgid ""
 "Field names must be unique within one structure or union.  This is not "
 "checked, only one field can be accessed when names are repeated."
 msgstr "字段名称在一个结构体或联合中必须唯一。 不会检查这个唯一性，但当名称出现重复时将只有一个字段可被访问。"
 
-#: ../../library/ctypes.rst:2504
+#: ../../library/ctypes.rst:2545
 msgid ""
 "It is possible to define the :attr:`_fields_` class variable *after* the "
 "class statement that defines the Structure subclass, this allows creating "
@@ -4339,7 +4329,7 @@ msgid ""
 msgstr ""
 "可以在定义 Structure 子类的类语句 *之后* 再定义 :attr:`_fields_` 类变量，这将允许创建直接或间接引用其自身的数据类型::"
 
-#: ../../library/ctypes.rst:2508
+#: ../../library/ctypes.rst:2549
 msgid ""
 "class List(Structure):\n"
 "    pass\n"
@@ -4353,7 +4343,7 @@ msgstr ""
 "                 ...\n"
 "                ]"
 
-#: ../../library/ctypes.rst:2514
+#: ../../library/ctypes.rst:2555
 msgid ""
 "The :attr:`_fields_` class variable must, however, be defined before the "
 "type is first used (an instance is created, :func:`sizeof` is called on it, "
@@ -4363,14 +4353,14 @@ msgstr ""
 "但是，:attr:`_fields_` 类变量必须在类型第一次被使用（创建实例，调用 :func:`sizeof` 等等）之前进行定义。 在此之后对 "
 ":attr:`_fields_` 类变量赋值将会引发 AttributeError。"
 
-#: ../../library/ctypes.rst:2519
+#: ../../library/ctypes.rst:2560
 msgid ""
 "It is possible to define sub-subclasses of structure types, they inherit the"
 " fields of the base class plus the :attr:`_fields_` defined in the sub-"
 "subclass, if any."
 msgstr "可以定义结构体类型的子类，它们会继承基类的字段再加上在子类中定义的任何 :attr:`_fields_`。"
 
-#: ../../library/ctypes.rst:2526
+#: ../../library/ctypes.rst:2567
 msgid ""
 "An optional small integer that allows overriding the alignment of structure "
 "fields in the instance.  :attr:`_pack_` must already be defined when "
@@ -4380,7 +4370,7 @@ msgstr ""
 "一个可选的小整数，它允许覆盖实例中结构体字段的对齐方式。 当 :attr:`_fields_` 被赋值时必须已经定义了 "
 ":attr:`_pack_`，否则它将没有效果。 将该属性设为 0 的效果与不设置它一样。"
 
-#: ../../library/ctypes.rst:2534
+#: ../../library/ctypes.rst:2575
 msgid ""
 "An optional sequence that lists the names of unnamed (anonymous) fields. "
 ":attr:`_anonymous_` must be already defined when :attr:`_fields_` is "
@@ -4389,7 +4379,7 @@ msgstr ""
 "一个可选的序列，它会列出未命名（匿名）字段的名称。 当 :attr:`_fields_` 被赋值时必须已经定义了 "
 ":attr:`_anonymous_`，否则它将没有效果。"
 
-#: ../../library/ctypes.rst:2538
+#: ../../library/ctypes.rst:2579
 msgid ""
 "The fields listed in this variable must be structure or union type fields. "
 ":mod:`ctypes` will create descriptors in the structure type that allows "
@@ -4399,11 +4389,11 @@ msgstr ""
 "在此变量中列出的字段必须为结构体或联合类型字段。 :mod:`ctypes` "
 "将在结构体类型中创建描述器以允许直接访问嵌套字段，而无需创建对应的结构体或联合字段。"
 
-#: ../../library/ctypes.rst:2543
+#: ../../library/ctypes.rst:2584
 msgid "Here is an example type (Windows)::"
 msgstr "以下是一个示例类型（Windows）::"
 
-#: ../../library/ctypes.rst:2545
+#: ../../library/ctypes.rst:2586
 msgid ""
 "class _U(Union):\n"
 "    _fields_ = [(\"lptdesc\", POINTER(TYPEDESC)),\n"
@@ -4425,7 +4415,7 @@ msgstr ""
 "    _fields_ = [(\"u\", _U),\n"
 "                (\"vt\", VARTYPE)]"
 
-#: ../../library/ctypes.rst:2556
+#: ../../library/ctypes.rst:2597
 msgid ""
 "The ``TYPEDESC`` structure describes a COM data type, the ``vt`` field "
 "specifies which one of the union fields is valid.  Since the ``u`` field is "
@@ -4438,7 +4428,7 @@ msgstr ""
 "字段被定义为匿名字段，现在可以直接从 TYPEDESC 实例访问成员。 ``td.lptdesc`` 和 ``td.u.lptdesc`` "
 "是等价的，但前者速度更快，因为它不需要创建临时的联合实例::"
 
-#: ../../library/ctypes.rst:2563
+#: ../../library/ctypes.rst:2604
 msgid ""
 "td = TYPEDESC()\n"
 "td.vt = VT_PTR\n"
@@ -4450,7 +4440,7 @@ msgstr ""
 "td.lptdesc = POINTER(some_type)\n"
 "td.u.lptdesc = POINTER(some_type)"
 
-#: ../../library/ctypes.rst:2568
+#: ../../library/ctypes.rst:2609
 msgid ""
 "It is possible to define sub-subclasses of structures, they inherit the "
 "fields of the base class.  If the subclass definition has a separate "
@@ -4459,7 +4449,7 @@ msgid ""
 msgstr ""
 "可以定义结构体的子类，它们会继承基类的字段。 如果子类定义具有单独的 :attr:`_fields_` 变量，在其中指定的字段会被添加到基类的字段中。"
 
-#: ../../library/ctypes.rst:2573
+#: ../../library/ctypes.rst:2614
 msgid ""
 "Structure and union constructors accept both positional and keyword "
 "arguments.  Positional arguments are used to initialize member fields in the"
@@ -4472,15 +4462,15 @@ msgstr ""
 "构造器中的关键字参数会被解读为属性赋值，因此它们将以相应的名称来初始化 :attr:`_fields_`，或为不存在于 :attr:`_fields_`"
 " 中的名称创建新的属性。"
 
-#: ../../library/ctypes.rst:2584
+#: ../../library/ctypes.rst:2625
 msgid "Arrays and pointers"
 msgstr "数组与指针"
 
-#: ../../library/ctypes.rst:2588
+#: ../../library/ctypes.rst:2629
 msgid "Abstract base class for arrays."
 msgstr "数组的抽象基类。"
 
-#: ../../library/ctypes.rst:2590
+#: ../../library/ctypes.rst:2631
 msgid ""
 "The recommended way to create concrete array types is by multiplying any "
 ":mod:`ctypes` data type with a non-negative integer.  Alternatively, you can"
@@ -4493,34 +4483,34 @@ msgstr ""
 ":attr:`_length_` 和 :attr:`_type_` 类变量。 数组元素可使用标准的抽取和切片操作来进行读写；对于切片读取，结果对象本身 "
 "*不是* 一个 :class:`Array`。"
 
-#: ../../library/ctypes.rst:2600
+#: ../../library/ctypes.rst:2641
 msgid ""
 "A positive integer specifying the number of elements in the array. Out-of-"
 "range subscripts result in an :exc:`IndexError`. Will be returned by "
 ":func:`len`."
 msgstr "一个指明数组中元素数量的正整数。 超出范围的抽取会导致 :exc:`IndexError`。 该值将由 :func:`len` 返回。"
 
-#: ../../library/ctypes.rst:2607
+#: ../../library/ctypes.rst:2648
 msgid "Specifies the type of each element in the array."
 msgstr "指明数组中每个元素的类型。"
 
-#: ../../library/ctypes.rst:2610
+#: ../../library/ctypes.rst:2651
 msgid ""
 "Array subclass constructors accept positional arguments, used to initialize "
 "the elements in order."
 msgstr "Array 子类构造器可接受位置参数，用来按顺序初始化元素。"
 
-#: ../../library/ctypes.rst:2616
+#: ../../library/ctypes.rst:2657
 msgid "Private, abstract base class for pointers."
 msgstr "私有对象，指针的抽象基类。"
 
-#: ../../library/ctypes.rst:2618
+#: ../../library/ctypes.rst:2659
 msgid ""
 "Concrete pointer types are created by calling :func:`POINTER` with the type "
 "that will be pointed to; this is done automatically by :func:`pointer`."
 msgstr "实际的指针类型是通过调用 :func:`POINTER` 并附带其将指向的类型来创建的；这会由 :func:`pointer` 自动完成。"
 
-#: ../../library/ctypes.rst:2622
+#: ../../library/ctypes.rst:2663
 msgid ""
 "If a pointer points to an array, its elements can be read and written using "
 "standard subscript and slice accesses.  Pointer objects have no size, so "
@@ -4532,11 +4522,11 @@ msgstr ""
 ":exc:`TypeError`。 抽取负值将会从指针 *之前* 的内存中读取（与 C "
 "一样），并且超出范围的抽取将可能因非法访问而导致崩溃（视你的运气而定）。"
 
-#: ../../library/ctypes.rst:2632
+#: ../../library/ctypes.rst:2673
 msgid "Specifies the type pointed to."
 msgstr "指明所指向的类型。"
 
-#: ../../library/ctypes.rst:2636
+#: ../../library/ctypes.rst:2677
 msgid ""
 "Returns the object to which to pointer points.  Assigning to this attribute "
 "changes the pointer to point to the assigned object."
