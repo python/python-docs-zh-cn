@@ -15,7 +15,7 @@
 # LeeWendao <LeeWendao@outlook.com>, 2023
 # Qinyu Chen, 2023
 # Kade For, 2024
-# Wulian233 <xiguawulian@gmail.com>, 2024
+# lian Wu (Wulian) <xiguawulian@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 14:17+0000\n"
+"POT-Creation-Date: 2024-11-19 01:00+0000\n"
 "PO-Revision-Date: 2021-06-28 01:13+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -743,6 +743,11 @@ msgid ""
 "   n number(10)            ! will look up a converter named \"number\"\n"
 " )"
 msgstr ""
+"CREATE TABLE test(\n"
+"   i integer primary key,  ! 将查找名为 \"integer\" 的转换器\n"
+"   p point,                ! 将查找名为 \"point\" 的转换器\n"
+"   n number(10)            ! 将查找名为 \"number\" 的转换器\n"
+" )"
 
 #: ../../library/sqlite3.rst:472
 msgid ""
@@ -1224,6 +1229,25 @@ msgid ""
 "\n"
 "con.close()"
 msgstr ""
+"class MySum:\n"
+"    def __init__(self):\n"
+"        self.count = 0\n"
+"\n"
+"    def step(self, value):\n"
+"        self.count += value\n"
+"\n"
+"    def finalize(self):\n"
+"        return self.count\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.create_aggregate(\"mysum\", 1, MySum)\n"
+"cur = con.execute(\"CREATE TABLE test(i)\")\n"
+"cur.execute(\"INSERT INTO test(i) VALUES(1)\")\n"
+"cur.execute(\"INSERT INTO test(i) VALUES(2)\")\n"
+"cur.execute(\"SELECT mysum(i) FROM test\")\n"
+"print(cur.fetchone()[0])\n"
+"\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:812
 msgid ""
@@ -1342,6 +1366,50 @@ msgid ""
 "print(cur.fetchall())\n"
 "con.close()"
 msgstr ""
+"# 来自 https://www.sqlite.org/windowfunctions.html#udfwinfunc 的示例\n"
+"class WindowSumInt:\n"
+"    def __init__(self):\n"
+"        self.count = 0\n"
+"\n"
+"    def step(self, value):\n"
+"        \"\"\"添加一行到当前窗口。\"\"\"\n"
+"        self.count += value\n"
+"\n"
+"    def value(self):\n"
+"        \"\"\"返回聚合的当前值。\"\"\"\n"
+"        return self.count\n"
+"\n"
+"    def inverse(self, value):\n"
+"        \"\"\"从当前窗口移除一行。\"\"\"\n"
+"        self.count -= value\n"
+"\n"
+"    def finalize(self):\n"
+"        \"\"\"返回聚合的最终值。\n"
+"\n"
+"        任何清理动作都应放在此处。\n"
+"        \"\"\"\n"
+"        return self.count\n"
+"\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.execute(\"CREATE TABLE test(x, y)\")\n"
+"values = [\n"
+"    (\"a\", 4),\n"
+"    (\"b\", 5),\n"
+"    (\"c\", 3),\n"
+"    (\"d\", 8),\n"
+"    (\"e\", 1),\n"
+"]\n"
+"cur.executemany(\"INSERT INTO test VALUES(?, ?)\", values)\n"
+"con.create_window_function(\"sumint\", 1, WindowSumInt)\n"
+"cur.execute(\"\"\"\n"
+"    SELECT x, sumint(y) OVER (\n"
+"        ORDER BY x ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING\n"
+"    ) AS sum_y\n"
+"    FROM test ORDER BY x\n"
+"\"\"\")\n"
+"print(cur.fetchall())\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:905
 msgid ""
@@ -1388,6 +1456,23 @@ msgid ""
 "    print(row)\n"
 "con.close()"
 msgstr ""
+"def collate_reverse(string1, string2):\n"
+"    if string1 == string2:\n"
+"        return 0\n"
+"    elif string1 < string2:\n"
+"        return 1\n"
+"    else:\n"
+"        return -1\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.create_collation(\"reverse\", collate_reverse)\n"
+"\n"
+"cur = con.execute(\"CREATE TABLE test(x)\")\n"
+"cur.executemany(\"INSERT INTO test(x) VALUES(?)\", [(\"a\",), (\"b\",)])\n"
+"cur.execute(\"SELECT x FROM test ORDER BY x COLLATE reverse\")\n"
+"for row in cur:\n"
+"    print(row)\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:941
 msgid "Remove a collation function by setting *callable* to ``None``."
@@ -1582,6 +1667,27 @@ msgid ""
 "for row in con.execute(\"SELECT rowid, name, ingredients FROM recipe WHERE name MATCH 'pie'\"):\n"
 "    print(row)"
 msgstr ""
+"con.enable_load_extension(True)\n"
+"\n"
+"# 加载 fts (fulltext search) 扩展\n"
+"con.execute(\"select load_extension('./fts3.so')\")\n"
+"\n"
+"# 你也可以使用 API 调用来加载该扩展：\n"
+"# con.load_extension(\"./fts3.so\")\n"
+"\n"
+"# 禁止扩展再次加载\n"
+"con.enable_load_extension(False)\n"
+"\n"
+"# 来自 SQLite wiki 的示例\n"
+"con.execute(\"CREATE VIRTUAL TABLE recipe USING fts3(name, ingredients)\")\n"
+"con.executescript(\"\"\"\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('broccoli stew', 'broccoli peppers cheese tomatoes');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('pumpkin stew', 'pumpkin onions garlic celery');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('broccoli pie', 'broccoli cheese onions flour');\n"
+"    INSERT INTO recipe (name, ingredients) VALUES('pumpkin pie', 'pumpkin sugar flour butter');\n"
+"    \"\"\")\n"
+"for row in con.execute(\"SELECT rowid, name, ingredients FROM recipe WHERE name MATCH 'pie'\"):\n"
+"    print(row)"
 
 #: ../../library/sqlite3.rst:1086
 msgid ""
@@ -1644,6 +1750,12 @@ msgid ""
 "        f.write('%s\\n' % line)\n"
 "con.close()"
 msgstr ""
+"# 将文件 example.db 转换为 SQL 转储文件 dump.sql\n"
+"con = sqlite3.connect('example.db')\n"
+"with open('dump.sql', 'w') as f:\n"
+"    for line in con.iterdump():\n"
+"        f.write('%s\\n' % line)\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:1141 ../../library/sqlite3.rst:1215
 msgid ":ref:`sqlite3-howto-encoding`"
@@ -2145,6 +2257,12 @@ msgid ""
 "# cur is an sqlite3.Cursor object\n"
 "cur.executemany(\"INSERT INTO data VALUES(?)\", rows)"
 msgstr ""
+"rows = [\n"
+"    (\"row1\",),\n"
+"    (\"row2\",),\n"
+"]\n"
+"# cur 是一个 sqlite3.Cursor 对象\n"
+"cur.executemany(\"INSERT INTO data VALUES(?)\", rows)"
 
 #: ../../library/sqlite3.rst:1567
 msgid ""
@@ -2190,6 +2308,14 @@ msgid ""
 "    COMMIT;\n"
 "\"\"\")"
 msgstr ""
+"# cur 是一个 sqlite3.Cursor 对象\n"
+"cur.executescript(\"\"\"\n"
+"    BEGIN;\n"
+"    CREATE TABLE person(firstname, lastname, age);\n"
+"    CREATE TABLE book(title, author, published);\n"
+"    CREATE TABLE publisher(name, address);\n"
+"    COMMIT;\n"
+"\"\"\")"
 
 #: ../../library/sqlite3.rst:1608
 msgid ""
@@ -2428,6 +2554,24 @@ msgid ""
 "print(greeting)  # outputs \"b'Hello, world!'\"\n"
 "con.close()"
 msgstr ""
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE test(blob_col blob)\")\n"
+"con.execute(\"INSERT INTO test(blob_col) VALUES(zeroblob(13))\")\n"
+"\n"
+"# 写入到我们的 blob，使用两次 write 操作：\n"
+"with con.blobopen(\"test\", \"blob_col\", 1) as blob:\n"
+"    blob.write(b\"hello, \")\n"
+"    blob.write(b\"world.\")\n"
+"    # 修改我们的 blob 的开头和末尾字节\n"
+"    blob[0] = ord(\"H\")\n"
+"    blob[-1] = ord(\"!\")\n"
+"\n"
+"# 读取我们的 blob 的内容\n"
+"with con.blobopen(\"test\", \"blob_col\", 1) as blob:\n"
+"    greeting = blob.read()\n"
+"\n"
+"print(greeting)  # 输出 \"b'Hello, world!'\"\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:1800
 msgid "Close the blob."
@@ -2805,6 +2949,13 @@ msgid ""
 "SELECT * FROM stocks WHERE symbol = '' OR TRUE; --'\n"
 ">>> cur.execute(sql)"
 msgstr ""
+">>> # 绝不要这样做 -- 很不安全！\n"
+">>> symbol = input()\n"
+"' OR TRUE; --\n"
+">>> sql = \"SELECT * FROM stocks WHERE symbol = '%s'\" % symbol\n"
+">>> print(sql)\n"
+"SELECT * FROM stocks WHERE symbol = '' OR TRUE; --'\n"
+">>> cur.execute(sql)"
 
 #: ../../library/sqlite3.rst:2070
 msgid ""
@@ -2851,6 +3002,23 @@ msgid ""
 "print(cur.fetchall())\n"
 "con.close()"
 msgstr ""
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.execute(\"CREATE TABLE lang(name, first_appeared)\")\n"
+"\n"
+"# 这是用于 executemany() 的名称风格：\n"
+"data = (\n"
+"    {\"name\": \"C\", \"year\": 1972},\n"
+"    {\"name\": \"Fortran\", \"year\": 1957},\n"
+"    {\"name\": \"Python\", \"year\": 1991},\n"
+"    {\"name\": \"Go\", \"year\": 2009},\n"
+")\n"
+"cur.executemany(\"INSERT INTO lang VALUES(:name, :year)\", data)\n"
+"\n"
+"# 这是用于 SELECT 查询的问号风格：\n"
+"params = (1972,)\n"
+"cur.execute(\"SELECT * FROM lang WHERE first_appeared = ?\", params)\n"
+"print(cur.fetchall())\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:2113
 msgid ""
@@ -2963,6 +3131,21 @@ msgid ""
 "print(cur.fetchone()[0])\n"
 "con.close()"
 msgstr ""
+"class Point:\n"
+"    def __init__(self, x, y):\n"
+"        self.x, self.y = x, y\n"
+"\n"
+"def adapt_point(point):\n"
+"    return f\"{point.x};{point.y}\"\n"
+"\n"
+"sqlite3.register_adapter(Point, adapt_point)\n"
+"\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"cur = con.cursor()\n"
+"\n"
+"cur.execute(\"SELECT ?\", (Point(1.0, 2.5),))\n"
+"print(cur.fetchone()[0])\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:2205
 msgid "How to convert SQLite values to custom Python types"
@@ -3076,6 +3259,44 @@ msgid ""
 "cur.close()\n"
 "con.close()"
 msgstr ""
+"class Point:\n"
+"    def __init__(self, x, y):\n"
+"        self.x, self.y = x, y\n"
+"\n"
+"    def __repr__(self):\n"
+"        return f\"Point({self.x}, {self.y})\"\n"
+"\n"
+"def adapt_point(point):\n"
+"    return f\"{point.x};{point.y}\"\n"
+"\n"
+"def convert_point(s):\n"
+"    x, y = list(map(float, s.split(b\";\")))\n"
+"    return Point(x, y)\n"
+"\n"
+"# 注册适配器和转换器\n"
+"sqlite3.register_adapter(Point, adapt_point)\n"
+"sqlite3.register_converter(\"point\", convert_point)\n"
+"\n"
+"# 1) 使用声明的类型来解析\n"
+"p = Point(4.0, -3.2)\n"
+"con = sqlite3.connect(\":memory:\", detect_types=sqlite3.PARSE_DECLTYPES)\n"
+"cur = con.execute(\"CREATE TABLE test(p point)\")\n"
+"\n"
+"cur.execute(\"INSERT INTO test(p) VALUES(?)\", (p,))\n"
+"cur.execute(\"SELECT p FROM test\")\n"
+"print(\"with declared types:\", cur.fetchone()[0])\n"
+"cur.close()\n"
+"con.close()\n"
+"\n"
+"# 2) 使用列名称来解析\n"
+"con = sqlite3.connect(\":memory:\", detect_types=sqlite3.PARSE_COLNAMES)\n"
+"cur = con.execute(\"CREATE TABLE test(p)\")\n"
+"\n"
+"cur.execute(\"INSERT INTO test(p) VALUES(?)\", (p,))\n"
+"cur.execute('SELECT p AS \"p [point]\" FROM test')\n"
+"print(\"with column names:\", cur.fetchone()[0])\n"
+"cur.close()\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:2292
 msgid "Adapter and converter recipes"
@@ -3122,6 +3343,40 @@ msgid ""
 "sqlite3.register_converter(\"datetime\", convert_datetime)\n"
 "sqlite3.register_converter(\"timestamp\", convert_timestamp)"
 msgstr ""
+"import datetime\n"
+"import sqlite3\n"
+"\n"
+"def adapt_date_iso(val):\n"
+"    \"\"\"将 datetime.date 适配为 ISO 8601 日期。\"\"\"\n"
+"    return val.isoformat()\n"
+"\n"
+"def adapt_datetime_iso(val):\n"
+"    \"\"\"将 datetime.datetime 适配为不带时区的 ISO 8601 日期。\"\"\"\n"
+"    return val.isoformat()\n"
+"\n"
+"def adapt_datetime_epoch(val):\n"
+"    \"\"\"将 datetime.datetime 适配为 Unix 时间戳。\"\"\"\n"
+"    return int(val.timestamp())\n"
+"\n"
+"sqlite3.register_adapter(datetime.date, adapt_date_iso)\n"
+"sqlite3.register_adapter(datetime.datetime, adapt_datetime_iso)\n"
+"sqlite3.register_adapter(datetime.datetime, adapt_datetime_epoch)\n"
+"\n"
+"def convert_date(val):\n"
+"    \"\"\"将 ISO 8601 日期转换为 datetime.date 对象。\"\"\"\n"
+"    return datetime.date.fromisoformat(val.decode())\n"
+"\n"
+"def convert_datetime(val):\n"
+"    \"\"\"将 ISO 8601 日期时间转换为 datetime.datetime 对象。\"\"\"\n"
+"    return datetime.datetime.fromisoformat(val.decode())\n"
+"\n"
+"def convert_timestamp(val):\n"
+"    \"\"\"将 Unix 纪元时间戳转换为 datetime.datetime 对象。\"\"\"\n"
+"    return datetime.datetime.fromtimestamp(int(val))\n"
+"\n"
+"sqlite3.register_converter(\"date\", convert_date)\n"
+"sqlite3.register_converter(\"datetime\", convert_datetime)\n"
+"sqlite3.register_converter(\"timestamp\", convert_timestamp)"
 
 #: ../../library/sqlite3.rst:2356
 msgid "How to use connection shortcut methods"
@@ -3165,6 +3420,24 @@ msgid ""
 "# the connection object should be closed manually\n"
 "con.close()"
 msgstr ""
+"# 创建并填充表。\n"
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE lang(name, first_appeared)\")\n"
+"data = [\n"
+"    (\"C++\", 1985),\n"
+"    (\"Objective-C\", 1984),\n"
+"]\n"
+"con.executemany(\"INSERT INTO lang(name, first_appeared) VALUES(?, ?)\", data)\n"
+"\n"
+"# 打印表内容\n"
+"for row in con.execute(\"SELECT name, first_appeared FROM lang\"):\n"
+"    print(row)\n"
+"\n"
+"print(\"I just deleted\", con.execute(\"DELETE FROM lang\").rowcount, \"rows\")\n"
+"\n"
+"# close() 不是一个快捷方法也不会被自动调用；\n"
+"# 连接对象应当被手动关闭\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:2399
 msgid "How to use the connection context manager"
@@ -3223,6 +3496,24 @@ msgid ""
 "# so the connection object should be closed manually\n"
 "con.close()"
 msgstr ""
+"con = sqlite3.connect(\":memory:\")\n"
+"con.execute(\"CREATE TABLE lang(id INTEGER PRIMARY KEY, name VARCHAR UNIQUE)\")\n"
+"\n"
+"# 成功，con.commit() 将在此后被自动调用\n"
+"with con:\n"
+"    con.execute(\"INSERT INTO lang(name) VALUES(?)\", (\"Python\",))\n"
+"\n"
+"# con.rollback() 会在 with 代码块结束时被自动调用并附带一个异常；\n"
+"# 该异常仍会被引发并且必须被捕获\n"
+"try:\n"
+"    with con:\n"
+"        con.execute(\"INSERT INTO lang(name) VALUES(?)\", (\"Python\",))\n"
+"except sqlite3.IntegrityError:\n"
+"    print(\"couldn't add Python twice\")\n"
+"\n"
+"# 被用作上下文管理器的连接对象只能提交或回滚事务，\n"
+"# 因此连接对象必须被手动关闭\n"
+"con.close()"
 
 #: ../../library/sqlite3.rst:2451
 msgid "How to work with SQLite URIs"
@@ -3241,21 +3532,23 @@ msgid ""
 ">>> con = sqlite3.connect(\"file:tutorial.db?mode=ro\", uri=True)\n"
 ">>> con.execute(\"CREATE TABLE readonly(data)\")\n"
 "Traceback (most recent call last):\n"
-"OperationalError: attempt to write a readonly database"
+"OperationalError: attempt to write a readonly database\n"
+">>> con.close()"
 msgstr ""
 ">>> con = sqlite3.connect(\"file:tutorial.db?mode=ro\", uri=True)\n"
 ">>> con.execute(\"CREATE TABLE readonly(data)\")\n"
 "Traceback (most recent call last):\n"
-"OperationalError: attempt to write a readonly database"
+"OperationalError: attempt to write a readonly database\n"
+">>> con.close()"
 
-#: ../../library/sqlite3.rst:2464
+#: ../../library/sqlite3.rst:2465
 msgid ""
 "Do not implicitly create a new database file if it does not already exist; "
 "will raise :exc:`~sqlite3.OperationalError` if unable to create a new file:"
 msgstr ""
 "如果一个数据库尚不存在则不会隐式地新建数据库；如果无法新建数据库则将引发 :exc:`~sqlite3.OperationalError`:"
 
-#: ../../library/sqlite3.rst:2467
+#: ../../library/sqlite3.rst:2468
 msgid ""
 ">>> con = sqlite3.connect(\"file:nosuchdb.db?mode=rw\", uri=True)\n"
 "Traceback (most recent call last):\n"
@@ -3265,11 +3558,11 @@ msgstr ""
 "Traceback (most recent call last):\n"
 "OperationalError: unable to open database file"
 
-#: ../../library/sqlite3.rst:2474
+#: ../../library/sqlite3.rst:2475
 msgid "Create a shared named in-memory database:"
 msgstr "创建一个名为 shared 的内存数据库:"
 
-#: ../../library/sqlite3.rst:2476
+#: ../../library/sqlite3.rst:2477
 msgid ""
 "db = \"file:mem1?mode=memory&cache=shared\"\n"
 "con1 = sqlite3.connect(db, uri=True)\n"
@@ -3295,17 +3588,17 @@ msgstr ""
 "con1.close()\n"
 "con2.close()"
 
-#: ../../library/sqlite3.rst:2490
+#: ../../library/sqlite3.rst:2491
 msgid ""
 "More information about this feature, including a list of parameters, can be "
 "found in the `SQLite URI documentation`_."
 msgstr "关于此特性的更多信息，包括可用的形参列表，可以在 `SQLite URI documentation`_ 中找到。"
 
-#: ../../library/sqlite3.rst:2499
+#: ../../library/sqlite3.rst:2500
 msgid "How to create and use row factories"
 msgstr "如何创建并使用行工厂对象"
 
-#: ../../library/sqlite3.rst:2501
+#: ../../library/sqlite3.rst:2502
 msgid ""
 "By default, :mod:`!sqlite3` represents each row as a :class:`tuple`. If a "
 ":class:`!tuple` does not suit your needs, you can use the "
@@ -3314,7 +3607,7 @@ msgstr ""
 "在默认情况下，:mod:`!sqlite3` 会以 :class:`tuple` 来表示每一行。 如果 :class:`!tuple` "
 "不适合你的需求，你可以使用 :class:`sqlite3.Row` 类或自定义的 :attr:`~Cursor.row_factory`。"
 
-#: ../../library/sqlite3.rst:2506
+#: ../../library/sqlite3.rst:2507
 msgid ""
 "While :attr:`!row_factory` exists as an attribute both on the "
 ":class:`Cursor` and the :class:`Connection`, it is recommended to set "
@@ -3324,7 +3617,7 @@ msgstr ""
 "虽然 :attr:`!row_factory` 同时作为 :class:`Cursor` 和 :class:`Connection` "
 "的属性存在，但推荐设置 :class:`Connection.row_factory`，这样在该连接上创建的所有游标都将使用同一个行工厂对象。"
 
-#: ../../library/sqlite3.rst:2511
+#: ../../library/sqlite3.rst:2512
 msgid ""
 ":class:`!Row` provides indexed and case-insensitive named access to columns,"
 " with minimal memory overhead and performance impact over a :class:`!tuple`."
@@ -3334,7 +3627,7 @@ msgstr ""
 ":class:`!Row` 提供了针对列的序列方式和大小写不敏感的名称方式访问，具有优于 :class:`!tuple` 的最小化内存开销和性能影响。 "
 "要使用 :class:`!Row` 作为行工厂对象，请将其赋值给 :attr:`!row_factory` 属性:"
 
-#: ../../library/sqlite3.rst:2516
+#: ../../library/sqlite3.rst:2517
 msgid ""
 ">>> con = sqlite3.connect(\":memory:\")\n"
 ">>> con.row_factory = sqlite3.Row"
@@ -3342,11 +3635,11 @@ msgstr ""
 ">>> con = sqlite3.connect(\":memory:\")\n"
 ">>> con.row_factory = sqlite3.Row"
 
-#: ../../library/sqlite3.rst:2521
+#: ../../library/sqlite3.rst:2522
 msgid "Queries now return :class:`!Row` objects:"
 msgstr "现在查询将返回 :class:`!Row` 对象:"
 
-#: ../../library/sqlite3.rst:2523
+#: ../../library/sqlite3.rst:2524
 msgid ""
 ">>> res = con.execute(\"SELECT 'Earth' AS name, 6378 AS radius\")\n"
 ">>> row = res.fetchone()\n"
@@ -3360,8 +3653,19 @@ msgid ""
 "6378\n"
 ">>> con.close()"
 msgstr ""
+">>> res = con.execute(\"SELECT 'Earth' AS name, 6378 AS radius\")\n"
+">>> row = res.fetchone()\n"
+">>> row.keys()\n"
+"['name', 'radius']\n"
+">>> row[0]         # 通过索引访问。\n"
+"'Earth'\n"
+">>> row[\"name\"]    # 通过名称访问。\n"
+"'Earth'\n"
+">>> row[\"RADIUS\"]  # 列名不区分大小写。\n"
+"6378\n"
+">>> con.close()"
 
-#: ../../library/sqlite3.rst:2539
+#: ../../library/sqlite3.rst:2540
 msgid ""
 "The ``FROM`` clause can be omitted in the ``SELECT`` statement, as in the "
 "above example. In such cases, SQLite returns a single row with columns "
@@ -3371,14 +3675,14 @@ msgstr ""
 "``FROM`` 子句可以在 ``SELECT`` 语句中省略，像在上面的示例中那样。 在这种情况下，SQLite "
 "将返回单独的行，其中的列由表达式来定义，例如使用字面量并给出相应的别名 ``expr AS alias``。"
 
-#: ../../library/sqlite3.rst:2544
+#: ../../library/sqlite3.rst:2545
 msgid ""
 "You can create a custom :attr:`~Cursor.row_factory` that returns each row as"
 " a :class:`dict`, with column names mapped to values:"
 msgstr ""
 "你可以创建自定义 :attr:`~Cursor.row_factory` 用来返回 :class:`dict` 形式的行，将列名映射到相应的值。"
 
-#: ../../library/sqlite3.rst:2547
+#: ../../library/sqlite3.rst:2548
 msgid ""
 "def dict_factory(cursor, row):\n"
 "    fields = [column[0] for column in cursor.description]\n"
@@ -3388,12 +3692,12 @@ msgstr ""
 "    fields = [column[0] for column in cursor.description]\n"
 "    return {key: value for key, value in zip(fields, row)}"
 
-#: ../../library/sqlite3.rst:2553
+#: ../../library/sqlite3.rst:2554
 msgid ""
 "Using it, queries now return a :class:`!dict` instead of a :class:`!tuple`:"
 msgstr "使用它，现在查询将返回 :class:`!dict` 而不是 :class:`!tuple`:"
 
-#: ../../library/sqlite3.rst:2555
+#: ../../library/sqlite3.rst:2556
 msgid ""
 ">>> con = sqlite3.connect(\":memory:\")\n"
 ">>> con.row_factory = dict_factory\n"
@@ -3402,12 +3706,18 @@ msgid ""
 "{'a': 1, 'b': 2}\n"
 ">>> con.close()"
 msgstr ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.row_factory = dict_factory\n"
+">>> for row in con.execute(\"SELECT 1 AS a, 2 AS b\"):\n"
+"...     print(row)\n"
+"{'a': 1, 'b': 2}\n"
+">>> con.close()"
 
-#: ../../library/sqlite3.rst:2564
+#: ../../library/sqlite3.rst:2565
 msgid "The following row factory returns a :term:`named tuple`:"
 msgstr "以下行工厂函数将返回一个 :term:`named tuple`:"
 
-#: ../../library/sqlite3.rst:2566
+#: ../../library/sqlite3.rst:2567
 msgid ""
 "from collections import namedtuple\n"
 "\n"
@@ -3416,12 +3726,18 @@ msgid ""
 "    cls = namedtuple(\"Row\", fields)\n"
 "    return cls._make(row)"
 msgstr ""
+"from collections import namedtuple\n"
+"\n"
+"def namedtuple_factory(cursor, row):\n"
+"    fields = [column[0] for column in cursor.description]\n"
+"    cls = namedtuple(\"Row\", fields)\n"
+"    return cls._make(row)"
 
-#: ../../library/sqlite3.rst:2575
+#: ../../library/sqlite3.rst:2576
 msgid ":func:`!namedtuple_factory` can be used as follows:"
 msgstr ":func:`!namedtuple_factory` 可以像下面这样使用:"
 
-#: ../../library/sqlite3.rst:2577
+#: ../../library/sqlite3.rst:2578
 msgid ""
 ">>> con = sqlite3.connect(\":memory:\")\n"
 ">>> con.row_factory = namedtuple_factory\n"
@@ -3435,8 +3751,19 @@ msgid ""
 "2\n"
 ">>> con.close()"
 msgstr ""
+">>> con = sqlite3.connect(\":memory:\")\n"
+">>> con.row_factory = namedtuple_factory\n"
+">>> cur = con.execute(\"SELECT 1 AS a, 2 AS b\")\n"
+">>> row = cur.fetchone()\n"
+">>> row\n"
+"Row(a=1, b=2)\n"
+">>> row[0]  # 索引访问。\n"
+"1\n"
+">>> row.b   # 属性访问。\n"
+"2\n"
+">>> con.close()"
 
-#: ../../library/sqlite3.rst:2591
+#: ../../library/sqlite3.rst:2592
 msgid ""
 "With some adjustments, the above recipe can be adapted to use a "
 ":class:`~dataclasses.dataclass`, or any other custom class, instead of a "
@@ -3445,11 +3772,11 @@ msgstr ""
 "经过一些调整，上面的范例程序可以被适配为使用 :class:`~dataclasses.dataclass`，或任何其他自定义类，而不是 "
 ":class:`~collections.namedtuple`。"
 
-#: ../../library/sqlite3.rst:2599
+#: ../../library/sqlite3.rst:2600
 msgid "How to handle non-UTF-8 text encodings"
 msgstr "如何处理非 UTF-8 文本编码格式"
 
-#: ../../library/sqlite3.rst:2601
+#: ../../library/sqlite3.rst:2602
 msgid ""
 "By default, :mod:`!sqlite3` uses :class:`str` to adapt SQLite values with "
 "the ``TEXT`` data type. This works well for UTF-8 encoded text, but it might"
@@ -3460,7 +3787,7 @@ msgstr ""
 " 编码的文本来说很适用，但对于其他编码格式和无效的 UTF-8 来说则可能出错。 你可以使用自定义的 "
 ":attr:`~Connection.text_factory` 来处理这种情况。"
 
-#: ../../library/sqlite3.rst:2607
+#: ../../library/sqlite3.rst:2608
 msgid ""
 "Because of SQLite's `flexible typing`_, it is not uncommon to encounter "
 "table columns with the ``TEXT`` data type containing non-UTF-8 encodings, or"
@@ -3475,40 +3802,40 @@ msgstr ""
 "编码的文本的数据库，例如一个捷克语-英语字典条目的表。 假定我们现在有一个 :class:`Connection` 实例 :py:data:`!con`"
 " 已连接到这个数据库，我们将可以使用这个 :attr:`~Connection.text_factory` 来解码使用 Latin-2 编码的文本："
 
-#: ../../library/sqlite3.rst:2616
+#: ../../library/sqlite3.rst:2617
 msgid "con.text_factory = lambda data: str(data, encoding=\"latin2\")"
 msgstr "con.text_factory = lambda data: str(data, encoding=\"latin2\")"
 
-#: ../../library/sqlite3.rst:2620
+#: ../../library/sqlite3.rst:2621
 msgid ""
 "For invalid UTF-8 or arbitrary data in stored in ``TEXT`` table columns, you"
 " can use the following technique, borrowed from the :ref:`unicode-howto`:"
 msgstr ""
 "对于存储在 ``TEXT`` 表字段中的无效 UTF-8 或任意数据，你可以使用以下技巧，借用自 :ref:`unicode-howto`:"
 
-#: ../../library/sqlite3.rst:2623
+#: ../../library/sqlite3.rst:2624
 msgid "con.text_factory = lambda data: str(data, errors=\"surrogateescape\")"
 msgstr "con.text_factory = lambda data: str(data, errors=\"surrogateescape\")"
 
-#: ../../library/sqlite3.rst:2629
+#: ../../library/sqlite3.rst:2630
 msgid ""
 "The :mod:`!sqlite3` module API does not support strings containing "
 "surrogates."
 msgstr ":mod:`!sqlite3` 模块 API 不支持包含替代符的字符串。"
 
-#: ../../library/sqlite3.rst:2634
+#: ../../library/sqlite3.rst:2635
 msgid ":ref:`unicode-howto`"
 msgstr ":ref:`unicode-howto`"
 
-#: ../../library/sqlite3.rst:2640
+#: ../../library/sqlite3.rst:2641
 msgid "Explanation"
 msgstr "说明"
 
-#: ../../library/sqlite3.rst:2646
+#: ../../library/sqlite3.rst:2647
 msgid "Transaction control"
 msgstr "事务控制"
 
-#: ../../library/sqlite3.rst:2648
+#: ../../library/sqlite3.rst:2649
 msgid ""
 ":mod:`!sqlite3` offers multiple methods of controlling whether, when and how"
 " database transactions are opened and closed. :ref:`sqlite3-transaction-"
@@ -3519,11 +3846,11 @@ msgstr ""
 ":ref:`sqlite3-transaction-control-autocommit` ，而 :ref:`sqlite3-transaction-"
 "control-isolation-level` 则保留了 Python 3.12 之前的行为。"
 
-#: ../../library/sqlite3.rst:2657
+#: ../../library/sqlite3.rst:2658
 msgid "Transaction control via the ``autocommit`` attribute"
 msgstr "通过 ``autocommit`` 属性进行事务控制"
 
-#: ../../library/sqlite3.rst:2659
+#: ../../library/sqlite3.rst:2660
 msgid ""
 "The recommended way of controlling transaction behaviour is through the "
 ":attr:`Connection.autocommit` attribute, which should preferably be set "
@@ -3532,13 +3859,13 @@ msgstr ""
 "控制事务行为的推荐方式是通过 :attr:`Connection.autocommit` 属性，最好是使用 :func:`connect` 的 "
 "*autocommit* 形参来设置该属性。"
 
-#: ../../library/sqlite3.rst:2664
+#: ../../library/sqlite3.rst:2665
 msgid ""
 "It is suggested to set *autocommit* to ``False``, which implies "
 ":pep:`249`-compliant transaction control. This means:"
 msgstr "建议将 *autocommit* 设为 ``False``，表示使用兼容 :pep:`249` 的事务控制。 这意味着："
 
-#: ../../library/sqlite3.rst:2668
+#: ../../library/sqlite3.rst:2669
 msgid ""
 ":mod:`!sqlite3` ensures that a transaction is always open, so "
 ":func:`connect`, :meth:`Connection.commit`, and :meth:`Connection.rollback` "
@@ -3550,21 +3877,21 @@ msgstr ""
 "和 :meth:`Connection.rollback` 将隐式地开启一个新事务（对于后两者，在关闭待处理事务后会立即执行）。 开启事务时 "
 ":mod:`!sqlite3` 会使用 ``BEGIN DEFERRED`` 语句。"
 
-#: ../../library/sqlite3.rst:2673
+#: ../../library/sqlite3.rst:2674
 msgid "Transactions should be committed explicitly using :meth:`!commit`."
 msgstr "事务应当显式地使用 :meth:`!commit` 执行提交。"
 
-#: ../../library/sqlite3.rst:2674
+#: ../../library/sqlite3.rst:2675
 msgid "Transactions should be rolled back explicitly using :meth:`!rollback`."
 msgstr "事务应当显式地使用 :meth:`!rollback` 执行回滚。"
 
-#: ../../library/sqlite3.rst:2675
+#: ../../library/sqlite3.rst:2676
 msgid ""
 "An implicit rollback is performed if the database is "
 ":meth:`~Connection.close`-ed with pending changes."
 msgstr "如果数据库执行 :meth:`~Connection.close` 时有待处理的更改则会隐式地执行回滚。"
 
-#: ../../library/sqlite3.rst:2678
+#: ../../library/sqlite3.rst:2679
 msgid ""
 "Set *autocommit* to ``True`` to enable SQLite's `autocommit mode`_. In this "
 "mode, :meth:`Connection.commit` and :meth:`Connection.rollback` have no "
@@ -3578,7 +3905,7 @@ msgstr ""
 "SQLite 的自动提交模式与兼容 :pep:`249` 的 :attr:`Connection.autocommit` 属性不同；请使用 "
 ":attr:`Connection.in_transaction` 查询底层的 SQLite 自动提交模式。"
 
-#: ../../library/sqlite3.rst:2686
+#: ../../library/sqlite3.rst:2687
 msgid ""
 "Set *autocommit* to :data:`LEGACY_TRANSACTION_CONTROL` to leave transaction "
 "control behaviour to the :attr:`Connection.isolation_level` attribute. See "
@@ -3588,11 +3915,11 @@ msgstr ""
 ":attr:`Connection.isolation_level` 属性。 更多信息参见 :ref:`sqlite3-transaction-"
 "control-isolation-level`。"
 
-#: ../../library/sqlite3.rst:2695
+#: ../../library/sqlite3.rst:2696
 msgid "Transaction control via the ``isolation_level`` attribute"
 msgstr "通过 ``isolation_level`` 属性进行事务控制"
 
-#: ../../library/sqlite3.rst:2699
+#: ../../library/sqlite3.rst:2700
 msgid ""
 "The recommended way of controlling transactions is via the "
 ":attr:`~Connection.autocommit` attribute. See :ref:`sqlite3-transaction-"
@@ -3601,7 +3928,7 @@ msgstr ""
 "推荐的控制事务方式是通过 :attr:`~Connection.autocommit` 属性。 参见 "
 ":ref:`sqlite3-transaction-control-autocommit`。"
 
-#: ../../library/sqlite3.rst:2703
+#: ../../library/sqlite3.rst:2704
 msgid ""
 "If :attr:`Connection.autocommit` is set to "
 ":data:`LEGACY_TRANSACTION_CONTROL` (the default), transaction behaviour is "
@@ -3612,7 +3939,7 @@ msgstr ""
 "(默认值)，则事务行为由 :attr:`Connection.isolation_level` 属性控制。 "
 "否则，:attr:`!isolation_level` 将没有任何作用。"
 
-#: ../../library/sqlite3.rst:2709
+#: ../../library/sqlite3.rst:2710
 msgid ""
 "If the connection attribute :attr:`~Connection.isolation_level` is not "
 "``None``, new transactions are implicitly opened before "
@@ -3632,7 +3959,7 @@ msgstr ""
 "你可以通过 :attr:`~Connection.isolation_level` 属性来选择下层的 `SQLite transaction "
 "behaviour`_ — 也就是说，:mod:`!sqlite3` 是否要隐式地执行以及执行何种类型的 ``BEGIN`` 语句"
 
-#: ../../library/sqlite3.rst:2722
+#: ../../library/sqlite3.rst:2723
 msgid ""
 "If :attr:`~Connection.isolation_level` is set to ``None``, no transactions "
 "are implicitly opened at all. This leaves the underlying SQLite library in "
@@ -3645,7 +3972,7 @@ msgstr ""
 "SQLite 库处于 `自动提交模式`_，但也允许用户使用显式 SQL 语句执行他们自己的事务处理。 下层 SQLite 库的自动提交模式可使用 "
 ":attr:`~Connection.in_transaction` 属性来查询。"
 
-#: ../../library/sqlite3.rst:2730
+#: ../../library/sqlite3.rst:2731
 msgid ""
 "The :meth:`~Cursor.executescript` method implicitly commits any pending "
 "transaction before execution of the given SQL script, regardless of the "
@@ -3654,13 +3981,13 @@ msgstr ""
 ":meth:`~Cursor.executescript` 方法会在执行给定的 SQL 脚本之前隐式地提交任何挂起的事务，无论 "
 ":attr:`~Connection.isolation_level` 的值是什么。"
 
-#: ../../library/sqlite3.rst:2734
+#: ../../library/sqlite3.rst:2735
 msgid ""
 ":mod:`!sqlite3` used to implicitly commit an open transaction before DDL "
 "statements.  This is no longer the case."
 msgstr "在以前 :mod:`!sqlite3` 会在 DDL 语句之前隐式地提交已开启的事务。 现存则不会再这样做。"
 
-#: ../../library/sqlite3.rst:2738
+#: ../../library/sqlite3.rst:2739
 msgid ""
 "The recommended way of controlling transactions is now via the "
 ":attr:`~Connection.autocommit` attribute."

@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-11 14:17+0000\n"
+"POT-Creation-Date: 2024-11-08 14:16+0000\n"
 "PO-Revision-Date: 2021-06-28 01:08+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -472,6 +472,11 @@ msgid ""
 "what spec to return. :func:`importlib.util.spec_from_loader` may be useful "
 "for implementing concrete ``MetaPathFinders``."
 msgstr ""
+"一个用于查找指定模块的 :term:`spec <module spec>` 的抽象方法。 如果这是最高层级的导入，*path* 将为 "
+"``None``。 在其他情况下，这将是对子包或模块的搜索而 *path* 将是来自上级包的 :attr:`~module.__path__` 值。 "
+"如果找不到 spec，则返回 ``None``。 在传入时，``target`` 是一个被查找器用来对返回的 spec 进行更有依据的猜测的模块对象。 "
+"在实现具体 ``MetaPathFinders`` 的时候 :func:`importlib.util.spec_from_loader` "
+"将会很有用处。"
 
 #: ../../library/importlib.rst:263
 msgid ""
@@ -666,6 +671,9 @@ msgid ""
 ":attr:`~module.__file__` attribute or an item from a package's "
 ":attr:`~module.__path__`."
 msgstr ""
+"一个返回用来表示位于 *path* 的数据的字节串的抽象方法。 具有允许存储任意数据的文件型存储后端的加载器能够实现这个抽象方法来直接访问被存储的数据。"
+" 如果 *path* 无法找到则会引发 :exc:`OSError`。 *path* 应当使用一个模块的 module's "
+":attr:`~module.__file__` 属性或来自某个包的 :attr:`~module.__path__` 中的条目来构造。"
 
 #: ../../library/importlib.rst:402
 msgid "Raises :exc:`OSError` instead of :exc:`NotImplementedError`."
@@ -773,6 +781,8 @@ msgid ""
 "for the specified module. If no path is available, :exc:`ImportError` is "
 "raised."
 msgstr ""
+"一个用于为指定模块返回 :attr:`~module.__file__` 的值的抽象方法。 如果没有可用的路径，则会引发 "
+":exc:`ImportError`。"
 
 #: ../../library/importlib.rst:491
 msgid ""
@@ -1555,18 +1565,26 @@ msgid ""
 " automatically reflected in the module's :attr:`__spec__.origin "
 "<ModuleSpec.origin>`, and vice versa."
 msgstr ""
+"针对特定模块的导入系统相关状态的规格说明。 这通常是作为模块的 :attr:`~module.__spec__` 属性对外公开。 "
+"这类属性中有许多在模块上也直接可用：例如，``module.__spec__.origin == module.__file__``。 但是请注意，虽然"
+" *值* 通常是相等的，但它们也可以因为两个对象之间没有进行同步而不相等。 举例来说，有可能在运行时更新模块的 "
+":attr:`~module.__file__` 而这将不会自动反映在模块的 :attr:`__spec__.origin "
+"<ModuleSpec.origin>` 中，反之亦然。"
 
 #: ../../library/importlib.rst:1161
 msgid ""
 "The module's fully qualified name (see :attr:`module.__name__`). The "
 ":term:`finder` should always set this attribute to a non-empty string."
 msgstr ""
+"模块的完整限定名称 (参见 :attr:`module.__name__`)。 :term:`finder` 应当总是将该属性设为一个非空字符串。"
 
 #: ../../library/importlib.rst:1166
 msgid ""
 "The :term:`loader` used to load the module (see :attr:`module.__loader__`). "
 "The :term:`finder` should always set this attribute."
 msgstr ""
+"用于加载模块的 :term:`loader` (参见 :attr:`module.__loader__`)。 :term:`finder` "
+"应当总是设置该属性。"
 
 #: ../../library/importlib.rst:1171
 msgid ""
@@ -1577,6 +1595,9 @@ msgid ""
 "uncommon case that there is not one (like for namespace packages), it should"
 " be set to ``None``."
 msgstr ""
+"应当被 :term:`loader` 用于加载模块的位置 (参见 :attr:`module.__file__`)。 例如，对于从 ``.py`` "
+"新闻公报加载的模块来说这将为文件名。 :term:`finder` 应当总是将此属性设为一个有意义的值以供 :term:`loader` 使用。 "
+"在没有可用值的少数情况下（如命名空间包），它应当被设为 ``None``。"
 
 #: ../../library/importlib.rst:1180
 msgid ""
@@ -1584,6 +1605,8 @@ msgid ""
 "which a package's submodules will be found (see :attr:`module.__path__`). "
 "Most of the time there will only be a single directory in this list."
 msgstr ""
+"一个（可能为空的）枚举用于查找包中的子模块的位置的由字符串组成的 :term:`sequence` (参见 "
+":attr:`module.__path__`)。 在大多数时候该列表中都将只有一个目录。"
 
 #: ../../library/importlib.rst:1185
 msgid ""
@@ -1592,6 +1615,8 @@ msgid ""
 "should be set to ``None`` for non-package modules.  It is set automatically "
 "later to a special object for namespace packages."
 msgstr ""
+":term:`finder` 应当将此属性设为一个序列，甚至可以为空序列，以向导入系统提示该模块是一个包。 对于非包模块它应当被设为 ``None``。"
+" 对于命名空间包它会在稍后被自动设为一个特殊对象。"
 
 #: ../../library/importlib.rst:1193
 msgid ""
@@ -1608,6 +1633,8 @@ msgid ""
 "attribute but it may be ``None`` for modules that do not need compiled code "
 "stored."
 msgstr ""
+"模块代码的已编译版本的文件名 (参见 :attr:`module.__cached__`)。 :term:`finder` "
+"总是应当设置此属性但对于不需要存储已编译代码的模块来说它可以为 ``None``。"
 
 #: ../../library/importlib.rst:1206
 msgid ""

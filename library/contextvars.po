@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-04 14:17+0000\n"
+"POT-Creation-Date: 2024-11-19 01:00+0000\n"
 "PO-Revision-Date: 2021-06-28 00:57+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -235,49 +235,102 @@ msgstr ""
 
 #: ../../library/contextvars.rst:147
 msgid ""
-"Every thread will have a different top-level :class:`~contextvars.Context` "
-"object. This means that a :class:`ContextVar` object behaves in a similar "
-"fashion to :func:`threading.local` when values are assigned in different "
-"threads."
+"Each thread has its own effective stack of :class:`!Context` objects.  The "
+":term:`current context` is the :class:`!Context` object at the top of the "
+"current thread's stack.  All :class:`!Context` objects in the stacks are "
+"considered to be *entered*."
 msgstr ""
-"每个线程将有一个不同的最高层级 :class:`~contextvars.Context` 对象。 这意味着当在不同的线程中赋值时 "
-":class:`ContextVar` 对象的行为方式与 :func:`threading.local` 类似。"
+"每个线程有它自己在用的 :class:`!Context` 对象栈。 :term:`current context` 是位于当前线程的栈的顶部的 "
+":class:`!Context` 对象。 栈中所有的 :class:`!Context` 对象都被视为是 *进入过的*。"
 
 #: ../../library/contextvars.rst:152
-msgid "Context implements the :class:`collections.abc.Mapping` interface."
-msgstr "Context 实现了 :class:`collections.abc.Mapping` 接口。"
+msgid ""
+"*Entering* a context, which can be done by calling its :meth:`~Context.run` "
+"method, makes the context the current context by pushing it onto the top of "
+"the current thread's context stack."
+msgstr ""
+"*进入* 一个上下文，这可以通过调用其 :meth:`~Context.run` 方法来完成，将把该上下文推入当前线程的栈的顶部使它成为当前上下文。"
 
 #: ../../library/contextvars.rst:156
 msgid ""
-"Execute ``callable(*args, **kwargs)`` code in the context object the *run* "
-"method is called on.  Return the result of the execution or propagate an "
-"exception if one occurred."
+"*Exiting* from the current context, which can be done by returning from the "
+"callback passed to the :meth:`~Context.run` method, restores the current "
+"context to what it was before the context was entered by popping the context"
+" off the top of the context stack."
 msgstr ""
-"按照 *run* 方法中的参数在上下文对象中执行 ``callable(*args, **kwargs)`` "
-"代码。返回执行结果，如果发生异常，则将异常透传出来。"
+"*退出* 当前上下文，这可以通过从传给 :meth:`~Context.run` "
+"方法的回调退出，通过将该上下文弹出上下文栈的顶部将当前上下文恢复至该上下文被进入之前的上下文来完成。"
 
-#: ../../library/contextvars.rst:160
+#: ../../library/contextvars.rst:161
 msgid ""
-"Any changes to any context variables that *callable* makes will be contained"
-" in the context object::"
-msgstr "*callable* 对上下文变量所做的任何修改都会保留在上下文对象中::"
+"Since each thread has its own context stack, :class:`ContextVar` objects "
+"behave in a similar fashion to :func:`threading.local` when values are "
+"assigned in different threads."
+msgstr ""
+"由于每个线程都有它自己的上下文栈，:class:`ContextVar` 对象的行为类似于 :func:`threading.local` "
+"在不同线程中赋值时的行为。"
 
-#: ../../library/contextvars.rst:163
+#: ../../library/contextvars.rst:165
 msgid ""
-"var = ContextVar('var')\n"
+"Attempting to enter an already entered context, including contexts entered "
+"in other threads, raises a :exc:`RuntimeError`."
+msgstr "尝试进入一个已被进入的上下文，包括在其他线程中被进入的上下文，将会引发 :exc:`RuntimeError`。"
+
+#: ../../library/contextvars.rst:168
+msgid "After exiting a context, it can later be re-entered (from any thread)."
+msgstr "在退出一个上下文之后，它可以在稍后被重新进入（从任何线程）。"
+
+#: ../../library/contextvars.rst:170
+msgid ""
+"Any changes to :class:`ContextVar` values via the :meth:`ContextVar.set` "
+"method are recorded in the current context.  The :meth:`ContextVar.get` "
+"method returns the value associated with the current context.  Exiting a "
+"context effectively reverts any changes made to context variables while the "
+"context was entered (if needed, the values can be restored by re-entering "
+"the context)."
+msgstr ""
+"任何通过 :meth:`ContextVar.set` 方法对 :class:`ContextVar` 值的修改都将在当前上下文中被记录。 "
+":meth:`ContextVar.get` 方法将返回关联到当前上下文的值。 "
+"退出一个上下文肯定会撤销在进入该上下文期间对上下文变量的任何修改（如有必要，这些值可通过重新进入相应的上下文来恢复）。"
+
+#: ../../library/contextvars.rst:177
+msgid "Context implements the :class:`collections.abc.Mapping` interface."
+msgstr "Context 实现了 :class:`collections.abc.Mapping` 接口。"
+
+#: ../../library/contextvars.rst:181
+msgid ""
+"Enters the Context, executes ``callable(*args, **kwargs)``, then exits the "
+"Context.  Returns *callable*'s return value, or propagates an exception if "
+"one occurred."
+msgstr ""
+"进入 Context，执行 ``callable(*args, **kwargs)``，然后退出 Context。 返回 *callable* "
+"的返回值，或者如果发生了异常则传播该异常。"
+
+#: ../../library/contextvars.rst:185
+msgid "Example:"
+msgstr "示例:"
+
+#: ../../library/contextvars.rst:187
+msgid ""
+"import contextvars\n"
+"\n"
+"var = contextvars.ContextVar('var')\n"
 "var.set('spam')\n"
+"print(var.get())  # 'spam'\n"
+"\n"
+"ctx = contextvars.copy_context()\n"
 "\n"
 "def main():\n"
 "    # 'var' was set to 'spam' before\n"
 "    # calling 'copy_context()' and 'ctx.run(main)', so:\n"
-"    # var.get() == ctx[var] == 'spam'\n"
+"    print(var.get())  # 'spam'\n"
+"    print(ctx[var])  # 'spam'\n"
 "\n"
 "    var.set('ham')\n"
 "\n"
 "    # Now, after setting 'var' to 'ham':\n"
-"    # var.get() == ctx[var] == 'ham'\n"
-"\n"
-"ctx = copy_context()\n"
+"    print(var.get())  # 'ham'\n"
+"    print(ctx[var])  # 'ham'\n"
 "\n"
 "# Any changes that the 'main' function makes to 'var'\n"
 "# will be contained in 'ctx'.\n"
@@ -285,61 +338,60 @@ msgid ""
 "\n"
 "# The 'main()' function was run in the 'ctx' context,\n"
 "# so changes to 'var' are contained in it:\n"
-"# ctx[var] == 'ham'\n"
+"print(ctx[var])  # 'ham'\n"
 "\n"
 "# However, outside of 'ctx', 'var' is still set to 'spam':\n"
-"# var.get() == 'spam'"
+"print(var.get())  # 'spam'"
 msgstr ""
-"var = ContextVar('var')\n"
+"import contextvars\n"
+"\n"
+"var = contextvars.ContextVar('var')\n"
 "var.set('spam')\n"
+"print(var.get())  # 'spam'\n"
+"\n"
+"ctx = contextvars.copy_context()\n"
 "\n"
 "def main():\n"
 "    # 在调用 'copy_context()' 和 'ctx.run(main)' 之前\n"
 "    # 'var' 被设为 'spam'，因此：\n"
-"    # var.get() == ctx[var] == 'spam'\n"
+"    print(var.get())  # 'spam'\n"
+"    print(ctx[var])  # 'spam'\n"
 "\n"
 "    var.set('ham')\n"
 "\n"
-"    # 现在，将 'var' 设为 'ham' 之后：\n"
-"    # var.get() == ctx[var] == 'ham'\n"
-"\n"
-"ctx = copy_context()\n"
+"    # 在将 'var' 设为 'ham' 之后：\n"
+"    print(var.get())  # 'ham'\n"
+"    print(ctx[var])  # 'ham'\n"
 "\n"
 "# 'main' 函数对 'var' 的任何修改\n"
 "# 都将包含在 'ctx' 中。\n"
 "ctx.run(main)\n"
 "\n"
 "# 'main()' 函数是在 'ctx' 上下文中运行的，\n"
-"# 因此对 'var' 的修改包含在其中：\n"
-"# ctx[var] == 'ham'\n"
+"# 因此对 'var' 的修改将包含在其中：\n"
+"print(ctx[var])  # 'ham'\n"
 "\n"
-"# 不过，在 'ctx' 之外，'var' 仍然被设为 'spam'：\n"
-"# var.get() == 'spam'"
+"# 不过，在 'ctx' 之外，'var' 仍为 'spam'：\n"
+"print(var.get())  # 'spam'"
 
-#: ../../library/contextvars.rst:189
-msgid ""
-"The method raises a :exc:`RuntimeError` when called on the same context "
-"object from more than one OS thread, or when called recursively."
-msgstr "当在多个系统线程或者递归调用同一个上下文对象的此方法，抛出 :exc:`RuntimeError` 异常。"
-
-#: ../../library/contextvars.rst:195
+#: ../../library/contextvars.rst:233
 msgid "Return a shallow copy of the context object."
 msgstr "返回此上下文对象的浅拷贝。"
 
-#: ../../library/contextvars.rst:199
+#: ../../library/contextvars.rst:237
 msgid ""
 "Return ``True`` if the *context* has a value for *var* set; return ``False``"
 " otherwise."
 msgstr "如果 *context* 中含有名称为 *var* 的变量，返回 ``True``， 否则返回 ``False``。"
 
-#: ../../library/contextvars.rst:204
+#: ../../library/contextvars.rst:242
 msgid ""
 "Return the value of the *var* :class:`ContextVar` variable. If the variable "
 "is not set in the context object, a :exc:`KeyError` is raised."
 msgstr ""
 "返回名称为 *var* 的 :class:`ContextVar` 变量。如果上下文对象中不包含这个变量，则抛出 :exc:`KeyError` 异常。"
 
-#: ../../library/contextvars.rst:210
+#: ../../library/contextvars.rst:248
 msgid ""
 "Return the value for *var* if *var* has the value in the context object.  "
 "Return *default* otherwise.  If *default* is not given, return ``None``."
@@ -347,33 +399,33 @@ msgstr ""
 "如果 *var* 在上下文对象中具有值则返回 *var* 的值。 在其他情况下返回 *default*。 如果未给出 *default* 则返回 "
 "``None``。"
 
-#: ../../library/contextvars.rst:216
+#: ../../library/contextvars.rst:254
 msgid "Return an iterator over the variables stored in the context object."
 msgstr "返回一个存储在上下文对象中的变量的迭代器。"
 
-#: ../../library/contextvars.rst:221
+#: ../../library/contextvars.rst:259
 msgid "Return the number of variables set in the context object."
 msgstr "返回上下文对象中所设的变量的数量。"
 
-#: ../../library/contextvars.rst:225
+#: ../../library/contextvars.rst:263
 msgid "Return a list of all variables in the context object."
 msgstr "返回上下文对象中的所有变量的列表。"
 
-#: ../../library/contextvars.rst:229
+#: ../../library/contextvars.rst:267
 msgid "Return a list of all variables' values in the context object."
 msgstr "返回上下文对象中所有变量值的列表。"
 
-#: ../../library/contextvars.rst:234
+#: ../../library/contextvars.rst:272
 msgid ""
 "Return a list of 2-tuples containing all variables and their values in the "
 "context object."
 msgstr "返回包含上下文对象中所有变量及其值的 2 元组的列表。"
 
-#: ../../library/contextvars.rst:239
+#: ../../library/contextvars.rst:277
 msgid "asyncio support"
 msgstr "asyncio 支持"
 
-#: ../../library/contextvars.rst:241
+#: ../../library/contextvars.rst:279
 msgid ""
 "Context variables are natively supported in :mod:`asyncio` and are ready to "
 "be used without any extra configuration.  For example, here is a simple echo"
@@ -383,7 +435,7 @@ msgstr ""
 "上下文变量在 :mod:`asyncio` 中有原生的支持并且无需任何额外配置即可被使用。 "
 "例如，以下是一个简单的回显服务器，它使用上下文变量来让远程客户端的地址在处理该客户端的 Task 中可用::"
 
-#: ../../library/contextvars.rst:247
+#: ../../library/contextvars.rst:285
 msgid ""
 "import asyncio\n"
 "import contextvars\n"

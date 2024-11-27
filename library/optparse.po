@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-11 14:17+0000\n"
+"POT-Creation-Date: 2024-11-19 01:00+0000\n"
 "PO-Revision-Date: 2021-06-28 01:10+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -2405,6 +2405,18 @@ msgid ""
 "                  help=\"Input file to read data from\")\n"
 "parser.add_option(\"--secret\", help=SUPPRESS_HELP)"
 msgstr ""
+"from optparse import OptionParser, SUPPRESS_HELP\n"
+"\n"
+"# 通常，help 选项会自动添加，但可以\n"
+"# 使用 add_help_option 参数来屏蔽\n"
+"parser = OptionParser(add_help_option=False)\n"
+"\n"
+"parser.add_option(\"-h\", \"--help\", action=\"help\")\n"
+"parser.add_option(\"-v\", action=\"store_true\", dest=\"verbose\",\n"
+"                  help=\"Be moderately verbose\")\n"
+"parser.add_option(\"--file\", dest=\"filename\",\n"
+"                  help=\"Input file to read data from\")\n"
+"parser.add_option(\"--secret\", help=SUPPRESS_HELP)"
 
 #: ../../library/optparse.rst:1274
 msgid ""
@@ -2921,6 +2933,11 @@ msgid ""
 "parser.add_option(\"--novice\", action=\"store_const\",\n"
 "                  dest=\"mode\", const=\"novice\")"
 msgstr ""
+"parser.set_defaults(mode=\"advanced\")\n"
+"parser.add_option(\"--advanced\", action=\"store_const\",\n"
+"                  dest=\"mode\", const=\"advanced\")\n"
+"parser.add_option(\"--novice\", action=\"store_const\",\n"
+"                  dest=\"mode\", const=\"novice\")"
 
 #: ../../library/optparse.rst:1566
 msgid "Option Callbacks"
@@ -2966,7 +2983,7 @@ msgstr ""
 
 #: ../../library/optparse.rst:1590
 msgid "parser.add_option(\"-c\", action=\"callback\", callback=my_callback)"
-msgstr ""
+msgstr "parser.add_option(\"-c\", action=\"callback\", callback=my_callback)"
 
 #: ../../library/optparse.rst:1592
 msgid ""
@@ -2996,7 +3013,7 @@ msgstr ""
 
 #: ../../library/optparse.rst:1606
 msgid "def my_callback(option, opt, value, parser):"
-msgstr ""
+msgstr "def my_callback(option, opt, value, parser):"
 
 #: ../../library/optparse.rst:1608
 msgid "The four arguments to a callback are described below."
@@ -3205,6 +3222,10 @@ msgid ""
 "\n"
 "parser.add_option(\"--foo\", action=\"callback\", callback=record_foo_seen)"
 msgstr ""
+"def record_foo_seen(option, opt_str, value, parser):\n"
+"    parser.values.saw_foo = True\n"
+"\n"
+"parser.add_option(\"--foo\", action=\"callback\", callback=record_foo_seen)"
 
 #: ../../library/optparse.rst:1717
 msgid "Of course, you could do that with the ``\"store_true\"`` action."
@@ -3230,6 +3251,13 @@ msgid ""
 "parser.add_option(\"-a\", action=\"callback\", callback=check_order)\n"
 "parser.add_option(\"-b\", action=\"store_true\", dest=\"b\")"
 msgstr ""
+"def check_order(option, opt_str, value, parser):\n"
+"    if parser.values.b:\n"
+"        raise OptionValueError(\"can't use -a after -b\")\n"
+"    parser.values.a = 1\n"
+"...\n"
+"parser.add_option(\"-a\", action=\"callback\", callback=check_order)\n"
+"parser.add_option(\"-b\", action=\"store_true\", dest=\"b\")"
 
 #: ../../library/optparse.rst:1740
 msgid "Callback example 3: check option order (generalized)"
@@ -3254,6 +3282,14 @@ msgid ""
 "parser.add_option(\"-b\", action=\"store_true\", dest=\"b\")\n"
 "parser.add_option(\"-c\", action=\"callback\", callback=check_order, dest='c')"
 msgstr ""
+"def check_order(option, opt_str, value, parser):\n"
+"    if parser.values.b:\n"
+"        raise OptionValueError(\"can't use %s after -b\" % opt_str)\n"
+"    setattr(parser.values, option.dest, 1)\n"
+"...\n"
+"parser.add_option(\"-a\", action=\"callback\", callback=check_order, dest='a')\n"
+"parser.add_option(\"-b\", action=\"store_true\", dest=\"b\")\n"
+"parser.add_option(\"-c\", action=\"callback\", callback=check_order, dest='c')"
 
 #: ../../library/optparse.rst:1759
 msgid "Callback example 4: check arbitrary condition"
@@ -3278,6 +3314,14 @@ msgid ""
 "parser.add_option(\"--foo\",\n"
 "                  action=\"callback\", callback=check_moon, dest=\"foo\")"
 msgstr ""
+"def check_moon(option, opt_str, value, parser):\n"
+"    if is_moon_full():\n"
+"        raise OptionValueError(\"%s option invalid when moon is full\"\n"
+"                               % opt_str)\n"
+"    setattr(parser.values, option.dest, 1)\n"
+"...\n"
+"parser.add_option(\"--foo\",\n"
+"                  action=\"callback\", callback=check_moon, dest=\"foo\")"
 
 #: ../../library/optparse.rst:1774
 msgid ""
@@ -3317,6 +3361,12 @@ msgid ""
 "                  action=\"callback\", callback=store_value,\n"
 "                  type=\"int\", nargs=3, dest=\"foo\")"
 msgstr ""
+"def store_value(option, opt_str, value, parser):\n"
+"    setattr(parser.values, option.dest, value)\n"
+"...\n"
+"parser.add_option(\"--foo\",\n"
+"                  action=\"callback\", callback=store_value,\n"
+"                  type=\"int\", nargs=3, dest=\"foo\")"
 
 #: ../../library/optparse.rst:1798
 msgid ""
@@ -3406,6 +3456,32 @@ msgid ""
 "parser.add_option(\"-c\", \"--callback\", dest=\"vararg_attr\",\n"
 "                  action=\"callback\", callback=vararg_callback)"
 msgstr ""
+"def vararg_callback(option, opt_str, value, parser):\n"
+"    assert value is None\n"
+"    value = []\n"
+"\n"
+"    def floatable(str):\n"
+"        try:\n"
+"            float(str)\n"
+"            return True\n"
+"        except ValueError:\n"
+"            return False\n"
+"\n"
+"    for arg in parser.rargs:\n"
+"        # stop on --foo like options\n"
+"        if arg[:2] == \"--\" and len(arg) > 2:\n"
+"            break\n"
+"        # stop on -a, but not on -3 or -3.0\n"
+"        if arg[:1] == \"-\" and len(arg) > 1 and not floatable(arg):\n"
+"            break\n"
+"        value.append(arg)\n"
+"\n"
+"    del parser.rargs[:len(value)]\n"
+"    setattr(parser.values, option.dest, value)\n"
+"\n"
+"...\n"
+"parser.add_option(\"-c\", \"--callback\", dest=\"vararg_attr\",\n"
+"                  action=\"callback\", callback=vararg_callback)"
 
 #: ../../library/optparse.rst:1863
 msgid "Extending :mod:`optparse`"
@@ -3448,7 +3524,7 @@ msgstr "一个将类型名称映射到类型检查函数的字典。 类型检�
 
 #: ../../library/optparse.rst:1889
 msgid "def check_mytype(option, opt, value)"
-msgstr ""
+msgstr "def check_mytype(option, opt, value)"
 
 #: ../../library/optparse.rst:1891
 msgid ""
@@ -3497,6 +3573,8 @@ msgid ""
 "from copy import copy\n"
 "from optparse import Option, OptionValueError"
 msgstr ""
+"from copy import copy\n"
+"from optparse import Option, OptionValueError"
 
 #: ../../library/optparse.rst:1915
 msgid ""
@@ -3514,6 +3592,12 @@ msgid ""
 "        raise OptionValueError(\n"
 "            \"option %s: invalid complex value: %r\" % (opt, value))"
 msgstr ""
+"def check_complex(option, opt, value):\n"
+"    try:\n"
+"        return complex(value)\n"
+"    except ValueError:\n"
+"        raise OptionValueError(\n"
+"            \"option %s: invalid complex value: %r\" % (opt, value))"
 
 #: ../../library/optparse.rst:1925
 msgid "Finally, the Option subclass::"
@@ -3526,6 +3610,10 @@ msgid ""
 "    TYPE_CHECKER = copy(Option.TYPE_CHECKER)\n"
 "    TYPE_CHECKER[\"complex\"] = check_complex"
 msgstr ""
+"class MyOption (Option):\n"
+"    TYPES = Option.TYPES + (\"complex\",)\n"
+"    TYPE_CHECKER = copy(Option.TYPE_CHECKER)\n"
+"    TYPE_CHECKER[\"complex\"] = check_complex"
 
 #: ../../library/optparse.rst:1932
 msgid ""
@@ -3552,6 +3640,8 @@ msgid ""
 "parser = OptionParser(option_class=MyOption)\n"
 "parser.add_option(\"-c\", type=\"complex\")"
 msgstr ""
+"parser = OptionParser(option_class=MyOption)\n"
+"parser.add_option(\"-c\", type=\"complex\")"
 
 #: ../../library/optparse.rst:1944
 msgid ""
@@ -3567,6 +3657,8 @@ msgid ""
 "option_list = [MyOption(\"-c\", action=\"store\", type=\"complex\", dest=\"c\")]\n"
 "parser = OptionParser(option_list=option_list)"
 msgstr ""
+"option_list = [MyOption(\"-c\", action=\"store\", type=\"complex\", dest=\"c\")]\n"
+"parser = OptionParser(option_list=option_list)"
 
 #: ../../library/optparse.rst:1955
 msgid "Adding new actions"
@@ -3665,7 +3757,7 @@ msgstr ""
 
 #: ../../library/optparse.rst:2007
 msgid "--names=foo,bar --names blah --names ding,dong"
-msgstr ""
+msgstr "--names=foo,bar --names blah --names ding,dong"
 
 #: ../../library/optparse.rst:2009
 msgid "would result in a list  ::"
@@ -3673,7 +3765,7 @@ msgstr "将得到一个列表 ::"
 
 #: ../../library/optparse.rst:2011
 msgid "[\"foo\", \"bar\", \"blah\", \"ding\", \"dong\"]"
-msgstr ""
+msgstr "[\"foo\", \"bar\", \"blah\", \"ding\", \"dong\"]"
 
 #: ../../library/optparse.rst:2013
 msgid "Again we define a subclass of Option::"
@@ -3696,6 +3788,20 @@ msgid ""
 "            Option.take_action(\n"
 "                self, action, dest, opt, value, values, parser)"
 msgstr ""
+"class MyOption(Option):\n"
+"\n"
+"    ACTIONS = Option.ACTIONS + (\"extend\",)\n"
+"    STORE_ACTIONS = Option.STORE_ACTIONS + (\"extend\",)\n"
+"    TYPED_ACTIONS = Option.TYPED_ACTIONS + (\"extend\",)\n"
+"    ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + (\"extend\",)\n"
+"\n"
+"    def take_action(self, action, dest, opt, value, values, parser):\n"
+"        if action == \"extend\":\n"
+"            lvalue = value.split(\",\")\n"
+"            values.ensure_value(dest, []).extend(lvalue)\n"
+"        else:\n"
+"            Option.take_action(\n"
+"                self, action, dest, opt, value, values, parser)"
 
 #: ../../library/optparse.rst:2030
 msgid "Features of note:"
@@ -3739,7 +3845,7 @@ msgstr ""
 
 #: ../../library/optparse.rst:2048
 msgid "values.ensure_value(attr, value)"
-msgstr ""
+msgstr "values.ensure_value(attr, value)"
 
 #: ../../library/optparse.rst:2050
 msgid ""
