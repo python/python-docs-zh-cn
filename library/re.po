@@ -14,7 +14,7 @@
 # ww song <sww4718168@gmail.com>, 2022
 # CCXXXI <ccxxxi@qq.com>, 2022
 # Chris Lau, 2022
-# Wulian233 <xiguawulian@gmail.com>, 2024
+# lian Wu (Wulian) <xiguawulian@gmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
 # 
 #, fuzzy
@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 14:17+0000\n"
+"POT-Creation-Date: 2024-12-06 14:18+0000\n"
 "PO-Revision-Date: 2021-06-28 01:12+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1390,6 +1390,10 @@ msgid ""
 "                   \\d *  # some fractional digits\"\"\", re.X)\n"
 "b = re.compile(r\"\\d+\\.\\d*\")"
 msgstr ""
+"a = re.compile(r\"\"\"\\d +  # 整数部分\n"
+"                   \\.    # 小数点\n"
+"                   \\d *  # 几个小数位\"\"\", re.X)\n"
+"b = re.compile(r\"\\d+\\.\\d*\")"
 
 #: ../../library/re.rst:874
 msgid "Corresponds to the inline flag ``(?x)``."
@@ -1957,6 +1961,10 @@ msgid ""
 ">>> pattern.match(\"dog\", 1)   # Match as \"o\" is the 2nd character of \"dog\".\n"
 "<re.Match object; span=(1, 2), match='o'>"
 msgstr ""
+">>> pattern = re.compile(\"o\")\n"
+">>> pattern.match(\"dog\")      # 不匹配因为 \"o\" 不在 \"dog\" 的开头。\n"
+">>> pattern.match(\"dog\", 1)   # 匹配因为 \"o\" 是 \"dog\" 的第 2 个字符。\n"
+"<re.Match object; span=(1, 2), match='o'>"
 
 #: ../../library/re.rst:1275
 msgid ""
@@ -1983,6 +1991,11 @@ msgid ""
 ">>> pattern.fullmatch(\"doggie\", 1, 3)   # Matches within given limits.\n"
 "<re.Match object; span=(1, 3), match='og'>"
 msgstr ""
+">>> pattern = re.compile(\"o[gh]\")\n"
+">>> pattern.fullmatch(\"dog\")      # 不匹配因为 \"o\" 不在 \"dog\" 的开头。\n"
+">>> pattern.fullmatch(\"ogre\")     # 不匹配因为不是整个字符串都匹配。\n"
+">>> pattern.fullmatch(\"doggie\", 1, 3)   # 在给定的限制下匹配。\n"
+"<re.Match object; span=(1, 3), match='og'>"
 
 #: ../../library/re.rst:1299
 msgid "Identical to the :func:`split` function, using the compiled pattern."
@@ -2125,6 +2138,15 @@ msgid ""
 ">>> m.group(1, 2)    # Multiple arguments give us a tuple.\n"
 "('Isaac', 'Newton')"
 msgstr ""
+">>> m = re.match(r\"(\\w+) (\\w+)\", \"Isaac Newton, physicist\")\n"
+">>> m.group(0)       # 整个匹配\n"
+"'Isaac Newton'\n"
+">>> m.group(1)       # 第一个圆括号标记的子分组。\n"
+"'Isaac'\n"
+">>> m.group(2)       # 第二个圆括号标记的子分组。\n"
+"'Newton'\n"
+">>> m.group(1, 2)    # 使用多个参数则返回一个元组。\n"
+"('Isaac', 'Newton')"
 
 #: ../../library/re.rst:1414
 msgid ""
@@ -2148,6 +2170,11 @@ msgid ""
 ">>> m.group('last_name')\n"
 "'Reynolds'"
 msgstr ""
+">>> m = re.match(r\"(?P<first_name>\\w+) (?P<last_name>\\w+)\", \"Malcolm Reynolds\")\n"
+">>> m.group('first_name')\n"
+"'Malcolm'\n"
+">>> m.group('last_name')\n"
+"'Reynolds'"
 
 #: ../../library/re.rst:1427
 msgid "Named groups can also be referred to by their index::"
@@ -2175,6 +2202,9 @@ msgid ""
 ">>> m.group(1)                        # Returns only the last match.\n"
 "'c3'"
 msgstr ""
+">>> m = re.match(r\"(..)+\", \"a1b2c3\")  # 匹配 3 次。\n"
+">>> m.group(1)                        # 只返回最后一个匹配。\n"
+"'c3'"
 
 #: ../../library/re.rst:1443
 msgid ""
@@ -2192,6 +2222,13 @@ msgid ""
 ">>> m[2]       # The second parenthesized subgroup.\n"
 "'Newton'"
 msgstr ""
+">>> m = re.match(r\"(\\w+) (\\w+)\", \"Isaac Newton, physicist\")\n"
+">>> m[0]       # 整个匹配\n"
+"'Isaac Newton'\n"
+">>> m[1]       # 第一个圆括号标记的子分组。\n"
+"'Isaac'\n"
+">>> m[2]       # 第二个圆括号标记的子分组。\n"
+"'Newton'"
 
 #: ../../library/re.rst:1454
 msgid "Named groups are supported as well::"
@@ -2249,6 +2286,11 @@ msgid ""
 ">>> m.groups('0')   # Now, the second group defaults to '0'.\n"
 "('24', '0')"
 msgstr ""
+">>> m = re.match(r\"(\\d+)\\.?(\\d+)?\", \"24\")\n"
+">>> m.groups()      # 第二个分组默认为 None。\n"
+"('24', None)\n"
+">>> m.groups('0')   # 现在，第二个分组默认为 '0'。\n"
+"('24', '0')"
 
 #: ../../library/re.rst:1490
 msgid ""
@@ -2264,6 +2306,9 @@ msgid ""
 ">>> m.groupdict()\n"
 "{'first_name': 'Malcolm', 'last_name': 'Reynolds'}"
 msgstr ""
+">>> m = re.match(r\"(?P<first_name>\\w+) (?P<last_name>\\w+)\", \"Malcolm Reynolds\")\n"
+">>> m.groupdict()\n"
+"{'first_name': 'Malcolm', 'last_name': 'Reynolds'}"
 
 #: ../../library/re.rst:1502
 msgid ""
@@ -2395,6 +2440,10 @@ msgid ""
 "        return None\n"
 "    return '<Match: %r, groups=%r>' % (match.group(), match.groups())"
 msgstr ""
+"def displaymatch(match):\n"
+"    if match is None:\n"
+"        return None\n"
+"    return '<Match: %r, groups=%r>' % (match.group(), match.groups())"
 
 #: ../../library/re.rst:1592
 msgid ""
