@@ -2607,7 +2607,7 @@ msgstr "从文件名和数字提取字符串 ::"
 
 #: ../../library/re.rst:1670
 msgid "/usr/sbin/sendmail - 0 errors, 4 warnings"
-msgstr ""
+msgstr "/usr/sbin/sendmail - 0 errors, 4 warnings"
 
 #: ../../library/re.rst:1672
 msgid "you would use a :c:func:`!scanf` format like ::"
@@ -2615,7 +2615,7 @@ msgstr "你应当这样使用 :c:func:`!scanf` 格式 ::"
 
 #: ../../library/re.rst:1674
 msgid "%s - %d errors, %d warnings"
-msgstr ""
+msgstr "%s - %d errors, %d warnings"
 
 #: ../../library/re.rst:1676
 msgid "The equivalent regular expression would be ::"
@@ -2623,7 +2623,7 @@ msgstr "等价的正则表达式是："
 
 #: ../../library/re.rst:1678
 msgid "(\\S+) - (\\d+) errors, (\\d+) warnings"
-msgstr ""
+msgstr "(\\S+) - (\\d+) errors, (\\d+) warnings"
 
 #: ../../library/re.rst:1684
 msgid "search() vs. match()"
@@ -2678,6 +2678,10 @@ msgid ""
 ">>> re.search(\"^a\", \"abcdef\")  # Match\n"
 "<re.Match object; span=(0, 1), match='a'>"
 msgstr ""
+">>> re.match(\"c\", \"abcdef\")    # 不匹配\n"
+">>> re.search(\"^c\", \"abcdef\")  # 不匹配\n"
+">>> re.search(\"^a\", \"abcdef\")  # 匹配\n"
+"<re.Match object; span=(0, 1), match='a'>"
 
 #: ../../library/re.rst:1713
 msgid ""
@@ -2695,6 +2699,9 @@ msgid ""
 ">>> re.search(\"^X\", \"A\\nB\\nX\", re.MULTILINE)  # Match\n"
 "<re.Match object; span=(4, 5), match='X'>"
 msgstr ""
+">>> re.match(\"X\", \"A\\nB\\nX\", re.MULTILINE)  # 不匹配\n"
+">>> re.search(\"^X\", \"A\\nB\\nX\", re.MULTILINE)  # 匹配\n"
+"<re.Match object; span=(4, 5), match='X'>"
 
 #: ../../library/re.rst:1723
 msgid "Making a Phonebook"
@@ -2725,6 +2732,13 @@ msgid ""
 "...\n"
 "... Heather Albrecht: 548.326.4584 919 Park Place\"\"\""
 msgstr ""
+">>> text = \"\"\"Ross McFluff: 834.345.1254 155 Elm Street\n"
+"...\n"
+"... Ronald Heathmore: 892.345.3428 436 Finley Avenue\n"
+"... Frank Burger: 925.541.7625 662 South Dogwood Way\n"
+"...\n"
+"...\n"
+"... Heather Albrecht: 548.326.4584 919 Park Place\"\"\""
 
 #: ../../library/re.rst:1743
 msgid ""
@@ -2741,6 +2755,12 @@ msgid ""
 "'Frank Burger: 925.541.7625 662 South Dogwood Way',\n"
 "'Heather Albrecht: 548.326.4584 919 Park Place']"
 msgstr ""
+">>> entries = re.split(\"\\n+\", text)\n"
+">>> entries\n"
+"['Ross McFluff: 834.345.1254 155 Elm Street',\n"
+"'Ronald Heathmore: 892.345.3428 436 Finley Avenue',\n"
+"'Frank Burger: 925.541.7625 662 South Dogwood Way',\n"
+"'Heather Albrecht: 548.326.4584 919 Park Place']"
 
 #: ../../library/re.rst:1756
 msgid ""
@@ -2759,6 +2779,11 @@ msgid ""
 "['Frank', 'Burger', '925.541.7625', '662 South Dogwood Way'],\n"
 "['Heather', 'Albrecht', '548.326.4584', '919 Park Place']]"
 msgstr ""
+">>> [re.split(\":? \", entry, maxsplit=3) for entry in entries]\n"
+"[['Ross', 'McFluff', '834.345.1254', '155 Elm Street'],\n"
+"['Ronald', 'Heathmore', '892.345.3428', '436 Finley Avenue'],\n"
+"['Frank', 'Burger', '925.541.7625', '662 South Dogwood Way'],\n"
+"['Heather', 'Albrecht', '548.326.4584', '919 Park Place']]"
 
 #: ../../library/re.rst:1769
 msgid ""
@@ -2776,6 +2801,11 @@ msgid ""
 "['Frank', 'Burger', '925.541.7625', '662', 'South Dogwood Way'],\n"
 "['Heather', 'Albrecht', '548.326.4584', '919', 'Park Place']]"
 msgstr ""
+">>> [re.split(\":? \", entry, maxsplit=4) for entry in entries]\n"
+"[['Ross', 'McFluff', '834.345.1254', '155', 'Elm Street'],\n"
+"['Ronald', 'Heathmore', '892.345.3428', '436', 'Finley Avenue'],\n"
+"['Frank', 'Burger', '925.541.7625', '662', 'South Dogwood Way'],\n"
+"['Heather', 'Albrecht', '548.326.4584', '919', 'Park Place']]"
 
 #: ../../library/re.rst:1784
 msgid "Text Munging"
@@ -2804,6 +2834,16 @@ msgid ""
 ">>> re.sub(r\"(\\w)(\\w+)(\\w)\", repl, text)\n"
 "'Pofsroser Aodlambelk, plasee reoprt yuor asnebces potlmrpy.'"
 msgstr ""
+">>> def repl(m):\n"
+"...     inner_word = list(m.group(2))\n"
+"...     random.shuffle(inner_word)\n"
+"...     return m.group(1) + \"\".join(inner_word) + m.group(3)\n"
+"...\n"
+">>> text = \"Professor Abdolmalek, please report your absences promptly.\"\n"
+">>> re.sub(r\"(\\w)(\\w+)(\\w)\", repl, text)\n"
+"'Poefsrosr Aealmlobdk, pslaee reorpt your abnseces plmrptoy.'\n"
+">>> re.sub(r\"(\\w)(\\w+)(\\w)\", repl, text)\n"
+"'Pofsroser Aodlambelk, plasee reoprt yuor asnebces potlmrpy.'"
 
 #: ../../library/re.rst:1804
 msgid "Finding all Adverbs"
