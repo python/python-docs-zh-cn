@@ -1605,6 +1605,10 @@ msgid ""
 ":c:member:`!tp_basicsize`. (Exceptions to this rule can be made using "
 ":c:func:`PyUnstable_Object_GC_NewWithExtraData`.)"
 msgstr ""
+"类型可分为两种：实例为固定长度且 :c:member:`!tp_itemsize` 字段值为零的类型；实例为可变长度且 "
+":c:member:`!tp_itemsize` 字段值不为零的类型。 对于实例为固定长度的类型，所有实例都具有相同的由 "
+":c:member:`!tp_basicsize` 给出的大小。 （这条规则的例外情况可通过使用 "
+":c:func:`PyUnstable_Object_GC_NewWithExtraData` 来实现。）"
 
 #: ../../c-api/typeobj.rst:604
 msgid ""
@@ -1613,6 +1617,8 @@ msgid ""
 ":c:member:`!tp_basicsize` plus N times :c:member:`!tp_itemsize`, where N is "
 "the \"length\" of the object."
 msgstr ""
+"对于实例为可变长度的类型，其实例必须具有 :c:member:`~PyVarObject.ob_size` 字段，且实例大小为 "
+":c:member:`!tp_basicsize` 加 N 乘以 :c:member:`!tp_itemsize`，其中 N 为对象的“长度”。"
 
 #: ../../c-api/typeobj.rst:609
 msgid ""
@@ -1624,12 +1630,19 @@ msgid ""
 "underlying storage and its size should be acessed using "
 ":c:func:`PyLong_Export`."
 msgstr ""
+":c:func:`PyObject_NewVar` 等函数接受 N 值作为参数，并将其保存在实例的 "
+":c:member:`~PyVarObject.ob_size` 字段中。 请注意在此之后 "
+":c:member:`~PyVarObject.ob_size` 字段可能还有其他用处。 例如，:py:type:`int` "
+"实例会以具体实现所定义的方式来使用 :c:member:`~PyVarObject.ob_size` 的比特位；下层的存储及其大小应当使用 "
+":c:func:`PyLong_Export` 来访问。"
 
 #: ../../c-api/typeobj.rst:619
 msgid ""
 "The :c:member:`~PyVarObject.ob_size` field should be accessed using the "
 ":c:func:`Py_SIZE()` and :c:func:`Py_SET_SIZE()` macros."
 msgstr ""
+":c:member:`~PyVarObject.ob_size` 字段应当使用 :c:func:`Py_SIZE()` 和 "
+":c:func:`Py_SET_SIZE()` 宏来访问。"
 
 #: ../../c-api/typeobj.rst:622
 msgid ""
@@ -1640,6 +1653,10 @@ msgid ""
 ":py:type:`int`, avoid reading lists' :c:member:`!ob_size` directly. Call "
 ":c:func:`PyList_Size` instead.)"
 msgstr ""
+"此外，实例布局中存在 :c:member:`~PyVarObject.ob_size` 字段并不意味着该实例结构体是可变长度的。 "
+"例如，:py:type:`list` 类型实例即为固定长度，虽然其实例具有 :c:member:`~PyVarObject.ob_size` 字段。 "
+"（和 :py:type:`int` 一样，请避免直接读取 list 的 :c:member:`!ob_size`。 要改为调用 "
+":c:func:`PyList_Size` 函数。）"
 
 #: ../../c-api/typeobj.rst:629
 msgid ""
