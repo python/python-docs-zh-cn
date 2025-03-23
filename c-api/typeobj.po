@@ -1664,6 +1664,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_base`, plus any extra data needed by each "
 "instance."
 msgstr ""
+":c:member:`!tp_basicsize` 包括类型的 :c:member:`~PyTypeObject.tp_base` "
+"所需数据大小，加上每个实例所需额外数据的大小。"
 
 #: ../../c-api/typeobj.rst:633
 msgid ""
@@ -1673,6 +1675,9 @@ msgid ""
 ":c:member:`!tp_basicsize` must be greater than or equal to the base's "
 ":c:member:`!tp_basicsize`."
 msgstr ""
+"设置 :c:member:`!tp_basicsize` 的正确方式是在被用于声明实例布局的结构体上使用 ``sizeof`` 运算符。 "
+"这个结构体必须包括被用于声明基类型的结构体。 换句话说，:c:member:`!tp_basicsize` 必须大于等于基类型的 "
+":c:member:`!tp_basicsize`。"
 
 #: ../../c-api/typeobj.rst:639
 msgid ""
@@ -1682,22 +1687,27 @@ msgid ""
 "defined by the macro :c:macro:`PyObject_HEAD` or "
 ":c:macro:`PyObject_VAR_HEAD`, respectively."
 msgstr ""
+"由于任何类型都是 :py:type:`object` 的子类型，这个结构体必须包括 :c:type:`PyObject` 或 "
+":c:type:`PyVarObject` (具体取决于 :c:member:`~PyVarObject.ob_size` 是否应当被包括)。 "
+"它们通常是分别由 :c:macro:`PyObject_HEAD` 或 :c:macro:`PyObject_VAR_HEAD` 宏来定义的。"
 
 #: ../../c-api/typeobj.rst:645
 msgid ""
 "The basic size does not include the GC header size, as that header is not "
 "part of :c:macro:`PyObject_HEAD`."
-msgstr ""
+msgstr "基础大小不包括 GC 标头大小，因为该标头不是 :c:macro:`PyObject_HEAD` 的一部分。"
 
 #: ../../c-api/typeobj.rst:648
 msgid ""
 "For cases where struct used to declare the base type is unknown, see "
 ":c:member:`PyType_Spec.basicsize` and :c:func:`PyType_FromMetaclass`."
 msgstr ""
+"对于用于声明基类型的结构体位置未知的情况，请参见 :c:member:`PyType_Spec.basicsize` 和 "
+":c:func:`PyType_FromMetaclass`。"
 
 #: ../../c-api/typeobj.rst:651
 msgid "Notes about alignment:"
-msgstr ""
+msgstr "有关对齐的说明："
 
 #: ../../c-api/typeobj.rst:653
 msgid ""
@@ -1707,6 +1717,9 @@ msgid ""
 "when using compiler extensions like ``__attribute__((packed))``, it is up to"
 " you."
 msgstr ""
+":c:member:`!tp_basicsize` 必须是 ``_Alignof(PyObject)`` 的位数。 当如建议的那样在包括了 "
+":c:macro:`PyObject_HEAD` 的 ``struct`` 上使用 ``sizeof`` 时，编译器会确保这一点。 当没有使用 C "
+"``struct``，或者当使用像 ``__attribute__((packed))`` 这样的编译器扩展时，这将是你的责任。"
 
 #: ../../c-api/typeobj.rst:658
 msgid ""
@@ -1716,6 +1729,9 @@ msgid ""
 "``double``, it is your responsibility that both fields are a multiple of "
 "``_Alignof(double)``."
 msgstr ""
+"如果可变条目需要特定的对齐，则 :c:member:`!tp_basicsize` 和 :c:member:`!tp_itemsize` "
+"必须均为该对齐值的倍数。 举例来说，如果一个类型的可变部分存储了一个 ``double``，你就要负责让这两个字段都是 "
+"``_Alignof(double)`` 的倍数。"
 
 #: ../../c-api/typeobj.rst:667
 msgid ""
@@ -1723,6 +1739,8 @@ msgid ""
 " set to zero, :c:func:`PyType_Ready` will copy the value from the base type,"
 " indicating that the instances do not need additional storage.)"
 msgstr ""
+"这些字段是由子类型分别来继承的。 （也就是说，如果字段被设为零，则 :c:func:`PyType_Ready` "
+"将拷贝来自基类型的值，这表示实例不需要额外的存储。）"
 
 #: ../../c-api/typeobj.rst:672
 msgid ""
@@ -1731,6 +1749,8 @@ msgid ""
 "different non-zero value in a subtype (though this depends on the "
 "implementation of the base type)."
 msgstr ""
+"如果基类型有一个非零的 :c:member:`~PyTypeObject.tp_itemsize`，那么在子类型中将 "
+":c:member:`~PyTypeObject.tp_itemsize` 设置为不同的非零值通常是不安全的（不过这取决于该基类型的具体实现）。"
 
 #: ../../c-api/typeobj.rst:679
 msgid ""
