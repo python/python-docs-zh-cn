@@ -26,6 +26,7 @@
 # LeeWendao <LeeWendao@outlook.com>, 2023
 # Alpha Du <alphanow@gmail.com>, 2024
 # lqks, 2024
+# Nyuan Zhang, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -1186,6 +1187,10 @@ msgid ""
 " manually set on the module object after it has been created when using this"
 " approach."
 msgstr ""
+"要动态创建模块而非使用导入系统创建，建议使用 "
+":func:`importlib.util.module_from_spec`，它会将各种由导入控制的属性设置为适当的值。也可以使用 "
+":class:`types.ModuleType` "
+"构造器直接创建模块，但这种方法更容易出错，因为在使用这种方法时，必须在创建模块对象后手动设置其大部分属性。"
 
 #: ../../reference/datamodel.rst:912
 msgid ""
@@ -1195,6 +1200,8 @@ msgid ""
 " Note that updating an attribute on :attr:`!__spec__` will not update the "
 "corresponding attribute on the module itself:"
 msgstr ""
+"对 :attr:`~module.__name__` 以外的用例，**强烈** 建议使用 :attr:`~module.__spec__` "
+"及其属性，而非此处列出的其他单独属性。请注意更新 :attr:`!__spec__` 上的属性时不会连带更新模块本身的同名属性。"
 
 #: ../../reference/datamodel.rst:918
 msgid ""
@@ -1257,6 +1264,8 @@ msgid ""
 ":attr:`module.__name__` if the module itself is a package). See :pep:`366` "
 "for further details."
 msgstr ""
+"如果一个模块是顶层模块（不是任何包的一部分），该属性应被设置为空字符串 ``''``。否则，它应被设置为模块所属包的名字（如果模块本身是一个包，它可以是"
+" :attr:`module.__name__` 的值）。详见 :pep:`366`。"
 
 #: ../../reference/datamodel.rst:958
 msgid ""
@@ -1266,6 +1275,9 @@ msgid ""
 " use :func:`importlib.util.module_from_spec` instead to ensure the attribute"
 " is set to a :class:`str`."
 msgstr ""
+"在为主模块计算显式相对导入时，这个属性而非 :attr:`~module.__name__` 被使用。在使用 "
+":class:`types.ModuleType` 构造器动态创建模块时会被默认设为 ``None``。要确保这个属性是 "
+":class:`str`，请使用 :func:`importlib.util.module_from_spec`。"
 
 #: ../../reference/datamodel.rst:964
 msgid ""
@@ -1275,6 +1287,9 @@ msgid ""
 "fallback if :attr:`!__spec__.parent` is not set, and this fallback path is "
 "deprecated."
 msgstr ""
+"**强烈** 建议使用 :attr:`module.__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>` 而非 :attr:`!module.__package__`。 "
+":attr:`__package__` 现在仅作 :attr:`!__spec__.parent` 未被设置时的回退路径，且这条回退路径已被弃用。"
 
 #: ../../reference/datamodel.rst:970 ../../reference/datamodel.rst:1011
 msgid ""
@@ -1282,6 +1297,7 @@ msgid ""
 "using the :class:`types.ModuleType` constructor. Previously the attribute "
 "was optional."
 msgstr ""
+"对于使用 :class:`types.ModuleType` 构造器动态创建的模块，该属性现在默认为 ``None``。先前该属性是可选的。"
 
 #: ../../reference/datamodel.rst:975
 msgid ""
@@ -1290,6 +1306,9 @@ msgid ""
 ":attr:`__package__` is now only used as a fallback during import resolution "
 "if :attr:`!__spec__.parent` is not defined."
 msgstr ""
+":attr:`!__package__` 的值应与 :attr:`__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>` 相同。:attr:`__package__` 现在仅作导入解析期间 "
+":attr:`!__spec__.parent` 未被定义时的回退值。"
 
 #: ../../reference/datamodel.rst:981
 msgid ""
@@ -1297,30 +1316,34 @@ msgid ""
 ":attr:`!__package__` instead of :attr:`__spec__.parent "
 "<importlib.machinery.ModuleSpec.parent>`."
 msgstr ""
+"如果导入解析回退到 :attr:`!__package__` 而非 :attr:`__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>`，会引发 :exc:`ImportWarning`。"
 
 #: ../../reference/datamodel.rst:986
 msgid ""
 "Raise :exc:`DeprecationWarning` instead of :exc:`ImportWarning` when falling"
 " back to :attr:`!__package__` during import resolution."
 msgstr ""
+"在导入解析期间回退到 :attr:`!__package__` 时会引发 :exc:`DeprecationWarning` 而非 "
+":exc:`ImportWarning`。"
 
 #: ../../reference/datamodel.rst:990
 msgid ""
 ":attr:`!__package__` will cease to be set or taken into consideration by the"
 " import system or standard library."
-msgstr ""
+msgstr ":attr:`!__package__` 将不再被设置或者被导入系统或标准库纳入考量。"
 
 #: ../../reference/datamodel.rst:996
 msgid ""
 "The :term:`loader` object that the import machinery used to load the module."
-msgstr ""
+msgstr "导入系统用来加载模块的 :term:`loader` 对象。"
 
 #: ../../reference/datamodel.rst:998
 msgid ""
 "This attribute is mostly useful for introspection, but can be used for "
 "additional loader-specific functionality, for example getting data "
 "associated with a loader."
-msgstr ""
+msgstr "该属性主要适用于内省，但也可用于额外的加载器专属功能，例如获取与加载器相关联的数据。"
 
 #: ../../reference/datamodel.rst:1002
 msgid ""
