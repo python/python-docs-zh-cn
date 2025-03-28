@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-21 14:55+0000\n"
+"POT-Creation-Date: 2025-03-28 14:58+0000\n"
 "PO-Revision-Date: 2024-05-11 00:32+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1192,6 +1192,8 @@ msgid ""
 ":file:`Include/cpython/object.h`.  For convenience of reference, this "
 "repeats the definition found there:"
 msgstr ""
+"针对 :c:type:`PyTypeObject` 的结构定义可以在 :file:`Include/cpython/object.h` 中找到。 "
+"为了方便参考，这里复述了其中的定义："
 
 #: ../../c-api/typeobj.rst:481
 msgid ""
@@ -1532,7 +1534,7 @@ msgstr ""
 msgid ""
 "This field should be accessed using the :c:func:`Py_SIZE()` and "
 ":c:func:`Py_SET_SIZE()` macros."
-msgstr ""
+msgstr "该字段应当使用 :c:func:`Py_SIZE()` 和 :c:func:`Py_SET_SIZE()` 宏来访问。"
 
 #: ../../c-api/typeobj.rst:571
 msgid "PyTypeObject Slots"
@@ -1623,6 +1625,10 @@ msgid ""
 ":c:member:`!tp_basicsize`. (Exceptions to this rule can be made using "
 ":c:func:`PyUnstable_Object_GC_NewWithExtraData`.)"
 msgstr ""
+"类型可分为两种：实例为固定长度且 :c:member:`!tp_itemsize` 字段值为零的类型；实例为可变长度且 "
+":c:member:`!tp_itemsize` 字段值不为零的类型。 对于实例为固定长度的类型，所有实例都具有相同的由 "
+":c:member:`!tp_basicsize` 给出的大小。 （这条规则的例外情况可通过使用 "
+":c:func:`PyUnstable_Object_GC_NewWithExtraData` 来实现。）"
 
 #: ../../c-api/typeobj.rst:626
 msgid ""
@@ -1631,6 +1637,8 @@ msgid ""
 ":c:member:`!tp_basicsize` plus N times :c:member:`!tp_itemsize`, where N is "
 "the \"length\" of the object."
 msgstr ""
+"对于实例为可变长度的类型，其实例必须具有 :c:member:`~PyVarObject.ob_size` 字段，且实例大小为 "
+":c:member:`!tp_basicsize` 加 N 乘以 :c:member:`!tp_itemsize`，其中 N 为对象的“长度”。"
 
 #: ../../c-api/typeobj.rst:631
 msgid ""
@@ -1642,12 +1650,19 @@ msgid ""
 "underlying storage and its size should be acessed using "
 ":c:func:`PyLong_Export`."
 msgstr ""
+":c:func:`PyObject_NewVar` 等函数接受 N 值作为参数，并将其保存在实例的 "
+":c:member:`~PyVarObject.ob_size` 字段中。 请注意在此之后 "
+":c:member:`~PyVarObject.ob_size` 字段可能还有其他用处。 例如，:py:type:`int` "
+"实例会以具体实现所定义的方式来使用 :c:member:`~PyVarObject.ob_size` 的比特位；下层的存储及其大小应当使用 "
+":c:func:`PyLong_Export` 来访问。"
 
 #: ../../c-api/typeobj.rst:641
 msgid ""
 "The :c:member:`~PyVarObject.ob_size` field should be accessed using the "
 ":c:func:`Py_SIZE()` and :c:func:`Py_SET_SIZE()` macros."
 msgstr ""
+":c:member:`~PyVarObject.ob_size` 字段应当使用 :c:func:`Py_SIZE()` 和 "
+":c:func:`Py_SET_SIZE()` 宏来访问。"
 
 #: ../../c-api/typeobj.rst:644
 msgid ""
@@ -1658,6 +1673,10 @@ msgid ""
 ":py:type:`int`, avoid reading lists' :c:member:`!ob_size` directly. Call "
 ":c:func:`PyList_Size` instead.)"
 msgstr ""
+"此外，实例布局中存在 :c:member:`~PyVarObject.ob_size` 字段并不意味着该实例结构体是可变长度的。 "
+"例如，:py:type:`list` 类型实例即为固定长度，虽然其实例具有 :c:member:`~PyVarObject.ob_size` 字段。 "
+"（和 :py:type:`int` 一样，请避免直接读取 list 的 :c:member:`!ob_size`。 要改为调用 "
+":c:func:`PyList_Size` 函数。）"
 
 #: ../../c-api/typeobj.rst:651
 msgid ""
@@ -1665,6 +1684,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_base`, plus any extra data needed by each "
 "instance."
 msgstr ""
+":c:member:`!tp_basicsize` 包括类型的 :c:member:`~PyTypeObject.tp_base` "
+"所需数据大小，加上每个实例所需额外数据的大小。"
 
 #: ../../c-api/typeobj.rst:655
 msgid ""
@@ -1674,6 +1695,9 @@ msgid ""
 ":c:member:`!tp_basicsize` must be greater than or equal to the base's "
 ":c:member:`!tp_basicsize`."
 msgstr ""
+"设置 :c:member:`!tp_basicsize` 的正确方式是在被用于声明实例布局的结构体上使用 ``sizeof`` 运算符。 "
+"这个结构体必须包括被用于声明基类型的结构体。 换句话说，:c:member:`!tp_basicsize` 必须大于等于基类型的 "
+":c:member:`!tp_basicsize`。"
 
 #: ../../c-api/typeobj.rst:661
 msgid ""
@@ -1683,22 +1707,27 @@ msgid ""
 "defined by the macro :c:macro:`PyObject_HEAD` or "
 ":c:macro:`PyObject_VAR_HEAD`, respectively."
 msgstr ""
+"由于任何类型都是 :py:type:`object` 的子类型，这个结构体必须包括 :c:type:`PyObject` 或 "
+":c:type:`PyVarObject` (具体取决于 :c:member:`~PyVarObject.ob_size` 是否应当被包括)。 "
+"它们通常是分别由 :c:macro:`PyObject_HEAD` 或 :c:macro:`PyObject_VAR_HEAD` 宏来定义的。"
 
 #: ../../c-api/typeobj.rst:667
 msgid ""
 "The basic size does not include the GC header size, as that header is not "
 "part of :c:macro:`PyObject_HEAD`."
-msgstr ""
+msgstr "基础大小不包括 GC 标头大小，因为该标头不是 :c:macro:`PyObject_HEAD` 的一部分。"
 
 #: ../../c-api/typeobj.rst:670
 msgid ""
 "For cases where struct used to declare the base type is unknown, see "
 ":c:member:`PyType_Spec.basicsize` and :c:func:`PyType_FromMetaclass`."
 msgstr ""
+"对于用于声明基类型的结构体位置未知的情况，请参见 :c:member:`PyType_Spec.basicsize` 和 "
+":c:func:`PyType_FromMetaclass`。"
 
 #: ../../c-api/typeobj.rst:673
 msgid "Notes about alignment:"
-msgstr ""
+msgstr "有关对齐的说明："
 
 #: ../../c-api/typeobj.rst:675
 msgid ""
@@ -1708,6 +1737,9 @@ msgid ""
 "when using compiler extensions like ``__attribute__((packed))``, it is up to"
 " you."
 msgstr ""
+":c:member:`!tp_basicsize` 必须是 ``_Alignof(PyObject)`` 的位数。 当如建议的那样在包括了 "
+":c:macro:`PyObject_HEAD` 的 ``struct`` 上使用 ``sizeof`` 时，编译器会确保这一点。 当没有使用 C "
+"``struct``，或者当使用像 ``__attribute__((packed))`` 这样的编译器扩展时，这将是你的责任。"
 
 #: ../../c-api/typeobj.rst:680
 msgid ""
@@ -1717,6 +1749,9 @@ msgid ""
 "``double``, it is your responsibility that both fields are a multiple of "
 "``_Alignof(double)``."
 msgstr ""
+"如果可变条目需要特定的对齐，则 :c:member:`!tp_basicsize` 和 :c:member:`!tp_itemsize` "
+"必须均为该对齐值的倍数。 举例来说，如果一个类型的可变部分存储了一个 ``double``，你就要负责让这两个字段都是 "
+"``_Alignof(double)`` 的倍数。"
 
 #: ../../c-api/typeobj.rst:689
 msgid ""
@@ -1724,6 +1759,8 @@ msgid ""
 " set to zero, :c:func:`PyType_Ready` will copy the value from the base type,"
 " indicating that the instances do not need additional storage.)"
 msgstr ""
+"这些字段是由子类型分别来继承的。 （也就是说，如果字段被设为零，则 :c:func:`PyType_Ready` "
+"将拷贝来自基类型的值，这表示实例不需要额外的存储。）"
 
 #: ../../c-api/typeobj.rst:694
 msgid ""
@@ -1732,6 +1769,8 @@ msgid ""
 "different non-zero value in a subtype (though this depends on the "
 "implementation of the base type)."
 msgstr ""
+"如果基类型有一个非零的 :c:member:`~PyTypeObject.tp_itemsize`，那么在子类型中将 "
+":c:member:`~PyTypeObject.tp_itemsize` 设置为不同的非零值通常是不安全的（不过这取决于该基类型的具体实现）。"
 
 #: ../../c-api/typeobj.rst:701
 msgid ""

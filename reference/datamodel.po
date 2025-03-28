@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 14:49+0000\n"
+"POT-Creation-Date: 2025-03-28 14:58+0000\n"
 "PO-Revision-Date: 2024-05-11 00:34+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1126,12 +1126,10 @@ msgid ""
 "done)."
 msgstr ""
 "模块是 Python 代码的基本组织单元，由 :ref:`导入系统 <importsystem>` 创建，它或是通过 :keyword:`import`"
-" 语句，或是通过调用 :func:`importlib.import_module` 和内置的 :func:`__import__` 等函数发起调用。 "
+" 语句，或是通过调用 :func:`importlib.import_module` 和内置的 :func:`__import__` 等函数来唤起。 "
 "模块对象具有通过 :class:`字典 <dict>` 对象实现的命名空间（就是被定义在模块中的函数的 "
 ":attr:`~function.__globals__` 属性所引用的字典）。 属性引用将被转换为在该字典中的查找操作，例如 ``m.x`` 就等价于"
-" ``m.__dict__[\"x\"]``。 模块对象不包含用于初始化模块的代码对象（因为初始化完成后已不再需要它）。 A module object"
-" does not contain the code object used to initialize the module (since it "
-"isn't needed once the initialization is done)."
+" ``m.__dict__[\"x\"]``。 模块对象不包含用于初始化模块的代码对象（因为初始化完成后已不再需要它）。"
 
 #: ../../reference/datamodel.rst:874
 msgid ""
@@ -1151,6 +1149,8 @@ msgid ""
 "the module's :term:`spec <module spec>`, before the :term:`loader` executes "
 "and loads the module."
 msgstr ""
+"模块对象具有下列与 :ref:`导入系统 <importsystem>` 相关的属性。 当使用关联到导入系统的机制创建模块时，这些属性将在 "
+":term:`loader` 执行和加载模块之前基于模块的 :term:`规格 <module spec>` 来填充。"
 
 #: ../../reference/datamodel.rst:900
 msgid ""
@@ -1162,6 +1162,10 @@ msgid ""
 " manually set on the module object after it has been created when using this"
 " approach."
 msgstr ""
+"要动态创建模块而非使用导入系统创建，建议使用 "
+":func:`importlib.util.module_from_spec`，它会将各种由导入控制的属性设置为适当的值。也可以使用 "
+":class:`types.ModuleType` "
+"构造器直接创建模块，但这种方法更容易出错，因为在使用这种方法时，必须在创建模块对象后手动设置其大部分属性。"
 
 #: ../../reference/datamodel.rst:910
 msgid ""
@@ -1171,6 +1175,8 @@ msgid ""
 " Note that updating an attribute on :attr:`!__spec__` will not update the "
 "corresponding attribute on the module itself:"
 msgstr ""
+"对 :attr:`~module.__name__` 以外的用例，**强烈** 建议使用 :attr:`~module.__spec__` "
+"及其属性，而非此处列出的其他单独属性。请注意更新 :attr:`!__spec__` 上的属性时不会连带更新模块本身的同名属性。"
 
 #: ../../reference/datamodel.rst:916
 msgid ""
@@ -1218,10 +1224,12 @@ msgid ""
 "Set to the :class:`module spec <importlib.machinery.ModuleSpec>` that was "
 "used when importing the module. See :ref:`module-specs` for more details."
 msgstr ""
+"设置为导入模块时使用的 :class:`模块规格 <importlib.machinery.ModuleSpec>`。 请参阅 "
+":ref:`module-specs` 了解详情。"
 
 #: ../../reference/datamodel.rst:948
 msgid "The :term:`package` a module belongs to."
-msgstr ""
+msgstr "模块所属的 :term:`package`。"
 
 #: ../../reference/datamodel.rst:950
 msgid ""
@@ -1231,6 +1239,8 @@ msgid ""
 ":attr:`module.__name__` if the module itself is a package). See :pep:`366` "
 "for further details."
 msgstr ""
+"如果一个模块是顶层模块（不是任何包的一部分），该属性应被设置为空字符串 ``''``。否则，它应被设置为模块所属包的名字（如果模块本身是一个包，它可以是"
+" :attr:`module.__name__` 的值）。详见 :pep:`366`。"
 
 #: ../../reference/datamodel.rst:956
 msgid ""
@@ -1240,6 +1250,9 @@ msgid ""
 " use :func:`importlib.util.module_from_spec` instead to ensure the attribute"
 " is set to a :class:`str`."
 msgstr ""
+"在为主模块计算显式相对导入时，这个属性而非 :attr:`~module.__name__` 被使用。在使用 "
+":class:`types.ModuleType` 构造器动态创建模块时会被默认设为 ``None``。要确保这个属性是 "
+":class:`str`，请使用 :func:`importlib.util.module_from_spec`。"
 
 #: ../../reference/datamodel.rst:962
 msgid ""
@@ -1249,6 +1262,9 @@ msgid ""
 "fallback if :attr:`!__spec__.parent` is not set, and this fallback path is "
 "deprecated."
 msgstr ""
+"**强烈** 建议使用 :attr:`module.__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>` 而非 :attr:`!module.__package__`。 "
+":attr:`__package__` 现在仅作 :attr:`!__spec__.parent` 未被设置时的回退路径，且这条回退路径已被弃用。"
 
 #: ../../reference/datamodel.rst:968 ../../reference/datamodel.rst:1005
 msgid ""
@@ -1256,6 +1272,7 @@ msgid ""
 "using the :class:`types.ModuleType` constructor. Previously the attribute "
 "was optional."
 msgstr ""
+"对于使用 :class:`types.ModuleType` 构造器动态创建的模块，该属性现在默认为 ``None``。先前该属性是可选的。"
 
 #: ../../reference/datamodel.rst:973
 msgid ""
@@ -1264,6 +1281,9 @@ msgid ""
 ":attr:`__package__` is now only used as a fallback during import resolution "
 "if :attr:`!__spec__.parent` is not defined."
 msgstr ""
+":attr:`!__package__` 的值应与 :attr:`__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>` 相同。:attr:`__package__` 现在仅作导入解析期间 "
+":attr:`!__spec__.parent` 未被定义时的回退值。"
 
 #: ../../reference/datamodel.rst:979
 msgid ""
@@ -1271,24 +1291,28 @@ msgid ""
 ":attr:`!__package__` instead of :attr:`__spec__.parent "
 "<importlib.machinery.ModuleSpec.parent>`."
 msgstr ""
+"如果导入解析回退到 :attr:`!__package__` 而非 :attr:`__spec__.parent "
+"<importlib.machinery.ModuleSpec.parent>`，会引发 :exc:`ImportWarning`。"
 
 #: ../../reference/datamodel.rst:984
 msgid ""
 "Raise :exc:`DeprecationWarning` instead of :exc:`ImportWarning` when falling"
 " back to :attr:`!__package__` during import resolution."
 msgstr ""
+"在导入解析期间回退到 :attr:`!__package__` 时会引发 :exc:`DeprecationWarning` 而非 "
+":exc:`ImportWarning`。"
 
 #: ../../reference/datamodel.rst:990
 msgid ""
 "The :term:`loader` object that the import machinery used to load the module."
-msgstr ""
+msgstr "导入系统用来加载模块的 :term:`loader` 对象。"
 
 #: ../../reference/datamodel.rst:992
 msgid ""
 "This attribute is mostly useful for introspection, but can be used for "
 "additional loader-specific functionality, for example getting data "
 "associated with a loader."
-msgstr ""
+msgstr "该属性主要适用于内省，但也可用于额外的加载器专属功能，例如获取与加载器相关联的数据。"
 
 #: ../../reference/datamodel.rst:996
 msgid ""
@@ -1297,6 +1321,9 @@ msgid ""
 ":func:`importlib.util.module_from_spec` instead to ensure the attribute is "
 "set to a :term:`loader` object."
 msgstr ""
+"对于使用 :class:`types.ModuleType` 构造器动态创建的模块 :attr:`!__loader__` 默认为 "
+"``None``；请改用 :func:`importlib.util.module_from_spec` 来确保将该属性设为 "
+":term:`loader` 对象。"
 
 #: ../../reference/datamodel.rst:1001
 msgid ""
@@ -1304,6 +1331,8 @@ msgid ""
 "<importlib.machinery.ModuleSpec.loader>` instead of "
 ":attr:`!module.__loader__`."
 msgstr ""
+"**强烈** 建议你使用 :attr:`module.__spec__.loader "
+"<importlib.machinery.ModuleSpec.loader>` 来代替 :attr:`!module.__loader__`。"
 
 #: ../../reference/datamodel.rst:1010
 msgid ""
@@ -1312,6 +1341,8 @@ msgid ""
 "will cease to be set or taken into consideration by the import system or the"
 " standard library."
 msgstr ""
+"当设置 :attr:`!__spec__.loader` 失败时在模块上设置 :attr:`!__loader__` 的做法已被弃用。 在 Python"
+" 3.16 中，:attr:`!__loader__` 将不会再被设置或被导入系统或标准库纳入考虑。"
 
 #: ../../reference/datamodel.rst:1018
 msgid ""
@@ -1320,6 +1351,8 @@ msgid ""
 " have a :attr:`!__path__` attribute. See :ref:`package-path-rules` for more "
 "details."
 msgstr ""
+"一个（可能为空的）枚举用于查找包的子模块的位置的由字符串组成的 :term:`sequence`。 非包模块应当没有 :attr:`!__path__`"
+" 属性。 详情参见 :ref:`package-path-rules`。"
 
 #: ../../reference/datamodel.rst:1023
 msgid ""
@@ -1328,6 +1361,9 @@ msgid ""
 "<importlib.machinery.ModuleSpec.submodule_search_locations>` instead of "
 ":attr:`!module.__path__`."
 msgstr ""
+"**强烈** 建议你使用 :attr:`module.__spec__.submodule_search_locations "
+"<importlib.machinery.ModuleSpec.submodule_search_locations>` 来代替 "
+":attr:`!module.__path__`。"
 
 #: ../../reference/datamodel.rst:1030
 msgid ""
@@ -1335,6 +1371,8 @@ msgid ""
 "may or may not be set. Both attributes should be a :class:`str` when they "
 "are available."
 msgstr ""
+":attr:`!__file__` 和 :attr:`!__cached__` 都是可设也可不设的可选属性。 两个属性在可用时都应当为 "
+":class:`str`。"
 
 #: ../../reference/datamodel.rst:1034
 msgid ""
@@ -1346,6 +1384,9 @@ msgid ""
 "<importsystem>` may opt to leave it unset if it has no semantic meaning (for"
 " example, a module loaded from a database)."
 msgstr ""
+":attr:`!__file__` 指明要载入的模块所在文件的路径名（如果是从文件载入），或者对于从共享库动态载入的扩展模块来说则是共享库文件的路径名。"
+" 它对于特定类型的模块来说可能是缺失的，例如静态链接到解释器中的 C 模块，并且 :ref:`导入系统 <importsystem>` "
+"也可能会在它没有语法意义时选择不设置它（例如，当一个模块是从数据库导入时）。"
 
 #: ../../reference/datamodel.rst:1042
 msgid ""
@@ -1355,6 +1396,9 @@ msgid ""
 "attribute; the path can simply point to where the compiled file *would* "
 "exist (see :pep:`3147`)."
 msgstr ""
+"如果设置了 :attr:`!__file__` 则 :attr:`!__cached__` "
+"属性也可能会被设置，它是指向任何代码的已编译版本的路径（例如，一个字节码文件）。 设置此属性并不需要存在相应的路径；该路径可以简单地指向已编译文件 "
+"*将要* 存在的位置 (参见 :pep:`3147`)。"
 
 #: ../../reference/datamodel.rst:1048
 msgid ""
@@ -1533,6 +1577,8 @@ msgid ""
 "collected during class body execution. For best practices on working with "
 ":attr:`!__annotations__`, please see :ref:`annotations-howto`."
 msgstr ""
+"包含在类体执行期间收集的 :term:`变量标 <variable annotation>` 的字典。 有关使用 "
+":attr:`!__annotations__` 的最佳实践，请参阅 :ref:`annotations-howto`。"
 
 #: ../../reference/datamodel.rst:1192
 msgid ""
@@ -2276,11 +2322,11 @@ msgid ""
 " appropriate method is defined (typically :exc:`AttributeError` or "
 ":exc:`TypeError`)."
 msgstr ""
-"一个类可以通过定义具有特殊名称的方法来实现由特殊语法来发起调用的特定操作（例如算术运算或抽取与切片）。 这是 Python 实现 "
-":dfn:`运算符重载` 的方式，允许每个类自行定义基于该语言运算符的特定行为。 举例来说，如果一个类定义了名为 "
-":meth:`~object.__getitem__` 的方法，并且 ``x`` 是该类的一个实例，则 ``x[i]`` 基本就等价于 "
-"``type(x).__getitem__(x, i)``。 除非有说明例外情况，在没有定义适当方法的时候尝试执行某种操作将引发一个异常 (通常为 "
-":exc:`AttributeError` 或 :exc:`TypeError`)。"
+"一个类可以通过定义具有特殊名称的方法来实现由特殊语法来唤起的特定操作（例如算术运算或抽取与切片）。 这是 Python 实现 :dfn:`运算符重载` "
+"的方式，允许每个类自行定义基于该语言运算符的特定行为。 举例来说，如果一个类定义了名为 :meth:`~object.__getitem__` "
+"的方法，并且 ``x`` 是该类的一个实例，则 ``x[i]`` 基本就等价于 ``type(x).__getitem__(x, i)``。 "
+"除非有说明例外情况，在没有定义适当方法的时候尝试执行某种操作将引发一个异常 (通常为 :exc:`AttributeError` 或 "
+":exc:`TypeError`)。"
 
 #: ../../reference/datamodel.rst:1799
 msgid ""
@@ -2330,7 +2376,7 @@ msgid ""
 "with appropriate arguments and then modifying the newly created instance as "
 "necessary before returning it."
 msgstr ""
-"典型的实现会附带适当的参数使用 ``super().__new__(cls[, ...])`` 通过发起调用超类的 :meth:`__new__` "
+"典型的实现会附带适当的参数使用 ``super().__new__(cls[, ...])`` 通过唤起超类的 :meth:`__new__` "
 "方法来创建一个新的类实例然后在返回它之前根据需要修改新创建的实例。"
 
 #: ../../reference/datamodel.rst:1834
@@ -2341,8 +2387,8 @@ msgid ""
 " the remaining arguments are the same as were passed to the object "
 "constructor."
 msgstr ""
-"如果 :meth:`__new__` 在构造对象期间被发起调用并且它返回了一个 *cls* 的实例，则新实例的 :meth:`__init__` "
-"方法将以 ``__init__(self[, ...])`` 的形式被发起调用，其中 *self* 为新实例而其余的参数与被传给对象构造器的参数相同。"
+"如果 :meth:`__new__` 在构造对象期间被唤起并且它返回了一个 *cls* 的实例，则新实例的 :meth:`__init__` 方法将以 "
+"``__init__(self[, ...])`` 的形式被唤起，其中 *self* 为新实例而其余的参数与被传给对象构造器的参数相同。"
 
 #: ../../reference/datamodel.rst:1839
 msgid ""
@@ -2500,7 +2546,7 @@ msgid ""
 "This is typically used for debugging, so it is important that the "
 "representation is information-rich and unambiguous. A default implementation"
 " is provided by the :class:`object` class itself."
-msgstr ""
+msgstr "此方法通常被用于调试，因此确保其表示的内容包含丰富信息且无歧义是很重要的。 :class:`object` 类本身提供了一个默认实现。"
 
 #: ../../reference/datamodel.rst:1956
 msgid ""
@@ -2509,6 +2555,8 @@ msgid ""
 "\"informal\" or nicely printable string representation of an object.  The "
 "return value must be a :ref:`str <textseq>` object."
 msgstr ""
+"由 :func:`str(object) <str>`, 默认的 :meth:`__format__` 实现以及内置函数 :func:`print` "
+"调用，以生成一个对象的“非正式”或适合打印的字符串表示形式。 返回值必须为一个 :ref:`str <textseq>` 对象。"
 
 #: ../../reference/datamodel.rst:1961
 msgid ""
@@ -2531,6 +2579,8 @@ msgid ""
 "of an object. This should return a :class:`bytes` object. The "
 ":class:`object` class itself does not provide this method."
 msgstr ""
+"由 :ref:`bytes <func-bytes>` 调用以生成一个对象的字节串表示形式。 这应当返回一个 :class:`bytes` 对象。 "
+":class:`object` 类本身不提供此方法。"
 
 #: ../../reference/datamodel.rst:1987
 msgid ""
@@ -2562,6 +2612,8 @@ msgid ""
 "The default implementation by the :class:`object` class should be given an "
 "empty *format_spec* string. It delegates to :meth:`__str__`."
 msgstr ""
+"应当为由 :class:`object` 类提供的默认实现给出一个空的 *format_spec* 字符串。 它将委托给 "
+":meth:`__str__`。"
 
 #: ../../reference/datamodel.rst:2004
 msgid ""
@@ -3136,13 +3188,13 @@ msgid ""
 "depends on which descriptor methods were defined and how they were called."
 msgstr ""
 "但是，如果找到的值是定义了某个描述器方法的对象，则 Python "
-"可能会重载默认行为并转而发起调用描述器方法。这具体发生在优先级链的哪个环节则要根据所定义的描述器方法及其被调用的方式来决定。"
+"可能会重载默认行为并转而唤起描述器方法。这具体发生在优先级链的哪个环节则要根据所定义的描述器方法及其被调用的方式来决定。"
 
 #: ../../reference/datamodel.rst:2389
 msgid ""
 "The starting point for descriptor invocation is a binding, ``a.x``. How the "
 "arguments are assembled depends on ``a``:"
-msgstr "描述器发起调用的开始点是一个绑定 ``a.x``。参数的组合方式依 ``a`` 而定:"
+msgstr "描述器唤起的开始点是一个绑定 ``a.x``。参数的组合方式依 ``a`` 而定:"
 
 #: ../../reference/datamodel.rst:2392
 msgid "Direct Call"
@@ -3152,7 +3204,7 @@ msgstr "直接调用"
 msgid ""
 "The simplest and least common call is when user code directly invokes a "
 "descriptor method:    ``x.__get__(a)``."
-msgstr "最简单但最不常见的调用方式是用户代码直接发起调用一个描述器方法:    ``x.__get__(a)``。"
+msgstr "最简单但最不常见的调用方式是用户代码直接唤起一个描述器方法:    ``x.__get__(a)``。"
 
 #: ../../reference/datamodel.rst:2396
 msgid "Instance Binding"
@@ -3356,7 +3408,7 @@ msgstr ""
 msgid ""
 ":attr:`~object.__class__` assignment works only if both classes have the "
 "same *__slots__*."
-msgstr ""
+msgstr ":attr:`~object.__class__` 赋值仅在两个类具有相同的 *__slots__* 时才会起作用。"
 
 #: ../../reference/datamodel.rst:2541
 msgid ""
@@ -3490,7 +3542,7 @@ msgstr ""
 "\n"
 "c = C()\n"
 "A.x = c                  # 钩子未被调用\n"
-"c.__set_name__(A, 'x')   # 手动发起调用钩子"
+"c.__set_name__(A, 'x')   # 手动唤起钩子"
 
 #: ../../reference/datamodel.rst:2619
 msgid "See :ref:`class-object-creation` for more details."
@@ -3760,7 +3812,7 @@ msgid ""
 "steps are invoked after creating the class object:"
 msgstr ""
 "当使用默认的元类 :class:`type`，或者任何最终会调用 ``type.__new__`` "
-"的元类时，以下额外的自定义步骤将在创建类对象之后被发起调用:"
+"的元类时，以下额外的自定义步骤将在创建类对象之后被唤起："
 
 #: ../../reference/datamodel.rst:2790
 msgid ""
@@ -3794,6 +3846,8 @@ msgid ""
 "object is discarded. The new copy is wrapped in a read-only proxy, which "
 "becomes the :attr:`~type.__dict__` attribute of the class object."
 msgstr ""
+"当通过 ``type.__new__`` 创建新类时，作为命令空间形参提供的对象会被拷贝到一个新的有序映射并丢弃原始对象。 "
+"这个新拷贝包装在一个只读代理中，该代理会成为类对象的 :attr:`~type.__dict__` 属性。"
 
 #: ../../reference/datamodel.rst:2808
 msgid ":pep:`3135` - New super"
@@ -4569,6 +4623,7 @@ msgid ""
 "For more information on context managers, see :ref:`typecontextmanager`. The"
 " :class:`object` class itself does not provide the context manager methods."
 msgstr ""
+"有关上下文管理器的更多信息，请参阅 :ref:`typecontextmanager`。 :class:`object` 类本身不提供上下文管理器方法。"
 
 #: ../../reference/datamodel.rst:3394
 msgid ""
@@ -4731,8 +4786,7 @@ msgid ""
 "object's instance dictionary.  That behaviour is the reason why the "
 "following code raises an exception::"
 msgstr ""
-"对于自定义类来说，特殊方法的隐式发起调用仅保证在其定义于对象类型中时能正确地发挥作用，而不能定义在对象实例字典中。 "
-"该行为就是以下代码会引发异常的原因。::"
+"对于自定义类来说，特殊方法的隐式唤起仅保证在其定义于对象类型中时能正确地发挥作用，而不能定义在对象实例字典中。 该行为就是以下代码会引发异常的原因。::"
 
 #: ../../reference/datamodel.rst:3503
 msgid ""
@@ -4765,7 +4819,7 @@ msgid ""
 "invoked on the type object itself::"
 msgstr ""
 "此行为背后的原理在于包括类型对象在内的所有对象都会实现的几个特殊方法如 :meth:`~object.__hash__` 和 "
-":meth:`~object.__repr__`。 如果这些方法的隐式查找使用了传统的查找过程，则当它们在对类型对象自身发起调用时将会失败::"
+":meth:`~object.__repr__`。 如果这些方法的隐式查找使用了传统的查找过程，则当它们在针对类型对象自身被唤起时将会失败::"
 
 #: ../../reference/datamodel.rst:3520
 msgid ""
@@ -4788,7 +4842,7 @@ msgid ""
 "Incorrectly attempting to invoke an unbound method of a class in this way is"
 " sometimes referred to as 'metaclass confusion', and is avoided by bypassing"
 " the instance when looking up special methods::"
-msgstr "以这种方式不正确地尝试发起调用一个类的未绑定方法有时被称为‘元类混淆’，可以通过在查找特殊方法时绕过实例的方式来避免::"
+msgstr "以这种方式不正确地尝试唤起一个类的未绑定方法有时被称为‘元类混淆’，可以通过在查找特殊方法时绕过实例的方式来避免::"
 
 #: ../../reference/datamodel.rst:3531
 msgid ""
@@ -4867,7 +4921,7 @@ msgid ""
 msgstr ""
 "以这种方式绕过 :meth:`~object.__getattribute__` "
 "机制为解释器内部的速度优化提供了显著的空间，其代价则是牺牲了一些处理特殊方法时的灵活性（特殊方法 *must* "
-"必须设置在类对象自身上以便始终一致地由解释器发起调用）。"
+"必须设置在类对象自身上以便始终一致地由解释器唤起）。"
 
 #: ../../reference/datamodel.rst:3573
 msgid "Coroutines"
@@ -4903,6 +4957,9 @@ msgid ""
 ":class:`object` class itself is not awaitable and does not provide this "
 "method."
 msgstr ""
+"必须返回一个 :term:`iterator`。 应当被用来实现 :term:`awaitable` 对象。 "
+"例如，:class:`asyncio.Future` 实现了此方法以与 :keyword:`await` 表达式兼容。 :class:`object` "
+"类本身不是可等待对象因而不提供此方法。"
 
 #: ../../reference/datamodel.rst:3599
 msgid ""
@@ -5021,7 +5078,7 @@ msgstr "异步迭代器可在 :keyword:`async for` 语句中使用。"
 
 #: ../../reference/datamodel.rst:3681 ../../reference/datamodel.rst:3730
 msgid "The :class:`object` class itself does not provide these methods."
-msgstr ""
+msgstr ":class:`object` 类本身不提供这些方法。"
 
 #: ../../reference/datamodel.rst:3686
 msgid "Must return an *asynchronous iterator* object."
@@ -5501,7 +5558,7 @@ msgstr "call"
 
 #: ../../reference/datamodel.rst:519
 msgid "invocation"
-msgstr "发起调用"
+msgstr "唤起"
 
 #: ../../reference/datamodel.rst:519
 msgid "argument"
@@ -5633,7 +5690,7 @@ msgstr "__name__ (模块属性)"
 
 #: ../../reference/datamodel.rst:877
 msgid "__spec__ (module attribute)"
-msgstr ""
+msgstr "__spec__ (模块属性)"
 
 #: ../../reference/datamodel.rst:877
 msgid "__package__ (module attribute)"
@@ -5645,7 +5702,7 @@ msgstr "__loader__ (模块属性)"
 
 #: ../../reference/datamodel.rst:877
 msgid "__path__ (module attribute)"
-msgstr ""
+msgstr "__path__ (模块属性)"
 
 #: ../../reference/datamodel.rst:877
 msgid "__file__ (module attribute)"
