@@ -6211,7 +6211,7 @@ msgid ""
 "functions. (Contributed by Victor Stinner in :gh:`108765`.)"
 msgstr ""
 "``Python.h`` 不再包括这些标准头文件: ``<time.h>``, ``<sys/select.h>`` 和 "
-"``<sys/time.h>``。 如果需要，它们应当显式地被包括。 例如，``<time.h>`` 提供 :c:func:`!clock` 和 "
+"``<sys/time.h>``。 如果需要，它们应当被显式地包括。 例如，``<time.h>`` 提供 :c:func:`!clock` 和 "
 ":c:func:`!gmtime` 函数，``<sys/select.h>`` 提供 :c:func:`!select` 函数，而 "
 "``<sys/time.h>`` 提供 the :c:func:`!futimes`, :c:func:`!gettimeofday` 和 "
 ":c:func:`!setitimer` 函数。 （由 Victor Stinner 在 :gh:`108765` 中贡献。）"
@@ -6225,6 +6225,10 @@ msgid ""
 "platforms, the ``HAVE_STDDEF_H`` macro is only defined on Windows. "
 "(Contributed by Victor Stinner in :gh:`108765`.)"
 msgstr ""
+"在 Windows 上，``Python.h`` 不再包括 ``<stddef.h>`` 标准头文件。 如果需要，它应当被显式地包括。 例如，它提供 "
+":c:func:`!offsetof` 函数，以及 ``size_t`` 和 ``ptrdiff_t`` 类型。 显式地包括 "
+"``<stddef.h>`` 在所有其他平台都已经是必须的，``HAVE_STDDEF_H`` 宏仅在 Windows 上被定义。 （由 Victor "
+"Stinner 在 :gh:`108765` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2700
 msgid ""
@@ -6233,6 +6237,9 @@ msgid ""
 ":c:macro:`!Py_BUILD_CORE_MODULE` macros are now undefined by ``<Python.h>``."
 " (Contributed by Victor Stinner in :gh:`85283`.)"
 msgstr ""
+"如果 :c:macro:`Py_LIMITED_API` 宏已被定义，则 :c:macro:`!Py_BUILD_CORE`, "
+":c:macro:`!Py_BUILD_CORE_BUILTIN` 和 :c:macro:`!Py_BUILD_CORE_MODULE` 宏现在会被 "
+"``<Python.h>`` 撤销定义。 （由 Victor Stinner 在 :gh:`85283` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2705
 msgid ""
@@ -6240,6 +6247,8 @@ msgid ""
 "``Py_TRASHCAN_SAFE_END`` were removed. They should be replaced by the new "
 "macros ``Py_TRASHCAN_BEGIN`` and ``Py_TRASHCAN_END``."
 msgstr ""
+"旧的 trashcan 宏 ``Py_TRASHCAN_SAFE_BEGIN`` 和 ``Py_TRASHCAN_SAFE_END`` 已被移除。 "
+"它们应该被替换为新的宏 ``Py_TRASHCAN_BEGIN`` 和 ``Py_TRASHCAN_END``。"
 
 #: ../../whatsnew/3.13.rst:2709
 msgid "A ``tp_dealloc`` function that has the old macros, such as::"
@@ -6296,12 +6305,14 @@ msgid ""
 "the old macros were deprecated in Python 3.11. (Contributed by Irit Katriel "
 "in :gh:`105111`.)"
 msgstr ""
+"请注意 ``Py_TRASHCAN_BEGIN`` 具有第二个参数，其值应为它所在的析构函数。 这些新宏是在 Python 3.8 中添加而旧的宏是在 "
+"Python 3.11 中弃用的。 （由 Irit Katriel 在 :gh:`105111` 中贡献。）"
 
 #: ../../whatsnew/3.13.rst:2738
 msgid ""
 ":ref:`PEP 667 <whatsnew313-locals-semantics>` introduces several changes to "
 "frame-related functions:"
-msgstr ""
+msgstr ":ref:`PEP 667 <whatsnew313-locals-semantics>` 引入了对帧相关函数的多项更改："
 
 #: ../../whatsnew/3.13.rst:2741
 msgid ""
@@ -6326,6 +6337,9 @@ msgid ""
 " (e.g. with :c:func:`PyDict_Copy`), or by calling the new "
 ":c:func:`PyEval_GetFrameLocals` API."
 msgstr ""
+"在 :term:`optimized scope` 中调用 :c:func:`PyFrame_GetLocals` "
+"现在将返回一个直通写入代理而不是一个在不明确的时刻更新的快照。 如果需要快照，必须显式地创建它 (例如使用 "
+":c:func:`PyDict_Copy`)，或是通过调用新的 :c:func:`PyEval_GetFrameLocals` API。"
 
 #: ../../whatsnew/3.13.rst:2761
 msgid ""
@@ -6333,6 +6347,8 @@ msgid ""
 " no longer have any effect. Calling these functions has been redundant since"
 " Python 3.11, when :c:func:`PyFrame_GetLocals` was first introduced."
 msgstr ""
+":c:func:`!PyFrame_FastToLocals` 和 :c:func:`!PyFrame_FastToLocalsWithError` "
+"将不再有任何效果。 自 Python 3.11 起调用这些函数是多余的，因为该版本首次引入了 :c:func:`PyFrame_GetLocals`。"
 
 #: ../../whatsnew/3.13.rst:2766
 msgid ""
@@ -6340,6 +6356,8 @@ msgid ""
 "function is redundant now that :c:func:`PyFrame_GetLocals` returns a write-"
 "through proxy for :term:`optimized scopes <optimized scope>`."
 msgstr ""
+":c:func:`!PyFrame_LocalsToFast` 将不再有任何效果。 现在调用此函数是多余的因为 "
+":c:func:`PyFrame_GetLocals` 将为 :term:`已优化作用域 <optimized scope>` 返回一个直通写入代理。"
 
 #: ../../whatsnew/3.13.rst:2770
 msgid ""
