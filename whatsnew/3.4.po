@@ -4185,6 +4185,10 @@ msgid ""
 ":class:`importlib.machinery.FrozenImporter`, or if Python 2 compatibility is"
 " necessary you can use :func:`!imp.is_frozen`."
 msgstr ""
+"冻结的包将不再定义 ``__file__`` 属性。 对冻结模块设置该属性在语义上是不正确的因为它们并不是从任何显式位置加载。 "
+"如果你必须知道一个模块是来自冻结的代码那么你可以查看该模块的 ``__spec__.location`` 是否被设为 "
+"``'frozen'``，检测加载器是否为 :class:`importlib.machinery.FrozenImporter` 的子类，或者如果需要"
+" Python 2 兼容性则可以使用 :func:`!imp.is_frozen`。"
 
 #: ../../whatsnew/3.4.rst:2305
 msgid ""
@@ -4193,6 +4197,8 @@ msgid ""
 " a warning that import will overwrite those files with a regular file "
 "regardless of what type of file path they were originally."
 msgstr ""
+"现在 :func:`py_compile.compile` 在它要写入的文件路径是符号链接或非常规文件时会引发 "
+":exc:`FileExistsError`。 这是为了提示导入系统将用一个常规文件覆盖相应文件而不管原始文件路径是什么类型而发出的警告。"
 
 #: ../../whatsnew/3.4.rst:2310
 msgid ""
@@ -4205,6 +4211,10 @@ msgid ""
 "before and wish to continue to ignore syntax or decoding issues, catch all "
 "three exceptions now."
 msgstr ""
+"当被加载的源代码触发了 :exc:`SyntaxError` 或 :exc:`UnicodeDecodeError` 时 "
+":meth:`importlib.abc.SourceLoader.get_source` 将不再引发 :exc:`ImportError`。 因为 "
+":exc:`ImportError` 本意只是在应该找到源代码但却找不到时被引发，而在源代码已找到但结构不正确时使用此异常会感觉有些过度/过载。 "
+"如果你在之前是捕获 ImportError 并希望继续忽略语法或解码问题，现在应当捕获所有这三个异常。"
 
 #: ../../whatsnew/3.4.rst:2319
 msgid ""
@@ -4217,6 +4227,10 @@ msgid ""
 "behaviour was intentional can use :func:`inspect.unwrap` to access the first"
 " function in the chain that has no ``__wrapped__`` attribute."
 msgstr ""
+"现在 :func:`functools.update_wrapper` 和 :func:`functools.wraps` 会正确地将 "
+"``__wrapped__`` 属性设为被包装的函数，即使该函数同样设置了 ``__wrapped__`` 属性。 这意味着 "
+"``__wrapped__`` 属性现在会正确地链接由被装饰函数组成的栈而不是链中指向最内层函数的的每个 ``__wrapped__`` 属性。 "
+"确定要沿袭之前版本行为的内省库可以使用 :func:`inspect.unwrap` 来访问链中没有 ``__wrapped__`` 属性的第一个函数。"
 
 #: ../../whatsnew/3.4.rst:2329
 msgid ""
