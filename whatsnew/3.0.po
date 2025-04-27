@@ -1263,16 +1263,19 @@ msgid ""
 " except for this latter category is to use :keyword:`except` "
 ":exc:`Exception`."
 msgstr ""
+"几乎所有异常实际上都应当派生自 :exc:`Exception`；:exc:`BaseException` "
+"仅应当被用作那些仅应当在最高层级中处理的异常的基类，如 :exc:`SystemExit` 或 :exc:`KeyboardInterrupt`。 "
+"处理除了后面这一类之外的所有异常的推荐写法是使用 :keyword:`except` :exc:`Exception`。"
 
 #: ../../whatsnew/3.0.rst:705
 msgid ":exc:`!StandardError` was removed."
-msgstr ""
+msgstr ":exc:`!StandardError` 已被移除。"
 
 #: ../../whatsnew/3.0.rst:707
 msgid ""
 "Exceptions no longer behave as sequences.  Use the "
 ":attr:`~BaseException.args` attribute instead."
-msgstr ""
+msgstr "异常已不再被当作序列来处理。 而应改用 :attr:`~BaseException.args` 属性。"
 
 #: ../../whatsnew/3.0.rst:710
 msgid ""
@@ -1282,6 +1285,9 @@ msgid ""
 "you *have* to do this, you can assign directly to the "
 ":attr:`~BaseException.__traceback__` attribute (see below)."
 msgstr ""
+":pep:`3109`: 引发异常。 你现在必须使用 :samp:`raise {Exception}({args})` 而不是 "
+":samp:`raise {Exception}, {args}`。 此外，你不再可以显式地指定回溯；作为替代，如果你 *必须* "
+"这样做，你可以直接赋值给 :attr:`~BaseException.__traceback__` 属性（见下文）。"
 
 #: ../../whatsnew/3.0.rst:716
 msgid ""
@@ -1290,6 +1296,9 @@ msgid ""
 "{variable}`.  Moreover, the *variable* is explicitly deleted when the "
 ":keyword:`except` block is left."
 msgstr ""
+":pep:`3110`: 捕获异常。 你现在必须使用 :samp:`except {SomeException} as {variable}` 而不是 "
+":samp:`except {SomeException}, {variable}`。 此外，*variable* 会在离开 "
+":keyword:`except` 代码块时被显式地删除。"
 
 #: ../../whatsnew/3.0.rst:722
 msgid ""
@@ -1301,10 +1310,14 @@ msgid ""
 " saved as the :attr:`~BaseException.__context__` attribute of the secondary "
 "exception. Explicit chaining is invoked with this syntax::"
 msgstr ""
+":pep:`3134`: 异常串连。 存在两种情况：隐式串连和显式串连。 当异常在 :keyword:`except` 或 "
+":keyword:`finally` 处理器代码块中被引发时将发生隐式串连。 通常发生这种情况是由于处理器代码块中存在程序缺陷；我们将其称为 *二级* "
+"异常。 在这种情况下，（正在处理的）原始异常将被保存为该二级异常的 :attr:`~BaseException.__context__` 属性。 "
+"显式串连则是由以下语法来唤起::"
 
 #: ../../whatsnew/3.0.rst:731
 msgid "raise SecondaryException() from primary_exception"
-msgstr ""
+msgstr "raise SecondaryException() from primary_exception"
 
 #: ../../whatsnew/3.0.rst:733
 msgid ""
@@ -1317,6 +1330,10 @@ msgid ""
 "traceback for each component of the chain, with the primary exception at the"
 " top.  (Java users may recognize this behavior.)"
 msgstr ""
+"（这里 *primary_exception* 是产生一个异常对象的任何异常，它可能是在之前被捕获的异常）。 在这种情况下，该原始异常将存储在二级异常的"
+" :attr:`~BaseException.__cause__` 属性中。 如果遍历 :attr:`!__cause__` 和 "
+":attr:`~BaseException.__context__` "
+"属性链时发生了未被处理的异常则会打印回溯信息并为属性链中的每个部分打印单独的回溯信息，原始异常将位于最上面。 （Java 用户可能很了解这样的行为。）"
 
 #: ../../whatsnew/3.0.rst:743
 msgid ""
@@ -1326,6 +1343,8 @@ msgid ""
 "exception, and there are fewer reasons to use :func:`sys.exc_info` (though "
 "the latter is not removed)."
 msgstr ""
+":pep:`3134`: 异常对象现在会将其回溯信息保存为 :attr:`~BaseException.__traceback__` 属性。 "
+"这意味着一个异常对象现在将包含从属于异常的所有信息，没有什么理由再使用 :func:`sys.exc_info` (不过后者并未被移除)。"
 
 #: ../../whatsnew/3.0.rst:749
 msgid ""
@@ -1333,27 +1352,29 @@ msgid ""
 "extension module.  For example, ``error code 193`` is now ``%1 is not a "
 "valid Win32 application``.  Strings now deal with non-English locales."
 msgstr ""
+"一些提示 Windows 载入扩展模块失败的异常消息得到了改进。 例如，``error code 193`` 现在是 ``%1 is not a "
+"valid Win32 application``。 字符串现在可处理非英语的语言区域。"
 
 #: ../../whatsnew/3.0.rst:756
 msgid "Miscellaneous Other Changes"
-msgstr ""
+msgstr "其他杂项修改"
 
 #: ../../whatsnew/3.0.rst:759
 msgid "Operators And Special Methods"
-msgstr ""
+msgstr "运算符与特殊方法"
 
 #: ../../whatsnew/3.0.rst:761
 msgid ""
 "``!=`` now returns the opposite of ``==``, unless ``==`` returns "
 ":data:`NotImplemented`."
-msgstr ""
+msgstr "现在 ``!=`` 将返回与 ``==`` 相反的结果，除非 ``==`` 是返回 :data:`NotImplemented`。"
 
 #: ../../whatsnew/3.0.rst:764
 msgid ""
 "The concept of \"unbound methods\" has been removed from the language. When "
 "referencing a method as a class attribute, you now get a plain function "
 "object."
-msgstr ""
+msgstr "“未绑定方法”的概念已从语言中移除。 现在当把一个方法作为类属性来引用时，你将得到一个普通函数对象。"
 
 #: ../../whatsnew/3.0.rst:768
 msgid ""
@@ -1362,12 +1383,15 @@ msgid ""
 "j))`` (or :meth:`~object.__setitem__` or :meth:`~object.__delitem__`, when "
 "used as an assignment or deletion target, respectively)."
 msgstr ""
+":meth:`!__getslice__`, :meth:`!__setslice__` 和 :meth:`!__delslice__` 已被去除。 "
+"现在 ``a[i:j]`` 语法形式将被转为 ``a.__getitem__(slice(i, j))`` (或者当用作赋值或删除的目标时，分别被转为 "
+":meth:`~object.__setitem__` 或 :meth:`~object.__delitem__`)。"
 
 #: ../../whatsnew/3.0.rst:774
 msgid ""
 ":pep:`3114`: the standard :meth:`next` method has been renamed to "
 ":meth:`~iterator.__next__`."
-msgstr ""
+msgstr ":pep:`3114`: 标准的 :meth:`next` 方法已被重命名为 :meth:`~iterator.__next__`。"
 
 #: ../../whatsnew/3.0.rst:777
 msgid ""
@@ -1375,10 +1399,12 @@ msgid ""
 ":func:`oct` and :func:`hex` use :meth:`~object.__index__` now to convert the"
 " argument to an integer."
 msgstr ""
+":meth:`!__oct__` 和 :meth:`!__hex__` 特殊方法已被移除 -- 现在 :func:`oct` 和 :func:`hex`"
+" 将使用 :meth:`~object.__index__` 来将参数转换为整数。"
 
 #: ../../whatsnew/3.0.rst:781
 msgid "Removed support for :attr:`!__members__` and :attr:`!__methods__`."
-msgstr ""
+msgstr "移除了对 :attr:`!__members__` 和 :attr:`!__methods__` 的支持。"
 
 #: ../../whatsnew/3.0.rst:783
 msgid ""
@@ -1392,10 +1418,18 @@ msgid ""
 ":attr:`~function.__doc__`, :attr:`~function.__globals__`, "
 ":attr:`~function.__name__`, respectively."
 msgstr ""
+"名为 :attr:`!func_X` 的函数属性已被重命名为使用 :attr:`!__X__` "
+"的形式，在函数属性命名空间中释放这些名称以便作为用户自定义属性。 也就是说，:attr:`!func_closure`, "
+":attr:`!func_code`, :attr:`!func_defaults`, :attr:`!func_dict`, "
+":attr:`!func_doc`, :attr:`!func_globals`, :attr:`!func_name` 分别被重命名为 "
+":attr:`~function.__closure__`, :attr:`~function.__code__`, "
+":attr:`~function.__defaults__`, :attr:`~function.__dict__`, "
+":attr:`~function.__doc__`, :attr:`~function.__globals__`, "
+":attr:`~function.__name__`。"
 
 #: ../../whatsnew/3.0.rst:794
 msgid ":meth:`!__nonzero__` is now :meth:`~object.__bool__`."
-msgstr ""
+msgstr ":meth:`!__nonzero__` 现在为 :meth:`~object.__bool__`。"
 
 #: ../../whatsnew/3.0.rst:797
 msgid "Builtins"
