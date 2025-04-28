@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2024, Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -10,16 +10,16 @@
 # ppcfish <ppcfish@gmail.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
-# Freesand Leo <yuqinju@163.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 14:17+0000\n"
+"POT-Creation-Date: 2025-04-25 14:19+0000\n"
 "PO-Revision-Date: 2021-06-29 13:04+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -658,6 +658,18 @@ msgid ""
 "    else:\n"
 "        raise"
 msgstr ""
+"from errno import ENOENT, EACCES, EPERM\n"
+"\n"
+"try:\n"
+"    with open(\"document.txt\") as f:\n"
+"        content = f.read()\n"
+"except IOError as err:\n"
+"    if err.errno == ENOENT:\n"
+"        print(\"document.txt file is missing\")\n"
+"    elif err.errno in (EACCES, EPERM):\n"
+"        print(\"You are not allowed to read document.txt\")\n"
+"    else:\n"
+"        raise"
 
 #: ../../whatsnew/3.3.rst:379
 msgid ""
@@ -675,6 +687,13 @@ msgid ""
 "except PermissionError:\n"
 "    print(\"You are not allowed to read document.txt\")"
 msgstr ""
+"try:\n"
+"    with open(\"document.txt\") as f:\n"
+"        content = f.read()\n"
+"except FileNotFoundError:\n"
+"    print(\"document.txt file is missing\")\n"
+"except PermissionError:\n"
+"    print(\"You are not allowed to read document.txt\")"
 
 #: ../../whatsnew/3.3.rst:392
 msgid ":pep:`3151` - Reworking the OS and IO Exception Hierarchy"
@@ -723,13 +742,19 @@ msgid ""
 ">>> list(g(5))\n"
 "[5, 4, 3, 2, 1, 0, 1, 2, 3, 4]"
 msgstr ""
+">>> def g(x):\n"
+"...     yield from range(x, 0, -1)\n"
+"...     yield from range(x)\n"
+"...\n"
+">>> list(g(5))\n"
+"[5, 4, 3, 2, 1, 0, 1, 2, 3, 4]"
 
 #: ../../whatsnew/3.3.rst:424
 msgid ""
 "However, unlike an ordinary loop, ``yield from`` allows subgenerators to "
 "receive sent and thrown values directly from the calling scope, and return a"
 " final value to the outer generator::"
-msgstr ""
+msgstr "但是，与普通的循环不同，``yield from`` 允许子生成器直接从调用方作用域获取、发送和抛出值，并向外层生成器返回一个最终值::"
 
 #: ../../whatsnew/3.3.rst:428
 msgid ""
@@ -760,6 +785,32 @@ msgid ""
 ">>> tallies\n"
 "[6, 10]"
 msgstr ""
+">>> def accumulate():\n"
+"...     tally = 0\n"
+"...     while 1:\n"
+"...         next = yield\n"
+"...         if next is None:\n"
+"...             return tally\n"
+"...         tally += next\n"
+"...\n"
+">>> def gather_tallies(tallies):\n"
+"...     while 1:\n"
+"...         tally = yield from accumulate()\n"
+"...         tallies.append(tally)\n"
+"...\n"
+">>> tallies = []\n"
+">>> acc = gather_tallies(tallies)\n"
+">>> next(acc)  # 确保累计器准备好接受值\n"
+">>> for i in range(4):\n"
+"...     acc.send(i)\n"
+"...\n"
+">>> acc.send(None)  # 完成第一次记录\n"
+">>> for i in range(5):\n"
+"...     acc.send(i)\n"
+"...\n"
+">>> acc.send(None)  # 完成第二次记录\n"
+">>> tallies\n"
+"[6, 10]"
 
 #: ../../whatsnew/3.3.rst:455
 msgid ""
@@ -1909,8 +1960,8 @@ msgstr "``-999999999999999999``"
 
 #: ../../whatsnew/3.3.rst:1150
 msgid ""
-"In the context templates (:class:`~decimal.DefaultContext`, "
-":class:`~decimal.BasicContext` and :class:`~decimal.ExtendedContext`) the "
+"In the context templates (:const:`~decimal.DefaultContext`, "
+":const:`~decimal.BasicContext` and :const:`~decimal.ExtendedContext`) the "
 "magnitude of :attr:`~decimal.Context.Emax` and :attr:`~decimal.Context.Emin`"
 " has changed to ``999999``."
 msgstr ""
@@ -3831,14 +3882,16 @@ msgid ""
 ":c:macro:`!Py_UNICODE_strchr()`, :c:macro:`!Py_UNICODE_strrchr()`: use "
 ":c:func:`PyUnicode_FindChar`"
 msgstr ""
+":c:macro:`!Py_UNICODE_strchr()`, :c:macro:`!Py_UNICODE_strrchr()`: 使用 "
+":c:func:`PyUnicode_FindChar`"
 
 #: ../../whatsnew/3.3.rst:2304
 msgid ":c:macro:`!Py_UNICODE_FILL()`: use :c:func:`PyUnicode_Fill`"
-msgstr ""
+msgstr ":c:macro:`!Py_UNICODE_FILL()`: 使用 :c:func:`PyUnicode_Fill`"
 
 #: ../../whatsnew/3.3.rst:2305
 msgid ":c:macro:`!Py_UNICODE_MATCH`"
-msgstr ""
+msgstr ":c:macro:`!Py_UNICODE_MATCH`"
 
 #: ../../whatsnew/3.3.rst:2307
 msgid "Encoders:"
@@ -3846,61 +3899,71 @@ msgstr "编码器:"
 
 #: ../../whatsnew/3.3.rst:2309
 msgid ":c:func:`!PyUnicode_Encode`: use :c:func:`!PyUnicode_AsEncodedObject`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_Encode`: 使用 :c:func:`!PyUnicode_AsEncodedObject`"
 
 #: ../../whatsnew/3.3.rst:2310
 msgid ":c:func:`!PyUnicode_EncodeUTF7`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_EncodeUTF7`"
 
 #: ../../whatsnew/3.3.rst:2311
 msgid ""
 ":c:func:`!PyUnicode_EncodeUTF8`: use :c:func:`PyUnicode_AsUTF8` or "
 ":c:func:`PyUnicode_AsUTF8String`"
 msgstr ""
+":c:func:`!PyUnicode_EncodeUTF8`: 使用 :c:func:`PyUnicode_AsUTF8` 或 "
+":c:func:`PyUnicode_AsUTF8String`"
 
 #: ../../whatsnew/3.3.rst:2313
 msgid ":c:func:`!PyUnicode_EncodeUTF32`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_EncodeUTF32`"
 
 #: ../../whatsnew/3.3.rst:2314
 msgid ":c:func:`!PyUnicode_EncodeUTF16`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_EncodeUTF16`"
 
 #: ../../whatsnew/3.3.rst:2315
 msgid ""
 ":c:func:`!PyUnicode_EncodeUnicodeEscape` use "
 ":c:func:`PyUnicode_AsUnicodeEscapeString`"
 msgstr ""
+":c:func:`!PyUnicode_EncodeUnicodeEscape` 使用 "
+":c:func:`PyUnicode_AsUnicodeEscapeString`"
 
 #: ../../whatsnew/3.3.rst:2317
 msgid ""
 ":c:func:`!PyUnicode_EncodeRawUnicodeEscape` use "
 ":c:func:`PyUnicode_AsRawUnicodeEscapeString`"
 msgstr ""
+":c:func:`!PyUnicode_EncodeRawUnicodeEscape` 使用 "
+":c:func:`PyUnicode_AsRawUnicodeEscapeString`"
 
 #: ../../whatsnew/3.3.rst:2319
 msgid ""
 ":c:func:`!PyUnicode_EncodeLatin1`: use :c:func:`PyUnicode_AsLatin1String`"
 msgstr ""
+":c:func:`!PyUnicode_EncodeLatin1`: 使用 :c:func:`PyUnicode_AsLatin1String`"
 
 #: ../../whatsnew/3.3.rst:2320
 msgid ""
 ":c:func:`!PyUnicode_EncodeASCII`: use :c:func:`PyUnicode_AsASCIIString`"
 msgstr ""
+":c:func:`!PyUnicode_EncodeASCII`: 使用 :c:func:`PyUnicode_AsASCIIString`"
 
 #: ../../whatsnew/3.3.rst:2321
 msgid ":c:func:`!PyUnicode_EncodeCharmap`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_EncodeCharmap`"
 
 #: ../../whatsnew/3.3.rst:2322
 msgid ":c:func:`!PyUnicode_TranslateCharmap`"
-msgstr ""
+msgstr ":c:func:`!PyUnicode_TranslateCharmap`"
 
 #: ../../whatsnew/3.3.rst:2323
 msgid ""
 ":c:func:`!PyUnicode_EncodeMBCS`: use :c:func:`PyUnicode_AsMBCSString` or "
 ":c:func:`PyUnicode_EncodeCodePage` (with ``CP_ACP`` code_page)"
 msgstr ""
+":c:func:`!PyUnicode_EncodeMBCS`: 使用 :c:func:`PyUnicode_AsMBCSString` 或 "
+":c:func:`PyUnicode_EncodeCodePage` (附带 ``CP_ACP`` code_page)"
 
 #: ../../whatsnew/3.3.rst:2325
 msgid ""
