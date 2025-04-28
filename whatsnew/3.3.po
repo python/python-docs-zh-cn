@@ -933,7 +933,7 @@ msgid ""
 "No debugging capability is lost, as the original exception context remains "
 "available if needed (for example, if an intervening library has incorrectly "
 "suppressed valuable underlying details)::"
-msgstr ""
+msgstr "调试功能并未丢失，因为原始异常上下文在需要时仍然可用（举例来说，如果某个中间库不正确地抑制了有价值的下层细节）::"
 
 #: ../../whatsnew/3.3.rst:518
 msgid ""
@@ -944,6 +944,12 @@ msgid ""
 "...\n"
 "KeyError('x',)"
 msgstr ""
+">>> try:\n"
+"...     D({}).x\n"
+"... except AttributeError as exc:\n"
+"...     print(repr(exc.__context__))\n"
+"...\n"
+"KeyError('x',)"
 
 #: ../../whatsnew/3.3.rst:527
 msgid ":pep:`409` - Suppressing exception context"
@@ -968,6 +974,9 @@ msgid ""
 "developers to focus on the more significant semantic changes (such as the "
 "stricter default separation of binary and text data)."
 msgstr ""
+"为使从 Python 2 迁移重度使用 Unicode 字面值的 Unicode 自适应型 Python 应用程序更为容易，Python 3.3 "
+"重新支持字符串字面值使用 \"``u``\" 前缀。 该前缀在 Python 3 中并无语法意义，提供它只是为了减少在迁移到 Python 3 "
+"时纯粹机械性的修改数量，让开发者能更轻松的关注更重要的语法变化（比如默认更严格的二进制和文本数据的区分）。"
 
 #: ../../whatsnew/3.3.rst:545
 msgid ":pep:`414` - Explicit Unicode literals"
@@ -990,10 +999,13 @@ msgid ""
 "better information about where they were actually defined, and how they "
 "might be accessible from the global scope."
 msgstr ""
+"函数和类对象新增了 :attr:`~definition.__qualname__` 属性来表示从模块最高层级到其定义位置的“路径”。 "
+"对于全局函数和类，这将与 :attr:`~definition.__name__` 相同。 "
+"对于其他函数和类，它提供了有关这些对象实际定义所在位置，以及如何从全局作用域访问它们的更详细信息。"
 
 #: ../../whatsnew/3.3.rst:560
 msgid "Example with (non-bound) methods::"
-msgstr ""
+msgstr "包含（未绑定）方法的示例::"
 
 #: ../../whatsnew/3.3.rst:562
 msgid ""
@@ -1006,10 +1018,18 @@ msgid ""
 ">>> C.meth.__qualname__\n"
 "'C.meth'"
 msgstr ""
+">>> class C:\n"
+"...     def meth(self):\n"
+"...         pass\n"
+"...\n"
+">>> C.meth.__name__\n"
+"'meth'\n"
+">>> C.meth.__qualname__\n"
+"'C.meth'"
 
 #: ../../whatsnew/3.3.rst:571
 msgid "Example with nested classes::"
-msgstr ""
+msgstr "包含嵌套类的示例::"
 
 #: ../../whatsnew/3.3.rst:573
 msgid ""
@@ -1027,10 +1047,23 @@ msgid ""
 ">>> C.D.meth.__qualname__\n"
 "'C.D.meth'"
 msgstr ""
+">>> class C:\n"
+"...     class D:\n"
+"...         def meth(self):\n"
+"...             pass\n"
+"...\n"
+">>> C.D.__name__\n"
+"'D'\n"
+">>> C.D.__qualname__\n"
+"'C.D'\n"
+">>> C.D.meth.__name__\n"
+"'meth'\n"
+">>> C.D.meth.__qualname__\n"
+"'C.D.meth'"
 
 #: ../../whatsnew/3.3.rst:587
 msgid "Example with nested functions::"
-msgstr ""
+msgstr "包含嵌套函数的示例::"
 
 #: ../../whatsnew/3.3.rst:589
 msgid ""
@@ -1044,12 +1077,21 @@ msgid ""
 ">>> outer().__qualname__\n"
 "'outer.<locals>.inner'"
 msgstr ""
+">>> def outer():\n"
+"...     def inner():\n"
+"...         pass\n"
+"...     return inner\n"
+"...\n"
+">>> outer().__name__\n"
+"'inner'\n"
+">>> outer().__qualname__\n"
+"'outer.<locals>.inner'"
 
 #: ../../whatsnew/3.3.rst:599
 msgid ""
 "The string representation of those objects is also changed to include the "
 "new, more precise information::"
-msgstr ""
+msgstr "这些对象的字符串表示形式也被修改以包括新的更准确的信息::"
 
 #: ../../whatsnew/3.3.rst:602
 msgid ""
@@ -1058,6 +1100,10 @@ msgid ""
 ">>> str(C.D.meth)\n"
 "'<function C.D.meth at 0x7f46b9fe31e0>'"
 msgstr ""
+">>> str(C.D)\n"
+"\"<class '__main__.C.D'>\"\n"
+">>> str(C.D.meth)\n"
+"'<function C.D.meth at 0x7f46b9fe31e0>'"
 
 #: ../../whatsnew/3.3.rst:609
 msgid ":pep:`3155` - Qualified name for classes and functions"
@@ -1078,6 +1124,7 @@ msgid ""
 "which stores the keys and their respective hashes).  This reduces the memory"
 " consumption of programs creating many instances of non-builtin types."
 msgstr ""
+"用于存储对象属性的字典现在能够在彼此之间共享部分内部存储（比如说，存储键及其对应哈希值的部分）。 这减少了程序创建多个非内置类型实例的内存消耗。"
 
 #: ../../whatsnew/3.3.rst:625
 msgid ":pep:`412` - Key-Sharing Dictionary"
@@ -1425,7 +1472,7 @@ msgstr "（由 Antoine Pitrou 在 :issue:`9260` 中贡献。）"
 
 #: ../../whatsnew/3.3.rst:843
 msgid "Builtin functions and types"
-msgstr ""
+msgstr "内置函数和类型"
 
 #: ../../whatsnew/3.3.rst:845
 msgid ""
@@ -1435,6 +1482,9 @@ msgid ""
 "example. The ``'x'`` mode was added: open for exclusive creation, failing if"
 " the file already exists."
 msgstr ""
+":func:`open` 新增了 *opener* 形参：文件对象下层的文件描述符将随后通过调用 *opener* 并附带 (*file*, "
+"*flags*) 来获取。 它可以被用来使用自定义旗标例如 :const:`os.O_CLOEXEC`。 增加了 ``'x'`` "
+"模式：打开为独占创建，如果文件已存在则打开失败。"
 
 #: ../../whatsnew/3.3.rst:850
 msgid ""
@@ -1498,6 +1548,15 @@ msgid ""
 "  File \"<stdin>\", line 1 in <module>\n"
 "Segmentation fault"
 msgstr ""
+"$ python -q -X faulthandler\n"
+">>> import ctypes\n"
+">>> ctypes.string_at(0)\n"
+"Fatal Python error: Segmentation fault\n"
+"\n"
+"Current thread 0x00007fb899f39700:\n"
+"  File \"/home/python/cpython/Lib/ctypes/__init__.py\", line 486 in string_at\n"
+"  File \"<stdin>\", line 1 in <module>\n"
+"Segmentation fault"
 
 #: ../../whatsnew/3.3.rst:893
 msgid "ipaddress"
@@ -1509,6 +1568,8 @@ msgid ""
 " objects representing IPv4 and IPv6 addresses, networks and interfaces (i.e."
 " an IP address associated with a specific IP subnet)."
 msgstr ""
+"新的 :mod:`ipaddress` 模块提供了用于创建和操作代表 IPv4 和 IPv6 地址、网络和接口（即关联到特定 IP 子网的 IP "
+"地址）的工具。"
 
 #: ../../whatsnew/3.3.rst:899
 msgid "(Contributed by Google and Peter Moody in :pep:`3144`.)"
