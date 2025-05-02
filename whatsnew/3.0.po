@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-31 15:27+0000\n"
+"POT-Creation-Date: 2025-05-02 15:33+0000\n"
 "PO-Revision-Date: 2023-05-24 02:23+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -317,6 +317,12 @@ msgid ""
 ":exc:`UnicodeDecodeError` if it contained non-ASCII values.  This value-"
 "specific behavior has caused numerous sad faces over the years."
 msgstr ""
+"Python 3.0 使用 *文本* 和 (二进制) *数据* 等概念来替代 Unicode 字符串和 8 位字符串。 所有文本均使用 "
+"Unicode；不过 *已编码* Unicode 是以二进制数据来表示的。 用于存放文本的类型是 :class:`str`，用于存放数据的类型是 "
+":class:`bytes`。 与 2.x 场景的最大区别是在 Python 3.0 中任何混用文本和数据的尝试都将引发 "
+":exc:`TypeError`，而当你在 Python 2.x 中混用 Unicode 和 8 位字符串时，如果 8 位字符串恰好仅包含 7 位 "
+"(ASCII) 字节数据那就没有问题，但是如果包含非 ASCII 值则将引发 :exc:`UnicodeDecodeError`。 "
+"这种依赖于特定值的行为多年来造成了无数的苦恼。"
 
 #: ../../whatsnew/3.0.rst:250
 msgid ""
@@ -343,6 +349,10 @@ msgid ""
 ":class:`bytes` to :class:`str`.  You can also use ``bytes(s, encoding=...)``"
 " and ``str(b, encoding=...)``, respectively."
 msgstr ""
+"由于 :class:`str` 和 :class:`bytes` 类型无法混用，你必须始终在它们之间执行显式转换。 使用 "
+":meth:`str.encode` 将 :class:`str` 转为 :class:`bytes`，并使用 :meth:`bytes.decode`"
+" 将 :class:`bytes` 转为 :class:`str`。 你也可以分别使用 ``bytes(s, encoding=...)`` 和 "
+"``str(b, encoding=...)``。"
 
 #: ../../whatsnew/3.0.rst:268
 msgid ""
@@ -397,6 +407,13 @@ msgid ""
 "have a way to override the encoding. There is no longer any need for using "
 "the encoding-aware streams in the :mod:`codecs` module."
 msgstr ""
+"作为文本文件打开的文件（仍然是 :func:`open` 的默认模式）总是会使用一个编码格式在（内存中的）字符串和（磁盘中的）字节串之间建立映射。 "
+"二进制文件（将 mode 参数设为 ``b`` 来打开）在内存中总是会使用数字串。 这意味着如果一个文件是使用不正确的模式或编码格式打开的，I/O "
+"操作很可能会报告失败，而不是静默地产生不正确的数据。 这也意味着即使是 Unix 用户在打开文件时也必须指定正确的模式（文本或二进制）。 "
+"存在一个依赖于具体平台的默认编码格式，在类 Unix 平台上可以通过 ``LANG`` "
+"环境变量来设置（有时也会使用其他一些平台专属的语言区域相关的环境变量）。 在多数情况下，系统默认使用 "
+"UTF-8，但并非全都如此；你绝不应该依赖这个默认值。 任何读写超出纯 ASCII 文本范围的内容的应用程序都应该提供重写编码格式的选项。 "
+"现在已不再需要使用 :mod:`codecs` 模块中可感知编码格式的流。"
 
 #: ../../whatsnew/3.0.rst:304
 msgid ""
@@ -424,6 +441,12 @@ msgid ""
 "of strings, filenames that cannot be decoded properly are omitted rather "
 "than raising :exc:`UnicodeError`."
 msgstr ""
+"文件名是以（Unicode）字符串的形式传给 API 并返回的。 这可能产生特定平台专属的问题因为在某些平台上文件名强制使用字节串。 （另一方面，在 "
+"Windows 上文件名则原生存储为 Unicode。） 为绕过此问题，多数接受文件名的 API（例如 :func:`open` 和 :mod:`os`"
+" 模块中的许多函数）都同时接受 :class:`bytes` 对象和字符串，而少数 API 会发出要求 :class:`bytes` 返回值的提示。 "
+"因而，当参数为 :class:`bytes` 的实例时 :func:`os.listdir` 会返回由 :class:`bytes` "
+"实例组成的列表，:func:`os.getcwdb` 则会将当前工作目录作为 :class:`bytes` 实例返回。 请注意当 "
+":func:`os.listdir` 返回字符串的列表时，无法被正确解码的文件名会被忽略而不是引发 :exc:`UnicodeError`。"
 
 #: ../../whatsnew/3.0.rst:325
 msgid ""
@@ -518,6 +541,8 @@ msgid ""
 "now assign directly to a variable in an outer (but non-global) scope.  "
 ":keyword:`!nonlocal` is a new reserved word."
 msgstr ""
+":pep:`3104`: :keyword:`nonlocal` 语句。 现在你可以使用 ``nonlocal x`` "
+"来允许直接赋值到一个外层（但非全局）作用域。 :keyword:`!nonlocal` 是新的保留字。"
 
 #: ../../whatsnew/3.0.rst:378
 msgid ""
@@ -526,10 +551,12 @@ msgid ""
 "``rest`` object is always a (possibly empty) list; the right-hand side may "
 "be any iterable.  Example::"
 msgstr ""
+":pep:`3132`: 扩展可迭代对象解包。 你现在可以编写像 ``a, b, *rest = some_sequence`` 这样的代码。 甚至 "
+"``*rest, a = stuff``。 ``rest`` 对象将总是为一个（可能为空的）列表；右侧的对象可以是任意可迭代对象。 例如::"
 
 #: ../../whatsnew/3.0.rst:385
 msgid "This sets *a* to ``0``, *b* to ``4``, and *rest* to ``[1, 2, 3]``."
-msgstr ""
+msgstr "这会将 *a* 设为 ``0``，*b* 设为 ``4``，而将 *rest* 设为 ``[1, 2, 3]``。"
 
 #: ../../whatsnew/3.0.rst:387
 msgid ""
@@ -537,6 +564,8 @@ msgid ""
 " as ``dict(stuff)`` but is more flexible.  (This is :pep:`274` vindicated. "
 ":-)"
 msgstr ""
+"新增字典推导式: ``{k: v for k, v in stuff}`` 的含义与 ``dict(stuff)`` 相同但是更为灵活。 "
+"(对此特性的解释见 :pep:`274`。 :-)"
 
 #: ../../whatsnew/3.0.rst:391
 msgid ""
@@ -545,24 +574,26 @@ msgid ""
 "``{x for x in stuff}`` means the same thing as ``set(stuff)`` but is more "
 "flexible."
 msgstr ""
+"新增集合字面值，例如 ``{1, 2}``。 请注意 ``{}`` 是空字典；要用 ``set()`` 表示空集合。 集合推导式也受到支持；例如 "
+"``{x for x in stuff}`` 的含义与 ``set(stuff)`` 相同但是更为灵活。"
 
 #: ../../whatsnew/3.0.rst:396
 msgid ""
 "New octal literals, e.g. ``0o720`` (already in 2.6).  The old octal literals"
 " (``0720``) are gone."
-msgstr ""
+msgstr "新增八进制字面值，例如 ``0o720`` (已存在于 2.6 中)。 旧的八进制字面值 (``0720``) 已不复存在。"
 
 #: ../../whatsnew/3.0.rst:399
 msgid ""
 "New binary literals, e.g. ``0b1010`` (already in 2.6), and there is a new "
 "corresponding built-in function, :func:`bin`."
-msgstr ""
+msgstr "新增二进制字面值，例如 ``0b1010`` (已存在于 2.6 中)，还有对应的新增内置函数 :func:`bin`。"
 
 #: ../../whatsnew/3.0.rst:402
 msgid ""
 "Bytes literals are introduced with a leading ``b`` or ``B``, and there is a "
 "new corresponding built-in function, :func:`bytes`."
-msgstr ""
+msgstr "引入了带有 ``b`` 或 ``B`` 前缀的字节串字面值，还有对应的新增内置函数 :func:`bytes`。"
 
 #: ../../whatsnew/3.0.rst:406
 msgid "Changed Syntax"
@@ -622,6 +653,9 @@ msgid ""
 "inside a :func:`list` constructor, and in particular the loop control "
 "variables are no longer leaked into the surrounding scope."
 msgstr ""
+"列表推导式不再支持 :samp:`[... for {var} in {item1}, {item2}, ...]` 这样的语法形式。 请改用 "
+":samp:`[... for {var} in ({item1}, {item2}, ...)]`。 还要注意列表推导式具有不同的句法：它们更像是 "
+":func:`list` 构造器内部用于生成器表达式的语法糖，具体来说就是循环控制变量将不会再泄漏到外层作用域中。"
 
 #: ../../whatsnew/3.0.rst:444
 msgid ""
@@ -642,14 +676,16 @@ msgid ""
 ":pep:`3113`: Tuple parameter unpacking removed.  You can no longer write "
 "``def foo(a, (b, c)): ...``. Use ``def foo(a, b_c): b, c = b_c`` instead."
 msgstr ""
+":pep:`3113`: 元组形参解包已被移除。 你不能再使用 ``def foo(a, (b, c)): ...`` 的写法。 请改用 ``def "
+"foo(a, b_c): b, c = b_c``。"
 
 #: ../../whatsnew/3.0.rst:456
 msgid "Removed backticks (use :func:`repr` instead)."
-msgstr ""
+msgstr "移除了反引号 (请改用 :func:`repr`)。"
 
 #: ../../whatsnew/3.0.rst:458
 msgid "Removed ``<>`` (use ``!=`` instead)."
-msgstr ""
+msgstr "移除了 ``<>`` (请改用 ``!=``)。"
 
 #: ../../whatsnew/3.0.rst:460
 msgid ""
@@ -658,20 +694,23 @@ msgid ""
 " note that :func:`exec` no longer takes a stream argument; instead of "
 "``exec(f)`` you can use ``exec(f.read())``."
 msgstr ""
+"移除的关键字: :func:`exec` 不再是一个关键字；它仍是一个函数。 （幸运的是该函数语法也在 2.x 中被接受。） 还要注意 "
+":func:`exec` 将不再接受流作为参数；你可以将原来的 ``exec(f)`` 改为使用 ``exec(f.read())``。"
 
 #: ../../whatsnew/3.0.rst:465
 msgid "Integer literals no longer support a trailing ``l`` or ``L``."
-msgstr ""
+msgstr "整数字面值不再支持 ``l`` 或 ``L`` 后缀。"
 
 #: ../../whatsnew/3.0.rst:467
 msgid "String literals no longer support a leading ``u`` or ``U``."
-msgstr ""
+msgstr "字符串字面值不再支持 ``u`` 或 ``U`` 前缀。"
 
 #: ../../whatsnew/3.0.rst:469
 msgid ""
 "The :keyword:`from` *module* :keyword:`import` ``*`` syntax is only allowed "
 "at the module level, no longer inside functions."
 msgstr ""
+":keyword:`from` *module* :keyword:`import` ``*`` 语法仅允许在模块层级使用，不再允许出现于函数内部。"
 
 #: ../../whatsnew/3.0.rst:472
 msgid ""
@@ -679,14 +718,16 @@ msgid ""
 "import {name}`.  All :keyword:`import` forms not starting with ``.`` are "
 "interpreted as absolute imports.  (:pep:`328`)"
 msgstr ""
+"唯一可接受的相对导入语法为 :samp:`from .[{module}] import {name}`。 所有不以 ``.`` 开头的 "
+":keyword:`import` 形式都将被解读为绝对导入。 (:pep:`328`)"
 
 #: ../../whatsnew/3.0.rst:476
 msgid "Classic classes are gone."
-msgstr ""
+msgstr "经典类已不复存在。"
 
 #: ../../whatsnew/3.0.rst:480
 msgid "Changes Already Present In Python 2.6"
-msgstr ""
+msgstr "已存在于 Python 2.6 中的改变"
 
 #: ../../whatsnew/3.0.rst:482
 msgid ""
@@ -696,6 +737,8 @@ msgid ""
 "corresponding sections in :ref:`whats-new-in-2.6` should be consulted for "
 "longer descriptions."
 msgstr ""
+"由于许多用户可能会直接从 Python 2.5 跳到 Python 3.0，因此本节提醒读者注意最初为 Python 3.0 设计但后来移植到 "
+"Python 2.6 的新特性。 如需更详细的说明请参阅 :ref:`whats-new-in-2.6` 中的相应章节。"
 
 #: ../../whatsnew/3.0.rst:488
 msgid ""
@@ -703,12 +746,14 @@ msgid ""
 "and no longer needs to be imported from the :mod:`__future__`. Also check "
 "out :ref:`new-26-context-managers` and :ref:`new-module-contextlib`."
 msgstr ""
+":ref:`pep-0343`。 现在 :keyword:`with` 语句已是一个标准特性而不再需要从 :mod:`__future__` 导入。 "
+"另请参阅 :ref:`new-26-context-managers` 和 :ref:`new-module-contextlib`。"
 
 #: ../../whatsnew/3.0.rst:493
 msgid ""
 ":ref:`pep-0366`.  This enhances the usefulness of the :option:`-m` option "
 "when the referenced module lives in a package."
-msgstr ""
+msgstr ":ref:`pep-0366`。 这增强了 :option:`-m` 选项在被引用的模块位于包中时的实用性。"
 
 #: ../../whatsnew/3.0.rst:496
 msgid ":ref:`pep-0370`."
@@ -727,12 +772,15 @@ msgid ""
 "API for string formatting, and to start deprecating the ``%`` operator in "
 "Python 3.1."
 msgstr ""
+":ref:`pep-3101`。 注意：2.6 说明文档提到 :meth:`format` 方法同时适用于 8 位和 Unicode 字符串。 在 "
+"3.0 中，只有 :class:`str` 类型（带有 Unicode 支持的文本字符串）才支持此方法；:class:`bytes` 类型并不支持。 "
+"最终的计划是使其成为仅针对字符串格式化的 API，并在 Python 3.1 中开始弃用 ``%`` 字符串运算符。"
 
 #: ../../whatsnew/3.0.rst:507
 msgid ""
 ":ref:`pep-3105`.  This is now a standard feature and no longer needs to be "
 "imported from :mod:`__future__`.  More details were given above."
-msgstr ""
+msgstr ":ref:`pep-3105`。 现在这已是一个标准特性而不再需要从 :mod:`__future__` 导入。 更多详情见上文。"
 
 #: ../../whatsnew/3.0.rst:510
 msgid ""
@@ -740,6 +788,8 @@ msgid ""
 " now standard and :keyword:`!except` *exc*, *var* is no longer supported.  "
 "(Of course, the :keyword:`!as` *var* part is still optional.)"
 msgstr ""
+":ref:`pep-3110`。 现在 :keyword:`except` *exc* :keyword:`!as` *var* 语法已成为标准而 "
+":keyword:`!except` *exc*, *var* 不再受到支持。 （当然，:keyword:`!as` *var* 部分仍为可选项。）"
 
 #: ../../whatsnew/3.0.rst:515
 msgid ""
@@ -747,6 +797,8 @@ msgid ""
 " like ``b'...'``, ``b\"\"\"...\"\"\"``, and ``br\"...\"``) now produces a "
 "literal of type :class:`bytes`."
 msgstr ""
+":ref:`pep-3112`。 现在 ``b\"...\"`` 字节串字面值标记法（及其变化形式如 ``b'...'``, "
+"``b\"\"\"...\"\"\"`` 和 ``br\"...\"`` 等将产生 :class:`bytes` 类型的字面值。"
 
 #: ../../whatsnew/3.0.rst:519
 msgid ""
@@ -783,7 +835,7 @@ msgstr ""
 msgid ""
 ":ref:`pep-3127`.  As mentioned above, the new octal literal notation is the "
 "only one supported, and binary literals have been added."
-msgstr ""
+msgstr ":ref:`pep-3127`。 如上文所述，新的八进制字面值标记法是唯一受支持的形式，并增加了二进制字面值。"
 
 #: ../../whatsnew/3.0.rst:543
 msgid ":ref:`pep-3129`."
@@ -795,6 +847,8 @@ msgid ""
 "defining Python's \"numeric tower\".  Also note the new :mod:`fractions` "
 "module which implements :class:`numbers.Rational`."
 msgstr ""
+":ref:`pep-3141`。 :mod:`numbers` 模块是 ABC 的另一个新用例，它定义了 Python 的“数字层级塔”。 另请注意新的"
+" :mod:`fractions` 模块，它实现了 :class:`numbers.Rational`。"
 
 #: ../../whatsnew/3.0.rst:551
 msgid "Library Changes"
@@ -831,7 +885,7 @@ msgstr ""
 msgid ""
 "Some modules were renamed because their old name disobeyed :pep:`8`, or for "
 "various other reasons.  Here's the list:"
-msgstr ""
+msgstr "一些模块名称已被修改因为它们的旧名称不符合 :pep:`8`，或是出于各种其他理由。 具体列表如下："
 
 #: ../../whatsnew/3.0.rst:576
 msgid "Old Name"
@@ -1416,4 +1470,4 @@ msgstr ""
 #: ../../whatsnew/3.0.rst:929
 msgid ""
 "For porting C extensions to Python 3.0, please see :ref:`cporting-howto`."
-msgstr ""
+msgstr "有关如何将 C 扩展移植到 Python 3.0，请参阅 :ref:`cporting-howto`。"
