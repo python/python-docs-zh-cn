@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2024, Python Software Foundation
+# Copyright (C) 2001 Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -7,15 +7,16 @@
 # jaystone776 <1732865113@qq.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2024
 # Freesand Leo <yuqinju@163.com>, 2024
+# zeroswan <zeroswan@outlook.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.13\n"
+"Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-11 14:17+0000\n"
+"POT-Creation-Date: 2025-05-08 02:53-0300\n"
 "PO-Revision-Date: 2021-06-28 01:14+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: zeroswan <zeroswan@outlook.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -248,80 +249,142 @@ msgstr "在更深的作用域（例如内部类）中定义的函数不会被 :m
 msgid "For example:"
 msgstr "例如:"
 
-#: ../../library/symtable.rst:215
+#: ../../library/symtable.rst:206
+msgid ""
+">>> import symtable\n"
+">>> st = symtable.symtable('''\n"
+"... def outer(): pass\n"
+"...\n"
+"... class A:\n"
+"...    def f():\n"
+"...        def w(): pass\n"
+"...\n"
+"...    def g(self): pass\n"
+"...\n"
+"...    @classmethod\n"
+"...    async def h(cls): pass\n"
+"...\n"
+"...    global outer\n"
+"...    def outer(self): pass\n"
+"... ''', 'test', 'exec')\n"
+">>> class_A = st.get_children()[2]\n"
+">>> class_A.get_methods()\n"
+"('f', 'g', 'h')"
+msgstr ""
+
+#: ../../library/symtable.rst:228
 msgid ""
 "Although ``A().f()`` raises :exc:`TypeError` at runtime, ``A.f`` is still "
 "considered as a method-like function."
 msgstr "虽然 ``A().f()`` 在运行时会引发 :exc:`TypeError`，但 ``A.f`` 仍然被视为是方法型函数。"
 
-#: ../../library/symtable.rst:220
+#: ../../library/symtable.rst:236
 msgid ""
 "An entry in a :class:`SymbolTable` corresponding to an identifier in the "
 "source.  The constructor is not public."
 msgstr ":class:`SymbolTable` 中的数据项，对应于源码中的某个标识符。构造函数不公开。"
 
-#: ../../library/symtable.rst:225
+#: ../../library/symtable.rst:241
 msgid "Return the symbol's name."
 msgstr "返回符号名"
 
-#: ../../library/symtable.rst:229
+#: ../../library/symtable.rst:245
 msgid "Return ``True`` if the symbol is used in its block."
 msgstr "如果符号在代码块中被引用了，则返回 ``True``。"
 
-#: ../../library/symtable.rst:233
+#: ../../library/symtable.rst:249
 msgid "Return ``True`` if the symbol is created from an import statement."
 msgstr "如果符号是由导入语句创建的，则返回 ``True``。"
 
-#: ../../library/symtable.rst:237
+#: ../../library/symtable.rst:253
 msgid "Return ``True`` if the symbol is a parameter."
 msgstr "如果符号是参数，返回 ``True``。"
 
-#: ../../library/symtable.rst:241
+#: ../../library/symtable.rst:257
+msgid "Return ``True`` if the symbol is a type parameter."
+msgstr ""
+
+#: ../../library/symtable.rst:263
 msgid "Return ``True`` if the symbol is global."
 msgstr "如果符号是全局变量，则返回 ``True``。"
 
-#: ../../library/symtable.rst:245
+#: ../../library/symtable.rst:267
 msgid "Return ``True`` if the symbol is nonlocal."
 msgstr "如果符号为非局部变量，则返回 ``True``。"
 
-#: ../../library/symtable.rst:249
+#: ../../library/symtable.rst:271
 msgid ""
 "Return ``True`` if the symbol is declared global with a global statement."
 msgstr "如果符号用 global 声明为全局变量，则返回 ``True``。"
 
-#: ../../library/symtable.rst:253
+#: ../../library/symtable.rst:275
 msgid "Return ``True`` if the symbol is local to its block."
 msgstr "如果符号是代码块内的局部变量，则返回 ``True``。"
 
-#: ../../library/symtable.rst:257
+#: ../../library/symtable.rst:279
 msgid "Return ``True`` if the symbol is annotated."
 msgstr "如果符号带有注解，则返回 ``True``。"
 
-#: ../../library/symtable.rst:263
+#: ../../library/symtable.rst:285
 msgid ""
 "Return ``True`` if the symbol is referenced in its block, but not assigned "
 "to."
 msgstr "如果符号在代码块中被引用，但未赋值，则返回 ``True``。"
 
-#: ../../library/symtable.rst:268
+#: ../../library/symtable.rst:290
+msgid ""
+"Return *True* if a class-scoped symbol is free from the perspective of a "
+"method."
+msgstr ""
+
+#: ../../library/symtable.rst:293
+msgid "Consider the following example::"
+msgstr "比如下面的例子::"
+
+#: ../../library/symtable.rst:295
+msgid ""
+"def f():\n"
+"    x = 1  # function-scoped\n"
+"    class C:\n"
+"        x = 2  # class-scoped\n"
+"        def method(self):\n"
+"            return x"
+msgstr ""
+
+#: ../../library/symtable.rst:302
+msgid ""
+"In this example, the class-scoped symbol ``x`` is considered to be free from"
+" the perspective of ``C.method``, thereby allowing the latter to return *1* "
+"at runtime and not *2*."
+msgstr ""
+
+#: ../../library/symtable.rst:310
 msgid "Return ``True`` if the symbol is assigned to in its block."
 msgstr "如果符号在代码块中赋值，则返回 ``True``。"
 
-#: ../../library/symtable.rst:272
+#: ../../library/symtable.rst:314
+msgid "Return ``True`` if the symbol is a comprehension iteration variable."
+msgstr ""
+
+#: ../../library/symtable.rst:320
+msgid "Return ``True`` if the symbol is a cell in an inlined comprehension."
+msgstr ""
+
+#: ../../library/symtable.rst:326
 msgid "Return ``True`` if name binding introduces new namespace."
 msgstr "如果符号名绑定引入了新的命名空间，则返回 ``True``。"
 
-#: ../../library/symtable.rst:274
+#: ../../library/symtable.rst:328
 msgid ""
 "If the name is used as the target of a function or class statement, this "
 "will be true."
 msgstr "如果符号名用于函数或类定义语句，则为 True。"
 
-#: ../../library/symtable.rst:277
+#: ../../library/symtable.rst:331
 msgid "For example::"
 msgstr "例如："
 
-#: ../../library/symtable.rst:279
+#: ../../library/symtable.rst:333
 msgid ""
 ">>> table = symtable.symtable(\"def some_func(): pass\", \"string\", \"exec\")\n"
 ">>> table.lookup(\"some_func\").is_namespace()\n"
@@ -331,7 +394,7 @@ msgstr ""
 ">>> table.lookup(\"some_func\").is_namespace()\n"
 "True"
 
-#: ../../library/symtable.rst:283
+#: ../../library/symtable.rst:337
 msgid ""
 "Note that a single name can be bound to multiple objects.  If the result is "
 "``True``, the name may also be bound to other objects, like an int or list, "
@@ -340,31 +403,31 @@ msgstr ""
 "注意，一个符号名可以与多个对象绑定。如果结果为 ``True``，则该符号名还可以绑定到其他对象上，比如 int 或 list "
 "，且不会引入新的命名空间。"
 
-#: ../../library/symtable.rst:289
+#: ../../library/symtable.rst:343
 msgid "Return a list of namespaces bound to this name."
 msgstr "返回与符号名绑定的命名空间的列表。"
 
-#: ../../library/symtable.rst:293
+#: ../../library/symtable.rst:347
 msgid ""
 "Return the namespace bound to this name. If more than one or no namespace is"
 " bound to this name, a :exc:`ValueError` is raised."
 msgstr "返回绑定到这个名称的命名空间。 如果有多个命名空间或没有命名空间被绑定到这个名称，则会引发 :exc:`ValueError`。"
 
-#: ../../library/symtable.rst:300
+#: ../../library/symtable.rst:354
 msgid "Command-Line Usage"
 msgstr "命令行用法"
 
-#: ../../library/symtable.rst:304
+#: ../../library/symtable.rst:358
 msgid ""
 "The :mod:`symtable` module can be executed as a script from the command "
 "line."
 msgstr ":mod:`symtable` 模块可以在命令行下作为脚本来执行。"
 
-#: ../../library/symtable.rst:306
+#: ../../library/symtable.rst:360
 msgid "python -m symtable [infile...]"
 msgstr "python -m symtable [infile...]"
 
-#: ../../library/symtable.rst:310
+#: ../../library/symtable.rst:364
 msgid ""
 "Symbol tables are generated for the specified Python source files and dumped"
 " to stdout. If no input file is specified, the content is read from stdin."
