@@ -63,7 +63,7 @@ msgstr "示例"
 msgid ""
 "Example of customized Python always running with the :ref:`Python "
 "Development Mode <devmode>` enabled; return ``-1`` on error:"
-msgstr ""
+msgstr "运行时始终启用 :ref:`Python 开发模式 <devmode>` 的定制版 Python 的例子；出错时将返回 ``-1``:"
 
 #: ../../c-api/init_config.rst:34
 msgid ""
@@ -101,36 +101,69 @@ msgid ""
 "    }\n"
 "}"
 msgstr ""
+"int init_python(void)\n"
+"{\n"
+"    PyInitConfig *config = PyInitConfig_Create();\n"
+"    if (config == NULL) {\n"
+"        printf(\"PYTHON INIT ERROR: memory allocation failed\\n\");\n"
+"        return -1;\n"
+"    }\n"
+"\n"
+"    // 启用 Python 开发模式\n"
+"    if (PyInitConfig_SetInt(config, \"dev_mode\", 1) < 0) {\n"
+"        goto error;\n"
+"    }\n"
+"\n"
+"    // 使用配置初始化 Python\n"
+"    if (Py_InitializeFromInitConfig(config) < 0) {\n"
+"        goto error;\n"
+"    }\n"
+"    PyInitConfig_Free(config);\n"
+"    return 0;\n"
+"\n"
+"error:\n"
+"    {\n"
+"        // 显示错误消息\n"
+"        //\n"
+"        // 使用这种不常见的花括号风格，因为你不能\n"
+"        // 将跳转目标指向变量声明。\n"
+"        const char *err_msg;\n"
+"        (void)PyInitConfig_GetError(config, &err_msg);\n"
+"        printf(\"PYTHON INIT ERROR: %s\\n\", err_msg);\n"
+"        PyInitConfig_Free(config);\n"
+"        return -1;\n"
+"    }\n"
+"}"
 
 #: ../../c-api/init_config.rst:71
 msgid "Create Config"
-msgstr ""
+msgstr "创建配置"
 
 #: ../../c-api/init_config.rst:75
 msgid "Opaque structure to configure the Python initialization."
-msgstr ""
+msgstr "用于配置 Python 初始化的不透明结构体。"
 
 #: ../../c-api/init_config.rst:80
 msgid ""
 "Create a new initialization configuration using :ref:`Isolated Configuration"
 " <init-isolated-conf>` default values."
-msgstr ""
+msgstr "使用 :ref:`隔离配置 <init-isolated-conf>` 的默认值新建一个初始化配置。"
 
 #: ../../c-api/init_config.rst:83
 msgid "It must be freed by :c:func:`PyInitConfig_Free`."
-msgstr ""
+msgstr "它必须由 :c:func:`PyInitConfig_Free` 来释放。"
 
 #: ../../c-api/init_config.rst:85
 msgid "Return ``NULL`` on memory allocation failure."
-msgstr ""
+msgstr "内存分配失败时返回 ``NULL``。"
 
 #: ../../c-api/init_config.rst:90
 msgid "Free memory of the initialization configuration *config*."
-msgstr ""
+msgstr "释放初始化配置 *config* 的内存。"
 
 #: ../../c-api/init_config.rst:92
 msgid "If *config* is ``NULL``, no operation is performed."
-msgstr ""
+msgstr "如果 *config* 为 ``NULL``，则不执行任何操作。"
 
 #: ../../c-api/init_config.rst:96
 msgid "Error Handling"
@@ -138,34 +171,34 @@ msgstr "错误处理"
 
 #: ../../c-api/init_config.rst:100
 msgid "Get the *config* error message."
-msgstr ""
+msgstr "获取 *config* 错误消息。"
 
 #: ../../c-api/init_config.rst:102
 msgid "Set *\\*err_msg* and return ``1`` if an error is set."
-msgstr ""
+msgstr "如果设置了一个错误则设置 *\\*err_msg* 并返回 ``1``。"
 
 #: ../../c-api/init_config.rst:103
 msgid "Set *\\*err_msg* to ``NULL`` and return ``0`` otherwise."
-msgstr ""
+msgstr "在其他情况下将 *\\*err_msg* 设为 ``NULL`` 并返回 ``0``。"
 
 #: ../../c-api/init_config.rst:105
 msgid "An error message is an UTF-8 encoded string."
-msgstr ""
+msgstr "错误消息是一个 UTF-8 编码的字符串。"
 
 #: ../../c-api/init_config.rst:107
 msgid ""
 "If *config* has an exit code, format the exit code as an error message."
-msgstr ""
+msgstr "如果 *config* 具有一个退出码，则将退出码格式化为错误消息。"
 
 #: ../../c-api/init_config.rst:110
 msgid ""
 "The error message remains valid until another ``PyInitConfig`` function is "
 "called with *config*. The caller doesn't have to free the error message."
-msgstr ""
+msgstr "错误消息将保持无效直到调用另一个 ``PyInitConfig`` 并附带 *config*。 调用方不必释放错误消息。"
 
 #: ../../c-api/init_config.rst:117
 msgid "Get the *config* exit code."
-msgstr ""
+msgstr "获取 *config* 退出码。"
 
 #: ../../c-api/init_config.rst:119
 msgid "Set *\\*exitcode* and return ``1`` if *config* has an exit code set."
