@@ -1,7 +1,9 @@
-zh_CN Translation of the Python Documentation
+Python文档简体中文翻译
 =============================================
 
-All translations are done on transifex.
+:PSF: Python Software Foundation (Python软件基金会)
+
+所有翻译工作均在transifex上完成
 https://www.transifex.com/python-doc/public/
 
 Maintained versions:
@@ -92,4 +94,26 @@ Join the Chinese (China) team on transifex to get start.
 You're recommended to read
 `大陆简中自由软件本地化工作指南：Free Software Localization Guide for Chinese (China)`__ first.
 
+文档贡献协议
+------------------------------------
+
+关于翻译许可的声明：Python的文档通由全球网络志愿者共同维护。
+我们将这个项目发布在 Transifex, GitHub, 和其它公开区域并诚邀您的参与。
+我们提出这个基于 CC0许可(详见 https://creativecommons.org/publicdomain/zero/1.0/legalcode)
+的协议，希望您可以同 PSF 一起完善 Python 文档以及对应的中文版本文档。
+作为回报，你可以公开声明你所翻译部分的所有权，
+同时，如果您翻译的部分被 PSF 收录，您的名字将记录到 TRANSLATORS 文件。
+尽管 PSF 在这个文档贡献协议中不确保收录您的翻译成果，但我们仍然期待您的参与。
+
+一旦您提交您的翻译成果给 PSF，我们将视为您已经接受本协议。
+
+为翻译文档做贡献
+-------------------------------
+
+加入 transifex 上的中文团队开始翻译吧。
+
+开始翻译前，我们推荐您先阅读下面的文档：
+`大陆简中自由软件本地化工作指南：Free Software Localization Guide for Chinese (China)`__ 。
+
 __ http://mirrors.ustc.edu.cn/anthon/aosc-l10n/zh_CN_l10n.pdf
+
