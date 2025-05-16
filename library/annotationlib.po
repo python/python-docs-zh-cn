@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2025-05-16 14:19+0000\n"
 "PO-Revision-Date: 2025-05-08 06:04+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -217,31 +217,31 @@ msgstr ""
 
 #: ../../library/annotationlib.rst:133
 msgid ""
-"Values are real annotation values (as per :attr:`Format.VALUE` format) for "
-"defined values, and :class:`ForwardRef` proxies for undefined values. Real "
-"objects may contain references to :class:`ForwardRef` proxy objects."
-msgstr ""
-
-#: ../../library/annotationlib.rst:141
-msgid ""
-"Values are the text string of the annotation as it appears in the source "
-"code, up to modifications including, but not restricted to, whitespace "
-"normalizations and constant values optimizations."
-msgstr ""
-
-#: ../../library/annotationlib.rst:145
-msgid ""
-"The exact values of these strings may change in future versions of Python."
-msgstr ""
-
-#: ../../library/annotationlib.rst:150
-msgid ""
 "Special value used to signal that an annotate function is being evaluated in"
 " a special environment with fake globals. When passed this value, annotate "
 "functions should either return the same value as for the "
 ":attr:`Format.VALUE` format, or raise :exc:`NotImplementedError` to signal "
 "that they do not support execution in this environment. This format is only "
 "used internally and should not be passed to the functions in this module."
+msgstr ""
+
+#: ../../library/annotationlib.rst:144
+msgid ""
+"Values are real annotation values (as per :attr:`Format.VALUE` format) for "
+"defined values, and :class:`ForwardRef` proxies for undefined values. Real "
+"objects may contain references to :class:`ForwardRef` proxy objects."
+msgstr ""
+
+#: ../../library/annotationlib.rst:152
+msgid ""
+"Values are the text string of the annotation as it appears in the source "
+"code, up to modifications including, but not restricted to, whitespace "
+"normalizations and constant values optimizations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:156
+msgid ""
+"The exact values of these strings may change in future versions of Python."
 msgstr ""
 
 #: ../../library/annotationlib.rst:162
@@ -342,6 +342,10 @@ msgid ""
 ">>> get_annotations(Movie, format=Format.STRING)\n"
 "{'name': 'str', 'year': 'int'}"
 msgstr ""
+">>> from typing import TypedDict\n"
+">>> Movie = TypedDict(\"movie\", {\"name\": str, \"year\": int})\n"
+">>> get_annotations(Movie, format=Format.STRING)\n"
+"{'name': 'str', 'year': 'int'}"
 
 #: ../../library/annotationlib.rst:243
 msgid ""
@@ -393,34 +397,34 @@ msgstr ""
 
 #: ../../library/annotationlib.rst:280
 msgid ":meth:`typing.TypeAliasType.evaluate_value`, the value of type aliases"
-msgstr ""
+msgstr ":meth:`typing.TypeAliasType.evaluate_value`，类型别名的值"
 
 #: ../../library/annotationlib.rst:281
 msgid ":meth:`typing.TypeVar.evaluate_bound`, the bound of type variables"
-msgstr ""
+msgstr ":meth:`typing.TypeVar.evaluate_bound`，类型变量的边界"
 
 #: ../../library/annotationlib.rst:282
 msgid ""
 ":meth:`typing.TypeVar.evaluate_constraints`, the constraints of type "
 "variables"
-msgstr ""
+msgstr ":meth:`typing.TypeVar.evaluate_constraints`，类型变量的约束"
 
 #: ../../library/annotationlib.rst:284
 msgid ""
 ":meth:`typing.TypeVar.evaluate_default`, the default value of type variables"
-msgstr ""
+msgstr ":meth:`typing.TypeVar.evaluate_default`，类型变量的默认值"
 
 #: ../../library/annotationlib.rst:286
 msgid ""
 ":meth:`typing.ParamSpec.evaluate_default`, the default value of parameter "
 "specifications"
-msgstr ""
+msgstr ":meth:`typing.ParamSpec.evaluate_default`，形参规格的默认值"
 
 #: ../../library/annotationlib.rst:288
 msgid ""
 ":meth:`typing.TypeVarTuple.evaluate_default`, the default value of type "
 "variable tuples"
-msgstr ""
+msgstr ":meth:`typing.TypeVarTuple.evaluate_default`，类型变量元组的默认值"
 
 #: ../../library/annotationlib.rst:291
 msgid ""
@@ -695,4 +699,250 @@ msgid ""
 "         typ.__annotate__ = wrapped_annotate\n"
 "      typ.classvars = classvars  # Store the ClassVars in a separate attribute\n"
 "      return typ"
+msgstr ""
+
+#: ../../library/annotationlib.rst:490
+msgid "Limitations of the ``STRING`` format"
+msgstr ""
+
+#: ../../library/annotationlib.rst:492
+msgid ""
+"The :attr:`~Format.STRING` format is meant to approximate the source code of"
+" the annotation, but the implementation strategy used means that it is not "
+"always possible to recover the exact source code."
+msgstr ""
+
+#: ../../library/annotationlib.rst:496
+msgid ""
+"First, the stringifier of course cannot recover any information that is not "
+"present in the compiled code, including comments, whitespace, "
+"parenthesization, and operations that get simplified by the compiler."
+msgstr ""
+
+#: ../../library/annotationlib.rst:500
+msgid ""
+"Second, the stringifier can intercept almost all operations that involve "
+"names looked up in some scope, but it cannot intercept operations that "
+"operate fully on constants. As a corollary, this also means it is not safe "
+"to request the ``STRING`` format on untrusted code: Python is powerful "
+"enough that it is possible to achieve arbitrary code execution even with no "
+"access to any globals or builtins. For example:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:506
+msgid ""
+">>> def f(x: (1).__class__.__base__.__subclasses__()[-1].__init__.__builtins__[\"print\"](\"Hello world\")): pass\n"
+"...\n"
+">>> annotationlib.get_annotations(f, format=annotationlib.Format.SOURCE)\n"
+"Hello world\n"
+"{'x': 'None'}"
+msgstr ""
+
+#: ../../library/annotationlib.rst:515
+msgid ""
+"This particular example works as of the time of writing, but it relies on "
+"implementation details and is not guaranteed to work in the future."
+msgstr ""
+
+#: ../../library/annotationlib.rst:518
+msgid ""
+"Among the different kinds of expressions that exist in Python, as "
+"represented by the :mod:`ast` module, some expressions are supported, "
+"meaning that the ``STRING`` format can generally recover the original source"
+" code; others are unsupported, meaning that they may result in incorrect "
+"output or an error."
+msgstr ""
+
+#: ../../library/annotationlib.rst:523
+msgid "The following are supported (sometimes with caveats):"
+msgstr ""
+
+#: ../../library/annotationlib.rst:525
+msgid ":class:`ast.BinOp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:526
+msgid ":class:`ast.UnaryOp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:528
+msgid ""
+":class:`ast.Invert` (``~``), :class:`ast.UAdd` (``+``), and "
+":class:`ast.USub` (``-``) are supported"
+msgstr ""
+
+#: ../../library/annotationlib.rst:529
+msgid ":class:`ast.Not` (``not``) is not supported"
+msgstr ""
+
+#: ../../library/annotationlib.rst:531
+msgid ":class:`ast.Dict` (except when using ``**`` unpacking)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:532
+msgid ":class:`ast.Set`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:533
+msgid ":class:`ast.Compare`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:535
+msgid ":class:`ast.Eq` and :class:`ast.NotEq` are supported"
+msgstr ""
+
+#: ../../library/annotationlib.rst:536
+msgid ""
+":class:`ast.Lt`, :class:`ast.LtE`, :class:`ast.Gt`, and :class:`ast.GtE` are"
+" supported, but the operand may be flipped"
+msgstr ""
+
+#: ../../library/annotationlib.rst:537
+msgid ""
+":class:`ast.Is`, :class:`ast.IsNot`, :class:`ast.In`, and :class:`ast.NotIn`"
+" are not supported"
+msgstr ""
+
+#: ../../library/annotationlib.rst:539
+msgid ":class:`ast.Call` (except when using ``**`` unpacking)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:540
+msgid ""
+":class:`ast.Constant` (though not the exact representation of the constant; "
+"for example, escape sequences in strings are lost; hexadecimal numbers are "
+"converted to decimal)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:542
+msgid ":class:`ast.Attribute` (assuming the value is not a constant)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:543
+msgid ":class:`ast.Subscript` (assuming the value is not a constant)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:544
+msgid ":class:`ast.Starred` (``*`` unpacking)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:545
+msgid ":class:`ast.Name`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:546
+msgid ":class:`ast.List`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:547
+msgid ":class:`ast.Tuple`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:548
+msgid ":class:`ast.Slice`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:550
+msgid ""
+"The following are unsupported, but throw an informative error when "
+"encountered by the stringifier:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:553
+msgid ""
+":class:`ast.FormattedValue` (f-strings; error is not detected if conversion "
+"specifiers like ``!r`` are used)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:555
+msgid ":class:`ast.JoinedStr` (f-strings)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:557
+msgid "The following are unsupported and result in incorrect output:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:559
+msgid ":class:`ast.BoolOp` (``and`` and ``or``)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:560
+msgid ":class:`ast.IfExp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:561
+msgid ":class:`ast.Lambda`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:562
+msgid ":class:`ast.ListComp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:563
+msgid ":class:`ast.SetComp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:564
+msgid ":class:`ast.DictComp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:565
+msgid ":class:`ast.GeneratorExp`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:567
+msgid ""
+"The following are disallowed in annotation scopes and therefore not "
+"relevant:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:569
+msgid ":class:`ast.NamedExpr` (``:=``)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:570
+msgid ":class:`ast.Await`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:571
+msgid ":class:`ast.Yield`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:572
+msgid ":class:`ast.YieldFrom`"
+msgstr ""
+
+#: ../../library/annotationlib.rst:576
+msgid "Limitations of the ``FORWARDREF`` format"
+msgstr ""
+
+#: ../../library/annotationlib.rst:578
+msgid ""
+"The :attr:`~Format.FORWARDREF` format aims to produce real values as much as"
+" possible, with anything that cannot be resolved replaced with "
+":class:`ForwardRef` objects. It is affected by broadly the same Limitations "
+"as the :attr:`~Format.STRING` format: annotations that perform operations on"
+" literals or that use unsupported expression types may raise exceptions when"
+" evaluated using the :attr:`~Format.FORWARDREF` format."
+msgstr ""
+
+#: ../../library/annotationlib.rst:585
+msgid "Below are a few examples of the behavior with unsupported expressions:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:587
+msgid ""
+">>> from annotationlib import get_annotations, Format\n"
+">>> def zerodiv(x: 1 / 0): ...\n"
+">>> get_annotations(zerodiv, format=Format.STRING)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ZeroDivisionError: division by zero\n"
+">>> get_annotations(zerodiv, format=Format.FORWARDREF)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ZeroDivisionError: division by zero\n"
+">>> def ifexp(x: 1 if y else 0): ...\n"
+">>> get_annotations(ifexp, format=Format.STRING)\n"
+"{'x': '1'}"
 msgstr ""
