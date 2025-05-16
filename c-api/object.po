@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2025, Python Software Foundation
+# Copyright (C) 2001 Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
@@ -17,9 +17,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.13\n"
+"Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 14:17+0000\n"
+"POT-Creation-Date: 2025-05-09 14:19+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -853,6 +853,225 @@ msgstr "此函数必须只在设置了 :c:macro:`Py_TPFLAGS_MANAGED_DICT` 旗标
 #: ../../c-api/object.rst:586
 msgid "Clear the managed dictionary of *obj*."
 msgstr "清空被管理的 *obj* 的字典。."
+
+#: ../../c-api/object.rst:595
+msgid ""
+"Enable `deferred reference counting "
+"<https://peps.python.org/pep-0703/#deferred-reference-counting>`_ on *obj*, "
+"if supported by the runtime.  In the :term:`free-threaded <free threading>` "
+"build, this allows the interpreter to avoid reference count adjustments to "
+"*obj*, which may improve multi-threaded performance.  The tradeoff is that "
+"*obj* will only be deallocated by the tracing garbage collector."
+msgstr ""
+"在 *obj* 上启用 `推迟引用计数 <https://peps.python.org/pep-0703/#deferred-reference-"
+"counting>`_，如果运行时支持的话。 在 :term:`自由线程 <free threading>` 构建版中，这将允许解释器避免对 *obj*"
+" 的引用计数调整，这可以提升多线程性能。 其代价是 *obj* 将只能由在追踪的垃圾回收器来释放。"
+
+#: ../../c-api/object.rst:601
+msgid ""
+"This function returns ``1`` if deferred reference counting is enabled on "
+"*obj* (including when it was enabled before the call), and ``0`` if deferred"
+" reference counting is not supported or if the hint was ignored by the "
+"runtime. This function is thread-safe, and cannot fail."
+msgstr ""
+"如果在 *obj* 上启用了推迟引用计数（包括在调用之前已启用的情况）则此函数将返回 ``1``，如果推迟引用计数不受运行时支持或者被其忽略 则返回 "
+"``0``。 此函数是线程安全的，并且一定不会执行失败。"
+
+#: ../../c-api/object.rst:606
+msgid ""
+"This function does nothing on builds with the :term:`GIL` enabled, which do "
+"not support deferred reference counting. This also does nothing if *obj* is "
+"not an object tracked by the garbage collector (see :func:`gc.is_tracked` "
+"and :c:func:`PyObject_GC_IsTracked`)."
+msgstr ""
+"此函数在启用了 :term:`GIL` 的构建版上将不做任何事，因为该版本不支持推迟引用计数。 如果 *obj* "
+"未被垃圾回收器追踪则此函数也不会做任何事 (参见 :func:`gc.is_tracked` 和 "
+":c:func:`PyObject_GC_IsTracked`)。"
+
+#: ../../c-api/object.rst:611
+msgid ""
+"This function is intended to be used soon after *obj* is created, by the "
+"code that creates it."
+msgstr "此函数应当在 *obj* 被创建之后立即供创建它的代码使用。"
+
+#: ../../c-api/object.rst:618
+msgid ""
+"Check if *obj* is a unique temporary object. Returns ``1`` if *obj* is known"
+" to be a unique temporary object, and ``0`` otherwise.  This function cannot"
+" fail, but the check is conservative, and may return ``0`` in some cases "
+"even if *obj* is a unique temporary object."
+msgstr ""
+"检测 *obj* 是否是一个单独临时对象。 如果确定 *obj* 是一个单独临时对象则返回 ``1``，否则返回 ``0``。 "
+"此函数一定不会执行失败，但该检测是偏保守的，在某些情况下即使 *obj* 是一个单独临时对象也可能返回 ``0``。"
+
+#: ../../c-api/object.rst:624
+msgid ""
+"If an object is a unique temporary, it is guaranteed that the current code "
+"has the only reference to the object. For arguments to C functions, this "
+"should be used instead of checking if the reference count is ``1``. Starting"
+" with Python 3.14, the interpreter internally avoids some reference count "
+"modifications when loading objects onto the operands stack by "
+":term:`borrowing <borrowed reference>` references when possible, which means"
+" that a reference count of ``1`` by itself does not guarantee that a "
+"function argument uniquely referenced."
+msgstr ""
+
+#: ../../c-api/object.rst:633
+msgid ""
+"In the example below, ``my_func`` is called with a unique temporary object "
+"as its argument::"
+msgstr ""
+
+#: ../../c-api/object.rst:636
+msgid "my_func([1, 2, 3])"
+msgstr ""
+
+#: ../../c-api/object.rst:638
+msgid ""
+"In the example below, ``my_func`` is **not** called with a unique temporary "
+"object as its argument, even if its refcount is ``1``::"
+msgstr ""
+
+#: ../../c-api/object.rst:641
+msgid ""
+"my_list = [1, 2, 3]\n"
+"my_func(my_list)"
+msgstr ""
+
+#: ../../c-api/object.rst:644
+msgid "See also the function :c:func:`Py_REFCNT`."
+msgstr ""
+
+#: ../../c-api/object.rst:650
+msgid ""
+"This function returns non-zero if *obj* is :term:`immortal`, and zero "
+"otherwise. This function cannot fail."
+msgstr ""
+
+#: ../../c-api/object.rst:655
+msgid ""
+"Objects that are immortal in one CPython version are not guaranteed to be "
+"immortal in another."
+msgstr ""
+
+#: ../../c-api/object.rst:662
+msgid ""
+"Increments the reference count of *obj* if it is not zero.  Returns ``1`` if"
+" the object's reference count was successfully incremented. Otherwise, this "
+"function returns ``0``."
+msgstr ""
+
+#: ../../c-api/object.rst:666
+msgid ""
+":c:func:`PyUnstable_EnableTryIncRef` must have been called earlier on *obj* "
+"or this function may spuriously return ``0`` in the :term:`free threading` "
+"build."
+msgstr ""
+
+#: ../../c-api/object.rst:670
+msgid ""
+"This function is logically equivalent to the following C code, except that "
+"it behaves atomically in the :term:`free threading` build::"
+msgstr ""
+
+#: ../../c-api/object.rst:673
+msgid ""
+"if (Py_REFCNT(op) > 0) {\n"
+"   Py_INCREF(op);\n"
+"   return 1;\n"
+"}\n"
+"return 0;"
+msgstr ""
+
+#: ../../c-api/object.rst:679
+msgid ""
+"This is intended as a building block for managing weak references without "
+"the overhead of a Python :ref:`weak reference object <weakrefobjects>`."
+msgstr ""
+
+#: ../../c-api/object.rst:682
+msgid ""
+"Typically, correct use of this function requires support from *obj*'s "
+"deallocator (:c:member:`~PyTypeObject.tp_dealloc`). For example, the "
+"following sketch could be adapted to implement a \"weakmap\" that works like"
+" a :py:class:`~weakref.WeakValueDictionary` for a specific type:"
+msgstr ""
+
+#: ../../c-api/object.rst:688
+msgid ""
+"PyMutex mutex;\n"
+"\n"
+"PyObject *\n"
+"add_entry(weakmap_key_type *key, PyObject *value)\n"
+"{\n"
+"    PyUnstable_EnableTryIncRef(value);\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    weakmap_add_entry(weakmap, key, value);\n"
+"    PyMutex_Unlock(&mutex);\n"
+"    Py_RETURN_NONE;\n"
+"}\n"
+"\n"
+"PyObject *\n"
+"get_value(weakmap_key_type *key)\n"
+"{\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    PyObject *result = weakmap_find(weakmap, key);\n"
+"    if (PyUnstable_TryIncRef(result)) {\n"
+"        // `result` is safe to use\n"
+"        PyMutex_Unlock(&mutex);\n"
+"        return result;\n"
+"    }\n"
+"    // if we get here, `result` is starting to be garbage-collected,\n"
+"    // but has not been removed from the weakmap yet\n"
+"    PyMutex_Unlock(&mutex);\n"
+"    return NULL;\n"
+"}\n"
+"\n"
+"// tp_dealloc function for weakmap values\n"
+"void\n"
+"value_dealloc(PyObject *value)\n"
+"{\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    weakmap_remove_value(weakmap, value);\n"
+"\n"
+"    ...\n"
+"    PyMutex_Unlock(&mutex);\n"
+"}"
+msgstr ""
+
+#: ../../c-api/object.rst:736
+msgid ""
+"Enables subsequent uses of :c:func:`PyUnstable_TryIncRef` on *obj*.  The "
+"caller must hold a :term:`strong reference` to *obj* when calling this."
+msgstr ""
+
+#: ../../c-api/object.rst:743
+msgid "Determine if *op* only has one reference."
+msgstr ""
+
+#: ../../c-api/object.rst:745
+msgid ""
+"On GIL-enabled builds, this function is equivalent to :c:expr:`Py_REFCNT(op)"
+" == 1`."
+msgstr ""
+
+#: ../../c-api/object.rst:748
+msgid ""
+"On a :term:`free threaded <free threading>` build, this checks if *op*'s "
+":term:`reference count` is equal to one and additionally checks if *op* is "
+"only used by this thread. :c:expr:`Py_REFCNT(op) == 1` is **not** thread-"
+"safe on free threaded builds; prefer this function."
+msgstr ""
+
+#: ../../c-api/object.rst:753
+msgid ""
+"The caller must hold an :term:`attached thread state`, despite the fact that"
+" this function doesn't call into the Python interpreter. This function "
+"cannot fail."
+msgstr ""
 
 #: ../../c-api/object.rst:316 ../../c-api/object.rst:328
 #: ../../c-api/object.rst:353 ../../c-api/object.rst:404

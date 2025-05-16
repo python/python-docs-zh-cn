@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 02:53-0300\n"
+"POT-Creation-Date: 2025-05-09 14:19+0000\n"
 "PO-Revision-Date: 2021-06-28 01:15+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -380,7 +380,7 @@ msgid ""
 "Thread-local data is data whose values are thread specific. If you have data"
 " that you want to be local to a thread, create a :class:`local` object and "
 "use its attributes::"
-msgstr ""
+msgstr "线程局部数据是指具有线程专属值的数据。 如果你希望某些数据是线程局部数据，则创建一个 :class:`local` 对象并使用其属性::"
 
 #: ../../library/threading.rst:267
 msgid ""
@@ -389,10 +389,14 @@ msgid ""
 ">>> mydata.number\n"
 "42"
 msgstr ""
+">>> mydata = local()\n"
+">>> mydata.number = 42\n"
+">>> mydata.number\n"
+"42"
 
 #: ../../library/threading.rst:272
 msgid "You can also access the :class:`local`-object's dictionary::"
-msgstr ""
+msgstr "你也可以访问 :class:`local` 对象的字典::"
 
 #: ../../library/threading.rst:274
 msgid ""
@@ -403,10 +407,16 @@ msgid ""
 ">>> mydata.widgets\n"
 "[]"
 msgstr ""
+">>> mydata.__dict__\n"
+"{'number': 42}\n"
+">>> mydata.__dict__.setdefault('widgets', [])\n"
+"[]\n"
+">>> mydata.widgets\n"
+"[]"
 
 #: ../../library/threading.rst:281
 msgid "If we access the data in a different thread::"
-msgstr ""
+msgstr "如果我们在另一个线程中访问此数据::"
 
 #: ../../library/threading.rst:283
 msgid ""
@@ -424,18 +434,33 @@ msgid ""
 ">>> log\n"
 "[[], 11]"
 msgstr ""
+">>> log = []\n"
+">>> def f():\n"
+"...     items = sorted(mydata.__dict__.items())\n"
+"...     log.append(items)\n"
+"...     mydata.number = 11\n"
+"...     log.append(mydata.number)\n"
+"\n"
+">>> import threading\n"
+">>> thread = threading.Thread(target=f)\n"
+">>> thread.start()\n"
+">>> thread.join()\n"
+">>> log\n"
+"[[], 11]"
 
 #: ../../library/threading.rst:297
 msgid ""
 "we get different data.  Furthermore, changes made in the other thread don't "
 "affect data seen in this thread::"
-msgstr ""
+msgstr "我们将得到不同的数据。 此外，在其他线程中进行的修改也不会影响在本线程中看到的数据::"
 
 #: ../../library/threading.rst:300
 msgid ""
 ">>> mydata.number\n"
 "42"
 msgstr ""
+">>> mydata.number\n"
+"42"
 
 #: ../../library/threading.rst:303
 msgid ""
@@ -445,12 +470,14 @@ msgid ""
 "to save these values across threads, as they apply only to the thread they "
 "came from."
 msgstr ""
+"当然，你从 :class:`local` 对象获取的值，包括其 :attr:`~object.__dict__` 属性，都只针对属性被读取时的当前线程。"
+" 出于此理由，通常你不会跨线程保存这些值，因为它们仅适用于它们所在的线程。"
 
 #: ../../library/threading.rst:309
 msgid ""
 "You can create custom :class:`local` objects by subclassing the "
 ":class:`local` class::"
-msgstr ""
+msgstr "你可以通过子类化 :class:`local` 类来创建自定义的 :class:`local` 对象::"
 
 #: ../../library/threading.rst:312
 msgid ""
@@ -461,6 +488,12 @@ msgid ""
 "...     def squared(self):\n"
 "...         return self.number ** 2"
 msgstr ""
+">>> class MyLocal(local):\n"
+"...     number = 2\n"
+"...     def __init__(self, /, **kw):\n"
+"...         self.__dict__.update(kw)\n"
+"...     def squared(self):\n"
+"...         return self.number ** 2"
 
 #: ../../library/threading.rst:319
 msgid ""
@@ -469,28 +502,32 @@ msgid ""
 "called each time the :class:`local` object is used in a separate thread.  "
 "This is necessary to initialize each thread's dictionary."
 msgstr ""
+"这适用于提供默认值、方法和初始化支持。 请注意如果你定义了 :py:meth:`~object.__init__` 方法，则每当该 "
+":class:`local` 对象在不同线程中被使用时都将调用它。 这对于初始化每个线程的字典是必要的。"
 
 #: ../../library/threading.rst:325
 msgid "Now if we create a :class:`local` object::"
-msgstr ""
+msgstr "现在如果我们创建一个 :class:`local` 对象::"
 
 #: ../../library/threading.rst:327
 msgid ">>> mydata = MyLocal(color='red')"
-msgstr ""
+msgstr ">>> mydata = MyLocal(color='red')"
 
 #: ../../library/threading.rst:329
 msgid "we have a default number::"
-msgstr ""
+msgstr "我们将有一个默认的 number 值::"
 
 #: ../../library/threading.rst:331
 msgid ""
 ">>> mydata.number\n"
 "2"
 msgstr ""
+">>> mydata.number\n"
+"2"
 
 #: ../../library/threading.rst:334
 msgid "an initial color::"
-msgstr ""
+msgstr "一个初始的 color 值::"
 
 #: ../../library/threading.rst:336
 msgid ""
@@ -498,20 +535,25 @@ msgid ""
 "'red'\n"
 ">>> del mydata.color"
 msgstr ""
+">>> mydata.color\n"
+"'red'\n"
+">>> del mydata.color"
 
 #: ../../library/threading.rst:340
 msgid "And a method that operates on the data::"
-msgstr ""
+msgstr "以及一个操作数据的方法::"
 
 #: ../../library/threading.rst:342
 msgid ""
 ">>> mydata.squared()\n"
 "4"
 msgstr ""
+">>> mydata.squared()\n"
+"4"
 
 #: ../../library/threading.rst:345
 msgid "As before, we can access the data in a separate thread::"
-msgstr ""
+msgstr "像之前一样，我们可以在不同的线程中访问该数据::"
 
 #: ../../library/threading.rst:347
 msgid ""
@@ -522,10 +564,16 @@ msgid ""
 ">>> log\n"
 "[[('color', 'red')], 11]"
 msgstr ""
+">>> log = []\n"
+">>> thread = threading.Thread(target=f)\n"
+">>> thread.start()\n"
+">>> thread.join()\n"
+">>> log\n"
+"[[('color', 'red')], 11]"
 
 #: ../../library/threading.rst:354
 msgid "without affecting this thread's data::"
-msgstr ""
+msgstr "而不会影响本线程的数据::"
 
 #: ../../library/threading.rst:356
 msgid ""
@@ -536,12 +584,18 @@ msgid ""
 "...\n"
 "AttributeError: 'MyLocal' object has no attribute 'color'"
 msgstr ""
+">>> mydata.number\n"
+"2\n"
+">>> mydata.color\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"AttributeError: 'MyLocal' object has no attribute 'color'"
 
 #: ../../library/threading.rst:363
 msgid ""
 "Note that subclasses can define :term:`__slots__`, but they are not thread "
 "local. They are shared across threads::"
-msgstr ""
+msgstr "请注意子类可以定义 :term:`__slots__`，但它们不是线程局部的。 它们会被跨线程共享::"
 
 #: ../../library/threading.rst:366
 msgid ""
@@ -552,10 +606,16 @@ msgid ""
 ">>> mydata.number = 42\n"
 ">>> mydata.color = 'red'"
 msgstr ""
+">>> class MyLocal(local):\n"
+"...     __slots__ = 'number'\n"
+"\n"
+">>> mydata = MyLocal()\n"
+">>> mydata.number = 42\n"
+">>> mydata.color = 'red'"
 
 #: ../../library/threading.rst:373
 msgid "So, the separate thread::"
-msgstr ""
+msgstr "因此，不同的线程::"
 
 #: ../../library/threading.rst:375
 msgid ""
@@ -563,16 +623,21 @@ msgid ""
 ">>> thread.start()\n"
 ">>> thread.join()"
 msgstr ""
+">>> thread = threading.Thread(target=f)\n"
+">>> thread.start()\n"
+">>> thread.join()"
 
 #: ../../library/threading.rst:379
 msgid "affects what we see::"
-msgstr ""
+msgstr "会影响我们的值::"
 
 #: ../../library/threading.rst:381
 msgid ""
 ">>> mydata.number\n"
 "11"
 msgstr ""
+">>> mydata.number\n"
+"11"
 
 #: ../../library/threading.rst:387
 msgid "A class that represents thread-local data."

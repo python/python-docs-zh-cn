@@ -1,0 +1,698 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Alpha Du <alphanow@gmail.com>, 2025
+# nick <2330458484@qq.com>, 2025
+# Xu Siyuan, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"PO-Revision-Date: 2025-05-08 06:04+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../library/annotationlib.rst:2
+msgid ":mod:`!annotationlib` --- Functionality for introspecting annotations"
+msgstr ":mod:`!annotationlib` --- 用于内省标记的功能"
+
+#: ../../library/annotationlib.rst:8
+msgid "**Source code:** :source:`Lib/annotationlib.py`"
+msgstr "**源代码:** :source:`Lib/annotationlib.py`"
+
+#: ../../library/annotationlib.rst:17
+msgid ""
+"The :mod:`!annotationlib` module provides tools for introspecting "
+":term:`annotations <annotation>` on modules, classes, and functions."
+msgstr ":mod:`!annotationlib` 模块提供了用于在模块、类和函数上内省 :term:`标记 <annotation>` 的工具。"
+
+#: ../../library/annotationlib.rst:20
+msgid ""
+"Annotations are :ref:`lazily evaluated <lazy-evaluation>` and often contain "
+"forward references to objects that are not yet defined when the annotation "
+"is created. This module provides a set of low-level tools that can be used "
+"to retrieve annotations in a reliable way, even in the presence of forward "
+"references and other edge cases."
+msgstr ""
+
+#: ../../library/annotationlib.rst:25
+msgid ""
+"This module supports retrieving annotations in three main formats (see "
+":class:`Format`), each of which works best for different use cases:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:28
+msgid ""
+":attr:`~Format.VALUE` evaluates the annotations and returns their value. "
+"This is most straightforward to work with, but it may raise errors, for "
+"example if the annotations contain references to undefined names."
+msgstr ""
+
+#: ../../library/annotationlib.rst:31
+msgid ""
+":attr:`~Format.FORWARDREF` returns :class:`ForwardRef` objects for "
+"annotations that cannot be resolved, allowing you to inspect the annotations"
+" without evaluating them. This is useful when you need to work with "
+"annotations that may contain unresolved forward references."
+msgstr ""
+
+#: ../../library/annotationlib.rst:35
+msgid ""
+":attr:`~Format.STRING` returns the annotations as a string, similar to how "
+"it would appear in the source file. This is useful for documentation "
+"generators that want to display annotations in a readable way."
+msgstr ""
+
+#: ../../library/annotationlib.rst:39
+msgid ""
+"The :func:`get_annotations` function is the main entry point for retrieving "
+"annotations. Given a function, class, or module, it returns an annotations "
+"dictionary in the requested format. This module also provides functionality "
+"for working directly with the :term:`annotate function` that is used to "
+"evaluate annotations, such as :func:`get_annotate_from_class_namespace` and "
+":func:`call_annotate_function`, as well as the "
+":func:`call_evaluate_function` function for working with :term:`evaluate "
+"functions <evaluate function>`."
+msgstr ""
+
+#: ../../library/annotationlib.rst:51
+msgid ""
+":pep:`649` proposed the current model for how annotations work in Python."
+msgstr ""
+
+#: ../../library/annotationlib.rst:53
+msgid ""
+":pep:`749` expanded on various aspects of :pep:`649` and introduced the "
+":mod:`!annotationlib` module."
+msgstr ""
+
+#: ../../library/annotationlib.rst:56
+msgid ""
+":ref:`annotations-howto` provides best practices for working with "
+"annotations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:59
+msgid ""
+":pypi:`typing-extensions` provides a backport of :func:`get_annotations` "
+"that works on earlier versions of Python."
+msgstr ""
+
+#: ../../library/annotationlib.rst:63
+msgid "Annotation semantics"
+msgstr ""
+
+#: ../../library/annotationlib.rst:65
+msgid ""
+"The way annotations are evaluated has changed over the history of Python 3, "
+"and currently still depends on a :ref:`future import <future>`. There have "
+"been execution models for annotations:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:69
+msgid ""
+"*Stock semantics* (default in Python 3.0 through 3.13; see :pep:`3107` and "
+":pep:`526`): Annotations are evaluated eagerly, as they are encountered in "
+"the source code."
+msgstr ""
+
+#: ../../library/annotationlib.rst:72
+msgid ""
+"*Stringified annotations* (used with ``from __future__ import annotations`` "
+"in Python 3.7 and newer; see :pep:`563`): Annotations are stored as strings "
+"only."
+msgstr ""
+
+#: ../../library/annotationlib.rst:75
+msgid ""
+"*Deferred evaluation* (default in Python 3.14 and newer; see :pep:`649` and "
+":pep:`749`): Annotations are evaluated lazily, only when they are accessed."
+msgstr ""
+
+#: ../../library/annotationlib.rst:78
+msgid "As an example, consider the following program::"
+msgstr ""
+
+#: ../../library/annotationlib.rst:80
+msgid ""
+"def func(a: Cls) -> None:\n"
+"    print(a)\n"
+"\n"
+"class Cls: pass\n"
+"\n"
+"print(func.__annotations__)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:87
+msgid "This will behave as follows:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:89
+msgid ""
+"Under stock semantics (Python 3.13 and earlier), it will throw a "
+":exc:`NameError` at the line where ``func`` is defined, because ``Cls`` is "
+"an undefined name at that point."
+msgstr ""
+
+#: ../../library/annotationlib.rst:92
+msgid ""
+"Under stringified annotations (if ``from __future__ import annotations`` is "
+"used), it will print ``{'a': 'Cls', 'return': 'None'}``."
+msgstr ""
+
+#: ../../library/annotationlib.rst:94
+msgid ""
+"Under deferred evaluation (Python 3.14 and later), it will print ``{'a': "
+"<class 'Cls'>, 'return': None}``."
+msgstr ""
+
+#: ../../library/annotationlib.rst:97
+msgid ""
+"Stock semantics were used when function annotations were first introduced in"
+" Python 3.0 (by :pep:`3107`) because this was the simplest, most obvious way"
+" to implement annotations. The same execution model was used when variable "
+"annotations were introduced in Python 3.6 (by :pep:`526`). However, stock "
+"semantics caused problems when using annotations as type hints, such as a "
+"need to refer to names that are not yet defined when the annotation is "
+"encountered. In addition, there were performance problems with executing "
+"annotations at module import time. Therefore, in Python 3.7, :pep:`563` "
+"introduced the ability to store annotations as strings using the ``from "
+"__future__ import annotations`` syntax. The plan at the time was to "
+"eventually make this behavior the default, but a problem appeared: "
+"stringified annotations are more difficult to process for those who "
+"introspect annotations at runtime. An alternative proposal, :pep:`649`, "
+"introduced the third execution model, deferred evaluation, and was "
+"implemented in Python 3.14. Stringified annotations are still used if ``from"
+" __future__ import annotations`` is present, but this behavior will "
+"eventually be removed."
+msgstr ""
+
+#: ../../library/annotationlib.rst:116
+msgid "Classes"
+msgstr "类"
+
+#: ../../library/annotationlib.rst:120
+msgid ""
+"An :class:`~enum.IntEnum` describing the formats in which annotations can be"
+" returned. Members of the enum, or their equivalent integer values, can be "
+"passed to :func:`get_annotations` and other functions in this module, as "
+"well as to :attr:`~object.__annotate__` functions."
+msgstr ""
+
+#: ../../library/annotationlib.rst:128
+msgid "Values are the result of evaluating the annotation expressions."
+msgstr ""
+
+#: ../../library/annotationlib.rst:133
+msgid ""
+"Values are real annotation values (as per :attr:`Format.VALUE` format) for "
+"defined values, and :class:`ForwardRef` proxies for undefined values. Real "
+"objects may contain references to :class:`ForwardRef` proxy objects."
+msgstr ""
+
+#: ../../library/annotationlib.rst:141
+msgid ""
+"Values are the text string of the annotation as it appears in the source "
+"code, up to modifications including, but not restricted to, whitespace "
+"normalizations and constant values optimizations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:145
+msgid ""
+"The exact values of these strings may change in future versions of Python."
+msgstr ""
+
+#: ../../library/annotationlib.rst:150
+msgid ""
+"Special value used to signal that an annotate function is being evaluated in"
+" a special environment with fake globals. When passed this value, annotate "
+"functions should either return the same value as for the "
+":attr:`Format.VALUE` format, or raise :exc:`NotImplementedError` to signal "
+"that they do not support execution in this environment. This format is only "
+"used internally and should not be passed to the functions in this module."
+msgstr ""
+
+#: ../../library/annotationlib.rst:162
+msgid "A proxy object for forward references in annotations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:164
+msgid ""
+"Instances of this class are returned when the :attr:`~Format.FORWARDREF` "
+"format is used and annotations contain a name that cannot be resolved. This "
+"can happen when a forward reference is used in an annotation, such as when a"
+" class is referenced before it is defined."
+msgstr ""
+
+#: ../../library/annotationlib.rst:171
+msgid ""
+"A string containing the code that was evaluated to produce the "
+":class:`~ForwardRef`. The string may not be exactly equivalent to the "
+"original source."
+msgstr ""
+
+#: ../../library/annotationlib.rst:177
+msgid "Evaluate the forward reference, returning its value."
+msgstr ""
+
+#: ../../library/annotationlib.rst:179
+msgid ""
+"If the *format* argument is :attr:`~Format.VALUE` (the default), this method"
+" may throw an exception, such as :exc:`NameError`, if the forward reference "
+"refers to a name that cannot be resolved. The arguments to this method can "
+"be used to provide bindings for names that would otherwise be undefined. If "
+"the *format* argument is :attr:`~Format.FORWARDREF`, the method will never "
+"throw an exception, but may return a :class:`~ForwardRef` instance. For "
+"example, if the forward reference object contains the code "
+"``list[undefined]``, where ``undefined`` is a name that is not defined, "
+"evaluating it with the :attr:`~Format.FORWARDREF` format will return "
+"``list[ForwardRef('undefined')]``. If the *format* argument is "
+":attr:`~Format.STRING`, the method will return "
+":attr:`~ForwardRef.__forward_arg__`."
+msgstr ""
+
+#: ../../library/annotationlib.rst:191
+msgid ""
+"The *owner* parameter provides the preferred mechanism for passing scope "
+"information to this method. The owner of a :class:`~ForwardRef` is the "
+"object that contains the annotation from which the :class:`~ForwardRef` "
+"derives, such as a module object, type object, or function object."
+msgstr ""
+
+#: ../../library/annotationlib.rst:196
+msgid ""
+"The *globals*, *locals*, and *type_params* parameters provide a more precise"
+" mechanism for influencing the names that are available when the "
+":class:`~ForwardRef` is evaluated. *globals* and *locals* are passed to "
+":func:`eval`, representing the global and local namespaces in which the name"
+" is evaluated. The *type_params* parameter is relevant for objects created "
+"using the native syntax for :ref:`generic classes <generic-classes>` and "
+":ref:`functions <generic-functions>`. It is a tuple of :ref:`type parameters"
+" <type-params>` that are in scope while the forward reference is being "
+"evaluated. For example, if evaluating a :class:`~ForwardRef` retrieved from "
+"an annotation found in the class namespace of a generic class ``C``, "
+"*type_params* should be set to ``C.__type_params__``."
+msgstr ""
+
+#: ../../library/annotationlib.rst:207
+msgid ""
+":class:`~ForwardRef` instances returned by :func:`get_annotations` retain "
+"references to information about the scope they originated from, so calling "
+"this method with no further arguments may be sufficient to evaluate such "
+"objects. :class:`~ForwardRef` instances created by other means may not have "
+"any information about their scope, so passing arguments to this method may "
+"be necessary to evaluate them successfully."
+msgstr ""
+
+#: ../../library/annotationlib.rst:218
+msgid "Functions"
+msgstr "函数"
+
+#: ../../library/annotationlib.rst:222
+msgid ""
+"Convert an annotations dict containing runtime values to a dict containing "
+"only strings. If the values are not already strings, they are converted "
+"using :func:`type_repr`. This is meant as a helper for user-provided "
+"annotate functions that support the :attr:`~Format.STRING` format but do not"
+" have access to the code creating the annotations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:229
+msgid ""
+"For example, this is used to implement the :attr:`~Format.STRING` for "
+":class:`typing.TypedDict` classes created through the functional syntax:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:232
+msgid ""
+">>> from typing import TypedDict\n"
+">>> Movie = TypedDict(\"movie\", {\"name\": str, \"year\": int})\n"
+">>> get_annotations(Movie, format=Format.STRING)\n"
+"{'name': 'str', 'year': 'int'}"
+msgstr ""
+
+#: ../../library/annotationlib.rst:243
+msgid ""
+"Call the :term:`annotate function` *annotate* with the given *format*, a "
+"member of the :class:`Format` enum, and return the annotations dictionary "
+"produced by the function."
+msgstr ""
+
+#: ../../library/annotationlib.rst:247
+msgid ""
+"This helper function is required because annotate functions generated by the"
+" compiler for functions, classes, and modules only support the "
+":attr:`~Format.VALUE` format when called directly. To support other formats,"
+" this function calls the annotate function in a special environment that "
+"allows it to produce annotations in the other formats. This is a useful "
+"building block when implementing functionality that needs to partially "
+"evaluate annotations while a class is being constructed."
+msgstr ""
+
+#: ../../library/annotationlib.rst:256
+msgid ""
+"*owner* is the object that owns the annotation function, usually a function,"
+" class, or module. If provided, it is used in the :attr:`~Format.FORWARDREF`"
+" format to produce a :class:`ForwardRef` object that carries more "
+"information."
+msgstr ""
+
+#: ../../library/annotationlib.rst:263
+msgid ""
+":PEP:`PEP 649 <649#the-stringizer-and-the-fake-globals-environment>` "
+"contains an explanation of the implementation technique used by this "
+"function."
+msgstr ""
+
+#: ../../library/annotationlib.rst:271
+msgid ""
+"Call the :term:`evaluate function` *evaluate* with the given *format*, a "
+"member of the :class:`Format` enum, and return the value produced by the "
+"function. This is similar to :func:`call_annotate_function`, but the latter "
+"always returns a dictionary mapping strings to annotations, while this "
+"function returns a single value."
+msgstr ""
+
+#: ../../library/annotationlib.rst:277
+msgid ""
+"This is intended for use with the evaluate functions generated for lazily "
+"evaluated elements related to type aliases and type parameters:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:280
+msgid ":meth:`typing.TypeAliasType.evaluate_value`, the value of type aliases"
+msgstr ""
+
+#: ../../library/annotationlib.rst:281
+msgid ":meth:`typing.TypeVar.evaluate_bound`, the bound of type variables"
+msgstr ""
+
+#: ../../library/annotationlib.rst:282
+msgid ""
+":meth:`typing.TypeVar.evaluate_constraints`, the constraints of type "
+"variables"
+msgstr ""
+
+#: ../../library/annotationlib.rst:284
+msgid ""
+":meth:`typing.TypeVar.evaluate_default`, the default value of type variables"
+msgstr ""
+
+#: ../../library/annotationlib.rst:286
+msgid ""
+":meth:`typing.ParamSpec.evaluate_default`, the default value of parameter "
+"specifications"
+msgstr ""
+
+#: ../../library/annotationlib.rst:288
+msgid ""
+":meth:`typing.TypeVarTuple.evaluate_default`, the default value of type "
+"variable tuples"
+msgstr ""
+
+#: ../../library/annotationlib.rst:291
+msgid ""
+"*owner* is the object that owns the evaluate function, such as the type "
+"alias or type variable object."
+msgstr ""
+
+#: ../../library/annotationlib.rst:294
+msgid ""
+"*format* can be used to control the format in which the value is returned:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:296
+msgid ""
+">>> type Alias = undefined\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.VALUE)\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"NameError: name 'undefined' is not defined\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.FORWARDREF)\n"
+"ForwardRef('undefined')\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.STRING)\n"
+"'undefined'"
+msgstr ""
+
+#: ../../library/annotationlib.rst:312
+msgid ""
+"Retrieve the :term:`annotate function` from a class namespace dictionary "
+"*namespace*. Return :const:`!None` if the namespace does not contain an "
+"annotate function. This is primarily useful before the class has been fully "
+"created (e.g., in a metaclass); after the class exists, the annotate "
+"function can be retrieved with ``cls.__annotate__``. See :ref:`below "
+"<annotationlib-metaclass>` for an example using this function in a "
+"metaclass."
+msgstr ""
+
+#: ../../library/annotationlib.rst:322
+msgid "Compute the annotations dict for an object."
+msgstr "计算一个对象的标注字典。"
+
+#: ../../library/annotationlib.rst:324
+msgid ""
+"*obj* may be a callable, class, module, or other object with "
+":attr:`~object.__annotate__` or :attr:`~object.__annotations__` attributes. "
+"Passing any other object raises :exc:`TypeError`."
+msgstr ""
+
+#: ../../library/annotationlib.rst:328
+msgid ""
+"The *format* parameter controls the format in which annotations are "
+"returned, and must be a member of the :class:`Format` enum or its integer "
+"equivalent. The different formats work as follows:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:332
+msgid ""
+"VALUE: :attr:`!object.__annotations__` is tried first; if that does not "
+"exist, the :attr:`!object.__annotate__` function is called if it exists."
+msgstr ""
+
+#: ../../library/annotationlib.rst:334
+msgid ""
+"FORWARDREF: If :attr:`!object.__annotations__` exists and can be evaluated "
+"successfully, it is used; otherwise, the :attr:`!object.__annotate__` "
+"function is called. If it does not exist either, "
+":attr:`!object.__annotations__` is tried again and any error from accessing "
+"it is re-raised."
+msgstr ""
+
+#: ../../library/annotationlib.rst:338
+msgid ""
+"STRING: If :attr:`!object.__annotate__` exists, it is called first; "
+"otherwise, :attr:`!object.__annotations__` is used and stringified using "
+":func:`annotations_to_string`."
+msgstr ""
+
+#: ../../library/annotationlib.rst:342
+msgid ""
+"Returns a dict. :func:`!get_annotations` returns a new dict every time it's "
+"called; calling it twice on the same object will return two different but "
+"equivalent dicts."
+msgstr ""
+
+#: ../../library/annotationlib.rst:346
+msgid "This function handles several details for you:"
+msgstr "该函数帮助你处理若干细节："
+
+#: ../../library/annotationlib.rst:348
+msgid ""
+"If *eval_str* is true, values of type :class:`!str` will be un-stringized "
+"using :func:`eval`. This is intended for use with stringized annotations "
+"(``from __future__ import annotations``). It is an error to set *eval_str* "
+"to true with formats other than :attr:`Format.VALUE`."
+msgstr ""
+
+#: ../../library/annotationlib.rst:353
+msgid ""
+"If *obj* doesn't have an annotations dict, returns an empty dict. (Functions"
+" and methods always have an annotations dict; classes, modules, and other "
+"types of callables may not.)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:357
+msgid ""
+"Ignores inherited annotations on classes, as well as annotations on "
+"metaclasses. If a class doesn't have its own annotations dict, returns an "
+"empty dict."
+msgstr ""
+
+#: ../../library/annotationlib.rst:360
+msgid ""
+"All accesses to object members and dict values are done using ``getattr()`` "
+"and ``dict.get()`` for safety."
+msgstr "因安全原因，所有对于对象成员和字典值的访问将通过 ``getattr()`` 和 ``dict.get()`` 完成。"
+
+#: ../../library/annotationlib.rst:363
+msgid ""
+"*eval_str* controls whether or not values of type :class:`!str` are replaced"
+" with the result of calling :func:`eval` on those values:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:366
+msgid ""
+"If eval_str is true, :func:`eval` is called on values of type :class:`!str`."
+" (Note that :func:`!get_annotations` doesn't catch exceptions; if "
+":func:`eval` raises an exception, it will unwind the stack past the "
+":func:`!get_annotations` call.)"
+msgstr ""
+
+#: ../../library/annotationlib.rst:370
+msgid ""
+"If *eval_str* is false (the default), values of type :class:`!str` are "
+"unchanged."
+msgstr ""
+
+#: ../../library/annotationlib.rst:373
+msgid ""
+"*globals* and *locals* are passed in to :func:`eval`; see the documentation "
+"for :func:`eval` for more information. If *globals* or *locals* is "
+":const:`!None`, this function may replace that value with a context-specific"
+" default, contingent on ``type(obj)``:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:378
+msgid "If *obj* is a module, *globals* defaults to ``obj.__dict__``."
+msgstr ""
+
+#: ../../library/annotationlib.rst:379
+msgid ""
+"If *obj* is a class, *globals* defaults to "
+"``sys.modules[obj.__module__].__dict__`` and *locals* defaults to the *obj* "
+"class namespace."
+msgstr ""
+
+#: ../../library/annotationlib.rst:382
+msgid ""
+"If *obj* is a callable, *globals* defaults to :attr:`obj.__globals__ "
+"<function.__globals__>`, although if *obj* is a wrapped function (using "
+":func:`functools.update_wrapper`) or a :class:`functools.partial` object, it"
+" is unwrapped until a non-wrapped function is found."
+msgstr ""
+
+#: ../../library/annotationlib.rst:388
+msgid ""
+"Calling :func:`!get_annotations` is best practice for accessing the "
+"annotations dict of any object. See :ref:`annotations-howto` for more "
+"information on annotations best practices."
+msgstr ""
+
+#: ../../library/annotationlib.rst:392
+msgid ""
+">>> def f(a: int, b: str) -> float:\n"
+"...     pass\n"
+">>> get_annotations(f)\n"
+"{'a': <class 'int'>, 'b': <class 'str'>, 'return': <class 'float'>}"
+msgstr ""
+
+#: ../../library/annotationlib.rst:403
+msgid ""
+"Convert an arbitrary Python value to a format suitable for use by the "
+":attr:`~Format.STRING` format. This calls :func:`repr` for most objects, but"
+" has special handling for some objects, such as type objects."
+msgstr ""
+
+#: ../../library/annotationlib.rst:407
+msgid ""
+"This is meant as a helper for user-provided annotate functions that support "
+"the :attr:`~Format.STRING` format but do not have access to the code "
+"creating the annotations. It can also be used to provide a user-friendly "
+"string representation for other objects that contain values that are "
+"commonly encountered in annotations."
+msgstr ""
+
+#: ../../library/annotationlib.rst:417
+msgid "Recipes"
+msgstr "例程"
+
+#: ../../library/annotationlib.rst:422
+msgid "Using annotations in a metaclass"
+msgstr ""
+
+#: ../../library/annotationlib.rst:424
+msgid ""
+"A :ref:`metaclass <metaclasses>` may want to inspect or even modify the "
+"annotations in a class body during class creation. Doing so requires "
+"retrieving annotations from the class namespace dictionary. For classes "
+"created with ``from __future__ import annotations``, the annotations will be"
+" in the ``__annotations__`` key of the dictionary. For other classes with "
+"annotations, :func:`get_annotate_from_class_namespace` can be used to get "
+"the annotate function, and :func:`call_annotate_function` can be used to "
+"call it and retrieve the annotations. Using the :attr:`~Format.FORWARDREF` "
+"format will usually be best, because this allows the annotations to refer to"
+" names that cannot yet be resolved when the class is created."
+msgstr ""
+
+#: ../../library/annotationlib.rst:435
+msgid ""
+"To modify the annotations, it is best to create a wrapper annotate function "
+"that calls the original annotate function, makes any necessary adjustments, "
+"and returns the result."
+msgstr ""
+
+#: ../../library/annotationlib.rst:439
+msgid ""
+"Below is an example of a metaclass that filters out all "
+":class:`typing.ClassVar` annotations from the class and puts them in a "
+"separate attribute:"
+msgstr ""
+
+#: ../../library/annotationlib.rst:442
+msgid ""
+"import annotationlib\n"
+"import typing\n"
+"\n"
+"class ClassVarSeparator(type):\n"
+"   def __new__(mcls, name, bases, ns):\n"
+"      if \"__annotations__\" in ns:  # from __future__ import annotations\n"
+"         annotations = ns[\"__annotations__\"]\n"
+"         classvar_keys = {\n"
+"            key for key, value in annotations.items()\n"
+"            # Use string comparison for simplicity; a more robust solution\n"
+"            # could use annotationlib.ForwardRef.evaluate\n"
+"            if value.startswith(\"ClassVar\")\n"
+"         }\n"
+"         classvars = {key: annotations[key] for key in classvar_keys}\n"
+"         ns[\"__annotations__\"] = {\n"
+"            key: value for key, value in annotations.items()\n"
+"            if key not in classvar_keys\n"
+"         }\n"
+"         wrapped_annotate = None\n"
+"      elif annotate := annotationlib.get_annotate_from_class_namespace(ns):\n"
+"         annotations = annotationlib.call_annotate_function(\n"
+"            annotate, format=annotationlib.Format.FORWARDREF\n"
+"         )\n"
+"         classvar_keys = {\n"
+"            key for key, value in annotations.items()\n"
+"            if typing.get_origin(value) is typing.ClassVar\n"
+"         }\n"
+"         classvars = {key: annotations[key] for key in classvar_keys}\n"
+"\n"
+"         def wrapped_annotate(format):\n"
+"            annos = annotationlib.call_annotate_function(annotate, format, owner=typ)\n"
+"            return {key: value for key, value in annos.items() if key not in classvar_keys}\n"
+"\n"
+"      else:  # no annotations\n"
+"         classvars = {}\n"
+"         wrapped_annotate = None\n"
+"      typ = super().__new__(mcls, name, bases, ns)\n"
+"\n"
+"      if wrapped_annotate is not None:\n"
+"         # Wrap the original __annotate__ with a wrapper that removes ClassVars\n"
+"         typ.__annotate__ = wrapped_annotate\n"
+"      typ.classvars = classvars  # Store the ClassVars in a separate attribute\n"
+"      return typ"
+msgstr ""

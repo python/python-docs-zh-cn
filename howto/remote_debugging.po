@@ -1,0 +1,855 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Freesand Leo <yuqinju@163.com>, 2025
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"PO-Revision-Date: 2025-05-08 06:04+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../howto/remote_debugging.rst:4
+msgid "Remote debugging attachment protocol"
+msgstr "远程调试附属协议"
+
+#: ../../howto/remote_debugging.rst:6
+msgid ""
+"This section describes the low-level protocol that enables external tools to"
+" inject and execute a Python script within a running CPython process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:9
+msgid ""
+"This mechanism forms the basis of the :func:`sys.remote_exec` function, "
+"which instructs a remote Python process to execute a ``.py`` file. However, "
+"this section does not document the usage of that function. Instead, it "
+"provides a detailed explanation of the underlying protocol, which takes as "
+"input the ``pid`` of a target Python process and the path to a Python source"
+" file to be executed. This information supports independent reimplementation"
+" of the protocol, regardless of programming language."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:19
+msgid ""
+"The execution of the injected script depends on the interpreter reaching a "
+"safe evaluation point. As a result, execution may be delayed depending on "
+"the runtime state of the target process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:23
+msgid ""
+"Once injected, the script is executed by the interpreter within the target "
+"process the next time a safe evaluation point is reached. This approach "
+"enables remote execution capabilities without modifying the behavior or "
+"structure of the running Python application."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:28
+msgid ""
+"Subsequent sections provide a step-by-step description of the protocol, "
+"including techniques for locating interpreter structures in memory, safely "
+"accessing internal fields, and triggering code execution. Platform-specific "
+"variations are noted where applicable, and example implementations are "
+"included to clarify each operation."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:35
+msgid "Locating the PyRuntime structure"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:37
+msgid ""
+"CPython places the ``PyRuntime`` structure in a dedicated binary section to "
+"help external tools find it at runtime. The name and format of this section "
+"vary by platform. For example, ``.PyRuntime`` is used on ELF systems, and "
+"``__DATA,__PyRuntime`` is used on macOS. Tools can find the offset of this "
+"structure by examining the binary on disk."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:43
+msgid ""
+"The ``PyRuntime`` structure contains CPython’s global interpreter state and "
+"provides access to other internal data, including the list of interpreters, "
+"thread states, and debugger support fields."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:47
+msgid ""
+"To work with a remote Python process, a debugger must first find the memory "
+"address of the ``PyRuntime`` structure in the target process. This address "
+"can’t be hardcoded or calculated from a symbol name, because it depends on "
+"where the operating system loaded the binary."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:52
+msgid ""
+"The method for finding ``PyRuntime`` depends on the platform, but the steps "
+"are the same in general:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:55
+msgid ""
+"Find the base address where the Python binary or shared library was loaded "
+"in the target process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:57
+msgid ""
+"Use the on-disk binary to locate the offset of the ``.PyRuntime`` section."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:58
+msgid ""
+"Add the section offset to the base address to compute the address in memory."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:60
+msgid ""
+"The sections below explain how to do this on each supported platform and "
+"include example code."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:64
+msgid "Linux (ELF)"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:65
+msgid "To find the ``PyRuntime`` structure on Linux:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:67
+msgid ""
+"Read the process’s memory map (for example, ``/proc/<pid>/maps``) to find "
+"the address where the Python executable or ``libpython`` was loaded."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:69
+msgid ""
+"Parse the ELF section headers in the binary to get the offset of the "
+"``.PyRuntime`` section."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:71
+msgid ""
+"Add that offset to the base address from step 1 to get the memory address of"
+" ``PyRuntime``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:74 ../../howto/remote_debugging.rst:136
+#: ../../howto/remote_debugging.rst:206 ../../howto/remote_debugging.rst:475
+msgid "The following is an example implementation::"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:76
+msgid ""
+"def find_py_runtime_linux(pid: int) -> int:\n"
+"    # Step 1: Try to find the Python executable in memory\n"
+"    binary_path, base_address = find_mapped_binary(\n"
+"        pid, name_contains=\"python\"\n"
+"    )\n"
+"\n"
+"    # Step 2: Fallback to shared library if executable is not found\n"
+"    if binary_path is None:\n"
+"        binary_path, base_address = find_mapped_binary(\n"
+"            pid, name_contains=\"libpython\"\n"
+"        )\n"
+"\n"
+"    # Step 3: Parse ELF headers to get .PyRuntime section offset\n"
+"    section_offset = parse_elf_section_offset(\n"
+"        binary_path, \".PyRuntime\"\n"
+"    )\n"
+"\n"
+"    # Step 4: Compute PyRuntime address in memory\n"
+"    return base_address + section_offset"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:97
+msgid ""
+"On Linux systems, there are two main approaches to read memory from another "
+"process. The first is through the ``/proc`` filesystem, specifically by "
+"reading from ``/proc/[pid]/mem`` which provides direct access to the "
+"process's memory. This requires appropriate permissions - either being the "
+"same user as the target process or having root access. The second approach "
+"is using the ``process_vm_readv()`` system call which provides a more "
+"efficient way to copy memory between processes. While ptrace's "
+"``PTRACE_PEEKTEXT`` operation can also be used to read memory, it is "
+"significantly slower as it only reads one word at a time and requires "
+"multiple context switches between the tracer and tracee processes."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:108
+msgid ""
+"For parsing ELF sections, the process involves reading and interpreting the "
+"ELF file format structures from the binary file on disk. The ELF header "
+"contains a pointer to the section header table. Each section header contains"
+" metadata about a section including its name (stored in a separate string "
+"table), offset, and size. To find a specific section like .PyRuntime, you "
+"need to walk through these headers and match the section name. The section "
+"header then provides the offset where that section exists in the file, which"
+" can be used to calculate its runtime address when the binary is loaded into"
+" memory."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:117
+msgid ""
+"You can read more about the ELF file format in the `ELF specification "
+"<https://en.wikipedia.org/wiki/Executable_and_Linkable_Format>`_."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:122
+msgid "macOS (Mach-O)"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:123
+msgid "To find the ``PyRuntime`` structure on macOS:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:125
+msgid ""
+"Call ``task_for_pid()`` to get the ``mach_port_t`` task port for the target "
+"process. This handle is needed to read memory using APIs like "
+"``mach_vm_read_overwrite`` and ``mach_vm_region``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:128
+msgid ""
+"Scan the memory regions to find the one containing the Python executable or "
+"``libpython``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:130
+msgid ""
+"Load the binary file from disk and parse the Mach-O headers to find the "
+"section named ``PyRuntime`` in the ``__DATA`` segment.  On macOS, symbol "
+"names are automatically prefixed with an underscore, so the ``PyRuntime`` "
+"symbol appears as ``_PyRuntime`` in the symbol table, but the section name "
+"is not affected."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:138
+msgid ""
+"def find_py_runtime_macos(pid: int) -> int:\n"
+"    # Step 1: Get access to the process's memory\n"
+"    handle = get_memory_access_handle(pid)\n"
+"\n"
+"    # Step 2: Try to find the Python executable in memory\n"
+"    binary_path, base_address = find_mapped_binary(\n"
+"        handle, name_contains=\"python\"\n"
+"    )\n"
+"\n"
+"    # Step 3: Fallback to libpython if the executable is not found\n"
+"    if binary_path is None:\n"
+"        binary_path, base_address = find_mapped_binary(\n"
+"            handle, name_contains=\"libpython\"\n"
+"        )\n"
+"\n"
+"    # Step 4: Parse Mach-O headers to get __DATA,__PyRuntime section offset\n"
+"    section_offset = parse_macho_section_offset(\n"
+"        binary_path, \"__DATA\", \"__PyRuntime\"\n"
+"    )\n"
+"\n"
+"    # Step 5: Compute the PyRuntime address in memory\n"
+"    return base_address + section_offset"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:161
+msgid ""
+"On macOS, accessing another process's memory requires using Mach-O specific "
+"APIs and file formats. The first step is obtaining a ``task_port`` handle "
+"via ``task_for_pid()``, which provides access to the target process's memory"
+" space. This handle enables memory operations through APIs like "
+"``mach_vm_read_overwrite()``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:167
+msgid ""
+"The process memory can be examined using ``mach_vm_region()`` to scan "
+"through the virtual memory space, while ``proc_regionfilename()`` helps "
+"identify which binary files are loaded at each memory region. When the "
+"Python binary or library is found, its Mach-O headers need to be parsed to "
+"locate the ``PyRuntime`` structure."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:172
+msgid ""
+"The Mach-O format organizes code and data into segments and sections. The "
+"``PyRuntime`` structure lives in a section named ``__PyRuntime`` within the "
+"``__DATA`` segment. The actual runtime address calculation involves finding "
+"the ``__TEXT`` segment which serves as the binary's base address, then "
+"locating the ``__DATA`` segment containing our target section. The final "
+"address is computed by combining the base address with the appropriate "
+"section offsets from the Mach-O headers."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:180
+msgid ""
+"Note that accessing another process's memory on macOS typically requires "
+"elevated privileges - either root access or special security entitlements "
+"granted to the debugging process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:186
+msgid "Windows (PE)"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:187
+msgid "To find the ``PyRuntime`` structure on Windows:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:189
+msgid ""
+"Use the ToolHelp API to enumerate all modules loaded in the target process. "
+"This is done using functions such as `CreateToolhelp32Snapshot "
+"<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
+"tlhelp32-createtoolhelp32snapshot>`_, `Module32First "
+"<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
+"tlhelp32-module32first>`_, and `Module32Next "
+"<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
+"tlhelp32-module32next>`_."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:196
+msgid ""
+"Identify the module corresponding to :file:`python.exe` or "
+":file:`python{XY}.dll`, where ``X`` and ``Y`` are the major and minor "
+"version numbers of the Python version, and record its base address."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:199
+msgid ""
+"Locate the ``PyRuntim`` section. Due to the PE format's 8-character limit on"
+" section names (defined as ``IMAGE_SIZEOF_SHORT_NAME``), the original name "
+"``PyRuntime`` is truncated. This section contains the ``PyRuntime`` "
+"structure."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:203
+msgid ""
+"Retrieve the section’s relative virtual address (RVA) and add it to the base"
+" address of the module."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:208
+msgid ""
+"def find_py_runtime_windows(pid: int) -> int:\n"
+"    # Step 1: Try to find the Python executable in memory\n"
+"    binary_path, base_address = find_loaded_module(\n"
+"        pid, name_contains=\"python\"\n"
+"    )\n"
+"\n"
+"    # Step 2: Fallback to shared pythonXY.dll if the executable is not\n"
+"    # found\n"
+"    if binary_path is None:\n"
+"        binary_path, base_address = find_loaded_module(\n"
+"            pid, name_contains=\"python3\"\n"
+"        )\n"
+"\n"
+"    # Step 3: Parse PE section headers to get the RVA of the PyRuntime\n"
+"    # section. The section name appears as \"PyRuntim\" due to the\n"
+"    # 8-character limit defined by the PE format (IMAGE_SIZEOF_SHORT_NAME).\n"
+"    section_rva = parse_pe_section_offset(binary_path, \"PyRuntim\")\n"
+"\n"
+"    # Step 4: Compute PyRuntime address in memory\n"
+"    return base_address + section_rva"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:230
+msgid ""
+"On Windows, accessing another process's memory requires using the Windows "
+"API functions like ``CreateToolhelp32Snapshot()`` and "
+"``Module32First()/Module32Next()`` to enumerate loaded modules. The "
+"``OpenProcess()`` function provides a handle to access the target process's "
+"memory space, enabling memory operations through ``ReadProcessMemory()``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:236
+msgid ""
+"The process memory can be examined by enumerating loaded modules to find the"
+" Python binary or DLL. When found, its PE headers need to be parsed to "
+"locate the ``PyRuntime`` structure."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:240
+msgid ""
+"The PE format organizes code and data into sections. The ``PyRuntime`` "
+"structure lives in a section named \"PyRuntim\" (truncated from "
+"\"PyRuntime\" due to PE's 8-character name limit). The actual runtime "
+"address calculation involves finding the module's base address from the "
+"module entry, then locating our target section in the PE headers. The final "
+"address is computed by combining the base address with the section's virtual"
+" address from the PE section headers."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:247
+msgid ""
+"Note that accessing another process's memory on Windows typically requires "
+"appropriate privileges - either administrative access or the "
+"``SeDebugPrivilege`` privilege granted to the debugging process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:253
+msgid "Reading _Py_DebugOffsets"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:255
+msgid ""
+"Once the address of the ``PyRuntime`` structure has been determined, the "
+"next step is to read the ``_Py_DebugOffsets`` structure located at the "
+"beginning of the ``PyRuntime`` block."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:259
+msgid ""
+"This structure provides version-specific field offsets that are needed to "
+"safely read interpreter and thread state memory. These offsets vary between "
+"CPython versions and must be checked before use to ensure they are "
+"compatible."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:263
+msgid "To read and check the debug offsets, follow these steps:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:265
+msgid ""
+"Read memory from the target process starting at the ``PyRuntime`` address, "
+"covering the same number of bytes as the ``_Py_DebugOffsets`` structure. "
+"This structure is located at the very start of the ``PyRuntime`` memory "
+"block. Its layout is defined in CPython’s internal headers and stays the "
+"same within a given minor version, but may change in major versions."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:271
+msgid "Check that the structure contains valid data:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:273
+msgid "The ``cookie`` field must match the expected debug marker."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:274
+msgid ""
+"The ``version`` field must match the version of the Python interpreter used "
+"by the debugger."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:276
+msgid ""
+"If either the debugger or the target process is using a pre-release version "
+"(for example, an alpha, beta, or release candidate), the versions must match"
+" exactly."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:279
+msgid ""
+"The ``free_threaded`` field must have the same value in both the debugger "
+"and the target process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:282
+msgid ""
+"If the structure is valid, the offsets it contains can be used to locate "
+"fields in memory. If any check fails, the debugger should stop the operation"
+" to avoid reading memory in the wrong format."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:286
+msgid ""
+"The following is an example implementation that reads and checks "
+"``_Py_DebugOffsets``::"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:289
+msgid ""
+"def read_debug_offsets(pid: int, py_runtime_addr: int) -> DebugOffsets:\n"
+"    # Step 1: Read memory from the target process at the PyRuntime address\n"
+"    data = read_process_memory(\n"
+"        pid, address=py_runtime_addr, size=DEBUG_OFFSETS_SIZE\n"
+"    )\n"
+"\n"
+"    # Step 2: Deserialize the raw bytes into a _Py_DebugOffsets structure\n"
+"    debug_offsets = parse_debug_offsets(data)\n"
+"\n"
+"    # Step 3: Validate the contents of the structure\n"
+"    if debug_offsets.cookie != EXPECTED_COOKIE:\n"
+"        raise RuntimeError(\"Invalid or missing debug cookie\")\n"
+"    if debug_offsets.version != LOCAL_PYTHON_VERSION:\n"
+"        raise RuntimeError(\n"
+"            \"Mismatch between caller and target Python versions\"\n"
+"        )\n"
+"    if debug_offsets.free_threaded != LOCAL_FREE_THREADED:\n"
+"        raise RuntimeError(\"Mismatch in free-threaded configuration\")\n"
+"\n"
+"    return debug_offsets"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:314
+msgid "**Process suspension recommended**"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:316
+msgid ""
+"To avoid race conditions and ensure memory consistency, it is strongly "
+"recommended that the target process be suspended before performing any "
+"operations that read or write internal interpreter state. The Python runtime"
+" may concurrently mutate interpreter data structures—such as creating or "
+"destroying threads—during normal execution. This can result in invalid "
+"memory reads or writes."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:323
+msgid ""
+"A debugger may suspend execution by attaching to the process with ``ptrace``"
+" or by sending a ``SIGSTOP`` signal. Execution should only be resumed after "
+"debugger-side memory operations are complete."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:329
+msgid ""
+"Some tools, such as profilers or sampling-based debuggers, may operate on a "
+"running process without suspension. In such cases, tools must be explicitly "
+"designed to handle partially updated or inconsistent memory. For most "
+"debugger implementations, suspending the process remains the safest and most"
+" robust approach."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:337
+msgid "Locating the interpreter and thread state"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:339
+msgid ""
+"Before code can be injected and executed in a remote Python process, the "
+"debugger must choose a thread in which to schedule execution. This is "
+"necessary because the control fields used to perform remote code injection "
+"are located in the ``_PyRemoteDebuggerSupport`` structure, which is embedded"
+" in a ``PyThreadState`` object. These fields are modified by the debugger to"
+" request execution of injected scripts."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:346
+msgid ""
+"The ``PyThreadState`` structure represents a thread running inside a Python "
+"interpreter.  It maintains the thread’s evaluation context and contains the "
+"fields required for debugger coordination.  Locating a valid "
+"``PyThreadState`` is therefore a key prerequisite for triggering execution "
+"remotely."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:351
+msgid ""
+"A thread is typically selected based on its role or ID. In most cases, the "
+"main thread is used, but some tools may target a specific thread by its "
+"native thread ID. Once the target thread is chosen, the debugger must locate"
+" both the interpreter and the associated thread state structures in memory."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:356
+msgid "The relevant internal structures are defined as follows:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:358
+msgid ""
+"``PyInterpreterState`` represents an isolated Python interpreter instance. "
+"Each interpreter maintains its own set of imported modules, built-in state, "
+"and thread state list. Although most Python applications use a single "
+"interpreter, CPython supports multiple interpreters in the same process."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:363
+msgid ""
+"``PyThreadState`` represents a thread running within an interpreter. It "
+"contains execution state and the control fields used by the debugger."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:366
+msgid "To locate a thread:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:368
+msgid ""
+"Use the offset ``runtime_state.interpreters_head`` to obtain the address of "
+"the first interpreter in the ``PyRuntime`` structure. This is the entry "
+"point to the linked list of active interpreters."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:372
+msgid ""
+"Use the offset ``interpreter_state.threads_main`` to access the main thread "
+"state associated with the selected interpreter. This is typically the most "
+"reliable thread to target."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:376
+msgid ""
+"3. Optionally, use the offset ``interpreter_state.threads_head`` to iterate "
+"through the linked list of all thread states. Each ``PyThreadState`` "
+"structure contains a ``native_thread_id`` field, which may be compared to a "
+"target thread ID to find a specific thread."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:381
+msgid ""
+"1. Once a valid ``PyThreadState`` has been found, its address can be used in"
+" later steps of the protocol, such as writing debugger control fields and "
+"scheduling execution."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:385
+msgid ""
+"The following is an example implementation that locates the main thread "
+"state::"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:387
+msgid ""
+"def find_main_thread_state(\n"
+"    pid: int, py_runtime_addr: int, debug_offsets: DebugOffsets,\n"
+") -> int:\n"
+"    # Step 1: Read interpreters_head from PyRuntime\n"
+"    interp_head_ptr = (\n"
+"        py_runtime_addr + debug_offsets.runtime_state.interpreters_head\n"
+"    )\n"
+"    interp_addr = read_pointer(pid, interp_head_ptr)\n"
+"    if interp_addr == 0:\n"
+"        raise RuntimeError(\"No interpreter found in the target process\")\n"
+"\n"
+"    # Step 2: Read the threads_main pointer from the interpreter\n"
+"    threads_main_ptr = (\n"
+"        interp_addr + debug_offsets.interpreter_state.threads_main\n"
+"    )\n"
+"    thread_state_addr = read_pointer(pid, threads_main_ptr)\n"
+"    if thread_state_addr == 0:\n"
+"        raise RuntimeError(\"Main thread state is not available\")\n"
+"\n"
+"    return thread_state_addr"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:408
+msgid ""
+"The following example demonstrates how to locate a thread by its native "
+"thread ID::"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:411
+msgid ""
+"def find_thread_by_id(\n"
+"    pid: int,\n"
+"    interp_addr: int,\n"
+"    debug_offsets: DebugOffsets,\n"
+"    target_tid: int,\n"
+") -> int:\n"
+"    # Start at threads_head and walk the linked list\n"
+"    thread_ptr = read_pointer(\n"
+"        pid,\n"
+"        interp_addr + debug_offsets.interpreter_state.threads_head\n"
+"    )\n"
+"\n"
+"    while thread_ptr:\n"
+"        native_tid_ptr = (\n"
+"            thread_ptr + debug_offsets.thread_state.native_thread_id\n"
+"        )\n"
+"        native_tid = read_int(pid, native_tid_ptr)\n"
+"        if native_tid == target_tid:\n"
+"            return thread_ptr\n"
+"        thread_ptr = read_pointer(\n"
+"            pid,\n"
+"            thread_ptr + debug_offsets.thread_state.next\n"
+"        )\n"
+"\n"
+"    raise RuntimeError(\"Thread with the given ID was not found\")"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:438
+msgid ""
+"Once a valid thread state has been located, the debugger can proceed with "
+"modifying its control fields and scheduling execution, as described in the "
+"next section."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:443
+msgid "Writing control information"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:445
+msgid ""
+"Once a valid ``PyThreadState`` structure has been identified, the debugger "
+"may modify control fields within it to schedule the execution of a specified"
+" Python script. These control fields are checked periodically by the "
+"interpreter, and when set correctly, they trigger the execution of remote "
+"code at a safe point in the evaluation loop."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:451
+msgid ""
+"Each ``PyThreadState`` contains a ``_PyRemoteDebuggerSupport`` structure "
+"used for communication between the debugger and the interpreter. The "
+"locations of its fields are defined by the ``_Py_DebugOffsets`` structure "
+"and include the following:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:456
+msgid ""
+"``debugger_script_path``: A fixed-size buffer that holds the full path to a"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:457
+msgid ""
+"Python source file (``.py``).  This file must be accessible and readable by "
+"the target process when execution is triggered."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:460
+msgid ""
+"``debugger_pending_call``: An integer flag. Setting this to ``1`` tells the"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:461
+msgid "interpreter that a script is ready to be executed."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:463
+msgid "``eval_breaker``: A field checked by the interpreter during execution."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:464
+msgid ""
+"Setting bit 5 (``_PY_EVAL_PLEASE_STOP_BIT``, value ``1U << 5``) in this "
+"field causes the interpreter to pause and check for debugger activity."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:467
+msgid ""
+"To complete the injection, the debugger must perform the following steps:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:469
+msgid "Write the full script path into the ``debugger_script_path`` buffer."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:470
+msgid "Set ``debugger_pending_call`` to ``1``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:471
+msgid ""
+"Read the current value of ``eval_breaker``, set bit 5 "
+"(``_PY_EVAL_PLEASE_STOP_BIT``), and write the updated value back. This "
+"signals the interpreter to check for debugger activity."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:477
+msgid ""
+"def inject_script(\n"
+"    pid: int,\n"
+"    thread_state_addr: int,\n"
+"    debug_offsets: DebugOffsets,\n"
+"    script_path: str\n"
+") -> None:\n"
+"    # Compute the base offset of _PyRemoteDebuggerSupport\n"
+"    support_base = (\n"
+"        thread_state_addr +\n"
+"        debug_offsets.debugger_support.remote_debugger_support\n"
+"    )\n"
+"\n"
+"    # Step 1: Write the script path into debugger_script_path\n"
+"    script_path_ptr = (\n"
+"        support_base +\n"
+"        debug_offsets.debugger_support.debugger_script_path\n"
+"    )\n"
+"    write_string(pid, script_path_ptr, script_path)\n"
+"\n"
+"    # Step 2: Set debugger_pending_call to 1\n"
+"    pending_ptr = (\n"
+"        support_base +\n"
+"        debug_offsets.debugger_support.debugger_pending_call\n"
+"    )\n"
+"    write_int(pid, pending_ptr, 1)\n"
+"\n"
+"    # Step 3: Set _PY_EVAL_PLEASE_STOP_BIT (bit 5, value 1 << 5) in\n"
+"    # eval_breaker\n"
+"    eval_breaker_ptr = (\n"
+"        thread_state_addr +\n"
+"        debug_offsets.debugger_support.eval_breaker\n"
+"    )\n"
+"    breaker = read_int(pid, eval_breaker_ptr)\n"
+"    breaker |= (1 << 5)\n"
+"    write_int(pid, eval_breaker_ptr, breaker)"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:514
+msgid ""
+"Once these fields are set, the debugger may resume the process (if it was "
+"suspended).  The interpreter will process the request at the next safe "
+"evaluation point, load the script from disk, and execute it."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:518
+msgid ""
+"It is the responsibility of the debugger to ensure that the script file "
+"remains present and accessible to the target process during execution."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:523
+msgid ""
+"Script execution is asynchronous. The script file cannot be deleted "
+"immediately after injection. The debugger should wait until the injected "
+"script has produced an observable effect before removing the file. This "
+"effect depends on what the script is designed to do. For example, a debugger"
+" might wait until the remote process connects back to a socket before "
+"removing the script. Once such an effect is observed, it is safe to assume "
+"the file is no longer needed."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:532
+msgid "Summary"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:534
+msgid "To inject and execute a Python script in a remote process:"
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:536
+msgid "Locate the ``PyRuntime`` structure in the target process’s memory."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:537
+msgid ""
+"Read and validate the ``_Py_DebugOffsets`` structure at the beginning of "
+"``PyRuntime``."
+msgstr ""
+
+#: ../../howto/remote_debugging.rst:539
+msgid "Use the offsets to locate a valid ``PyThreadState``."
+msgstr "使用该偏移量来定位一个有效的 ``PyThreadState``。"
+
+#: ../../howto/remote_debugging.rst:540
+msgid "Write the path to a Python script into ``debugger_script_path``."
+msgstr "将一个 Python 脚本的路径写入到 ``debugger_script_path``。"
+
+#: ../../howto/remote_debugging.rst:541
+msgid "Set the ``debugger_pending_call`` flag to ``1``."
+msgstr "将 ``debugger_pending_call`` 旗标设为 ``1``。"
+
+#: ../../howto/remote_debugging.rst:542
+msgid "Set ``_PY_EVAL_PLEASE_STOP_BIT`` in the ``eval_breaker`` field."
+msgstr "设置 ``eval_breaker`` 字段中的 ``_PY_EVAL_PLEASE_STOP_BIT``。"
+
+#: ../../howto/remote_debugging.rst:543
+msgid ""
+"Resume the process (if suspended). The script will execute at the next safe "
+"evaluation point."
+msgstr "恢复进程（如已挂起）。 脚本将在下一个安全求值点开始执行。"
