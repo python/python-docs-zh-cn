@@ -61,6 +61,10 @@ msgid ""
 "bound, such as file operations or making network requests, where much of the"
 " time is spent waiting for external resources."
 msgstr ""
+":mod:`!threading` 模块提供了一种在单个进程内部并发地运行多个 `线程 "
+"<https://en.wikipedia.org/wiki/Thread_(computing)>`_ (从进程分出的更小单位) 的方式。 "
+"它允许创建和管理线程，以便能够平行地执行多个任务，并共享内存空间。 线程特别适用于 I/O "
+"密集型的任务，如文件操作或发送网络请求，在此类任务中大部分时间都会消耗于等待外部资源。"
 
 #: ../../library/threading.rst:27
 msgid ""
@@ -68,6 +72,8 @@ msgid ""
 "threads that can process multiple tasks concurrently.  Here's a basic "
 "example of creating and starting threads using :class:`~threading.Thread`::"
 msgstr ""
+"典型的 :mod:`!threading` 使用场景包括管理一个工作线程池来并发地处理多个任务。 下面是一个使用 "
+":class:`~threading.Thread` 创建并启动线程的简单示例::"
 
 #: ../../library/threading.rst:31
 msgid ""
@@ -100,6 +106,34 @@ msgid ""
 "for t in threads:\n"
 "    t.join()"
 msgstr ""
+"import threading\n"
+"import time\n"
+"\n"
+"def crawl(link, delay=3):\n"
+"    print(f\"crawl started for {link}\")\n"
+"    time.sleep(delay)  # 阻塞 I/O (模拟网络请求)\n"
+"    print(f\"crawl ended for {link}\")\n"
+"\n"
+"links = [\n"
+"    \"https://python.org\",\n"
+"    \"https://docs.python.org\",\n"
+"    \"https://peps.python.org\",\n"
+"]\n"
+"\n"
+"# 针对每个链接启动线程\n"
+"threads = []\n"
+"for link in links:\n"
+"    # 使用 `args` 传入位置参数并使用 `kwargs` 传入关键字参数\n"
+"    t = threading.Thread(target=crawl, args=(link,), kwargs={\"delay\": 2})\n"
+"    threads.append(t)\n"
+"\n"
+"# 启动每个线程\n"
+"for t in threads:\n"
+"    t.start()\n"
+"\n"
+"# 等待所有线程结束\n"
+"for t in threads:\n"
+"    t.join()"
 
 #: ../../library/threading.rst:60
 msgid "This module used to be optional, it is now always available."
@@ -166,6 +200,9 @@ msgid ""
 "bytecode at a time. Despite this, threads remain a useful tool for achieving"
 " concurrency in many scenarios."
 msgstr ""
+"与使用多个进程来绕过 :term:`global interpreter lock` (GIL) 的 :mod:`multiprocessing` "
+"模块不同，threading 模块是在单个进程内部操作的，这意味着所有线程共享相同的内存空间。 不过，对于 CPU 密集型任务来说 GIL 会限制 "
+"threading 带来的性能提升，因为在同一时刻只有一个线程能执行 Python 字节码。 尽管如此，在许多场景中线程仍然是实现并发的有用工具。"
 
 #: ../../library/threading.rst:105
 msgid ""
@@ -173,6 +210,8 @@ msgid ""
 "builds can disable the GIL, enabling true parallel execution of threads, but"
 " this feature is not available by default (see :pep:`703`)."
 msgstr ""
+"对于 Python 3.13，实验性的 :term:`自由线程 <free threading>` 构建版可以禁用 "
+"GIL，启用真正的线程并行执行，但此特性在默认情况下不可用 (参见 :pep:`703`)。"
 
 #: ../../library/threading.rst:112
 msgid "Reference"
@@ -199,6 +238,8 @@ msgid ""
 "through the :mod:`!threading` module, a dummy thread object with limited "
 "functionality is returned."
 msgstr ""
+"返回当前 :class:`Thread` 对象，与调用方的控制线程。 如果调用方的控制线程不是通过 :mod:`!threading` "
+"模块创建的，则会返回一个功能受限的假线程对象。"
 
 #: ../../library/threading.rst:132
 msgid ""
@@ -325,12 +366,14 @@ msgid ""
 "module. The *func* will be passed to  :func:`sys.settrace` for each thread, "
 "before its :meth:`~Thread.run` method is called."
 msgstr ""
+"为所有从 :mod:`!threading` 模块启动的线程设置追踪函数，在每个线程的 :meth:`~Thread.run` "
+"方法被调用前，*func* 会被传递给 :func:`sys.settrace`。"
 
 #: ../../library/threading.rst:230
 msgid ""
 "Set a trace function for all threads started from the :mod:`!threading` "
 "module and all Python threads that are currently executing."
-msgstr ""
+msgstr "为从 :mod:`!threading` 模块启动的所有线程以及当前正在执行的所有 Python 线程设置追踪函数。"
 
 #: ../../library/threading.rst:233
 msgid ""
@@ -349,12 +392,14 @@ msgid ""
 "module. The *func* will be passed to  :func:`sys.setprofile` for each "
 "thread, before its :meth:`~Thread.run` method is called."
 msgstr ""
+"为从 :mod:`!threading` 模块启动的所有线程设置性能分析函数。 在每个线程的 :meth:`~Thread.run` "
+"方法被调用前，*func* 会被传递给 :func:`sys.setprofile`。"
 
 #: ../../library/threading.rst:259
 msgid ""
 "Set a profile function for all threads started from the :mod:`!threading` "
 "module and all Python threads that are currently executing."
-msgstr ""
+msgstr "为从 :mod:`!threading` 模块启动的所有线程和当前正在执行和的所有 Python 线程设置性能分析函数。"
 
 #: ../../library/threading.rst:262
 msgid ""
@@ -709,7 +754,7 @@ msgstr "一个代表线程本地数据的类。"
 
 #: ../../library/threading.rst:457
 msgid "Thread objects"
-msgstr "Thread 对象"
+msgstr "线程对象"
 
 #: ../../library/threading.rst:459
 msgid ""
@@ -1058,7 +1103,7 @@ msgstr "已被弃用的 :attr:`~Thread.daemon` 的取值/设值 API；请改为�
 
 #: ../../library/threading.rst:676
 msgid "Lock objects"
-msgstr "Lock 对象"
+msgstr "锁对象"
 
 #: ../../library/threading.rst:678
 msgid ""
