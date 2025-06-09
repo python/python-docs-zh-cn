@@ -370,6 +370,9 @@ msgid ""
 " populated with fresh method and type objects. The old module is subject to "
 "normal garbage collection. This mirrors the behavior of pure-Python modules."
 msgstr ""
+"不同于使用单阶段初始化创建的模块，这些模块不是单例对象。 举例来说，如果 :py:attr:`sys.modules` "
+"条目被移除且模块被重新导入，一个新模块对象将被创建，并且通常会以新的方法和类型对象充实其内容。旧模块将成为正常垃圾回收的目标。 这类似于纯 Python"
+" 模块的行为。"
 
 #: ../../c-api/module.rst:302
 msgid ""
@@ -379,6 +382,9 @@ msgid ""
 " Python objects between module instances would likely cause crashes or "
 "undefined behavior."
 msgstr ""
+"额外的模块实例可能会在 :ref:`子解释器 <sub-interpreter-support>` 中或者 Python 运行时重新初始化之后 "
+"(:c:func:`Py_Finalize` 和 :c:func:`Py_Initialize`) 被创建。 在这些情况下，在模块实例之间共享 "
+"Python 对象将可能导致程序崩溃或未定义的行为。"
 
 #: ../../c-api/module.rst:309
 msgid ""
@@ -388,12 +394,14 @@ msgid ""
 "to a particular module instance. See :ref:`isolating-extensions-howto` for "
 "more details and a practical guide."
 msgstr ""
+"为避免这种问题，每个扩展模块的实例都应当是 *隔离的*: 对一个实例的修改不应隐式地影响其他的实例，以及所有的状态，包括对 Python "
+"对象的引用，都应当是特定模块实例专属的。 请参阅  :ref:`isolating-extensions-howto` 了解更多的细节和实用的指南。"
 
 #: ../../c-api/module.rst:315
 msgid ""
 "A simpler way to avoid these issues is :ref:`raising an error on repeated "
 "initialization <isolating-extensions-optout>`."
-msgstr ""
+msgstr "一个避免这些问题的简单方式是 :ref:`针对重复的初始化引发一个错误 <isolating-extensions-optout>`。"
 
 #: ../../c-api/module.rst:318
 msgid ""
@@ -403,6 +411,9 @@ msgid ""
 "repeated initialization, as above. A module may also be limited to the main "
 "interpreter using the :c:data:`Py_mod_multiple_interpreters` slot."
 msgstr ""
+"所有使用多阶段初始化创建的模块都应该支持 :ref:`子解释器 <sub-interpreter-support>`，否则要显式地发出缺乏支持的信号。 "
+"这往往是通过隔离或阻止重复的初始化，如上文所述。 一个模块也可以使用 :c:data:`Py_mod_multiple_interpreters` "
+"槽位将其限制于主解释器中。"
 
 #: ../../c-api/module.rst:326
 msgid ""
