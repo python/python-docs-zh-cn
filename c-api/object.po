@@ -12,6 +12,7 @@
 # Alpha Du <alphanow@gmail.com>, 2024
 # 稀饭~~ <wangwhai@qq.com>, 2024
 # Dai Xu <daixu61@hotmail.com>, 2024
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -19,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -915,51 +916,56 @@ msgid ""
 " that a reference count of ``1`` by itself does not guarantee that a "
 "function argument uniquely referenced."
 msgstr ""
+"如果一个对象是唯一的临时对象，则可以保证当前代码对该对象有唯一的引用。对于C函数的参数，应该这样做，而不是检查引用计数是否为``1``。从Python "
+"3.14开始，解释器在将对象加载到操作数堆栈时，通过在可能的情况下 :term:`借用 <borrowed reference>` "
+"引用，在内部避免了一些引用计数修改，这意味着引用计数``1``本身并不能保证函数参数被唯一引用。"
 
 #: ../../c-api/object.rst:633
 msgid ""
 "In the example below, ``my_func`` is called with a unique temporary object "
 "as its argument::"
-msgstr ""
+msgstr "在下面的例子中，调用``my_func``时使用一个唯一的临时对象作为参数::"
 
 #: ../../c-api/object.rst:636
 msgid "my_func([1, 2, 3])"
-msgstr ""
+msgstr "my_func([1, 2, 3])"
 
 #: ../../c-api/object.rst:638
 msgid ""
 "In the example below, ``my_func`` is **not** called with a unique temporary "
 "object as its argument, even if its refcount is ``1``::"
-msgstr ""
+msgstr "在下面的例子中，调用``my_func``时 *不是* 使用一个唯一的临时对象作为参数，即使它的refcount是``1``::"
 
 #: ../../c-api/object.rst:641
 msgid ""
 "my_list = [1, 2, 3]\n"
 "my_func(my_list)"
 msgstr ""
+"my_list = [1, 2, 3]\n"
+"my_func(my_list)"
 
 #: ../../c-api/object.rst:644
 msgid "See also the function :c:func:`Py_REFCNT`."
-msgstr ""
+msgstr "另请参阅 :c:func:`Py_REFCNT` 函数。"
 
 #: ../../c-api/object.rst:650
 msgid ""
 "This function returns non-zero if *obj* is :term:`immortal`, and zero "
 "otherwise. This function cannot fail."
-msgstr ""
+msgstr "如果 *obj* 是 :term:`immortal`，这个函数返回非零，否则返回零。 这个函数不会失败。"
 
 #: ../../c-api/object.rst:655
 msgid ""
 "Objects that are immortal in one CPython version are not guaranteed to be "
 "immortal in another."
-msgstr ""
+msgstr "在一个CPython版本中是不朽的对象不能保证在另一个CPython版本中还是不朽的。"
 
 #: ../../c-api/object.rst:662
 msgid ""
 "Increments the reference count of *obj* if it is not zero.  Returns ``1`` if"
 " the object's reference count was successfully incremented. Otherwise, this "
 "function returns ``0``."
-msgstr ""
+msgstr "如果 *obj* 的引用计数不为零，则增加引用计数。如果对象的引用计数已成功递增，则返回``1``。否则，此函数返回``0``。"
 
 #: ../../c-api/object.rst:666
 msgid ""
@@ -967,12 +973,14 @@ msgid ""
 "or this function may spuriously return ``0`` in the :term:`free threading` "
 "build."
 msgstr ""
+":c:func:`PyUnstable_EnableTryIncRef` 必须先前在 *obj* 上被调用，否则此函数可能在 :term:`free "
+"threading` 构建中错误地返回 ``0``。"
 
 #: ../../c-api/object.rst:670
 msgid ""
 "This function is logically equivalent to the following C code, except that "
 "it behaves atomically in the :term:`free threading` build::"
-msgstr ""
+msgstr "此函数在逻辑上等效于以下C代码，除了它在 :term:`free threading` 构建中的行为是原子性的::"
 
 #: ../../c-api/object.rst:673
 msgid ""
@@ -982,12 +990,17 @@ msgid ""
 "}\n"
 "return 0;"
 msgstr ""
+"if (Py_REFCNT(op) > 0) {\n"
+"   Py_INCREF(op);\n"
+"   return 1;\n"
+"}\n"
+"return 0;"
 
 #: ../../c-api/object.rst:679
 msgid ""
 "This is intended as a building block for managing weak references without "
 "the overhead of a Python :ref:`weak reference object <weakrefobjects>`."
-msgstr ""
+msgstr "这旨在作为一个构建块，用于管理弱引用，而不会产生Python :ref:`弱引用对象 <weakrefobjects>` 的开销。"
 
 #: ../../c-api/object.rst:682
 msgid ""
@@ -996,6 +1009,9 @@ msgid ""
 "following sketch could be adapted to implement a \"weakmap\" that works like"
 " a :py:class:`~weakref.WeakValueDictionary` for a specific type:"
 msgstr ""
+"通常，正确使用此函数需要 *obj* 的释放器 (:c:member:`~PyTypeObject.tp_dealloc`) 的支持。 "
+"例如，下面的草图可以用来实现一个“weakmap”，就像一个特定类型的 :py:class:`~weakref.WeakValueDictionary`"
+" 一样："
 
 #: ../../c-api/object.rst:688
 msgid ""
@@ -1041,22 +1057,65 @@ msgid ""
 "    PyMutex_Unlock(&mutex);\n"
 "}"
 msgstr ""
+"PyMutex mutex;\n"
+"\n"
+"PyObject *\n"
+"add_entry(weakmap_key_type *key, PyObject *value)\n"
+"{\n"
+"    PyUnstable_EnableTryIncRef(value);\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    weakmap_add_entry(weakmap, key, value);\n"
+"    PyMutex_Unlock(&mutex);\n"
+"    Py_RETURN_NONE;\n"
+"}\n"
+"\n"
+"PyObject *\n"
+"get_value(weakmap_key_type *key)\n"
+"{\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    PyObject *result = weakmap_find(weakmap, key);\n"
+"    if (PyUnstable_TryIncRef(result)) {\n"
+"        // `result` 可以安全使用\n"
+"        PyMutex_Unlock(&mutex);\n"
+"        return result;\n"
+"    }\n"
+"    // 如果我们到这里，`result` 开始被垃圾回收，\n"
+"    // 但还没有从弱映射中移除\n"
+"    PyMutex_Unlock(&mutex);\n"
+"    return NULL;\n"
+"}\n"
+"\n"
+"// weakmap 值的tp_dealloc 函数\n"
+"void\n"
+"value_dealloc(PyObject *value)\n"
+"{\n"
+"    weakmap_type weakmap = ...;\n"
+"    PyMutex_Lock(&mutex);\n"
+"    weakmap_remove_value(weakmap, value);\n"
+"\n"
+"    ...\n"
+"    PyMutex_Unlock(&mutex);\n"
+"}"
 
 #: ../../c-api/object.rst:736
 msgid ""
 "Enables subsequent uses of :c:func:`PyUnstable_TryIncRef` on *obj*.  The "
 "caller must hold a :term:`strong reference` to *obj* when calling this."
 msgstr ""
+"允许在 *obj* 上后续使用 :c:func:`PyUnstable_TryIncRef`。 调用者在调用时必须持有 *obj* 的 "
+":term:`strong reference`。"
 
 #: ../../c-api/object.rst:743
 msgid "Determine if *op* only has one reference."
-msgstr ""
+msgstr "确定 *op* 是否只有一个引用。"
 
 #: ../../c-api/object.rst:745
 msgid ""
 "On GIL-enabled builds, this function is equivalent to :c:expr:`Py_REFCNT(op)"
 " == 1`."
-msgstr ""
+msgstr "在启用GIL的构建中，此函数等价于 :c:expr:`Py_REFCNT(op) == 1`。"
 
 #: ../../c-api/object.rst:748
 msgid ""
@@ -1065,13 +1124,16 @@ msgid ""
 "only used by this thread. :c:expr:`Py_REFCNT(op) == 1` is **not** thread-"
 "safe on free threaded builds; prefer this function."
 msgstr ""
+"在 :term:`自由线程 <free threading>` 构建中，这将检查 *op* 的 :term:`reference count` "
+"是否等于1，并检查 *op* 是否仅由该线程使用。 :c:expr:`Py_REFCNT(op) == 1` 在自由线程构建中 *不是* "
+"线程安全的；更喜欢这个函数。"
 
 #: ../../c-api/object.rst:753
 msgid ""
 "The caller must hold an :term:`attached thread state`, despite the fact that"
 " this function doesn't call into the Python interpreter. This function "
 "cannot fail."
-msgstr ""
+msgstr "调用者必须持有一个 :term:`attached thread state`，尽管这个函数不调用Python解释器。这个函数不会失败。"
 
 #: ../../c-api/object.rst:316 ../../c-api/object.rst:328
 #: ../../c-api/object.rst:353 ../../c-api/object.rst:404

@@ -9,6 +9,7 @@
 # LeeWendao <LeeWendao@outlook.com>, 2022
 # WH-2099 <wh2099@outlook.com>, 2023
 # Xu Siyuan, 2024
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -16,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:57+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -107,6 +108,8 @@ msgid ""
 "results have not yet been yielded. If the buffer is full, iteration over the"
 " *iterables* pauses until a result is yielded from the buffer."
 msgstr ""
+"*iterables* 的收集是立即而非惰性的，除非指定了 *buffersize* 来限制提交结果尚未产生的任务数量。 如果缓冲区已满，对 "
+"*iterables* 的迭代将暂停直到缓冲区产生了一个结果。"
 
 #: ../../library/concurrent.futures.rst:53
 msgid ""
@@ -142,6 +145,10 @@ msgid ""
 "size of 1.  With :class:`ThreadPoolExecutor` and "
 ":class:`InterpreterPoolExecutor`, *chunksize* has no effect."
 msgstr ""
+"当使用 :class:`ProcessPoolExecutor` 时，这个方法会将 *iterables* 分块并作为单独的任务提交到执行池中。 "
+"这些分块的（近似）大小可通过将 *chunksize* 设为一个正整数来指定。 对于非常长的迭代器来说，使用较大的 *chunksize* "
+"值相比默认大小 1 能显著地提升性能。 对于 :class:`ThreadPoolExecutor` 和 "
+":class:`InterpreterPoolExecutor`，*chunksize* 将没有效果。"
 
 #: ../../library/concurrent.futures.rst:74
 msgid "Added the *chunksize* parameter."
@@ -351,7 +358,7 @@ msgstr ""
 "工作线程名称以方便调试。"
 
 #: ../../library/concurrent.futures.rst:188
-#: ../../library/concurrent.futures.rst:401
+#: ../../library/concurrent.futures.rst:386
 msgid "Added the *initializer* and *initargs* arguments."
 msgstr "加入 *initializer* 和*initargs* 参数。"
 
@@ -450,6 +457,9 @@ msgid ""
 "is that each worker has its own interpreter, and runs each task using that "
 "interpreter."
 msgstr ""
+":class:`InterpreterPoolExecutor` 类使用一个解释器池来异步地执行调用。 它是 "
+":class:`ThreadPoolExecutor` 的子类，这意味着每个工作解释器在它自己的线程中运行。 "
+"它与其父类的区别在于每个工作线程都具有自己的解释器，并使用该解释器运行每个任务。"
 
 #: ../../library/concurrent.futures.rst:248
 msgid ""
@@ -459,6 +469,8 @@ msgid ""
 "interpreter can run on one CPU core, while code in another interpreter runs "
 "unblocked on a different core."
 msgstr ""
+"使用解释器而非只用线程的最大好处是真正的多核心并行。 每个解释器都有自己的 :term:`全局解释器锁 <global interpreter "
+"lock>`，因此在一个解释器中运行的代码可以在一个 CPU 核心上运行，而在另一个解释器中运行的代码可以在不同的核心上无阻塞地运行。"
 
 #: ../../library/concurrent.futures.rst:254
 msgid ""
@@ -472,13 +484,17 @@ msgid ""
 "deal with several of the big pain points of using threads, like race "
 "conditions."
 msgstr ""
+"作为交换的是编写用于多解释器的并发代码需要额外的考量。 "
+"不过，这是由于它会迫使你谨慎处理多解释器要怎样以及何时进行交互，并明确哪些数据要在解释器之间进行共享。 "
+"这导致几项有助于对额外的考量进行平衡的好处，包括真正的多核心并行。 "
+"例如，以这种方式编写的代码可以更容易地理顺并发过程。另一项重要的好处是你不必处理某些使用线程的关键痛点，比如竞争条件等。"
 
 #: ../../library/concurrent.futures.rst:264
 msgid ""
 "Each worker's interpreter is isolated from all the other interpreters. "
 "\"Isolated\" means each interpreter has its own runtime state and operates "
 "completely independently.  For example, if you redirect :data:`sys.stdout` "
-"in one interpreter, it will not be automatically redirected any other "
+"in one interpreter, it will not be automatically redirected to any other "
 "interpreter.  If you import a module in one interpreter, it is not "
 "automatically imported in any other.  You would need to import the module "
 "separately in interpreter where you need it.  In fact, each module imported "
@@ -486,6 +502,10 @@ msgid ""
 "different interpreter, including :mod:`sys`, :mod:`builtins`, and even "
 "``__main__``."
 msgstr ""
+"每个工作线程的解释器都是与其他所有解释器隔离的。“隔离”意味着每个解释器都有自己的运行时状态，并且完全独立地运行。例如，如果你在一个解释器中重定向 "
+":data:`sys.stdout` "
+"，它不会自动重定向到任何其他解释器。如果你在一个解释器中导入了一个模块，它不会在其他解释器中自动导入。您需要在需要它的解释器中单独导入模块。事实上，在解释器中导入的每个模块都是与不同解释器中的相同模块完全独立的对象，包括"
+" :mod:`sys`、:mod:`builtins` 甚至 ``__main__``。"
 
 #: ../../library/concurrent.futures.rst:276
 msgid ""
@@ -496,6 +516,7 @@ msgid ""
 "copies manually.  Immutable objects and data, like the builtin singletons, "
 "strings, and tuples of immutable objects, don't have these limitations."
 msgstr ""
+"隔离意味着可变对象或其他数据不能同时被多个解释器使用。这实际上意味着解释器实际上不能共享这些对象或数据。相反，每个解释器必须有自己的副本，并且必须手动同步副本之间的任何更改。不可变对象和数据，如不可变对象的内置单例、字符串和元组，就没有这些限制。"
 
 #: ../../library/concurrent.futures.rst:284
 msgid ""
@@ -504,6 +525,8 @@ msgid ""
 "efficient alternative is to serialize with :mod:`pickle` and then send the "
 "bytes over a shared :mod:`socket <socket>` or :func:`pipe <os.pipe>`."
 msgstr ""
+"解释器之间的通信和同步使用专用工具是最有效的，就像在 :pep:`734` 中建议的那样。 一种效率较低的替代方法是使用 :mod:`pickle` "
+"进行序列化，然后通过共享的 :mod:`套接字 <socket>` 或 :func:`管道 <os.pipe>` 发送字节。"
 
 #: ../../library/concurrent.futures.rst:292
 msgid ""
@@ -515,6 +538,10 @@ msgid ""
 "Interpreter Lock <global interpreter lock>`, which means code run with this "
 "executor has true multi-core parallelism."
 msgstr ""
+"一个 :class:`ThreadPoolExecutor` 子类，使用最多 *max_workers* 线程的池异步执行调用。 "
+"每个线程在自己的解释器中运行任务。 工作解释器彼此隔离，这意味着每个解释器都有自己的运行时状态，并且它们不能共享任何可变对象或其他数据。 "
+"每个解释器都有自己的 :term:`全局解释器锁 <global interpreter "
+"lock>`，这意味着使用该执行器运行的代码具有真正的多核并行性。"
 
 #: ../../library/concurrent.futures.rst:300
 msgid ""
@@ -524,42 +551,34 @@ msgid ""
 "executor serializes the *initializer* and *initargs* using :mod:`pickle` "
 "when sending them to the worker's interpreter."
 msgstr ""
+"可选的 *initializer* 和 *initargs* 参数与 :class:`!ThreadPoolExecutor` "
+"具有相同的含义：初始化器在每个工作线程被创建时运行，尽管在这种情况下它是在工作线程的解释器中运行的。 当执行器将 *initializer* 和 "
+"*initargs* 发送给工作线程的解释器时，使用 :mod:`pickle` 对它们进行序列化。"
 
 #: ../../library/concurrent.futures.rst:308
-#: ../../library/concurrent.futures.rst:330
-msgid ""
-"Functions defined in the ``__main__`` module cannot be pickled and thus "
-"cannot be used."
-msgstr ""
-
-#: ../../library/concurrent.futures.rst:312
 msgid ""
 "The executor may replace uncaught exceptions from *initializer* with "
 ":class:`~concurrent.futures.interpreter.ExecutionFailed`."
 msgstr ""
+"执行器可以用 :class:`~concurrent.futures.interpreter.ExecutionFailed` 替换 "
+"*initializer* 中未捕获的异常。"
 
-#: ../../library/concurrent.futures.rst:315
-msgid ""
-"The optional *shared* argument is a :class:`dict` of objects that all "
-"interpreters in the pool share.  The *shared* items are added to each "
-"interpreter's ``__main__`` module.  Not all objects are shareable. Shareable"
-" objects include the builtin singletons, :class:`str` and :class:`bytes`, "
-"and :class:`memoryview`.  See :pep:`734` for more info."
-msgstr ""
-
-#: ../../library/concurrent.futures.rst:322
+#: ../../library/concurrent.futures.rst:311
 msgid "Other caveats from parent :class:`ThreadPoolExecutor` apply here."
-msgstr ""
+msgstr "来自 :class:`ThreadPoolExecutor` 的其他警告也适用于此。"
 
-#: ../../library/concurrent.futures.rst:324
+#: ../../library/concurrent.futures.rst:313
 msgid ""
 ":meth:`~Executor.submit` and :meth:`~Executor.map` work like normal, except "
 "the worker serializes the callable and arguments using :mod:`pickle` when "
 "sending them to its interpreter.  The worker likewise serializes the return "
 "value when sending it back."
 msgstr ""
+":meth:`~Executor.submit` 和 :meth:`~Executor.map` "
+"的工作方式与正常情况一样，只是工作线程在将可调用函数和参数发送到其解释器时使用 :mod:`pickle` 对其进行序列化。 "
+"在发送返回值时，工作线程同样会对其进行序列化。"
 
-#: ../../library/concurrent.futures.rst:333
+#: ../../library/concurrent.futures.rst:318
 msgid ""
 "When a worker's current task raises an uncaught exception, the worker always"
 " tries to preserve the exception as-is.  If that is successful then it also "
@@ -570,12 +589,16 @@ msgid ""
 " the corresponding :class:`~concurrent.futures.interpreter.ExecutionFailed` "
 "instance instead."
 msgstr ""
+"当工作线程的当前任务引发未捕获的异常时，工作线程总是尝试保持异常的原样。 如果成功，那么它还会将 ``__cause__`` 设置为相应的 "
+":class:`~concurrent.futures.interpreter.ExecutionFailed` 实例，该实例包含原始异常的摘要。 "
+"在极少数情况下，工作线程不能保留原来的状态，那么它会直接保留相应的 "
+":class:`~concurrent.futures.interpreter.ExecutionFailed` 实例。"
 
-#: ../../library/concurrent.futures.rst:345
+#: ../../library/concurrent.futures.rst:330
 msgid "ProcessPoolExecutor"
 msgstr "ProcessPoolExecutor"
 
-#: ../../library/concurrent.futures.rst:347
+#: ../../library/concurrent.futures.rst:332
 msgid ""
 "The :class:`ProcessPoolExecutor` class is an :class:`Executor` subclass that"
 " uses a pool of processes to execute calls asynchronously. "
@@ -588,7 +611,7 @@ msgstr ""
 ":class:`ProcessPoolExecutor` 会使用 :mod:`multiprocessing` 模块，这允许它绕过 "
 ":term:`全局解释器锁 <global interpreter lock>` 但也意味着只可以处理和返回可封存的对象。"
 
-#: ../../library/concurrent.futures.rst:354
+#: ../../library/concurrent.futures.rst:339
 msgid ""
 "The ``__main__`` module must be importable by worker subprocesses. This "
 "means that :class:`ProcessPoolExecutor` will not work in the interactive "
@@ -597,7 +620,7 @@ msgstr ""
 "``__main__`` 模块必须可以被工作者子进程导入。这意味着 :class:`ProcessPoolExecutor` "
 "不可以工作在交互式解释器中。"
 
-#: ../../library/concurrent.futures.rst:357
+#: ../../library/concurrent.futures.rst:342
 msgid ""
 "Calling :class:`Executor` or :class:`Future` methods from a callable "
 "submitted to a :class:`ProcessPoolExecutor` will result in deadlock."
@@ -605,7 +628,7 @@ msgstr ""
 "从可调用对象中调用 :class:`Executor` 或 :class:`Future` 的方法提交给 "
 ":class:`ProcessPoolExecutor` 会导致死锁。"
 
-#: ../../library/concurrent.futures.rst:362
+#: ../../library/concurrent.futures.rst:347
 msgid ""
 "An :class:`Executor` subclass that executes calls asynchronously using a "
 "pool of at most *max_workers* processes.  If *max_workers* is ``None`` or "
@@ -627,7 +650,7 @@ msgstr ""
 " 它将被用来启动工作进程。 如果 *mp_context* 为 ``None`` 或未给出，则将使用默认的 :mod:`multiprocessing`"
 " 上下文。 参见 :ref:`multiprocessing-start-methods`。"
 
-#: ../../library/concurrent.futures.rst:376
+#: ../../library/concurrent.futures.rst:361
 msgid ""
 "*initializer* is an optional callable that is called at the start of each "
 "worker process; *initargs* is a tuple of arguments passed to the "
@@ -639,7 +662,7 @@ msgstr ""
 "如果 *initializer* 引发了异常，则所有当前在等待的任务以及任何向进程池提交更多任务的尝试都将引发 "
 ":exc:`~concurrent.futures.process.BrokenProcessPool`。"
 
-#: ../../library/concurrent.futures.rst:382
+#: ../../library/concurrent.futures.rst:367
 msgid ""
 "*max_tasks_per_child* is an optional argument that specifies the maximum "
 "number of tasks a single process can execute before it will exit and be "
@@ -653,7 +676,7 @@ msgstr ""
 "*max_tasks_per_child* 为 ``None`` 表示工作进程将存活与进程池一样长的时间。 当指定了最大数量时，则如果不存在 "
 "*mp_context* 形参则将默认使用 \"spawn\" 多进程启动方法。 此特性不能兼容 \"fork\" 启动方法。"
 
-#: ../../library/concurrent.futures.rst:390
+#: ../../library/concurrent.futures.rst:375
 msgid ""
 "When one of the worker processes terminates abruptly, a "
 ":exc:`~concurrent.futures.process.BrokenProcessPool` error is now raised. "
@@ -663,19 +686,19 @@ msgstr ""
 "当某个工作进程突然终止时，现在将引发 :exc:`~concurrent.futures.process.BrokenProcessPool`。 "
 "在之前版本中，它的行为是未定义的但在执行器上的操作或它的 future 对象往往会被冻结或死锁。"
 
-#: ../../library/concurrent.futures.rst:397
+#: ../../library/concurrent.futures.rst:382
 msgid ""
 "The *mp_context* argument was added to allow users to control the "
 "start_method for worker processes created by the pool."
 msgstr "添加 *mp_context* 参数允许用户控制由进程池创建给工作者进程的开始方法 。"
 
-#: ../../library/concurrent.futures.rst:403
+#: ../../library/concurrent.futures.rst:388
 msgid ""
 "The *max_tasks_per_child* argument was added to allow users to control the "
 "lifetime of workers in the pool."
 msgstr "增加了 *max_tasks_per_child* 参数以允许用户控制进程池中工作进程的生命期。"
 
-#: ../../library/concurrent.futures.rst:407
+#: ../../library/concurrent.futures.rst:392
 msgid ""
 "On POSIX systems, if your application has multiple threads and the "
 ":mod:`multiprocessing` context uses the ``\"fork\"`` start method: The "
@@ -688,7 +711,7 @@ msgstr ""
 "启动方法：内部调用的 :func:`os.fork` 函数来生成工作进程可能会引发 :exc:`DeprecationWarning`。 "
 "请传递配置为使用不同启动方法的 *mp_context*。 进一步的解释请参阅 :func:`os.fork` 文档。"
 
-#: ../../library/concurrent.futures.rst:415
+#: ../../library/concurrent.futures.rst:400
 msgid ""
 "*max_workers* uses :func:`os.process_cpu_count` by default, instead of "
 ":func:`os.cpu_count`."
@@ -696,42 +719,50 @@ msgstr ""
 "在默认情况下 *max_workers* 将使用 :func:`os.process_cpu_count`，而不是 "
 ":func:`os.cpu_count`。"
 
-#: ../../library/concurrent.futures.rst:419
+#: ../../library/concurrent.futures.rst:404
 msgid ""
 "The default process start method (see :ref:`multiprocessing-start-methods`) "
 "changed away from *fork*. If you require the *fork* start method for "
 ":class:`ProcessPoolExecutor` you must explicitly pass "
 "``mp_context=multiprocessing.get_context(\"fork\")``."
 msgstr ""
+"默认的进程启动方法 (参见 :ref:`multiprocessing-start-methods`) 已改为不再使用 *fork*。 如果你需要为 "
+":class:`ProcessPoolExecutor` 使用 *fork* 启动方法你必须显式地传入 "
+"``mp_context=multiprocessing.get_context(\"fork\")``。"
 
-#: ../../library/concurrent.futures.rst:427
+#: ../../library/concurrent.futures.rst:412
 msgid ""
 "Attempt to terminate all living worker processes immediately by calling "
 ":meth:`Process.terminate <multiprocessing.Process.terminate>` on each of "
 "them. Internally, it will also call :meth:`Executor.shutdown` to ensure that"
 " all other resources associated with the executor are freed."
 msgstr ""
+"尝试通过在每个激活中的工作进程上调用 :meth:`Process.terminate "
+"<multiprocessing.Process.terminate>` 来全部终结它们。 在内部，它还将调用 "
+":meth:`Executor.shutdown` 以确保所有与执行器相关联的其他资源被释放。"
 
-#: ../../library/concurrent.futures.rst:432
-#: ../../library/concurrent.futures.rst:444
+#: ../../library/concurrent.futures.rst:417
+#: ../../library/concurrent.futures.rst:429
 msgid ""
 "After calling this method the caller should no longer submit tasks to the "
 "executor."
-msgstr ""
+msgstr "在调用此方法之后调用方不应再向执行器提交任务。"
 
-#: ../../library/concurrent.futures.rst:439
+#: ../../library/concurrent.futures.rst:424
 msgid ""
 "Attempt to kill all living worker processes immediately by calling "
 ":meth:`Process.kill <multiprocessing.Process.kill>` on each of them. "
 "Internally, it will also call :meth:`Executor.shutdown` to ensure that all "
 "other resources associated with the executor are freed."
 msgstr ""
+"尝试通过对每个进程调用 :meth:`Process.kill <multiprocessing.Process.kill>` "
+"来立即杀死所有存活的工作进程。 在内部，它还将调用 :meth:`Executor.shutdown` 来确保释放与执行器相关的所有其他资源。"
 
-#: ../../library/concurrent.futures.rst:452
+#: ../../library/concurrent.futures.rst:437
 msgid "ProcessPoolExecutor Example"
 msgstr "ProcessPoolExecutor 例子"
 
-#: ../../library/concurrent.futures.rst:455
+#: ../../library/concurrent.futures.rst:440
 msgid ""
 "import concurrent.futures\n"
 "import math\n"
@@ -799,11 +830,11 @@ msgstr ""
 "if __name__ == '__main__':\n"
 "    main()"
 
-#: ../../library/concurrent.futures.rst:490
+#: ../../library/concurrent.futures.rst:475
 msgid "Future Objects"
 msgstr "Future 对象"
 
-#: ../../library/concurrent.futures.rst:492
+#: ../../library/concurrent.futures.rst:477
 msgid ""
 "The :class:`Future` class encapsulates the asynchronous execution of a "
 "callable. :class:`Future` instances are created by :meth:`Executor.submit`."
@@ -811,7 +842,7 @@ msgstr ""
 ":class:`Future` 类将可调用对象封装为异步执行。:class:`Future` 实例由 :meth:`Executor.submit` "
 "创建。"
 
-#: ../../library/concurrent.futures.rst:497
+#: ../../library/concurrent.futures.rst:482
 msgid ""
 "Encapsulates the asynchronous execution of a callable.  :class:`Future` "
 "instances are created by :meth:`Executor.submit` and should not be created "
@@ -819,7 +850,7 @@ msgid ""
 msgstr ""
 "将可调用对象封装为异步执行。:class:`Future` 实例由 :meth:`Executor.submit` 创建，除非测试，不应直接创建。"
 
-#: ../../library/concurrent.futures.rst:503
+#: ../../library/concurrent.futures.rst:488
 msgid ""
 "Attempt to cancel the call.  If the call is currently being executed or "
 "finished running and cannot be cancelled then the method will return "
@@ -828,22 +859,22 @@ msgid ""
 msgstr ""
 "尝试取消调用。 如果调用正在执行或已结束运行不能被取消则该方法将返回 ``False``，否则调用会被取消并且该方法将返回 ``True``。"
 
-#: ../../library/concurrent.futures.rst:510
+#: ../../library/concurrent.futures.rst:495
 msgid "Return ``True`` if the call was successfully cancelled."
 msgstr "如果调用成功取消返回 ``True``。"
 
-#: ../../library/concurrent.futures.rst:514
+#: ../../library/concurrent.futures.rst:499
 msgid ""
 "Return ``True`` if the call is currently being executed and cannot be "
 "cancelled."
 msgstr "如果调用正在执行而且不能被取消那么返回 ``True`` 。"
 
-#: ../../library/concurrent.futures.rst:519
+#: ../../library/concurrent.futures.rst:504
 msgid ""
 "Return ``True`` if the call was successfully cancelled or finished running."
 msgstr "如果调用已被取消或正常结束那么返回 ``True``。"
 
-#: ../../library/concurrent.futures.rst:524
+#: ../../library/concurrent.futures.rst:509
 msgid ""
 "Return the value returned by the call. If the call hasn't yet completed then"
 " this method will wait up to *timeout* seconds.  If the call hasn't "
@@ -855,19 +886,19 @@ msgstr ""
 ":exc:`TimeoutError`。 *timeout* 可以为整数或浮点数。 如果 *timeout* 未指定或为 "
 "``None``，则不限制等待时间。"
 
-#: ../../library/concurrent.futures.rst:531
-#: ../../library/concurrent.futures.rst:545
+#: ../../library/concurrent.futures.rst:516
+#: ../../library/concurrent.futures.rst:530
 msgid ""
 "If the future is cancelled before completing then :exc:`.CancelledError` "
 "will be raised."
 msgstr "如果 future 在完成前被取消则 :exc:`.CancelledError` 将被触发。"
 
-#: ../../library/concurrent.futures.rst:534
+#: ../../library/concurrent.futures.rst:519
 msgid ""
 "If the call raised an exception, this method will raise the same exception."
 msgstr "如果调用引发了一个异常，这个方法也会引发同样的异常。"
 
-#: ../../library/concurrent.futures.rst:538
+#: ../../library/concurrent.futures.rst:523
 msgid ""
 "Return the exception raised by the call.  If the call hasn't yet completed "
 "then this method will wait up to *timeout* seconds.  If the call hasn't "
@@ -879,11 +910,11 @@ msgstr ""
 ":exc:`TimeoutError`。 *timeout* 可以为整数或浮点数。 如果 *timeout* 未指定或为 "
 "``None``，则不限制等待时间。"
 
-#: ../../library/concurrent.futures.rst:548
+#: ../../library/concurrent.futures.rst:533
 msgid "If the call completed without raising, ``None`` is returned."
 msgstr "如果调用正常完成那么返回 ``None``。"
 
-#: ../../library/concurrent.futures.rst:552
+#: ../../library/concurrent.futures.rst:537
 msgid ""
 "Attaches the callable *fn* to the future.  *fn* will be called, with the "
 "future as its only argument, when the future is cancelled or finishes "
@@ -892,7 +923,7 @@ msgstr ""
 "附加可调用 *fn* 到 future 对象。当 future 对象被取消或完成运行时，将会调用 *fn*，而这个 future "
 "对象将作为它唯一的参数。"
 
-#: ../../library/concurrent.futures.rst:556
+#: ../../library/concurrent.futures.rst:541
 msgid ""
 "Added callables are called in the order that they were added and are always "
 "called in a thread belonging to the process that added them.  If the "
@@ -903,26 +934,26 @@ msgstr ""
 "加入的可调用对象总被属于添加它们的进程中的线程按加入的顺序调用。如果可调用对象引发一个 :exc:`Exception` "
 "子类，它会被记录下来并被忽略掉。如果可调用对象引发一个 :exc:`BaseException` 子类，这个行为没有定义。"
 
-#: ../../library/concurrent.futures.rst:562
+#: ../../library/concurrent.futures.rst:547
 msgid ""
 "If the future has already completed or been cancelled, *fn* will be called "
 "immediately."
 msgstr "如果 future 对象已经完成或已取消，*fn* 会被立即调用。"
 
-#: ../../library/concurrent.futures.rst:565
+#: ../../library/concurrent.futures.rst:550
 msgid ""
 "The following :class:`Future` methods are meant for use in unit tests and "
 ":class:`Executor` implementations."
 msgstr "下面这些 :class:`Future` 方法用于单元测试和 :class:`Executor` 实现。"
 
-#: ../../library/concurrent.futures.rst:570
+#: ../../library/concurrent.futures.rst:555
 msgid ""
 "This method should only be called by :class:`Executor` implementations "
 "before executing the work associated with the :class:`Future` and by unit "
 "tests."
 msgstr "这个方法只可以在执行关联 :class:`Future`  工作之前由 :class:`Executor` 实现调用或由单测试调用。"
 
-#: ../../library/concurrent.futures.rst:574
+#: ../../library/concurrent.futures.rst:559
 msgid ""
 "If the method returns ``False`` then the :class:`Future` was cancelled, i.e."
 " :meth:`Future.cancel` was called and returned ``True``.  Any threads "
@@ -933,7 +964,7 @@ msgstr ""
 "``True``。 任何等待 :class:`Future` 完成 (即通过 :func:`as_completed` 或 :func:`wait`) "
 "的线程将被唤醒。"
 
-#: ../../library/concurrent.futures.rst:579
+#: ../../library/concurrent.futures.rst:564
 msgid ""
 "If the method returns ``True`` then the :class:`Future` was not cancelled "
 "and has been put in the running state, i.e. calls to :meth:`Future.running` "
@@ -942,7 +973,7 @@ msgstr ""
 "如果此方法返回 ``True`` 则 :class:`Future` 没有被取消并已被置为正在运行的状态，即对 "
 ":meth:`Future.running` 的调用将返回 ``True``。"
 
-#: ../../library/concurrent.futures.rst:583
+#: ../../library/concurrent.futures.rst:568
 msgid ""
 "This method can only be called once and cannot be called after "
 ":meth:`Future.set_result` or :meth:`Future.set_exception` have been called."
@@ -950,37 +981,37 @@ msgstr ""
 "这个方法只可以被调用一次并且不能在调用 :meth:`Future.set_result` 或 :meth:`Future.set_exception`"
 " 之后再调用。"
 
-#: ../../library/concurrent.futures.rst:589
+#: ../../library/concurrent.futures.rst:574
 msgid ""
 "Sets the result of the work associated with the :class:`Future` to *result*."
 msgstr "设置将 :class:`Future` 关联工作的结果给 *result* 。"
 
-#: ../../library/concurrent.futures.rst:592
-#: ../../library/concurrent.futures.rst:605
+#: ../../library/concurrent.futures.rst:577
+#: ../../library/concurrent.futures.rst:590
 msgid ""
 "This method should only be used by :class:`Executor` implementations and "
 "unit tests."
 msgstr "这个方法只可以由 :class:`Executor` 实现和单元测试使用。"
 
-#: ../../library/concurrent.futures.rst:595
-#: ../../library/concurrent.futures.rst:608
+#: ../../library/concurrent.futures.rst:580
+#: ../../library/concurrent.futures.rst:593
 msgid ""
 "This method raises :exc:`concurrent.futures.InvalidStateError` if the "
 ":class:`Future` is already done."
 msgstr ""
 "如果 :class:`Future` 已经完成则此方法会引发 :exc:`concurrent.futures.InvalidStateError`。"
 
-#: ../../library/concurrent.futures.rst:602
+#: ../../library/concurrent.futures.rst:587
 msgid ""
 "Sets the result of the work associated with the :class:`Future` to the "
 ":class:`Exception` *exception*."
 msgstr "设置 :class:`Future` 关联工作的结果给 :class:`Exception` *exception* 。"
 
-#: ../../library/concurrent.futures.rst:614
+#: ../../library/concurrent.futures.rst:599
 msgid "Module Functions"
 msgstr "模块函数"
 
-#: ../../library/concurrent.futures.rst:618
+#: ../../library/concurrent.futures.rst:603
 msgid ""
 "Wait for the :class:`Future` instances (possibly created by different "
 ":class:`Executor` instances) given by *fs* to complete. Duplicate futures "
@@ -995,7 +1026,7 @@ msgstr ""
 "future（包括正常结束或被取消的 future）。 第二个集合的名称为 ``not_done``，包含未完成的 future（包括挂起的或正在运行的"
 " future）。"
 
-#: ../../library/concurrent.futures.rst:626
+#: ../../library/concurrent.futures.rst:611
 msgid ""
 "*timeout* can be used to control the maximum number of seconds to wait "
 "before returning.  *timeout* can be an int or float.  If *timeout* is not "
@@ -1004,25 +1035,25 @@ msgstr ""
 "*timeout* 可以用来控制返回前最大的等待秒数。 *timeout* 可以为 int 或 float 类型。 如果 *timeout* 未指定或为"
 " ``None`` ，则不限制等待时间。"
 
-#: ../../library/concurrent.futures.rst:630
+#: ../../library/concurrent.futures.rst:615
 msgid ""
 "*return_when* indicates when this function should return.  It must be one of"
 " the following constants:"
 msgstr "*return_when* 指定此函数应在何时返回。它必须为以下常数之一:"
 
-#: ../../library/concurrent.futures.rst:636
+#: ../../library/concurrent.futures.rst:621
 msgid "Constant"
 msgstr "常量"
 
-#: ../../library/concurrent.futures.rst:637
+#: ../../library/concurrent.futures.rst:622
 msgid "Description"
 msgstr "描述"
 
-#: ../../library/concurrent.futures.rst:640
+#: ../../library/concurrent.futures.rst:625
 msgid "The function will return when any future finishes or is cancelled."
 msgstr "函数将在任意可等待对象结束或取消时返回。"
 
-#: ../../library/concurrent.futures.rst:643
+#: ../../library/concurrent.futures.rst:628
 msgid ""
 "The function will return when any future finishes by raising an exception. "
 "If no future raises an exception then it is equivalent to "
@@ -1031,11 +1062,11 @@ msgstr ""
 "该函数将在任何 future 对象通过引发异常而结束时返回。 如果没有任何 future 对象引发引发那么它将等价于 "
 ":const:`ALL_COMPLETED`。"
 
-#: ../../library/concurrent.futures.rst:648
+#: ../../library/concurrent.futures.rst:633
 msgid "The function will return when all futures finish or are cancelled."
 msgstr "函数将在所有可等待对象结束或取消时返回。"
 
-#: ../../library/concurrent.futures.rst:652
+#: ../../library/concurrent.futures.rst:637
 msgid ""
 "Returns an iterator over the :class:`Future` instances (possibly created by "
 "different :class:`Executor` instances) given by *fs* that yields futures as "
@@ -1054,48 +1085,48 @@ msgstr ""
 "秒内其结果仍不可用，这个迭代器将引发 :exc:`TimeoutError`。 *timeout* 可以为整数或浮点数。 如果 *timeout* "
 "未指定或为 ``None``，则不限制等待时间。"
 
-#: ../../library/concurrent.futures.rst:665
+#: ../../library/concurrent.futures.rst:650
 msgid ":pep:`3148` -- futures - execute computations asynchronously"
 msgstr ":pep:`3148` -- future 对象 - 异步执行指令。"
 
-#: ../../library/concurrent.futures.rst:666
+#: ../../library/concurrent.futures.rst:651
 msgid ""
 "The proposal which described this feature for inclusion in the Python "
 "standard library."
 msgstr "该提案描述了Python标准库中包含的这个特性。"
 
-#: ../../library/concurrent.futures.rst:671
+#: ../../library/concurrent.futures.rst:656
 msgid "Exception classes"
 msgstr "Exception 类"
 
-#: ../../library/concurrent.futures.rst:677
+#: ../../library/concurrent.futures.rst:662
 msgid "Raised when a future is cancelled."
 msgstr "future 对象被取消时会触发。"
 
-#: ../../library/concurrent.futures.rst:681
+#: ../../library/concurrent.futures.rst:666
 msgid ""
 "A deprecated alias of :exc:`TimeoutError`, raised when a future operation "
 "exceeds the given timeout."
 msgstr ":exc:`TimeoutError` 的一个已被弃用的别名，会在 future 操作超出了给定的时限时被引发。"
 
-#: ../../library/concurrent.futures.rst:686
+#: ../../library/concurrent.futures.rst:671
 msgid "This class was made an alias of :exc:`TimeoutError`."
 msgstr "这个类是 :exc:`TimeoutError` 的别名。"
 
-#: ../../library/concurrent.futures.rst:691
+#: ../../library/concurrent.futures.rst:676
 msgid ""
 "Derived from :exc:`RuntimeError`, this exception class is raised when an "
 "executor is broken for some reason, and cannot be used to submit or execute "
 "new tasks."
 msgstr "当执行器被某些原因中断而且不能用来提交或执行新任务时就会被引发派生于 :exc:`RuntimeError` 的异常类。"
 
-#: ../../library/concurrent.futures.rst:699
+#: ../../library/concurrent.futures.rst:684
 msgid ""
 "Raised when an operation is performed on a future that is not allowed in the"
 " current state."
 msgstr "当某个操作在一个当前状态所不允许的 future 上执行时将被引发。"
 
-#: ../../library/concurrent.futures.rst:708
+#: ../../library/concurrent.futures.rst:693
 msgid ""
 "Derived from :exc:`~concurrent.futures.BrokenExecutor`, this exception class"
 " is raised when one of the workers of a "
@@ -1104,7 +1135,7 @@ msgstr ""
 "派生自 :exc:`~concurrent.futures.BrokenExecutor`，这个异常类会在 "
 ":class:`~concurrent.futures.ThreadPoolExecutor` 的某个工作线程初始化失败时被引发。"
 
-#: ../../library/concurrent.futures.rst:719
+#: ../../library/concurrent.futures.rst:704
 msgid ""
 "Derived from :exc:`~concurrent.futures.thread.BrokenThreadPool`, this "
 "exception class is raised when one of the workers of a "
@@ -1114,7 +1145,7 @@ msgstr ""
 "派生自 :exc:`~concurrent.futures.thread.BrokenThreadPool`，这个异常类会在 "
 ":class:`~concurrent.futures.InterpreterPoolExecutor` 的某个工作线程初始化失败时被引发。"
 
-#: ../../library/concurrent.futures.rst:728
+#: ../../library/concurrent.futures.rst:713
 msgid ""
 "Raised from :class:`~concurrent.futures.InterpreterPoolExecutor` when the "
 "given initializer fails or from :meth:`~concurrent.futures.Executor.submit` "
@@ -1123,7 +1154,7 @@ msgstr ""
 "当给定的初始化器执行失败时由 :class:`~concurrent.futures.InterpreterPoolExecutor` "
 "引发或者是当有来自已提交任务的未捕获异常时由 :meth:`~concurrent.futures.Executor.submit` 引发。"
 
-#: ../../library/concurrent.futures.rst:739
+#: ../../library/concurrent.futures.rst:724
 msgid ""
 "Derived from :exc:`~concurrent.futures.BrokenExecutor` (formerly "
 ":exc:`RuntimeError`), this exception class is raised when one of the workers"

@@ -12,6 +12,7 @@
 # ppcfish <ppcfish@gmail.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2022
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -19,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-23 14:20+0000\n"
+"POT-Creation-Date: 2025-06-27 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:08+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -120,13 +121,13 @@ msgid ""
 "When working with a non-blocking stream, be aware that read operations on "
 "text I/O objects might raise a :exc:`BlockingIOError` if the stream cannot "
 "perform the operation immediately."
-msgstr ""
+msgstr "使用非阻塞流时，请注意，如果流不能立即执行操作，则对文本 I/O 对象的读取操作可能会引发 :exc:`BlockingIOError`。"
 
 #: ../../library/io.rst:73
 msgid ""
 "The text stream API is described in detail in the documentation of "
 ":class:`TextIOBase`."
-msgstr ":class:`TextIOBase` 的文档中详细描述了文本流的API"
+msgstr ":class:`TextIOBase` 的文档中详细描述了文本流的 API。"
 
 #: ../../library/io.rst:78 ../../library/io.rst:1205
 msgid "Binary I/O"
@@ -140,8 +141,8 @@ msgid ""
 " be used for all kinds of non-text data, and also when manual control over "
 "the handling of text data is desired."
 msgstr ""
-"二进制I/O（也称为缓冲I/O）预期 :term:`bytes-like objects <bytes-like object>` 并生成  "
-":class:`bytes` 对象。不执行编码、解码或换行转换。这种类型的流可以用于所有类型的非文本数据，并且还可以在需要手动控制文本数据的处理时使用。"
+"二进制 I/O（也称为缓冲 I/O）接受 :term:`字节型对象 <bytes-like object>` 并生成  :class:`bytes` "
+"对象。 不执行编码、解码或换行转换。 这种类型的流可以用于所有类型的非文本数据，并且还可以在需要手动控制文本数据的处理时使用。"
 
 #: ../../library/io.rst:86
 msgid ""
@@ -185,8 +186,8 @@ msgid ""
 "manipulate a raw stream from user code.  Nevertheless, you can create a raw "
 "stream by opening a file in binary mode with buffering disabled::"
 msgstr ""
-"原始 I/O（也称为 *非缓冲 "
-"I/O*）通常用作二进制和文本流的低级构建块。用户代码直接操作原始流的用法非常罕见。不过，可以通过在禁用缓冲的情况下以二进制模式打开文件来创建原始流："
+"原始 I/O (也称为 *非缓冲 I/O*) 通常用作二进制和文本流的低级构建块。 用户代码直接操作原始流的用法非常罕见。 "
+"不过，可以通过在禁用缓冲的情况下以二进制模式打开文件来创建原始流："
 
 #: ../../library/io.rst:110
 msgid "f = open(\"myfile.jpg\", \"rb\", buffering=0)"
@@ -905,6 +906,8 @@ msgid ""
 ":meth:`readinto` and :meth:`write` will try (respectively) to read as much "
 "input as requested or to emit all provided data."
 msgstr ""
+"与 :class:`RawIOBase` 的主要差别在于 :meth:`read`, :meth:`readinto` 和 :meth:`write` "
+"等方法会（分别）按要求读取尽可能多的输入或是耗尽已提供的所有数据。"
 
 #: ../../library/io.rst:534
 msgid ""
@@ -913,6 +916,9 @@ msgid ""
 "with :attr:`BlockingIOError.characters_written` and :meth:`read` will return"
 " data read so far or ``None`` if no data is available."
 msgstr ""
+"此外，如果下层的原始流处于非阻塞模式，当系统返回时会阻塞时 :meth:`write` 将引发 :exc:`BlockingIOError` 并附带 "
+":attr:`BlockingIOError.characters_written` 而 :meth:`read` "
+"将返回当前读取的数据或者如果数据不可用则返回 ``None``。"
 
 #: ../../library/io.rst:539
 msgid ""
@@ -965,7 +971,7 @@ msgstr ""
 msgid ""
 "Read and return up to *size* bytes. If the argument is omitted, ``None``, or"
 " negative read as much as possible."
-msgstr ""
+msgstr "读取并返回至多 *size* 个字节。 如果此参数被省略、为 ``None`` 或为负值则会读取尽可能多的数据。"
 
 #: ../../library/io.rst:573
 msgid ""
@@ -975,6 +981,9 @@ msgid ""
 ":meth:`os.read` and :pep:`475` for more details. Less than size bytes being "
 "returned does not imply that EOF is imminent."
 msgstr ""
+"返回的字节数可能会少于请求数。 如果流已到达 EOF 则将返回一个空 :class:`bytes` 对象。 "
+"如果遇到某些问题可能会进行多次读取并可能尝试重新调用，请参阅 :meth:`os.read` 和 :pep:`475` 了解详情。 返回的字节数少于 "
+"size 并不意味着已到达 EOF。"
 
 #: ../../library/io.rst:579
 msgid ""
@@ -985,6 +994,9 @@ msgid ""
 "streams this is to EOF, but for non-blocking streams more data may become "
 "available."
 msgstr ""
+"当需要尽量多读取时默认实现将在可能的情况下使用 ``raw.readall`` (它应当实现 "
+":meth:`RawIOBase.readall`)，否则将在循环中读取直到读取操作返回 ``None``、空 :class:`bytes` "
+"或是不可重试的错误。 对于大多数流来说就是直到 EOF，但对于非阻塞流来说可能会有更多数据可用。"
 
 #: ../../library/io.rst:588 ../../library/io.rst:601
 msgid ""
@@ -992,6 +1004,8 @@ msgid ""
 "raise :exc:`BlockingIOError` or return ``None`` if no data is available. "
 ":mod:`io` implementations return ``None``."
 msgstr ""
+"当下层的原始流是非阻塞流时，实现可能会引发 :exc:`BlockingIOError` 或者在没有可用数据时返回 ``None``。 "
+":mod:`io` 的实现将返回 ``None``。"
 
 #: ../../library/io.rst:594
 msgid ""
@@ -1000,6 +1014,8 @@ msgid ""
 "If *size* is ``-1`` or not provided, the implementation will choose an "
 "arbitrary value for *size*."
 msgstr ""
+"读取并返回至多 *size* 个字节，调用根据 :pep:`475` 在遇到 :py:const:`~errno.EINTR` 时可能重试的 "
+":meth:`~RawIOBase.readinto`。 如果 *size* 为 ``-1`` 未被提供，实现将为 *size* 选择一个任意值。"
 
 #: ../../library/io.rst:607
 msgid ""
@@ -1276,7 +1292,7 @@ msgid ""
 "Return bytes from the stream without advancing the position. The number of "
 "bytes returned may be less or more than requested. If the underlying raw "
 "stream is non-blocking and the operation would block, returns empty bytes."
-msgstr ""
+msgstr "从流返回字节数据而不会前移指针位置。 返回的字节数量可能少于或多于请求的数量。 如果下层的原始流是非阻塞流而操作将要阻塞，则返回空字节串。"
 
 #: ../../library/io.rst:786
 msgid ""
@@ -1355,6 +1371,8 @@ msgid ""
 ":attr:`BlockingIOError.characters_written` set is raised if the buffer needs"
 " to be written out but the raw stream blocks."
 msgstr ""
+"写入 :term:`bytes-like object` *b*，并返回写入的字节数。 当处于非阻塞模式时，如果缓冲区需要被写入但原始流发生阻塞则会引发"
+" :exc:`BlockingIOError` 并设置 :attr:`BlockingIOError.characters_written`。"
 
 #: ../../library/io.rst:832
 msgid ""
@@ -1456,6 +1474,8 @@ msgid ""
 "not part of the :class:`TextIOBase` API and may not exist in some "
 "implementations."
 msgstr ""
+"由 :class:`TextIOBase` 处理的下层二进制缓冲区（一个 :class:`BufferedIOBase` 或 "
+":class:`RawIOBase` 实例）。 它不是 :class:`TextIOBase` API 的组成部分并且不存在于某些实现中。"
 
 #: ../../library/io.rst:901
 msgid ""
@@ -1659,7 +1679,7 @@ msgstr "*encoding* 参数现在支持 ``\"locale\"`` 作为编码格式名称。
 msgid ""
 "When the underlying raw stream is non-blocking, a :exc:`BlockingIOError` may"
 " be raised if a read operation cannot be completed immediately."
-msgstr ""
+msgstr "当底层原始流是非阻塞时，如果读取操作不能立即完成，可能会引发 :exc:`BlockingIOError`。"
 
 #: ../../library/io.rst:1029
 msgid ""
@@ -1858,6 +1878,7 @@ msgid ""
 "arguments for simple stream reading or writing operations. They are "
 "decorated with :deco:`typing.runtime_checkable`."
 msgstr ""
+"以下协议可用于注解简单流读取或写入操作的函数和方法参数。这些协议由 :deco:`typing.runtime_checkable` 装饰。"
 
 #: ../../library/io.rst:1158
 msgid ""
@@ -1865,13 +1886,15 @@ msgid ""
 "usually be :class:`str` or :class:`bytes`, but can be any type that is read "
 "from the stream."
 msgstr ""
+"用于从文件或其他输入流读取的泛型协议。 通常 ``T`` 将为 :class:`str` 或 "
+":class:`bytes`，但也可以是能从流读取的任意类型。"
 
 #: ../../library/io.rst:1167
 msgid ""
 "Read data from the input stream and return it. If *size* is specified, it "
 "should be an integer, and at most *size* items (bytes/characters) will be "
 "read."
-msgstr ""
+msgstr "从输入流读取数据并将其返回。 如果指定了 *size*，它应当是一个整数，并且至多有 *size* 个条目（字节/字符）将被读取。"
 
 #: ../../library/io.rst:1171 ../../library/io.rst:1190
 msgid "For example::"
@@ -1883,6 +1906,9 @@ msgid ""
 "    data = reader.read(11)\n"
 "    assert isinstance(data, str)"
 msgstr ""
+"def read_it(reader: Reader[str]):\n"
+"    data = reader.read(11)\n"
+"    assert isinstance(data, str)"
 
 #: ../../library/io.rst:1179
 msgid ""
@@ -1890,24 +1916,28 @@ msgid ""
 "usually be :class:`str` or :class:`bytes`, but can be any type that can be "
 "written to the stream."
 msgstr ""
+"用于向文件或其他输出流写入的泛型协议。 通常 ``T`` 将为 :class:`str` 或 "
+":class:`bytes`，但也可以是能被写入流的任意类型。"
 
 #: ../../library/io.rst:1187
 msgid ""
 "Write *data* to the output stream and return the number of items "
 "(bytes/characters) written."
-msgstr ""
+msgstr "将 *data* 写入到输出流并返回写入的条目（字节/字符）数。"
 
 #: ../../library/io.rst:1192
 msgid ""
 "def write_binary(writer: Writer[bytes]):\n"
 "    writer.write(b\"Hello world!\\n\")"
 msgstr ""
+"def write_binary(writer: Writer[bytes]):\n"
+"    writer.write(b\"Hello world!\\n\")"
 
 #: ../../library/io.rst:1195
 msgid ""
 "See :ref:`typing-io` for other I/O related protocols and classes that can be"
 " used for static type checking."
-msgstr ""
+msgstr "请参阅 :ref:`typing-io` 了解其他 I/O 相关的可被用于静态类型检查的协议和类。"
 
 #: ../../library/io.rst:1199
 msgid "Performance"

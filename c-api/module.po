@@ -7,21 +7,20 @@
 # 汪心禾 <wangxinhe06@gmail.com>, 2021
 # ppcfish <ppcfish@gmail.com>, 2021
 # Yifan Sun, 2022
-# 高乐喆 <gaolezhe@outlook.com>, 2023
 # Shan Su, 2023
 # ProgramRipper, 2023
 # WH-2099 <wh2099@outlook.com>, 2023
-# Freesand Leo <yuqinju@163.com>, 2025
 # 汇民 王 <whuim@qq.com>, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 02:53-0300\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: 汇民 王 <whuim@qq.com>, 2025\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -66,8 +65,8 @@ msgstr ""
 ":attr:`~module.__loader__` 属性将被填充 (除 :attr:`!__name__` 外全都设为 ``None``)。 "
 "调用方要负责设置 :attr:`~module.__file__` 属性。"
 
-#: ../../c-api/module.rst:46 ../../c-api/module.rst:272
-#: ../../c-api/module.rst:474
+#: ../../c-api/module.rst:46 ../../c-api/module.rst:416
+#: ../../c-api/module.rst:443
 msgid "Return ``NULL`` with an exception set on error."
 msgstr "当发生错误时将返回 ``NULL`` 并设置一个异常。"
 
@@ -160,51 +159,68 @@ msgstr ""
 ":c:func:`PyModule_GetFilenameObject`。"
 
 #: ../../c-api/module.rst:133
-msgid "Initializing C modules"
-msgstr "初始化 C 模块"
+msgid "Module definitions"
+msgstr "模块定义"
 
 #: ../../c-api/module.rst:135
 msgid ""
-"Modules objects are usually created from extension modules (shared libraries"
-" which export an initialization function), or compiled-in modules (where the"
-" initialization function is added using :c:func:`PyImport_AppendInittab`). "
-"See :ref:`building` or :ref:`extending-with-embedding` for details."
-msgstr ""
-"模块对象通常是基于扩展模块（导出初始化函数的共享库），或内部编译模块（其中使用 :c:func:`PyImport_AppendInittab` "
-"添加初始化函数）。 请参阅 :ref:`building` 或 :ref:`extending-with-embedding` 了解详情。"
+"The functions in the previous section work on any module object, including "
+"modules imported from Python code."
+msgstr "上一节中的函数适用于任何模块对象，包括从 Python 代码导入的模块。"
 
-#: ../../c-api/module.rst:140
+#: ../../c-api/module.rst:138
 msgid ""
-"The initialization function can either pass a module definition instance to "
-":c:func:`PyModule_Create`, and return the resulting module object, or "
-"request \"multi-phase initialization\" by returning the definition struct "
-"itself."
+"Modules defined using the C API typically use a *module definition*, "
+":c:type:`PyModuleDef` -- a statically allocated, constant “description\" of "
+"how a module should be created."
 msgstr ""
-"初始化函数可以向 :c:func:`PyModule_Create` "
-"传入一个模块定义实例，并返回结果模块对象，或者通过返回定义结构体本身来请求“多阶段初始化”。"
+"使用 C API 定义的模块通常使用一个 *模块定义*，即 :c:type:`PyModuleDef` -- "
+"有关模块应当如何被创建的静态分配的、常量形式的“描述”。"
 
-#: ../../c-api/module.rst:146
+#: ../../c-api/module.rst:142
+msgid ""
+"The definition is usually used to define an extension's “main” module object"
+" (see :ref:`extension-modules` for details). It is also used to :ref:`create"
+" extension modules dynamically <moduledef-dynamic>`."
+msgstr ""
+"该定义通常被用来定义扩展的 “main” 模块对象（参阅 :ref:`extension-modules` 了解详情）。 它还会被用来 "
+":ref:`动态创建扩展模块 <moduledef-dynamic>`。"
+
+#: ../../c-api/module.rst:147
+msgid ""
+"Unlike :c:func:`PyModule_New`, the definition allows management of *module "
+"state* -- a piece of memory that is allocated and cleared together with the "
+"module object. Unlike the module's Python attributes, Python code cannot "
+"replace or delete data stored in module state."
+msgstr ""
+"不同于 :c:func:`PyModule_New`，该定义管理 *模块状态* -- 一块随同模块对象被分配和清空的内存。 不同于模块的 Python "
+"属性，Python 代码无法替换或删除存储在模块状态中的数据。"
+
+#: ../../c-api/module.rst:155
 msgid ""
 "The module definition struct, which holds all information needed to create a"
-" module object. There is usually only one statically initialized variable of"
-" this type for each module."
-msgstr "模块定义结构，它保存创建模块对象所需的所有信息。每个模块通常只有一个这种类型的静态初始化变量"
+" module object. This structure must be statically allocated (or be otherwise"
+" guaranteed to be valid while any modules created from it exist). Usually, "
+"there is only one variable of this type for each extension module."
+msgstr ""
+"模块定义结构体，它保存着创建模块对象所有的全部信息。 该结构体必须被静态地分配（或者应在自其存在起的任何模块被创建期间确保可用）。 "
+"通常，每个扩展模块仅有一个该类型的变量。"
 
-#: ../../c-api/module.rst:152
+#: ../../c-api/module.rst:163
 msgid "Always initialize this member to :c:macro:`PyModuleDef_HEAD_INIT`."
 msgstr "始终将此成员初始化为 :c:macro:`PyModuleDef_HEAD_INIT`。"
 
-#: ../../c-api/module.rst:156
+#: ../../c-api/module.rst:167
 msgid "Name for the new module."
 msgstr "新模块的名称。"
 
-#: ../../c-api/module.rst:160
+#: ../../c-api/module.rst:171
 msgid ""
 "Docstring for the module; usually a docstring variable created with "
 ":c:macro:`PyDoc_STRVAR` is used."
 msgstr "模块的文档字符串；一般会使用通过 :c:macro:`PyDoc_STRVAR` 创建的文档字符串变量。"
 
-#: ../../c-api/module.rst:165
+#: ../../c-api/module.rst:176
 msgid ""
 "Module state may be kept in a per-module memory area that can be retrieved "
 "with :c:func:`PyModule_GetState`, rather than in static globals. This makes "
@@ -213,7 +229,7 @@ msgstr ""
 "可以把模块的状态保存在为单个模块分配的内存区域中，使用 :c:func:`PyModule_GetState` "
 "检索，而不是保存在静态全局区。这使得模块可以在多个子解释器中安全地使用。"
 
-#: ../../c-api/module.rst:169
+#: ../../c-api/module.rst:180
 msgid ""
 "This memory area is allocated based on *m_size* on module creation, and "
 "freed when the module object is deallocated, after the "
@@ -222,53 +238,57 @@ msgstr ""
 "这个内存区域将在创建模块时根据 *m_size* 分配，并在调用 :c:member:`~PyModuleDef.m_free` "
 "函数（如果存在）在取消分配模块对象时释放。"
 
-#: ../../c-api/module.rst:173
-msgid ""
-"Setting ``m_size`` to ``-1`` means that the module does not support sub-"
-"interpreters, because it has global state."
-msgstr "将 ``m_size`` 设置为 ``-1``，意味着这个模块具有全局状态，因此不支持子解释器。"
-
-#: ../../c-api/module.rst:176
+#: ../../c-api/module.rst:184
 msgid ""
 "Setting it to a non-negative value means that the module can be re-"
 "initialized and specifies the additional amount of memory it requires for "
-"its state. Non-negative ``m_size`` is required for multi-phase "
-"initialization."
-msgstr "将其设置为非负值，意味着模块可以重新初始化，并指定其状态所需要的额外内存大小。多阶段初始化需要非负的 ``m_size``。"
+"its state."
+msgstr "将其设置为非负值意味着可以重新初始化模块，并指定其状态所需的额外内存量。"
 
-#: ../../c-api/module.rst:181
+#: ../../c-api/module.rst:188
+msgid ""
+"Setting ``m_size`` to ``-1`` means that the module does not support sub-"
+"interpreters, because it has global state. Negative ``m_size`` is only "
+"allowed when using :ref:`legacy single-phase initialization <single-phase-"
+"initialization>` or when :ref:`creating modules dynamically <moduledef-"
+"dynamic>`."
+msgstr ""
+"将``m_size``设置为``-1``意味着模块不支持子解析器，因为它具有全局状态。负``m_size``只允许在使用 :ref:`遗留单阶段初始化 "
+"<single-phase-initialization>` 或 :ref:`动态创建模块 <moduledef-dynamic>` 时使用。"
+
+#: ../../c-api/module.rst:194
 msgid "See :PEP:`3121` for more details."
 msgstr "请参阅 :PEP:`3121` 了解详情。"
 
-#: ../../c-api/module.rst:185
+#: ../../c-api/module.rst:198
 msgid ""
 "A pointer to a table of module-level functions, described by "
 ":c:type:`PyMethodDef` values.  Can be ``NULL`` if no functions are present."
 msgstr "一个指向模块函数表的指针，由 :c:type:`PyMethodDef` 描述。如果模块没有函数，可以为 ``NULL``。"
 
-#: ../../c-api/module.rst:190
+#: ../../c-api/module.rst:203
 msgid ""
 "An array of slot definitions for multi-phase initialization, terminated by a"
-" ``{0, NULL}`` entry. When using single-phase initialization, *m_slots* must"
-" be ``NULL``."
+" ``{0, NULL}`` entry. When using legacy single-phase initialization, "
+"*m_slots* must be ``NULL``."
 msgstr ""
-"由针对多阶段初始化的槽位定义组成的数组，以一个 ``{0, NULL}`` 条目结束。 当使用单阶段初始化时，*m_slots* 必须为 "
+"由针对多阶段初始化的槽位定义组成的数组，以一个 ``{0, NULL}`` 条目结束。 当使用遗留单阶段初始化时，*m_slots* 必须为 "
 "``NULL``。"
 
-#: ../../c-api/module.rst:196
+#: ../../c-api/module.rst:209
 msgid ""
 "Prior to version 3.5, this member was always set to ``NULL``, and was "
 "defined as:"
 msgstr "在 3.5 版之前，此成员总是被设为 ``NULL``，并被定义为:"
 
-#: ../../c-api/module.rst:203
+#: ../../c-api/module.rst:216
 msgid ""
 "A traversal function to call during GC traversal of the module object, or "
 "``NULL`` if not needed."
 msgstr "在模块对象的垃圾回收遍历期间所调用的遍历函数，如果不需要则为 ``NULL``。"
 
-#: ../../c-api/module.rst:206 ../../c-api/module.rst:221
-#: ../../c-api/module.rst:242
+#: ../../c-api/module.rst:219 ../../c-api/module.rst:234
+#: ../../c-api/module.rst:255
 msgid ""
 "This function is not called if the module state was requested but is not "
 "allocated yet. This is the case immediately after the module is created and "
@@ -281,18 +301,18 @@ msgstr ""
 " 更确切地说，如果 :c:member:`~PyModuleDef.m_size` 大于 0 且模块状态（由 "
 ":c:func:`PyModule_GetState` 返回）为 ``NULL`` 则不会调用此函数。"
 
-#: ../../c-api/module.rst:213 ../../c-api/module.rst:234
-#: ../../c-api/module.rst:249
+#: ../../c-api/module.rst:226 ../../c-api/module.rst:247
+#: ../../c-api/module.rst:262
 msgid "No longer called before the module state is allocated."
 msgstr "在模块状态被分配之前不再调用。"
 
-#: ../../c-api/module.rst:218
+#: ../../c-api/module.rst:231
 msgid ""
 "A clear function to call during GC clearing of the module object, or "
 "``NULL`` if not needed."
 msgstr "在模块对象的垃圾回收清理期间所调用的清理函数，如果不需要则为 ``NULL``。"
 
-#: ../../c-api/module.rst:228
+#: ../../c-api/module.rst:241
 msgid ""
 "Like :c:member:`PyTypeObject.tp_clear`, this function is not *always* called"
 " before a module is deallocated. For example, when reference counting is "
@@ -304,148 +324,35 @@ msgstr ""
 "那样，这个函数并不总是在模块被释放前被调用。例如，当引用计数足以确定一个对象不再被使用时，就会直接调用 "
 ":c:member:`~PyModuleDef.m_free`，而不使用循环垃圾回收器。"
 
-#: ../../c-api/module.rst:239
+#: ../../c-api/module.rst:252
 msgid ""
 "A function to call during deallocation of the module object, or ``NULL`` if "
 "not needed."
 msgstr "在模块对象的释放期间所调用的函数，如果不需要则为 ``NULL``。"
 
-#: ../../c-api/module.rst:253
-msgid "Single-phase initialization"
-msgstr "单阶段初始化"
+#: ../../c-api/module.rst:267
+msgid "Module slots"
+msgstr "模块槽位"
 
-#: ../../c-api/module.rst:255
-msgid ""
-"The module initialization function may create and return the module object "
-"directly. This is referred to as \"single-phase initialization\", and uses "
-"one of the following two module creation functions:"
-msgstr "模块初始化函数可以直接创建并返回模块对象，称为“单阶段初始化”，使用以下两个模块创建函数中的一个："
-
-#: ../../c-api/module.rst:261
-msgid ""
-"Create a new module object, given the definition in *def*.  This behaves "
-"like :c:func:`PyModule_Create2` with *module_api_version* set to "
-":c:macro:`PYTHON_API_VERSION`."
-msgstr ""
-"根据在 *def* 中给出的定义创建一个新的模块对象。 它的行为类似于 :c:func:`PyModule_Create2` 将 "
-"*module_api_version* 设为 :c:macro:`PYTHON_API_VERSION`。"
-
-#: ../../c-api/module.rst:268
-msgid ""
-"Create a new module object, given the definition in *def*, assuming the API "
-"version *module_api_version*.  If that version does not match the version of"
-" the running interpreter, a :exc:`RuntimeWarning` is emitted."
-msgstr ""
-"创建一个新的模块对象，在参数 *def* 中给出定义，设定API版本为参数 *module_api_version* "
-"。如果该版本与正在运行的解释器版本不匹配，则会触发 :exc:`RuntimeWarning`。"
-
-#: ../../c-api/module.rst:276
-msgid ""
-"Most uses of this function should be using :c:func:`PyModule_Create` "
-"instead; only use this if you are sure you need it."
-msgstr "大多数时候应该使用 :c:func:`PyModule_Create` 代替使用此函数，除非你确定需要使用它。"
-
-#: ../../c-api/module.rst:279
-msgid ""
-"Before it is returned from in the initialization function, the resulting "
-"module object is typically populated using functions like "
-":c:func:`PyModule_AddObjectRef`."
-msgstr "在初始化函数返回之前，生成的模块对象通常使用 :c:func:`PyModule_AddObjectRef` 等函数进行填充。"
-
-#: ../../c-api/module.rst:285
-msgid "Multi-phase initialization"
-msgstr "多阶段初始化"
-
-#: ../../c-api/module.rst:287
-msgid ""
-"An alternate way to specify extensions is to request \"multi-phase "
-"initialization\". Extension modules created this way behave more like Python"
-" modules: the initialization is split between the *creation phase*, when the"
-" module object is created, and the *execution phase*, when it is populated. "
-"The distinction is similar to the :py:meth:`!__new__` and "
-":py:meth:`!__init__` methods of classes."
-msgstr ""
-"指定扩展的另一种方式是请求“多阶段初始化”。 以这种方式创建的扩展模块的行为更类似 Python 模块：初始化分为 *创建阶段* 即创建模块对象时和 "
-"*执行阶段* 即填充模块对象时。 这种区分类似于类的 :py:meth:`!__new__` 和 :py:meth:`!__init__` 方法。"
-
-#: ../../c-api/module.rst:294
-msgid ""
-"Unlike modules created using single-phase initialization, these modules are "
-"not singletons: if the *sys.modules* entry is removed and the module is re-"
-"imported, a new module object is created, and the old module is subject to "
-"normal garbage collection -- as with Python modules. By default, multiple "
-"modules created from the same definition should be independent: changes to "
-"one should not affect the others. This means that all state should be "
-"specific to the module object (using e.g. using "
-":c:func:`PyModule_GetState`), or its contents (such as the module's "
-":attr:`~object.__dict__` or individual classes created with "
-":c:func:`PyType_FromSpec`)."
-msgstr ""
-"与使用单阶段初始化创建的模块不同，这些模块不是单例：如果移除 *sys.modules* "
-"条目并重新导入模块，将会创建一个新的模块对象，而旧的模块则会成为常规的垃圾回收目标 —— 就像 Python 模块那样。 "
-"默认情况下，根据同一个定义创建的多个模块应该是相互独立的：对其中一个模块的更改不应影响其他模块。 这意味着所有状态都应该是模块对象 (例如使用 "
-":c:func:`PyModule_GetState` ) 或其内容 (例如模块的 :attr:`~object.__dict__` 或使用 "
-":c:func:`PyType_FromSpec` 创建的单独类) 的特定状态。"
-
-#: ../../c-api/module.rst:304
-msgid ""
-"All modules created using multi-phase initialization are expected to support"
-" :ref:`sub-interpreters <sub-interpreter-support>`. Making sure multiple "
-"modules are independent is typically enough to achieve this."
-msgstr ""
-"所有使用多阶段初始化创建的模块都应该支持 :ref:`子解释器<sub-interpreter-"
-"support>`。保证多个模块之间相互独立，通常就可以实现这一点。"
-
-#: ../../c-api/module.rst:308
-msgid ""
-"To request multi-phase initialization, the initialization function "
-"(PyInit_modulename) returns a :c:type:`PyModuleDef` instance with non-empty "
-":c:member:`~PyModuleDef.m_slots`. Before it is returned, the ``PyModuleDef``"
-" instance must be initialized with the following function:"
-msgstr ""
-"要请求多阶段初始化，初始化函数 (PyInit_modulename) 返回一个包含非空的 "
-":c:member:`~PyModuleDef.m_slots` 属性的 :c:type:`PyModuleDef` 实例。在它被返回之前，这个 "
-"``PyModuleDef`` 实例必须先使用以下函数初始化："
-
-#: ../../c-api/module.rst:315
-msgid ""
-"Ensures a module definition is a properly initialized Python object that "
-"correctly reports its type and reference count."
-msgstr "确保模块定义是一个正确初始化的Python对象，拥有正确的类型和引用计数。"
-
-#: ../../c-api/module.rst:318
-msgid "Returns *def* cast to ``PyObject*``, or ``NULL`` if an error occurred."
-msgstr "返回转换为 ``PyObject*`` 的 *def* ，如果发生错误，则返回 ``NULL``。"
-
-#: ../../c-api/module.rst:322
-msgid ""
-"The *m_slots* member of the module definition must point to an array of "
-"``PyModuleDef_Slot`` structures:"
-msgstr "模块定义的 *m_slots* 成员必须指向一个 ``PyModuleDef_Slot`` 结构体数组:"
-
-#: ../../c-api/module.rst:329
+#: ../../c-api/module.rst:273
 msgid "A slot ID, chosen from the available values explained below."
 msgstr "槽位 ID，从下面介绍的可用值中选择。"
 
-#: ../../c-api/module.rst:333
+#: ../../c-api/module.rst:277
 msgid "Value of the slot, whose meaning depends on the slot ID."
 msgstr "槽位值，其含义取决于槽位 ID。"
 
-#: ../../c-api/module.rst:337
-msgid "The *m_slots* array must be terminated by a slot with id 0."
-msgstr "*m_slots* 数组必须以一个 id 为 0 的槽位结束。"
-
-#: ../../c-api/module.rst:339
+#: ../../c-api/module.rst:281
 msgid "The available slot types are:"
 msgstr "可用的槽位类型是:"
 
-#: ../../c-api/module.rst:343
+#: ../../c-api/module.rst:285
 msgid ""
 "Specifies a function that is called to create the module object itself. The "
 "*value* pointer of this slot must point to a function of the signature:"
 msgstr "指定一个函数供调用以创建模块对象本身。 该槽位的 *value* 指针必须指向一个具有如下签名的函数:"
 
-#: ../../c-api/module.rst:350
+#: ../../c-api/module.rst:292
 msgid ""
 "The function receives a :py:class:`~importlib.machinery.ModuleSpec` "
 "instance, as defined in :PEP:`451`, and the module definition. It should "
@@ -454,20 +361,20 @@ msgstr ""
 "该函数接受一个 :py:class:`~importlib.machinery.ModuleSpec` 实例，如 :PEP:`451` "
 "所定义的，以及模块定义。 它应当返回一个新的模块对象，或者设置一个错误并返回 ``NULL``。"
 
-#: ../../c-api/module.rst:355
+#: ../../c-api/module.rst:297
 msgid ""
 "This function should be kept minimal. In particular, it should not call "
 "arbitrary Python code, as trying to import the same module again may result "
 "in an infinite loop."
 msgstr "此函数应当保持最小化。 特别地，它不应当调用任意 Python 代码，因为尝试再次导入同一个模块可能会导致无限循环。"
 
-#: ../../c-api/module.rst:359
+#: ../../c-api/module.rst:301
 msgid ""
 "Multiple ``Py_mod_create`` slots may not be specified in one module "
 "definition."
 msgstr "多个 ``Py_mod_create`` 槽位不能在一个模块定义中指定。"
 
-#: ../../c-api/module.rst:362
+#: ../../c-api/module.rst:304
 msgid ""
 "If ``Py_mod_create`` is not specified, the import machinery will create a "
 "normal module object using :c:func:`PyModule_New`. The name is taken from "
@@ -478,7 +385,7 @@ msgstr ""
 "如果未指定 ``Py_mod_create``，导入机制将使用 :c:func:`PyModule_New` 创建一个普通的模块对象。 名称是获取自 "
 "*spec* 而非定义，以允许扩展模块动态地调整它们在模块层级结构中的位置并通过符号链接以不同的名称被导入，同时共享同一个模块定义。"
 
-#: ../../c-api/module.rst:368
+#: ../../c-api/module.rst:310
 msgid ""
 "There is no requirement for the returned object to be an instance of "
 ":c:type:`PyModule_Type`. Any type can be used, as long as it supports "
@@ -491,7 +398,7 @@ msgstr ""
 "``PyModuleDef`` 具有非 ``NULL`` 的 ``m_traverse``, ``m_clear``, ``m_free``；非零的 "
 "``m_size``；或者 ``Py_mod_create`` 以外的槽位则只能返回 ``PyModule_Type`` 的实例。"
 
-#: ../../c-api/module.rst:377
+#: ../../c-api/module.rst:319
 msgid ""
 "Specifies a function that is called to *execute* the module. This is "
 "equivalent to executing the code of a Python module: typically, this "
@@ -499,46 +406,46 @@ msgid ""
 "function is:"
 msgstr "指定一个供调用以 *执行* 模块的函数。 这造价于执行一个 Python 模块的代码：通常，此函数会向模块添加类和常量。 此函数的签名为:"
 
-#: ../../c-api/module.rst:386
+#: ../../c-api/module.rst:328
 msgid ""
 "If multiple ``Py_mod_exec`` slots are specified, they are processed in the "
 "order they appear in the *m_slots* array."
 msgstr "如果指定了多个 ``Py_mod_exec`` 槽位，将按照它们在*m_slots*数组中出现的顺序进行处理。"
 
-#: ../../c-api/module.rst:391 ../../c-api/module.rst:424
+#: ../../c-api/module.rst:333 ../../c-api/module.rst:366
 msgid "Specifies one of the following values:"
 msgstr "指定以下的值之一:"
 
-#: ../../c-api/module.rst:397
+#: ../../c-api/module.rst:339
 msgid "The module does not support being imported in subinterpreters."
 msgstr "该模块不支持在子解释器中导入。"
 
-#: ../../c-api/module.rst:401
+#: ../../c-api/module.rst:343
 msgid ""
 "The module supports being imported in subinterpreters, but only when they "
 "share the main interpreter's GIL. (See :ref:`isolating-extensions-howto`.)"
 msgstr ""
 "该模块支持在子解释器中导入，但是它们必须要共享主解释器的 GIL。 （参见 :ref:`isolating-extensions-howto`。）"
 
-#: ../../c-api/module.rst:407
+#: ../../c-api/module.rst:349
 msgid ""
 "The module supports being imported in subinterpreters, even when they have "
 "their own GIL. (See :ref:`isolating-extensions-howto`.)"
 msgstr "该模块支持在子解释器中导入，即使它们有自己的 GIL。 （参见 :ref:`isolating-extensions-howto`。）"
 
-#: ../../c-api/module.rst:411
+#: ../../c-api/module.rst:353
 msgid ""
 "This slot determines whether or not importing this module in a "
 "subinterpreter will fail."
 msgstr "此槽位决定在子解释器中导入此模块是否会失败。"
 
-#: ../../c-api/module.rst:414
+#: ../../c-api/module.rst:356
 msgid ""
 "Multiple ``Py_mod_multiple_interpreters`` slots may not be specified in one "
 "module definition."
 msgstr "在一个模块定义中不能指定多个 ``Py_mod_multiple_interpreters`` 槽位。"
 
-#: ../../c-api/module.rst:417
+#: ../../c-api/module.rst:359
 msgid ""
 "If ``Py_mod_multiple_interpreters`` is not specified, the import machinery "
 "defaults to ``Py_MOD_MULTIPLE_INTERPRETERS_SUPPORTED``."
@@ -546,17 +453,17 @@ msgstr ""
 "如果未指定 ``Py_mod_multiple_interpreters``，则导入机制默认为 "
 "``Py_MOD_MULTIPLE_INTERPRETERS_SUPPORTED``。"
 
-#: ../../c-api/module.rst:430
+#: ../../c-api/module.rst:372
 msgid ""
 "The module depends on the presence of the global interpreter lock (GIL), and"
 " may access global state without synchronization."
 msgstr "这个模块依赖于全局解释器锁 (GIL) 的存在，并可访问全局状态而不带同步。"
 
-#: ../../c-api/module.rst:435
+#: ../../c-api/module.rst:377
 msgid "The module is safe to run without an active GIL."
 msgstr "这个模块可以在不激活 GIL 的情况下安全运行。"
 
-#: ../../c-api/module.rst:437
+#: ../../c-api/module.rst:379
 msgid ""
 "This slot is ignored by Python builds not configured with "
 ":option:`--disable-gil`.  Otherwise, it determines whether or not importing "
@@ -566,46 +473,75 @@ msgstr ""
 "这个槽位会被未配置 :option:`--disable-gil` 的 Python 构建版所忽略。 在其他情况下，它将决定导入此模块是否会导致 GIL"
 " 被自动启用。 请参阅 :ref:`whatsnew313-free-threaded-cpython` 了解详情。"
 
-#: ../../c-api/module.rst:442
+#: ../../c-api/module.rst:384
 msgid ""
 "Multiple ``Py_mod_gil`` slots may not be specified in one module definition."
 msgstr "多个 ``Py_mod_gil`` 槽位不能在一个模块定义中指定。"
 
-#: ../../c-api/module.rst:444
+#: ../../c-api/module.rst:386
 msgid ""
 "If ``Py_mod_gil`` is not specified, the import machinery defaults to "
 "``Py_MOD_GIL_USED``."
 msgstr "如果未指定 ``Py_mod_gil``，则导入机制默认为 ``Py_MOD_GIL_USED``。"
 
-#: ../../c-api/module.rst:449
-msgid "See :PEP:`489` for more details on multi-phase initialization."
-msgstr "有关多阶段初始化的更多细节，请参阅PEP:`489`"
+#: ../../c-api/module.rst:395
+msgid "Creating extension modules dynamically"
+msgstr "动态创建扩展模块"
 
-#: ../../c-api/module.rst:452
-msgid "Low-level module creation functions"
-msgstr "底层模块创建函数"
-
-#: ../../c-api/module.rst:454
+#: ../../c-api/module.rst:397
 msgid ""
-"The following functions are called under the hood when using multi-phase "
-"initialization. They can be used directly, for example when creating module "
-"objects dynamically. Note that both ``PyModule_FromDefAndSpec`` and "
-"``PyModule_ExecDef`` must be called to fully initialize a module."
+"The following functions may be used to create a module outside of an "
+"extension's :ref:`initialization function <extension-export-hook>`. They are"
+" also used in :ref:`single-phase initialization <single-phase-"
+"initialization>`."
 msgstr ""
-"当使用多阶段初始化时，将会调用以下函数。例如，在动态创建模块对象的时候，可以直接使用它们。注意，必须调用 "
-"``PyModule_FromDefAndSpec`` 和 ``PyModule_ExecDef`` 来完整地初始化一个模块。"
+"以下函数可用于在扩展的 :ref:`初始化函数 <extension-export-hook>` 之外创建模块。 它们也用于 :ref:`单阶段初始化 "
+"<single-phase-initialization>`。"
 
-#: ../../c-api/module.rst:461
+#: ../../c-api/module.rst:404
 msgid ""
-"Create a new module object, given the definition in *def* and the ModuleSpec"
-" *spec*.  This behaves like :c:func:`PyModule_FromDefAndSpec2` with "
-"*module_api_version* set to :c:macro:`PYTHON_API_VERSION`."
+"Create a new module object, given the definition in *def*. This is a macro "
+"that calls :c:func:`PyModule_Create2` with *module_api_version* set to "
+":c:macro:`PYTHON_API_VERSION`, or to :c:macro:`PYTHON_ABI_VERSION` if using "
+"the :ref:`limited API <limited-c-api>`."
 msgstr ""
-"根据在 *def* 中给出的定义和 ModuleSpec *spec* 创建一个新的模块对象。 它的行为类似于 "
-":c:func:`PyModule_FromDefAndSpec2` 将 *module_api_version* 设为 "
-":c:macro:`PYTHON_API_VERSION`。"
+"根据 *def* 中的定义创建一个新的模块对象。这是一个调用 :c:func:`PyModule_Create2` 的宏，其中 "
+"*module_api_version* 设置为 :c:macro:`PYTHON_API_VERSION`，或者如果使用 :ref:`受限 API "
+"<limited-c-api>`，则设置为 :c:macro:`PYTHON_ABI_VERSION`。"
 
-#: ../../c-api/module.rst:469
+#: ../../c-api/module.rst:412
+msgid ""
+"Create a new module object, given the definition in *def*, assuming the API "
+"version *module_api_version*.  If that version does not match the version of"
+" the running interpreter, a :exc:`RuntimeWarning` is emitted."
+msgstr ""
+"创建一个新的模块对象，在参数 *def* 中给出定义，设定API版本为参数 *module_api_version* "
+"。如果该版本与正在运行的解释器版本不匹配，则会触发 :exc:`RuntimeWarning`。"
+
+#: ../../c-api/module.rst:418
+msgid ""
+"This function does not support slots. The :c:member:`~PyModuleDef.m_slots` "
+"member of *def* must be ``NULL``."
+msgstr "此函数不支持槽位。 *def* 的 :c:member:`~PyModuleDef.m_slots` 成员必须为 ``NULL``。"
+
+#: ../../c-api/module.rst:424
+msgid ""
+"Most uses of this function should be using :c:func:`PyModule_Create` "
+"instead; only use this if you are sure you need it."
+msgstr "大多数时候应该使用 :c:func:`PyModule_Create` 代替使用此函数，除非你确定需要使用它。"
+
+#: ../../c-api/module.rst:429
+msgid ""
+"This macro calls :c:func:`PyModule_FromDefAndSpec2` with "
+"*module_api_version* set to :c:macro:`PYTHON_API_VERSION`, or to "
+":c:macro:`PYTHON_ABI_VERSION` if using the :ref:`limited API <limited-c-"
+"api>`."
+msgstr ""
+"这个宏调用 :c:func:`PyModule_FromDefAndSpec2`， *module_api_version* 设置为 "
+":c:macro:`PYTHON_API_VERSION`，或者如果使用 :ref:`受限 API <limited-c-api>`，则设置为 "
+":c:macro:`PYTHON_ABI_VERSION`。"
+
+#: ../../c-api/module.rst:438
 msgid ""
 "Create a new module object, given the definition in *def* and the ModuleSpec"
 " *spec*, assuming the API version *module_api_version*. If that version does"
@@ -615,71 +551,69 @@ msgstr ""
 "创建一个新的模块对象，在参数 *def* 和 *spec* 中给出定义，设置API版本为参数 "
 "*module_api_version*。如果该版本与正在运行的解释器版本不匹配，则会触发 :exc:`RuntimeWarning`。"
 
-#: ../../c-api/module.rst:478
+#: ../../c-api/module.rst:445
+msgid ""
+"Note that this does not process execution slots (:c:data:`Py_mod_exec`). "
+"Both ``PyModule_FromDefAndSpec`` and ``PyModule_ExecDef`` must be called to "
+"fully initialize a module."
+msgstr ""
+"注意，这不会处理执行槽（:c:data:`Py_mod_exec`）。必须调用``PyModule_FromDefAndSpec``和``PyModule_ExecDef``来完全初始化模块。"
+
+#: ../../c-api/module.rst:451
 msgid ""
 "Most uses of this function should be using :c:func:`PyModule_FromDefAndSpec`"
 " instead; only use this if you are sure you need it."
 msgstr "大多数时候应该使用 :c:func:`PyModule_FromDefAndSpec` 代替使用此函数，除非你确定需要使用它。"
 
-#: ../../c-api/module.rst:485
+#: ../../c-api/module.rst:458
 msgid "Process any execution slots (:c:data:`Py_mod_exec`) given in *def*."
 msgstr "执行参数*def*中给出的任意执行槽（:c:data:`Py_mod_exec`）。"
 
-#: ../../c-api/module.rst:491
-msgid ""
-"Set the docstring for *module* to *docstring*. This function is called "
-"automatically when creating a module from ``PyModuleDef``, using either "
-"``PyModule_Create`` or ``PyModule_FromDefAndSpec``."
-msgstr ""
-"将*module*的文档字符串设置为*docstring*。当使用 ``PyModule_Create`` 或 "
-"``PyModule_FromDefAndSpec`` 从 ``PyModuleDef`` 创建模块时，会自动调用此函数。"
+#: ../../c-api/module.rst:464
+msgid "The C API version. Defined for backwards compatibility."
+msgstr "C API 版本，为向后兼容性而定义。"
 
-#: ../../c-api/module.rst:500
+#: ../../c-api/module.rst:466 ../../c-api/module.rst:473
 msgid ""
-"Add the functions from the ``NULL`` terminated *functions* array to "
-"*module*. Refer to the :c:type:`PyMethodDef` documentation for details on "
-"individual entries (due to the lack of a shared module namespace, module "
-"level \"functions\" implemented in C typically receive the module as their "
-"first parameter, making them similar to instance methods on Python classes)."
-" This function is called automatically when creating a module from "
-"``PyModuleDef``, using either ``PyModule_Create`` or "
-"``PyModule_FromDefAndSpec``."
-msgstr ""
-"将以 ``NULL`` 结尾的*functions*数组中的函数添加到*module*模块中。有关单个条目的更多细节，请参与 "
-":c:type:`PyMethodDef` "
-"文档（由于缺少共享的模块命名空间，在C中实现的模块级“函数”通常将模块作为它的第一个参数，与Python类的实例方法类似）。当使用 "
-"``PyModule_Create`` 或 ``PyModule_FromDefAndSpec`` 从 ``PyModuleDef`` "
-"创建模块时，会自动调用此函数。"
+"Currently, this constant is not updated in new Python versions, and is not "
+"useful for versioning. This may change in the future."
+msgstr "目前，该常量在新的Python版本中没有更新，并且对于版本控制没有用处。这在未来可能会改变。"
 
-#: ../../c-api/module.rst:512
+#: ../../c-api/module.rst:471
+msgid "Defined as ``3`` for backwards compatibility."
+msgstr "为向后兼容性定义为``3``。"
+
+#: ../../c-api/module.rst:478
 msgid "Support functions"
 msgstr "支持函数"
 
-#: ../../c-api/module.rst:514
+#: ../../c-api/module.rst:480
 msgid ""
-"The module initialization function (if using single phase initialization) or"
-" a function called from a module execution slot (if using multi-phase "
-"initialization), can use the following functions to help initialize the "
-"module state:"
-msgstr "模块初始化函数（单阶段初始化）或通过模块的执行槽位调用的函数（多阶段初始化），可以使用以下函数，来帮助初始化模块的状态："
+"The following functions are provided to help initialize a module state. They"
+" are intended for a module's execution slots (:c:data:`Py_mod_exec`), the "
+"initialization function for legacy :ref:`single-phase initialization "
+"<single-phase-initialization>`, or code that creates modules dynamically."
+msgstr ""
+"提供以下函数来帮助初始化模块状态。它们用于模块的执行槽（:c:data:`Py_mod_exec`）、遗留的 :ref:`单阶段初始化 <single-"
+"phase-initialization>` 的初始化函数，或动态创建模块的代码。"
 
-#: ../../c-api/module.rst:521
+#: ../../c-api/module.rst:488
 msgid ""
 "Add an object to *module* as *name*.  This is a convenience function which "
 "can be used from the module's initialization function."
 msgstr "将一个名称为*name*的对象添加到*module*模块中。这是一个方便的函数，可以在模块的初始化函数中使用。"
 
-#: ../../c-api/module.rst:524
+#: ../../c-api/module.rst:491
 msgid ""
 "On success, return ``0``. On error, raise an exception and return ``-1``."
 msgstr "如果成功，返回 ``0``。如果发生错误，引发异常并返回 ``-1``。"
 
-#: ../../c-api/module.rst:526 ../../c-api/module.rst:577
-#: ../../c-api/module.rst:604
+#: ../../c-api/module.rst:493 ../../c-api/module.rst:544
+#: ../../c-api/module.rst:571
 msgid "Example usage::"
 msgstr "用法示例："
 
-#: ../../c-api/module.rst:528
+#: ../../c-api/module.rst:495
 msgid ""
 "static int\n"
 "add_spam(PyObject *module, int value)\n"
@@ -705,20 +639,20 @@ msgstr ""
 "    return res;\n"
 " }"
 
-#: ../../c-api/module.rst:540
+#: ../../c-api/module.rst:507
 msgid ""
 "To be convenient, the function accepts ``NULL`` *value* with an exception "
 "set. In this case, return ``-1`` and just leave the raised exception "
 "unchanged."
 msgstr "为了方便，该函数接受 ``NULL`` *value* 并设置一个异常。 在此情况下，将返回 ``-1`` 并让所引发的异常保持不变。"
 
-#: ../../c-api/module.rst:544
+#: ../../c-api/module.rst:511
 msgid ""
 "The example can also be written without checking explicitly if *obj* is "
 "``NULL``::"
 msgstr "这个例子也可以写成不显式地检查 *obj* 是否为 ``NULL``::"
 
-#: ../../c-api/module.rst:547
+#: ../../c-api/module.rst:514
 msgid ""
 "static int\n"
 "add_spam(PyObject *module, int value)\n"
@@ -738,14 +672,14 @@ msgstr ""
 "    return res;\n"
 " }"
 
-#: ../../c-api/module.rst:556
+#: ../../c-api/module.rst:523
 msgid ""
 "Note that ``Py_XDECREF()`` should be used instead of ``Py_DECREF()`` in this"
 " case, since *obj* can be ``NULL``."
 msgstr ""
 "注意在此情况下应当使用 ``Py_XDECREF()`` 而不是 ``Py_DECREF()``，因为 *obj* 可能为 ``NULL``。"
 
-#: ../../c-api/module.rst:559
+#: ../../c-api/module.rst:526
 msgid ""
 "The number of different *name* strings passed to this function should be "
 "kept small, usually by only using statically allocated strings as *name*. "
@@ -759,7 +693,7 @@ msgstr ""
 ":c:func:`PyObject_SetAttr`。 更多相关细节，请参阅 "
 ":c:func:`PyUnicode_InternFromString`，它可在内部用于创建键对象。"
 
-#: ../../c-api/module.rst:572
+#: ../../c-api/module.rst:539
 msgid ""
 "Similar to :c:func:`PyModule_AddObjectRef`, but \"steals\" a reference to "
 "*value*. It can be called with a result of function that returns a new "
@@ -769,7 +703,7 @@ msgstr ""
 "类似于 :c:func:`PyModule_AddObjectRef`，但会“偷取”一个指向 *value* 的引用。 "
 "它在被调用时可附带一个返回新引用的函数的结果而无需检查其结果或是将其保存到一个变量。"
 
-#: ../../c-api/module.rst:579
+#: ../../c-api/module.rst:546
 msgid ""
 "if (PyModule_Add(module, \"spam\", PyBytes_FromString(value)) < 0) {\n"
 "    goto error;\n"
@@ -779,14 +713,14 @@ msgstr ""
 "    goto error;\n"
 "}"
 
-#: ../../c-api/module.rst:588
+#: ../../c-api/module.rst:555
 msgid ""
 "Similar to :c:func:`PyModule_AddObjectRef`, but steals a reference to "
 "*value* on success (if it returns ``0``)."
 msgstr ""
 "类似于 :c:func:`PyModule_AddObjectRef`，但会在成功时偷取一个对 *value* 的引用（如果它返回 ``0`` 值）。"
 
-#: ../../c-api/module.rst:591
+#: ../../c-api/module.rst:558
 msgid ""
 "The new :c:func:`PyModule_Add` or :c:func:`PyModule_AddObjectRef` functions "
 "are recommended, since it is easy to introduce reference leaks by misusing "
@@ -795,19 +729,19 @@ msgstr ""
 "推荐使用新的 :c:func:`PyModule_Add` 或 :c:func:`PyModule_AddObjectRef` 函数，因为误用 "
 ":c:func:`PyModule_AddObject` 函数很容易导致引用泄漏。"
 
-#: ../../c-api/module.rst:598
+#: ../../c-api/module.rst:565
 msgid ""
 "Unlike other functions that steal references, ``PyModule_AddObject()`` only "
 "releases the reference to *value* **on success**."
 msgstr "与其他窃取引用的函数不同，``PyModule_AddObject()`` 只在 **成功** 时释放对 *value* 的引用。"
 
-#: ../../c-api/module.rst:601
+#: ../../c-api/module.rst:568
 msgid ""
 "This means that its return value must be checked, and calling code must "
 ":c:func:`Py_XDECREF` *value* manually on error."
 msgstr "这意味着必须检查它的返回值，调用方代码必须在发生错误时手动为 *value* 执行 :c:func:`Py_XDECREF`。"
 
-#: ../../c-api/module.rst:606
+#: ../../c-api/module.rst:573
 msgid ""
 "PyObject *obj = PyBytes_FromString(value);\n"
 "if (PyModule_AddObject(module, \"spam\", obj) < 0) {\n"
@@ -831,11 +765,11 @@ msgstr ""
 "// PyModule_AddObject() 会偷取一个对 obj 的引用：\n"
 "// 这里不需要 Py_XDECREF(obj)。"
 
-#: ../../c-api/module.rst:619
+#: ../../c-api/module.rst:586
 msgid ":c:func:`PyModule_AddObject` is :term:`soft deprecated`."
 msgstr ":c:func:`PyModule_AddObject` 处于 :term:`soft deprecated` 状态。"
 
-#: ../../c-api/module.rst:624
+#: ../../c-api/module.rst:591
 msgid ""
 "Add an integer constant to *module* as *name*.  This convenience function "
 "can be used from the module's initialization function. Return ``-1`` with an"
@@ -844,7 +778,7 @@ msgstr ""
 "将一个整数常量作为 *name* 添加到 *module* 中。 这个便捷函数可在模块的初始化函数中使用。 当发生错误时将返回 ``-1`` "
 "并设置一个异常，成功时则返回 ``0``。"
 
-#: ../../c-api/module.rst:628
+#: ../../c-api/module.rst:595
 msgid ""
 "This is a convenience function that calls :c:func:`PyLong_FromLong` and "
 ":c:func:`PyModule_AddObjectRef`; see their documentation for details."
@@ -852,7 +786,7 @@ msgstr ""
 "这是一个调用 :c:func:`PyLong_FromLong` 和 :c:func:`PyModule_AddObjectRef` "
 "的便捷函数；请参阅其文档了解详情。"
 
-#: ../../c-api/module.rst:634
+#: ../../c-api/module.rst:601
 msgid ""
 "Add a string constant to *module* as *name*.  This convenience function can "
 "be used from the module's initialization function.  The string *value* must "
@@ -862,7 +796,7 @@ msgstr ""
 "将一个字符串常量作为 *name* 添加到 *module* 中。 这个便捷函数可在模块初始化函数中使用。 字符串 *value* 必须以 "
 "``NULL`` 结尾。 当发生错误时将返回 ``-1``，成功时则返回 ``0``。"
 
-#: ../../c-api/module.rst:639
+#: ../../c-api/module.rst:606
 msgid ""
 "This is a convenience function that calls "
 ":c:func:`PyUnicode_InternFromString` and :c:func:`PyModule_AddObjectRef`; "
@@ -871,7 +805,7 @@ msgstr ""
 "这是一个调用 :c:func:`PyUnicode_InternFromString` 和 "
 ":c:func:`PyModule_AddObjectRef` 的便捷函数；请参阅其文档了解详情。"
 
-#: ../../c-api/module.rst:646
+#: ../../c-api/module.rst:613
 msgid ""
 "Add an int constant to *module*. The name and the value are taken from "
 "*macro*. For example ``PyModule_AddIntMacro(module, AF_INET)`` adds the int "
@@ -882,11 +816,11 @@ msgstr ""
 "AF_INET)`` 将值为 *AF_INET* 的整数常量 *AF_INET* 添加到 *module* 中。 当发生错误时将抬 ``-1`` "
 "并设置一个异常，成功时将返回 ``0``。"
 
-#: ../../c-api/module.rst:654
+#: ../../c-api/module.rst:621
 msgid "Add a string constant to *module*."
 msgstr "将一个字符串常量添加到*module*模块中。"
 
-#: ../../c-api/module.rst:658
+#: ../../c-api/module.rst:625
 msgid ""
 "Add a type object to *module*. The type object is finalized by calling "
 "internally :c:func:`PyType_Ready`. The name of the type object is taken from"
@@ -897,40 +831,79 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_name` 在点号之后的部分。 当发生错误时将返回 ``-1`` 并设置一个异常，成功时将返回 "
 "``0``。"
 
-#: ../../c-api/module.rst:668
+#: ../../c-api/module.rst:635
+msgid ""
+"Add the functions from the ``NULL`` terminated *functions* array to "
+"*module*. Refer to the :c:type:`PyMethodDef` documentation for details on "
+"individual entries (due to the lack of a shared module namespace, module "
+"level \"functions\" implemented in C typically receive the module as their "
+"first parameter, making them similar to instance methods on Python classes)."
+msgstr ""
+"将以 ``NULL`` 结尾的 *functions* 数组中的函数添加到 *module* 中。有关单个条目的更多细节，请参阅 "
+":c:type:`PyMethodDef` "
+"文档（由于缺少共享的模块命名空间，在C中实现的模块级“函数”通常将模块作为它的第一个形参，与Python类的实例方法类似）。"
+
+#: ../../c-api/module.rst:641
+msgid ""
+"This function is called automatically when creating a module from "
+"``PyModuleDef`` (such as when using :ref:`multi-phase-initialization`, "
+"``PyModule_Create``, or ``PyModule_FromDefAndSpec``). Some module authors "
+"may prefer defining functions in multiple :c:type:`PyMethodDef` arrays; in "
+"that case they should call this function directly."
+msgstr ""
+"此函数在从 ``PyModuleDef`` 创建模块时自动调用（例如使用 :ref:`multi-phase-initialization`、 "
+"``PyModule_Create`` 或 ``PyModule_FromDefAndSpec`` 等）。 一些模块作者可能更喜欢在多个 "
+":c:type:`PyMethodDef` 数组中定义函数；在这种情况下，他们应该直接调用这个函数。"
+
+#: ../../c-api/module.rst:652
+msgid ""
+"Set the docstring for *module* to *docstring*. This function is called "
+"automatically when creating a module from ``PyModuleDef`` (such as when "
+"using :ref:`multi-phase-initialization`, ``PyModule_Create``, or "
+"``PyModule_FromDefAndSpec``)."
+msgstr ""
+"将 *module* 的文档字符串设置为 *docstring* 。 此函数在使用 ``PyModuleDef`` 创建模块时自动调用（例如使用 "
+":ref:`multi-phase-initialization`、``PyModule_Create`` 或 "
+"``PyModule_FromDefAndSpec`` 时）。"
+
+#: ../../c-api/module.rst:661
 msgid ""
 "Indicate that *module* does or does not support running without the global "
 "interpreter lock (GIL), using one of the values from :c:macro:`Py_mod_gil`. "
-"It must be called during *module*'s initialization function. If this "
-"function is not called during module initialization, the import machinery "
-"assumes the module does not support running without the GIL. This function "
-"is only available in Python builds configured with :option:`--disable-gil`. "
-"Return ``-1`` with an exception set on error, ``0`` on success."
+"It must be called during *module*'s initialization function when using "
+":ref:`single-phase-initialization`. If this function is not called during "
+"module initialization, the import machinery assumes the module does not "
+"support running without the GIL. This function is only available in Python "
+"builds configured with :option:`--disable-gil`. Return ``-1`` with an "
+"exception set on error, ``0`` on success."
 msgstr ""
-"指明 *module* 是否支持不带全局解释器锁 (GIL) 运行，使用来自 :c:macro:`Py_mod_gil` 的值 。 它必须在 "
-"*module* 的初始化函数执行期间被调用。 如果此函数在模块初始化期间未被调用，导入机制将假定该模块不支持不带 GIL 运行。 此函数仅在配置了 "
-":option:`--disable-gil` 的 Python 编译版中可用。 当发生错误时将返回 ``-1`` 并设置一个异常，成功时将返回 "
-"``0``。"
+"指明 *module* 是否支持不带全局解释器锁 (GIL) 运行，使用一个来自 :c:macro:`Py_mod_gil` 的值 。 当使用 "
+":ref:`single-phase-initialization` 时它必须在 *module* 的初始化函数执行期间被调用。 "
+"如果此函数在模块初始化期间未被调用，导入机制将假定该模块不支持不带 GIL 运行。 此函数仅在配置了 :option:`--disable-gil` 的"
+" Python 构建版中可用。 当发生错误时将返回 ``-1`` 并设置一个异常，成功时将返回 ``0``。"
 
-#: ../../c-api/module.rst:681
-msgid "Module lookup"
-msgstr "查找模块"
+#: ../../c-api/module.rst:675
+msgid "Module lookup (single-phase initialization)"
+msgstr "模块查找（单阶段初始化）"
 
-#: ../../c-api/module.rst:683
+#: ../../c-api/module.rst:677
 msgid ""
-"Single-phase initialization creates singleton modules that can be looked up "
-"in the context of the current interpreter. This allows the module object to "
-"be retrieved later with only a reference to the module definition."
-msgstr "单阶段初始化创建可以在当前解释器上下文中被查找的单例模块。这使得仅通过模块定义的引用，就可以检索模块对象。"
+"The legacy :ref:`single-phase initialization <single-phase-initialization>` "
+"initialization scheme creates singleton modules that can be looked up in the"
+" context of the current interpreter. This allows the module object to be "
+"retrieved later with only a reference to the module definition."
+msgstr ""
+"遗留的 :ref:`单阶段初始化 <single-phase-initialization>` "
+"初始化方案创建可以在当前解释器上下文中被查找的单例模块。这使得仅通过模块定义的引用，就可以检索模块对象。"
 
-#: ../../c-api/module.rst:687
+#: ../../c-api/module.rst:682
 msgid ""
 "These functions will not work on modules created using multi-phase "
 "initialization, since multiple such modules can be created from a single "
 "definition."
 msgstr "这些函数不适用于通过多阶段初始化创建的模块，因为可以从一个模块定义创建多个模块对象。"
 
-#: ../../c-api/module.rst:692
+#: ../../c-api/module.rst:687
 msgid ""
 "Returns the module object that was created from *def* for the current "
 "interpreter. This method requires that the module object has been attached "
@@ -941,20 +914,21 @@ msgstr ""
 "返回当前解释器中由 *def* 创建的模块对象。此方法要求模块对象此前已通过 :c:func:`PyState_AddModule` "
 "函数附加到解释器状态中。如果找不到相应的模块对象，或模块对象还未附加到解释器状态，返回 ``NULL``。"
 
-#: ../../c-api/module.rst:699
+#: ../../c-api/module.rst:694
 msgid ""
 "Attaches the module object passed to the function to the interpreter state. "
 "This allows the module object to be accessible via "
 ":c:func:`PyState_FindModule`."
 msgstr "将传给函数的模块对象附加到解释器状态。 这将允许通过 :c:func:`PyState_FindModule` 来访问该模块对象。"
 
-#: ../../c-api/module.rst:702
+#: ../../c-api/module.rst:697
 msgid "Only effective on modules created using single-phase initialization."
 msgstr "仅在使用单阶段初始化创建的模块上有效。"
 
-#: ../../c-api/module.rst:704
+#: ../../c-api/module.rst:699
 msgid ""
-"Python calls ``PyState_AddModule`` automatically after importing a module, "
+"Python calls ``PyState_AddModule`` automatically after importing a module "
+"that uses :ref:`single-phase initialization <single-phase-initialization>`, "
 "so it is unnecessary (but harmless) to call it from module initialization "
 "code. An explicit call is needed only if the module's own init code "
 "subsequently calls ``PyState_FindModule``. The function is mainly intended "
@@ -962,19 +936,26 @@ msgid ""
 "directly, or by referring to its implementation for details of the required "
 "state updates)."
 msgstr ""
-"Python 会在导入一个模块后自动调用 ``PyState_AddModule``，因此从模块初始化代码中调用它是没有必要的（但也没有害处）。 "
-"显式的调用仅在模块自己的初始化代码后继调用了 ``PyState_FindModule`` 的情况下才是必要的。 "
+"Python 会在使用 :ref:`单阶段初始化 <single-phase-initialization>` 导入一个模块后自动调用 "
+"``PyState_AddModule``，因此从模块初始化代码中调用它是没有必要的（但也没有害处）。 显式的调用仅在模块自己的初始化代码后继调用了 "
+"``PyState_FindModule`` 的情况下才是必要的。 "
 "此函数主要是为了实现替代导入机制（或是通过直接调用它，或是通过引用它的实现来获取所需的状态更新详情）。"
 
-#: ../../c-api/module.rst:712 ../../c-api/module.rst:723
+#: ../../c-api/module.rst:708
+msgid ""
+"If a module was attached previously using the same *def*, it is replaced by "
+"the new *module*."
+msgstr "如果先前使用相同的 *def* 附加了一个模块，则将其替换为新的 *module*。"
+
+#: ../../c-api/module.rst:711 ../../c-api/module.rst:722
 msgid "The caller must have an :term:`attached thread state`."
 msgstr "调用方必须有已附加的线程状态 :term:`attached thread state`。"
 
-#: ../../c-api/module.rst:714
+#: ../../c-api/module.rst:713
 msgid "Return ``-1`` with an exception set on error, ``0`` on success."
 msgstr "出错时返回 ``-1`` 并设置一个异常，成功时返回 ``0``。"
 
-#: ../../c-api/module.rst:720
+#: ../../c-api/module.rst:719
 msgid ""
 "Removes the module object created from *def* from the interpreter state. "
 "Return ``-1`` with an exception set on error, ``0`` on success."

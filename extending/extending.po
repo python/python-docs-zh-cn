@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2025-06-20 14:21+0000\n"
 "PO-Revision-Date: 2021-06-28 00:51+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -112,7 +112,7 @@ msgstr ""
 msgid "The first two lines of our file can be::"
 msgstr "文件中开始的两行是："
 
-#: ../../extending/extending.rst:60 ../../extending/extending.rst:663
+#: ../../extending/extending.rst:60 ../../extending/extending.rst:681
 msgid ""
 "#define PY_SSIZE_T_CLEAN\n"
 "#include <Python.h>"
@@ -395,62 +395,117 @@ msgstr ""
 
 #: ../../extending/extending.rst:206
 msgid ""
-"You can also define a new exception that is unique to your module. For this,"
-" you usually declare a static object variable at the beginning of your "
-"file::"
-msgstr "你也可以为你的模块定义一个唯一的新异常。需要在文件前部声明一个静态对象变量，如:"
+"You can also define a new exception that is unique to your module. The "
+"simplest way to do this is to declare a static global object variable at the"
+" beginning of the file::"
+msgstr "你也可以定义你的模块独有的新异常。 做到这点的最简单方式是在文件的开头声明一个静态全局对象变量::"
 
-#: ../../extending/extending.rst:209
-msgid "static PyObject *SpamError;"
-msgstr "static PyObject *SpamError;"
+#: ../../extending/extending.rst:210
+msgid "static PyObject *SpamError = NULL;"
+msgstr "static PyObject *SpamError = NULL;"
 
-#: ../../extending/extending.rst:211
+#: ../../extending/extending.rst:212
 msgid ""
-"and initialize it in your module's initialization function "
-"(:c:func:`!PyInit_spam`) with an exception object::"
-msgstr "并在模块的初始化函数 (:c:func:`!PyInit_spam`) 中附带异常对象对其进行初始化::"
+"and initialize it by calling :c:func:`PyErr_NewException` in the module's "
+":c:data:`Py_mod_exec` function (:c:func:`!spam_module_exec`)::"
+msgstr ""
+"并通过在模块的 :c:data:`Py_mod_exec` 函数 (:c:func:`!spam_module_exec`) 中调用 "
+":c:func:`PyErr_NewException` 来初始化它::"
 
-#: ../../extending/extending.rst:214
+#: ../../extending/extending.rst:215
+msgid "SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);"
+msgstr "SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);"
+
+#: ../../extending/extending.rst:217
 msgid ""
+"Since :c:data:`!SpamError` is a global variable, it will be overwitten every"
+" time the module is reinitialized, when the :c:data:`Py_mod_exec` function "
+"is called."
+msgstr ""
+"由于 :c:data:`!SpamError` 是一个全局变量，它将在模块每次重新初始化时被覆盖，即当 :c:data:`Py_mod_exec` "
+"函数被调用时。"
+
+#: ../../extending/extending.rst:220
+msgid ""
+"For now, let's avoid the issue: we will block repeated initialization by "
+"raising an :py:exc:`ImportError`::"
+msgstr "在目前，让我们避免这个问题：我们将通过引发 :py:exc:`ImportError` 来阻止重复的初始化::"
+
+#: ../../extending/extending.rst:223
+msgid ""
+"static PyObject *SpamError = NULL;\n"
+"\n"
+"static int\n"
+"spam_module_exec(PyObject *m)\n"
+"{\n"
+"    if (SpamError != NULL) {\n"
+"        PyErr_SetString(PyExc_ImportError,\n"
+"                        \"cannot initialize spam module more than once\");\n"
+"        return -1;\n"
+"    }\n"
+"    SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);\n"
+"    if (PyModule_AddObjectRef(m, \"SpamError\", SpamError) < 0) {\n"
+"        return -1;\n"
+"    }\n"
+"\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyModuleDef_Slot spam_module_slots[] = {\n"
+"    {Py_mod_exec, spam_module_exec},\n"
+"    {0, NULL}\n"
+"};\n"
+"\n"
+"static struct PyModuleDef spam_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"spam\",\n"
+"    .m_size = 0,  // non-negative\n"
+"    .m_slots = spam_module_slots,\n"
+"};\n"
+"\n"
 "PyMODINIT_FUNC\n"
 "PyInit_spam(void)\n"
 "{\n"
-"    PyObject *m;\n"
-"\n"
-"    m = PyModule_Create(&spammodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
-"\n"
-"    SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);\n"
-"    if (PyModule_AddObjectRef(m, \"error\", SpamError) < 0) {\n"
-"        Py_CLEAR(SpamError);\n"
-"        Py_DECREF(m);\n"
-"        return NULL;\n"
-"    }\n"
-"\n"
-"    return m;\n"
+"    return PyModuleDef_Init(&spam_module);\n"
 "}"
 msgstr ""
+"static PyObject *SpamError = NULL;\n"
+"\n"
+"static int\n"
+"spam_module_exec(PyObject *m)\n"
+"{\n"
+"    if (SpamError != NULL) {\n"
+"        PyErr_SetString(PyExc_ImportError,\n"
+"                        \"cannot initialize spam module more than once\");\n"
+"        return -1;\n"
+"    }\n"
+"    SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);\n"
+"    if (PyModule_AddObjectRef(m, \"SpamError\", SpamError) < 0) {\n"
+"        return -1;\n"
+"    }\n"
+"\n"
+"    return 0;\n"
+"}\n"
+"\n"
+"static PyModuleDef_Slot spam_module_slots[] = {\n"
+"    {Py_mod_exec, spam_module_exec},\n"
+"    {0, NULL}\n"
+"};\n"
+"\n"
+"static struct PyModuleDef spam_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"spam\",\n"
+"    .m_size = 0,  // non-negative\n"
+"    .m_slots = spam_module_slots,\n"
+"};\n"
+"\n"
 "PyMODINIT_FUNC\n"
 "PyInit_spam(void)\n"
 "{\n"
-"    PyObject *m;\n"
-"\n"
-"    m = PyModule_Create(&spammodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
-"\n"
-"    SpamError = PyErr_NewException(\"spam.error\", NULL, NULL);\n"
-"    if (PyModule_AddObjectRef(m, \"error\", SpamError) < 0) {\n"
-"        Py_CLEAR(SpamError);\n"
-"        Py_DECREF(m);\n"
-"        return NULL;\n"
-"    }\n"
-"\n"
-"    return m;\n"
+"    return PyModuleDef_Init(&spam_module);\n"
 "}"
 
-#: ../../extending/extending.rst:233
+#: ../../extending/extending.rst:259
 msgid ""
 "Note that the Python name for the exception object is :exc:`!spam.error`.  "
 "The :c:func:`PyErr_NewException` function may create a class with the base "
@@ -461,7 +516,7 @@ msgstr ""
 "函数可以创建基类为 :exc:`Exception` 的类 (除非传入了另一个类而不是 ``NULL``)，如 :ref:`bltin-"
 "exceptions` 中所描述的。"
 
-#: ../../extending/extending.rst:238
+#: ../../extending/extending.rst:264
 msgid ""
 "Note also that the :c:data:`!SpamError` variable retains a reference to the "
 "newly created exception class; this is intentional!  Since the exception "
@@ -475,19 +530,29 @@ msgstr ""
 "由于异常可能会被外部代码从模块中删除，因此需要拥有一个对该类的引用以确保它不会被丢弃，从而导致 :c:data:`!SpamError` "
 "成为一个悬空指针。 如果异常类成为悬空指针，则引发该异常的 C 代码可能会导致核心转储或其他预期之外的附带影响。"
 
-#: ../../extending/extending.rst:245
+#: ../../extending/extending.rst:271
+msgid ""
+"For now, the :c:func:`Py_DECREF` call to remove this reference is missing. "
+"Even when the Python interpreter shuts down, the global :c:data:`!SpamError`"
+" variable will not be garbage-collected. It will \"leak\". We did, however, "
+"ensure that this will happen at most once per process."
+msgstr ""
+"在目前，用于移除该引用的 :c:func:`Py_DECREF` 调用是缺失的。 即使是在 Python 解释器关闭时，全局变量 "
+":c:data:`!SpamError` 也不会被当作垃圾回收。 它将会“泄漏”。 不过，我们确实能保证这在每个进程中最多发生一次。"
+
+#: ../../extending/extending.rst:276
 msgid ""
 "We discuss the use of :c:macro:`PyMODINIT_FUNC` as a function return type "
 "later in this sample."
 msgstr "本样例稍后将讨论 :c:macro:`PyMODINIT_FUNC` 作为函数返回类型的用法。"
 
-#: ../../extending/extending.rst:248
+#: ../../extending/extending.rst:279
 msgid ""
 "The :exc:`!spam.error` exception can be raised in your extension module "
 "using a call to :c:func:`PyErr_SetString` as shown below::"
 msgstr "可在扩展模块中调用 :c:func:`PyErr_SetString` 来引发 :exc:`!spam.error` 异常，如下所示::"
 
-#: ../../extending/extending.rst:251
+#: ../../extending/extending.rst:282
 msgid ""
 "static PyObject *\n"
 "spam_system(PyObject *self, PyObject *args)\n"
@@ -521,17 +586,17 @@ msgstr ""
 "    return PyLong_FromLong(sts);\n"
 "}"
 
-#: ../../extending/extending.rst:271
+#: ../../extending/extending.rst:302
 msgid "Back to the Example"
 msgstr "回到例子"
 
-#: ../../extending/extending.rst:273
+#: ../../extending/extending.rst:304
 msgid ""
 "Going back to our example function, you should now be able to understand "
 "this statement::"
 msgstr "回到前面的例子，你应该明白下面的代码:"
 
-#: ../../extending/extending.rst:276
+#: ../../extending/extending.rst:307
 msgid ""
 "if (!PyArg_ParseTuple(args, \"s\", &command))\n"
 "    return NULL;"
@@ -539,7 +604,7 @@ msgstr ""
 "if (!PyArg_ParseTuple(args, \"s\", &command))\n"
 "    return NULL;"
 
-#: ../../extending/extending.rst:279
+#: ../../extending/extending.rst:310
 msgid ""
 "It returns ``NULL`` (the error indicator for functions returning object "
 "pointers) if an error is detected in the argument list, relying on the "
@@ -554,7 +619,7 @@ msgstr ""
 " 这是一个指针赋值并且你不应该修改它所指向的字符串 (因此在标准 C 中，变量 :c:data:`!command` 应当被正确地声明为 ``const"
 " char *command``)。"
 
-#: ../../extending/extending.rst:287
+#: ../../extending/extending.rst:318
 msgid ""
 "The next statement is a call to the Unix function :c:func:`system`, passing "
 "it the string we just got from :c:func:`PyArg_ParseTuple`::"
@@ -562,11 +627,11 @@ msgstr ""
 "下一个语句使用UNIX系统函数 :c:func:`system` ，传递给他的参数是刚才从 :c:func:`PyArg_ParseTuple` "
 "取出的:"
 
-#: ../../extending/extending.rst:290
+#: ../../extending/extending.rst:321
 msgid "sts = system(command);"
 msgstr "sts = system(command);"
 
-#: ../../extending/extending.rst:292
+#: ../../extending/extending.rst:323
 msgid ""
 "Our :func:`!spam.system` function must return the value of :c:data:`!sts` as"
 " a Python object.  This is done using the function "
@@ -575,17 +640,17 @@ msgstr ""
 "我们的 :func:`!spam.system` 函数必须以 Python 对象的形式返回 :c:data:`!sts` 的值。 这是通过使用函数 "
 ":c:func:`PyLong_FromLong` 完成的。 ::"
 
-#: ../../extending/extending.rst:295
+#: ../../extending/extending.rst:326
 msgid "return PyLong_FromLong(sts);"
 msgstr "return PyLong_FromLong(sts);"
 
-#: ../../extending/extending.rst:297
+#: ../../extending/extending.rst:328
 msgid ""
 "In this case, it will return an integer object.  (Yes, even integers are "
 "objects on the heap in Python!)"
 msgstr "在这种情况下，会返回一个整数对象，(这个对象会在Python堆里面管理)。"
 
-#: ../../extending/extending.rst:300
+#: ../../extending/extending.rst:331
 msgid ""
 "If you have a C function that returns no useful argument (a function "
 "returning :c:expr:`void`), the corresponding Python function must return "
@@ -595,7 +660,7 @@ msgstr ""
 "如果你有一个不返回有用参数的 C 函数（即返回 :c:expr:`void` 的函数），则对应的 Python 函数必须返回 ``None``。 "
 "你必须使用这种写法（它是通过 :c:macro:`Py_RETURN_NONE` 宏来实现的） ::"
 
-#: ../../extending/extending.rst:305
+#: ../../extending/extending.rst:336
 msgid ""
 "Py_INCREF(Py_None);\n"
 "return Py_None;"
@@ -603,7 +668,7 @@ msgstr ""
 "Py_INCREF(Py_None);\n"
 "return Py_None;"
 
-#: ../../extending/extending.rst:308
+#: ../../extending/extending.rst:339
 msgid ""
 ":c:data:`Py_None` is the C name for the special Python object ``None``.  It "
 "is a genuine Python object rather than a ``NULL`` pointer, which means "
@@ -612,11 +677,11 @@ msgstr ""
 ":c:data:`Py_None` 是特殊 Python 对象 ``None`` 所对应的 C 名称。 它是一个真正的 Python 对象而不是 "
 "``NULL`` 指针，如我们所见，后者在大多数上下文中都意味着“错误”。"
 
-#: ../../extending/extending.rst:316
+#: ../../extending/extending.rst:347
 msgid "The Module's Method Table and Initialization Function"
 msgstr "模块方法表和初始化函数"
 
-#: ../../extending/extending.rst:318
+#: ../../extending/extending.rst:349
 msgid ""
 "I promised to show how :c:func:`!spam_system` is called from Python "
 "programs. First, we need to list its name and address in a \"method "
@@ -624,9 +689,9 @@ msgid ""
 msgstr ""
 "我承诺过要向大家展示如何从 Python 程序中调用 :c:func:`!spam_system`。 首先，我们需要在“方法表”中列出它的名称和地址::"
 
-#: ../../extending/extending.rst:321
+#: ../../extending/extending.rst:352
 msgid ""
-"static PyMethodDef SpamMethods[] = {\n"
+"static PyMethodDef spam_methods[] = {\n"
 "    ...\n"
 "    {\"system\",  spam_system, METH_VARARGS,\n"
 "     \"Execute a shell command.\"},\n"
@@ -634,7 +699,7 @@ msgid ""
 "    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
 "};"
 msgstr ""
-"static PyMethodDef SpamMethods[] = {\n"
+"static PyMethodDef spam_methods[] = {\n"
 "    ...\n"
 "    {\"system\",  spam_system, METH_VARARGS,\n"
 "     \"Execute a shell command.\"},\n"
@@ -642,7 +707,7 @@ msgstr ""
 "    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
 "};"
 
-#: ../../extending/extending.rst:329
+#: ../../extending/extending.rst:360
 msgid ""
 "Note the third entry (``METH_VARARGS``).  This is a flag telling the "
 "interpreter the calling convention to be used for the C function.  It should"
@@ -654,7 +719,7 @@ msgstr ""
 "``METH_VARARGS | METH_KEYWORDS`` 。值 ``0`` 代表使用 :c:func:`PyArg_ParseTuple` "
 "的陈旧变量。"
 
-#: ../../extending/extending.rst:334
+#: ../../extending/extending.rst:365
 msgid ""
 "When using only ``METH_VARARGS``, the function should expect the Python-"
 "level parameters to be passed in as a tuple acceptable for parsing via "
@@ -664,7 +729,7 @@ msgstr ""
 "如果单独使用 ``METH_VARARGS`` ，函数会等待Python传来tuple格式的参数，并最终使用  "
 ":c:func:`PyArg_ParseTuple` 进行解析。"
 
-#: ../../extending/extending.rst:338
+#: ../../extending/extending.rst:369
 msgid ""
 "The :c:macro:`METH_KEYWORDS` bit may be set in the third field if keyword "
 "arguments should be passed to the function.  In this case, the C function "
@@ -676,32 +741,26 @@ msgstr ""
 "``PyObject *`` 形参，它将为一个由关键字组成的字典。 使用 :c:func:`PyArg_ParseTupleAndKeywords` "
 "来将参数解析为函数。"
 
-#: ../../extending/extending.rst:344
+#: ../../extending/extending.rst:375
 msgid ""
 "The method table must be referenced in the module definition structure::"
 msgstr "这个方法表必须被模块定义结构所引用。"
 
-#: ../../extending/extending.rst:346
+#: ../../extending/extending.rst:377
 msgid ""
-"static struct PyModuleDef spammodule = {\n"
-"    PyModuleDef_HEAD_INIT,\n"
-"    \"spam\",   /* name of module */\n"
-"    spam_doc, /* module documentation, may be NULL */\n"
-"    -1,       /* size of per-interpreter state of the module,\n"
-"                 or -1 if the module keeps state in global variables. */\n"
-"    SpamMethods\n"
+"static struct PyModuleDef spam_module = {\n"
+"    ...\n"
+"    .m_methods = spam_methods,\n"
+"    ...\n"
 "};"
 msgstr ""
-"static struct PyModuleDef spammodule = {\n"
-"    PyModuleDef_HEAD_INIT,\n"
-"    \"spam\",   /* 模块名称 */\n"
-"    spam_doc, /* 模块文档，可以为 NULL */\n"
-"    -1,       /* 模块的每解释器状态大小，\n"
-"                 或者如果模块在全局变量中状态则为 -1。 */\n"
-"    SpamMethods\n"
+"static struct PyModuleDef spam_module = {\n"
+"    ...\n"
+"    .m_methods = spam_methods,\n"
+"    ...\n"
 "};"
 
-#: ../../extending/extending.rst:355
+#: ../../extending/extending.rst:383
 msgid ""
 "This structure, in turn, must be passed to the interpreter in the module's "
 "initialization function.  The initialization function must be named "
@@ -711,21 +770,21 @@ msgstr ""
 "这个结构体必须在模块的初始化函数中传递给解释器。 初始化函数必须命名为 :c:func:`!PyInit_name`，其中 *name* "
 "是模块的名称，并且应该是模块文件中定义的唯一非 ``static`` 条目::"
 
-#: ../../extending/extending.rst:360
+#: ../../extending/extending.rst:388
 msgid ""
 "PyMODINIT_FUNC\n"
 "PyInit_spam(void)\n"
 "{\n"
-"    return PyModule_Create(&spammodule);\n"
+"    return PyModuleDef_Init(&spam_module);\n"
 "}"
 msgstr ""
 "PyMODINIT_FUNC\n"
 "PyInit_spam(void)\n"
 "{\n"
-"    return PyModule_Create(&spammodule);\n"
+"    return PyModuleDef_Init(&spam_module);\n"
 "}"
 
-#: ../../extending/extending.rst:366
+#: ../../extending/extending.rst:394
 msgid ""
 "Note that :c:macro:`PyMODINIT_FUNC` declares the function as ``PyObject *`` "
 "return type, declares any special linkage declarations required by the "
@@ -734,26 +793,19 @@ msgstr ""
 "请注意 :c:macro:`PyMODINIT_FUNC` 将函数声明为 ``PyObject *`` "
 "返回类型，声明了平台所要求的任何特殊链接声明，并针对于= C++ 将函数声明为 ``extern \"C\"``。"
 
-#: ../../extending/extending.rst:370
+#: ../../extending/extending.rst:398
 msgid ""
-"When the Python program imports module :mod:`!spam` for the first time, "
-":c:func:`!PyInit_spam` is called. (See below for comments about embedding "
-"Python.) It calls :c:func:`PyModule_Create`, which returns a module object, "
-"and inserts built-in function objects into the newly created module based "
-"upon the table (an array of :c:type:`PyMethodDef` structures) found in the "
-"module definition. :c:func:`PyModule_Create` returns a pointer to the module"
-" object that it creates.  It may abort with a fatal error for certain "
-"errors, or return ``NULL`` if the module could not be initialized "
-"satisfactorily. The init function must return the module object to its "
-"caller, so that it then gets inserted into ``sys.modules``."
+":c:func:`!PyInit_spam` is called when each interpreter imports its module "
+":mod:`!spam` for the first time.  (See below for comments about embedding "
+"Python.) A pointer to the module definition must be returned via "
+":c:func:`PyModuleDef_Init`, so that the import machinery can create the "
+"module and store it in ``sys.modules``."
 msgstr ""
-"当 Python 程序首次导入 :mod:`!spam` 模块时，:c:func:`!PyInit_spam` 将被调用。 （有关嵌入 Python "
-"的注释参见下文。） 它将调用 :c:func:`PyModule_Create`，该函数会返回一个模块对象，并基于在模块定义中找到的表（一个 "
-":c:type:`PyMethodDef` 结构体的数组）将内置函数对象插入到新创建的模块中。 :c:func:`PyModule_Create` "
-"返回一个指向它所创建的模块对象的指针。 它可能会会程度严重的特定错误而中止，或者在模块无法成功初始化时返回 ``NULL``。 "
-"初始化函数必须将模块对象返回给其调用者，以便将其插入到 ``sys.modules`` 中。"
+":c:func:`!PyInit_spam` 会在每个解释器首次导入其 :mod:`!spam` 模块时被调用。 （请参看下文中有关嵌入式 Python"
+" 的说明。） 必须通过 :c:func:`PyModuleDef_Init` 返回一个指向模块定义的指针，以便导入机制能够创建该模块并将其保存到 "
+"``sys.modules`` 中。"
 
-#: ../../extending/extending.rst:381
+#: ../../extending/extending.rst:403
 msgid ""
 "When embedding Python, the :c:func:`!PyInit_spam` function is not called "
 "automatically unless there's an entry in the :c:data:`PyImport_Inittab` "
@@ -765,7 +817,7 @@ msgstr ""
 ":c:func:`!PyInit_spam` 函数。 要将模块添加到初始化表中，请使用 "
 ":c:func:`PyImport_AppendInittab`，可选择随后导入该模块::"
 
-#: ../../extending/extending.rst:386
+#: ../../extending/extending.rst:408
 msgid ""
 "#define PY_SSIZE_T_CLEAN\n"
 "#include <Python.h>\n"
@@ -863,41 +915,37 @@ msgstr ""
 "     Py_ExitStatusException(status);\n"
 "}"
 
-#: ../../extending/extending.rst:436
+#: ../../extending/extending.rst:458
 msgid ""
-"Removing entries from ``sys.modules`` or importing compiled modules into "
+"If you declare a global variable or a local static one, the module may "
+"experience unintended side-effects on re-initialisation, for example when "
+"removing entries from ``sys.modules`` or importing compiled modules into "
 "multiple interpreters within a process (or following a :c:func:`fork` "
-"without an intervening :c:func:`exec`) can create problems for some "
-"extension modules. Extension module authors should exercise caution when "
-"initializing internal data structures."
+"without an intervening :c:func:`exec`). If module state is not yet fully "
+":ref:`isolated <isolating-extensions-howto>`, authors should consider "
+"marking the module as having no support for subinterpreters (via "
+":c:macro:`Py_MOD_MULTIPLE_INTERPRETERS_NOT_SUPPORTED`)."
 msgstr ""
-"要从 ``sys.modules`` 删除实体或导入已编译模块到一个进程里的多个解释器(或使用 :c:func:`fork` 而没用 "
-":c:func:`exec` )会在一些扩展模块上产生错误。扩展模块作者可以在初始化内部数据结构时给出警告。"
+"如果你声明一个全局变量或局部静态变量，模块可能在重新初始化时出现预料之外的附带影响，例如在从 ``sys.modules`` "
+"中移除条目或将已编译的模块导入到一个进程中的多个解释器（或者在未干预 :c:func:`exec` 的情况下执行 :c:func:`fork` "
+"之后）的时候。 如果模块状态没有被完全 :ref:`隔离 <isolating-extensions-"
+"howto>`，开发者应当考虑将模块标记为不支持子解释器 (通过 "
+":c:macro:`Py_MOD_MULTIPLE_INTERPRETERS_NOT_SUPPORTED`)。"
 
-#: ../../extending/extending.rst:442
+#: ../../extending/extending.rst:467
 msgid ""
 "A more substantial example module is included in the Python source "
-"distribution as :file:`Modules/xxmodule.c`.  This file may be used as a  "
+"distribution as :file:`Modules/xxlimited.c`.  This file may be used as a "
 "template or simply read as an example."
 msgstr ""
-"更多关于模块的现实的例子包含在 Python 源码发布包的 :file:`Modules/xxmodule.c` 中。 "
-"此文件可以被用作代码模板或是学习样例。"
+"在 Python 源代码发布包的 :file:`Modules/xxlimited.c` 中包括了一个更详细的示例。 "
+"此文件可被用作代码模板或是学习样例。"
 
-#: ../../extending/extending.rst:448
-msgid ""
-"Unlike our ``spam`` example, ``xxmodule`` uses *multi-phase initialization* "
-"(new in Python 3.5), where a PyModuleDef structure is returned from "
-"``PyInit_spam``, and creation of the module is left to the import machinery."
-" For details on multi-phase initialization, see :PEP:`489`."
-msgstr ""
-"不像我们的 ``spam`` 例子， ``xxmodule`` 使用了 *多阶段初始化* (Python3.5开始引入)， "
-"``PyInit_spam`` 会返回一个 PyModuleDef 结构体，然后创建的模块放到导入机制。细节参考 :PEP:`489` 的多阶段初始化。"
-
-#: ../../extending/extending.rst:457
+#: ../../extending/extending.rst:475
 msgid "Compilation and Linkage"
 msgstr "编译和链接"
 
-#: ../../extending/extending.rst:459
+#: ../../extending/extending.rst:477
 msgid ""
 "There are two more things to do before you can use your new extension: "
 "compiling and linking it with the Python system.  If you use dynamic "
@@ -911,7 +959,7 @@ msgstr ""
 "系统来编译和链接。如果你使用动态加载，这取决于你使用的操作系统的动态加载机制；更多信息请参考编译扩展模块的章节（ :ref:`building` "
 "章节），以及在 Windows 上编译需要的额外信息（ :ref:`building-on-windows` 章节）。"
 
-#: ../../extending/extending.rst:466
+#: ../../extending/extending.rst:484
 msgid ""
 "If you can't use dynamic loading, or if you want to make your module a "
 "permanent part of the Python interpreter, you will have to change the "
@@ -924,11 +972,11 @@ msgstr ""
 " ( :file:`spammodule.c` 为例) 放在解压缩源码发行包的 :file:`Modules/` 目录下，添加一行到 "
 ":file:`Modules/Setup.local` 来描述你的文件："
 
-#: ../../extending/extending.rst:473
+#: ../../extending/extending.rst:491
 msgid "spam spammodule.o"
 msgstr "spam spammodule.o"
 
-#: ../../extending/extending.rst:477
+#: ../../extending/extending.rst:495
 msgid ""
 "and rebuild the interpreter by running :program:`make` in the toplevel "
 "directory.  You can also run :program:`make` in the :file:`Modules/` "
@@ -940,21 +988,21 @@ msgstr ""
 ":program:`make`，但是你必须先重建 :file:`Makefile` 文件，然后运行 ':program:`make` Makefile'"
 " 命令。（你每次修改 :file:`Setup` 文件都需要这样操作。）"
 
-#: ../../extending/extending.rst:483
+#: ../../extending/extending.rst:501
 msgid ""
 "If your module requires additional libraries to link with, these can be "
 "listed on the line in the configuration file as well, for instance:"
 msgstr "如果你的模块需要额外的链接，这些内容可以列出在配置文件里，举个实例："
 
-#: ../../extending/extending.rst:486
+#: ../../extending/extending.rst:504
 msgid "spam spammodule.o -lX11"
 msgstr "spam spammodule.o -lX11"
 
-#: ../../extending/extending.rst:494
+#: ../../extending/extending.rst:512
 msgid "Calling Python Functions from C"
 msgstr "在C中调用Python函数"
 
-#: ../../extending/extending.rst:496
+#: ../../extending/extending.rst:514
 msgid ""
 "So far we have concentrated on making C functions callable from Python.  The"
 " reverse is also useful: calling Python functions from C. This is especially"
@@ -966,7 +1014,7 @@ msgid ""
 msgstr ""
 "迄今为止，我们一直把注意力集中于让Python调用C函数，其实反过来也很有用，就是用C调用Python函数。这在回调函数中尤其有用。如果一个C接口使用回调，那么就要实现这个回调机制。"
 
-#: ../../extending/extending.rst:504
+#: ../../extending/extending.rst:522
 msgid ""
 "Fortunately, the Python interpreter is easily called recursively, and there "
 "is a standard interface to call a Python function.  (I won't dwell on how to"
@@ -977,7 +1025,7 @@ msgstr ""
 "幸运的是，Python解释器是比较方便回调的，并给标准Python函数提供了标准接口。(这里就不再详述解析Python字符串作为输入的方式，如果有兴趣可以参考"
 " :file:`Python/pythonmain.c` 中的 :option:`-c` 命令行代码。)"
 
-#: ../../extending/extending.rst:510
+#: ../../extending/extending.rst:528
 msgid ""
 "Calling a Python function is easy.  First, the Python program must somehow "
 "pass you the Python function object.  You should provide a function (or some"
@@ -989,7 +1037,7 @@ msgstr ""
 "调用Python函数很简单，首先Python程序要传递Python函数对象。应该提供个函数(或其他接口)来实现。当调用这个函数时，用全局变量保存Python函数对象的指针，还要调用"
 " (:c:func:`Py_INCREF`) 来增加引用计数，当然不用全局变量也没什么关系。举个例子，如下函数可能是模块定义的一部分："
 
-#: ../../extending/extending.rst:517
+#: ../../extending/extending.rst:535
 msgid ""
 "static PyObject *my_callback = NULL;\n"
 "\n"
@@ -1037,7 +1085,7 @@ msgstr ""
 "    return result;\n"
 "}"
 
-#: ../../extending/extending.rst:540
+#: ../../extending/extending.rst:558
 msgid ""
 "This function must be registered with the interpreter using the "
 ":c:macro:`METH_VARARGS` flag; this is described in section "
@@ -1047,7 +1095,7 @@ msgstr ""
 "此函数必须使用 :c:macro:`METH_VARARGS` 旗标注册到解释器；这将在 :ref:`methodtable` 一节中详细描述。 "
 ":c:func:`PyArg_ParseTuple` 函数及其参数的文档见 :ref:`parsetuple` 一节。"
 
-#: ../../extending/extending.rst:545
+#: ../../extending/extending.rst:563
 msgid ""
 "The macros :c:func:`Py_XINCREF` and :c:func:`Py_XDECREF` increment/decrement"
 " the reference count of an object and are safe in the presence of ``NULL`` "
@@ -1058,7 +1106,7 @@ msgstr ""
 "``NULL`` 指针时仍可保证安全 (但请注意在这个上下文中 *temp* 将不为  ``NULL``)。 更多相关信息请参考 "
 ":ref:`refcounts` 章节。"
 
-#: ../../extending/extending.rst:552
+#: ../../extending/extending.rst:570
 msgid ""
 "Later, when it is time to call the function, you call the C function "
 ":c:func:`PyObject_CallObject`.  This function has two arguments, both "
@@ -1074,7 +1122,7 @@ msgstr ""
 "函数，则传入 ``NULL`` 或一个空元组；要带一个参数调用它，则传入一个单元组。 :c:func:`Py_BuildValue` "
 "会在其格式字符串包含一对圆括号内的零个或多个格式代码时返回一个元组。 例如::"
 
-#: ../../extending/extending.rst:561
+#: ../../extending/extending.rst:579
 msgid ""
 "int arg;\n"
 "PyObject *arglist;\n"
@@ -1098,7 +1146,7 @@ msgstr ""
 "result = PyObject_CallObject(my_callback, arglist);\n"
 "Py_DECREF(arglist);"
 
-#: ../../extending/extending.rst:572
+#: ../../extending/extending.rst:590
 msgid ""
 ":c:func:`PyObject_CallObject` returns a Python object pointer: this is the "
 "return value of the Python function.  :c:func:`PyObject_CallObject` is "
@@ -1111,7 +1159,7 @@ msgstr ""
 ":c:func:`PyObject_CallObject` 是一个对其参数 \"引用计数无关\" 的函数。例子中新的元组创建用于参数列表，并且在  "
 ":c:func:`PyObject_CallObject` 之后立即使用了 :c:func:`Py_DECREF` 。"
 
-#: ../../extending/extending.rst:579
+#: ../../extending/extending.rst:597
 msgid ""
 "The return value of :c:func:`PyObject_CallObject` is \"new\": either it is a"
 " brand new object, or it is an existing object whose reference count has "
@@ -1123,7 +1171,7 @@ msgstr ""
 "的返回值总是“新”的：要么是一个新建的对象；要么是已有对象，但增加了引用计数。所以除非你想把结果保存在全局变量中，你需要对这个值使用 "
 ":c:func:`Py_DECREF`，即使你对里面的内容（特别！）不感兴趣。"
 
-#: ../../extending/extending.rst:585
+#: ../../extending/extending.rst:603
 msgid ""
 "Before you do this, however, it is important to check that the return value "
 "isn't ``NULL``.  If it is, the Python function terminated by raising an "
@@ -1138,7 +1186,7 @@ msgstr ""
 "调用者，以便解释器能打印栈回溯信息，或者让调用方 Python 代码能处理该异常。 如果这无法做到或不合本意，则应当通过调用 "
 ":c:func:`PyErr_Clear` 来清除异常。 例如::"
 
-#: ../../extending/extending.rst:593
+#: ../../extending/extending.rst:611
 msgid ""
 "if (result == NULL)\n"
 "    return NULL; /* Pass error back */\n"
@@ -1150,7 +1198,7 @@ msgstr ""
 "...使用 result...\n"
 "Py_DECREF(result);"
 
-#: ../../extending/extending.rst:598
+#: ../../extending/extending.rst:616
 msgid ""
 "Depending on the desired interface to the Python callback function, you may "
 "also have to provide an argument list to :c:func:`PyObject_CallObject`.  In "
@@ -1165,7 +1213,7 @@ msgstr ""
 "。在某些情况下参数列表是由Python程序提供的，通过接口再传到回调函数对象。这样就可以不改变形式直接传递。另外一些时候你要构造一个新的元组来传递参数。最简单的方法就是"
 " :c:func:`Py_BuildValue` 函数构造tuple。举个例子，你要传递一个事件代码时可以用如下代码:"
 
-#: ../../extending/extending.rst:607
+#: ../../extending/extending.rst:625
 msgid ""
 "PyObject *arglist;\n"
 "...\n"
@@ -1187,7 +1235,7 @@ msgstr ""
 "/* 可以在此使用 result */\n"
 "Py_DECREF(result);"
 
-#: ../../extending/extending.rst:617
+#: ../../extending/extending.rst:635
 msgid ""
 "Note the placement of ``Py_DECREF(arglist)`` immediately after the call, "
 "before the error check!  Also note that strictly speaking this code is not "
@@ -1197,7 +1245,7 @@ msgstr ""
 "注意 ``Py_DECREF(arglist)`` 所在处会立即调用，在错误检查之前。当然还要注意一些常规的错误，比如 "
 ":c:func:`Py_BuildValue` 可能会遭遇内存不足等等。"
 
-#: ../../extending/extending.rst:621
+#: ../../extending/extending.rst:639
 msgid ""
 "You may also call a function with keyword arguments by using "
 ":c:func:`PyObject_Call`, which supports arguments and keyword arguments.  As"
@@ -1207,7 +1255,7 @@ msgstr ""
 "当你调用函数时还需要注意，用关键字参数调用 :c:func:`PyObject_Call` ，需要支持普通参数和关键字参数。有如如上例子中，我们使用 "
 ":c:func:`Py_BuildValue` 来构造字典。"
 
-#: ../../extending/extending.rst:625
+#: ../../extending/extending.rst:643
 msgid ""
 "PyObject *dict;\n"
 "...\n"
@@ -1229,19 +1277,19 @@ msgstr ""
 "/* 可以在此使用 result */\n"
 "Py_DECREF(result);"
 
-#: ../../extending/extending.rst:639
+#: ../../extending/extending.rst:657
 msgid "Extracting Parameters in Extension Functions"
 msgstr "提取扩展函数的参数"
 
-#: ../../extending/extending.rst:643
+#: ../../extending/extending.rst:661
 msgid "The :c:func:`PyArg_ParseTuple` function is declared as follows::"
 msgstr "函数 :c:func:`PyArg_ParseTuple` 的声明如下："
 
-#: ../../extending/extending.rst:645
+#: ../../extending/extending.rst:663
 msgid "int PyArg_ParseTuple(PyObject *arg, const char *format, ...);"
 msgstr "int PyArg_ParseTuple(PyObject *arg, const char *format, ...);"
 
-#: ../../extending/extending.rst:647
+#: ../../extending/extending.rst:665
 msgid ""
 "The *arg* argument must be a tuple object containing an argument list passed"
 " from Python to a C function.  The *format* argument must be a format "
@@ -1252,7 +1300,7 @@ msgstr ""
 "参数 *arg* 必须是一个元组对象，包含从 Python 传递给 C 函数的参数列表。*format* 参数必须是一个格式字符串，语法请参考 "
 "Python C/API 手册中的 :ref:`arg-parsing`。剩余参数是各个变量的地址，类型要与格式字符串对应。"
 
-#: ../../extending/extending.rst:653
+#: ../../extending/extending.rst:671
 msgid ""
 "Note that while :c:func:`PyArg_ParseTuple` checks that the Python arguments "
 "have the required types, it cannot check the validity of the addresses of C "
@@ -1262,17 +1310,17 @@ msgstr ""
 "注意 :c:func:`PyArg_ParseTuple` "
 "会检测他需要的Python参数类型，却无法检测传递给他的C变量地址，如果这里出错了，可能会在内存中随机写入东西，小心。"
 
-#: ../../extending/extending.rst:658
+#: ../../extending/extending.rst:676
 msgid ""
 "Note that any Python object references which are provided to the caller are "
 "*borrowed* references; do not decrement their reference count!"
 msgstr "注意任何由调用者提供的 Python 对象引用是 *借来的* 引用；不要递减它们的引用计数！"
 
-#: ../../extending/extending.rst:661
+#: ../../extending/extending.rst:679
 msgid "Some example calls::"
 msgstr "一些调用的例子："
 
-#: ../../extending/extending.rst:668
+#: ../../extending/extending.rst:686
 msgid ""
 "int ok;\n"
 "int i, j;\n"
@@ -1292,7 +1340,7 @@ msgstr ""
 "ok = PyArg_ParseTuple(args, \"\"); /* 无参数 */\n"
 "    /* Python 调用: f() */"
 
-#: ../../extending/extending.rst:679
+#: ../../extending/extending.rst:697
 msgid ""
 "ok = PyArg_ParseTuple(args, \"s\", &s); /* A string */\n"
 "    /* Possible Python call: f('whoops!') */"
@@ -1300,7 +1348,7 @@ msgstr ""
 "ok = PyArg_ParseTuple(args, \"s\", &s); /* 一个字符串 */\n"
 "    /* 可能的 Python 调用: f('whoops!') */"
 
-#: ../../extending/extending.rst:684
+#: ../../extending/extending.rst:702
 msgid ""
 "ok = PyArg_ParseTuple(args, \"lls\", &k, &l, &s); /* Two longs and a string */\n"
 "    /* Possible Python call: f(1, 2, 'three') */"
@@ -1308,7 +1356,7 @@ msgstr ""
 "ok = PyArg_ParseTuple(args, \"lls\", &k, &l, &s); /* 两个长整型和一个字符串 */\n"
 "    /* 可能的 Python 调用: f(1, 2, 'three') */"
 
-#: ../../extending/extending.rst:689
+#: ../../extending/extending.rst:707
 msgid ""
 "ok = PyArg_ParseTuple(args, \"(ii)s#\", &i, &j, &s, &size);\n"
 "    /* A pair of ints and a string, whose size is also returned */\n"
@@ -1318,7 +1366,7 @@ msgstr ""
 "    /* 一对整数和一个字符串，其大小也将被返回 */\n"
 "    /* 可能的 Python 调用: f((1, 2), 'three') */"
 
-#: ../../extending/extending.rst:695
+#: ../../extending/extending.rst:713
 msgid ""
 "{\n"
 "    const char *file;\n"
@@ -1344,7 +1392,7 @@ msgstr ""
 "       f('spam', 'wb', 100000) */\n"
 "}"
 
-#: ../../extending/extending.rst:709
+#: ../../extending/extending.rst:727
 msgid ""
 "{\n"
 "    int left, top, right, bottom, h, v;\n"
@@ -1364,7 +1412,7 @@ msgstr ""
 "       f(((0, 0), (400, 300)), (10, 10)) */\n"
 "}"
 
-#: ../../extending/extending.rst:720
+#: ../../extending/extending.rst:738
 msgid ""
 "{\n"
 "    Py_complex c;\n"
@@ -1380,16 +1428,16 @@ msgstr ""
 "    /* Possible Python call: myfunction(1+2j) */\n"
 "}"
 
-#: ../../extending/extending.rst:731
+#: ../../extending/extending.rst:749
 msgid "Keyword Parameters for Extension Functions"
 msgstr "给扩展函数的关键字参数"
 
-#: ../../extending/extending.rst:735
+#: ../../extending/extending.rst:753
 msgid ""
 "The :c:func:`PyArg_ParseTupleAndKeywords` function is declared as follows::"
 msgstr "函数 :c:func:`PyArg_ParseTupleAndKeywords` 声明如下："
 
-#: ../../extending/extending.rst:737
+#: ../../extending/extending.rst:755
 msgid ""
 "int PyArg_ParseTupleAndKeywords(PyObject *arg, PyObject *kwdict,\n"
 "                                const char *format, char * const *kwlist, ...);"
@@ -1397,7 +1445,7 @@ msgstr ""
 "int PyArg_ParseTupleAndKeywords(PyObject *arg, PyObject *kwdict,\n"
 "                                const char *format, char * const *kwlist, ...);"
 
-#: ../../extending/extending.rst:740
+#: ../../extending/extending.rst:758
 msgid ""
 "The *arg* and *format* parameters are identical to those of the "
 ":c:func:`PyArg_ParseTuple` function.  The *kwdict* parameter is the "
@@ -1413,20 +1461,20 @@ msgstr ""
 "结尾的字符串列表，它被用来标识形参；名称从左至右与来自 *format* 的类型信息相匹配。 "
 "如果执行成功，:c:func:`PyArg_ParseTupleAndKeywords` 会返回真值，否则返回假值并引发一个适当的异常。"
 
-#: ../../extending/extending.rst:750
+#: ../../extending/extending.rst:768
 msgid ""
 "Nested tuples cannot be parsed when using keyword arguments!  Keyword "
 "parameters passed in which are not present in the *kwlist* will cause "
 ":exc:`TypeError` to be raised."
 msgstr "嵌套的元组在使用关键字参数时无法生效，不在 *kwlist* 中的关键字参数会导致 :exc:`TypeError` 异常。"
 
-#: ../../extending/extending.rst:756
+#: ../../extending/extending.rst:774
 msgid ""
 "Here is an example module which uses keywords, based on an example by Geoff "
 "Philbrick (philbrick@hks.com)::"
 msgstr "如下例子是使用关键字参数的例子模块，作者是 Geoff Philbrick (philbrick@hks.com):"
 
-#: ../../extending/extending.rst:759
+#: ../../extending/extending.rst:777
 msgid ""
 "#define PY_SSIZE_T_CLEAN\n"
 "#include <Python.h>\n"
@@ -1462,18 +1510,17 @@ msgid ""
 "    {NULL, NULL, 0, NULL}   /* sentinel */\n"
 "};\n"
 "\n"
-"static struct PyModuleDef keywdargmodule = {\n"
-"    PyModuleDef_HEAD_INIT,\n"
-"    \"keywdarg\",\n"
-"    NULL,\n"
-"    -1,\n"
-"    keywdarg_methods\n"
+"static struct PyModuleDef keywdarg_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"keywdarg\",\n"
+"    .m_size = 0,\n"
+"    .m_methods = keywdarg_methods,\n"
 "};\n"
 "\n"
 "PyMODINIT_FUNC\n"
 "PyInit_keywdarg(void)\n"
 "{\n"
-"    return PyModule_Create(&keywdargmodule);\n"
+"    return PyModuleDef_Init(&keywdarg_module);\n"
 "}"
 msgstr ""
 "#define PY_SSIZE_T_CLEAN\n"
@@ -1510,35 +1557,34 @@ msgstr ""
 "    {NULL, NULL, 0, NULL}   /* sentinel */\n"
 "};\n"
 "\n"
-"static struct PyModuleDef keywdargmodule = {\n"
-"    PyModuleDef_HEAD_INIT,\n"
-"    \"keywdarg\",\n"
-"    NULL,\n"
-"    -1,\n"
-"    keywdarg_methods\n"
+"static struct PyModuleDef keywdarg_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"keywdarg\",\n"
+"    .m_size = 0,\n"
+"    .m_methods = keywdarg_methods,\n"
 "};\n"
 "\n"
 "PyMODINIT_FUNC\n"
 "PyInit_keywdarg(void)\n"
 "{\n"
-"    return PyModule_Create(&keywdargmodule);\n"
+"    return PyModuleDef_Init(&keywdarg_module);\n"
 "}"
 
-#: ../../extending/extending.rst:811
+#: ../../extending/extending.rst:828
 msgid "Building Arbitrary Values"
 msgstr "构造任意值"
 
-#: ../../extending/extending.rst:813
+#: ../../extending/extending.rst:830
 msgid ""
 "This function is the counterpart to :c:func:`PyArg_ParseTuple`.  It is "
 "declared as follows::"
 msgstr "这个函数与 :c:func:`PyArg_ParseTuple` 很相似，声明如下："
 
-#: ../../extending/extending.rst:816
+#: ../../extending/extending.rst:833
 msgid "PyObject *Py_BuildValue(const char *format, ...);"
 msgstr "PyObject *Py_BuildValue(const char *format, ...);"
 
-#: ../../extending/extending.rst:818
+#: ../../extending/extending.rst:835
 msgid ""
 "It recognizes a set of format units similar to the ones recognized by "
 ":c:func:`PyArg_ParseTuple`, but the arguments (which are input to the "
@@ -1548,7 +1594,7 @@ msgstr ""
 "接受一个格式字符串，与 :c:func:`PyArg_ParseTuple` "
 "相同，但是参数必须是原变量的地址指针(输入给函数，而非输出)。最终返回一个Python对象适合于返回C函数调用给Python代码。"
 
-#: ../../extending/extending.rst:823
+#: ../../extending/extending.rst:840
 msgid ""
 "One difference with :c:func:`PyArg_ParseTuple`: while the latter requires "
 "its first argument to be a tuple (since Python argument lists are always "
@@ -1564,12 +1610,12 @@ msgstr ""
 ":c:func:`Py_BuildValue` 并不总是生成元组，在多于1个格式字符串时会生成元组，而如果格式字符串为空则返回 ``None`` "
 "，一个参数则直接返回该参数的对象。如果要求强制生成一个长度为0的元组，或包含一个元素的元组，需要在格式字符串中加上括号。"
 
-#: ../../extending/extending.rst:831
+#: ../../extending/extending.rst:848
 msgid ""
 "Examples (to the left the call, to the right the resulting Python value):"
 msgstr "例子(左侧是调用，右侧是Python值结果)："
 
-#: ../../extending/extending.rst:833
+#: ../../extending/extending.rst:850
 msgid ""
 "Py_BuildValue(\"\")                        None\n"
 "Py_BuildValue(\"i\", 123)                  123\n"
@@ -1607,11 +1653,11 @@ msgstr ""
 "Py_BuildValue(\"((ii)(ii)) (ii)\",\n"
 "              1, 2, 3, 4, 5, 6)          (((1, 2), (3, 4)), (5, 6))"
 
-#: ../../extending/extending.rst:857
+#: ../../extending/extending.rst:874
 msgid "Reference Counts"
 msgstr "引用计数"
 
-#: ../../extending/extending.rst:859
+#: ../../extending/extending.rst:876
 msgid ""
 "In languages like C or C++, the programmer is responsible for dynamic "
 "allocation and deallocation of memory on the heap.  In C, this is done using"
@@ -1622,7 +1668,7 @@ msgstr ""
 "在C/C++语言中，程序员负责动态分配和回收堆heap当中的内存。在C里，通过函数 :c:func:`malloc` 和 :c:func:`free` "
 "来完成。在C++里是操作 ``new`` 和 ``delete`` 来实现相同的功能。"
 
-#: ../../extending/extending.rst:865
+#: ../../extending/extending.rst:882
 msgid ""
 "Every block of memory allocated with :c:func:`malloc` should eventually be "
 "returned to the pool of available memory by exactly one call to "
@@ -1642,7 +1688,7 @@ msgstr ""
 ":c:func:`free` 然后却继续使用该内存块，它将与通过另一个 :c:func:`malloc` 调用对该内存块的重新使用产生冲突。 这就称为 "
 ":dfn:`使用已释放的内存`。 它所造成的后果与引用未初始化数据一样糟糕 --- 核心转储、错误结果、意外崩溃等等。"
 
-#: ../../extending/extending.rst:876
+#: ../../extending/extending.rst:893
 msgid ""
 "Common causes of memory leaks are unusual paths through the code.  For "
 "instance, a function may allocate a block of memory, do some calculation, "
@@ -1660,7 +1706,7 @@ msgid ""
 msgstr ""
 "内存泄露往往发生在一些并不常见的代码流程上面。比如一个函数申请了内存以后，做了些计算，然后释放内存块。现在一些对函数的修改可能增加对计算的测试并检测错误条件，然后过早的从函数返回了。这很容易忘记在退出前释放内存，特别是后期修改的代码。这种内存泄漏，一旦引入，通常很长时间都难以检测到，错误退出被调用的频度较低，而现代电脑又有非常巨大的虚拟内存，所以泄漏仅在长期运行或频繁调用泄漏函数时才会变得明显。因此，有必要避免内存泄漏，通过代码规范会策略来最小化此类错误。"
 
-#: ../../extending/extending.rst:889
+#: ../../extending/extending.rst:906
 msgid ""
 "Since Python makes heavy use of :c:func:`malloc` and :c:func:`free`, it "
 "needs a strategy to avoid memory leaks as well as the use of freed memory.  "
@@ -1674,7 +1720,7 @@ msgstr ""
 "包含大量的内存分配和释放，同样需要避免内存泄漏和野指针。他选择的方法就是 :dfn:`引用计数` "
 "。其原理比较简单：每个对象都包含一个计数器，计数器的增减与对象引用的增减直接相关，当引用计数为0时，表示对象已经没有存在的意义了，对象就可以删除了。"
 
-#: ../../extending/extending.rst:897
+#: ../../extending/extending.rst:914
 msgid ""
 "An alternative strategy is called :dfn:`automatic garbage collection`. "
 "(Sometimes, reference counting is also referred to as a garbage collection "
@@ -1695,7 +1741,7 @@ msgstr ""
 ":c:func:`malloc` 和 :c:func:`free` "
 "函数是可用的，这也是C标准担保的)。也许以后有一天会出现可移植的自动垃圾回收器，但在此前我们必须与引用计数一起工作。"
 
-#: ../../extending/extending.rst:909
+#: ../../extending/extending.rst:926
 msgid ""
 "While Python uses the traditional reference counting implementation, it also"
 " offers a cycle detector that works to detect reference cycles.  This allows"
@@ -1710,7 +1756,7 @@ msgid ""
 msgstr ""
 "Python使用传统的引用计数实现，也提供了循环监测器，用以检测引用循环。这使得应用无需担心直接或间接的创建了循环引用，这是引用计数垃圾收集的一个弱点。引用循环是对象(可能直接)的引用了本身，所以循环中的每个对象的引用计数都不是0。典型的引用计数实现无法回收处于引用循环中的对象，或者被循环所引用的对象，哪怕没有循环以外的引用了。"
 
-#: ../../extending/extending.rst:920
+#: ../../extending/extending.rst:937
 msgid ""
 "The cycle detector is able to detect garbage cycles and can reclaim them. "
 "The :mod:`gc` module exposes a way to run the detector (the "
@@ -1720,11 +1766,11 @@ msgstr ""
 "循环检测器能够检测垃圾回收循环并能回收它们。 :mod:`gc` 模块提供了一种运行该检测器的方式 (:func:`~gc.collect` "
 "函数)，以及多个配置接口和在运行时禁用该检测器的功能。"
 
-#: ../../extending/extending.rst:929
+#: ../../extending/extending.rst:946
 msgid "Reference Counting in Python"
 msgstr "Python中的引用计数"
 
-#: ../../extending/extending.rst:931
+#: ../../extending/extending.rst:948
 msgid ""
 "There are two macros, ``Py_INCREF(x)`` and ``Py_DECREF(x)``, which handle "
 "the incrementing and decrementing of the reference count. "
@@ -1738,7 +1784,7 @@ msgstr ""
 "也会在引用计数到达0时释放对象。为了灵活，并不会直接调用 :c:func:`free` ，而是通过对象的 :dfn:`类型对象` "
 "的函数指针来调用。为了这个目的(或其他的)，每个对象同时包含一个指向自身类型对象的指针。"
 
-#: ../../extending/extending.rst:938
+#: ../../extending/extending.rst:955
 msgid ""
 "The big question now remains: when to use ``Py_INCREF(x)`` and "
 "``Py_DECREF(x)``? Let's first introduce some terms.  Nobody \"owns\" an "
@@ -1756,7 +1802,7 @@ msgstr ""
 "，在引用不再需要时。引用的拥有关系可以被传递。有三种办法来处置拥有的引用：传递、存储、调用 :c:func:`Py_DECREF` "
 "。忘记处置一个拥有的引用会导致内存泄漏。"
 
-#: ../../extending/extending.rst:947
+#: ../../extending/extending.rst:964
 msgid ""
 "It is also possible to :dfn:`borrow` [#]_ a reference to an object.  The "
 "borrower of a reference should not call :c:func:`Py_DECREF`.  The borrower "
@@ -1767,7 +1813,7 @@ msgstr ""
 "还可以 :dfn:`借用` [#]_ 一个对象的引用。借用的引用不应该调用 :c:func:`Py_DECREF` "
 "。借用者必须确保不能持有对象超过拥有者借出的时间。在拥有者处置对象后使用借用的引用是有风险的，应该完全避免 [#]_ 。"
 
-#: ../../extending/extending.rst:953
+#: ../../extending/extending.rst:970
 msgid ""
 "The advantage of borrowing over owning a reference is that you don't need to"
 " take care of disposing of the reference on all possible paths through the "
@@ -1779,7 +1825,7 @@ msgid ""
 msgstr ""
 "借用相对于引用的优点是你无需担心整条路径上代码的引用，或者说，通过借用你无需担心内存泄漏的风险。借用的缺点是一些看起来正确代码上的借用可能会在拥有者处置后使用对象。"
 
-#: ../../extending/extending.rst:961
+#: ../../extending/extending.rst:978
 msgid ""
 "A borrowed reference can be changed into an owned reference by calling "
 ":c:func:`Py_INCREF`.  This does not affect the status of the owner from "
@@ -1790,18 +1836,18 @@ msgstr ""
 "借用可以变为拥有引用，通过调用 :c:func:`Py_INCREF`。 这不会影响已经借出的拥有者的状态。 "
 "这会创建一个新的拥有引用，并给予完全的拥有者责任（新的拥有者必须恰当的处置引用，就像之前的拥有者那样）。"
 
-#: ../../extending/extending.rst:971
+#: ../../extending/extending.rst:988
 msgid "Ownership Rules"
 msgstr "拥有规则"
 
-#: ../../extending/extending.rst:973
+#: ../../extending/extending.rst:990
 msgid ""
 "Whenever an object reference is passed into or out of a function, it is part"
 " of the function's interface specification whether ownership is transferred "
 "with the reference or not."
 msgstr "当一个对象引用传递进出一个函数时，函数的接口应该指定拥有关系的传递是否包含引用。"
 
-#: ../../extending/extending.rst:977
+#: ../../extending/extending.rst:994
 msgid ""
 "Most functions that return a reference to an object pass on ownership with "
 "the reference.  In particular, all functions whose function it is to create "
@@ -1815,7 +1861,7 @@ msgstr ""
 ":c:func:`Py_BuildValue` ，会传递拥有关系给接收者。即便是对象不是真正新的，你仍然可以获得对象的新引用。一个实例是 "
 ":c:func:`PyLong_FromLong` 维护了一个流行值的缓存，并可以返回已缓存项目的新引用。"
 
-#: ../../extending/extending.rst:985
+#: ../../extending/extending.rst:1002
 msgid ""
 "Many functions that extract objects from other objects also transfer "
 "ownership with the reference, for instance :c:func:`PyObject_GetAttrString`."
@@ -1829,7 +1875,7 @@ msgstr ""
 ":c:func:`PyList_GetItem` ， :c:func:`PyDict_GetItem` ， "
 ":c:func:`PyDict_GetItemString` 都是返回从元组、列表、字典里借用的引用。"
 
-#: ../../extending/extending.rst:992
+#: ../../extending/extending.rst:1009
 msgid ""
 "The function :c:func:`PyImport_AddModule` also returns a borrowed reference,"
 " even though it may actually create the object it returns: this is possible "
@@ -1838,7 +1884,7 @@ msgstr ""
 "函数 :c:func:`PyImport_AddModule` 也会返回借用的引用，哪怕可能会返回创建的对象：这个可能因为一个拥有的引用对象是存储在 "
 "``sys.modules`` 里。"
 
-#: ../../extending/extending.rst:996
+#: ../../extending/extending.rst:1013
 msgid ""
 "When you pass an object reference into another function, in general, the "
 "function borrows the reference from you --- if it needs to store it, it will"
@@ -1853,7 +1899,7 @@ msgstr ""
 " 。这些函数接受传递来的引用关系，哪怕会失败！(注意 :c:func:`PyDict_SetItem` "
 "及其同类不会接受引用关系，他们是\"正常的\")。"
 
-#: ../../extending/extending.rst:1004
+#: ../../extending/extending.rst:1021
 msgid ""
 "When a C function is called from Python, it borrows references to its "
 "arguments from the caller.  The caller owns a reference to the object, so "
@@ -1864,18 +1910,18 @@ msgstr ""
 "当一个C函数被Python调用时，会从调用方传来的参数借用引用。调用者拥有对象的引用，所以借用的引用生命周期可以保证到函数返回。只要当借用的引用需要存储或传递时，就必须转换为拥有的引用，通过调用"
 " :c:func:`Py_INCREF` 。"
 
-#: ../../extending/extending.rst:1010
+#: ../../extending/extending.rst:1027
 msgid ""
 "The object reference returned from a C function that is called from Python "
 "must be an owned reference --- ownership is transferred from the function to"
 " its caller."
 msgstr "Python调用从C函数返回的对象引用时必须是拥有的引用---拥有关系被从函数传递给调用者。"
 
-#: ../../extending/extending.rst:1018
+#: ../../extending/extending.rst:1035
 msgid "Thin Ice"
 msgstr "危险的薄冰"
 
-#: ../../extending/extending.rst:1020
+#: ../../extending/extending.rst:1037
 msgid ""
 "There are a few situations where seemingly harmless use of a borrowed "
 "reference can lead to problems.  These all have to do with implicit "
@@ -1883,14 +1929,14 @@ msgid ""
 "dispose of it."
 msgstr "有少数情况下，借用的引用看起来无害，但却可能导致问题。这通常是因为解释器的隐式调用，并可能导致引用拥有者处置这个引用。"
 
-#: ../../extending/extending.rst:1024
+#: ../../extending/extending.rst:1041
 msgid ""
 "The first and most important case to know about is using :c:func:`Py_DECREF`"
 " on an unrelated object while borrowing a reference to a list item.  For "
 "instance::"
 msgstr "首先需要特别注意的情况是使用 :c:func:`Py_DECREF` 到一个无关对象，而这个对象的引用是借用自一个列表的元素。举个实例："
 
-#: ../../extending/extending.rst:1027
+#: ../../extending/extending.rst:1044
 msgid ""
 "void\n"
 "bug(PyObject *list)\n"
@@ -1910,7 +1956,7 @@ msgstr ""
 "    PyObject_Print(item, stdout, 0); /* BUG! */\n"
 "}"
 
-#: ../../extending/extending.rst:1036
+#: ../../extending/extending.rst:1053
 msgid ""
 "This function first borrows a reference to ``list[0]``, then replaces "
 "``list[1]`` with the value ``0``, and finally prints the borrowed reference."
@@ -1918,7 +1964,7 @@ msgid ""
 msgstr ""
 "这个函数首先借用一个引用 ``list[0]`` ，然后替换 ``list[1]`` 为值 ``0`` ，最后打印借用的引用。看起来无害是吧，但却不是。"
 
-#: ../../extending/extending.rst:1040
+#: ../../extending/extending.rst:1057
 msgid ""
 "Let's follow the control flow into :c:func:`PyList_SetItem`.  The list owns "
 "references to all its items, so when item 1 is replaced, it has to dispose "
@@ -1931,7 +1977,7 @@ msgstr ""
 " 现在我们假设原始条目 1 是一个用户定义类的实例，并进一步假设该类定义了一个 :meth:`!__del__` 方法。 如果该类实例的引用计数为 "
 "1，那么丢弃它时将调用其 :meth:`!__del__` 方法。"
 
-#: ../../extending/extending.rst:1047
+#: ../../extending/extending.rst:1064
 msgid ""
 "Since it is written in Python, the :meth:`!__del__` method can execute "
 "arbitrary Python code.  Could it perhaps do something to invalidate the "
@@ -1946,13 +1992,13 @@ msgstr ""
 ":meth:`!__del__` 方法访问，它就可以执行一条语句实现 ``del list[0]`` "
 "的效果，假定这是对该对象的最后一次引用，它就会释放与之相关联的内存，从而使 ``item`` 失效。"
 
-#: ../../extending/extending.rst:1055
+#: ../../extending/extending.rst:1072
 msgid ""
 "The solution, once you know the source of the problem, is easy: temporarily "
 "increment the reference count.  The correct version of the function reads::"
 msgstr "解决方法是，当你知道了问题的根源，就容易了：临时增加引用计数。正确版本的函数代码如下："
 
-#: ../../extending/extending.rst:1058
+#: ../../extending/extending.rst:1075
 msgid ""
 "void\n"
 "no_bug(PyObject *list)\n"
@@ -1976,7 +2022,7 @@ msgstr ""
 "    Py_DECREF(item);\n"
 "}"
 
-#: ../../extending/extending.rst:1069
+#: ../../extending/extending.rst:1086
 msgid ""
 "This is a true story.  An older version of Python contained variants of this"
 " bug and someone spent a considerable amount of time in a C debugger to "
@@ -1985,24 +2031,26 @@ msgstr ""
 "这是一个真实的故事。 一个较旧版本的 Python 曾经包含此问题的变化形式，有人在 C 语言调试器中花费了大量时间，才弄明白为什么他的 "
 ":meth:`!__del__` 方法会失败……"
 
-#: ../../extending/extending.rst:1073
+#: ../../extending/extending.rst:1090
 msgid ""
 "The second case of problems with a borrowed reference is a variant involving"
 " threads.  Normally, multiple threads in the Python interpreter can't get in"
-" each other's way, because there is a global lock protecting Python's entire"
-" object space.  However, it is possible to temporarily release this lock "
-"using the macro :c:macro:`Py_BEGIN_ALLOW_THREADS`, and to re-acquire it "
-"using :c:macro:`Py_END_ALLOW_THREADS`.  This is common around blocking I/O "
-"calls, to let other threads use the processor while waiting for the I/O to "
+" each other's way, because there is a :term:`global lock <global interpreter"
+" lock>` protecting Python's entire object space. However, it is possible to "
+"temporarily release this lock using the macro "
+":c:macro:`Py_BEGIN_ALLOW_THREADS`, and to re-acquire it using "
+":c:macro:`Py_END_ALLOW_THREADS`.  This is common around blocking I/O calls, "
+"to let other threads use the processor while waiting for the I/O to "
 "complete. Obviously, the following function has the same problem as the "
 "previous one::"
 msgstr ""
-"这个问题的第二种情况是借用的引用涉及线程的变种。通常，Python解释器里多个线程无法进入对方的路径，因为有个全局锁保护着Python整个对象空间。但可以使用宏"
-" :c:macro:`Py_BEGIN_ALLOW_THREADS` 来临时释放这个锁，重新获取锁用 "
-":c:macro:`Py_END_ALLOW_THREADS` "
-"。这通常围绕在阻塞I/O调用外，使得其他线程可以在等待I/O期间使用处理器。显然，如下函数会跟之前那个有一样的问题："
+"有关借入引用的问题的第二种情况是涉及线程的变种。 通常， Python 解释器中的多个线程不会相互影响，因为有一个 :term:`全局锁 <global"
+" interpreter lock>` 在保护 Python 的整个对象空间。 不过，有可能使用宏 "
+":c:macro:`Py_BEGIN_ALLOW_THREADS` 来临时释放这个锁，并使用 "
+":c:macro:`Py_END_ALLOW_THREADS` 来重新获取它。 这在阻塞型 I/O 调用操作中很常见，可以让其他线程在等待 I/O "
+"结束期间使用处理器。 显然，下面的函数与之前那个存在相同的问题::"
 
-#: ../../extending/extending.rst:1082
+#: ../../extending/extending.rst:1100
 msgid ""
 "void\n"
 "bug(PyObject *list)\n"
@@ -2024,11 +2072,11 @@ msgstr ""
 "    PyObject_Print(item, stdout, 0); /* BUG! */\n"
 "}"
 
-#: ../../extending/extending.rst:1096
+#: ../../extending/extending.rst:1114
 msgid "NULL Pointers"
 msgstr "NULL指针"
 
-#: ../../extending/extending.rst:1098
+#: ../../extending/extending.rst:1116
 msgid ""
 "In general, functions that take object references as arguments do not expect"
 " you to pass them ``NULL`` pointers, and will dump core (or cause later core"
@@ -2043,7 +2091,7 @@ msgstr ""
 "返回对象引用的函数通常只在要指明发生了异常时才返回 ``NULL``。 不检测 ``NULL`` "
 "参数的原因在于这些函数经常要将它们所接收的对象传给其他函数 --- 如果每个函数都检测 ``NULL``，将会导致大量的冗余检测而使代码运行得更缓慢。"
 
-#: ../../extending/extending.rst:1106
+#: ../../extending/extending.rst:1124
 msgid ""
 "It is better to test for ``NULL`` only at the \"source:\" when a pointer "
 "that may be ``NULL`` is received, for example, from :c:func:`malloc` or from"
@@ -2052,7 +2100,7 @@ msgstr ""
 "更好的做法是仅在“源头”上检测 ``NULL``，即在接收到一个可能为 ``NULL`` 的指针，例如来自 :c:func:`malloc` "
 "或是一个可能引发异常的函数的时候。"
 
-#: ../../extending/extending.rst:1110
+#: ../../extending/extending.rst:1128
 msgid ""
 "The macros :c:func:`Py_INCREF` and :c:func:`Py_DECREF` do not check for "
 "``NULL`` pointers --- however, their variants :c:func:`Py_XINCREF` and "
@@ -2061,7 +2109,7 @@ msgstr ""
 ":c:func:`Py_INCREF` 和 :c:func:`Py_DECREF` 等宏不会检测 ``NULL`` 指针 --- 但是，它们的变种 "
 ":c:func:`Py_XINCREF` 和 :c:func:`Py_XDECREF` 则会检测。"
 
-#: ../../extending/extending.rst:1114
+#: ../../extending/extending.rst:1132
 msgid ""
 "The macros for checking for a particular object type (``Pytype_Check()``) "
 "don't check for ``NULL`` pointers --- again, there is much code that calls "
@@ -2072,7 +2120,7 @@ msgstr ""
 "用于检测特定对象类型的宏 (``Pytype_Check()``) 不会检测 ``NULL`` 指针 --- "
 "同样地，有大量代码会连续调用这些宏来测试一个对象是否为几种不同预期类型之一，这将会生成冗余的测试。 不存在带有 ``NULL`` 检测的变体。"
 
-#: ../../extending/extending.rst:1120
+#: ../../extending/extending.rst:1138
 msgid ""
 "The C function calling mechanism guarantees that the argument list passed to"
 " C functions (``args`` in the examples) is never ``NULL`` --- in fact it "
@@ -2081,17 +2129,17 @@ msgstr ""
 "C 函数调用机制会保证传给 C 函数的参数列表 (本示例中为 ``args``) 绝不会为 ``NULL`` --- 实际上它会保证其总是为一个元组 "
 "[#]_。"
 
-#: ../../extending/extending.rst:1124
+#: ../../extending/extending.rst:1142
 msgid ""
 "It is a severe error to ever let a ``NULL`` pointer \"escape\" to the Python"
 " user."
 msgstr "任何时候将 ``NULL`` 指针“泄露”给 Python 用户都会是个严重的错误。"
 
-#: ../../extending/extending.rst:1135
+#: ../../extending/extending.rst:1153
 msgid "Writing Extensions in C++"
 msgstr "在C++中编写扩展"
 
-#: ../../extending/extending.rst:1137
+#: ../../extending/extending.rst:1155
 msgid ""
 "It is possible to write extension modules in C++.  Some restrictions apply."
 "  If the main program (the Python interpreter) is compiled and linked by the"
@@ -2107,11 +2155,11 @@ msgstr ""
 " ``extern \"C\"`` 。而是否在 ``extern \"C\" {...}`` 里包含Python头文件则不是那么重要，因为如果定义了符号"
 " ``__cplusplus`` 则已经是这么声明的了(所有现代C++编译器都会定义这个符号)。"
 
-#: ../../extending/extending.rst:1151
+#: ../../extending/extending.rst:1169
 msgid "Providing a C API for an Extension Module"
 msgstr "给扩展模块提供C API"
 
-#: ../../extending/extending.rst:1156
+#: ../../extending/extending.rst:1174
 msgid ""
 "Many extension modules just provide new functions and types to be used from "
 "Python, but sometimes the code in an extension module can be useful for "
@@ -2125,7 +2173,7 @@ msgstr ""
 "\"collection\" 看起来是没有顺序的。就像是Python列表类型，拥有C "
 "API允许扩展模块来创建和维护列表，这个新的集合类型可以有一堆C函数用于给其他扩展模块直接使用。"
 
-#: ../../extending/extending.rst:1164
+#: ../../extending/extending.rst:1182
 msgid ""
 "At first sight this seems easy: just write the functions (without declaring "
 "them ``static``, of course), provide an appropriate header file, and "
@@ -2143,7 +2191,7 @@ msgstr ""
 "开始看起来很简单：只需要编写函数(无需声明为 ``static`` )，提供恰当的头文件，以及C "
 "API的文档。实际上在所有扩展模块都是静态链接到Python解释器时也是可以正常工作的。当模块以共享库链接时，一个模块中的符号定义对另一个模块不可见。可见的细节依赖于操作系统，一些系统的Python解释器使用全局命名空间(例如Windows)，有些则在链接时需要一个严格的已导入符号列表(一个例子是AIX)，或者提供可选的不同策略(如Unix系列)。即便是符号是全局可见的，你要调用的模块也可能尚未加载。"
 
-#: ../../extending/extending.rst:1176
+#: ../../extending/extending.rst:1194
 msgid ""
 "Portability therefore requires not to make any assumptions about symbol "
 "visibility. This means that all symbols in extension modules should be "
@@ -2156,7 +2204,7 @@ msgstr ""
 "，除了模块的初始化函数，来避免与其他扩展模块的命名冲突(在段落 :ref:`methodtable` 中讨论) 。这意味着符号应该 *必须* "
 "通过其他导出方式来供其他扩展模块访问。"
 
-#: ../../extending/extending.rst:1183
+#: ../../extending/extending.rst:1201
 msgid ""
 "Python provides a special mechanism to pass C-level information (pointers) "
 "from one extension module to another one: Capsules. A Capsule is a Python "
@@ -2172,7 +2220,7 @@ msgstr ""
 "来创建和访问，但它们可以像任何其他 Python 对象一样被传递。 特别地，它们可以被赋值给扩展模块命名空间中的一个名称。 "
 "其他扩展模块将可以导入这个模块，获取该名称对应的值，然后从 Capsule 中获取指针。"
 
-#: ../../extending/extending.rst:1191
+#: ../../extending/extending.rst:1209
 msgid ""
 "There are many ways in which Capsules can be used to export the C API of an "
 "extension module. Each function could get its own Capsule, or all C API "
@@ -2184,7 +2232,7 @@ msgstr ""
 "Capsule可以用多种方式导出C API给扩展模块。每个函数可以用自己的Capsule，或者所有C "
 "API指针可以存储在一个数组里，数组地址再发布给Capsule。存储和获取指针也可以用多种方式，供客户端模块使用。"
 
-#: ../../extending/extending.rst:1197
+#: ../../extending/extending.rst:1215
 msgid ""
 "Whichever method you choose, it's important to name your Capsules properly. "
 "The function :c:func:`PyCapsule_New` takes a name parameter (:c:expr:`const "
@@ -2197,17 +2245,17 @@ msgstr ""
 "(:c:expr:`const char \\*`)；允许你传入一个 ``NULL`` 作为名称，但我们强烈推荐你指定名称。 正确地命名的 "
 "Capsule 提供了一定的运行时类型安全性；没有可行的方式能区别两个未命名的 Capsule。"
 
-#: ../../extending/extending.rst:1204
+#: ../../extending/extending.rst:1222
 msgid ""
 "In particular, Capsules used to expose C APIs should be given a name "
 "following this convention::"
 msgstr "通常来说，Capsule用于暴露C API，其名字应该遵循如下规范："
 
-#: ../../extending/extending.rst:1207
+#: ../../extending/extending.rst:1225
 msgid "modulename.attributename"
 msgstr "modulename.attributename"
 
-#: ../../extending/extending.rst:1209
+#: ../../extending/extending.rst:1227
 msgid ""
 "The convenience function :c:func:`PyCapsule_Import` makes it easy to load a "
 "C API provided via a Capsule, but only if the Capsule's name matches this "
@@ -2217,7 +2265,7 @@ msgstr ""
 "便利函数 :c:func:`PyCapsule_Import` 可以方便的载入通过Capsule提供的C "
 "API，仅在Capsule的名字匹配时。这个行为为C API用户提供了高度的确定性来载入正确的C API。"
 
-#: ../../extending/extending.rst:1214
+#: ../../extending/extending.rst:1232
 msgid ""
 "The following example demonstrates an approach that puts most of the burden "
 "on the writer of the exporting module, which is appropriate for commonly "
@@ -2231,7 +2279,7 @@ msgstr ""
 "指针（在这个例子里只有一个！）储存到一个 :c:expr:`void` 指针数组，它将成为一个 Capsule 的值。 "
 "与模块对应的头文件提供了一个宏用来管理导入模块和获取其 C API 指针；客户端模块只需要在访问 C API 之前调用这个宏即可。"
 
-#: ../../extending/extending.rst:1222
+#: ../../extending/extending.rst:1240
 msgid ""
 "The exporting module is a modification of the :mod:`!spam` module from "
 "section :ref:`extending-simpleexample`. The function :func:`!spam.system` "
@@ -2246,13 +2294,13 @@ msgstr ""
 ":c:func:`!PySpam_System`，这个函数在现实中当然会做一些更复杂的事情（比如在每条命令中添加“sapm”）。 该函数 "
 ":c:func:`!PySpam_System` 也会导出给其他扩展模块。"
 
-#: ../../extending/extending.rst:1229
+#: ../../extending/extending.rst:1247
 msgid ""
 "The function :c:func:`!PySpam_System` is a plain C function, declared "
 "``static`` like everything else::"
 msgstr "函数 :c:func:`!PySpam_System` 是一个纯 C 函数，像其他函数一样声明为 ``static``::"
 
-#: ../../extending/extending.rst:1232
+#: ../../extending/extending.rst:1250
 msgid ""
 "static int\n"
 "PySpam_System(const char *command)\n"
@@ -2266,11 +2314,11 @@ msgstr ""
 "    return system(command);\n"
 "}"
 
-#: ../../extending/extending.rst:1238
+#: ../../extending/extending.rst:1256
 msgid "The function :c:func:`!spam_system` is modified in a trivial way::"
 msgstr "函数 :c:func:`!spam_system` 已按如下方式修改::"
 
-#: ../../extending/extending.rst:1240
+#: ../../extending/extending.rst:1258
 msgid ""
 "static PyObject *\n"
 "spam_system(PyObject *self, PyObject *args)\n"
@@ -2296,19 +2344,19 @@ msgstr ""
 "    return PyLong_FromLong(sts);\n"
 "}"
 
-#: ../../extending/extending.rst:1252
+#: ../../extending/extending.rst:1270
 msgid "In the beginning of the module, right after the line ::"
 msgstr "在模块开头，在此行后::"
 
-#: ../../extending/extending.rst:1254
+#: ../../extending/extending.rst:1272
 msgid "#include <Python.h>"
 msgstr "#include <Python.h>"
 
-#: ../../extending/extending.rst:1256
+#: ../../extending/extending.rst:1274
 msgid "two more lines must be added::"
 msgstr "添加另外两行::"
 
-#: ../../extending/extending.rst:1258
+#: ../../extending/extending.rst:1276
 msgid ""
 "#define SPAM_MODULE\n"
 "#include \"spammodule.h\""
@@ -2316,26 +2364,23 @@ msgstr ""
 "#define SPAM_MODULE\n"
 "#include \"spammodule.h\""
 
-#: ../../extending/extending.rst:1261
+#: ../../extending/extending.rst:1279
 msgid ""
 "The ``#define`` is used to tell the header file that it is being included in"
 " the exporting module, not a client module. Finally, the module's "
-"initialization function must take care of initializing the C API pointer "
-"array::"
-msgstr "``#define`` 用于告知头文件需要包含给导出的模块，而不是客户端模块。最终，模块的初始化函数必须负责初始化C API指针数组::"
+":c:data:`mod_exec <Py_mod_exec>` function must take care of initializing the"
+" C API pointer array::"
+msgstr ""
+"``#define`` 被用来告知头文件它被包括在导出的模块中，而不是客户端模块。 最终，模块的 :c:data:`mod_exec "
+"<Py_mod_exec>` 函数必须负责初始化 C API 指针数组::"
 
-#: ../../extending/extending.rst:1265
+#: ../../extending/extending.rst:1283
 msgid ""
-"PyMODINIT_FUNC\n"
-"PyInit_spam(void)\n"
+"static int\n"
+"spam_module_exec(PyObject *m)\n"
 "{\n"
-"    PyObject *m;\n"
 "    static void *PySpam_API[PySpam_API_pointers];\n"
 "    PyObject *c_api_object;\n"
-"\n"
-"    m = PyModule_Create(&spammodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
 "\n"
 "    /* Initialize the C API pointer array */\n"
 "    PySpam_API[PySpam_System_NUM] = (void *)PySpam_System;\n"
@@ -2344,52 +2389,45 @@ msgid ""
 "    c_api_object = PyCapsule_New((void *)PySpam_API, \"spam._C_API\", NULL);\n"
 "\n"
 "    if (PyModule_Add(m, \"_C_API\", c_api_object) < 0) {\n"
-"        Py_DECREF(m);\n"
-"        return NULL;\n"
+"        return -1;\n"
 "    }\n"
 "\n"
-"    return m;\n"
+"    return 0;\n"
 "}"
 msgstr ""
-"PyMODINIT_FUNC\n"
-"PyInit_spam(void)\n"
+"static int\n"
+"spam_module_exec(PyObject *m)\n"
 "{\n"
-"    PyObject *m;\n"
-"    static void *PySpam_API[PySpam_API_pointers];\n"
-"    PyObject *c_api_object;\n"
+"static void *PySpam_API[PySpam_API_pointers];\n"
+"PyObject *c_api_object;\n"
 "\n"
-"    m = PyModule_Create(&spammodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
+"/* 初始化 C API 指针数组 */\n"
+"PySpam_API[PySpam_System_NUM] = (void *)PySpam_System;\n"
 "\n"
-"    /* 初始化 C API 指针数组 */\n"
-"    PySpam_API[PySpam_System_NUM] = (void *)PySpam_System;\n"
+"/* 创建包含 API 指针数组地址的 Capsule */\n"
+"c_api_object = PyCapsule_New((void *)PySpam_API, \"spam._C_API\", NULL);\n"
 "\n"
-"    /* 创建包含 API 指针数组的地址的 Capsule */\n"
-"    c_api_object = PyCapsule_New((void *)PySpam_API, \"spam._C_API\", NULL);\n"
+"if (PyModule_Add(m, \"_C_API\", c_api_object) < 0) {\n"
+"return -1;\n"
+"}\n"
 "\n"
-"    if (PyModule_Add(m, \"_C_API\", c_api_object) < 0) {\n"
-"        Py_DECREF(m);\n"
-"        return NULL;\n"
-"    }\n"
-"\n"
-"    return m;\n"
+"return 0;\n"
 "}"
 
-#: ../../extending/extending.rst:1290
+#: ../../extending/extending.rst:1302
 msgid ""
 "Note that ``PySpam_API`` is declared ``static``; otherwise the pointer array"
 " would disappear when :c:func:`!PyInit_spam` terminates!"
 msgstr ""
 "请注意 ``PySpam_API`` 被声明为 ``static``；否则指针数组会在 :c:func:`!PyInit_spam` 终结时消失！"
 
-#: ../../extending/extending.rst:1293
+#: ../../extending/extending.rst:1305
 msgid ""
 "The bulk of the work is in the header file :file:`spammodule.h`, which looks"
 " like this::"
 msgstr "头文件 :file:`spammodule.h` 里的一堆工作，看起来如下所示::"
 
-#: ../../extending/extending.rst:1296
+#: ../../extending/extending.rst:1308
 msgid ""
 "#ifndef Py_SPAMMODULE_H\n"
 "#define Py_SPAMMODULE_H\n"
@@ -2487,46 +2525,38 @@ msgstr ""
 "\n"
 "#endif /* !defined(Py_SPAMMODULE_H) */"
 
-#: ../../extending/extending.rst:1344
+#: ../../extending/extending.rst:1356
 msgid ""
 "All that a client module must do in order to have access to the function "
 ":c:func:`!PySpam_System` is to call the function (or rather macro) "
-":c:func:`!import_spam` in its initialization function::"
+":c:func:`!import_spam` in its :c:data:`mod_exec <Py_mod_exec>` function::"
 msgstr ""
-"客户端模块要能够访问函数 :c:func:`!PySpam_System` 所必须做的事情就是在其初始化函数中调用函数 (实际上是宏) "
-":c:func:`!import_spam`::"
+"客户端模块要访问函数 :c:func:`!PySpam_System` 所必须做的全部事情就是在其 :c:data:`mod_exec "
+"<Py_mod_exec>` 函数中调用函数 :c:func:`!import_spam` (更准确地说是宏)::"
 
-#: ../../extending/extending.rst:1348
+#: ../../extending/extending.rst:1360
 msgid ""
-"PyMODINIT_FUNC\n"
-"PyInit_client(void)\n"
+"static int\n"
+"client_module_exec(PyObject *m)\n"
 "{\n"
-"    PyObject *m;\n"
-"\n"
-"    m = PyModule_Create(&clientmodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
-"    if (import_spam() < 0)\n"
-"        return NULL;\n"
+"    if (import_spam() < 0) {\n"
+"        return -1;\n"
+"    }\n"
 "    /* additional initialization can happen here */\n"
-"    return m;\n"
+"    return 0;\n"
 "}"
 msgstr ""
-"PyMODINIT_FUNC\n"
-"PyInit_client(void)\n"
+"static int\n"
+"client_module_exec(PyObject *m)\n"
 "{\n"
-"    PyObject *m;\n"
-"\n"
-"    m = PyModule_Create(&clientmodule);\n"
-"    if (m == NULL)\n"
-"        return NULL;\n"
-"    if (import_spam() < 0)\n"
-"        return NULL;\n"
-"    /* 额外的初始化可在此进行 */\n"
-"    return m;\n"
+"if (import_spam() < 0) {\n"
+"return -1;\n"
+"}\n"
+"/* 额外的初始化可在此进行 */\n"
+"return 0;\n"
 "}"
 
-#: ../../extending/extending.rst:1362
+#: ../../extending/extending.rst:1370
 msgid ""
 "The main disadvantage of this approach is that the file :file:`spammodule.h`"
 " is rather complicated. However, the basic structure is the same for each "
@@ -2534,7 +2564,7 @@ msgid ""
 msgstr ""
 "这种方法的主要缺点是，文件 :file:`spammodule.h` 过于复杂。当然，对每个要导出的函数，基本结构是相似的，所以只需要学习一次。"
 
-#: ../../extending/extending.rst:1366
+#: ../../extending/extending.rst:1374
 msgid ""
 "Finally it should be mentioned that Capsules offer additional functionality,"
 " which is especially useful for memory allocation and deallocation of the "
@@ -2547,47 +2577,47 @@ msgstr ""
 ":ref:`capsules` 和Capsule的实现(在Python源码发行包的 :file:`Include/pycapsule.h` 和 "
 ":file:`Objects/pycapsule.c` )。"
 
-#: ../../extending/extending.rst:1374
+#: ../../extending/extending.rst:1382
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../extending/extending.rst:1375
+#: ../../extending/extending.rst:1383
 msgid ""
 "An interface for this function already exists in the standard module "
 ":mod:`os` --- it was chosen as a simple and straightforward example."
 msgstr "这个函数的接口已经在标准模块 :mod:`os` 里了，这里作为一个简单而直接的例子。"
 
-#: ../../extending/extending.rst:1378
+#: ../../extending/extending.rst:1386
 msgid ""
 "The metaphor of \"borrowing\" a reference is not completely correct: the "
 "owner still has a copy of the reference."
 msgstr "术语\"借用\"一个引用是不完全正确的：拥有者仍然有引用的拷贝。"
 
-#: ../../extending/extending.rst:1381
+#: ../../extending/extending.rst:1389
 msgid ""
 "Checking that the reference count is at least 1 **does not work** --- the "
 "reference count itself could be in freed memory and may thus be reused for "
 "another object!"
 msgstr "检查引用计数至少为1 **没有用** ，引用计数本身可以在已经释放的内存里，并有可能被其他对象所用。"
 
-#: ../../extending/extending.rst:1385
+#: ../../extending/extending.rst:1393
 msgid ""
 "These guarantees don't hold when you use the \"old\" style calling "
 "convention --- this is still found in much existing code."
 msgstr "当你使用 \"旧式\" 风格调用约定时，这些保证不成立，尽管这依旧存在于很多旧代码中。"
 
-#: ../../extending/extending.rst:550
+#: ../../extending/extending.rst:568
 msgid "PyObject_CallObject (C function)"
 msgstr "PyObject_CallObject (C 函数)"
 
-#: ../../extending/extending.rst:641
+#: ../../extending/extending.rst:659
 msgid "PyArg_ParseTuple (C function)"
 msgstr "PyArg_ParseTuple (C 函数)"
 
-#: ../../extending/extending.rst:733
+#: ../../extending/extending.rst:751
 msgid "PyArg_ParseTupleAndKeywords (C function)"
 msgstr "PyArg_ParseTupleAndKeywords (C 函数)"
 
-#: ../../extending/extending.rst:754
+#: ../../extending/extending.rst:772
 msgid "Philbrick, Geoff"
 msgstr "Philbrick, Geoff"

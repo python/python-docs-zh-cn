@@ -7,7 +7,8 @@
 # Arisaka97 <solitaire2312@gmail.com>, 2021
 # Kevin Deng <kevindeng55+transifex@gmail.com>, 2021
 # Dai Xu <daixu61@hotmail.com>, 2021
-# lian Wu (Wulian) <xiguawulian@gmail.com>, 2025
+# Wulian233 <xiguawulian@gmail.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -15,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 14:19+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:07+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -467,7 +468,7 @@ msgstr ""
 msgid ""
 "Responses are represented as ``(type, [data, ...])`` tuples, as described in"
 " :ref:`IMAP4 Objects <imap4-objects>`."
-msgstr ""
+msgstr "响应表示为``(type, [data, ...])``元组，如 :ref:`IMAP4 对象 <imap4-objects>` 中所述。"
 
 #: ../../library/imaplib.rst:329
 msgid ""
@@ -478,6 +479,9 @@ msgid ""
 "minutes (1740 seconds). Requires a socket connection; *duration* must be "
 "``None`` on :class:`IMAP4_stream` connections."
 msgstr ""
+"*duration* 参数设置了保持空闲的最大持续时间（以秒为单位），在此之后任何正在进行的迭代都将停止。它可以是 :class:`int` 或 "
+":class:`float`，或者没有时间限制的 ``None``。 希望避免服务器上的非活动超时的调用者应该最多保持 29 分钟（1740 秒）。 "
+"需要一个套接字连接；在 :class:`IMAP4_stream` 连接上，*duration* 必须为 ``None``。"
 
 #: ../../library/imaplib.rst:337
 msgid ""
@@ -488,12 +492,18 @@ msgid ""
 "EXISTS [b'1']\n"
 "RECENT [b'1']"
 msgstr ""
+">>> with M.idle(duration=29 * 60) as idler:\n"
+"...     for typ, data in idler:\n"
+"...         print(typ, data)\n"
+"...\n"
+"EXISTS [b'1']\n"
+"RECENT [b'1']"
 
 #: ../../library/imaplib.rst:349
 msgid ""
 "Yield a burst of responses no more than *interval* seconds apart (expressed "
 "as an :class:`int` or :class:`float`)."
-msgstr ""
+msgstr "产生间隔不超过 *interval* 秒的突发响应 (表示为 :class:`int` 或 :class:`float`)。"
 
 #: ../../library/imaplib.rst:352
 msgid ""
@@ -502,12 +512,14 @@ msgid ""
 "response along with any immediately available subsequent responses. (For "
 "example, a rapid series of ``EXPUNGE`` responses after a bulk delete.)"
 msgstr ""
+":term:`generator` 是一次迭代一个响应的替代方法，旨在帮助高效的批处理。 "
+"它检索下一个响应以及任何立即可用的后续响应。（例如，在批量删除后的一系列快速 ``EXPUNGE`` 响应。）"
 
 #: ../../library/imaplib.rst:358
 msgid ""
 "Requires a socket connection; does not work on :class:`IMAP4_stream` "
 "connections."
-msgstr ""
+msgstr "需要一个套接字连接；在 :class:`IMAP4_stream` 连接上不起作用。"
 
 #: ../../library/imaplib.rst:361
 msgid ""
@@ -520,6 +532,14 @@ msgid ""
 "processing 3 responses...\n"
 "[('EXPUNGE', [b'2']), ('EXPUNGE', [b'1']), ('RECENT', [b'0'])]"
 msgstr ""
+">>> with M.idle() as idler:\n"
+"...     # 在小于0.1秒的时间内获得响应和其他后续\n"
+"...     batch = list(idler.burst())\n"
+"...     print(f'正在处理 {len(batch)} 个响应...')\n"
+"...     print(batch)\n"
+"...\n"
+"正在处理 3 个响应...\n"
+"[('EXPUNGE', [b'2']), ('EXPUNGE', [b'1']), ('RECENT', [b'0'])]"
 
 #: ../../library/imaplib.rst:374
 msgid ""
@@ -529,6 +549,8 @@ msgid ""
 "without producing anything. Callers should consider this if using it in a "
 "loop."
 msgstr ""
+"当等待突发中的第一个响应时，``IDLE`` 上下文的最大持续时间被传递给 :meth:`IMAP4.idle`。 因此，一个过期的 "
+":class:`!Idler` 将导致此生成器立即返回而不产生任何东西。 如果在循环中使用它，调用者应该考虑这一点。"
 
 #: ../../library/imaplib.rst:383
 msgid ""
@@ -537,6 +559,8 @@ msgid ""
 "responses are collected internally whenever a command finishes, and can be "
 "retrieved with :meth:`IMAP4.response`."
 msgstr ""
+":meth:`IMAP4.idle` 返回的迭代器仅在 :keyword:`with` 语句中可用。 "
+"在该上下文之前或之后，当命令完成时，就会在内部收集未经请求的响应，并且可以使用 :meth:`IMAP4.response` 进行检索。"
 
 #: ../../library/imaplib.rst:390
 msgid ""
@@ -545,6 +569,8 @@ msgid ""
 "iteration, and public method to remain stable, but should not subclass, "
 "instantiate, compare, or otherwise directly reference the class."
 msgstr ""
+":class:`!Idler` 类的名称和结构是内部接口，可能会发生变化。 "
+"调用代码可以依赖其上下文管理、迭代和公共方法来保持稳定，但不应该子类化、实例化、比较或以其他方式直接引用该类。"
 
 #: ../../library/imaplib.rst:400
 msgid ""

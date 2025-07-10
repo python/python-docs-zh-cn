@@ -12,6 +12,7 @@
 # jaystone776 <1732865113@qq.com>, 2021
 # Alpha Du <alphanow@gmail.com>, 2022
 # 乐成 王, 2024
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -19,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 14:19+0000\n"
+"POT-Creation-Date: 2025-06-27 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:06+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -616,6 +617,9 @@ msgid ""
 ":func:`partial` can be used to create a callable that behaves like the "
 ":func:`int` function where the *base* argument defaults to ``2``:"
 msgstr ""
+":func:`!partial` 函数会被用于“冻结了”一部分函数的参数和/或关键字的 partial "
+"函数从而得到一个具有简化的签名的新对象的应用程序。 例如，:func:`partial` 可被用来创建一个行为类似于 :func:`int` "
+"函数的可调用对象，其中 *base* 参数默认值为 ``2``:"
 
 #: ../../library/functools.rst:362
 msgid ""
@@ -624,6 +628,10 @@ msgid ""
 ">>> basetwo('10010')\n"
 "18"
 msgstr ""
+">>> basetwo = partial(int, base=2)\n"
+">>> basetwo.__doc__ = 'Convert base 2 string to an int.'\n"
+">>> basetwo('10010')\n"
+"18"
 
 #: ../../library/functools.rst:369
 msgid ""
@@ -633,12 +641,15 @@ msgid ""
 ":data:`!Placeholder`, only the chosen number of leading positional arguments"
 " can be pre-filled."
 msgstr ""
+"如果 :data:`Placeholder` 哨兵出现在 *args* 中，它们将在调用 :func:`!partial` 时首先被填充。 "
+"这使得通过调用 :func:`!partial` 来预先填充任何位置参数成为可能；如果没有 "
+":data:`!Placeholder`，则只能预填充选定数量的前导位置参数。"
 
 #: ../../library/functools.rst:374
 msgid ""
 "If any :data:`!Placeholder` sentinels are present, all must be filled at "
 "call time:"
-msgstr ""
+msgstr "如果有任何 :data:`!Placeholder` 哨兵存在，则必须在调用时填充所有哨兵："
 
 #: ../../library/functools.rst:376
 msgid ""
@@ -646,6 +657,9 @@ msgid ""
 ">>> say_to_world('Hello', 'dear')\n"
 "Hello dear world!"
 msgstr ""
+">>> say_to_world = partial(print, Placeholder, Placeholder, \"world!\")\n"
+">>> say_to_world('Hello', 'dear')\n"
+"Hello dear world!"
 
 #: ../../library/functools.rst:382
 msgid ""
@@ -653,6 +667,7 @@ msgid ""
 "one positional argument is provided, but there are two placeholders that "
 "must be filled in."
 msgstr ""
+"调用 ``say_to_world('Hello')`` 会引发 :exc:`TypeError`，因为只提供了一个位置参数，但有两个必须填充的占位符。"
 
 #: ../../library/functools.rst:386
 msgid ""
@@ -662,6 +677,9 @@ msgid ""
 ":data:`!Placeholder` sentinel to the place held by a previous "
 ":data:`!Placeholder`:"
 msgstr ""
+"如果 :func:`!partial` 应用于现有的 :func:`!partial` 对象，则输入对象的 :data:`!Placeholder` "
+"哨兵将使用新的位置参数填充。 通过在前一个 :data:`!Placeholder` 所占的位置插入一个新的 :data:`!Placeholder` "
+"哨兵，可以保留占位符："
 
 #: ../../library/functools.rst:392
 msgid ""
@@ -677,16 +695,27 @@ msgid ""
 ">>> remove_first_dear(message)\n"
 "'Hello, dear world!'"
 msgstr ""
+">>> from functools import partial, Placeholder as _\n"
+">>> remove = partial(str.replace, _, _, '')\n"
+">>> message = 'Hello, dear dear world!'\n"
+">>> remove(message, ' dear')\n"
+"'Hello, world!'\n"
+">>> remove_dear = partial(remove, _, ' dear')\n"
+">>> remove_dear(message)\n"
+"'Hello, world!'\n"
+">>> remove_first_dear = partial(remove_dear, _, 1)\n"
+">>> remove_first_dear(message)\n"
+"'Hello, dear world!'"
 
 #: ../../library/functools.rst:406
 msgid ""
 ":data:`!Placeholder` cannot be passed to :func:`!partial` as a keyword "
 "argument."
-msgstr ""
+msgstr ":data:`!Placeholder`不能作为关键字参数传递给:func:`!partial`。"
 
 #: ../../library/functools.rst:408
 msgid "Added support for :data:`Placeholder` in positional arguments."
-msgstr ""
+msgstr "增加了对位置参数 :data:`Placeholder` 的支持。"
 
 #: ../../library/functools.rst:413
 msgid ""
@@ -800,6 +829,17 @@ msgid ""
 "        value = function(value, element)\n"
 "    return value"
 msgstr ""
+"initial_missing = object()\n"
+"\n"
+"def reduce(function, iterable, /, initial=initial_missing):\n"
+"    it = iter(iterable)\n"
+"    if initial is initial_missing:\n"
+"        value = next(it)\n"
+"    else:\n"
+"        value = initial\n"
+"    for element in it:\n"
+"        value = function(value, element)\n"
+"    return value"
 
 #: ../../library/functools.rst:480
 msgid ""
@@ -809,7 +849,7 @@ msgstr "请参阅 :func:`itertools.accumulate` 了解有关可产生所有中间
 
 #: ../../library/functools.rst:483
 msgid "*initial* is now supported as a keyword argument."
-msgstr ""
+msgstr "现在支持 *initial* 作为关键字参数。"
 
 #: ../../library/functools.rst:488
 msgid ""
@@ -882,7 +922,7 @@ msgstr ""
 
 #: ../../library/functools.rst:520
 msgid ":class:`typing.Union` can also be used::"
-msgstr ""
+msgstr "还可以使用 :class:`typing.Union`::"
 
 #: ../../library/functools.rst:522
 msgid ""
@@ -1158,7 +1198,7 @@ msgstr ":func:`register` 属性现在支持使用类型标注。"
 msgid ""
 "The :func:`register` attribute now supports :class:`typing.Union` as a type "
 "annotation."
-msgstr ""
+msgstr ":func:`register` 属性现在支持 :class:`typing.Union` 作为类型注解。"
 
 #: ../../library/functools.rst:662
 msgid ""
@@ -1438,3 +1478,6 @@ msgid ""
 ":attr:`~definition.__name__` and :attr:`~definition.__doc__` attributes are "
 "not created automatically."
 msgstr ""
+":class:`partial` 对象与 :ref:`函数对象 <user-defined-funcs>` "
+"的类似之处在于它们都是可调用、可弱引用并可具有属性的。 但两者也存在一些重要的区别。 例如，:attr:`~definition.__name__` 和"
+" :attr:`~definition.__doc__` 属性不会被自动创建。 "

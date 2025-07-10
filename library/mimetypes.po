@@ -6,6 +6,7 @@
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # Alpha Du <alphanow@gmail.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -13,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 14:19+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:09+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -100,6 +101,10 @@ msgid ""
 "is ``False``, some additional non-standard but commonly used MIME types are "
 "also recognized."
 msgstr ""
+"可选的 *strict* 参数是一个旗标，指明要将已知 MIME 类型限制在 `IANA 已注册的 "
+"<https://www.iana.org/assignments/media-types/media-types.xhtml>`_ 官方类型之内。 "
+"但是，此模块的行为也取决于底层操作系统。只能识别操作系统识别的或在Python内部数据库中明确注册的文件类型。当 *strict* 为 ``True``"
+" 时（默认值），则仅支持 IANA 类型；当 *strict* 为 ``False`` 时，则还支持某些附加的非标准但常用的 MIME 类型。"
 
 #: ../../library/mimetypes.rst:56
 msgid "Added support for *url* being a :term:`path-like object`."
@@ -415,11 +420,13 @@ msgid ""
 "known, the new type will replace the old one. When the type is already known"
 " the extension will be added to the list of known extensions."
 msgstr ""
+"添加一个从 MIME 类型 *type* 到扩展名 *ext* 的映射。有效的扩展名以“.”开头或为空。 当扩展名已知时，新类型将替代旧类型。 "
+"当类型已知时，扩展名将被添加到已知扩展名列表。"
 
 #: ../../library/mimetypes.rst:312
 msgid ""
 "Invalid, undotted extensions will raise a :exc:`ValueError` in Python 3.16."
-msgstr ""
+msgstr "无效的、未点分隔的扩展名在 Python 3.16 中将引发 :exc:`ValueError`。"
 
 #: ../../library/mimetypes.rst:320
 msgid "Command-line usage"
@@ -429,7 +436,7 @@ msgstr "命令行用法"
 msgid ""
 "The :mod:`!mimetypes` module can be executed as a script from the command "
 "line."
-msgstr ""
+msgstr " :mod:`!mimetypes` 模块可以在命令行下作为脚本来执行。"
 
 #: ../../library/mimetypes.rst:324
 msgid "python -m mimetypes [-h] [-e] [-l] type [type ...]"
@@ -445,24 +452,24 @@ msgstr "显示帮助信息并退出。"
 
 #: ../../library/mimetypes.rst:340
 msgid "Guess extension instead of type."
-msgstr ""
+msgstr "猜测扩展名而不是类型。"
 
 #: ../../library/mimetypes.rst:345
 msgid "Additionally search for some common, but non-standard types."
-msgstr ""
+msgstr "此外，还可以搜索一些常见但非标准的类型。"
 
 #: ../../library/mimetypes.rst:347
 msgid ""
 "By default the script converts MIME types to file extensions. However, if "
 "``--extension`` is specified, it converts file extensions to MIME types."
-msgstr ""
+msgstr "默认情况下，脚本将MIME类型转换为文件扩展名。但是，如果指定了``--extension``，它会将文件扩展名转换为MIME类型。"
 
 #: ../../library/mimetypes.rst:351
 msgid ""
 "For each ``type`` entry, the script writes a line into the standard output "
 "stream. If an unknown type occurs, it writes an error message into the "
 "standard error stream and exits with the return code ``1``."
-msgstr ""
+msgstr "对于每个``type``条目，脚本将一行写入标准输出流。如果出现未知类型，则将错误消息写入标准错误流，并返回代码``1``退出。"
 
 #: ../../library/mimetypes.rst:359
 msgid "Command-line example"
@@ -472,7 +479,7 @@ msgstr "命令行示例"
 msgid ""
 "Here are some examples of typical usage of the :mod:`!mimetypes` command-"
 "line interface:"
-msgstr ""
+msgstr "以下是一些 :mod:`!mimetypes` 命令行界面的典型用法示例："
 
 #: ../../library/mimetypes.rst:364
 msgid ""
@@ -520,6 +527,49 @@ msgid ""
 ".opus\n"
 "error: unknown type audio/future"
 msgstr ""
+"$ # 通过文件名获取MIME类型\n"
+"$ python -m mimetypes filename.png\n"
+"type: image/png encoding: None\n"
+"\n"
+"$ # 通过URL获取MIME类型\n"
+"$ python -m mimetypes https://example.com/filename.txt\n"
+"type: text/plain encoding: None\n"
+"\n"
+"$ # 获取一个复杂的MIME类型\n"
+"$ python -m mimetypes filename.tar.gz\n"
+"type: application/x-tar encoding: gzip\n"
+"\n"
+"$ # 获取罕见文件扩展名的MIME类型\n"
+"$ python -m mimetypes filename.pict\n"
+"error: unknown extension of filename.pict\n"
+"\n"
+"$ # 现在看看Python内置的扩展数据库\n"
+"$ python -m mimetypes --lenient filename.pict\n"
+"type: image/pict encoding: None\n"
+"\n"
+"$ # 通过MIME类型获取文件扩展名\n"
+"$ python -m mimetypes --extension text/javascript\n"
+".js\n"
+"\n"
+"$ # 通过罕见的MIME类型获取文件扩展名\n"
+"$ python -m mimetypes --extension text/xul\n"
+"error: unknown type text/xul\n"
+"\n"
+"$ # 现在再次查看扩展数据库\n"
+"$ python -m mimetypes --extension --lenient text/xul\n"
+".xul\n"
+"\n"
+"$ # 尝试输入未知的文件扩展名\n"
+"$ python -m mimetypes filename.sh filename.nc filename.xxx filename.txt\n"
+"type: application/x-sh encoding: None\n"
+"type: application/x-netcdf encoding: None\n"
+"error: unknown extension of filename.xxx\n"
+"\n"
+"$ # 尝试输入未知的MIME类型\n"
+"$ python -m mimetypes --extension audio/aac audio/opus audio/future audio/x-wav\n"
+".aac\n"
+".opus\n"
+"error: unknown type audio/future"
 
 #: ../../library/mimetypes.rst:11 ../../library/mimetypes.rst:31
 #: ../../library/mimetypes.rst:66

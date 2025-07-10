@@ -9,6 +9,7 @@
 # Dai Xu <daixu61@hotmail.com>, 2021
 # ProgramRipper, 2023
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -16,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 14:19+0000\n"
+"POT-Creation-Date: 2025-06-27 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:17+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -663,7 +664,7 @@ msgid ""
 "allows you to use known-deprecated code without having to see the warning "
 "while not suppressing the warning for other code that might not be aware of "
 "its use of deprecated code."
-msgstr ""
+msgstr "而在上下文管理器中，所有警告都将被忽略。这允许你使用已知弃用的代码而不必看到警告，同时不抑制其他可能不知道其使用弃用代码的代码的警告。"
 
 #: ../../library/warnings.rst:331 ../../library/warnings.rst:373
 #: ../../library/warnings.rst:623
@@ -672,6 +673,8 @@ msgid ""
 "the :class:`catch_warnings` context manager when used in programs using "
 "multiple threads or async functions."
 msgstr ""
+"有关 :class:`catch_warnings` 上下文管理器在使用多线程或异步函数的程序中使用时的并发安全性的详细信息，请参阅 "
+":ref:`warning-concurrent-safe`。"
 
 #: ../../library/warnings.rst:338
 msgid "Testing Warnings"
@@ -736,7 +739,7 @@ msgid ""
 " when the context was entered. This prevents tests from changing the "
 "warnings filter in unexpected ways between tests and leading to "
 "indeterminate test results."
-msgstr ""
+msgstr "一旦上下文管理器退出，警告过滤器将恢复到进入上下文时的状态。这可以防止测试在测试之间以意外的方式更改警告过滤器，从而导致不确定的测试结果。"
 
 #: ../../library/warnings.rst:377
 msgid ""
@@ -1143,6 +1146,10 @@ msgid ""
 "that behavior is predictable in a multi-threaded program.  The flag defaults"
 " to true for free-threaded builds and false otherwise."
 msgstr ""
+":class:`catch_warnings` 上下文管理器的行为取决于 "
+":data:`sys.flags.context_aware_warnings` 标志。 如果该标志为 "
+"true，则上下文管理器以并发安全的方式运行，否则不是并发安全的。 并发安全意味着它不但是线程安全的，并且可以安全地在 :ref:`asyncio 协程"
+" <coroutine>` 和任务中使用。 线程安全意味着在多线程程序中行为是可预测的。 该标志对于自由线程构建默认为 true，否则为 false。"
 
 #: ../../library/warnings.rst:646
 msgid ""
@@ -1153,6 +1160,9 @@ msgid ""
 "if two or more threads use the :class:`catch_warnings` class at the same "
 "time, the behavior is undefined."
 msgstr ""
+"如果 :data:`~sys.flags.context_aware_warnings` 标志是 false，则 "
+":class:`catch_warnings` 将修改 :mod:`warnings` 模块的全局属性。 如果在并发程序中使用（使用多线程或使用 "
+"asyncio 协程），则不安全。 例如，如果两个或多个线程同时使用 :class:`catch_warnings` 类，则行为是未定义的。"
 
 #: ../../library/warnings.rst:653
 msgid ""
@@ -1162,6 +1172,9 @@ msgid ""
 "thread-local storage and it makes the use of :class:`catch_warnings` thread-"
 "safe."
 msgstr ""
+"如果该标志为 true，:class:`catch_warnings` 将不会修改全局属性，而是使用一个 "
+":class:`~contextvars.ContextVar` 来存储新建立的警告过滤器状态。 上下文变量提供线程本地存储，并使得 "
+":class:`catch_warnings` 的使用是线程安全的。"
 
 #: ../../library/warnings.rst:659
 msgid ""
@@ -1170,6 +1183,8 @@ msgid ""
 "false, the context manager works by replacing and then later restoring the "
 "module's :func:`showwarning` function.  That is not concurrent-safe."
 msgstr ""
+"上下文处理器的 *record* 形参也根据标志的值表现不同。 当 *record* 为 true 并且该标志为 false "
+"时，上下文管理器通过替换再稍后恢复模块的 :func:`showwarning` 函数来运作。 这不是并发安全的。"
 
 #: ../../library/warnings.rst:664
 msgid ""
@@ -1178,6 +1193,8 @@ msgid ""
 " property in the context variable.  In this case, the :func:`showwarning` "
 "function will not be restored when exiting the context handler."
 msgstr ""
+"当 *record* 为 true 且该标志为 true 时，:func:`showwarning` 函数不会被替换。 "
+"相反，记录状态由上下文变量中的内部属性指示。 在这种情况下，退出上下文处理器时不会恢复 :func:`showwarning` 函数。"
 
 #: ../../library/warnings.rst:669
 msgid ""
@@ -1185,6 +1202,9 @@ msgid ""
 ":option:`-X context_aware_warnings<-X>` command-line option or by the "
 ":envvar:`PYTHON_CONTEXT_AWARE_WARNINGS` environment variable."
 msgstr ""
+":data:`~sys.flags.context_aware_warnings` 标志可以通过命令行选项 :option:`-X "
+"context_aware_warnings <-X>` 或环境变量 :envvar:`PYTHON_CONTEXT_AWARE_WARNINGS` "
+"来设置。"
 
 #: ../../library/warnings.rst:675
 msgid ""
@@ -1198,6 +1218,11 @@ msgid ""
 "warnings context variable, meaning that any filtering that was established "
 "by a :class:`catch_warnings` context manager will no longer be active."
 msgstr ""
+"大多数希望 warnings 模块具有线程安全行为的程序也可能希望将 :data:`~sys.flags.thread_inherit_context`"
+" 标志设置为 true。 该标志导致由 :class:`threading.Thread` 创建的线程从启动它的线程的上下文变量副本启动。 当为 "
+"true 时，由 :class:`catch_warnings` 在一个线程中建立的上下文也将应用于由它启动的新线程。 如果为 "
+"false，新的线程将以空的 warnings 上下文变量开始，这意味着由 :class:`catch_warnings` "
+"上下文管理器建立的任何过滤将不再有效。"
 
 #: ../../library/warnings.rst:688
 msgid ""

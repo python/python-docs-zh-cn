@@ -11,20 +11,21 @@
 # jaystone776 <1732865113@qq.com>, 2021
 # 高乐喆 <gaolezhe@outlook.com>, 2023
 # F-park, 2024
-# lian Wu (Wulian) <xiguawulian@gmail.com>, 2024
+# Wulian233 <xiguawulian@gmail.com>, 2024
 # Pan Felix <tinylambda@gmail.com>, 2024
 # Alpha Du <alphanow@gmail.com>, 2024
-# Freesand Leo <yuqinju@163.com>, 2025
 # WH-2099 <wh2099@outlook.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-23 14:20+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:55+0000\n"
-"Last-Translator: WH-2099 <wh2099@outlook.com>, 2025\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -480,7 +481,7 @@ msgid ""
 "The full function signature is largely the same as that of the :class:`Task`"
 " constructor (or factory) - all of the keyword arguments to this function "
 "are passed through to that interface."
-msgstr ""
+msgstr "完整函数签名与 :class:`Task` 构造器（或工厂函数）的大致相同 —— 所有传给此函数的关键字参数都会被传给该接口。"
 
 #: ../../library/asyncio-task.rst:250
 msgid ""
@@ -498,6 +499,8 @@ msgid ""
 "later. If *eager_start* is not passed the mode set by "
 ":meth:`loop.set_task_factory` will be used."
 msgstr ""
+"一个可选的仅限关键字的 *eager_start* 参数允许指定任务是应该在调用 create_task 期间紧急执行，还是稍后调度。如果没有传递 "
+"*eager_start*，则会使用 :meth:`loop.set_task_factory` 设置的模式。"
 
 #: ../../library/asyncio-task.rst:259
 msgid ""
@@ -564,7 +567,7 @@ msgstr "增加了 *context* 形参。"
 
 #: ../../library/asyncio-task.rst:299
 msgid "Added the *eager_start* parameter by passing on all *kwargs*."
-msgstr ""
+msgstr "通过传递所有的 *kwargs* 添加了 *eager_start* 形参。"
 
 #: ../../library/asyncio-task.rst:304
 msgid "Task Cancellation"
@@ -640,7 +643,7 @@ msgstr "如果任务组未激活则关闭所给出的协程。"
 
 #: ../../library/asyncio-task.rst:356
 msgid "Passes on all *kwargs* to :meth:`loop.create_task`"
-msgstr ""
+msgstr "将所有的 *kwargs* 传递给 :meth:`loop.create_task`"
 
 #: ../../library/asyncio-task.rst:358 ../../library/asyncio-task.rst:564
 #: ../../library/asyncio-task.rst:737 ../../library/asyncio-task.rst:795
@@ -1862,10 +1865,29 @@ msgid ""
 "    # Run something in a thread\n"
 "    await asyncio.to_thread(in_thread, loop)"
 msgstr ""
+"def in_thread(loop: asyncio.AbstractEventLoop) -> None:\n"
+"    #运行一些阻塞IO\n"
+"    pathlib.Path(\"example.txt\").write_text(\"hello world\", encoding=\"utf8\")\n"
+"\n"
+"    # 创建一个协程\n"
+"    coro = asyncio.sleep(1, result=3)\n"
+"\n"
+"    # 将协程提交给给定的循环\n"
+"    future = asyncio.run_coroutine_threadsafe(coro, loop)\n"
+"\n"
+"    # 使用可选的timeout参数等待结果\n"
+"    assert future.result(timeout=2) == 3\n"
+"\n"
+"async def amain() -> None:\n"
+"    # 获取正在运行的循环\n"
+"    loop = asyncio.get_running_loop()\n"
+"\n"
+"    # 在线程中运行一些东西\n"
+"    await asyncio.to_thread(in_thread, loop)"
 
 #: ../../library/asyncio-task.rst:1107
 msgid "It's also possible to run the other way around.  Example::"
-msgstr ""
+msgstr "也有可能反过来运行。例如::"
 
 #: ../../library/asyncio-task.rst:1109
 msgid ""
@@ -1901,6 +1923,37 @@ msgid ""
 "    # Wait for the result with an optional timeout argument\n"
 "    assert future.result(timeout=2) == 3"
 msgstr ""
+"@contextlib.contextmanager\n"
+"def loop_in_thread() -> Generator[asyncio.AbstractEventLoop]:\n"
+"    loop_fut = concurrent.futures.Future[asyncio.AbstractEventLoop]()\n"
+"    stop_event = asyncio.Event()\n"
+"\n"
+"    async def main() -> None:\n"
+"        loop_fut.set_result(asyncio.get_running_loop())\n"
+"        await stop_event.wait()\n"
+"\n"
+"    with concurrent.futures.ThreadPoolExecutor(1) as tpe:\n"
+"        complete_fut = tpe.submit(asyncio.run, main())\n"
+"        for fut in concurrent.futures.as_completed((loop_fut, complete_fut)):\n"
+"            if fut is loop_fut:\n"
+"                loop = loop_fut.result()\n"
+"                try:\n"
+"                    yield loop\n"
+"                finally:\n"
+"                    loop.call_soon_threadsafe(stop_event.set)\n"
+"            else:\n"
+"                fut.result()\n"
+"\n"
+"# 在另一线程中创建循环\n"
+"with loop_in_thread() as loop:\n"
+"    # 创建一个协程\n"
+"    coro = asyncio.sleep(1, result=3)\n"
+"\n"
+"    # 将协程提交至给定的循环\n"
+"    future = asyncio.run_coroutine_threadsafe(coro, loop)\n"
+"\n"
+"    # 附带可选的超时参数等待结果\n"
+"    assert future.result(timeout=2) == 3"
 
 #: ../../library/asyncio-task.rst:1141
 msgid ""

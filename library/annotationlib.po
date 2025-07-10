@@ -7,6 +7,7 @@
 # Alpha Du <alphanow@gmail.com>, 2025
 # nick <2330458484@qq.com>, 2025
 # Xu Siyuan, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -14,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 14:19+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2025-05-08 06:04+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -46,12 +47,14 @@ msgid ""
 "to retrieve annotations in a reliable way, even in the presence of forward "
 "references and other edge cases."
 msgstr ""
+"类型注解是 :ref:`延迟求值 <lazy-evaluation>` "
+"的，并且通常包含对在注解创建时尚未定义的对象的前向引用。这个模块提供了一组底层工具，即使在存在前向引用和其他极端情况时，也能以可靠的方式获取注解。"
 
 #: ../../library/annotationlib.rst:25
 msgid ""
 "This module supports retrieving annotations in three main formats (see "
 ":class:`Format`), each of which works best for different use cases:"
-msgstr ""
+msgstr "该模块支持以三种主要格式（见 :class:`Format`）检索注解，每种格式适用于不同的使用场景："
 
 #: ../../library/annotationlib.rst:28
 msgid ""
@@ -59,6 +62,7 @@ msgid ""
 "This is most straightforward to work with, but it may raise errors, for "
 "example if the annotations contain references to undefined names."
 msgstr ""
+":attr:`~Format.VALUE` 会对注解进行求值并返回其值。这种格式使用起来最直接，但可能会引发错误，例如当注解中包含对未定义名称的引用时。"
 
 #: ../../library/annotationlib.rst:31
 msgid ""
@@ -67,6 +71,8 @@ msgid ""
 " without evaluating them. This is useful when you need to work with "
 "annotations that may contain unresolved forward references."
 msgstr ""
+":attr:`~Format.FORWARDREF` 会为无法解析的注解返回 :class:`ForwardRef` "
+"对象，允许你在不求值注解的情况下检查它们。当你需要处理可能包含未解析前向引用的注解时，这种格式非常有用。"
 
 #: ../../library/annotationlib.rst:35
 msgid ""
@@ -74,6 +80,8 @@ msgid ""
 "it would appear in the source file. This is useful for documentation "
 "generators that want to display annotations in a readable way."
 msgstr ""
+":attr:`~Format.STRING` "
+"会将注解以字符串形式返回，类似于其在源代码文件中的呈现方式。这对于希望以可读方式展示注解的文档生成器非常有用。"
 
 #: ../../library/annotationlib.rst:39
 msgid ""
@@ -86,33 +94,40 @@ msgid ""
 ":func:`call_evaluate_function` function for working with :term:`evaluate "
 "functions <evaluate function>`."
 msgstr ""
+":func:`get_annotations` "
+"函数是检索注解的主要入口点。给定一个函数、类或模块，它会以请求的格式返回注解字典。此模块还提供了直接处理用于求值注解的 :term:`annotate "
+"function` ，例如 :func:`get_annotate_from_class_namespace` 和 "
+":func:`call_annotate_function`，以及用于处理 :term:`求值函数 <evaluate function>` 的 "
+":func:`call_evaluate_function` 函数。"
 
 #: ../../library/annotationlib.rst:51
 msgid ""
 ":pep:`649` proposed the current model for how annotations work in Python."
-msgstr ""
+msgstr ":pep:`649` 提出了 Python 中注解工作方式的当前模型。"
 
 #: ../../library/annotationlib.rst:53
 msgid ""
 ":pep:`749` expanded on various aspects of :pep:`649` and introduced the "
 ":mod:`!annotationlib` module."
-msgstr ""
+msgstr ":pep:`749` 在 :pep:`649` 的基础上进行了多方面扩展，并引入了 :mod:`!annotationlib` 模块。"
 
 #: ../../library/annotationlib.rst:56
 msgid ""
 ":ref:`annotations-howto` provides best practices for working with "
 "annotations."
-msgstr ""
+msgstr ":ref:`annotations-howto` 提供了使用注解的最佳实践指南。"
 
 #: ../../library/annotationlib.rst:59
 msgid ""
 ":pypi:`typing-extensions` provides a backport of :func:`get_annotations` "
 "that works on earlier versions of Python."
 msgstr ""
+":pypi:`typing-extensions` 提供了 :func:`get_annotations` 的向后移植版本，可在早期 Python "
+"版本上使用。"
 
 #: ../../library/annotationlib.rst:63
 msgid "Annotation semantics"
-msgstr ""
+msgstr "注解语义（Annotation semantics）"
 
 #: ../../library/annotationlib.rst:65
 msgid ""
@@ -120,6 +135,8 @@ msgid ""
 "and currently still depends on a :ref:`future import <future>`. There have "
 "been execution models for annotations:"
 msgstr ""
+"在 Python 3 的发展历程中，注解的求值方式发生了多次变化，目前仍依赖于 :ref:`future import "
+"<future>`。注解的执行模型主要有以下几种："
 
 #: ../../library/annotationlib.rst:69
 msgid ""
@@ -127,6 +144,8 @@ msgid ""
 ":pep:`526`): Annotations are evaluated eagerly, as they are encountered in "
 "the source code."
 msgstr ""
+"*标准语义* (Python 3.0 至 3.13 的默认行为；参见 :pep:`3107` 和 "
+":pep:`526`)：注解会在源代码中被遇到时立即求值。"
 
 #: ../../library/annotationlib.rst:72
 msgid ""
@@ -134,16 +153,20 @@ msgid ""
 "in Python 3.7 and newer; see :pep:`563`): Annotations are stored as strings "
 "only."
 msgstr ""
+"*字符串化注解* (在 Python 3.7 及更高版本中使用 ``from __future__ import annotations`` 启用；参见"
+" :pep:`563`)：注解仅以字符串形式存储。"
 
 #: ../../library/annotationlib.rst:75
 msgid ""
 "*Deferred evaluation* (default in Python 3.14 and newer; see :pep:`649` and "
 ":pep:`749`): Annotations are evaluated lazily, only when they are accessed."
 msgstr ""
+"*延迟求值* (Python 3.14 及更高版本的默认行为；参见 :pep:`649` 和 "
+":pep:`749`)：注解会延迟求值，仅在被访问时才会进行。"
 
 #: ../../library/annotationlib.rst:78
 msgid "As an example, consider the following program::"
-msgstr ""
+msgstr "举个例子，考虑以下程序::"
 
 #: ../../library/annotationlib.rst:80
 msgid ""
@@ -154,10 +177,16 @@ msgid ""
 "\n"
 "print(func.__annotations__)"
 msgstr ""
+"def func(a: Cls) -> None:\n"
+"    print(a)\n"
+"\n"
+"class Cls: pass\n"
+"\n"
+"print(func.__annotations__)"
 
 #: ../../library/annotationlib.rst:87
 msgid "This will behave as follows:"
-msgstr ""
+msgstr "其行为如下："
 
 #: ../../library/annotationlib.rst:89
 msgid ""
@@ -165,18 +194,23 @@ msgid ""
 ":exc:`NameError` at the line where ``func`` is defined, because ``Cls`` is "
 "an undefined name at that point."
 msgstr ""
+"在标准语义（Python 3.13 及更早版本）下，程序会在定义 ``func`` 的行抛出 :exc:`NameError`，因为此时 ``Cls``"
+" 是一个未定义的名称。"
 
 #: ../../library/annotationlib.rst:92
 msgid ""
 "Under stringified annotations (if ``from __future__ import annotations`` is "
 "used), it will print ``{'a': 'Cls', 'return': 'None'}``."
 msgstr ""
+"在字符串化注解（使用 ``from __future__ import annotations``）下，程序会打印 ``{'a': 'Cls', "
+"'return': 'None'}``。"
 
 #: ../../library/annotationlib.rst:94
 msgid ""
 "Under deferred evaluation (Python 3.14 and later), it will print ``{'a': "
 "<class 'Cls'>, 'return': None}``."
 msgstr ""
+"在延迟求值（Python 3.14 及更高版本）下，程序会打印 ``{'a': <class 'Cls'>, 'return': None}``。"
 
 #: ../../library/annotationlib.rst:97
 msgid ""
@@ -198,6 +232,13 @@ msgid ""
 " __future__ import annotations`` is present, but this behavior will "
 "eventually be removed."
 msgstr ""
+"当 Python 3.0 通过 :pep:`3107` 首次引入函数注解时，采用标准语义是因为这是实现注解最简单、最直观的方式。Python 3.6 "
+"通过 :pep:`526` "
+"引入变量注解时，也使用了相同的执行模型。然而，标准语义在将注解用作类型提示时会引发问题，例如在遇到注解时需要引用尚未定义的名称。此外，在模块导入时执行注解还存在性能问题。因此，Python"
+" 3.7 通过 :pep:`563` 引入了使用 ``from __future__ import annotations`` "
+"语法将注解存储为字符串的功能。当时的计划是最终将这种行为设为默认，但出现了一个问题：对于在运行时内省注解的人来说，字符串化注解更难处理。另一个提案 "
+":pep:`649` 引入了第三种执行模型——延迟求值，并在 Python 3.14 中实现。如果存在 ``from __future__ import"
+" annotations``，仍然会使用字符串化注解，但这种行为最终会被移除。"
 
 #: ../../library/annotationlib.rst:116
 msgid "Classes"
@@ -210,10 +251,12 @@ msgid ""
 "passed to :func:`get_annotations` and other functions in this module, as "
 "well as to :attr:`~object.__annotate__` functions."
 msgstr ""
+"一个 :class:`~enum.IntEnum` 枚举类，用于描述注解可以返回的格式。该枚举的成员或其等效整数值可传递给 "
+":func:`get_annotations` 以及本模块中的其他函数，也可传递给 :attr:`~object.__annotate__` 函数。"
 
 #: ../../library/annotationlib.rst:128
 msgid "Values are the result of evaluating the annotation expressions."
-msgstr ""
+msgstr "值是对注解表达式求值的结果。"
 
 #: ../../library/annotationlib.rst:133
 msgid ""
@@ -224,6 +267,9 @@ msgid ""
 "that they do not support execution in this environment. This format is only "
 "used internally and should not be passed to the functions in this module."
 msgstr ""
+"特殊值，用于表示注解函数正在具有伪全局变量的特殊环境中求值。当传递此值时，注解函数应返回与 :attr:`Format.VALUE` "
+"格式相同的值，或者抛出 :exc:`NotImplementedError` "
+"以表示它们不支持在此环境中执行。此格式仅在内部使用，不应传递给本模块中的函数。"
 
 #: ../../library/annotationlib.rst:144
 msgid ""
@@ -231,22 +277,24 @@ msgid ""
 "defined values, and :class:`ForwardRef` proxies for undefined values. Real "
 "objects may contain references to :class:`ForwardRef` proxy objects."
 msgstr ""
+"对于已定义的值，使用真实的注解值（按照 :attr:`Format.VALUE` 格式）；对于未定义的值，使用 :class:`ForwardRef` "
+"代理。真实对象可能包含对 :class:`ForwardRef` 代理对象的引用。"
 
 #: ../../library/annotationlib.rst:152
 msgid ""
 "Values are the text string of the annotation as it appears in the source "
 "code, up to modifications including, but not restricted to, whitespace "
 "normalizations and constant values optimizations."
-msgstr ""
+msgstr "值是注解在源代码中显示的文本字符串，可能经过包括但不限于空白符规范化和常数值优化的修改。"
 
 #: ../../library/annotationlib.rst:156
 msgid ""
 "The exact values of these strings may change in future versions of Python."
-msgstr ""
+msgstr "这些字符串的确切值可能在未来的Python版本中发生变化。"
 
 #: ../../library/annotationlib.rst:162
 msgid "A proxy object for forward references in annotations."
-msgstr ""
+msgstr "用于注解中前向引用的代理对象。"
 
 #: ../../library/annotationlib.rst:164
 msgid ""
@@ -255,17 +303,19 @@ msgid ""
 "can happen when a forward reference is used in an annotation, such as when a"
 " class is referenced before it is defined."
 msgstr ""
+"当使用 :attr:`~Format.FORWARDREF` "
+"格式且注解包含无法解析的名称时，将返回此类的实例。这种情况通常发生在注解中使用前向引用时，例如在类定义之前引用该类。"
 
 #: ../../library/annotationlib.rst:171
 msgid ""
 "A string containing the code that was evaluated to produce the "
 ":class:`~ForwardRef`. The string may not be exactly equivalent to the "
 "original source."
-msgstr ""
+msgstr "一个包含生成 :class:`~ForwardRef` 所执行代码的字符串。该字符串可能与原始源代码不完全等同。"
 
 #: ../../library/annotationlib.rst:177
 msgid "Evaluate the forward reference, returning its value."
-msgstr ""
+msgstr "对前向引用进行求值，返回其值。"
 
 #: ../../library/annotationlib.rst:179
 msgid ""
@@ -282,6 +332,13 @@ msgid ""
 ":attr:`~Format.STRING`, the method will return "
 ":attr:`~ForwardRef.__forward_arg__`."
 msgstr ""
+"如果 *format* 参数为 :attr:`~Format.VALUE` (默认值)，当此方法遇到无法解析的前向引用名称时，可能会抛出 "
+":exc:`NameError` 等异常。该方法的参数可用于为那些原本未定义的名称提供绑定。如果 *format* 参数为 "
+":attr:`~Format.FORWARDREF`，此方法绝不会抛出异常，但可能会返回一个 :class:`~ForwardRef` 实例。 "
+"例如，当前向引用对象包含代码 ``list[undefined]``，其中 ``undefined`` 是一个未定义的名称，使用 "
+":attr:`~Format.FORWARDREF` 格式对其求值将返回 ``list[ForwardRef('undefined')]``。 如果 "
+"*format* 参数为 :attr:`~Format.STRING`，此方法将返回 "
+":attr:`~ForwardRef.__forward_arg__`。"
 
 #: ../../library/annotationlib.rst:191
 msgid ""
@@ -290,6 +347,8 @@ msgid ""
 "object that contains the annotation from which the :class:`~ForwardRef` "
 "derives, such as a module object, type object, or function object."
 msgstr ""
+"*owner* 形参提供了向此方法传递作用域信息的首选机制。:class:`~ForwardRef` 的所有者是包含该 "
+":class:`~ForwardRef` 所源自的注解的对象，例如模块对象、类型对象或函数对象。"
 
 #: ../../library/annotationlib.rst:196
 msgid ""
@@ -305,6 +364,12 @@ msgid ""
 "an annotation found in the class namespace of a generic class ``C``, "
 "*type_params* should be set to ``C.__type_params__``."
 msgstr ""
+"*globals*、*locals* 和 *type_params* 形参提供了一种更精确的机制，用于影响在求值 "
+":class:`~ForwardRef` 时可用的名称。*globals* 和 *locals* 会传递给 "
+":func:`eval`，表示求值该名称时的全局和局部命名空间。*type_params* 参数与使用原生语法创建的 :ref:`泛型类 "
+"<generic-classes>` 和 :ref:`函数 <generic-functions>` 对象相关。它是一个 :ref:`类型形参 "
+"<type-params>` 元组，表示在求值前向引用时的作用域内的类型参数。例如，如果要对从泛型类 ``C`` 的类命名空间中的注解获取的 "
+":class:`~ForwardRef` 进行求值，*type_params* 应设置为 ``C.__type_params__``。"
 
 #: ../../library/annotationlib.rst:207
 msgid ""
@@ -315,12 +380,24 @@ msgid ""
 "any information about their scope, so passing arguments to this method may "
 "be necessary to evaluate them successfully."
 msgstr ""
+"由 :func:`get_annotations` 返回的 :class:`~ForwardRef` "
+"实例会保留其来源作用域的信息，因此调用此方法时无需传递额外参数即可对这些对象进行求值。而通过其他方式创建的 :class:`~ForwardRef` "
+"实例可能不包含任何作用域信息，因此可能需要向此方法传递参数才能成功对其进行求值。"
 
-#: ../../library/annotationlib.rst:218
+#: ../../library/annotationlib.rst:214
+msgid ""
+"If no *owner*, *globals*, *locals*, or *type_params* are provided and the "
+":class:`~ForwardRef` does not contain information about its origin, empty "
+"globals and locals dictionaries are used."
+msgstr ""
+"如果未提供 *owner*、*globals*、*locals* 或 *type_params* 参数，并且 :class:`~ForwardRef` "
+"不包含其来源信息，则会使用空的全局和局部字典。"
+
+#: ../../library/annotationlib.rst:222
 msgid "Functions"
 msgstr "函数"
 
-#: ../../library/annotationlib.rst:222
+#: ../../library/annotationlib.rst:226
 msgid ""
 "Convert an annotations dict containing runtime values to a dict containing "
 "only strings. If the values are not already strings, they are converted "
@@ -328,14 +405,17 @@ msgid ""
 "annotate functions that support the :attr:`~Format.STRING` format but do not"
 " have access to the code creating the annotations."
 msgstr ""
+"将包含运行时值的注解字典转换为仅包含字符串的字典。如果值已经是字符串，则保持不变；否则，使用 :func:`type_repr` "
+"进行转换。这是为用户提供的注解函数提供的辅助工具，这些函数支持 :attr:`~Format.STRING` 格式，但无法访问创建注解的代码。"
 
-#: ../../library/annotationlib.rst:229
+#: ../../library/annotationlib.rst:233
 msgid ""
 "For example, this is used to implement the :attr:`~Format.STRING` for "
 ":class:`typing.TypedDict` classes created through the functional syntax:"
 msgstr ""
+"例如，这用于为通过函数式语法创建的 :class:`typing.TypedDict` 类实现 :attr:`~Format.STRING` 格式："
 
-#: ../../library/annotationlib.rst:232
+#: ../../library/annotationlib.rst:236
 msgid ""
 ">>> from typing import TypedDict\n"
 ">>> Movie = TypedDict(\"movie\", {\"name\": str, \"year\": int})\n"
@@ -347,14 +427,16 @@ msgstr ""
 ">>> get_annotations(Movie, format=Format.STRING)\n"
 "{'name': 'str', 'year': 'int'}"
 
-#: ../../library/annotationlib.rst:243
+#: ../../library/annotationlib.rst:247
 msgid ""
 "Call the :term:`annotate function` *annotate* with the given *format*, a "
 "member of the :class:`Format` enum, and return the annotations dictionary "
 "produced by the function."
 msgstr ""
+"使用给定的 *format* (:class:`Format` 枚举的成员) 调用 :term:`annotate function` "
+"*annotate*，并返回该函数生成的注解字典。"
 
-#: ../../library/annotationlib.rst:247
+#: ../../library/annotationlib.rst:251
 msgid ""
 "This helper function is required because annotate functions generated by the"
 " compiler for functions, classes, and modules only support the "
@@ -364,23 +446,29 @@ msgid ""
 "building block when implementing functionality that needs to partially "
 "evaluate annotations while a class is being constructed."
 msgstr ""
+"之所以需要这个辅助函数，是因为编译器为函数、类和模块生成的注解函数在直接调用时仅支持 :attr:`~Format.VALUE` "
+"格式。为了支持其他格式，此函数会在一个特殊环境中调用注解函数，使其能够生成其他格式的注解。在实现需要在类构建过程中部分求值注解的功能时，这是一个有用的构建块。"
 
-#: ../../library/annotationlib.rst:256
+#: ../../library/annotationlib.rst:260
 msgid ""
 "*owner* is the object that owns the annotation function, usually a function,"
 " class, or module. If provided, it is used in the :attr:`~Format.FORWARDREF`"
 " format to produce a :class:`ForwardRef` object that carries more "
 "information."
 msgstr ""
+"*owner* 是拥有注解函数的对象，通常是函数、类或模块。如果提供了该参数，它会在 :attr:`~Format.FORWARDREF` "
+"格式中用于生成一个携带更多信息的 :class:`ForwardRef` 对象。"
 
-#: ../../library/annotationlib.rst:263
+#: ../../library/annotationlib.rst:267
 msgid ""
 ":PEP:`PEP 649 <649#the-stringizer-and-the-fake-globals-environment>` "
 "contains an explanation of the implementation technique used by this "
 "function."
 msgstr ""
+":PEP:`PEP 649 <649#the-stringizer-and-the-fake-globals-environment>` "
+"中包含了对此函数所使用的实现技术的解释。"
 
-#: ../../library/annotationlib.rst:271
+#: ../../library/annotationlib.rst:275
 msgid ""
 "Call the :term:`evaluate function` *evaluate* with the given *format*, a "
 "member of the :class:`Format` enum, and return the value produced by the "
@@ -388,56 +476,59 @@ msgid ""
 "always returns a dictionary mapping strings to annotations, while this "
 "function returns a single value."
 msgstr ""
+"使用给定的 *format* (:class:`Format` 枚举的成员) 调用 :term:`evaluate function` "
+"*evaluate*，并返回该函数生成的值。 这与 :func:`call_annotate_function` "
+"类似，但后者始终返回一个将字符串映射到注解的字典，而此函数返回单个值。"
 
-#: ../../library/annotationlib.rst:277
+#: ../../library/annotationlib.rst:281
 msgid ""
 "This is intended for use with the evaluate functions generated for lazily "
 "evaluated elements related to type aliases and type parameters:"
-msgstr ""
+msgstr "此功能旨在与为类型别名和类型参数相关的延迟求值元素生成的求值函数一起使用："
 
-#: ../../library/annotationlib.rst:280
+#: ../../library/annotationlib.rst:284
 msgid ":meth:`typing.TypeAliasType.evaluate_value`, the value of type aliases"
 msgstr ":meth:`typing.TypeAliasType.evaluate_value`，类型别名的值"
 
-#: ../../library/annotationlib.rst:281
+#: ../../library/annotationlib.rst:285
 msgid ":meth:`typing.TypeVar.evaluate_bound`, the bound of type variables"
 msgstr ":meth:`typing.TypeVar.evaluate_bound`，类型变量的边界"
 
-#: ../../library/annotationlib.rst:282
+#: ../../library/annotationlib.rst:286
 msgid ""
 ":meth:`typing.TypeVar.evaluate_constraints`, the constraints of type "
 "variables"
 msgstr ":meth:`typing.TypeVar.evaluate_constraints`，类型变量的约束"
 
-#: ../../library/annotationlib.rst:284
+#: ../../library/annotationlib.rst:288
 msgid ""
 ":meth:`typing.TypeVar.evaluate_default`, the default value of type variables"
 msgstr ":meth:`typing.TypeVar.evaluate_default`，类型变量的默认值"
 
-#: ../../library/annotationlib.rst:286
+#: ../../library/annotationlib.rst:290
 msgid ""
 ":meth:`typing.ParamSpec.evaluate_default`, the default value of parameter "
 "specifications"
 msgstr ":meth:`typing.ParamSpec.evaluate_default`，形参规格的默认值"
 
-#: ../../library/annotationlib.rst:288
+#: ../../library/annotationlib.rst:292
 msgid ""
 ":meth:`typing.TypeVarTuple.evaluate_default`, the default value of type "
 "variable tuples"
 msgstr ":meth:`typing.TypeVarTuple.evaluate_default`，类型变量元组的默认值"
 
-#: ../../library/annotationlib.rst:291
+#: ../../library/annotationlib.rst:295
 msgid ""
 "*owner* is the object that owns the evaluate function, such as the type "
 "alias or type variable object."
-msgstr ""
+msgstr "*owner* 是拥有求值函数的对象，例如类型别名或类型变量对象。"
 
-#: ../../library/annotationlib.rst:294
+#: ../../library/annotationlib.rst:298
 msgid ""
 "*format* can be used to control the format in which the value is returned:"
-msgstr ""
+msgstr "*format* 可用于控制返回值的格式："
 
-#: ../../library/annotationlib.rst:296
+#: ../../library/annotationlib.rst:300
 msgid ""
 ">>> type Alias = undefined\n"
 ">>> call_evaluate_function(Alias.evaluate_value, Format.VALUE)\n"
@@ -449,8 +540,17 @@ msgid ""
 ">>> call_evaluate_function(Alias.evaluate_value, Format.STRING)\n"
 "'undefined'"
 msgstr ""
+">>> type Alias = undefined\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.VALUE)\n"
+"Traceback (most recent call last):\n"
+"...\n"
+"NameError: name 'undefined' is not defined\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.FORWARDREF)\n"
+"ForwardRef('undefined')\n"
+">>> call_evaluate_function(Alias.evaluate_value, Format.STRING)\n"
+"'undefined'"
 
-#: ../../library/annotationlib.rst:312
+#: ../../library/annotationlib.rst:316
 msgid ""
 "Retrieve the :term:`annotate function` from a class namespace dictionary "
 "*namespace*. Return :const:`!None` if the namespace does not contain an "
@@ -460,32 +560,39 @@ msgid ""
 "<annotationlib-metaclass>` for an example using this function in a "
 "metaclass."
 msgstr ""
+"从类命名空间字典 *namespace* 中检索 :term:`annotate function`。 如果命名空间中不包含注解函数，则返回 "
+":const:`!None`。这在类完全创建之前（例如在元类中）特别有用；类创建后，可以通过 ``cls.__annotate__`` "
+"检索注解函数。有关在元类中使用此函数的示例，请参阅 :ref:`下文 <annotationlib-metaclass>`。"
 
-#: ../../library/annotationlib.rst:322
+#: ../../library/annotationlib.rst:326
 msgid "Compute the annotations dict for an object."
 msgstr "计算一个对象的标注字典。"
 
-#: ../../library/annotationlib.rst:324
+#: ../../library/annotationlib.rst:328
 msgid ""
 "*obj* may be a callable, class, module, or other object with "
 ":attr:`~object.__annotate__` or :attr:`~object.__annotations__` attributes. "
 "Passing any other object raises :exc:`TypeError`."
 msgstr ""
+"*obj* 可以是可调用对象、类、模块或其他具有 :attr:`~object.__annotate__` 或 "
+":attr:`~object.__annotations__` 属性的对象。传递任何其他对象会引发 :exc:`TypeError`。"
 
-#: ../../library/annotationlib.rst:328
+#: ../../library/annotationlib.rst:332
 msgid ""
 "The *format* parameter controls the format in which annotations are "
 "returned, and must be a member of the :class:`Format` enum or its integer "
 "equivalent. The different formats work as follows:"
-msgstr ""
+msgstr "*format* 形参控制注解的返回格式，必须是 :class:`Format` 枚举的成员或其整数值。不同格式的工作方式如下："
 
-#: ../../library/annotationlib.rst:332
+#: ../../library/annotationlib.rst:336
 msgid ""
 "VALUE: :attr:`!object.__annotations__` is tried first; if that does not "
 "exist, the :attr:`!object.__annotate__` function is called if it exists."
 msgstr ""
+"VALUE: 首先尝试使用 :attr:`!object.__annotations__`；如果该属性不存在，则调用 "
+":attr:`!object.__annotate__` 函数（如果存在）。"
 
-#: ../../library/annotationlib.rst:334
+#: ../../library/annotationlib.rst:338
 msgid ""
 "FORWARDREF: If :attr:`!object.__annotations__` exists and can be evaluated "
 "successfully, it is used; otherwise, the :attr:`!object.__annotate__` "
@@ -493,123 +600,152 @@ msgid ""
 ":attr:`!object.__annotations__` is tried again and any error from accessing "
 "it is re-raised."
 msgstr ""
+"FORWARDREF: 如果 :attr:`!object.__annotations__` 存在且可以成功求值，则使用它；否则，调用 "
+":attr:`!object.__annotate__` 函数。如果该函数也不存在，则再次尝试使用 "
+":attr:`!object.__annotations__`，并重新引发访问它时发生的任何错误。"
 
-#: ../../library/annotationlib.rst:338
+#: ../../library/annotationlib.rst:342
 msgid ""
 "STRING: If :attr:`!object.__annotate__` exists, it is called first; "
 "otherwise, :attr:`!object.__annotations__` is used and stringified using "
 ":func:`annotations_to_string`."
 msgstr ""
+"STRING: 如果 :attr:`!object.__annotate__` 存在，则首先调用它；否则，使用 "
+":attr:`!object.__annotations__` 并使用 :func:`annotations_to_string` 进行字符串化。"
 
-#: ../../library/annotationlib.rst:342
+#: ../../library/annotationlib.rst:346
 msgid ""
 "Returns a dict. :func:`!get_annotations` returns a new dict every time it's "
 "called; calling it twice on the same object will return two different but "
 "equivalent dicts."
 msgstr ""
+"返回一个字典。:func:`!get_annotations` 每次调用时都会返回一个新字典；对同一对象调用两次会返回两个不同但相等的字典。"
 
-#: ../../library/annotationlib.rst:346
+#: ../../library/annotationlib.rst:350
 msgid "This function handles several details for you:"
 msgstr "该函数帮助你处理若干细节："
 
-#: ../../library/annotationlib.rst:348
+#: ../../library/annotationlib.rst:352
 msgid ""
 "If *eval_str* is true, values of type :class:`!str` will be un-stringized "
 "using :func:`eval`. This is intended for use with stringized annotations "
 "(``from __future__ import annotations``). It is an error to set *eval_str* "
 "to true with formats other than :attr:`Format.VALUE`."
 msgstr ""
+"如果 *eval_str* 为 True，则会使用 :func:`eval` 对 :class:`!str` "
+"类型的值进行反字符串化处理。这旨在配合字符串化的注解使用（如 ``from __future__ import annotations``）。将 "
+"*eval_str* 与 :attr:`Format.VALUE` 以外的格式一起设为 True 是错误的。"
 
-#: ../../library/annotationlib.rst:353
+#: ../../library/annotationlib.rst:357
 msgid ""
 "If *obj* doesn't have an annotations dict, returns an empty dict. (Functions"
 " and methods always have an annotations dict; classes, modules, and other "
 "types of callables may not.)"
-msgstr ""
+msgstr "如果 *obj* 不包含一个标注字典，返回一个空字典。（函数和方法永远包含一个标注字典；类、模块和其他类型的可调用对象则可能没有。）"
 
-#: ../../library/annotationlib.rst:357
+#: ../../library/annotationlib.rst:361
 msgid ""
 "Ignores inherited annotations on classes, as well as annotations on "
 "metaclasses. If a class doesn't have its own annotations dict, returns an "
 "empty dict."
-msgstr ""
+msgstr "忽略类上的继承注解以及元类上的注解。如果类没有自己的注解字典，则返回空字典。"
 
-#: ../../library/annotationlib.rst:360
+#: ../../library/annotationlib.rst:364
 msgid ""
 "All accesses to object members and dict values are done using ``getattr()`` "
 "and ``dict.get()`` for safety."
 msgstr "因安全原因，所有对于对象成员和字典值的访问将通过 ``getattr()`` 和 ``dict.get()`` 完成。"
 
-#: ../../library/annotationlib.rst:363
+#: ../../library/annotationlib.rst:367
 msgid ""
 "*eval_str* controls whether or not values of type :class:`!str` are replaced"
 " with the result of calling :func:`eval` on those values:"
-msgstr ""
+msgstr "*eval_str* 控制是否将 :class:`!str` 类型的值替换为对这些值调用 :func:`eval` 的结果："
 
-#: ../../library/annotationlib.rst:366
+#: ../../library/annotationlib.rst:370
 msgid ""
 "If eval_str is true, :func:`eval` is called on values of type :class:`!str`."
 " (Note that :func:`!get_annotations` doesn't catch exceptions; if "
 ":func:`eval` raises an exception, it will unwind the stack past the "
 ":func:`!get_annotations` call.)"
 msgstr ""
+"如果 eval_str 为 true，则会对 :class:`!str` 类型的值调用 :func:`eval`。（注意 "
+":func:`!get_annotations` 不会捕获异常；如果 :func:`eval` 引发异常，它将使堆栈展开到 "
+":func:`!get_annotations` 调用之外。）"
 
-#: ../../library/annotationlib.rst:370
+#: ../../library/annotationlib.rst:374
 msgid ""
 "If *eval_str* is false (the default), values of type :class:`!str` are "
 "unchanged."
-msgstr ""
+msgstr "如果 *eval_str* 为 false（默认值），则 :class:`!str` 类型的值保持不变。"
 
-#: ../../library/annotationlib.rst:373
+#: ../../library/annotationlib.rst:377
 msgid ""
 "*globals* and *locals* are passed in to :func:`eval`; see the documentation "
 "for :func:`eval` for more information. If *globals* or *locals* is "
 ":const:`!None`, this function may replace that value with a context-specific"
 " default, contingent on ``type(obj)``:"
 msgstr ""
+"*globals* 和 *locals* 会被传递给 :func:`eval`；更多信息请参阅 :func:`eval` 的文档。如果 "
+"*globals* 或 *locals* 为 :const:`!None`，此函数可能会根据 ``type(obj)`` "
+"用特定于上下文的默认值替换该值："
 
-#: ../../library/annotationlib.rst:378
+#: ../../library/annotationlib.rst:382
 msgid "If *obj* is a module, *globals* defaults to ``obj.__dict__``."
-msgstr ""
+msgstr "如果 *obj* 是一个模块，*globals* 默认使用 ``obj.__dict__``。"
 
-#: ../../library/annotationlib.rst:379
+#: ../../library/annotationlib.rst:383
 msgid ""
 "If *obj* is a class, *globals* defaults to "
 "``sys.modules[obj.__module__].__dict__`` and *locals* defaults to the *obj* "
 "class namespace."
 msgstr ""
+"如果 *obj* 是一个类，*globals* 默认使用 ``sys.modules[obj.__module__].__dict__``，而 "
+"*locals* 默认使用 *obj* 类的命名空间。"
 
-#: ../../library/annotationlib.rst:382
+#: ../../library/annotationlib.rst:386
 msgid ""
 "If *obj* is a callable, *globals* defaults to :attr:`obj.__globals__ "
 "<function.__globals__>`, although if *obj* is a wrapped function (using "
 ":func:`functools.update_wrapper`) or a :class:`functools.partial` object, it"
 " is unwrapped until a non-wrapped function is found."
 msgstr ""
+"如果 *obj* 是一个可调用对象，*globals* 默认使用 :attr:`obj.__globals__ "
+"<function.__globals__>`，不过如果 *obj* 是一个包装函数（使用 "
+":func:`functools.update_wrapper`）或 :class:`functools.partial` "
+"对象，则会对其进行解包，直到找到一个未被包装的函数为止。"
 
-#: ../../library/annotationlib.rst:388
+#: ../../library/annotationlib.rst:392
 msgid ""
 "Calling :func:`!get_annotations` is best practice for accessing the "
 "annotations dict of any object. See :ref:`annotations-howto` for more "
 "information on annotations best practices."
 msgstr ""
+"调用 :func:`!get_annotations` 是访问任何对象的注解字典的最佳实践。有关注解最佳实践的更多信息，请参阅 "
+":ref:`annotations-howto`。"
 
-#: ../../library/annotationlib.rst:392
+#: ../../library/annotationlib.rst:396
 msgid ""
 ">>> def f(a: int, b: str) -> float:\n"
 "...     pass\n"
 ">>> get_annotations(f)\n"
 "{'a': <class 'int'>, 'b': <class 'str'>, 'return': <class 'float'>}"
 msgstr ""
+">>> def f(a: int, b: str) -> float:\n"
+"...     pass\n"
+">>> get_annotations(f)\n"
+"{'a': <class 'int'>, 'b': <class 'str'>, 'return': <class 'float'>}"
 
-#: ../../library/annotationlib.rst:403
+#: ../../library/annotationlib.rst:407
 msgid ""
 "Convert an arbitrary Python value to a format suitable for use by the "
 ":attr:`~Format.STRING` format. This calls :func:`repr` for most objects, but"
 " has special handling for some objects, such as type objects."
 msgstr ""
+"将任意 Python 值转换为适合 :attr:`~Format.STRING` 格式使用的形式。对于大多数对象，这会调用 "
+":func:`repr`，但对某些对象（如类型对象）有特殊处理。"
 
-#: ../../library/annotationlib.rst:407
+#: ../../library/annotationlib.rst:411
 msgid ""
 "This is meant as a helper for user-provided annotate functions that support "
 "the :attr:`~Format.STRING` format but do not have access to the code "
@@ -617,16 +753,18 @@ msgid ""
 "string representation for other objects that contain values that are "
 "commonly encountered in annotations."
 msgstr ""
+"这旨在作为用户提供的注解函数的辅助工具，这些函数支持 :attr:`~Format.STRING` "
+"格式，但无法访问创建注解的代码。它还可以用于为包含在注解中常见的值的其他对象提供用户友好的字符串表示。"
 
-#: ../../library/annotationlib.rst:417
+#: ../../library/annotationlib.rst:421
 msgid "Recipes"
 msgstr "例程"
 
-#: ../../library/annotationlib.rst:422
+#: ../../library/annotationlib.rst:426
 msgid "Using annotations in a metaclass"
-msgstr ""
+msgstr "在元类中使用注解"
 
-#: ../../library/annotationlib.rst:424
+#: ../../library/annotationlib.rst:428
 msgid ""
 "A :ref:`metaclass <metaclasses>` may want to inspect or even modify the "
 "annotations in a class body during class creation. Doing so requires "
@@ -639,22 +777,27 @@ msgid ""
 "format will usually be best, because this allows the annotations to refer to"
 " names that cannot yet be resolved when the class is created."
 msgstr ""
+":ref:`元类 <metaclasses>` 可能需要在类创建过程中检查甚至修改类体中的注解。实现这一需求需要从类命名空间字典中获取注解。对于使用 "
+"``from __future__ import annotations`` 创建的类，注解会存储在字典的 ``__annotations__`` "
+"键中。而对于其他带有注解的类，可以通过 :func:`get_annotate_from_class_namespace` 获取注释函数，再使用 "
+":func:`call_annotate_function` 调用该函数来获取注解。通常建议优先使用 "
+":attr:`~Format.FORWARDREF` 格式，因为这种格式允许注解引用在类创建时尚未解析的名称。"
 
-#: ../../library/annotationlib.rst:435
+#: ../../library/annotationlib.rst:439
 msgid ""
 "To modify the annotations, it is best to create a wrapper annotate function "
 "that calls the original annotate function, makes any necessary adjustments, "
 "and returns the result."
-msgstr ""
+msgstr "要修改注解，最好创建一个包装注解函数，该函数调用原始注解函数，进行必要的调整，并返回结果。"
 
-#: ../../library/annotationlib.rst:439
+#: ../../library/annotationlib.rst:443
 msgid ""
 "Below is an example of a metaclass that filters out all "
 ":class:`typing.ClassVar` annotations from the class and puts them in a "
 "separate attribute:"
-msgstr ""
+msgstr "下面是一个元类的示例，该元类从类中过滤掉所有 :class:`typing.ClassVar` 注解，并将它们放入单独的属性中："
 
-#: ../../library/annotationlib.rst:442
+#: ../../library/annotationlib.rst:446
 msgid ""
 "import annotationlib\n"
 "import typing\n"
@@ -700,26 +843,70 @@ msgid ""
 "      typ.classvars = classvars  # Store the ClassVars in a separate attribute\n"
 "      return typ"
 msgstr ""
+"import annotationlib\n"
+"import typing\n"
+"\n"
+"class ClassVarSeparator(type):\n"
+"   def __new__(mcls, name, bases, ns):\n"
+"      if \"__annotations__\" in ns:  # from __future__ import annotations\n"
+"         annotations = ns[\"__annotations__\"]\n"
+"         classvar_keys = {\n"
+"            key for key, value in annotations.items()\n"
+"            # 为了简单起见，可以使用字符串比较；更稳健的解决方案\n"
+"            #  可以使用 annotationlib.ForwardRef.evaluate。\n"
+"            if value.startswith(\"ClassVar\")\n"
+"         }\n"
+"         classvars = {key: annotations[key] for key in classvar_keys}\n"
+"         ns[\"__annotations__\"] = {\n"
+"            key: value for key, value in annotations.items()\n"
+"            if key not in classvar_keys\n"
+"         }\n"
+"         wrapped_annotate = None\n"
+"      elif annotate := annotationlib.get_annotate_from_class_namespace(ns):\n"
+"         annotations = annotationlib.call_annotate_function(\n"
+"            annotate, format=annotationlib.Format.FORWARDREF\n"
+"         )\n"
+"         classvar_keys = {\n"
+"            key for key, value in annotations.items()\n"
+"            if typing.get_origin(value) is typing.ClassVar\n"
+"         }\n"
+"         classvars = {key: annotations[key] for key in classvar_keys}\n"
+"\n"
+"         def wrapped_annotate(format):\n"
+"            annos = annotationlib.call_annotate_function(annotate, format, owner=typ)\n"
+"            return {key: value for key, value in annos.items() if key not in classvar_keys}\n"
+"\n"
+"      else:  # 没有注解\n"
+"         classvars = {}\n"
+"         wrapped_annotate = None\n"
+"      typ = super().__new__(mcls, name, bases, ns)\n"
+"\n"
+"      if wrapped_annotate is not None:\n"
+"         # 将原始的 __annotate__ 函数用一个包装器包裹起来，该包装器会移除 ClassVars。\n"
+"         typ.__annotate__ = wrapped_annotate\n"
+"      typ.classvars = classvars  # 将 ClassVars 存储在一个单独的属性中。\n"
+"      return typ"
 
-#: ../../library/annotationlib.rst:490
+#: ../../library/annotationlib.rst:494
 msgid "Limitations of the ``STRING`` format"
-msgstr ""
+msgstr "``STRING`` 格式的局限性"
 
-#: ../../library/annotationlib.rst:492
+#: ../../library/annotationlib.rst:496
 msgid ""
 "The :attr:`~Format.STRING` format is meant to approximate the source code of"
 " the annotation, but the implementation strategy used means that it is not "
 "always possible to recover the exact source code."
 msgstr ""
+":attr:`~Format.STRING` 格式的设计初衷是尽可能还原注解的源代码形式，但由于采用的实现策略限制，它并不总能精确恢复原始的源代码。"
 
-#: ../../library/annotationlib.rst:496
+#: ../../library/annotationlib.rst:500
 msgid ""
 "First, the stringifier of course cannot recover any information that is not "
 "present in the compiled code, including comments, whitespace, "
 "parenthesization, and operations that get simplified by the compiler."
-msgstr ""
+msgstr "首先，字符串化器显然无法恢复编译后代码中不存在的任何信息，包括注释、空白符、括号结构以及被编译器简化的操作。"
 
-#: ../../library/annotationlib.rst:500
+#: ../../library/annotationlib.rst:504
 msgid ""
 "Second, the stringifier can intercept almost all operations that involve "
 "names looked up in some scope, but it cannot intercept operations that "
@@ -728,8 +915,10 @@ msgid ""
 "enough that it is possible to achieve arbitrary code execution even with no "
 "access to any globals or builtins. For example:"
 msgstr ""
+"其次，字符串化器几乎可以拦截所有涉及在某个作用域中查找名称的操作，但它无法拦截完全基于常量的操作。由此推论，这也意味着在不可信代码上请求 "
+"``STRING`` 格式是不安全的：Python功能强大，即使没有访问任何全局变量或内置函数，也有可能实现任意代码执行。例如："
 
-#: ../../library/annotationlib.rst:506
+#: ../../library/annotationlib.rst:510
 msgid ""
 ">>> def f(x: (1).__class__.__base__.__subclasses__()[-1].__init__.__builtins__[\"print\"](\"Hello world\")): pass\n"
 "...\n"
@@ -737,14 +926,19 @@ msgid ""
 "Hello world\n"
 "{'x': 'None'}"
 msgstr ""
+">>> def f(x: (1).__class__.__base__.__subclasses__()[-1].__init__.__builtins__[\"print\"](\"Hello world\")): pass\n"
+"...\n"
+">>> annotationlib.get_annotations(f, format=annotationlib.Format.SOURCE)\n"
+"Hello world\n"
+"{'x': 'None'}"
 
-#: ../../library/annotationlib.rst:515
+#: ../../library/annotationlib.rst:519
 msgid ""
 "This particular example works as of the time of writing, but it relies on "
 "implementation details and is not guaranteed to work in the future."
-msgstr ""
+msgstr "此特定示例在撰写本文时能够正常工作，但它依赖于实现细节，并不能保证在未来版本中仍然有效。"
 
-#: ../../library/annotationlib.rst:518
+#: ../../library/annotationlib.rst:522
 msgid ""
 "Among the different kinds of expressions that exist in Python, as "
 "represented by the :mod:`ast` module, some expressions are supported, "
@@ -752,171 +946,179 @@ msgid ""
 " code; others are unsupported, meaning that they may result in incorrect "
 "output or an error."
 msgstr ""
+"在Python中存在的各种表达式中，由 :mod:`ast` 模块表示，有些表达式是被支持的，这意味着 ``STRING`` "
+"格式通常可以恢复原始源代码；而另一些表达式则不被支持，这可能导致输出不正确或产生错误。"
 
-#: ../../library/annotationlib.rst:523
+#: ../../library/annotationlib.rst:527
 msgid "The following are supported (sometimes with caveats):"
-msgstr ""
+msgstr "以下类型是受支持的（有些带有额外说明）："
 
-#: ../../library/annotationlib.rst:525
+#: ../../library/annotationlib.rst:529
 msgid ":class:`ast.BinOp`"
-msgstr ""
+msgstr ":class:`ast.BinOp`"
 
-#: ../../library/annotationlib.rst:526
+#: ../../library/annotationlib.rst:530
 msgid ":class:`ast.UnaryOp`"
-msgstr ""
+msgstr ":class:`ast.UnaryOp`"
 
-#: ../../library/annotationlib.rst:528
+#: ../../library/annotationlib.rst:532
 msgid ""
 ":class:`ast.Invert` (``~``), :class:`ast.UAdd` (``+``), and "
 ":class:`ast.USub` (``-``) are supported"
 msgstr ""
-
-#: ../../library/annotationlib.rst:529
-msgid ":class:`ast.Not` (``not``) is not supported"
-msgstr ""
-
-#: ../../library/annotationlib.rst:531
-msgid ":class:`ast.Dict` (except when using ``**`` unpacking)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:532
-msgid ":class:`ast.Set`"
-msgstr ""
+":class:`ast.Invert` (``~``), :class:`ast.UAdd` (``+``) 和 :class:`ast.USub` "
+"(``-``) 受支持"
 
 #: ../../library/annotationlib.rst:533
-msgid ":class:`ast.Compare`"
-msgstr ""
+msgid ":class:`ast.Not` (``not``) is not supported"
+msgstr ":class:`ast.Not` (``not``) 不受支持"
 
 #: ../../library/annotationlib.rst:535
-msgid ":class:`ast.Eq` and :class:`ast.NotEq` are supported"
-msgstr ""
+msgid ":class:`ast.Dict` (except when using ``**`` unpacking)"
+msgstr ":class:`ast.Dict` (当使用 ``**`` 解包时除外)"
 
 #: ../../library/annotationlib.rst:536
+msgid ":class:`ast.Set`"
+msgstr ":class:`ast.Set`"
+
+#: ../../library/annotationlib.rst:537
+msgid ":class:`ast.Compare`"
+msgstr ":class:`ast.Compare`"
+
+#: ../../library/annotationlib.rst:539
+msgid ":class:`ast.Eq` and :class:`ast.NotEq` are supported"
+msgstr ":class:`ast.Eq` 和 :class:`ast.NotEq` 受支持"
+
+#: ../../library/annotationlib.rst:540
 msgid ""
 ":class:`ast.Lt`, :class:`ast.LtE`, :class:`ast.Gt`, and :class:`ast.GtE` are"
 " supported, but the operand may be flipped"
 msgstr ""
+":class:`ast.Lt`, :class:`ast.LtE`, :class:`ast.Gt` 和 :class:`ast.GtE` "
+"受支持，但操作数可能被交换"
 
-#: ../../library/annotationlib.rst:537
+#: ../../library/annotationlib.rst:541
 msgid ""
 ":class:`ast.Is`, :class:`ast.IsNot`, :class:`ast.In`, and :class:`ast.NotIn`"
 " are not supported"
 msgstr ""
+":class:`ast.Is`, :class:`ast.IsNot`, :class:`ast.In` 和 :class:`ast.NotIn` "
+"不受支持"
 
-#: ../../library/annotationlib.rst:539
+#: ../../library/annotationlib.rst:543
 msgid ":class:`ast.Call` (except when using ``**`` unpacking)"
-msgstr ""
+msgstr ":class:`ast.Call` (当使用 ``**`` 解包时除外)"
 
-#: ../../library/annotationlib.rst:540
+#: ../../library/annotationlib.rst:544
 msgid ""
 ":class:`ast.Constant` (though not the exact representation of the constant; "
 "for example, escape sequences in strings are lost; hexadecimal numbers are "
 "converted to decimal)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:542
-msgid ":class:`ast.Attribute` (assuming the value is not a constant)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:543
-msgid ":class:`ast.Subscript` (assuming the value is not a constant)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:544
-msgid ":class:`ast.Starred` (``*`` unpacking)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:545
-msgid ":class:`ast.Name`"
-msgstr ""
+msgstr ":class:`ast.Constant` (但不是常量的准确表示形式；例如，字符串形式的转义序列会丢失；十六进制数字会被转换为十进制)"
 
 #: ../../library/annotationlib.rst:546
-msgid ":class:`ast.List`"
-msgstr ""
+msgid ":class:`ast.Attribute` (assuming the value is not a constant)"
+msgstr ":class:`ast.Attribute` (假定其值不为常量)"
 
 #: ../../library/annotationlib.rst:547
-msgid ":class:`ast.Tuple`"
-msgstr ""
+msgid ":class:`ast.Subscript` (assuming the value is not a constant)"
+msgstr ":class:`ast.Subscript` (假定其值不为常量)"
 
 #: ../../library/annotationlib.rst:548
-msgid ":class:`ast.Slice`"
-msgstr ""
+msgid ":class:`ast.Starred` (``*`` unpacking)"
+msgstr ":class:`ast.Starred` (``*`` 解包)"
+
+#: ../../library/annotationlib.rst:549
+msgid ":class:`ast.Name`"
+msgstr ":class:`ast.Name`"
 
 #: ../../library/annotationlib.rst:550
+msgid ":class:`ast.List`"
+msgstr ":class:`ast.List`"
+
+#: ../../library/annotationlib.rst:551
+msgid ":class:`ast.Tuple`"
+msgstr ":class:`ast.Tuple`"
+
+#: ../../library/annotationlib.rst:552
+msgid ":class:`ast.Slice`"
+msgstr ":class:`ast.Slice`"
+
+#: ../../library/annotationlib.rst:554
 msgid ""
 "The following are unsupported, but throw an informative error when "
 "encountered by the stringifier:"
-msgstr ""
+msgstr "以下表达式不被支持，但当字符串化器遇到它们时会抛出一个具有信息性的错误："
 
-#: ../../library/annotationlib.rst:553
+#: ../../library/annotationlib.rst:557
 msgid ""
 ":class:`ast.FormattedValue` (f-strings; error is not detected if conversion "
 "specifiers like ``!r`` are used)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:555
-msgid ":class:`ast.JoinedStr` (f-strings)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:557
-msgid "The following are unsupported and result in incorrect output:"
-msgstr ""
+msgstr ":class:`ast.FormattedValue`（f-字符串；如果使用了如 ``!r`` 这样的转换说明符，则不会检测到错误）"
 
 #: ../../library/annotationlib.rst:559
-msgid ":class:`ast.BoolOp` (``and`` and ``or``)"
-msgstr ""
-
-#: ../../library/annotationlib.rst:560
-msgid ":class:`ast.IfExp`"
-msgstr ""
+msgid ":class:`ast.JoinedStr` (f-strings)"
+msgstr ":class:`ast.JoinedStr` (f-字符串)"
 
 #: ../../library/annotationlib.rst:561
-msgid ":class:`ast.Lambda`"
-msgstr ""
-
-#: ../../library/annotationlib.rst:562
-msgid ":class:`ast.ListComp`"
-msgstr ""
+msgid "The following are unsupported and result in incorrect output:"
+msgstr "以下表达式不被支持，且会导致输出不正确："
 
 #: ../../library/annotationlib.rst:563
-msgid ":class:`ast.SetComp`"
-msgstr ""
+msgid ":class:`ast.BoolOp` (``and`` and ``or``)"
+msgstr ":class:`ast.BoolOp` (``and`` 和 ``or``)"
 
 #: ../../library/annotationlib.rst:564
-msgid ":class:`ast.DictComp`"
-msgstr ""
+msgid ":class:`ast.IfExp`"
+msgstr ":class:`ast.IfExp`"
 
 #: ../../library/annotationlib.rst:565
-msgid ":class:`ast.GeneratorExp`"
-msgstr ""
+msgid ":class:`ast.Lambda`"
+msgstr ":class:`ast.Lambda`"
+
+#: ../../library/annotationlib.rst:566
+msgid ":class:`ast.ListComp`"
+msgstr ":class:`ast.ListComp`"
 
 #: ../../library/annotationlib.rst:567
+msgid ":class:`ast.SetComp`"
+msgstr ":class:`ast.SetComp`"
+
+#: ../../library/annotationlib.rst:568
+msgid ":class:`ast.DictComp`"
+msgstr ":class:`ast.DictComp`"
+
+#: ../../library/annotationlib.rst:569
+msgid ":class:`ast.GeneratorExp`"
+msgstr ":class:`ast.GeneratorExp`"
+
+#: ../../library/annotationlib.rst:571
 msgid ""
 "The following are disallowed in annotation scopes and therefore not "
 "relevant:"
-msgstr ""
+msgstr "以下内容在注解作用域中不被允许，因此不予考虑："
 
-#: ../../library/annotationlib.rst:569
+#: ../../library/annotationlib.rst:573
 msgid ":class:`ast.NamedExpr` (``:=``)"
-msgstr ""
+msgstr ":class:`ast.NamedExpr` (``:=``)"
 
-#: ../../library/annotationlib.rst:570
+#: ../../library/annotationlib.rst:574
 msgid ":class:`ast.Await`"
-msgstr ""
+msgstr ":class:`ast.Await`"
 
-#: ../../library/annotationlib.rst:571
+#: ../../library/annotationlib.rst:575
 msgid ":class:`ast.Yield`"
-msgstr ""
-
-#: ../../library/annotationlib.rst:572
-msgid ":class:`ast.YieldFrom`"
-msgstr ""
+msgstr ":class:`ast.Yield`"
 
 #: ../../library/annotationlib.rst:576
-msgid "Limitations of the ``FORWARDREF`` format"
-msgstr ""
+msgid ":class:`ast.YieldFrom`"
+msgstr ":class:`ast.YieldFrom`"
 
-#: ../../library/annotationlib.rst:578
+#: ../../library/annotationlib.rst:580
+msgid "Limitations of the ``FORWARDREF`` format"
+msgstr "``FORWARDREF`` 格式的局限性"
+
+#: ../../library/annotationlib.rst:582
 msgid ""
 "The :attr:`~Format.FORWARDREF` format aims to produce real values as much as"
 " possible, with anything that cannot be resolved replaced with "
@@ -925,12 +1127,15 @@ msgid ""
 " literals or that use unsupported expression types may raise exceptions when"
 " evaluated using the :attr:`~Format.FORWARDREF` format."
 msgstr ""
+":attr:`~Format.FORWARDREF` 格式旨在尽可能生成实际值，对于无法解析的内容则用 :class:`ForwardRef` "
+"对象替代。该格式受到的限制与 :attr:`~Format.STRING` 格式基本相同：当使用 :attr:`~Format.FORWARDREF` "
+"格式求值时，若注解包含对字面值的操作或使用了不支持的表达式类型，可能会引发异常。"
 
-#: ../../library/annotationlib.rst:585
+#: ../../library/annotationlib.rst:589
 msgid "Below are a few examples of the behavior with unsupported expressions:"
-msgstr ""
+msgstr "以下是使用不支持的表达式时的行为示例："
 
-#: ../../library/annotationlib.rst:587
+#: ../../library/annotationlib.rst:591
 msgid ""
 ">>> from annotationlib import get_annotations, Format\n"
 ">>> def zerodiv(x: 1 / 0): ...\n"
@@ -946,3 +1151,16 @@ msgid ""
 ">>> get_annotations(ifexp, format=Format.STRING)\n"
 "{'x': '1'}"
 msgstr ""
+">>> from annotationlib import get_annotations, Format\n"
+">>> def zerodiv(x: 1 / 0): ...\n"
+">>> get_annotations(zerodiv, format=Format.STRING)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ZeroDivisionError: division by zero\n"
+">>> get_annotations(zerodiv, format=Format.FORWARDREF)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"ZeroDivisionError: division by zero\n"
+">>> def ifexp(x: 1 if y else 0): ...\n"
+">>> get_annotations(ifexp, format=Format.STRING)\n"
+"{'x': '1'}"

@@ -13,6 +13,7 @@
 # MuSheng Chen <sheng.2179@gmail.com>, 2022
 # Alpha Du <alphanow@gmail.com>, 2022
 # WH-2099 <wh2099@outlook.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -20,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-23 14:20+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:54+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -121,7 +122,7 @@ msgstr "如上文所说，请考虑使用高层级的 :func:`asyncio.run` 函数
 
 #: ../../library/asyncio-eventloop.rst:62
 msgid "Raises a :exc:`RuntimeError` if there is no current event loop."
-msgstr ""
+msgstr "如果没有当前事件循环则会引发 :exc:`RuntimeError`。"
 
 #: ../../library/asyncio-eventloop.rst:67
 msgid ""
@@ -130,6 +131,8 @@ msgid ""
 "event loop if present else it will return the loop set by "
 ":func:`set_event_loop`."
 msgstr ""
+":mod:`!asyncio` 策略系统已弃用，将在 Python 3.16 "
+"中删除；从那时起，此函数将返回当前正在运行的事件循环（如果存在），否则它将返回由 :func:`set_event_loop` 设置的循环。"
 
 #: ../../library/asyncio-eventloop.rst:74
 msgid "Set *loop* as the current event loop for the current OS thread."
@@ -569,7 +572,7 @@ msgid ""
 "The full function signature is largely the same as that of the :class:`Task`"
 " constructor (or factory) - all of the keyword arguments to this function "
 "are passed through to that interface."
-msgstr ""
+msgstr "完整函数签名与 :class:`Task` 构造器（或工厂函数）的大致相同 —— 所有传给此函数的关键字参数都会被传给该接口。"
 
 #: ../../library/asyncio-eventloop.rst:377
 msgid ""
@@ -593,6 +596,8 @@ msgid ""
 "later. If *eager_start* is not passed the mode set by "
 ":meth:`loop.set_task_factory` will be used."
 msgstr ""
+"一个可选的只有关键字的 *eager_start* 参数允许指定任务是应该在调用 create_task 期间紧急执行，还是稍后调度。如果没有传递 "
+"*eager_start*，则会使用 :meth:`loop.set_task_factory` 设置的模式。"
 
 #: ../../library/asyncio-eventloop.rst:389
 msgid "Added the *name* parameter."
@@ -606,7 +611,7 @@ msgstr "增加了 *context* 形参。"
 msgid ""
 "Added ``kwargs`` which passes on arbitrary extra parameters, including  "
 "``name`` and ``context``."
-msgstr ""
+msgstr "增加了 ``kwargs``，它将传递任意附加形参，包括 ``name`` 和 ``context``。"
 
 #: ../../library/asyncio-eventloop.rst:398
 msgid ""
@@ -614,12 +619,14 @@ msgid ""
 "while still passing on other arbitrary keyword arguments (to avoid breaking "
 "backwards compatibility with 3.13.3)."
 msgstr ""
+"撤回传递 *name* 和 *context* (如果其为 None) 的更改，虽然仍会传递其他任何关键字参数（以避免破坏与 3.13.3 "
+"的向下兼容）。"
 
 #: ../../library/asyncio-eventloop.rst:402
 msgid ""
 "All *kwargs* are now passed on. The *eager_start* parameter works with eager"
 " task factories."
-msgstr ""
+msgstr "现在所有 *kwargs* 都会被传递。 *eager_start* 形参适用于主动型任务工厂。"
 
 #: ../../library/asyncio-eventloop.rst:407
 msgid "Set a task factory that will be used by :meth:`loop.create_task`."
@@ -639,19 +646,19 @@ msgstr ""
 
 #: ../../library/asyncio-eventloop.rst:416
 msgid "Required that all *kwargs* are passed on to :class:`asyncio.Task`."
-msgstr ""
+msgstr "要求所有 *kwargs* 被传递给 :class:`asyncio.Task`。"
 
 #: ../../library/asyncio-eventloop.rst:419
 msgid ""
 "*name* is no longer passed to task factories. *context* is no longer passed "
 "to task factories if it is ``None``."
-msgstr ""
+msgstr "*name* 不再会被传递给任务工厂函数。 如果其为 ``None`` 则 *context* 也不再会被传递给任务工厂函数。"
 
 #: ../../library/asyncio-eventloop.rst:423
 msgid ""
 "*name* and *context* are now unconditionally passed on to task factories "
 "again."
-msgstr ""
+msgstr "现在 *name* 和 *context* 会被无条件地再次传递给任务工厂。"
 
 #: ../../library/asyncio-eventloop.rst:428
 msgid "Return a task factory or ``None`` if the default one is in use."
@@ -1933,6 +1940,51 @@ msgid ""
 "if __name__ == '__main__':\n"
 "    asyncio.run(main())"
 msgstr ""
+"import asyncio\n"
+"import concurrent.futures\n"
+"\n"
+"def blocking_io():\n"
+"    #文件操作（如日志记录）会阻塞\n"
+"    # 事件循环：在线程池中运行它们。\n"
+"    with open('/dev/urandom', 'rb') as f:\n"
+"        return f.read(100)\n"
+"\n"
+"def cpu_bound():\n"
+"    # cpu绑定的操作将阻塞事件循环：\n"
+"    # 通常，最好在进程池中运行它们。\n"
+"    # \n"
+"    return sum(i * i for i in range(10 ** 7))\n"
+"\n"
+"async def main():\n"
+"    loop = asyncio.get_running_loop()\n"
+"\n"
+"    ## 选项：\n"
+"\n"
+"    # 1. 在默认循环执行器中运行：\n"
+"    result = await loop.run_in_executor(\n"
+"        None, blocking_io)\n"
+"    print('default thread pool', result)\n"
+"\n"
+"    # 2. 在自定义线程池中运行：\n"
+"    with concurrent.futures.ThreadPoolExecutor() as pool:\n"
+"        result = await loop.run_in_executor(\n"
+"            pool, blocking_io)\n"
+"        print('custom thread pool', result)\n"
+"\n"
+"    # 3. 在自定义进程池中运行：\n"
+"    with concurrent.futures.ProcessPoolExecutor() as pool:\n"
+"        result = await loop.run_in_executor(\n"
+"            pool, cpu_bound)\n"
+"        print('custom process pool', result)\n"
+"\n"
+"    # 4. 在自定义解释器池中运行：\n"
+"    with concurrent.futures.InterpreterPoolExecutor() as pool:\n"
+"        result = await loop.run_in_executor(\n"
+"            pool, cpu_bound)\n"
+"        print('custom interpreter pool', result)\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    asyncio.run(main())"
 
 #: ../../library/asyncio-eventloop.rst:1384
 msgid ""
@@ -1975,6 +2027,9 @@ msgid ""
 ":class:`~concurrent.futures.ThreadPoolExecutor`, which includes "
 ":class:`~concurrent.futures.InterpreterPoolExecutor`."
 msgstr ""
+"将 *executor* 设为 :meth:`run_in_executor` 所使用的默认执行器。 *executor* 必须是 "
+":class:`~concurrent.futures.ThreadPoolExecutor` (其中包括 "
+":class:`~concurrent.futures.InterpreterPoolExecutor`) 的实例。"
 
 #: ../../library/asyncio-eventloop.rst:1408
 msgid ""
@@ -2644,6 +2699,14 @@ msgid ""
 "loop_factory = lambda: asyncio.SelectorEventLoop(selectors.SelectSelector())\n"
 "asyncio.run(main(), loop_factory=loop_factory)"
 msgstr ""
+"import asyncio\n"
+"import selectors\n"
+"\n"
+"async def main():\n"
+"   ...\n"
+"\n"
+"loop_factory = lambda: asyncio.SelectorEventLoop(selectors.SelectSelector())\n"
+"asyncio.run(main(), loop_factory=loop_factory)"
 
 #: ../../library/asyncio-eventloop.rst:1867
 msgid ""

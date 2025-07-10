@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2025-06-20 14:21+0000\n"
 "PO-Revision-Date: 2021-06-28 00:51+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -588,21 +588,23 @@ msgid ""
 "    return PyLong_FromLong(numargs);\n"
 "}\n"
 "\n"
-"static PyMethodDef EmbMethods[] = {\n"
+"static PyMethodDef emb_module_methods[] = {\n"
 "    {\"numargs\", emb_numargs, METH_VARARGS,\n"
 "     \"Return the number of arguments received by the process.\"},\n"
 "    {NULL, NULL, 0, NULL}\n"
 "};\n"
 "\n"
-"static PyModuleDef EmbModule = {\n"
-"    PyModuleDef_HEAD_INIT, \"emb\", NULL, -1, EmbMethods,\n"
-"    NULL, NULL, NULL, NULL\n"
+"static struct PyModuleDef emb_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"emb\",\n"
+"    .m_size = 0,\n"
+"    .m_methods = emb_module_methods,\n"
 "};\n"
 "\n"
 "static PyObject*\n"
 "PyInit_emb(void)\n"
 "{\n"
-"    return PyModule_Create(&EmbModule);\n"
+"    return PyModuleDef_Init(&emb_module);\n"
 "}"
 msgstr ""
 "static int numargs=0;\n"
@@ -616,30 +618,32 @@ msgstr ""
 "    return PyLong_FromLong(numargs);\n"
 "}\n"
 "\n"
-"static PyMethodDef EmbMethods[] = {\n"
+"static PyMethodDef emb_module_methods[] = {\n"
 "    {\"numargs\", emb_numargs, METH_VARARGS,\n"
 "     \"Return the number of arguments received by the process.\"},\n"
 "    {NULL, NULL, 0, NULL}\n"
 "};\n"
 "\n"
-"static PyModuleDef EmbModule = {\n"
-"    PyModuleDef_HEAD_INIT, \"emb\", NULL, -1, EmbMethods,\n"
-"    NULL, NULL, NULL, NULL\n"
+"static struct PyModuleDef emb_module = {\n"
+"    .m_base = PyModuleDef_HEAD_INIT,\n"
+"    .m_name = \"emb\",\n"
+"    .m_size = 0,\n"
+"    .m_methods = emb_module_methods,\n"
 "};\n"
 "\n"
 "static PyObject*\n"
 "PyInit_emb(void)\n"
 "{\n"
-"    return PyModule_Create(&EmbModule);\n"
+"    return PyModuleDef_Init(&emb_module);\n"
 "}"
 
-#: ../../extending/embedding.rst:265
+#: ../../extending/embedding.rst:267
 msgid ""
 "Insert the above code just above the :c:func:`main` function. Also, insert "
 "the following two statements before the call to :c:func:`Py_Initialize`::"
 msgstr "在 :c:func:`main` 函数之前插入上述代码。并在调用 :c:func:`Py_Initialize` 之前插入以下两条语句："
 
-#: ../../extending/embedding.rst:268
+#: ../../extending/embedding.rst:270
 msgid ""
 "numargs = argc;\n"
 "PyImport_AppendInittab(\"emb\", &PyInit_emb);"
@@ -647,7 +651,7 @@ msgstr ""
 "numargs = argc;\n"
 "PyImport_AppendInittab(\"emb\", &PyInit_emb);"
 
-#: ../../extending/embedding.rst:271
+#: ../../extending/embedding.rst:273
 msgid ""
 "These two lines initialize the ``numargs`` variable, and make the "
 ":func:`!emb.numargs` function accessible to the embedded Python interpreter."
@@ -656,7 +660,7 @@ msgstr ""
 "这两行代码初始化了 ``numargs`` 变量，并使嵌入式 Python 解释器可以访问 :func:`!emb.numargs` "
 "函数。通过这些扩展，Python 脚本可以执行以下操作"
 
-#: ../../extending/embedding.rst:275
+#: ../../extending/embedding.rst:277
 msgid ""
 "import emb\n"
 "print(\"Number of arguments\", emb.numargs())"
@@ -664,17 +668,17 @@ msgstr ""
 "import emb\n"
 "print(\"Number of arguments\", emb.numargs())"
 
-#: ../../extending/embedding.rst:280
+#: ../../extending/embedding.rst:282
 msgid ""
 "In a real application, the methods will expose an API of the application to "
 "Python."
 msgstr "在真实的应用程序中，这种方法将把应用的 API 暴露给 Python 使用。"
 
-#: ../../extending/embedding.rst:290
+#: ../../extending/embedding.rst:292
 msgid "Embedding Python in C++"
 msgstr "在 C++ 中嵌入 Python"
 
-#: ../../extending/embedding.rst:292
+#: ../../extending/embedding.rst:294
 msgid ""
 "It is also possible to embed Python in a C++ program; precisely how this is "
 "done will depend on the details of the C++ system used; in general you will "
@@ -685,11 +689,11 @@ msgstr ""
 "还可以将 Python 嵌入到 C++ 程序中去；确切地说，实现方式将取决于 C++ 系统的实现细节；一般需用 C++ 编写主程序，并用 C++ "
 "编译器来编译和链接程序。不需要用 C++ 重新编译 Python 本身。"
 
-#: ../../extending/embedding.rst:301
+#: ../../extending/embedding.rst:303
 msgid "Compiling and Linking under Unix-like systems"
 msgstr "在类 Unix 系统中编译和链接"
 
-#: ../../extending/embedding.rst:303
+#: ../../extending/embedding.rst:305
 msgid ""
 "It is not necessarily trivial to find the right flags to pass to your "
 "compiler (and linker) in order to embed the Python interpreter into your "
@@ -699,7 +703,7 @@ msgstr ""
 "为了将 Python 解释器嵌入应用程序，找到正确的编译参数传给编译器 (和链接器) 并非易事，特别是因为 Python 加载的库模块是以 C "
 "动态扩展（:file:`.so` 文件）的形式实现的。"
 
-#: ../../extending/embedding.rst:309
+#: ../../extending/embedding.rst:311
 msgid ""
 "To find out the required compiler and linker flags, you can execute the "
 ":file:`python{X.Y}-config` script which is generated as part of the "
@@ -710,13 +714,13 @@ msgstr ""
 "为了得到所需的编译器和链接器参数，可执行 :file:`python{X.Y}-config` 脚本，它是在安装 Python 时生成的（也可能存在 "
 ":file:`python3-config` 脚本）。该脚本有几个参数，其中以下几个参数会直接有用："
 
-#: ../../extending/embedding.rst:315
+#: ../../extending/embedding.rst:317
 msgid ""
 "``pythonX.Y-config --cflags`` will give you the recommended flags when "
 "compiling:"
 msgstr "``pythonX.Y-config --cflags`` 将给出建议的编译参数。"
 
-#: ../../extending/embedding.rst:318
+#: ../../extending/embedding.rst:320
 msgid ""
 "$ /opt/bin/python3.11-config --cflags\n"
 "-I/opt/include/python3.11 -I/opt/include/python3.11 -Wsign-compare  -DNDEBUG -g -fwrapv -O3 -Wall"
@@ -724,13 +728,13 @@ msgstr ""
 "$ /opt/bin/python3.11-config --cflags\n"
 "-I/opt/include/python3.11 -I/opt/include/python3.11 -Wsign-compare  -DNDEBUG -g -fwrapv -O3 -Wall"
 
-#: ../../extending/embedding.rst:323
+#: ../../extending/embedding.rst:325
 msgid ""
 "``pythonX.Y-config --ldflags --embed`` will give you the recommended flags "
 "when linking:"
 msgstr "``pythonX.Y-config --ldflags --embed`` 将给出在链接时建议的旗标:"
 
-#: ../../extending/embedding.rst:326
+#: ../../extending/embedding.rst:328
 msgid ""
 "$ /opt/bin/python3.11-config --ldflags --embed\n"
 "-L/opt/lib/python3.11/config-3.11-x86_64-linux-gnu -L/opt/lib -lpython3.11 -lpthread -ldl  -lutil -lm"
@@ -738,7 +742,7 @@ msgstr ""
 "$ /opt/bin/python3.11-config --ldflags --embed\n"
 "-L/opt/lib/python3.11/config-3.11-x86_64-linux-gnu -L/opt/lib -lpython3.11 -lpthread -ldl  -lutil -lm"
 
-#: ../../extending/embedding.rst:332
+#: ../../extending/embedding.rst:334
 msgid ""
 "To avoid confusion between several Python installations (and especially "
 "between the system Python and your own compiled Python), it is recommended "
@@ -748,7 +752,7 @@ msgstr ""
 "为了避免多个 Python 安装版本引发混乱（特别是在系统安装版本和自己编译版本之间），建议用 :file:`python{X.Y}-config` "
 "指定绝对路径，如上例所述。"
 
-#: ../../extending/embedding.rst:337
+#: ../../extending/embedding.rst:339
 msgid ""
 "If this procedure doesn't work for you (it is not guaranteed to work for all"
 " Unix-like platforms; however, we welcome :ref:`bug reports <reporting-"
@@ -764,7 +768,7 @@ msgstr ""
 ":func:`sysconfig.get_makefile_filename` 找到所在位置）和编译参数。这时 :mod:`sysconfig` "
 "模块会是个有用的工具，可用编程方式提取需组合在一起的配置值。比如："
 
-#: ../../extending/embedding.rst:346
+#: ../../extending/embedding.rst:348
 msgid ""
 ">>> import sysconfig\n"
 ">>> sysconfig.get_config_var('LIBS')\n"

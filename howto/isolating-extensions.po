@@ -7,16 +7,16 @@
 # df2dc1c92e792f7ae8417c51df43db8f_594d92a <0f49be28017426edb1db1a2ab6e67088_717605>, 2022
 # jaystone776 <1732865113@qq.com>, 2022
 # ppcfish <ppcfish@gmail.com>, 2022
-# Freesand Leo <yuqinju@163.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-23 14:20+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2022-11-05 19:48+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2024\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -303,11 +303,11 @@ msgstr ""
 msgid ""
 "If it is necessary to use process-global state, the simplest way to avoid "
 "issues with multiple interpreters is to explicitly prevent a module from "
-"being loaded more than once per process—see `Opt-Out: Limiting to One Module"
-" Object per Process`_."
+"being loaded more than once per process—see :ref:`isolating-extensions-"
+"optout`."
 msgstr ""
-"如果有必要使用进程级全局状态，避免多解释器相关问题的最简单的方式是显式地阻止模块在一个进程中被多次加载 — 参见 "
-"`回退选项：每个进程限一个模块对象`_。"
+"如果有必要使用进程级全局状态，那么避免多解释器相关问题的最简单方式是显式地阻止模块在一个进程中被多次加载 — 参见 :ref:`isolating-"
+"extensions-optout`。"
 
 #: ../../howto/isolating-extensions.rst:175
 msgid "Managing Per-Module State"
@@ -376,11 +376,11 @@ msgstr ""
 "<https://github.com/python/cpython/blob/master/Modules/xxlimited.c>`__ "
 "获取；模块初始化的示例见文件的末尾部分。"
 
-#: ../../howto/isolating-extensions.rst:211
+#: ../../howto/isolating-extensions.rst:213
 msgid "Opt-Out: Limiting to One Module Object per Process"
 msgstr "回退选项：每个进程限一个模块对象"
 
-#: ../../howto/isolating-extensions.rst:213
+#: ../../howto/isolating-extensions.rst:215
 msgid ""
 "A non-negative ``PyModuleDef.m_size`` signals that a module supports "
 "multiple interpreters correctly. If this is not yet the case for your "
@@ -390,7 +390,7 @@ msgstr ""
 "非负的 ``PyModuleDef.m_size`` 值表示一个模块能正确地支持多解释器。 "
 "如果你的模块还不能做到这样，你可以显式地设置你的模块在每个进程中只能加载一次。 例如::"
 
-#: ../../howto/isolating-extensions.rst:218
+#: ../../howto/isolating-extensions.rst:220
 msgid ""
 "// A process-wide flag\n"
 "static int loaded = 0;\n"
@@ -413,8 +413,28 @@ msgid ""
 "    // ... rest of initialization\n"
 "}"
 msgstr ""
+"// 作用于进程的旗标\n"
+"static int loaded = 0;\n"
+"\n"
+"// 提供线程安全的互斥锁（仅在自由线程版 Python 中需要）\n"
+"static PyMutex modinit_mutex = {0};\n"
+"\n"
+"static int\n"
+"exec_module(PyObject* module)\n"
+"{\n"
+"    PyMutex_Lock(&modinit_mutex);\n"
+"    if (loaded) {\n"
+"        PyMutex_Unlock(&modinit_mutex);\n"
+"        PyErr_SetString(PyExc_ImportError,\n"
+"                        \"cannot load module more than once per process\");\n"
+"        return -1;\n"
+"    }\n"
+"    loaded = 1;\n"
+"    PyMutex_Unlock(&modinit_mutex);\n"
+"    // ... 初始化的其余部分\n"
+"}"
 
-#: ../../howto/isolating-extensions.rst:240
+#: ../../howto/isolating-extensions.rst:242
 msgid ""
 "If your module's :c:member:`PyModuleDef.m_clear` function is able to prepare"
 " for future re-initialization, it should clear the ``loaded`` flag. In this "
@@ -422,12 +442,15 @@ msgid ""
 "but it will, for example, support being loaded after Python runtime shutdown"
 " (:c:func:`Py_FinalizeEx`) and re-initialization (:c:func:`Py_Initialize`)."
 msgstr ""
+"如果你的模块的 :c:member:`PyModuleDef.m_clear` 函数能够为将来的重新初始化做好准备，它应当清除 ``loaded`` "
+"旗标。 在此情况下，你的模块将不支持多个实例 *并发地* 存在，但举例来说，它将支持在 Python 运行时关闭 "
+"(:c:func:`Py_FinalizeEx`) 和重新初始化 (:c:func:`Py_Initialize`) 之后被加载。"
 
-#: ../../howto/isolating-extensions.rst:249
+#: ../../howto/isolating-extensions.rst:251
 msgid "Module State Access from Functions"
 msgstr "函数对模块状态的访问"
 
-#: ../../howto/isolating-extensions.rst:251
+#: ../../howto/isolating-extensions.rst:253
 msgid ""
 "Accessing the state from module-level functions is straightforward. "
 "Functions get the module object as their first argument; for extracting the "
@@ -435,7 +458,7 @@ msgid ""
 msgstr ""
 "从模块层级的函数访问状态是相当直观的。 函数通过它们的第一个参数获得模块对象；要提取状态，你可以使用 ``PyModule_GetState``::"
 
-#: ../../howto/isolating-extensions.rst:255
+#: ../../howto/isolating-extensions.rst:257
 msgid ""
 "static PyObject *\n"
 "func(PyObject *module, PyObject *args)\n"
@@ -457,7 +480,7 @@ msgstr ""
 "    // ... 其余的逻辑\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:266
+#: ../../howto/isolating-extensions.rst:268
 msgid ""
 "``PyModule_GetState`` may return ``NULL`` without setting an exception if "
 "there is no module state, i.e. ``PyModuleDef.m_size`` was zero. In your own "
@@ -466,11 +489,11 @@ msgstr ""
 "如果模块状态不存在则 ``PyModule_GetState`` 可能返回 ``NULL`` 而不设置异常，即 "
 "``PyModuleDef.m_size`` 为零。 在你自己的模块中，你可以任意控制 ``m_size``，因此这很容易避免。"
 
-#: ../../howto/isolating-extensions.rst:273
+#: ../../howto/isolating-extensions.rst:275
 msgid "Heap Types"
 msgstr "堆类型"
 
-#: ../../howto/isolating-extensions.rst:275
+#: ../../howto/isolating-extensions.rst:277
 msgid ""
 "Traditionally, types defined in C code are *static*; that is, ``static "
 "PyTypeObject`` structures defined directly in code and initialized using "
@@ -479,7 +502,7 @@ msgstr ""
 "在传统上，在 C 代码中定义的类型都是 *静态的*；也就是说，``static PyTypeObject`` 结构体在代码中直接定义并使用 "
 "``PyType_Ready()`` 来初始化。"
 
-#: ../../howto/isolating-extensions.rst:279
+#: ../../howto/isolating-extensions.rst:281
 msgid ""
 "Such types are necessarily shared across the process. Sharing them between "
 "module objects requires paying attention to any state they own or access. To"
@@ -489,7 +512,7 @@ msgstr ""
 "这样的类型必须在进程范围内共享。 在模块对象之间共享它们需要注意它们所拥有或访问的任何状态。 要限制可能出现的问题，静态类型在 Python "
 "层级上是不可变的：例如，你无法设置 ``str.myattribute = 123``。"
 
-#: ../../howto/isolating-extensions.rst:285
+#: ../../howto/isolating-extensions.rst:287
 msgid ""
 "Sharing truly immutable objects between interpreters is fine, as long as "
 "they don't provide access to mutable objects. However, in CPython, every "
@@ -502,7 +525,7 @@ msgstr ""
 "对象都有一个可变的实现细节：引用计数。 对引用计数的更改是由 GIL 来保护的。 因此，跨解释器共享任何 Python 对象的代码都隐式地依赖于 "
 "CPython 现有的、进程级的 GIL。"
 
-#: ../../howto/isolating-extensions.rst:292
+#: ../../howto/isolating-extensions.rst:294
 msgid ""
 "Because they are immutable and process-global, static types cannot access "
 "\"their\" module state. If any method of such a type requires access to "
@@ -513,15 +536,15 @@ msgstr ""
 "因为它们是不可变的进程级全局对象，所以静态类型无法访问“它们的”模块状态。 如果任何此种类型的方法需要访问模块状态，则该类型必须被转换为 "
 "*堆分配类型*，或者简称为 *堆类型*。 此种类型相对更接近由 Python 的 ``class`` 语句所创建的类。"
 
-#: ../../howto/isolating-extensions.rst:299
+#: ../../howto/isolating-extensions.rst:301
 msgid "For new modules, using heap types by default is a good rule of thumb."
 msgstr "对于新模块，默认使用堆类型是一个很好的经验法则。"
 
-#: ../../howto/isolating-extensions.rst:303
+#: ../../howto/isolating-extensions.rst:305
 msgid "Changing Static Types to Heap Types"
 msgstr "将静态类型改为堆类型"
 
-#: ../../howto/isolating-extensions.rst:305
+#: ../../howto/isolating-extensions.rst:307
 msgid ""
 "Static types can be converted to heap types, but note that the heap type API"
 " was not designed for \"lossless\" conversion from static types—that is, "
@@ -533,20 +556,20 @@ msgstr ""
 "静态类型可以转换为堆类型，但要注意堆类型 API 并非针对静态类型的“无损”转换 — 也就是说，创建与给定静态类型完全一致的类型来设计的。 "
 "因此，当在新的 API 中重写类定义时，你很容易在无意中改变一些细节（例如可封存性或所继承的槽位等）。 请始终确保测试对你来说重要的细节。"
 
-#: ../../howto/isolating-extensions.rst:314
+#: ../../howto/isolating-extensions.rst:316
 msgid ""
 "Watch out for the following two points in particular (but note that this is "
 "not a comprehensive list):"
 msgstr "特别要关注以下两点（但请注意这并非一个完整的列表）:"
 
-#: ../../howto/isolating-extensions.rst:317
+#: ../../howto/isolating-extensions.rst:319
 msgid ""
 "Unlike static types, heap type objects are mutable by default. Use the "
 ":c:macro:`Py_TPFLAGS_IMMUTABLETYPE` flag to prevent mutability."
 msgstr ""
 "不同于静态类型，堆类型对象默认是可变的。 请使用 :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` 旗标来防止可变性。"
 
-#: ../../howto/isolating-extensions.rst:319
+#: ../../howto/isolating-extensions.rst:321
 msgid ""
 "Heap types inherit :c:member:`~PyTypeObject.tp_new` by default, so it may "
 "become possible to instantiate them from Python code. You can prevent this "
@@ -555,11 +578,11 @@ msgstr ""
 "堆类型默认继承 :c:member:`~PyTypeObject.tp_new`，因此有可能通过 Python 代码来初始化它们。 你可以使用 "
 ":c:macro:`Py_TPFLAGS_DISALLOW_INSTANTIATION` 旗标来防止此特性。"
 
-#: ../../howto/isolating-extensions.rst:325
+#: ../../howto/isolating-extensions.rst:327
 msgid "Defining Heap Types"
 msgstr "定义堆类型"
 
-#: ../../howto/isolating-extensions.rst:327
+#: ../../howto/isolating-extensions.rst:329
 msgid ""
 "Heap types can be created by filling a :c:struct:`PyType_Spec` structure, a "
 "description or \"blueprint\" of a class, and calling "
@@ -568,7 +591,7 @@ msgstr ""
 "堆类型可以通过填充 :c:struct:`PyType_Spec` 结构体来创建，它是对于特定类的描述或“蓝图”，并调用 "
 ":c:func:`PyType_FromModuleAndSpec` 来构造新的类对象。to construct a new class object."
 
-#: ../../howto/isolating-extensions.rst:332
+#: ../../howto/isolating-extensions.rst:334
 msgid ""
 "Other functions, like :c:func:`PyType_FromSpec`, can also create heap types,"
 " but :c:func:`PyType_FromModuleAndSpec` associates the module with the "
@@ -577,42 +600,42 @@ msgstr ""
 "其他的函数，如 :c:func:`PyType_FromSpec`，也可以创建堆类型，但 "
 ":c:func:`PyType_FromModuleAndSpec` 会将模块关联到类，以允许从方法访问模块状态。"
 
-#: ../../howto/isolating-extensions.rst:336
+#: ../../howto/isolating-extensions.rst:338
 msgid ""
 "The class should generally be stored in *both* the module state (for safe "
 "access from C) and the module's ``__dict__`` (for access from Python code)."
 msgstr ""
 "类通常应当 *同时* 保存在模块的状态（用于从 C 中安全地访问）和模块的 ``__dict__`` 中（用于从 Python 代码中访问）。"
 
-#: ../../howto/isolating-extensions.rst:342
+#: ../../howto/isolating-extensions.rst:344
 msgid "Garbage-Collection Protocol"
 msgstr "垃圾回收协议"
 
-#: ../../howto/isolating-extensions.rst:344
+#: ../../howto/isolating-extensions.rst:346
 msgid ""
 "Instances of heap types hold a reference to their type. This ensures that "
 "the type isn't destroyed before all its instances are, but may result in "
 "reference cycles that need to be broken by the garbage collector."
 msgstr "堆类型的实例会持有一个指向其类型的引用。 这能确保类型的销毁不会发生在其实例之前，但可能会导致需要由垃圾回收器来打破的引用循环。"
 
-#: ../../howto/isolating-extensions.rst:349
+#: ../../howto/isolating-extensions.rst:351
 msgid ""
 "To avoid memory leaks, instances of heap types must implement the garbage "
 "collection protocol. That is, heap types should:"
 msgstr "要避免内存泄漏，堆类型的实例必须实现垃圾回收协议。 也就是说，堆类型应当:"
 
-#: ../../howto/isolating-extensions.rst:353
+#: ../../howto/isolating-extensions.rst:355
 msgid "Have the :c:macro:`Py_TPFLAGS_HAVE_GC` flag."
 msgstr "具有 :c:macro:`Py_TPFLAGS_HAVE_GC` 旗标。"
 
-#: ../../howto/isolating-extensions.rst:354
+#: ../../howto/isolating-extensions.rst:356
 msgid ""
 "Define a traverse function using ``Py_tp_traverse``, which visits the type "
 "(e.g. using ``Py_VISIT(Py_TYPE(self))``)."
 msgstr ""
 "定义一个使用 ``Py_tp_traverse`` 的遍历函数，它将访问该类型 (例如使用 ``Py_VISIT(Py_TYPE(self))``)。"
 
-#: ../../howto/isolating-extensions.rst:357
+#: ../../howto/isolating-extensions.rst:359
 msgid ""
 "Please refer to the documentation of :c:macro:`Py_TPFLAGS_HAVE_GC` and "
 ":c:member:`~PyTypeObject.tp_traverse` for additional considerations."
@@ -620,18 +643,18 @@ msgstr ""
 "请参阅 :c:macro:`Py_TPFLAGS_HAVE_GC` 和 :c:member:`~PyTypeObject.tp_traverse` "
 "的文档以获取更多说明。"
 
-#: ../../howto/isolating-extensions.rst:361
+#: ../../howto/isolating-extensions.rst:363
 msgid ""
 "The API for defining heap types grew organically, leaving it somewhat "
 "awkward to use in its current state. The following sections will guide you "
 "through common issues."
 msgstr "定义堆类型的 API 在有机地增长，使得它目前的使用状况有些尴尬。 以下章节将引导您解决常见的问题。"
 
-#: ../../howto/isolating-extensions.rst:367
+#: ../../howto/isolating-extensions.rst:369
 msgid "``tp_traverse`` in Python 3.8 and lower"
 msgstr "``tp_traverse`` 在 Python 3.8 及更低的版本中"
 
-#: ../../howto/isolating-extensions.rst:369
+#: ../../howto/isolating-extensions.rst:371
 msgid ""
 "The requirement to visit the type from ``tp_traverse`` was added in Python "
 "3.9. If you support Python 3.8 and lower, the traverse function must *not* "
@@ -640,7 +663,7 @@ msgstr ""
 "从``tp_traverse`` 访问类型的要求是在 Python 3.9 中添加的。 如果你要支持 Python 3.8 及更低版本，则遍历函数 "
 "*不可* 访问类型，因此必须使用更复杂的方式::"
 
-#: ../../howto/isolating-extensions.rst:373
+#: ../../howto/isolating-extensions.rst:375
 msgid ""
 "static int my_traverse(PyObject *self, visitproc visit, void *arg)\n"
 "{\n"
@@ -658,17 +681,17 @@ msgstr ""
 "    return 0;\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:381
+#: ../../howto/isolating-extensions.rst:383
 msgid ""
 "Unfortunately, :c:data:`Py_Version` was only added in Python 3.11. As a "
 "replacement, use:"
 msgstr "不幸的是，:c:data:`Py_Version` 直到 Python 3.11 才被加入。 作为替代，请使用："
 
-#: ../../howto/isolating-extensions.rst:384
+#: ../../howto/isolating-extensions.rst:386
 msgid ":c:macro:`PY_VERSION_HEX`, if not using the stable ABI, or"
 msgstr ":c:macro:`PY_VERSION_HEX`，如果不使用稳定 ABI 的话，或者"
 
-#: ../../howto/isolating-extensions.rst:385
+#: ../../howto/isolating-extensions.rst:387
 msgid ""
 ":py:data:`sys.version_info` (via :c:func:`PySys_GetObject` and "
 ":c:func:`PyArg_ParseTuple`)."
@@ -676,11 +699,11 @@ msgstr ""
 ":py:data:`sys.version_info` (通过 :c:func:`PySys_GetObject` 和 "
 ":c:func:`PyArg_ParseTuple`)。"
 
-#: ../../howto/isolating-extensions.rst:390
+#: ../../howto/isolating-extensions.rst:392
 msgid "Delegating ``tp_traverse``"
 msgstr "委托 ``tp_traverse``"
 
-#: ../../howto/isolating-extensions.rst:392
+#: ../../howto/isolating-extensions.rst:394
 msgid ""
 "If your traverse function delegates to the "
 ":c:member:`~PyTypeObject.tp_traverse` of its base class (or another type), "
@@ -690,19 +713,19 @@ msgstr ""
 "如果你的遍历函数委托给了其基类（或另一个类型）的 :c:member:`~PyTypeObject.tp_traverse`，请确保 "
 "``Py_TYPE(self)`` 只被访问一次。 请注意只有堆类型会被预期访问 ``tp_traverse`` 中的类型。"
 
-#: ../../howto/isolating-extensions.rst:397
+#: ../../howto/isolating-extensions.rst:399
 msgid "For example, if your traverse function includes::"
 msgstr "举例来说，如果你的遍历函数包括::"
 
-#: ../../howto/isolating-extensions.rst:399
+#: ../../howto/isolating-extensions.rst:401
 msgid "base->tp_traverse(self, visit, arg)"
 msgstr "base->tp_traverse(self, visit, arg)"
 
-#: ../../howto/isolating-extensions.rst:401
+#: ../../howto/isolating-extensions.rst:403
 msgid "...and ``base`` may be a static type, then it should also include::"
 msgstr "... 并且 ``base`` 可能是一个静态类型，则它也应当包括::"
 
-#: ../../howto/isolating-extensions.rst:403
+#: ../../howto/isolating-extensions.rst:405
 msgid ""
 "if (base->tp_flags & Py_TPFLAGS_HEAPTYPE) {\n"
 "    // a heap type's tp_traverse already visited Py_TYPE(self)\n"
@@ -720,7 +743,7 @@ msgstr ""
 "    }\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:411
+#: ../../howto/isolating-extensions.rst:413
 msgid ""
 "It is not necessary to handle the type's reference count in "
 ":c:member:`~PyTypeObject.tp_new` and :c:member:`~PyTypeObject.tp_clear`."
@@ -728,32 +751,32 @@ msgstr ""
 "不需要在 :c:member:`~PyTypeObject.tp_new` 和 :c:member:`~PyTypeObject.tp_clear` "
 "中处理该类型的引用计数。"
 
-#: ../../howto/isolating-extensions.rst:416
+#: ../../howto/isolating-extensions.rst:418
 msgid "Defining ``tp_dealloc``"
 msgstr "定义 ``tp_dealloc``"
 
-#: ../../howto/isolating-extensions.rst:418
+#: ../../howto/isolating-extensions.rst:420
 msgid ""
 "If your type has a custom :c:member:`~PyTypeObject.tp_dealloc` function, it "
 "needs to:"
 msgstr "如果你的类型有自定义的 :c:member:`~PyTypeObject.tp_dealloc` 函数，则它需要："
 
-#: ../../howto/isolating-extensions.rst:421
+#: ../../howto/isolating-extensions.rst:423
 msgid ""
 "call :c:func:`PyObject_GC_UnTrack` before any fields are invalidated, and"
 msgstr "在任何字段失效之前调用 :c:func:`PyObject_GC_UnTrack`，并且"
 
-#: ../../howto/isolating-extensions.rst:422
+#: ../../howto/isolating-extensions.rst:424
 msgid "decrement the reference count of the type."
 msgstr "递减该类型的引用计数。"
 
-#: ../../howto/isolating-extensions.rst:424
+#: ../../howto/isolating-extensions.rst:426
 msgid ""
 "To keep the type valid while ``tp_free`` is called, the type's refcount "
 "needs to be decremented *after* the instance is deallocated. For example::"
 msgstr "要在 ``tp_free`` 被调用时保持类型有效，必须在撤销分配实例 *之后* 递减该类型的引用计数。 例如::"
 
-#: ../../howto/isolating-extensions.rst:427
+#: ../../howto/isolating-extensions.rst:429
 msgid ""
 "static void my_dealloc(PyObject *self)\n"
 "{\n"
@@ -773,17 +796,17 @@ msgstr ""
 "    Py_DECREF(type);\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:436
+#: ../../howto/isolating-extensions.rst:438
 msgid ""
 "The default ``tp_dealloc`` function does this, so if your type does *not* "
 "override ``tp_dealloc`` you don't need to add it."
 msgstr "默认的 ``tp_dealloc`` 函数会执行此操作，因此如果你的类型 *没有* 重载 ``tp_dealloc`` 你就不需要添加它。"
 
-#: ../../howto/isolating-extensions.rst:442
+#: ../../howto/isolating-extensions.rst:444
 msgid "Not overriding ``tp_free``"
 msgstr "没有重载 ``tp_free``"
 
-#: ../../howto/isolating-extensions.rst:444
+#: ../../howto/isolating-extensions.rst:446
 msgid ""
 "The :c:member:`~PyTypeObject.tp_free` slot of a heap type must be set to "
 ":c:func:`PyObject_GC_Del`. This is the default; do not override it."
@@ -791,19 +814,19 @@ msgstr ""
 "堆类型的 :c:member:`~PyTypeObject.tp_free` 槽位必须设为 :c:func:`PyObject_GC_Del`。 "
 "这是默认的设置；请不要重载它。"
 
-#: ../../howto/isolating-extensions.rst:450
+#: ../../howto/isolating-extensions.rst:452
 msgid "Avoiding ``PyObject_New``"
 msgstr "避免 ``PyObject_New``"
 
-#: ../../howto/isolating-extensions.rst:452
+#: ../../howto/isolating-extensions.rst:454
 msgid "GC-tracked objects need to be allocated using GC-aware functions."
 msgstr "带 GC 追踪的对象需要使用带 GC 感知的函数来分配。"
 
-#: ../../howto/isolating-extensions.rst:454
-msgid "If you use use :c:func:`PyObject_New` or :c:func:`PyObject_NewVar`:"
+#: ../../howto/isolating-extensions.rst:456
+msgid "If you use :c:func:`PyObject_New` or :c:func:`PyObject_NewVar`:"
 msgstr "如果你使用 :c:func:`PyObject_New` 或 :c:func:`PyObject_NewVar`:"
 
-#: ../../howto/isolating-extensions.rst:456
+#: ../../howto/isolating-extensions.rst:458
 msgid ""
 "Get and call type's :c:member:`~PyTypeObject.tp_alloc` slot, if possible. "
 "That is, replace ``TYPE *o = PyObject_New(TYPE, typeobj)`` with::"
@@ -811,17 +834,17 @@ msgstr ""
 "如有可能，请获取并调用类型的 :c:member:`~PyTypeObject.tp_alloc` 槽位。 也就是说，将 ``TYPE *o = "
 "PyObject_New(TYPE, typeobj)`` 替换为::"
 
-#: ../../howto/isolating-extensions.rst:459
+#: ../../howto/isolating-extensions.rst:461
 msgid "TYPE *o = typeobj->tp_alloc(typeobj, 0);"
 msgstr "TYPE *o = typeobj->tp_alloc(typeobj, 0);"
 
-#: ../../howto/isolating-extensions.rst:461
+#: ../../howto/isolating-extensions.rst:463
 msgid ""
 "Replace ``o = PyObject_NewVar(TYPE, typeobj, size)`` with the same, but use "
 "size instead of the 0."
 msgstr "同样地替换 ``o = PyObject_NewVar(TYPE, typeobj, size)``，但要使用指定大小而不是 0。"
 
-#: ../../howto/isolating-extensions.rst:464
+#: ../../howto/isolating-extensions.rst:466
 msgid ""
 "If the above is not possible (e.g. inside a custom ``tp_alloc``), call "
 ":c:func:`PyObject_GC_New` or :c:func:`PyObject_GC_NewVar`::"
@@ -829,7 +852,7 @@ msgstr ""
 "如果无法执行以上操作（例如在自定义的 ``tp_alloc`` 中），请调用 :c:func:`PyObject_GC_New` 或 "
 ":c:func:`PyObject_GC_NewVar`::"
 
-#: ../../howto/isolating-extensions.rst:467
+#: ../../howto/isolating-extensions.rst:469
 msgid ""
 "TYPE *o = PyObject_GC_New(TYPE, typeobj);\n"
 "\n"
@@ -839,11 +862,11 @@ msgstr ""
 "\n"
 "TYPE *o = PyObject_GC_NewVar(TYPE, typeobj, size);"
 
-#: ../../howto/isolating-extensions.rst:473
+#: ../../howto/isolating-extensions.rst:475
 msgid "Module State Access from Classes"
 msgstr "类对模块状态的访问"
 
-#: ../../howto/isolating-extensions.rst:475
+#: ../../howto/isolating-extensions.rst:477
 msgid ""
 "If you have a type object defined with :c:func:`PyType_FromModuleAndSpec`, "
 "you can call :c:func:`PyType_GetModule` to get the associated module, and "
@@ -853,13 +876,13 @@ msgstr ""
 ":c:func:`PyType_GetModule` 来获取关联的模块，然后调用 :c:func:`PyModule_GetState` "
 "来获取模块的状态。to get the module's state."
 
-#: ../../howto/isolating-extensions.rst:479
+#: ../../howto/isolating-extensions.rst:481
 msgid ""
 "To save a some tedious error-handling boilerplate code, you can combine "
 "these two steps with :c:func:`PyType_GetModuleState`, resulting in::"
 msgstr "要省略一些繁琐的错误处理样板代码，你可以使用 :c:func:`PyType_GetModuleState` 来合并这两步，得到::"
 
-#: ../../howto/isolating-extensions.rst:482
+#: ../../howto/isolating-extensions.rst:484
 msgid ""
 "my_struct *state = (my_struct*)PyType_GetModuleState(type);\n"
 "if (state == NULL) {\n"
@@ -871,11 +894,11 @@ msgstr ""
 "    return NULL;\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:489
+#: ../../howto/isolating-extensions.rst:491
 msgid "Module State Access from Regular Methods"
 msgstr "常规方法对模块状态的访问"
 
-#: ../../howto/isolating-extensions.rst:491
+#: ../../howto/isolating-extensions.rst:493
 msgid ""
 "Accessing the module-level state from methods of a class is somewhat more "
 "complicated, but is possible thanks to API introduced in Python 3.9. To get "
@@ -885,14 +908,14 @@ msgstr ""
 "从一个类的方法访问模块层级的状态在某些方面会更为复杂，但通过 Python 3.9 所引入的 API 这是可能做到的。 为了获取状态，你需要首先获取 "
 "*定义的类*，然后从中获取模块状态。"
 
-#: ../../howto/isolating-extensions.rst:496
+#: ../../howto/isolating-extensions.rst:498
 msgid ""
 "The largest roadblock is getting *the class a method was defined in*, or "
 "that method's \"defining class\" for short. The defining class can have a "
 "reference to the module it is part of."
 msgstr "最大的障碍是获取 *方法定义所在的类*，简称为方法“定义的类”。 定义的类可以拥有一个指向作为其组成部分的方法的引用。"
 
-#: ../../howto/isolating-extensions.rst:500
+#: ../../howto/isolating-extensions.rst:502
 msgid ""
 "Do not confuse the defining class with ``Py_TYPE(self)``. If the method is "
 "called on a *subclass* of your type, ``Py_TYPE(self)`` will refer to that "
@@ -901,7 +924,7 @@ msgstr ""
 "不要混淆定义的类和 ``Py_TYPE(self)``。 如果方法是在你的类型的一个 *子类* 上被调用的，则 ``Py_TYPE(self)`` "
 "将指向该子类，它可能是在另一个模块中定义的。"
 
-#: ../../howto/isolating-extensions.rst:505
+#: ../../howto/isolating-extensions.rst:507
 msgid ""
 "The following Python code can illustrate the concept. "
 "``Base.get_defining_class`` returns ``Base`` even if ``type(self) == Sub``:"
@@ -909,7 +932,7 @@ msgstr ""
 "下面的 Python 代码可以演示这一概念。 ``Base.get_defining_class`` 将返回 ``Base``，即使 "
 "``type(self) == Sub``:"
 
-#: ../../howto/isolating-extensions.rst:509
+#: ../../howto/isolating-extensions.rst:511
 msgid ""
 "class Base:\n"
 "    def get_type_of_self(self):\n"
@@ -931,7 +954,7 @@ msgstr ""
 "class Sub(Base):\n"
 "    pass"
 
-#: ../../howto/isolating-extensions.rst:521
+#: ../../howto/isolating-extensions.rst:523
 msgid ""
 "For a method to get its \"defining class\", it must use the "
 ":ref:`METH_METHOD | METH_FASTCALL | METH_KEYWORDS <METH_METHOD-"
@@ -942,7 +965,7 @@ msgstr ""
 "<METH_METHOD-METH_FASTCALL-METH_KEYWORDS>` :c:type:`调用惯例 <PyMethodDef>` "
 "以及相应的 :c:type:`PyCMethod` 签名::"
 
-#: ../../howto/isolating-extensions.rst:526
+#: ../../howto/isolating-extensions.rst:528
 msgid ""
 "PyObject *PyCMethod(\n"
 "    PyObject *self,               // object the method was called on\n"
@@ -958,17 +981,17 @@ msgstr ""
 "    Py_ssize_t nargs,             // \"args\" 的长度\n"
 "    PyObject *kwnames)            // NULL，或由关键字参数组成的字典"
 
-#: ../../howto/isolating-extensions.rst:533
+#: ../../howto/isolating-extensions.rst:535
 msgid ""
 "Once you have the defining class, call :c:func:`PyType_GetModuleState` to "
 "get the state of its associated module."
 msgstr "一旦你得到了定义的类，即可调用 :c:func:`PyType_GetModuleState` 来获取它所关联的模块的状态。"
 
-#: ../../howto/isolating-extensions.rst:536
+#: ../../howto/isolating-extensions.rst:538
 msgid "For example::"
 msgstr "例如："
 
-#: ../../howto/isolating-extensions.rst:538
+#: ../../howto/isolating-extensions.rst:540
 msgid ""
 "static PyObject *\n"
 "example_method(PyObject *self,\n"
@@ -1018,15 +1041,15 @@ msgstr ""
 "    {NULL},\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:564
+#: ../../howto/isolating-extensions.rst:566
 msgid "Module State Access from Slot Methods, Getters and Setters"
 msgstr "槽位方法、读取方法和设置方法对模块状态的访问"
 
-#: ../../howto/isolating-extensions.rst:568
+#: ../../howto/isolating-extensions.rst:570
 msgid "This is new in Python 3.11."
 msgstr "这是 Python 3.11 的新增特性。"
 
-#: ../../howto/isolating-extensions.rst:576
+#: ../../howto/isolating-extensions.rst:578
 msgid ""
 "Slot methods—the fast C equivalents for special methods, such as "
 ":c:member:`~PyNumberMethods.nb_add` for :py:attr:`~object.__add__` or "
@@ -1040,7 +1063,7 @@ msgstr ""
 "具有不允许传入定义类的非常简单的 API，这不同于 :c:type:`PyCMethod`。 同样的机制也适用于通过 "
 ":c:type:`PyGetSetDef` 定义的读取方法和设置方法。"
 
-#: ../../howto/isolating-extensions.rst:583
+#: ../../howto/isolating-extensions.rst:585
 msgid ""
 "To access the module state in these cases, use the "
 ":c:func:`PyType_GetModuleByDef` function, and pass in the module definition."
@@ -1050,7 +1073,7 @@ msgstr ""
 "要在这些场景下访问模块状态，请使用 :c:func:`PyType_GetModuleByDef` 函数，并传入模块定义。 一旦你得到该模块，即可调用 "
 ":c:func:`PyModule_GetState` 来获取状态::"
 
-#: ../../howto/isolating-extensions.rst:588
+#: ../../howto/isolating-extensions.rst:590
 msgid ""
 "PyObject *module = PyType_GetModuleByDef(Py_TYPE(self), &module_def);\n"
 "my_struct *state = (my_struct*)PyModule_GetState(module);\n"
@@ -1064,7 +1087,7 @@ msgstr ""
 "    return NULL;\n"
 "}"
 
-#: ../../howto/isolating-extensions.rst:594
+#: ../../howto/isolating-extensions.rst:596
 msgid ""
 ":c:func:`!PyType_GetModuleByDef` works by searching the :term:`method "
 "resolution order` (i.e. all superclasses) for the first superclass that has "
@@ -1073,7 +1096,7 @@ msgstr ""
 ":c:func:`!PyType_GetModuleByDef` 的作用方式是通过搜索 :term:`method resolution order` "
 "(即所有超类) 来找到具有相应模块的第一个超类。"
 
-#: ../../howto/isolating-extensions.rst:600
+#: ../../howto/isolating-extensions.rst:602
 msgid ""
 "In very exotic cases (inheritance chains spanning multiple modules created "
 "from the same definition), :c:func:`!PyType_GetModuleByDef` might not return"
@@ -1083,18 +1106,18 @@ msgstr ""
 "在非常特别的情况下（继承链跨越由同样定义创建的多个模块），:c:func:`!PyType_GetModuleByDef` "
 "可能不会返回真正定义方法的类。 但是，它总是会返回一个具有同样定义的模块，这将确保具有兼容的 C 内存布局。"
 
-#: ../../howto/isolating-extensions.rst:608
+#: ../../howto/isolating-extensions.rst:610
 msgid "Lifetime of the Module State"
 msgstr "模块状态的生命期"
 
-#: ../../howto/isolating-extensions.rst:610
+#: ../../howto/isolating-extensions.rst:612
 msgid ""
 "When a module object is garbage-collected, its module state is freed. For "
 "each pointer to (a part of) the module state, you must hold a reference to "
 "the module object."
 msgstr "当一个模块对象被当作垃圾回收时，它的模块状态将被释放。 对于每个指向（一部分）模块状态的指针来说，你必须持有一个对模块对象的引用。"
 
-#: ../../howto/isolating-extensions.rst:614
+#: ../../howto/isolating-extensions.rst:616
 msgid ""
 "Usually this is not an issue, because types created with "
 ":c:func:`PyType_FromModuleAndSpec`, and their instances, hold a reference to"
@@ -1105,28 +1128,27 @@ msgstr ""
 "通常这不会有问题，因为使用 :c:func:`PyType_FromModuleAndSpec` 创建的类型，以及它们的实例，都持有对模块的引用。 "
 "但是，当你从其他地方，例如对外部库的回调引用模块状态时必须小心谨慎。"
 
-#: ../../howto/isolating-extensions.rst:623
+#: ../../howto/isolating-extensions.rst:625
 msgid "Open Issues"
 msgstr "未解决的问题"
 
-#: ../../howto/isolating-extensions.rst:625
+#: ../../howto/isolating-extensions.rst:627
 msgid "Several issues around per-module state and heap types are still open."
 msgstr "围绕模块级状态和堆类型仍然存在一些未解决的问题。"
 
-#: ../../howto/isolating-extensions.rst:627
+#: ../../howto/isolating-extensions.rst:629
 msgid ""
-"Discussions about improving the situation are best held on the `capi-sig "
-"mailing list <https://mail.python.org/mailman3/lists/capi-"
-"sig.python.org/>`__."
+"Discussions about improving the situation are best held on the `discuss "
+"forum under c-api tag <https://discuss.python.org/c/core-dev/c-api/30>`__."
 msgstr ""
-"改善此状况最好的讨论是在 `capi-sig 邮件列表 <https://mail.python.org/mailman3/lists/capi-"
-"sig.python.org/>`__ 进行的。"
+"有关改进此状况最好的讨论是在 `discuss 论坛的 c-api 标签下 <https://discuss.python.org/c/core-"
+"dev/c-api/30>`__ 进行的。"
 
-#: ../../howto/isolating-extensions.rst:632
+#: ../../howto/isolating-extensions.rst:633
 msgid "Per-Class Scope"
 msgstr "类级作用域"
 
-#: ../../howto/isolating-extensions.rst:634
+#: ../../howto/isolating-extensions.rst:635
 msgid ""
 "It is currently (as of Python 3.11) not possible to attach state to "
 "individual *types* without relying on CPython implementation details (which "
@@ -1136,11 +1158,11 @@ msgstr ""
 "目前（即 Python 3.11）还无法将状态关联到单个 *类型* 而不依赖于 CPython 实现细节（这在未来可能发生改变 — "
 "或许，会怪异地允许采用适当的类级作用域解决方案）。"
 
-#: ../../howto/isolating-extensions.rst:641
+#: ../../howto/isolating-extensions.rst:642
 msgid "Lossless Conversion to Heap Types"
 msgstr "无损转换为堆类型"
 
-#: ../../howto/isolating-extensions.rst:643
+#: ../../howto/isolating-extensions.rst:644
 msgid ""
 "The heap type API was not designed for \"lossless\" conversion from static "
 "types; that is, creating a type that works exactly like a given static type."

@@ -7,17 +7,17 @@
 # 强 陈 <lxchenqiang@163.com>, 2021
 # Sonny <758896823@qq.com>, 2021
 # Naisen Xu <723648649@qq.com>, 2021
-# Freesand Leo <yuqinju@163.com>, 2025
 # ppcfish <ppcfish@gmail.com>, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-23 14:20+0000\n"
+"POT-Creation-Date: 2025-06-20 14:21+0000\n"
 "PO-Revision-Date: 2021-06-28 00:47+0000\n"
-"Last-Translator: ppcfish <ppcfish@gmail.com>, 2025\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,6 +38,9 @@ msgid ""
 "slot).  Specifically, this function does **not** call the object's "
 ":meth:`!__init__` method."
 msgstr ""
+"为新分配的对象 *op* 初始化它的类型和初始引用。 返回初始化后的对象。 对象的其他字段不会被初始化。 虽然被如此命名，但该函数与对象的 "
+":meth:`~object.__init__` 方法 (:c:member:`~PyTypeObject.tp_init` 槽位) 无关。 "
+"具体而言，该函数 **不会** 调用对象的 :meth:`!__init__` 方法。"
 
 #: ../../c-api/allocation.rst:24
 msgid ""
@@ -46,12 +49,15 @@ msgid ""
 ":c:member:`!tp_alloc` for your type, prefer :c:func:`PyType_GenericAlloc` or"
 " :c:func:`PyObject_New`."
 msgstr ""
+"总而言之，可将该函数视为一个低层级的例程。 如有可能请使用 :c:member:`~PyTypeObject.tp_alloc`。 要为你的类型实现 "
+":c:member:`!tp_alloc`，推荐使用 :c:func:`PyType_GenericAlloc` 或 "
+":c:func:`PyObject_New`。"
 
 #: ../../c-api/allocation.rst:31
 msgid ""
 "This function only initializes the object's memory corresponding to the "
 "initial :c:type:`PyObject` structure.  It does not zero the rest."
-msgstr ""
+msgstr "该函数只初始化与初始 :c:type:`PyObject` 结构体相对应的对象内存。 它不会为其余内存写入零值。"
 
 #: ../../c-api/allocation.rst:37
 msgid ""
@@ -63,7 +69,7 @@ msgstr "它的功能和 :c:func:`PyObject_Init` 一样，并且会初始化变�
 msgid ""
 "This function only initializes some of the object's memory.  It does not "
 "zero the rest."
-msgstr ""
+msgstr "该函数只初始化对象的部分内存。 它不会为其余内存写入零值。"
 
 #: ../../c-api/allocation.rst:48
 msgid ""
@@ -73,12 +79,15 @@ msgid ""
 ":c:func:`PyObject_Init`.  The caller will own the only reference to the "
 "object (i.e. its reference count will be one)."
 msgstr ""
+"通过调用 :c:func:`PyObject_Malloc` 分配内存并如 :c:func:`PyObject_Init` 那样将其初始化分配一个使用 "
+"C 结构类型 *TYPE* 和 Python 类型对象 *typeobj* (``PyTypeObject*``) 的新 Python 对象。 "
+"调用方将拥有对该对象的唯一引用（即其引用计数将为一）。"
 
 #: ../../c-api/allocation.rst:54 ../../c-api/allocation.rst:107
 msgid ""
 "Avoid calling this directly to allocate memory for an object; call the "
 "type's :c:member:`~PyTypeObject.tp_alloc` slot instead."
-msgstr ""
+msgstr "请避免直接调用此函数为对象分配内存；而应调用类型的 :c:member:`~PyTypeObject.tp_alloc` 槽位。"
 
 #: ../../c-api/allocation.rst:57 ../../c-api/allocation.rst:110
 msgid ""
@@ -86,6 +95,8 @@ msgid ""
 ":c:func:`PyType_GenericAlloc` is preferred over a custom function that "
 "simply calls this macro."
 msgstr ""
+"在填充类型的 :c:member:`~PyTypeObject.tp_alloc` 槽位时，推荐使用 "
+":c:func:`PyType_GenericAlloc` 而不是使用简单调用此宏的自定义函数。"
 
 #: ../../c-api/allocation.rst:61
 msgid ""
@@ -93,24 +104,31 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_new` (:meth:`~object.__new__`), or "
 ":c:member:`~PyTypeObject.tp_init` (:meth:`~object.__init__`)."
 msgstr ""
+"这个宏不会调用 :c:member:`~PyTypeObject.tp_alloc`, :c:member:`~PyTypeObject.tp_new`"
+" (:meth:`~object.__new__`) 或 :c:member:`~PyTypeObject.tp_init` "
+"(:meth:`~object.__init__`)。"
 
 #: ../../c-api/allocation.rst:65
 msgid ""
 "This cannot be used for objects with :c:macro:`Py_TPFLAGS_HAVE_GC` set in "
 ":c:member:`~PyTypeObject.tp_flags`; use :c:macro:`PyObject_GC_New` instead."
 msgstr ""
+"这不能被用于在 :c:member:`~PyTypeObject.tp_flags` 中设置了 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 的对象；请改用 :c:macro:`PyObject_GC_New`。"
 
 #: ../../c-api/allocation.rst:68
 msgid ""
 "Memory allocated by this macro must be freed with :c:func:`PyObject_Free` "
 "(usually called via the object's :c:member:`~PyTypeObject.tp_free` slot)."
 msgstr ""
+"由此宏分配的内存必须用 :c:func:`PyObject_Free` 来释放（一般是通过对象的 "
+":c:member:`~PyTypeObject.tp_free` 槽位进行调用）。"
 
 #: ../../c-api/allocation.rst:73 ../../c-api/allocation.rst:123
 msgid ""
 "The returned memory is not guaranteed to have been completely zeroed before "
 "it was initialized."
-msgstr ""
+msgstr "返回的内存并不保证在其初始化之前被完全置为零值。"
 
 #: ../../c-api/allocation.rst:78 ../../c-api/allocation.rst:128
 msgid ""
@@ -119,10 +137,12 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_init`.  To construct a fully initialized object,"
 " call *typeobj* instead.  For example::"
 msgstr ""
+"此宏并不会构造给定类型的完全初始化的对象；它只是分配内存并准备好由 :c:member:`~PyTypeObject.tp_init` 来进一步初始化。"
+" 要构造完全初始化的对象，应改为调用 *typeobj*。 例如::"
 
 #: ../../c-api/allocation.rst:83
 msgid "PyObject *foo = PyObject_CallNoArgs((PyObject *)&PyFoo_Type);"
-msgstr ""
+msgstr "PyObject *foo = PyObject_CallNoArgs((PyObject *)&PyFoo_Type);"
 
 #: ../../c-api/allocation.rst:87 ../../c-api/allocation.rst:137
 msgid ":c:func:`PyObject_Free`"
@@ -130,11 +150,11 @@ msgstr ":c:func:`PyObject_Free`"
 
 #: ../../c-api/allocation.rst:88
 msgid ":c:macro:`PyObject_GC_New`"
-msgstr ""
+msgstr ":c:macro:`PyObject_GC_New`"
 
 #: ../../c-api/allocation.rst:89 ../../c-api/allocation.rst:139
 msgid ":c:func:`PyType_GenericAlloc`"
-msgstr ""
+msgstr ":c:func:`PyType_GenericAlloc`"
 
 #: ../../c-api/allocation.rst:90 ../../c-api/allocation.rst:140
 msgid ":c:member:`~PyTypeObject.tp_alloc`"
@@ -142,7 +162,7 @@ msgstr ":c:member:`~PyTypeObject.tp_alloc`"
 
 #: ../../c-api/allocation.rst:95
 msgid "Like :c:macro:`PyObject_New` except:"
-msgstr ""
+msgstr "如 :c:macro:`PyObject_New` 异常："
 
 #: ../../c-api/allocation.rst:97
 msgid ""
@@ -150,10 +170,12 @@ msgid ""
 "(``Py_ssize_t``) fields of the size given by the "
 ":c:member:`~PyTypeObject.tp_itemsize` field of *typeobj*."
 msgstr ""
+"它将分配足够容纳 *TYPE* 结构加上由 *typeobj* 的 :c:member:`~PyTypeObject.tp_itemsize` "
+"字段所给出的大小的 *size* (``Py_ssize_t``) 个字段的内存。"
 
 #: ../../c-api/allocation.rst:100
 msgid "The memory is initialized like :c:func:`PyObject_InitVar`."
-msgstr ""
+msgstr "该内存将像 :c:func:`PyObject_InitVar` 一样被初始化。"
 
 #: ../../c-api/allocation.rst:102
 msgid ""
@@ -161,7 +183,7 @@ msgid ""
 "determine their size at construction time.  Embedding the array of fields "
 "into the same allocation decreases the number of allocations, improving the "
 "memory management efficiency."
-msgstr ""
+msgstr "这适用于实现像元组那样的对象，它能够在构造时确定其大小。 通过将字段数组嵌入到同样的分配块减去分配块数量，提高了内存管理效率。"
 
 #: ../../c-api/allocation.rst:114
 msgid ""
@@ -169,21 +191,26 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_flags`; use :c:macro:`PyObject_GC_NewVar` "
 "instead."
 msgstr ""
+"这不能被用于在 :c:member:`~PyTypeObject.tp_flags` 中设置了 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 的对象；请改用 :c:macro:`PyObject_GC_NewVar`。"
 
 #: ../../c-api/allocation.rst:118
 msgid ""
 "Memory allocated by this function must be freed with :c:func:`PyObject_Free`"
 " (usually called via the object's :c:member:`~PyTypeObject.tp_free` slot)."
 msgstr ""
+"由此函数分配的内存必须用 :c:func:`PyObject_Free` 来释放（一般是通过对象的 "
+":c:member:`~PyTypeObject.tp_free` 槽位进行调用）。"
 
 #: ../../c-api/allocation.rst:133
 msgid ""
 "PyObject *list_instance = PyObject_CallNoArgs((PyObject *)&PyList_Type);"
 msgstr ""
+"PyObject *list_instance = PyObject_CallNoArgs((PyObject *)&PyList_Type);"
 
 #: ../../c-api/allocation.rst:138
 msgid ":c:macro:`PyObject_GC_NewVar`"
-msgstr ""
+msgstr ":c:macro:`PyObject_GC_NewVar`"
 
 #: ../../c-api/allocation.rst:145
 msgid "Same as :c:func:`PyObject_Free`."
@@ -198,8 +225,8 @@ msgstr ""
 "这个对象是像 ``None`` 一样的 Python 对象。它可以使用 :c:macro:`Py_None` 宏访问，该宏的拿到指向该对象的指针。"
 
 #: ../../c-api/allocation.rst:156
-msgid ":c:func:`PyModule_Create`"
-msgstr ":c:func:`PyModule_Create`"
+msgid ":ref:`moduleobjects`"
+msgstr ":ref:`moduleobjects`"
 
 #: ../../c-api/allocation.rst:157
 msgid "To allocate and create extension modules."
