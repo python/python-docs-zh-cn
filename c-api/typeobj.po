@@ -20,6 +20,7 @@
 # Kevin Deng <kevindeng55+transifex@gmail.com>, 2024
 # Wulian233 <xiguawulian@gmail.com>, 2024
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -27,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-27 14:20+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 00:50+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1796,6 +1797,8 @@ msgid ""
 "instance, and call the type's :c:member:`~PyTypeObject.tp_free` function to "
 "free the object itself."
 msgstr ""
+"析构函数应移除该实例所拥有的所有引用（例如，调用 :c:func:`Py_CLEAR`），释放该实例所拥有的所有内存缓冲区，并调用该类型的 "
+":c:member:`~PyTypeObject.tp_free` 函数来释放对象本身。"
 
 #: ../../c-api/typeobj.rst:689
 msgid ""
@@ -1804,6 +1807,8 @@ msgid ""
 " ensure you don't clobber a preexisting error indicator (the deallocation "
 "could have occurred while processing a different error):"
 msgstr ""
+"如果您可能会调用那些可能设置错误指示器的函数，则必须使用 :c:func:`PyErr_GetRaisedException` 和 "
+":c:func:`PyErr_SetRaisedException`，以确保不会破坏已存在的错误指示器（在处理另一个错误的过程中，可能已发生了内存释放）："
 
 #: ../../c-api/typeobj.rst:694
 msgid ""
@@ -1816,6 +1821,14 @@ msgid ""
 "    PyErr_SetRaisedException(exc);\n"
 "}"
 msgstr ""
+"static void\n"
+"foo_dealloc(foo_object *self)\n"
+"{\n"
+"    PyObject *et, *ev, *etb;\n"
+"    PyObject *exc = PyErr_GetRaisedException();\n"
+"    ...\n"
+"    PyErr_SetRaisedException(exc);\n"
+"}"
 
 #: ../../c-api/typeobj.rst:705
 msgid ""
@@ -1823,10 +1836,11 @@ msgid ""
 "case it should call :c:func:`PyErr_FormatUnraisable` to log (and clear) an "
 "unraisable exception."
 msgstr ""
+"释放处理程序本身不应引发异常；若遇到错误情况，应调用 :c:func:`PyErr_FormatUnraisable` 记录（并清除）不可抛出的异常。"
 
 #: ../../c-api/typeobj.rst:709
 msgid "No guarantees are made about when an object is destroyed, except:"
-msgstr ""
+msgstr "关于对象何时被销毁，不做任何保证，除非："
 
 #: ../../c-api/typeobj.rst:711
 msgid ""
@@ -1834,6 +1848,8 @@ msgid ""
 "reference to the object is deleted, unless its finalizer "
 "(:c:member:`~PyTypeObject.tp_finalize`) subsequently resurrects the object."
 msgstr ""
+"Python "
+"会在对象的最后一个引用被删除后立即销毁该对象，或者在一段时间后再销毁，除非其终结器（:c:member:`~PyTypeObject.tp_finalize`）在此期间重新激活了该对象。"
 
 #: ../../c-api/typeobj.rst:715
 msgid ""
@@ -1841,13 +1857,14 @@ msgid ""
 "(:c:member:`~PyTypeObject.tp_finalize`) or automatically cleared "
 "(:c:member:`~PyTypeObject.tp_clear`)."
 msgstr ""
+"在对象被自动终结（:c:member:`~PyTypeObject.tp_finalize`）或自动清理（:c:member:`~PyTypeObject.tp_clear`）的过程中，不会销毁该对象。"
 
 #: ../../c-api/typeobj.rst:719
 msgid ""
 "CPython currently destroys an object immediately from :c:func:`Py_DECREF` "
 "when the new reference count is zero, but this may change in a future "
 "version."
-msgstr ""
+msgstr "当前 CPython 在引用计数归零时，会立即通过 :c:func:`Py_DECREF` 销毁对象，但这一行为在未来版本中可能会改变。"
 
 #: ../../c-api/typeobj.rst:723
 msgid ""
@@ -1855,6 +1872,8 @@ msgid ""
 " beginning of :c:member:`!tp_dealloc` to guarantee that the object is always"
 " finalized before destruction."
 msgstr ""
+"建议在 :c:member:`!tp_dealloc` 的开头调用 "
+":c:func:`PyObject_CallFinalizerFromDealloc` 以确保对象在销毁前始终被终结。"
 
 #: ../../c-api/typeobj.rst:727
 msgid ""
@@ -1862,6 +1881,8 @@ msgid ""
 "flag is set), the destructor should call :c:func:`PyObject_GC_UnTrack` "
 "before clearing any member fields."
 msgstr ""
+"若该类型支持垃圾回收（即设置了 :c:macro:`Py_TPFLAGS_HAVE_GC` 标志），则析构函数应在清理任何成员字段之前调用 "
+":c:func:`PyObject_GC_UnTrack`。"
 
 #: ../../c-api/typeobj.rst:731
 msgid ""
@@ -1870,6 +1891,9 @@ msgid ""
 " object is always cleared before destruction.  Beware that "
 ":c:member:`!tp_clear` might have already been called."
 msgstr ""
+"允许从 :c:member:`!tp_dealloc` 方法中调用 "
+":c:member:`~PyTypeObject.tp_clear`，以减少代码重复并确保对象在销毁前始终被清理。但需注意，:c:member:`!tp_clear`"
+" 可能已被提前调用。"
 
 #: ../../c-api/typeobj.rst:736
 msgid ""
@@ -1878,6 +1902,8 @@ msgid ""
 ":c:func:`Py_DECREF`) after calling the type deallocator.  See the example "
 "code below.::"
 msgstr ""
+"如果该类型是堆分配的（:c:macro:`Py_TPFLAGS_HEAPTYPE`），则释放器应在调用类型释放器之后，释放对其类型对象的自有引用（通过 "
+":c:func:`Py_DECREF`）。参见下面的示例代码。::"
 
 #: ../../c-api/typeobj.rst:741
 msgid ""
@@ -1890,6 +1916,14 @@ msgid ""
 "   Py_TYPE(self)->tp_free(self);\n"
 "}"
 msgstr ""
+"static void\n"
+"foo_dealloc(PyObject *op)\n"
+"{\n"
+"   foo_object *self = (foo_object *) op;\n"
+"   PyObject_GC_UnTrack(self);\n"
+"   Py_CLEAR(self->ref);\n"
+"   Py_TYPE(self)->tp_free(self);\n"
+"}"
 
 #: ../../c-api/typeobj.rst:750
 msgid ""
@@ -1898,6 +1932,8 @@ msgid ""
 "must be backed up first and restored later (after logging any exceptions "
 "with :c:func:`PyErr_WriteUnraisable`)."
 msgstr ""
+":c:member:`!tp_dealloc` 必须保持异常状态不变。如果它需要调用可能引发异常的函数，必须先备份异常状态，之后（在用 "
+":c:func:`PyErr_WriteUnraisable` 记录任何异常后）再恢复该状态。"
 
 #: ../../c-api/typeobj.rst:755
 msgid "Example::"
@@ -1944,6 +1980,44 @@ msgid ""
 "    PyErr_SetRaisedException(exc);\n"
 "}"
 msgstr ""
+"static void\n"
+"foo_dealloc(PyObject *self)\n"
+"{\n"
+"    PyObject *exc = PyErr_GetRaisedException();\n"
+"\n"
+"    if (PyObject_CallFinalizerFromDealloc(self) < 0) {\n"
+"        // 自我复活了。\n"
+"        goto done;\n"
+"    }\n"
+"\n"
+"    PyTypeObject *tp = Py_TYPE(self);\n"
+"\n"
+"    if (tp->tp_flags & Py_TPFLAGS_HAVE_GC) {\n"
+"        PyObject_GC_UnTrack(self);\n"
+"    }\n"
+"\n"
+"    // 可选，但可以避免代码重复，较为方便。\n"
+"    if (tp->tp_clear && tp->tp_clear(self) < 0) {\n"
+"        PyErr_WriteUnraisable(self);\n"
+"    }\n"
+"\n"
+"    // 此处可执行任何额外的销毁操作。\n"
+"\n"
+"    tp->tp_free(self);\n"
+"    self = NULL;  // 若后续调用了 PyErr_WriteUnraisable() 函数。\n"
+"\n"
+"    if (tp->tp_flags & Py_TPFLAGS_HEAPTYPE) {\n"
+"        Py_CLEAR(tp);\n"
+"    }\n"
+"\n"
+"done:\n"
+"    // 可选操作：若之前调用的操作可能引发了异常。\n"
+"    //  \n"
+"    if (PyErr_Occurred()) {\n"
+"        PyErr_WriteUnraisable(self);\n"
+"    }\n"
+"    PyErr_SetRaisedException(exc);\n"
+"}"
 
 #: ../../c-api/typeobj.rst:796
 msgid ""
@@ -1957,12 +2031,17 @@ msgid ""
 "objects on the thread which called :c:member:`!tp_dealloc` will not violate "
 "any assumptions of the library."
 msgstr ""
+":c:member:`!tp_dealloc` 可能从任意 Python "
+"线程调用，而不仅限于创建该对象的线程（如果对象成为引用循环的一部分，该循环可能由任意线程的垃圾回收操作回收）。 这对 Python API "
+"调用不是问题，因为调用 :c:member:`!tp_dealloc` 的线程会带有 :term:`attached thread "
+"state`。然而，如果被销毁的对象反过来会销毁其他 C 库中的对象，则需要确保在调用 :c:member:`!tp_dealloc` "
+"的线程上销毁这些对象不会违反该库的任何假设条件。"
 
 #: ../../c-api/typeobj.rst:814 ../../c-api/typeobj.rst:1714
 #: ../../c-api/typeobj.rst:2447
 msgid ""
 ":ref:`life-cycle` for details about how this slot relates to other slots."
-msgstr ""
+msgstr "有关此槽位如何与其他槽位关联的详细信息，请参阅 :ref:`life-cycle`。"
 
 #: ../../c-api/typeobj.rst:819
 msgid ""

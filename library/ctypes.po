@@ -14,6 +14,7 @@
 # Wulian233 <xiguawulian@gmail.com>, 2024
 # ww song <sww4718168@gmail.com>, 2025
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
@@ -21,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-27 14:20+0000\n"
+"POT-Creation-Date: 2025-07-04 14:20+0000\n"
 "PO-Revision-Date: 2021-06-28 01:03+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1465,6 +1466,8 @@ msgid ""
 "specifying a :attr:`~Structure._layout_` class attribute in the subclass "
 "definition; see the attribute documentation for details."
 msgstr ""
+"默认情况下，结构体和联合的字段布局方式与 C 编译器的处理方式相同。可以通过在子类定义中指定 :attr:`~Structure._layout_` "
+"类属性来完全覆盖此行为；有关详细信息，请参阅该属性的文档。"
 
 #: ../../library/ctypes.rst:687
 msgid ""
@@ -1472,6 +1475,8 @@ msgid ""
 "the :attr:`~Structure._pack_` class attribute to a positive integer. This "
 "matches what ``#pragma pack(n)`` does in MSVC."
 msgstr ""
+"可以通过将 :attr:`~Structure._pack_` 类属性设置为正整数来指定字段的最大对齐方式。这与 MSVC 中的 ``#pragma "
+"pack(n)`` 功能等效。"
 
 #: ../../library/ctypes.rst:691
 msgid ""
@@ -1480,6 +1485,8 @@ msgid ""
 "achieved by specifying a :attr:`~Structure._align_` class attribute in the "
 "subclass definition."
 msgstr ""
+"也可以为子类自身的打包设置最小对齐方式，这与 MSVC 中  ``#pragma align(n)`` 的作用相同。通过在子类定义中指定 "
+":attr:`~Structure._align_` 类属性即可实现这一点。"
 
 #: ../../library/ctypes.rst:696
 msgid ""
@@ -1534,6 +1541,8 @@ msgid ""
 "for the current platform. See the :attr:`~Structure._layout_` attribute for "
 "details on the default behavior and how to change it."
 msgstr ""
+"需要注意的是，位域在内存中的分配和布局并非 C 标准所定义；其实现取决于具体的编译器。默认情况下，Python "
+"会尝试匹配当前平台上“原生”编译器的行为。有关默认行为以及如何修改它的详细信息，请参阅 :attr:`~Structure._layout_` 属性。"
 
 #: ../../library/ctypes.rst:732
 msgid "Arrays"
@@ -1855,6 +1864,8 @@ msgid ""
 "threaded <free threading>` builds. In ctypes, reads and writes to a single "
 "object concurrently is safe, but not across multiple objects:"
 msgstr ""
+"从 Python 3.13 开始，在 :term:`自由线程 <free threading>` 构建中可以禁用 :term:`GIL`。在 "
+"ctypes 中，对单个对象的并发读写是安全的，但跨多个对象则不安全："
 
 #: ../../library/ctypes.rst:888
 msgid ""
@@ -1874,6 +1885,8 @@ msgid ""
 "attempting to do the same. If this is an issue, consider using a "
 ":class:`threading.Lock` to synchronize access to memory:"
 msgstr ""
+"在上述情况下，如果 GIL 已禁用，只有当一个对象对地址进行读写时才是安全的。因此，``pointer_a`` 可以在多个线程之间共享和写入，但前提是 "
+"``pointer_b`` 不同时尝试执行相同操作。如果这是个问题，可以考虑使用 :class:`threading.Lock` 来同步对内存的访问："
 
 #: ../../library/ctypes.rst:899
 msgid ""
@@ -1886,6 +1899,14 @@ msgid ""
 ">>> with lock:\n"
 "...    pointer_b.contents = 42"
 msgstr ""
+">>> import threading\n"
+">>> lock = threading.Lock()\n"
+">>> # Thread 1\n"
+">>> with lock:\n"
+"...    pointer_a.contents = 24\n"
+">>> # Thread 2\n"
+">>> with lock:\n"
+"...    pointer_b.contents = 42"
 
 #: ../../library/ctypes.rst:914
 msgid "Type conversions"
@@ -2885,14 +2906,14 @@ msgstr ""
 
 #: ../../library/ctypes.rst:1419
 msgid "Listing loaded shared libraries"
-msgstr ""
+msgstr "列出已加载的共享库"
 
 #: ../../library/ctypes.rst:1421
 msgid ""
 "When writing code that relies on code loaded from shared libraries, it can "
 "be useful to know which shared libraries have already been loaded into the "
 "current process."
-msgstr ""
+msgstr "在编写依赖于从共享库加载的代码时，了解当前进程中已加载哪些共享库可能会很有用。"
 
 #: ../../library/ctypes.rst:1425
 msgid ""
@@ -2901,6 +2922,8 @@ msgid ""
 "to help determine which shared libraries have already been loaded into the "
 "current process."
 msgstr ""
+":mod:`!ctypes.util` 模块提供了 :func:`~ctypes.util.dllist` 函数，该函数会调用各种平台提供的不同 "
+"API，以帮助确定当前进程中已加载了哪些共享库。"
 
 #: ../../library/ctypes.rst:1429
 msgid ""
@@ -2909,6 +2932,8 @@ msgid ""
 "itself, which may be an empty string. For example, on glibc-based Linux, the"
 " return may look like::"
 msgstr ""
+"此函数的确切输出取决于系统。在大多数平台上，该列表的第一个条目代表当前进程本身，可能是空字符串。例如，在基于 glibc 的 Linux "
+"上，返回结果可能如下："
 
 #: ../../library/ctypes.rst:1434
 msgid ""
@@ -2916,16 +2941,19 @@ msgid ""
 ">>> dllist()\n"
 "['', 'linux-vdso.so.1', '/lib/x86_64-linux-gnu/libm.so.6', '/lib/x86_64-linux-gnu/libc.so.6', ... ]"
 msgstr ""
+">>> from ctypes.util import dllist\n"
+">>> dllist()\n"
+"['', 'linux-vdso.so.1', '/lib/x86_64-linux-gnu/libm.so.6', '/lib/x86_64-linux-gnu/libc.so.6', ... ]"
 
 #: ../../library/ctypes.rst:1441
 msgid "Loading shared libraries"
-msgstr "加载动态链接库"
+msgstr "加载共享库"
 
 #: ../../library/ctypes.rst:1443
 msgid ""
 "There are several ways to load shared libraries into the Python process.  "
 "One way is to instantiate one of the following classes:"
-msgstr "有很多方式可以将动态链接库加载到 Python 进程。其中之一是实例化以下类的其中一个::"
+msgstr "有很多方式可以将共享库加载到 Python 进程。其中之一是实例化以下类的其中一个::"
 
 #: ../../library/ctypes.rst:1449
 msgid ""
@@ -3008,7 +3036,7 @@ msgstr "这个类的实例代表已加载的共享库，这些库中的函数使
 msgid ""
 "The Python :term:`global interpreter lock` is released before calling any "
 "function exported by these libraries, and reacquired afterwards."
-msgstr "调用动态库导出的函数之前，Python会释放 :term:`global interpreter lock` ，并在调用后重新获取。"
+msgstr "调用共享库导出的函数之前，Python会释放 :term:`global interpreter lock` ，并在调用后重新获取。"
 
 #: ../../library/ctypes.rst:1512
 msgid ""
@@ -3411,6 +3439,8 @@ msgid ""
 "in this module may raise an auditing event ``ctypes.call_function`` with "
 "arguments ``function pointer`` and ``arguments``."
 msgstr ""
+"调用外部函数的某些方式以及本模块中的部分函数可能会引发一个审计事件 ``ctypes.call_function``，并附带参数 ``function "
+"pointer`` 和 ``arguments``。"
 
 #: ../../library/ctypes.rst:1795
 msgid "Function prototypes"
@@ -3503,6 +3533,8 @@ msgid ""
 "call fails. If *iid* is specified, a :exc:`~ctypes.COMError` is raised "
 "instead."
 msgstr ""
+"如果未指定 *iid*，则当 COM 方法调用失败时会引发 :exc:`OSError`。如果指定了 *iid*，则会改为引发 "
+":exc:`~ctypes.COMError`。"
 
 #: ../../library/ctypes.rst:1871
 msgid ""
@@ -3785,13 +3817,13 @@ msgstr "返回的对象只能被用作外部函数调用形参。 它的行为�
 msgid ""
 "Copies a COM pointer from *src* to *dst* and returns the Windows specific "
 ":c:type:`!HRESULT` value."
-msgstr ""
+msgstr "将 COM 指针从 *src* 复制到 *dst*，并返回 Windows 特定的 :c:type:`!HRESULT` 值。"
 
 #: ../../library/ctypes.rst:2019
 msgid ""
 "If *src* is not ``NULL``, its ``AddRef`` method is called, incrementing the "
 "reference count."
-msgstr ""
+msgstr "如果 *src* 不为 ``NULL``，则会调用其 ``AddRef`` 方法，从而增加引用计数。"
 
 #: ../../library/ctypes.rst:2022
 msgid ""
@@ -3800,6 +3832,8 @@ msgid ""
 " for decrementing the reference count by calling its ``Release`` method when"
 " necessary."
 msgstr ""
+"相反，在赋值新值之前，*dst* 的引用计数不会被递减。除非 *dst* 为 ``NULL``，否则调用者有责任在必要时通过调用其 "
+"``Release`` 方法来递减引用计数。"
 
 #: ../../library/ctypes.rst:2034
 msgid ""
@@ -3960,12 +3994,14 @@ msgid ""
 "The function can raise :exc:`OSError` if the underlying platform APIs fail. "
 "The exact functionality is system dependent."
 msgstr ""
+"尝试提供当前进程中已加载的共享库的路径列表。这些路径未经过任何形式的标准化或处理。如果底层平台 API 失败，该函数可能会引发 "
+":exc:`OSError`。确切功能因系统而异。"
 
 #: ../../library/ctypes.rst:2144
 msgid ""
 "On most platforms, the first element of the list represents the current "
 "executable file. It may be an empty string."
-msgstr ""
+msgstr "在大多数平台上，列表的第一个元素代表当前的可执行文件。它可能是空字符串。"
 
 #: ../../library/ctypes.rst:2152
 msgid ""
@@ -3973,6 +4009,8 @@ msgid ""
 " specified, the last error code is used by calling the Windows API function "
 ":func:`GetLastError`."
 msgstr ""
+"返回错误代码 *code* 的文本描述。如果未指定错误代码，则通过调用 Windows API 函数 :func:`GetLastError` "
+"使用最后一个错误代码。"
 
 #: ../../library/ctypes.rst:2161
 msgid ""
@@ -4031,6 +4069,7 @@ msgid ""
 "internally, so calling this function repeatedly is cheap. *type* must be a "
 "ctypes type."
 msgstr ""
+"创建或返回一个 ctypes 指针类型。指针类型会在内部进行缓存和重用，因此重复调用此函数的成本较低。*type* 必须是一个 ctypes 类型。"
 
 #: ../../library/ctypes.rst:2207
 msgid ""
@@ -4040,6 +4079,9 @@ msgid ""
 "discouraged: manually creating a suitable pointer type is difficult without "
 "relying on implementation details that may change in future Python versions."
 msgstr ""
+"生成的指针类型会缓存到 *type* 的 ``__pointer_type__`` 属性中。可以在首次调用 ``POINTER`` "
+"之前设置该属性，以指定自定义指针类型。但不建议这样做：在不依赖可能在未来 Python "
+"版本中发生变化的实现细节的情况下，手动创建合适的指针类型非常困难。"
 
 #: ../../library/ctypes.rst:2218
 msgid ""
@@ -4115,6 +4157,8 @@ msgid ""
 "not specified, :func:`FormatError` is called to get a textual description of"
 " the error."
 msgstr ""
+"创建一个 :exc:`OSError` 的实例。如果未指定 *code*，则会调用 :func:`GetLastError` 来确定错误代码。如果未指定"
+" *descr*，则会调用 :func:`FormatError` 来获取错误的文本描述。"
 
 #: ../../library/ctypes.rst:2276
 msgid ""
@@ -4140,7 +4184,7 @@ msgstr ""
 msgid ""
 "Return a :class:`memoryview` object of length *size* that references memory "
 "starting at *void \\*ptr*."
-msgstr ""
+msgstr "返回一个长度为 *size* 的 :class:`memoryview` 对象，该对象引用从 *void \\*ptr* 开始的内存。"
 
 #: ../../library/ctypes.rst:2296
 msgid ""
@@ -4148,6 +4192,8 @@ msgid ""
 "used to modify the underlying memory. (Changes made by other means will "
 "still be reflected in the returned object.)"
 msgstr ""
+"如果 *readonly* 为 True，返回的 :class:`!memoryview` "
+"对象将无法用于修改底层内存。（通过其他方式所做的更改仍会反映在返回的对象中。）"
 
 #: ../../library/ctypes.rst:2301
 msgid ""
@@ -4158,12 +4204,17 @@ msgid ""
 "integers, *ptr* can also be given as a :class:`ctypes.POINTER` or a "
 ":func:`~ctypes.byref` object.)"
 msgstr ""
+"此函数与 :func:`string_at` 类似，主要区别在于它不会对指定内存进行复制。它是 ``memoryview((c_byte * "
+"size).from_address(ptr))`` 的语义等效替代方案，但效率更高。（虽然 :meth:`~_CData.from_address` "
+"只接受整数，但 *ptr* 也可以是 :class:`ctypes.POINTER` 或 :func:`~ctypes.byref` 对象。）"
 
 #: ../../library/ctypes.rst:2308
 msgid ""
 "Raises an :ref:`auditing event <auditing>` ``ctypes.memoryview_at`` with "
 "arguments ``address``, ``size``, ``readonly``."
 msgstr ""
+"引发一个 :ref:`审计事件 <auditing>` ``ctypes.memoryview_at``，附带参数 "
+"``address``、``size``、``readonly``。"
 
 #: ../../library/ctypes.rst:2316
 msgid "Data types"
@@ -4258,18 +4309,18 @@ msgstr "此方法返回一个由共享库导出的 ctypes 类型。 *name* 为�
 
 #: ../../library/ctypes.rst:2379
 msgid "Common class variables of ctypes data types:"
-msgstr ""
+msgstr "ctypes 数据类型的常见类变量："
 
 #: ../../library/ctypes.rst:2383
 msgid ""
 "The pointer type that was created by calling :func:`POINTER` for "
 "corresponding ctypes data type. If a pointer type was not yet created, the "
 "attribute is missing."
-msgstr ""
+msgstr "通过为相应的 ctypes 数据类型调用 :func:`POINTER` 所创建的指针类型。如果尚未创建指针类型，则该属性不存在。"
 
 #: ../../library/ctypes.rst:2389
 msgid "Common instance variables of ctypes data types:"
-msgstr "ctypes 数据类型的通用实例变量:"
+msgstr "ctypes 数据类型的常见实例变量:"
 
 #: ../../library/ctypes.rst:2393
 msgid ""
@@ -4415,18 +4466,24 @@ msgid ""
 "Represents the C :c:expr:`double complex` datatype, if available.  The "
 "constructor accepts an optional :class:`complex` initializer."
 msgstr ""
+"代表 C 语言中的 :c:expr:`double complex` 数据类型（如果可用）。该构造器接受一个可选的 :class:`complex` "
+"初始化器。"
 
 #: ../../library/ctypes.rst:2504
 msgid ""
 "Represents the C :c:expr:`float complex` datatype, if available.  The "
 "constructor accepts an optional :class:`complex` initializer."
 msgstr ""
+"代表 C 语言中的 :c:expr:`float complex` 数据类型（如果可用）。该构造器接受一个可选的 :class:`complex` "
+"初始化器。"
 
 #: ../../library/ctypes.rst:2512
 msgid ""
 "Represents the C :c:expr:`long double complex` datatype, if available.  The "
 "constructor accepts an optional :class:`complex` initializer."
 msgstr ""
+"代表 C 语言中的 :c:expr:`long double complex` 数据类型（如果可用）。该构造器接受一个可选的 "
+":class:`complex` 初始化器。"
 
 #: ../../library/ctypes.rst:2520
 msgid ""
@@ -4599,7 +4656,7 @@ msgstr ""
 
 #: ../../library/ctypes.rst:2682
 msgid ":class:`!py_object` is now a :term:`generic type`."
-msgstr ""
+msgstr ":class:`!py_object` 现在是一种 :term:`generic type`。"
 
 #: ../../library/ctypes.rst:2685
 msgid ""
@@ -4624,7 +4681,7 @@ msgstr "本机字节序的联合所对应的抽象基类。"
 msgid ""
 "Unions share common attributes and behavior with structures; see "
 ":class:`Structure` documentation for details."
-msgstr ""
+msgstr "联合与结构体共享共同的属性和行为；详情请参见 :class:`Structure` 的文档。"
 
 #: ../../library/ctypes.rst:2705
 msgid "Abstract base class for unions in *big endian* byte order."
@@ -4709,7 +4766,7 @@ msgstr ""
 msgid ""
 "The :attr:`!_fields_` class variable can only be set once. Later assignments"
 " will raise an :exc:`AttributeError`."
-msgstr ""
+msgstr "类变量 :attr:`!_fields_` 只能设置一次。后续的赋值操作将会引发 :exc:`AttributeError`。"
 
 #: ../../library/ctypes.rst:2764
 msgid ""
@@ -4720,12 +4777,15 @@ msgid ""
 "has not been set before such use, the structure or union will have no own "
 "fields, as if :attr:`!_fields_` was empty."
 msgstr ""
+"此外，类变量 :attr:`!_fields_` 必须在结构体或联合类型首次使用前定义：包括创建实例或子类、对其调用 :func:`sizeof` "
+"等情况。后续对 :attr:`!_fields_` 的赋值会引发 :exc:`AttributeError`。如果在上述使用场景前未设置 "
+":attr:`!_fields_`，则该结构体或联合将没有自身的字段，就如同 :attr:`!_fields_` 为空一样。"
 
 #: ../../library/ctypes.rst:2772
 msgid ""
 "Sub-subclasses of structure types inherit the fields of the base class plus "
 "the :attr:`_fields_` defined in the sub-subclass, if any."
-msgstr ""
+msgstr "结构体类型的子子类会继承基类的字段，再加上子子类中定义的 :attr:`_fields_`，如果有的话。"
 
 #: ../../library/ctypes.rst:2778
 msgid ""
@@ -4739,7 +4799,7 @@ msgstr ""
 
 #: ../../library/ctypes.rst:2783
 msgid "This is only implemented for the MSVC-compatible memory layout."
-msgstr ""
+msgstr "这仅针对与 MSVC 兼容的内存布局实现。"
 
 #: ../../library/ctypes.rst:2787
 msgid ""
@@ -4748,6 +4808,9 @@ msgid ""
 "deprecated and is slated to become an error in Python 3.19. If it is "
 "intended, set :attr:`~Structure._layout_` to ``'ms'`` explicitly."
 msgstr ""
+"由于历史原因，如果 :attr:`!_pack_` 为非零值，默认情况下将使用与 MSVC 兼容的布局。在非 Windows "
+"平台上，这一默认行为已被弃用，并计划在 Python 3.19 中变为错误。如果确实需要此行为，请显式将 "
+":attr:`~Structure._layout_` 设置为 ``'ms'``。"
 
 #: ../../library/ctypes.rst:2796
 msgid ""
@@ -4760,13 +4823,15 @@ msgstr "一个可选的小整数，它允许覆盖结构体在针对内存执行
 msgid ""
 "An optional string naming the struct/union layout. It can currently be set "
 "to:"
-msgstr ""
+msgstr "一个可选字符串，用于指定结构体/联合的布局。目前它可以设置为："
 
 #: ../../library/ctypes.rst:2807
 msgid ""
 "``\"ms\"``: the layout used by the Microsoft compiler (MSVC). On GCC and "
 "Clang, this layout can be selected with ``__attribute__((ms_struct))``."
 msgstr ""
+"``\"ms\"``：微软编译器（MSVC）所使用的布局。在 GCC 和 Clang 上，可以通过 "
+"``__attribute__((ms_struct))`` 来选择此布局。"
 
 #: ../../library/ctypes.rst:2810
 msgid ""
@@ -4774,6 +4839,8 @@ msgid ""
 "data model, as used on Linux and macOS. With this layout, "
 ":attr:`~Structure._pack_` must be unset or zero."
 msgstr ""
+"``\"gcc-sysv\"``：GCC 在 System V 或“类 SysV”数据模型中使用的布局，适用于 Linux 和 macOS "
+"系统。采用此布局时，:attr:`~Structure._pack_` 必须保持未设置状态或设为零。"
 
 #: ../../library/ctypes.rst:2814
 msgid ""
@@ -4782,26 +4849,30 @@ msgid ""
 " example, when a new platform gains official support, or when a difference "
 "between similar platforms is found). Currently the default will be:"
 msgstr ""
+"如果未显式设置，``ctypes`` 将使用与平台约定相匹配的默认值。此默认值可能会在未来的 Python "
+"版本中发生变化（例如，当新平台获得官方支持时，或者当发现相似平台之间存在差异时）。目前，默认值如下："
 
 #: ../../library/ctypes.rst:2820
 msgid "On Windows: ``\"ms\"``"
-msgstr ""
+msgstr "在Windows平台上： ``\"ms\"``"
 
 #: ../../library/ctypes.rst:2821
 msgid ""
 "When :attr:`~Structure._pack_` is specified: ``\"ms\"``. (This is "
 "deprecated; see :attr:`~Structure._pack_` documentation.)"
 msgstr ""
+"当指定了 :attr:`~Structure._pack_` 时：``\"ms\"``。（此行为已弃用，详见 "
+":attr:`~Structure._pack_` 的文档。）"
 
 #: ../../library/ctypes.rst:2823
 msgid "Otherwise: ``\"gcc-sysv\"``"
-msgstr ""
+msgstr "在非Windows平台上：``\"gcc-sysv\"``"
 
 #: ../../library/ctypes.rst:2825
 msgid ""
 ":attr:`!_layout_` must already be defined when :attr:`~Structure._fields_` "
 "is assigned, otherwise it will have no effect."
-msgstr ""
+msgstr "在为 :attr:`~Structure._fields_` 赋值时，:attr:`!_layout_` 必须已被定义，否则它将不起作用。"
 
 #: ../../library/ctypes.rst:2832
 msgid ""
@@ -4899,7 +4970,7 @@ msgstr ""
 msgid ""
 "Descriptor for fields of a :class:`Structure` and :class:`Union`. For "
 "example::"
-msgstr ""
+msgstr "结构体（:class:`Structure`）和联合（:class:`Union`）字段的描述符。例如："
 
 #: ../../library/ctypes.rst:2884
 msgid ""
@@ -4923,16 +4994,35 @@ msgid ""
 ">>> Color.blinking.bit_offset\n"
 "1"
 msgstr ""
+">>> class Color(Structure):\n"
+"...     _fields_ = (\n"
+"...         ('red', c_uint8),\n"
+"...         ('green', c_uint8),\n"
+"...         ('blue', c_uint8),\n"
+"...         ('intense', c_bool, 1),\n"
+"...         ('blinking', c_bool, 1),\n"
+"...    )\n"
+"...\n"
+">>> Color.red\n"
+"<ctypes.CField 'red' type=c_ubyte, ofs=0, size=1>\n"
+">>> Color.green.type\n"
+"<class 'ctypes.c_ubyte'>\n"
+">>> Color.blue.byte_offset\n"
+"2\n"
+">>> Color.intense\n"
+"<ctypes.CField 'intense' type=c_bool, ofs=3, bit_size=1, bit_offset=0>\n"
+">>> Color.blinking.bit_offset\n"
+"1"
 
 #: ../../library/ctypes.rst:2904
 msgid "All attributes are read-only."
-msgstr ""
+msgstr "所有属性均为只读。"
 
 #: ../../library/ctypes.rst:2906
 msgid ""
 ":class:`!CField` objects are created via :attr:`~Structure._fields_`; do not"
 " instantiate the class directly."
-msgstr ""
+msgstr ":class:`!CField` 对象通过 :attr:`~Structure._fields_` 创建；请勿直接实例化该类。"
 
 #: ../../library/ctypes.rst:2911
 msgid ""
@@ -4940,38 +5030,39 @@ msgid ""
 "readable string representation; the :class:`!CField` class was not available"
 " directly."
 msgstr ""
+"以前，描述符只有 ``offset`` 和 ``size`` 属性以及一个可读的字符串表示形式；:class:`!CField` 类无法直接使用。"
 
 #: ../../library/ctypes.rst:2917
 msgid "Name of the field, as a string."
-msgstr ""
+msgstr "字段的名称，为字符串形式。"
 
 #: ../../library/ctypes.rst:2921
 msgid "Type of the field, as a :ref:`ctypes class <ctypes-data-types>`."
-msgstr ""
+msgstr "字段的类型，为一个 :ref:`ctypes 类 <ctypes-data-types>`。"
 
 #: ../../library/ctypes.rst:2926
 msgid "Offset of the field, in bytes."
-msgstr ""
+msgstr "字段的偏移量，以字节为单位。"
 
 #: ../../library/ctypes.rst:2928
 msgid ""
 "For bitfields, this is the offset of the underlying byte-aligned *storage "
 "unit*; see :attr:`~CField.bit_offset`."
-msgstr ""
+msgstr "对于位域，这是基础字节对齐的 *存储单元* 的偏移量；详见 :attr:`~CField.bit_offset`。"
 
 #: ../../library/ctypes.rst:2933
 msgid "Size of the field, in bytes."
-msgstr ""
+msgstr "字段的大小，以字节为单位。"
 
 #: ../../library/ctypes.rst:2935
 msgid ""
 "For bitfields, this is the size of the underlying *storage unit*. Typically,"
 " it has the same size as the bitfield's type."
-msgstr ""
+msgstr "对于位域，这是基础 *存储单元* 的大小。通常，它与位域类型的大小相同。"
 
 #: ../../library/ctypes.rst:2940
 msgid "For non-bitfields, equivalent to :attr:`~CField.byte_size`."
-msgstr ""
+msgstr "对于非位域，与 :attr:`~CField.byte_size` 等效。"
 
 #: ../../library/ctypes.rst:2942
 msgid ""
@@ -4979,10 +5070,12 @@ msgid ""
 "combines :attr:`~CField.bit_size` and :attr:`~CField.bit_offset`. Prefer "
 "using the explicit attributes instead."
 msgstr ""
+"对于位域，该属性包含一个向后兼容的位打包值，它结合了 :attr:`~CField.bit_size` 和 "
+":attr:`~CField.bit_offset`。建议优先使用这两个显式属性。"
 
 #: ../../library/ctypes.rst:2949
 msgid "True if this is a bitfield."
-msgstr ""
+msgstr "如果这是位域，则为 True。"
 
 #: ../../library/ctypes.rst:2954
 msgid ""
@@ -4990,6 +5083,8 @@ msgid ""
 ":attr:`~CField.byte_size` bytes of memory starting at "
 ":attr:`~CField.byte_offset`."
 msgstr ""
+"位域在其 *存储单元* 内的位置，即位于从 :attr:`~CField.byte_offset` 开始的 "
+":attr:`~CField.byte_size` 字节内存范围内。"
 
 #: ../../library/ctypes.rst:2958
 msgid ""
@@ -4997,18 +5092,21 @@ msgid ""
 "left <shifting>` by :attr:`!bit_offset` and take the :attr:`!bit_size` least"
 " significant bits."
 msgstr ""
+"要获取位域的值，请先将存储单元作为整数读取，然后按 :attr:`!bit_offset` 进行 :ref:`左移 <shifting>` "
+"操作，并取结果的最低 :attr:`!bit_size` 位。"
 
 #: ../../library/ctypes.rst:2962
 msgid ""
 "For non-bitfields, :attr:`!bit_offset` is zero and :attr:`!bit_size` is "
 "equal to ``byte_size * 8``."
 msgstr ""
+"对于非位域，:attr:`!bit_offset` 为零，且 :attr:`!bit_size` 等于 ``byte_size * 8``。"
 
 #: ../../library/ctypes.rst:2967
 msgid ""
 "True if this field is anonymous, that is, it contains nested sub-fields that"
 " should be merged into a containing structure or union."
-msgstr ""
+msgstr "如果此字段是匿名的（即它包含应合并到所属结构体或联合中的嵌套子字段），则为 True。"
 
 #: ../../library/ctypes.rst:2974
 msgid "Arrays and pointers"
@@ -5106,19 +5204,19 @@ msgstr "此异常会在外部函数无法对某个传入参数执行转换时被
 
 #: ../../library/ctypes.rst:3052
 msgid "This exception is raised when a COM method call failed."
-msgstr ""
+msgstr "当 COM 方法调用失败时，会引发此异常。"
 
 #: ../../library/ctypes.rst:3056
 msgid "The integer value representing the error code."
-msgstr ""
+msgstr "表示错误代码的整数值。"
 
 #: ../../library/ctypes.rst:3060
 msgid "The error message."
-msgstr ""
+msgstr "错误消息。"
 
 #: ../../library/ctypes.rst:3064
 msgid "The 5-tuple ``(descr, source, helpfile, helpcontext, progid)``."
-msgstr ""
+msgstr "5元组``(descr, source, helpfile, helpcontext, progid)``。"
 
 #: ../../library/ctypes.rst:3066
 msgid ""
@@ -5127,3 +5225,5 @@ msgid ""
 "is the path of the help file.  *helpcontext* is the help context identifier."
 "  *progid* is the ``ProgID`` of the interface that defined the error."
 msgstr ""
+"*descr* 是文本描述。*source* 是引发错误的类或应用程序所对应的依赖于语言的 ``ProgID``。*helpfile* "
+"是帮助文件的路径。*helpcontext* 是帮助上下文标识符。*progid* 是定义该错误的接口的 ``ProgID``。"
