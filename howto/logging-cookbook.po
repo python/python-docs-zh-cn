@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-04 14:20+0000\n"
+"POT-Creation-Date: 2025-07-11 14:21+0000\n"
 "PO-Revision-Date: 2021-06-28 00:53+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -7821,11 +7821,132 @@ msgstr ""
 "WARNING:demo:    1/0\n"
 "WARNING:demo:ZeroDivisionError: division by zero"
 
-#: ../../howto/logging-cookbook.rst:4085
+#: ../../howto/logging-cookbook.rst:4082
+msgid "How to uniformly handle newlines in logging output"
+msgstr "如何统一地处理日志记录输出中的换行符"
+
+#: ../../howto/logging-cookbook.rst:4084
+msgid ""
+"Usually, messages that are logged (say to console or file) consist of a "
+"single line of text. However, sometimes there is a need to handle messages "
+"with multiple lines - whether because a logging format string contains "
+"newlines, or logged data contains newlines. If you want to handle such "
+"messages uniformly, so that each line in the logged message appears "
+"uniformly formatted as if it was logged separately, you can do this using a "
+"handler mixin, as in the following snippet:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4092
+msgid ""
+"# Assume this is in a module mymixins.py\n"
+"import copy\n"
+"\n"
+"class MultilineMixin:\n"
+"    def emit(self, record):\n"
+"        s = record.getMessage()\n"
+"        if '\\n' not in s:\n"
+"            super().emit(record)\n"
+"        else:\n"
+"            lines = s.splitlines()\n"
+"            rec = copy.copy(record)\n"
+"            rec.args = None\n"
+"            for line in lines:\n"
+"                rec.msg = line\n"
+"                super().emit(rec)"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4110
+msgid "You can use the mixin as in the following script:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4112
+msgid ""
+"import logging\n"
+"\n"
+"from mymixins import MultilineMixin\n"
+"\n"
+"logger = logging.getLogger(__name__)\n"
+"\n"
+"class StreamHandler(MultilineMixin, logging.StreamHandler):\n"
+"    pass\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-9s %(message)s',\n"
+"                        handlers = [StreamHandler()])\n"
+"    logger.debug('Single line')\n"
+"    logger.debug('Multiple lines:\\nfool me once ...')\n"
+"    logger.debug('Another single line')\n"
+"    logger.debug('Multiple lines:\\n%s', 'fool me ...\\ncan\\'t get fooled again')"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4131
+msgid "The script, when run, prints something like:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4133
+msgid ""
+"2025-07-02 13:54:47,234 DEBUG     Single line\n"
+"2025-07-02 13:54:47,234 DEBUG     Multiple lines:\n"
+"2025-07-02 13:54:47,234 DEBUG     fool me once ...\n"
+"2025-07-02 13:54:47,234 DEBUG     Another single line\n"
+"2025-07-02 13:54:47,234 DEBUG     Multiple lines:\n"
+"2025-07-02 13:54:47,234 DEBUG     fool me ...\n"
+"2025-07-02 13:54:47,234 DEBUG     can't get fooled again"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4143
+msgid ""
+"If, on the other hand, you are concerned about `log injection "
+"<https://owasp.org/www-community/attacks/Log_Injection>`_, you can use a "
+"formatter which escapes newlines, as per the following example:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4147
+msgid ""
+"import logging\n"
+"\n"
+"logger = logging.getLogger(__name__)\n"
+"\n"
+"class EscapingFormatter(logging.Formatter):\n"
+"    def format(self, record):\n"
+"        s = super().format(record)\n"
+"        return s.replace('\\n', r'\\n')\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    h = logging.StreamHandler()\n"
+"    h.setFormatter(EscapingFormatter('%(asctime)s %(levelname)-9s %(message)s'))\n"
+"    logging.basicConfig(level=logging.DEBUG, handlers = [h])\n"
+"    logger.debug('Single line')\n"
+"    logger.debug('Multiple lines:\\nfool me once ...')\n"
+"    logger.debug('Another single line')\n"
+"    logger.debug('Multiple lines:\\n%s', 'fool me ...\\ncan\\'t get fooled again')"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4167
+msgid ""
+"You can, of course, use whatever escaping scheme makes the most sense for "
+"you. The script, when run, should produce output like this:"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4170
+msgid ""
+"2025-07-09 06:47:33,783 DEBUG     Single line\n"
+"2025-07-09 06:47:33,783 DEBUG     Multiple lines:\\nfool me once ...\n"
+"2025-07-09 06:47:33,783 DEBUG     Another single line\n"
+"2025-07-09 06:47:33,783 DEBUG     Multiple lines:\\nfool me ...\\ncan't get fooled again"
+msgstr ""
+
+#: ../../howto/logging-cookbook.rst:4177
+msgid ""
+"Escaping behaviour can't be the stdlib default , as it would break backwards"
+" compatibility."
+msgstr "转义行为不能是标准库默认设置，因为它会破坏向下兼容性。"
+
+#: ../../howto/logging-cookbook.rst:4183
 msgid "Patterns to avoid"
 msgstr "理应避免的用法"
 
-#: ../../howto/logging-cookbook.rst:4087
+#: ../../howto/logging-cookbook.rst:4185
 msgid ""
 "Although the preceding sections have described ways of doing things you "
 "might need to do or deal with, it is worth mentioning some usage patterns "
@@ -7834,11 +7955,11 @@ msgid ""
 msgstr ""
 "前几节虽介绍了几种方案，描述了可能需要处理的操作，但值得一提的是，有些用法是 *没有好处* 的，大多数情况下应该避免使用。下面几节的顺序不分先后。"
 
-#: ../../howto/logging-cookbook.rst:4093
+#: ../../howto/logging-cookbook.rst:4191
 msgid "Opening the same log file multiple times"
 msgstr "多次打开同一个日志文件"
 
-#: ../../howto/logging-cookbook.rst:4095
+#: ../../howto/logging-cookbook.rst:4193
 msgid ""
 "On Windows, you will generally not be able to open the same file multiple "
 "times as this will lead to a \"file is in use by another process\" error. "
@@ -7848,19 +7969,19 @@ msgstr ""
 "因会导致 \"文件被其他进程占用 \"错误，所以在 Windows 中一般无法多次打开同一个文件。但在 POSIX "
 "平台中，多次打开同一个文件不会报任何错误。这种操作可能是意外发生的，比如："
 
-#: ../../howto/logging-cookbook.rst:4100
+#: ../../howto/logging-cookbook.rst:4198
 msgid ""
 "Adding a file handler more than once which references the same file (e.g. by"
 " a copy/paste/forget-to-change error)."
 msgstr "多次添加指向同一文件的 handler（比如通过复制/粘贴，或忘记修改）。"
 
-#: ../../howto/logging-cookbook.rst:4103
+#: ../../howto/logging-cookbook.rst:4201
 msgid ""
 "Opening two files that look different, as they have different names, but are"
 " the same because one is a symbolic link to the other."
 msgstr "打开两个貌似不同（文件名不一样）的文件，但一个是另一个的符号链接，所以其实是同一个文件。"
 
-#: ../../howto/logging-cookbook.rst:4106
+#: ../../howto/logging-cookbook.rst:4204
 msgid ""
 "Forking a process, following which both parent and child have a reference to"
 " the same file. This might be through use of the :mod:`multiprocessing` "
@@ -7868,13 +7989,13 @@ msgid ""
 msgstr ""
 "进程 fork，然后父进程和子进程都有对同一文件的引用。 例如，这可能是通过使用 :mod:`multiprocessing` 模块实现的。"
 
-#: ../../howto/logging-cookbook.rst:4110
+#: ../../howto/logging-cookbook.rst:4208
 msgid ""
 "Opening a file multiple times might *appear* to work most of the time, but "
 "can lead to a number of problems in practice:"
 msgstr "在大多数情况下，多次打开同一个文件 *貌似* 一切正常，但实际会导致很多问题。"
 
-#: ../../howto/logging-cookbook.rst:4113
+#: ../../howto/logging-cookbook.rst:4211
 msgid ""
 "Logging output can be garbled because multiple threads or processes try to "
 "write to the same file. Although logging guards against concurrent use of "
@@ -7885,7 +8006,7 @@ msgstr ""
 "由于多个线程或进程会尝试写入同一个文件，日志输出可能会出现乱码。尽管日志对象可以防止多个线程同时使用同一个 handler "
 "实例，但如果两个不同的线程使用不同的 handler 实例同时写入文件，而这两个 handler 又恰好指向同一个文件，那么就失去了这种防护。"
 
-#: ../../howto/logging-cookbook.rst:4119
+#: ../../howto/logging-cookbook.rst:4217
 msgid ""
 "An attempt to delete a file (e.g. during file rotation) silently fails, "
 "because there is another reference pointing to it. This can lead to "
@@ -7898,17 +8019,17 @@ msgstr ""
 "日志条目会出现在意想不到的地方，或者完全丢失。 "
 "或者会有应当移除的文件仍然保持存在，文件还会在已经设置了基于文件大小的轮换的情况下仍然增长到预料之外的大小。"
 
-#: ../../howto/logging-cookbook.rst:4126
+#: ../../howto/logging-cookbook.rst:4224
 msgid ""
 "Use the techniques outlined in :ref:`multiple-processes` to circumvent such "
 "issues."
 msgstr "请用 :ref:`multiple-processes` 中介绍的技术来避免上述问题。"
 
-#: ../../howto/logging-cookbook.rst:4130
+#: ../../howto/logging-cookbook.rst:4228
 msgid "Using loggers as attributes in a class or passing them as parameters"
 msgstr "将日志对象用作属性或传递参数"
 
-#: ../../howto/logging-cookbook.rst:4132
+#: ../../howto/logging-cookbook.rst:4230
 msgid ""
 "While there might be unusual cases where you'll need to do this, in general "
 "there is no point because loggers are singletons. Code can always access a "
@@ -7922,13 +8043,13 @@ msgstr ""
 "用名称访问一个已有的日志对象实例，因此将实例作为参数来传递，或作为属性留存，都是毫无意义的。请注意，在其他语言中，如 Java 和 "
 "C#，日志对象通常是静态类属性。但在 Python 中是没有意义的，因为软件拆分的单位是模块（而不是类）。"
 
-#: ../../howto/logging-cookbook.rst:4141
+#: ../../howto/logging-cookbook.rst:4239
 msgid ""
 "Adding handlers other than :class:`~logging.NullHandler` to a logger in a "
 "library"
 msgstr "为库中的日志记录器添加 :class:`~logging.NullHandler` 以外的处理器"
 
-#: ../../howto/logging-cookbook.rst:4143
+#: ../../howto/logging-cookbook.rst:4241
 msgid ""
 "Configuring logging by adding handlers, formatters and filters is the "
 "responsibility of the application developer, not the library developer. If "
@@ -7939,11 +8060,11 @@ msgstr ""
 "来配置日志，这是应用程序开发人员的责任，而不是库开发人员该做的。如果正在维护一个库，请确保不要向任何日志对象添加 "
 ":class:`~logging.NullHandler` 实例以外的 handler。"
 
-#: ../../howto/logging-cookbook.rst:4149
+#: ../../howto/logging-cookbook.rst:4247
 msgid "Creating a lot of loggers"
 msgstr "创建大量的日志对象"
 
-#: ../../howto/logging-cookbook.rst:4151
+#: ../../howto/logging-cookbook.rst:4249
 msgid ""
 "Loggers are singletons that are never freed during a script execution, and "
 "so creating lots of loggers will use up memory which can't then be freed. "
@@ -7957,38 +8078,38 @@ msgstr ""
 " :ref:`已有机制 <context-info>` "
 "将上下文信息传给自定义日志对象，并将创建的日志对象限制在应用程序内的指定区域（通常是模块，但偶尔会再精细些）使用。"
 
-#: ../../howto/logging-cookbook.rst:4162
+#: ../../howto/logging-cookbook.rst:4260
 msgid "Other resources"
 msgstr "其他资源"
 
-#: ../../howto/logging-cookbook.rst:4166
+#: ../../howto/logging-cookbook.rst:4264
 msgid "Module :mod:`logging`"
 msgstr "模块 :mod:`logging`"
 
-#: ../../howto/logging-cookbook.rst:4167
+#: ../../howto/logging-cookbook.rst:4265
 msgid "API reference for the logging module."
 msgstr "日志记录模块的 API 参考。"
 
-#: ../../howto/logging-cookbook.rst:4169
+#: ../../howto/logging-cookbook.rst:4267
 msgid "Module :mod:`logging.config`"
 msgstr ":mod:`logging.config` 模块"
 
-#: ../../howto/logging-cookbook.rst:4170
+#: ../../howto/logging-cookbook.rst:4268
 msgid "Configuration API for the logging module."
 msgstr "日志记录模块的配置 API 。"
 
-#: ../../howto/logging-cookbook.rst:4172
+#: ../../howto/logging-cookbook.rst:4270
 msgid "Module :mod:`logging.handlers`"
 msgstr ":mod:`logging.handlers` 模块"
 
-#: ../../howto/logging-cookbook.rst:4173
+#: ../../howto/logging-cookbook.rst:4271
 msgid "Useful handlers included with the logging module."
 msgstr "日志记录模块附带的有用处理器。"
 
-#: ../../howto/logging-cookbook.rst:4175
+#: ../../howto/logging-cookbook.rst:4273
 msgid ":ref:`Basic Tutorial <logging-basic-tutorial>`"
 msgstr ":ref:`基础教程 <logging-basic-tutorial>`"
 
-#: ../../howto/logging-cookbook.rst:4177
+#: ../../howto/logging-cookbook.rst:4275
 msgid ":ref:`Advanced Tutorial <logging-advanced-tutorial>`"
 msgstr ":ref:`进阶教程 <logging-advanced-tutorial>`"
