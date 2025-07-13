@@ -4,17 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Freesand Leo <yuqinju@163.com>, 2025
 # 汇民 王 <whuim@qq.com>, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-04 14:20+0000\n"
+"POT-Creation-Date: 2025-07-11 14:21+0000\n"
 "PO-Revision-Date: 2025-05-08 06:04+0000\n"
-"Last-Translator: 汇民 王 <whuim@qq.com>, 2025\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,7 +30,7 @@ msgstr "远程调试附加协议"
 msgid ""
 "This section describes the low-level protocol that enables external tools to"
 " inject and execute a Python script within a running CPython process."
-msgstr ""
+msgstr "本节描述了低级协议，该协议使外部工具能够在运行的CPython进程中注入和执行Python脚本。"
 
 #: ../../howto/remote_debugging.rst:9
 msgid ""
@@ -42,13 +42,16 @@ msgid ""
 " file to be executed. This information supports independent reimplementation"
 " of the protocol, regardless of programming language."
 msgstr ""
+"该机制构成了 :func:`sys.remote_exec` 函数的基础，该函数用于指示远程Python进程执行指定的 ``.py`` "
+"文件。但本节并不记录该函数的具体用法，而是详细阐述其底层协议的工作原理——该协议以目标Python进程的 ``pid`` "
+"和待执行的Python源文件路径作为输入。这些信息支持协议的独立重新实现，且不受编程语言限制。"
 
 #: ../../howto/remote_debugging.rst:19
 msgid ""
 "The execution of the injected script depends on the interpreter reaching a "
 "safe evaluation point. As a result, execution may be delayed depending on "
 "the runtime state of the target process."
-msgstr ""
+msgstr "注入脚本的执行依赖于解释器到达安全的求值点。因此，实际执行时机可能会因目标进程的运行时状态而产生延迟。"
 
 #: ../../howto/remote_debugging.rst:23
 msgid ""
@@ -57,6 +60,7 @@ msgid ""
 "enables remote execution capabilities without modifying the behavior or "
 "structure of the running Python application."
 msgstr ""
+"一旦注入，脚本将在解释器下一次达到安全求值点时在目标进程中执行。这种方法能够在不修改运行中Python应用的行为或结构的情况下实现远程执行功能。"
 
 #: ../../howto/remote_debugging.rst:28
 msgid ""
@@ -66,10 +70,11 @@ msgid ""
 "variations are noted where applicable, and example implementations are "
 "included to clarify each operation."
 msgstr ""
+"后续各节提供了该协议的逐步描述，包括定位内存中解释器结构的技术、安全访问内部字段以及触发代码执行的方法。适用的情况下会注明平台特定的变体，并包含示例实现以澄清每个操作。"
 
 #: ../../howto/remote_debugging.rst:35
 msgid "Locating the PyRuntime structure"
-msgstr ""
+msgstr "定位PyRuntime结构"
 
 #: ../../howto/remote_debugging.rst:37
 msgid ""
@@ -79,6 +84,9 @@ msgid ""
 "``__DATA,__PyRuntime`` is used on macOS. Tools can find the offset of this "
 "structure by examining the binary on disk."
 msgstr ""
+"CPython将 ``PyRuntime`` "
+"结构放置在一个专用的二进制节中，以帮助外部工具在运行时找到它。该节的名称和格式因平台而异。例如，在ELF系统上使用 "
+"``.PyRuntime``，在macOS上使用 ``__DATA,__PyRuntime``。工具可以通过检查磁盘上的二进制文件来找到该结构的偏移量。"
 
 #: ../../howto/remote_debugging.rst:43
 msgid ""
@@ -86,6 +94,7 @@ msgid ""
 "provides access to other internal data, including the list of interpreters, "
 "thread states, and debugger support fields."
 msgstr ""
+"``PyRuntime`` 结构包含 CPython 的全局解释器状态，并提供对其他内部数据的访问，包括解释器列表、线程状态和调试器支持字段。"
 
 #: ../../howto/remote_debugging.rst:47
 msgid ""
@@ -94,65 +103,68 @@ msgid ""
 "can’t be hardcoded or calculated from a symbol name, because it depends on "
 "where the operating system loaded the binary."
 msgstr ""
+"要处理远程Python进程，调试器首先必须在目标进程中找到 ``PyRuntime`` "
+"结构的内存地址。这个地址不能硬编码或通过符号名计算，因为它取决于操作系统加载二进制文件的位置。"
 
 #: ../../howto/remote_debugging.rst:52
 msgid ""
 "The method for finding ``PyRuntime`` depends on the platform, but the steps "
 "are the same in general:"
-msgstr ""
+msgstr "查找 ``PyRuntime`` 的方法取决于平台，但一般步骤是相同的："
 
 #: ../../howto/remote_debugging.rst:55
 msgid ""
 "Find the base address where the Python binary or shared library was loaded "
 "in the target process."
-msgstr ""
+msgstr "找到Python二进制文件或共享库在目标进程中加载的基址。"
 
 #: ../../howto/remote_debugging.rst:57
 msgid ""
 "Use the on-disk binary to locate the offset of the ``.PyRuntime`` section."
-msgstr ""
+msgstr "使用磁盘上的二进制文件定位 ``.PyRuntime`` 段的偏移。"
 
 #: ../../howto/remote_debugging.rst:58
 msgid ""
 "Add the section offset to the base address to compute the address in memory."
-msgstr ""
+msgstr "将段偏移加到基址上，计算出内存中的地址。"
 
 #: ../../howto/remote_debugging.rst:60
 msgid ""
 "The sections below explain how to do this on each supported platform and "
 "include example code."
-msgstr ""
+msgstr "以下部分将说明在每个受支持平台上如何进行此操作，并包括示例代码。"
 
 #: ../../howto/remote_debugging.rst:64
 msgid "Linux (ELF)"
-msgstr ""
+msgstr "Linux (ELF)"
 
 #: ../../howto/remote_debugging.rst:65
 msgid "To find the ``PyRuntime`` structure on Linux:"
-msgstr ""
+msgstr "在Linux上查找 ``PyRuntime`` 结构："
 
 #: ../../howto/remote_debugging.rst:67
 msgid ""
 "Read the process’s memory map (for example, ``/proc/<pid>/maps``) to find "
 "the address where the Python executable or ``libpython`` was loaded."
 msgstr ""
+"读取进程的内存映射（例如，``/proc/<pid>/maps``）以找到Python可执行文件或 ``libpython`` 加载的地址。"
 
 #: ../../howto/remote_debugging.rst:69
 msgid ""
 "Parse the ELF section headers in the binary to get the offset of the "
 "``.PyRuntime`` section."
-msgstr ""
+msgstr "解析二进制文件中的ELF段头，获取 ``.PyRuntime`` 段的偏移。"
 
 #: ../../howto/remote_debugging.rst:71
 msgid ""
 "Add that offset to the base address from step 1 to get the memory address of"
 " ``PyRuntime``."
-msgstr ""
+msgstr "将此偏移加到步骤1中的基址上，得到 ``PyRuntime`` 的内存地址。"
 
 #: ../../howto/remote_debugging.rst:74 ../../howto/remote_debugging.rst:136
 #: ../../howto/remote_debugging.rst:206 ../../howto/remote_debugging.rst:475
 msgid "The following is an example implementation::"
-msgstr ""
+msgstr "以下是一个示例实现："
 
 #: ../../howto/remote_debugging.rst:76
 msgid ""
@@ -209,6 +221,11 @@ msgid ""
 "significantly slower as it only reads one word at a time and requires "
 "multiple context switches between the tracer and tracee processes."
 msgstr ""
+"在Linux系统上，有两种主要方法读取另一个进程的内存。第一种是通过 ``/proc`` 文件系统，具体来说是通过读取 "
+"``/proc/[pid]/mem`` "
+"，它提供了对进程内存的直接访问。这需要适当的权限——要么是与目标进程相同的用户，要么拥有root权限。第二种方法是使用 "
+"``process_vm_readv()`` 系统调用，它提供了在进程间复制内存的更高效方式。虽然ptrace的 ``PTRACE_PEEKTEXT``"
+" 操作也可以用来读取内存，但它显著较慢，因为它一次只读取一个字，并且需要在跟踪器和被跟踪进程之间进行多次上下文切换。"
 
 #: ../../howto/remote_debugging.rst:108
 msgid ""
@@ -222,20 +239,23 @@ msgid ""
 " can be used to calculate its runtime address when the binary is loaded into"
 " memory."
 msgstr ""
+"为了解析ELF节，过程包括从磁盘上的二进制文件中读取和解释ELF文件格式结构。ELF头部包含一个指向节头表的指针。每个节头包含有关节的元数据，包括其名称（存储在单独的字符串表中）、偏移量和大小。要查找特定节（如.PyRuntime），需要遍历这些头部并匹配节名称。节头然后提供该节在文件中存在的偏移量，这可以用来计算二进制文件加载到内存时的运行时地址。"
 
 #: ../../howto/remote_debugging.rst:117
 msgid ""
 "You can read more about the ELF file format in the `ELF specification "
 "<https://en.wikipedia.org/wiki/Executable_and_Linkable_Format>`_."
 msgstr ""
+"你可以在`ELF规范 "
+"<https://en.wikipedia.org/wiki/Executable_and_Linkable_Format>`_中了解更多关于ELF文件格式的信息。"
 
 #: ../../howto/remote_debugging.rst:122
 msgid "macOS (Mach-O)"
-msgstr ""
+msgstr "macOS (Mach-O)"
 
 #: ../../howto/remote_debugging.rst:123
 msgid "To find the ``PyRuntime`` structure on macOS:"
-msgstr ""
+msgstr "在macOS上查找 ``PyRuntime`` 结构："
 
 #: ../../howto/remote_debugging.rst:125
 msgid ""
@@ -243,12 +263,14 @@ msgid ""
 "process. This handle is needed to read memory using APIs like "
 "``mach_vm_read_overwrite`` and ``mach_vm_region``."
 msgstr ""
+"调用   ``task_for_pid()`` 以获取目标进程的 ``mach_port_t`` 任务端口。此句柄用于通过 "
+"``mach_vm_read_overwrite`` 和 ``mach_vm_region`` 等API读取内存。"
 
 #: ../../howto/remote_debugging.rst:128
 msgid ""
 "Scan the memory regions to find the one containing the Python executable or "
 "``libpython``."
-msgstr ""
+msgstr "扫描内存区域，找到包含Python可执行文件或 ``libpython`` 的区域。"
 
 #: ../../howto/remote_debugging.rst:130
 msgid ""
@@ -258,6 +280,9 @@ msgid ""
 "symbol appears as ``_PyRuntime`` in the symbol table, but the section name "
 "is not affected."
 msgstr ""
+"从磁盘加载二进制文件并解析Mach-O头部，以在  ``__DATA`` 段中找到名为 ``PyRuntime`` "
+"的节。在macOS上，符号名称自动以一个下划线为前缀，因此 ``PyRuntime`` "
+"符号在符号表中显示为``_PyRuntime``，但节名称不受影响。"
 
 #: ../../howto/remote_debugging.rst:138
 msgid ""
@@ -315,6 +340,9 @@ msgid ""
 " space. This handle enables memory operations through APIs like "
 "``mach_vm_read_overwrite()``."
 msgstr ""
+"在macOS上，访问另一个进程的内存需要使用Mach-O特定的API和文件格式。第一步是通过  ``task_for_pid()`` 获取 "
+"``task_port`` 句柄，这提供了对目标进程内存空间的访问。此句柄通过 ``mach_vm_read_overwrite()`` "
+"等API启用内存操作。"
 
 #: ../../howto/remote_debugging.rst:167
 msgid ""
@@ -324,6 +352,9 @@ msgid ""
 "Python binary or library is found, its Mach-O headers need to be parsed to "
 "locate the ``PyRuntime`` structure."
 msgstr ""
+"可以使用 ``mach_vm_region()`` 检查进程内存，以扫描虚拟内存空间，而 ``proc_regionfilename()`` "
+"帮助识别每个内存区域加载了哪些二进制文件。当找到 Python 二进制文件或库时，需要解析其 Mach-O 头部以定位 ``PyRuntime`` "
+"结构。"
 
 #: ../../howto/remote_debugging.rst:172
 msgid ""
@@ -335,21 +366,24 @@ msgid ""
 "address is computed by combining the base address with the appropriate "
 "section offsets from the Mach-O headers."
 msgstr ""
+"Mach-O 格式将代码和数据组织到段和节中。``PyRuntime`` 结构位于 ``__DATA`` 段中的名为 ``__PyRuntime`` "
+"的节内。实际的运行时地址计算涉及找到作为二进制文件基址的 ``__TEXT`` 段，然后定位包含目标节的 ``__DATA`` "
+"段。最终地址是通过将基址与 Mach-O 头部中的适当节偏移量组合来计算的。"
 
 #: ../../howto/remote_debugging.rst:180
 msgid ""
 "Note that accessing another process's memory on macOS typically requires "
 "elevated privileges - either root access or special security entitlements "
 "granted to the debugging process."
-msgstr ""
+msgstr "请注意，在 macOS 上访问另一个进程的内存通常需要提升权限——要么是 root 访问权限，要么是授予调试进程的特殊安全权限。"
 
 #: ../../howto/remote_debugging.rst:186
 msgid "Windows (PE)"
-msgstr ""
+msgstr "Windows (PE)"
 
 #: ../../howto/remote_debugging.rst:187
 msgid "To find the ``PyRuntime`` structure on Windows:"
-msgstr ""
+msgstr "在 Windows 上查找 ``PyRuntime`` 结构："
 
 #: ../../howto/remote_debugging.rst:189
 msgid ""
@@ -362,6 +396,12 @@ msgid ""
 "<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
 "tlhelp32-module32next>`_."
 msgstr ""
+"使用 ToolHelp API 枚举目标进程中加载的所有模块。这通过使用如 `CreateToolhelp32Snapshot "
+"<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
+"tlhelp32-createtoolhelp32snapshot>`_, `Module32First "
+"<https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-"
+"tlhelp32-module32first>`_, 和 `Module32Next <https://learn.microsoft.com/en-"
+"us/windows/win32/api/tlhelp32/nf-tlhelp32-module32next>`_ 等函数来完成。"
 
 #: ../../howto/remote_debugging.rst:196
 msgid ""
@@ -369,6 +409,8 @@ msgid ""
 ":file:`python{XY}.dll`, where ``X`` and ``Y`` are the major and minor "
 "version numbers of the Python version, and record its base address."
 msgstr ""
+"识别对应于 :file:`python.exe` 或 :file:`python{XY}.dll` 的模块，其中 ``X`` 和 ``Y`` 是 "
+"Python 版本的主次版本号，并记录其基址。"
 
 #: ../../howto/remote_debugging.rst:199
 msgid ""
@@ -377,12 +419,14 @@ msgid ""
 "``PyRuntime`` is truncated. This section contains the ``PyRuntime`` "
 "structure."
 msgstr ""
+"定位 ``PyRuntim`` 节。由于 PE 格式对节名称有 8 个字符的限制（定义为 "
+"``IMAGE_SIZEOF_SHORT_NAME``），原始名称 ``PyRuntime`` 被截断。此节包含 ``PyRuntime`` 结构。"
 
 #: ../../howto/remote_debugging.rst:203
 msgid ""
 "Retrieve the section’s relative virtual address (RVA) and add it to the base"
 " address of the module."
-msgstr ""
+msgstr "检索节的相对虚拟地址（RVA），并将其添加到模块的基址。"
 
 #: ../../howto/remote_debugging.rst:208
 msgid ""
@@ -436,6 +480,9 @@ msgid ""
 "``OpenProcess()`` function provides a handle to access the target process's "
 "memory space, enabling memory operations through ``ReadProcessMemory()``."
 msgstr ""
+"在Windows上，访问另一个进程的内存需要使用Windows API函数，如   ``CreateToolhelp32Snapshot()`` 和 "
+"``Module32First()/Module32Next()`` 来枚举已加载的模块。``OpenProcess()`` "
+"函数提供了一个句柄，用于访问目标进程的内存空间，通过 ``ReadProcessMemory()`` 实现内存操作。"
 
 #: ../../howto/remote_debugging.rst:236
 msgid ""
@@ -443,6 +490,7 @@ msgid ""
 " Python binary or DLL. When found, its PE headers need to be parsed to "
 "locate the ``PyRuntime`` structure."
 msgstr ""
+"可以通过枚举已加载的模块来检查进程内存，以找到Python二进制文件或DLL。找到后，需要解析其PE头以定位 ``PyRuntime`` 结构。"
 
 #: ../../howto/remote_debugging.rst:240
 msgid ""
@@ -454,6 +502,9 @@ msgid ""
 "address is computed by combining the base address with the section's virtual"
 " address from the PE section headers."
 msgstr ""
+"PE 格式将代码和数据组织到节中。 ``PyRuntime`` 结构位于名为 \"PyRuntim\" 的节中（由于 PE 的 8 字符名称限制，从 "
+"\"PyRuntime\" 截断）。 实际的运行时地址计算涉及从模块入口找到模块的基址，然后在 PE "
+"头中定位目标节。最终地址是通过将基址与PE节头中的节的虚拟地址组合来计算的。"
 
 #: ../../howto/remote_debugging.rst:247
 msgid ""
@@ -461,10 +512,12 @@ msgid ""
 "appropriate privileges - either administrative access or the "
 "``SeDebugPrivilege`` privilege granted to the debugging process."
 msgstr ""
+"请注意，在Windows上访问另一个进程的内存通常需要适当的权限——要么是管理员访问权限，要么是授予调试进程的 ``SeDebugPrivilege``"
+" 权限。"
 
 #: ../../howto/remote_debugging.rst:253
 msgid "Reading _Py_DebugOffsets"
-msgstr ""
+msgstr "读取_Py_DebugOffsets"
 
 #: ../../howto/remote_debugging.rst:255
 msgid ""
@@ -472,6 +525,8 @@ msgid ""
 "next step is to read the ``_Py_DebugOffsets`` structure located at the "
 "beginning of the ``PyRuntime`` block."
 msgstr ""
+"一旦确定了  ``PyRuntime`` 结构的地址，下一步就是读取位于 ``PyRuntime`` 块开头的 ``_Py_DebugOffsets``"
+" 结构。"
 
 #: ../../howto/remote_debugging.rst:259
 msgid ""
@@ -480,10 +535,11 @@ msgid ""
 "CPython versions and must be checked before use to ensure they are "
 "compatible."
 msgstr ""
+"该结构提供了特定版本的字段偏移量，这些偏移量用于安全地读取解释器和线程状态内存。这些偏移量在CPython版本之间有所变化，必须在使用前进行检查以确保它们是兼容的。"
 
 #: ../../howto/remote_debugging.rst:263
 msgid "To read and check the debug offsets, follow these steps:"
-msgstr ""
+msgstr "要读取和检查调试偏移量，请按照以下步骤操作："
 
 #: ../../howto/remote_debugging.rst:265
 msgid ""
@@ -493,46 +549,48 @@ msgid ""
 "block. Its layout is defined in CPython’s internal headers and stays the "
 "same within a given minor version, but may change in major versions."
 msgstr ""
+"从目标进程的 ``PyRuntime`` 地址开始读取内存，覆盖的字节数与 ``_Py_DebugOffsets`` 结构相同。该结构位于 "
+"``PyRuntime`` 内存块的起始位置。其布局在CPython的内部头文件中定义，并在给定的小版本中保持不变，但在大版本中可能会发生变化。"
 
 #: ../../howto/remote_debugging.rst:271
 msgid "Check that the structure contains valid data:"
-msgstr ""
+msgstr "检查该结构是否包含有效数据："
 
 #: ../../howto/remote_debugging.rst:273
 msgid "The ``cookie`` field must match the expected debug marker."
-msgstr ""
+msgstr "``cookie`` 字段必须与预期的调试标记匹配。"
 
 #: ../../howto/remote_debugging.rst:274
 msgid ""
 "The ``version`` field must match the version of the Python interpreter used "
 "by the debugger."
-msgstr ""
+msgstr "``version`` 字段必须与调试器使用的Python解释器版本匹配。"
 
 #: ../../howto/remote_debugging.rst:276
 msgid ""
 "If either the debugger or the target process is using a pre-release version "
 "(for example, an alpha, beta, or release candidate), the versions must match"
 " exactly."
-msgstr ""
+msgstr "如果调试器或目标进程使用的是预发布版本（例如，alpha、beta或发布候选版本），则版本必须完全匹配。"
 
 #: ../../howto/remote_debugging.rst:279
 msgid ""
 "The ``free_threaded`` field must have the same value in both the debugger "
 "and the target process."
-msgstr ""
+msgstr "``free_threaded`` 字段在调试器和目标进程中必须具有相同的值。"
 
 #: ../../howto/remote_debugging.rst:282
 msgid ""
 "If the structure is valid, the offsets it contains can be used to locate "
 "fields in memory. If any check fails, the debugger should stop the operation"
 " to avoid reading memory in the wrong format."
-msgstr ""
+msgstr "如果结构体有效，其中包含的偏移量可以用于定位内存中的字段。如果任何检查失败，调试器应停止操作，以避免以错误格式读取内存。"
 
 #: ../../howto/remote_debugging.rst:286
 msgid ""
 "The following is an example implementation that reads and checks "
 "``_Py_DebugOffsets``::"
-msgstr ""
+msgstr "以下是一个读取和检查 ``_Py_DebugOffsets`` 的示例实现："
 
 #: ../../howto/remote_debugging.rst:289
 msgid ""
@@ -580,7 +638,7 @@ msgstr ""
 
 #: ../../howto/remote_debugging.rst:314
 msgid "**Process suspension recommended**"
-msgstr ""
+msgstr "**建议挂起进程**"
 
 #: ../../howto/remote_debugging.rst:316
 msgid ""
@@ -591,6 +649,7 @@ msgid ""
 "destroying threads—during normal execution. This can result in invalid "
 "memory reads or writes."
 msgstr ""
+"为避免竞态条件并确保内存一致性，在执行任何读取或写入解释器内部状态的操作前，强烈建议先挂起目标进程。Python运行时可能在正常执行期间并发修改解释器数据结构（例如创建或销毁线程），这可能导致无效的内存读写操作。"
 
 #: ../../howto/remote_debugging.rst:323
 msgid ""
@@ -598,6 +657,7 @@ msgid ""
 " or by sending a ``SIGSTOP`` signal. Execution should only be resumed after "
 "debugger-side memory operations are complete."
 msgstr ""
+"调试器可以通过使用 ``ptrace`` 附加到进程或发送 ``SIGSTOP`` 信号来挂起执行。只有在调试器端的内存操作完成后，才应恢复执行。"
 
 #: ../../howto/remote_debugging.rst:329
 msgid ""
@@ -607,10 +667,11 @@ msgid ""
 "debugger implementations, suspending the process remains the safest and most"
 " robust approach."
 msgstr ""
+"一些工具，如性能分析器或基于采样的调试器，可以在不挂起运行进程的情况下操作。在这种情况下，工具必须明确设计以处理部分更新或不一致的内存。对于大多数调试器实现来说，挂起进程仍然是最安全、最稳健的方法。"
 
 #: ../../howto/remote_debugging.rst:337
 msgid "Locating the interpreter and thread state"
-msgstr ""
+msgstr "定位解释器和线程状态"
 
 #: ../../howto/remote_debugging.rst:339
 msgid ""
@@ -621,6 +682,9 @@ msgid ""
 " in a ``PyThreadState`` object. These fields are modified by the debugger to"
 " request execution of injected scripts."
 msgstr ""
+"在远程Python进程中注入并执行代码前，调试器必须选定一个目标线程来调度执行。这是因为用于远程代码注入的控制字段位于 "
+"``_PyRemoteDebuggerSupport`` 结构体中，而该结构体又嵌入在 ``PyThreadState`` "
+"对象内。调试器通过修改这些字段来请求执行已注入的脚本。"
 
 #: ../../howto/remote_debugging.rst:346
 msgid ""
@@ -630,6 +694,8 @@ msgid ""
 "``PyThreadState`` is therefore a key prerequisite for triggering execution "
 "remotely."
 msgstr ""
+"``PyThreadState`` 结构体表示在Python解释器内运行的线程。它维护线程的求值上下文，并包含调试器协调所需的字段。因此，定位一个有效的"
+" ``PyThreadState`` 是触发远程执行的关键前提。"
 
 #: ../../howto/remote_debugging.rst:351
 msgid ""
@@ -638,10 +704,11 @@ msgid ""
 "native thread ID. Once the target thread is chosen, the debugger must locate"
 " both the interpreter and the associated thread state structures in memory."
 msgstr ""
+"通常基于线程的角色或ID来选择线程。在大多数情况下，使用主线程，但一些工具可能通过其本地线程ID定位特定线程。一旦选择了目标线程，调试器必须在内存中定位解释器和相关的线程状态结构。"
 
 #: ../../howto/remote_debugging.rst:356
 msgid "The relevant internal structures are defined as follows:"
-msgstr ""
+msgstr "相关内部结构体定义如下："
 
 #: ../../howto/remote_debugging.rst:358
 msgid ""
@@ -650,16 +717,18 @@ msgid ""
 "and thread state list. Although most Python applications use a single "
 "interpreter, CPython supports multiple interpreters in the same process."
 msgstr ""
+"``PyInterpreterState`` "
+"表示一个隔离的Python解释器实例。每个解释器维护其自己的导入模块集、内置状态和线程状态列表。尽管大多数Python应用程序使用单个解释器，但CPython支持在同一进程中使用多个解释器。"
 
 #: ../../howto/remote_debugging.rst:363
 msgid ""
 "``PyThreadState`` represents a thread running within an interpreter. It "
 "contains execution state and the control fields used by the debugger."
-msgstr ""
+msgstr "``PyThreadState`` 表示在解释器内运行的线程。它包含执行状态和调试器使用的控制字段。"
 
 #: ../../howto/remote_debugging.rst:366
 msgid "To locate a thread:"
-msgstr ""
+msgstr "要定位一个线程："
 
 #: ../../howto/remote_debugging.rst:368
 msgid ""
@@ -667,6 +736,8 @@ msgid ""
 "the first interpreter in the ``PyRuntime`` structure. This is the entry "
 "point to the linked list of active interpreters."
 msgstr ""
+"使用偏移量 ``runtime_state.interpreters_head`` 获取 ``PyRuntime`` "
+"结构体中第一个解释器的地址。这是活动解释器链表的入口点。"
 
 #: ../../howto/remote_debugging.rst:372
 msgid ""
@@ -674,6 +745,7 @@ msgid ""
 "state associated with the selected interpreter. This is typically the most "
 "reliable thread to target."
 msgstr ""
+"使用偏移量 ``interpreter_state.threads_main`` 访问与选定解释器相关联的主线程状态。这通常是目标的最可靠线程。"
 
 #: ../../howto/remote_debugging.rst:376
 msgid ""
@@ -682,19 +754,21 @@ msgid ""
 "structure contains a ``native_thread_id`` field, which may be compared to a "
 "target thread ID to find a specific thread."
 msgstr ""
+"3. 可选地，使用偏移量 ``interpreter_state.threads_head`` 遍历所有线程状态的链表。每个 "
+"``PyThreadState`` 结构体包含一个 ``native_thread_id`` 字段，可以将其与目标线程 ID 进行比较以找到特定线程。"
 
 #: ../../howto/remote_debugging.rst:381
 msgid ""
 "1. Once a valid ``PyThreadState`` has been found, its address can be used in"
 " later steps of the protocol, such as writing debugger control fields and "
 "scheduling execution."
-msgstr ""
+msgstr "1. 一旦找到有效的 ``PyThreadState``，其地址可以在协议的后续步骤中使用，例如写入调试器控制字段和调度执行。"
 
 #: ../../howto/remote_debugging.rst:385
 msgid ""
 "The following is an example implementation that locates the main thread "
 "state::"
-msgstr ""
+msgstr "以下是一个定位主线程状态的示例实现::"
 
 #: ../../howto/remote_debugging.rst:387
 msgid ""
@@ -728,7 +802,7 @@ msgstr ""
 "    )\n"
 "    interp_addr = read_pointer(pid, interp_head_ptr)\n"
 "    if interp_addr == 0:\n"
-"        raise RuntimeError(\"No interpreter found in the target process\")\n"
+"        raise RuntimeError(\"在目标进程中没有找到解释器\")\n"
 "\n"
 "    # 步骤2：从解释器中读取threads_main指针\n"
 "    threads_main_ptr = (\n"
@@ -736,7 +810,7 @@ msgstr ""
 "    )\n"
 "    thread_state_addr = read_pointer(pid, threads_main_ptr)\n"
 "    if thread_state_addr == 0:\n"
-"        raise RuntimeError(\"Main thread state is not available\")\n"
+"        raise RuntimeError(\"主线程状态不可用\")\n"
 "\n"
 "    return thread_state_addr"
 
@@ -744,7 +818,7 @@ msgstr ""
 msgid ""
 "The following example demonstrates how to locate a thread by its native "
 "thread ID::"
-msgstr ""
+msgstr "以下示例演示了如何通过其本地线程 ID 定位线程::"
 
 #: ../../howto/remote_debugging.rst:411
 msgid ""
@@ -798,18 +872,18 @@ msgstr ""
 "            thread_ptr + debug_offsets.thread_state.next\n"
 "        )\n"
 "\n"
-"    raise RuntimeError(\"Thread with the given ID was not found\")"
+"    raise RuntimeError(\"没有找到给定ID的线程\")"
 
 #: ../../howto/remote_debugging.rst:438
 msgid ""
 "Once a valid thread state has been located, the debugger can proceed with "
 "modifying its control fields and scheduling execution, as described in the "
 "next section."
-msgstr ""
+msgstr "一旦定位到有效的线程状态，调试器可以继续修改其控制字段并调度执行，如下一节所述。"
 
 #: ../../howto/remote_debugging.rst:443
 msgid "Writing control information"
-msgstr ""
+msgstr "写入控制信息"
 
 #: ../../howto/remote_debugging.rst:445
 msgid ""
@@ -819,6 +893,8 @@ msgid ""
 "interpreter, and when set correctly, they trigger the execution of remote "
 "code at a safe point in the evaluation loop."
 msgstr ""
+"一旦识别出有效的 ``PyThreadState`` 结构体，调试器可以修改其中的控制字段以调度指定 Python "
+"脚本的执行。这些控制字段由解释器定期检查，当正确设置时，它们会在求值循环的安全点触发远程代码的执行。"
 
 #: ../../howto/remote_debugging.rst:451
 msgid ""
@@ -827,49 +903,52 @@ msgid ""
 "locations of its fields are defined by the ``_Py_DebugOffsets`` structure "
 "and include the following:"
 msgstr ""
+"每个 ``PyThreadState`` 包含一个 ``_PyRemoteDebuggerSupport`` "
+"结构体，用于调试器和解释器之间的通信。其字段的位置由 ``_Py_DebugOffsets`` 结构体定义，包括以下内容："
 
 #: ../../howto/remote_debugging.rst:456
 msgid ""
 "``debugger_script_path``: A fixed-size buffer that holds the full path to a"
-msgstr ""
+msgstr "``debugger_script_path``：一个固定大小的缓冲区，用于保存"
 
 #: ../../howto/remote_debugging.rst:457
 msgid ""
 "Python source file (``.py``).  This file must be accessible and readable by "
 "the target process when execution is triggered."
-msgstr ""
+msgstr "Python 源文件（``.py``）的完整路径。当触发执行时，目标进程必须能够访问并读取此文件。"
 
 #: ../../howto/remote_debugging.rst:460
 msgid ""
 "``debugger_pending_call``: An integer flag. Setting this to ``1`` tells the"
-msgstr ""
+msgstr "``debugger_pending_call``: 一个整数标志。将其设置为 ``1`` 告诉"
 
 #: ../../howto/remote_debugging.rst:461
 msgid "interpreter that a script is ready to be executed."
-msgstr ""
+msgstr "解释器一个脚本已准备好执行。"
 
 #: ../../howto/remote_debugging.rst:463
 msgid "``eval_breaker``: A field checked by the interpreter during execution."
-msgstr ""
+msgstr "``eval_breaker``: 解释器在执行过程中检查的字段。"
 
 #: ../../howto/remote_debugging.rst:464
 msgid ""
 "Setting bit 5 (``_PY_EVAL_PLEASE_STOP_BIT``, value ``1U << 5``) in this "
 "field causes the interpreter to pause and check for debugger activity."
 msgstr ""
+"在此字段中设置位 5 (``_PY_EVAL_PLEASE_STOP_BIT``，值 ``1U << 5``) 会导致解释器暂停并检查调试器活动。"
 
 #: ../../howto/remote_debugging.rst:467
 msgid ""
 "To complete the injection, the debugger must perform the following steps:"
-msgstr ""
+msgstr "要完成注入，调试器必须执行以下步骤："
 
 #: ../../howto/remote_debugging.rst:469
 msgid "Write the full script path into the ``debugger_script_path`` buffer."
-msgstr ""
+msgstr "将完整脚本路径写入 ``debugger_script_path`` 缓冲区。"
 
 #: ../../howto/remote_debugging.rst:470
 msgid "Set ``debugger_pending_call`` to ``1``."
-msgstr ""
+msgstr "将 ``debugger_pending_call`` 设置为 ``1``。"
 
 #: ../../howto/remote_debugging.rst:471
 msgid ""
@@ -877,6 +956,8 @@ msgid ""
 "(``_PY_EVAL_PLEASE_STOP_BIT``), and write the updated value back. This "
 "signals the interpreter to check for debugger activity."
 msgstr ""
+"读取 ``eval_breaker`` 的当前值，设置位 5 "
+"(``_PY_EVAL_PLEASE_STOP_BIT``)，并将更新后的值写回。这会指示解释器检查调试器活动。"
 
 #: ../../howto/remote_debugging.rst:477
 msgid ""
@@ -957,13 +1038,13 @@ msgid ""
 "Once these fields are set, the debugger may resume the process (if it was "
 "suspended).  The interpreter will process the request at the next safe "
 "evaluation point, load the script from disk, and execute it."
-msgstr ""
+msgstr "设置这些字段后，调试器可以恢复进程（如果它被挂起）。解释器将在下一个安全求值点处理请求，从磁盘加载脚本并执行它。"
 
 #: ../../howto/remote_debugging.rst:518
 msgid ""
 "It is the responsibility of the debugger to ensure that the script file "
 "remains present and accessible to the target process during execution."
-msgstr ""
+msgstr "调试器有责任确保脚本文件在执行期间对目标进程保持存在和可访问。"
 
 #: ../../howto/remote_debugging.rst:523
 msgid ""
@@ -975,24 +1056,25 @@ msgid ""
 "removing the script. Once such an effect is observed, it is safe to assume "
 "the file is no longer needed."
 msgstr ""
+"脚本执行是异步的。注入脚本后不能立即删除脚本文件。调试器应等待注入脚本产生可观察的效果后再删除文件。这个效果取决于脚本的设计目的。例如，调试器可能会等待远程进程连接回套接字后再删除脚本。一旦观察到此类效果，可以安全地假设文件不再需要。"
 
 #: ../../howto/remote_debugging.rst:532
 msgid "Summary"
-msgstr ""
+msgstr "总结"
 
 #: ../../howto/remote_debugging.rst:534
 msgid "To inject and execute a Python script in a remote process:"
-msgstr ""
+msgstr "要在远程进程中注入并执行 Python 脚本："
 
 #: ../../howto/remote_debugging.rst:536
 msgid "Locate the ``PyRuntime`` structure in the target process’s memory."
-msgstr ""
+msgstr "在目标进程的内存中定位 ``PyRuntime`` 结构体。"
 
 #: ../../howto/remote_debugging.rst:537
 msgid ""
 "Read and validate the ``_Py_DebugOffsets`` structure at the beginning of "
 "``PyRuntime``."
-msgstr ""
+msgstr "读取并验证 ``PyRuntime`` 开头的 ``_Py_DebugOffsets`` 结构体。"
 
 #: ../../howto/remote_debugging.rst:539
 msgid "Use the offsets to locate a valid ``PyThreadState``."
