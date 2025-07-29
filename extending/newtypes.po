@@ -3,6 +3,9 @@
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Nyuan Zhang, 2025
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -10,6 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-25 16:48+0000\n"
 "PO-Revision-Date: 2025-07-18 20:05+0000\n"
+"Last-Translator: Nyuan Zhang, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,26 +23,27 @@ msgstr ""
 
 #: ../../extending/newtypes.rst:7
 msgid "Defining Extension Types: Assorted Topics"
-msgstr ""
+msgstr "定义扩展类型：已分类主题"
 
 #: ../../extending/newtypes.rst:11
 msgid ""
 "This section aims to give a quick fly-by on the various type methods you can"
 " implement and what they do."
-msgstr ""
+msgstr "本章节目标是提供一个各种你可以实现的类型方法及其功能的简短介绍。"
 
 #: ../../extending/newtypes.rst:14
 msgid ""
 "Here is the definition of :c:type:`PyTypeObject`, with some fields only used"
 " in :ref:`debug builds <debug-build>` omitted:"
 msgstr ""
+"这是 C 类型 :c:type:`PyTypeObject` 的定义，省略了只用于 :ref:`调试构建 <debug-build>` 的字段："
 
 #: ../../extending/newtypes.rst:20
 msgid ""
 "Now that's a *lot* of methods.  Don't worry too much though -- if you have a"
 " type you want to define, the chances are very good that you will only "
 "implement a handful of these."
-msgstr ""
+msgstr "这里有 *很多* 方法。但是不要太担心，如果你要定义一个类型，通常只需要实现少量的方法。"
 
 #: ../../extending/newtypes.rst:24
 msgid ""
@@ -49,13 +54,14 @@ msgid ""
 "that includes the fields you need and then change the values to suit your "
 "new type. ::"
 msgstr ""
+"正如你猜到的一样，我们正要一步一步详细介绍各种处理程序。因为有大量的历史包袱影响字段的排序，所以我们不会根据它们在结构体里定义的顺序讲解。通常非常容易找到一个包含你需要的字段的例子，然后改变值去适应你新的类型。"
 
 #: ../../extending/newtypes.rst:33
 msgid ""
 "The name of the type -- as mentioned in the previous chapter, this will "
 "appear in various places, almost entirely for diagnostic purposes. Try to "
 "choose something that will be helpful in such a situation! ::"
-msgstr ""
+msgstr "类型的名字 - 上一章提到过的，会出现在很多地方，几乎全部都是为了诊断目的。尝试选择一个好名字，对于诊断很有帮助。"
 
 #: ../../extending/newtypes.rst:39
 msgid ""
@@ -65,22 +71,24 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_itemsize` field comes in.  This will be dealt "
 "with later. ::"
 msgstr ""
+"这些字段告诉运行时在创造这个类型的新对象时需要分配多少内存。Python为了可变长度的结构（想下：字符串，元组）有些内置支持，这是 "
+":c:member:`~PyTypeObject.tp_itemsize` 字段存在的原由。这部分稍后解释。"
 
 #: ../../extending/newtypes.rst:46
 msgid ""
 "Here you can put a string (or its address) that you want returned when the "
 "Python script references ``obj.__doc__`` to retrieve the doc string."
-msgstr ""
+msgstr "这里你可以放置一段字符串（或者它的地址），当你想在Python脚本引用 ``obj.__doc__`` 时返回这段文档字符串。"
 
 #: ../../extending/newtypes.rst:49
 msgid ""
 "Now we come to the basic type methods -- the ones most extension types will "
 "implement."
-msgstr ""
+msgstr "现在我们来看一下基本类型方法 - 大多数扩展类型将实现的方法。"
 
 #: ../../extending/newtypes.rst:54
 msgid "Finalization and De-allocation"
-msgstr ""
+msgstr "终结和内存释放"
 
 #: ../../extending/newtypes.rst:66
 msgid ""
@@ -90,12 +98,14 @@ msgid ""
 "here.  The object itself needs to be freed here as well.  Here is an example"
 " of this function::"
 msgstr ""
+"当您的类型实例的引用计数减少为零并且Python解释器想要回收它时，将调用此函数。如果你的类型有内存可供释放或执行其他清理，你可以把它放在这里。 "
+"对象本身也需要在这里释放。 以下是此函数的示例："
 
 #: ../../extending/newtypes.rst:79
 msgid ""
 "If your type supports garbage collection, the destructor should call "
 ":c:func:`PyObject_GC_UnTrack` before clearing any member fields::"
-msgstr ""
+msgstr "如果你的类型支持垃圾回收，则析构器应当在清理任何成员字段之前调用 :c:func:`PyObject_GC_UnTrack`::"
 
 #: ../../extending/newtypes.rst:95
 msgid ""
@@ -111,6 +121,8 @@ msgid ""
 " the unsafe action, and restoring it when done.  This can be done using the "
 ":c:func:`PyErr_Fetch` and :c:func:`PyErr_Restore` functions::"
 msgstr ""
+"一个重要的释放器函数实现要求是把所有未决异常放着不动。这很重要是因为释放器会被解释器频繁的调用，当栈异常退出时(而非正常返回)，不会有任何办法保护释放器看到一个异常尚未被设置。此事释放器的任何行为都会导致额外增加的Python代码来检查异常是否被设置。这可能导致解释器的误导性错误。正确的保护方法是，在任何不安全的操作前，保存未决异常，然后在其完成后恢复。者可以通过"
+" :c:func:`PyErr_Fetch` 和 :c:func:`PyErr_Restore` 函数来实现::"
 
 #: ../../extending/newtypes.rst:134
 msgid ""
@@ -125,6 +137,13 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_dealloc` again, causing a double free and a "
 "crash."
 msgstr ""
+"你能在释放器函数中安全执行的操作是有限的。 首先，如果你的类型支持垃圾回收 (使用 "
+":c:member:`~PyTypeObject.tp_traverse` 和/或 "
+":c:member:`~PyTypeObject.tp_clear`)，对象的部分成员可以在调用 "
+":c:member:`~PyTypeObject.tp_dealloc` 时被清空或终结。 其次，在 "
+":c:member:`~PyTypeObject.tp_dealloc` 中，你的对象将处于不稳定状态：它的引用计数等于零。 任何对非琐碎对象或 API"
+" 的调用 (如上面的示例所做的) 最终都可能会再次调用 "
+":c:member:`~PyTypeObject.tp_dealloc`，导致双重释放并发生崩溃。"
 
 #: ../../extending/newtypes.rst:143
 msgid ""
@@ -132,14 +151,16 @@ msgid ""
 "finalization code in :c:member:`~PyTypeObject.tp_dealloc`, and instead use "
 "the new :c:member:`~PyTypeObject.tp_finalize` type method."
 msgstr ""
+"从 Python 3.4 开始，推荐不要在 :c:member:`~PyTypeObject.tp_dealloc` 放复杂的终结代码，而是使用新的 "
+":c:member:`~PyTypeObject.tp_finalize` 类型方法。"
 
 #: ../../extending/newtypes.rst:148
 msgid ":pep:`442` explains the new finalization scheme."
-msgstr ""
+msgstr ":pep:`442` 解释了新的终结方案。"
 
 #: ../../extending/newtypes.rst:155
 msgid "Object Presentation"
-msgstr ""
+msgstr "对象展示"
 
 #: ../../extending/newtypes.rst:157
 msgid ""
@@ -148,6 +169,8 @@ msgid ""
 ":func:`print` function just calls :func:`str`.)  These handlers are both "
 "optional."
 msgstr ""
+"在 Python 中，有两种方式可以生成对象的文本表示: :func:`repr` 函数和 :func:`str` 函数。 (:func:`print`"
+" 函数会直接调用 :func:`str`。) 这些处理程序都是可选的。"
 
 #: ../../extending/newtypes.rst:166
 msgid ""
@@ -155,6 +178,8 @@ msgid ""
 "containing a representation of the instance for which it is called.  Here is"
 " a simple example::"
 msgstr ""
+":c:member:`~PyTypeObject.tp_repr` 处理程序应该返回一个字符串对象，其中包含调用它的实例的表示形式。 "
+"下面是一个简单的例子::"
 
 #: ../../extending/newtypes.rst:177
 msgid ""
@@ -163,6 +188,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_name` and a uniquely identifying value for the "
 "object."
 msgstr ""
+"如果没有指定 :c:member:`~PyTypeObject.tp_repr` 处理器，解释器将提供一个使用类型的 "
+":c:member:`~PyTypeObject.tp_name` 的表示形式以及对象的唯一标识值。"
 
 #: ../../extending/newtypes.rst:181
 msgid ""
@@ -174,14 +201,19 @@ msgid ""
 "intended for human consumption.  If :c:member:`~PyTypeObject.tp_str` is not "
 "specified, the :c:member:`~PyTypeObject.tp_repr` handler is used instead."
 msgstr ""
+":c:member:`~PyTypeObject.tp_str` 处理器对于 :func:`str` 就如上述的 "
+":c:member:`~PyTypeObject.tp_repr` 处理器对于 :func:`repr` 一样；也就是说，它会在当 Python "
+"代码在你的对象的某个实例上调用 :func:`str` 时被调用。 它的实现与 :c:member:`~PyTypeObject.tp_repr` "
+"函数非常相似，但其结果字符串是供人类查看的。 如果未指定 :c:member:`~PyTypeObject.tp_str`，则会使用 "
+":c:member:`~PyTypeObject.tp_repr` 处理器来代替。"
 
 #: ../../extending/newtypes.rst:188
 msgid "Here is a simple example::"
-msgstr ""
+msgstr "下面是一个简单的例子::"
 
 #: ../../extending/newtypes.rst:200
 msgid "Attribute Management"
-msgstr ""
+msgstr "属性管理"
 
 #: ../../extending/newtypes.rst:202
 msgid ""
@@ -192,6 +224,9 @@ msgid ""
 "an attribute is a special case, for which the new value passed to the "
 "handler is ``NULL``."
 msgstr ""
+"对于每个可支持属性操作的对象，相应的类型必须提供用于控制属性获取方式的函数。 "
+"需要有一个能够检索属性的函数（如果定义了任何属性）还要有另一个函数负责设置属性（如果允许设置属性）。 "
+"移除属性是一种特殊情况，在此情况下要传给处理器的新值为 ``NULL``。"
 
 #: ../../extending/newtypes.rst:208
 msgid ""
@@ -202,6 +237,8 @@ msgid ""
 " can use whichever pair makes more sense for the implementation's "
 "convenience. ::"
 msgstr ""
+"Python 支持两对属性处理器；一个支持属性操作的类型只需要实现其中一对的函数。 两者的差别在于一对接受 :c:expr:`char\\*` "
+"作为属性名称，而另一对则接受 :c:expr:`PyObject*`。 每种类型都可以选择使用对于实现的便利性来说更有意义的那一对。 ::"
 
 #: ../../extending/newtypes.rst:220
 msgid ""
@@ -213,34 +250,36 @@ msgid ""
 "examples which have not been updated to use some of the new generic "
 "mechanism that is available."
 msgstr ""
+"如果访问一个对象的属性总是为简单操作（这将在下文进行解释），则有一些泛用实现可被用来提供 :c:expr:`PyObject*` 版本的属性管理函数。 "
+"从 Python 2.2 开始对于类型专属的属性处理器的实际需要几乎已完全消失，尽管还存在着许多尚未理新为使用某种新的可选泛用机制的例子。"
 
 #: ../../extending/newtypes.rst:231
 msgid "Generic Attribute Management"
-msgstr ""
+msgstr "泛型属性管理"
 
 #: ../../extending/newtypes.rst:233
 msgid ""
 "Most extension types only use *simple* attributes.  So, what makes the "
 "attributes simple?  There are only a couple of conditions that must be met:"
-msgstr ""
+msgstr "大多数扩展类型只使用 **简单** 属性，那么，是什么让属性变得“简单”呢？只需要满足下面几个条件："
 
 #: ../../extending/newtypes.rst:236
 msgid ""
 "The name of the attributes must be known when :c:func:`PyType_Ready` is "
 "called."
-msgstr ""
+msgstr "当调用 :c:func:`PyType_Ready` 时，必须知道属性的名称。"
 
 #: ../../extending/newtypes.rst:239
 msgid ""
 "No special processing is needed to record that an attribute was looked up or"
 " set, nor do actions need to be taken based on the value."
-msgstr ""
+msgstr "不需要特殊的处理来记录属性是否被查找或设置，也不需要根据值采取操作。"
 
 #: ../../extending/newtypes.rst:242
 msgid ""
 "Note that this list does not place any restrictions on the values of the "
 "attributes, when the values are computed, or how relevant data is stored."
-msgstr ""
+msgstr "请注意，此列表不对属性的值、值的计算时间或相关数据的存储方式施加任何限制。"
 
 #: ../../extending/newtypes.rst:245
 msgid ""
@@ -254,10 +293,15 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_setattro` fields ``NULL`` as well, allowing the "
 "base type to handle attributes."
 msgstr ""
+"当 :c:func:`PyType_Ready` 被调用时，它会使用由类型对象所引用的三个表来创建要放置到类型对象的字典中的 "
+":term:`descriptor`。 每个描述器控制对实例对象的一个属性的访问。 每个表都是可选的；如果三个表全都为 "
+"``NULL``，则该类型的实例将只有从它们的基础类型继承来的属性，并且还应当让 "
+":c:member:`~PyTypeObject.tp_getattro` 和 "
+":c:member:`~PyTypeObject.tp_setattro` 字段保持为 ``NULL``，以允许由基础类型处理这些属性。"
 
 #: ../../extending/newtypes.rst:253
 msgid "The tables are declared as three fields of the type object::"
-msgstr ""
+msgstr "表被声明为object::类型的三个字段::"
 
 #: ../../extending/newtypes.rst:259
 msgid ""
@@ -265,6 +309,8 @@ msgid ""
 " array of :c:type:`PyMethodDef` structures.  Each entry in the table is an "
 "instance of this structure::"
 msgstr ""
+"如果 :c:member:`~PyTypeObject.tp_methods` 不为 ``NULL``，则它必须指向一个由 "
+":c:type:`PyMethodDef` 结构体组成的数组。 表中的每个条目都是该结构体的一个实例::"
 
 #: ../../extending/newtypes.rst:270
 msgid ""
@@ -273,6 +319,8 @@ msgid ""
 " needed at the end; it is a sentinel that marks the end of the array.  The "
 ":c:member:`~PyMethodDef.ml_name` field of the sentinel must be ``NULL``."
 msgstr ""
+"应当为该类型所提供的每个方法都应定义一个条目；从基类型继承来的方法无需定义条目。 还需要在末尾加一个额外的条目；它是一个标记数组结束的哨兵条目。 "
+"该哨兵条目的 :c:member:`~PyMethodDef.ml_name` 字段必须为 ``NULL``。"
 
 #: ../../extending/newtypes.rst:275
 msgid ""
@@ -280,7 +328,7 @@ msgid ""
 "stored in the instance.  A variety of primitive C types are supported, and "
 "access may be read-only or read-write.  The structures in the table are "
 "defined as::"
-msgstr ""
+msgstr "第二个表被用来定义要直接映射到实例中的数据的属性。 各种原始 C 类型均受到支持，并且访问方式可以为只读或读写。 表中的结构体被定义为::"
 
 #: ../../extending/newtypes.rst:287
 msgid ""
@@ -297,33 +345,33 @@ msgstr ""
 msgid ""
 "The following flag constants are defined in :file:`structmember.h`; they may"
 " be combined using bitwise-OR."
-msgstr ""
+msgstr "以下标志常量定义在:file: ' structmember.h ';它们可以使用bitwise-OR组合。"
 
 #: ../../extending/newtypes.rst:298
 msgid "Constant"
-msgstr ""
+msgstr "常量"
 
 #: ../../extending/newtypes.rst:298
 msgid "Meaning"
-msgstr ""
+msgstr "含意"
 
 #: ../../extending/newtypes.rst:300
 msgid ":const:`READONLY`"
-msgstr ""
+msgstr ":const:`READONLY`"
 
 #: ../../extending/newtypes.rst:300
 msgid "Never writable."
-msgstr ""
+msgstr "没有可写的"
 
 #: ../../extending/newtypes.rst:302
 msgid ":const:`PY_AUDIT_READ`"
-msgstr ""
+msgstr ":const:`PY_AUDIT_READ`"
 
 #: ../../extending/newtypes.rst:302
 msgid ""
 "Emit an ``object.__getattr__`` :ref:`audit events <audit-events>` before "
 "reading."
-msgstr ""
+msgstr "在读取之前发送一个 ``object.__getattr__`` :ref:`审计事件 <audit-events>`。"
 
 #: ../../extending/newtypes.rst:307
 msgid ""
@@ -343,16 +391,21 @@ msgid ""
 " the descriptor from the class object, and get the doc string using its "
 ":attr:`!__doc__` attribute."
 msgstr ""
+"使用 :c:member:`~PyTypeObject.tp_members` "
+"表来构建用于运行时的描述器还有一个有趣的优点是任何以这种方式定义的属性都可以简单地通过在表中提供文本来设置一个相关联的文档字符串。 "
+"一个应用程序可以使用自省 API 从类对象获取描述器，并使用其 :attr:`!__doc__` 属性来获取文档字符串。"
 
 #: ../../extending/newtypes.rst:326
 msgid ""
 "As with the :c:member:`~PyTypeObject.tp_methods` table, a sentinel entry "
 "with a :c:member:`~PyMethodDef.ml_name` value of ``NULL`` is required."
 msgstr ""
+"与 :c:member:`~PyTypeObject.tp_methods` 表一样，需要有一个值为 ``NULL`` 的 "
+":c:member:`~PyMethodDef.ml_name` 哨兵条目。"
 
 #: ../../extending/newtypes.rst:340
 msgid "Type-specific Attribute Management"
-msgstr ""
+msgstr "类型专属的属性管理"
 
 #: ../../extending/newtypes.rst:342
 msgid ""
@@ -364,6 +417,9 @@ msgid ""
 "handler functions are called, so that if you do need to extend their "
 "functionality, you'll understand what needs to be done."
 msgstr ""
+"为了简单起见，这里只演示 :c:expr:`char\\*` 版本； name 形参的类型是 :c:expr:`char\\*` 和 "
+":c:expr:`PyObject*` 风格接口之间的唯一区别。 这个示例实际上做了与上面的泛用示例相同的事情，但没有使用在 Python 2.2 "
+"中增加的泛用支持。 它解释了处理器函数是如何被调用的，因此如果你确实需要扩展它们的功能，你就会明白有什么是需要做的。"
 
 #: ../../extending/newtypes.rst:350
 msgid ""
@@ -371,10 +427,12 @@ msgid ""
 "requires an attribute look-up.  It is called in the same situations where "
 "the :meth:`~object.__getattr__` method of a class would be called."
 msgstr ""
+":c:member:`~PyTypeObject.tp_getattr` 处理器会在对象需要进行属性查找时被调用。 它被调用的场合与一个类的 "
+":meth:`~object.__getattr__` 方法要被调用的场合相同。"
 
 #: ../../extending/newtypes.rst:354
 msgid "Here is an example::"
-msgstr ""
+msgstr "例如："
 
 #: ../../extending/newtypes.rst:370
 msgid ""
@@ -385,10 +443,14 @@ msgid ""
 "exception; if this were really all you wanted, the "
 ":c:member:`~PyTypeObject.tp_setattr` handler should be set to ``NULL``. ::"
 msgstr ""
+"当调用类实例的 :meth:`~object.__setattr__` 或 :meth:`~object.__delattr__` 方法时会调用 "
+":c:member:`~PyTypeObject.tp_setattr` 处理器。 当需要删除一个属性时，第三个形参将为 ``NULL``。 "
+"下面是一个简单地引发异常的例子；如果这确实是你想要的，则 :c:member:`~PyTypeObject.tp_setattr` 处理器应当被设为 "
+"``NULL``。 ::"
 
 #: ../../extending/newtypes.rst:384
 msgid "Object Comparison"
-msgstr ""
+msgstr "对象比较"
 
 #: ../../extending/newtypes.rst:390
 msgid ""
@@ -397,6 +459,9 @@ msgid ""
 "methods <richcmpfuncs>`, like :meth:`!__lt__`, and also called by "
 ":c:func:`PyObject_RichCompare` and :c:func:`PyObject_RichCompareBool`."
 msgstr ""
+":c:member:`~PyTypeObject.tp_richcompare` 处理器会在需要进行比较时被调用。 它类似于 :ref:`富比较方法 "
+"<richcmpfuncs>`，例如 :meth:`!__lt__`，并会被 :c:func:`PyObject_RichCompare` 和 "
+":c:func:`PyObject_RichCompareBool` 调用。"
 
 #: ../../extending/newtypes.rst:395
 msgid ""
@@ -408,22 +473,26 @@ msgid ""
 "comparison is not implemented and the other object's comparison method "
 "should be tried, or ``NULL`` if an exception was set."
 msgstr ""
+"此函数被调用时将传入两个 Python 对象和运算符作为参数，其中运算符为 ``Py_EQ``, ``Py_NE``, ``Py_LE``, "
+"``Py_GE``, ``Py_LT`` 或 ``Py_GT`` 之一。 它应当使用指定的运算符来比较两个对象并在比较操作成功时返回 "
+"``Py_True`` 或 ``Py_False``，如果比较操作未被实现并应尝试其他对象比较方法时则返回 "
+"``Py_NotImplemented``，或者如果设置了异常则返回 ``NULL``。"
 
 #: ../../extending/newtypes.rst:403
 msgid ""
 "Here is a sample implementation, for a datatype that is considered equal if "
 "the size of an internal pointer is equal::"
-msgstr ""
+msgstr "下面是一个示例实现，该数据类型如果内部指针的大小相等就认为是相等的::"
 
 #: ../../extending/newtypes.rst:433
 msgid "Abstract Protocol Support"
-msgstr ""
+msgstr "抽象协议支持"
 
 #: ../../extending/newtypes.rst:435
 msgid ""
 "Python supports a variety of *abstract* 'protocols;' the specific interfaces"
 " provided to use these interfaces are documented in :ref:`abstract`."
-msgstr ""
+msgstr "Python 支持多种 *抽象* '协议'；被提供来使用这些接口的专门接口说明请在 :ref:`abstract` 中查看。"
 
 #: ../../extending/newtypes.rst:439
 msgid ""
@@ -439,6 +508,10 @@ msgid ""
 "values are non-``NULL``. The flag may be set to indicate the presence of a "
 "slot, but a slot may still be unfilled.) ::"
 msgstr ""
+"这些抽象接口很多都是在 Python 实现开发的早期被定义的。 特别地，数字、映射和序列协议从一开始就已经是 Python 的组成部分。 "
+"其他协议则是后来添加的。 对于依赖某些来自类型实现的处理器例程的协议来说，较旧的协议被定义为类型对象所引用的处理器的可选块。 "
+"对于较新的协议来说在主类型对象中还有额外的槽位，并带有一个预设旗标位来指明存在该槽位并应当由解释器来检查。 （此旗标位并不会指明槽位值非 "
+"``NULL`` 的情况，可以设置该旗标来指明一个槽位的存在，但此本位仍可能保持未填充的状态。） ::"
 
 #: ../../extending/newtypes.rst:454
 msgid ""
@@ -450,12 +523,15 @@ msgid ""
 "of these in the :file:`Objects` directory of the Python source distribution."
 " ::"
 msgstr ""
+"如果你希望你的对象的行为类似一个数字、序列或映射对象，那么你就要分别放置一个实现了 C 类型 :c:type:`PyNumberMethods`, "
+":c:type:`PySequenceMethods` 或 :c:type:`PyMappingMethods`, 的结构体的地址。 "
+"你要负责将适当的值填入这些结构体。 你可以在 Python 源代码发布版的 :file:`Objects` 目录中找到这些对象各自的用法示例。 ::"
 
 #: ../../extending/newtypes.rst:463
 msgid ""
 "This function, if you choose to provide it, should return a hash number for "
 "an instance of your data type. Here is a simple example::"
-msgstr ""
+msgstr "如果你选择提供此函数，则它应当为你的数据类型的实例返回一个哈希数值。 下面是一个简单的示例::"
 
 #: ../../extending/newtypes.rst:476
 msgid ""
@@ -464,6 +540,9 @@ msgid ""
 " which is why you should be careful to avoid returning it when hash "
 "computation is successful, as seen above."
 msgstr ""
+":c:type:`!Py_hash_t` 是一个宽度取决于具体平台的有符号整数类型。 从 "
+":c:member:`~PyTypeObject.tp_hash` 返回 ``-1`` "
+"表示发生了错误，这就是为什么你应当注意避免在哈希运算成功时返回它，如上面所演示的那样。"
 
 #: ../../extending/newtypes.rst:485
 msgid ""
@@ -472,22 +551,24 @@ msgid ""
 "script contains ``obj1('hello')``, the :c:member:`~PyTypeObject.tp_call` "
 "handler is invoked."
 msgstr ""
+"此函数会在“调用”你的数据类型实例时被调用，举例来说，如果 ``obj1`` 是你的数据类型的实例而 Python 脚本包含了 "
+"``obj1('hello')``，则将唤起 :c:member:`~PyTypeObject.tp_call` 处理器。"
 
 #: ../../extending/newtypes.rst:489
 msgid "This function takes three arguments:"
-msgstr ""
+msgstr "此函数接受三个参数:"
 
 #: ../../extending/newtypes.rst:491
 msgid ""
 "*self* is the instance of the data type which is the subject of the call. If"
 " the call is ``obj1('hello')``, then *self* is ``obj1``."
-msgstr ""
+msgstr "*self* 是作为调用目标的数据类型实例。 如果调用是 ``obj1('hello')``，则 *self* 为 ``obj1``。"
 
 #: ../../extending/newtypes.rst:494
 msgid ""
 "*args* is a tuple containing the arguments to the call.  You can use "
 ":c:func:`PyArg_ParseTuple` to extract the arguments."
-msgstr ""
+msgstr "*args* 是包含调用参数的元组。 你可以使用 :c:func:`PyArg_ParseTuple` 来提取参数。"
 
 #: ../../extending/newtypes.rst:497
 msgid ""
@@ -498,10 +579,13 @@ msgid ""
 ":exc:`TypeError` with a message saying that keyword arguments are not "
 "supported."
 msgstr ""
+"*kwds* 是由传入的关键字参数组成的字典。 如果它不为 ``NULL`` 且你支持关键字参数，则可使用 "
+":c:func:`PyArg_ParseTupleAndKeywords` 来提取参数。 如果你不想支持关键字参数而它为非 ``NULL`` "
+"值，则会引发 :exc:`TypeError` 并附带一个提示不支持关键字参数的消息。"
 
 #: ../../extending/newtypes.rst:503
 msgid "Here is a toy ``tp_call`` implementation::"
-msgstr ""
+msgstr "下面是一个演示性的 ``tp_call`` 实现::"
 
 #: ../../extending/newtypes.rst:529
 msgid ""
@@ -513,6 +597,10 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_iternext` corresponds to the Python "
 ":meth:`~iterator.__next__` method."
 msgstr ""
+"这些函数提供了对迭代器协议的支持。 这两个处理器都只接受一个形参，即它们被调用时所使用的实例，并返回一个新的引用。 "
+"当发生错误时，它们应设置一个异常并返回 ``NULL``。 :c:member:`~PyTypeObject.tp_iter` 对应于 Python "
+":meth:`~object.__iter__` 方法，而 :c:member:`~PyTypeObject.tp_iternext` 对应于 "
+"Python :meth:`~iterator.__next__` 方法。"
 
 #: ../../extending/newtypes.rst:536
 msgid ""
@@ -521,6 +609,8 @@ msgid ""
 ":term:`iterator` object.  Here the same guidelines apply as for Python "
 "classes:"
 msgstr ""
+"任何 :term:`iterable` 对象都必须实现 :c:member:`~PyTypeObject.tp_iter` 处理器，该处理器必须返回一个"
+" :term:`iterator` 对象。 下面是与 Python 类所应用的同一个指导原则:"
 
 #: ../../extending/newtypes.rst:540
 msgid ""
@@ -528,6 +618,8 @@ msgid ""
 "independent iterators, a new iterator should be created and returned by each"
 " call to :c:member:`~PyTypeObject.tp_iter`."
 msgstr ""
+"对于可以支持多个独立迭代器的多项集（如列表和元组），则应当在每次调用 :c:member:`~PyTypeObject.tp_iter` "
+"时创建并返回一个新的迭代器。"
 
 #: ../../extending/newtypes.rst:543
 msgid ""
@@ -537,6 +629,9 @@ msgid ""
 " -- and should also therefore implement the "
 ":c:member:`~PyTypeObject.tp_iternext`  handler."
 msgstr ""
+"只能被迭代一次的对象（通常是由于迭代操作的附带影响，例如文件对象）可以通过返回一个指向自身的新引用来实现 "
+":c:member:`~PyTypeObject.tp_iter` -- 并且为此还应当实现 "
+":c:member:`~PyTypeObject.tp_iternext`  处理器。"
 
 #: ../../extending/newtypes.rst:548
 msgid ""
@@ -552,10 +647,17 @@ msgid ""
 "an actual error occurs, :c:member:`~PyTypeObject.tp_iternext` should always "
 "set an exception and return ``NULL``."
 msgstr ""
+"任何 :term:`iterator` 对象都应当同时实现 :c:member:`~PyTypeObject.tp_iter` 和 "
+":c:member:`~PyTypeObject.tp_iternext`。 一个迭代器的 "
+":c:member:`~PyTypeObject.tp_iter` 处理器应当返回一个指向该迭代器的新引用。 它的 "
+":c:member:`~PyTypeObject.tp_iternext` 处理器应当返回一个指向迭代操作的下一个对象的新引用，如果还有下一个对象的话。"
+" 如果迭代已到达末尾，则 :c:member:`~PyTypeObject.tp_iternext` 可以返回 ``NULL`` "
+"而不设置异常，或者也可以在返回 ``NULL`` 的基础上 *额外* 设置 :exc:`StopIteration`；避免异常可以产生更好的性能。 "
+"如果发生了实际的错误，则 :c:member:`~PyTypeObject.tp_iternext` 应当总是设置一个异常并返回 ``NULL``。"
 
 #: ../../extending/newtypes.rst:564
 msgid "Weak Reference Support"
-msgstr ""
+msgstr "弱引用支持"
 
 #: ../../extending/newtypes.rst:566
 msgid ""
@@ -563,16 +665,17 @@ msgid ""
 "type to participate in the weak reference mechanism without incurring the "
 "overhead on performance-critical objects (such as numbers)."
 msgstr ""
+"One of the goals of Python 弱引用实现的目标之一是允许任意类型参与弱引用机制而不会在重视性能的对象（例如数字）上产生额外开销。"
 
 #: ../../extending/newtypes.rst:571
 msgid "Documentation for the :mod:`weakref` module."
-msgstr ""
+msgstr ":mod:`weakref` 模块的文档。"
 
 #: ../../extending/newtypes.rst:573
 msgid ""
 "For an object to be weakly referencable, the extension type must do two "
 "things:"
-msgstr ""
+msgstr "对于可弱引用的对象，扩展类型必须做两件事:"
 
 #: ../../extending/newtypes.rst:575
 msgid ""
@@ -581,6 +684,8 @@ msgid ""
 "``NULL`` (which is automatic when using the default "
 ":c:member:`~PyTypeObject.tp_alloc`)."
 msgstr ""
+"在 C 对象结构体中包括一个专门用于弱引用机制的 :c:expr:`PyObject*` 字段。 该对象的构造器应当让它保持为 ``NULL`` "
+"(当使用默认的 :c:member:`~PyTypeObject.tp_alloc` 时这将会自动设置)。"
 
 #: ../../extending/newtypes.rst:580
 msgid ""
@@ -588,16 +693,18 @@ msgid ""
 "offset of the aforementioned field in the C object structure, so that the "
 "interpreter knows how to access and modify that field."
 msgstr ""
+"将 :c:member:`~PyTypeObject.tp_weaklistoffset` 类型成员设置为 C "
+"对象结构体中上述字段的偏移量，这样解释器就能知道如何访问和修改该字段。"
 
 #: ../../extending/newtypes.rst:584
 msgid ""
 "Concretely, here is how a trivial object structure would be augmented with "
 "the required field::"
-msgstr ""
+msgstr "具体来说，下面是一个微小的对象结构体如何被增强为具有所需的字段::"
 
 #: ../../extending/newtypes.rst:592
 msgid "And the corresponding member in the statically declared type object::"
-msgstr ""
+msgstr "以及在静态声明的类型对象中的相应成员::"
 
 #: ../../extending/newtypes.rst:600
 msgid ""
@@ -605,10 +712,12 @@ msgid ""
 "references (by calling :c:func:`PyObject_ClearWeakRefs`) if the field is "
 "non-``NULL``::"
 msgstr ""
+"唯一的额外补充是如果字段不为 ``NULL`` 则 ``tp_dealloc`` 需要清除任何弱引用 (通过调用 "
+":c:func:`PyObject_ClearWeakRefs`)。::"
 
 #: ../../extending/newtypes.rst:616
 msgid "More Suggestions"
-msgstr ""
+msgstr "更多建议"
 
 #: ../../extending/newtypes.rst:618
 msgid ""
@@ -618,6 +727,8 @@ msgid ""
 "want (for example, ``tp_richcompare``).  You will find examples of the "
 "function you want to implement."
 msgstr ""
+"为了学习如何为你的新数据类型实现任何特定方法，请获取 :term:`CPython` 源代码。 进入 :file:`Objects` 目录，然后在 C "
+"源文件中搜索 ``tp_`` 加上你想要的函数 (例如，``tp_richcompare``)。 你将找到你想要实现的函数的例子。"
 
 #: ../../extending/newtypes.rst:624
 msgid ""
@@ -625,84 +736,85 @@ msgid ""
 "you are implementing, use the :c:func:`PyObject_TypeCheck` function.  A "
 "sample of its use might be something like the following::"
 msgstr ""
+"当你需要验证一个对象是否为你实现的类型的具体实例时，请使用 :c:func:`PyObject_TypeCheck` 函数。 它的一个用法示例如下::"
 
 #: ../../extending/newtypes.rst:635
 msgid "Download CPython source releases."
-msgstr ""
+msgstr "下载CPython源代码版本。"
 
 #: ../../extending/newtypes.rst:635
 msgid "https://www.python.org/downloads/source/"
-msgstr ""
+msgstr "https://www.python.org/downloads/source/"
 
 #: ../../extending/newtypes.rst:637
 msgid ""
 "The CPython project on GitHub, where the CPython source code is developed."
-msgstr ""
+msgstr "GitHub上开发CPython源代码的CPython项目。"
 
 #: ../../extending/newtypes.rst:638
 msgid "https://github.com/python/cpython"
-msgstr ""
+msgstr "https://github.com/python/cpython"
 
 #: ../../extending/newtypes.rst:56
 msgid "object"
-msgstr ""
+msgstr "object -- 对象"
 
 #: ../../extending/newtypes.rst:56
 msgid "deallocation"
-msgstr ""
+msgstr "撤销分配"
 
 #: ../../extending/newtypes.rst:56
 msgid "deallocation, object"
-msgstr ""
+msgstr "撤销分配，对象"
 
 #: ../../extending/newtypes.rst:56
 msgid "finalization"
-msgstr ""
+msgstr "最终化"
 
 #: ../../extending/newtypes.rst:56
 msgid "finalization, of objects"
-msgstr ""
+msgstr "最终化，对象"
 
 #: ../../extending/newtypes.rst:91
 msgid "PyErr_Fetch (C function)"
-msgstr ""
+msgstr "PyErr_Fetch (C 函数)"
 
 #: ../../extending/newtypes.rst:91
 msgid "PyErr_Restore (C function)"
-msgstr ""
+msgstr "PyErr_Restore (C 函数)"
 
 #: ../../extending/newtypes.rst:150
 msgid "string"
-msgstr ""
+msgstr "string"
 
 #: ../../extending/newtypes.rst:150
 msgid "object representation"
-msgstr ""
+msgstr "对象的表示"
 
 #: ../../extending/newtypes.rst:150
 msgid "built-in function"
-msgstr ""
+msgstr "内置函数"
 
 #: ../../extending/newtypes.rst:150
 msgid "repr"
-msgstr ""
+msgstr "repr"
 
 #: ../../extending/newtypes.rst:313
 msgid "READONLY"
-msgstr ""
+msgstr "READONLY"
 
 #: ../../extending/newtypes.rst:313
 msgid "READ_RESTRICTED"
-msgstr ""
+msgstr "READ_RESTRICTED"
 
 #: ../../extending/newtypes.rst:313
 msgid "WRITE_RESTRICTED"
-msgstr ""
+msgstr "WRITE_RESTRICTED"
 
 #: ../../extending/newtypes.rst:313
 msgid "RESTRICTED"
-msgstr ""
+msgstr "RESTRICTED"
 
 #: ../../extending/newtypes.rst:313
 msgid "PY_AUDIT_READ"
-msgstr ""
+msgstr "PY_AUDIT_READ"

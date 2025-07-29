@@ -3,6 +3,9 @@
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Nyuan Zhang, 2025
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -10,6 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-25 16:48+0000\n"
 "PO-Revision-Date: 2025-07-18 20:04+0000\n"
+"Last-Translator: Nyuan Zhang, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +23,7 @@ msgstr ""
 
 #: ../../distutils/setupscript.rst:5
 msgid "Writing the Setup Script"
-msgstr ""
+msgstr "编写安装脚本"
 
 #: ../../distutils/_setuptools_disclaimer.rst:3
 msgid ""
@@ -28,6 +32,8 @@ msgid ""
 " independently covers all of the relevant information currently included "
 "here."
 msgstr ""
+"这篇文档是历史遗留文档，在 https://setuptools.readthedocs.io/en/latest/setuptools.html 上的"
+" ``setuptools`` 文档独立涵盖此处包含的所有相关信息之后，将不再单独作为正式文档保留。"
 
 #: ../../distutils/setupscript.rst:9
 msgid ""
@@ -40,6 +46,10 @@ msgid ""
 " the Distutils by the module developer is supplied as keyword arguments to "
 ":func:`setup`."
 msgstr ""
+"安装脚本是使用 Distutils 进行构建、分发和安装模块的的入口。设置脚本的主要目的是向 Distutils "
+"描述如何分发您的模块，以便对您的模块进行操作的各种命令正确运行。正如我们在上面的 :ref:`distutils-simple-example` "
+"部分中看到的，安装脚本主要包含对 :func:`setup` 的调用，并且模块开发人员提供给 Distutils 的大部分信息都通过关键字参数提供给 "
+":func:`setup`。"
 
 #: ../../distutils/setupscript.rst:17
 msgid ""
@@ -50,6 +60,9 @@ msgid ""
 "install other module distributions.  The Distutils' own setup script, shown "
 "here, is used to install the package into Python 1.5.2.) ::"
 msgstr ""
+"这是一个略微复杂一点的例子，我们将在接下来的几节中继续追踪它：Distutils 本身的安装脚本。 （请记住，虽然 Distutils 被包括在 "
+"Python 1.6 及之后的版本中，但它们也仍保存独立存在因此 Python 1.5.2 用户可以使用它们来安装其他模块分发版。 这里所演示的 "
+"Distutils 本身的安装脚本，是用来将该软件包安装到 Python 1.5.2 中。） ::"
 
 #: ../../distutils/setupscript.rst:37
 msgid ""
@@ -61,6 +74,10 @@ msgid ""
 " module would be tedious to generate and difficult to maintain.  For more "
 "information on the additional meta-data, see section :ref:`meta-data`."
 msgstr ""
+"这里与 :ref:`distutils-simple-example` 一节中介绍的最简版单文件分发包只有两处差异：更多的元数据，以及按包列出纯 "
+"Python 模块，而非按模块列出。 这一点很重要因为 Distutils "
+"是由（目前）分成两个包的几十个模块组成的；显式地列出每个模块将十分繁琐并且难以维护。 有关额外元数据的更多信息，请参阅 :ref:`meta-data`"
+" 一节。"
 
 #: ../../distutils/setupscript.rst:45
 msgid ""
@@ -72,6 +89,9 @@ msgid ""
 "systems, which of course is one of the major goals of the Distutils.  In "
 "this spirit, all pathnames in this document are slash-separated."
 msgstr ""
+"请注意在 setup 脚本中提供的任何路径名称（文件或目录）都应当使用 Unix 约定来书写，即以斜杠分隔。 Distutils "
+"会负责在实际使用该路径名称之前将这个与平台无关的表示形式转换为适用于你的当前平台的形式 。 这使得你的 setup "
+"脚本可以在跨操作系统进行移植，这当然是 Distutils 的主要目标之一。 基于此精神，在本文档中的所有路径名称都是以斜杠分隔的。"
 
 #: ../../distutils/setupscript.rst:53
 msgid ""
@@ -80,10 +100,12 @@ msgid ""
 "or :func:`os.listdir` to specify files, you should be careful to write "
 "portable code instead of hardcoding path separators::"
 msgstr ""
+"当然，这仅适用于提供给 Distutils 函数的路径名称。 举例来说，如果你使用标准 Python 函数例如 :func:`glob.glob` 或 "
+":func:`os.listdir` 来指定文件，则你应当小心地编写可移植的代码而不是硬编码路径分隔符::"
 
 #: ../../distutils/setupscript.rst:65
 msgid "Listing whole packages"
-msgstr ""
+msgstr "列出全部的包"
 
 #: ../../distutils/setupscript.rst:67
 msgid ""
@@ -100,6 +122,12 @@ msgid ""
 "lives.  If you break this promise, the Distutils will issue a warning but "
 "still process the broken package anyway."
 msgstr ""
+"``packages`` 选项通知 Distutils 处理（构建、分发、安装等）在 ``packages`` 列表中提及的每个包中找到的所有纯 "
+"Python 模块。 当然，为做到这一点，包名称和文件系统的目录之间必须保持对应关系。 默认的对应关系是很显然的，即 :mod:`distutils` "
+"包即相对于分发包根目录的 :file:`distutils` 目录。 因此，当你在你的 setup 脚本中写 ``packages = "
+"['foo']`` 时，你就承诺了 Distutils 将在相对于你的 setup 脚本所在目录下找到一个文件 "
+":file:`foo/__init__.py` (在你的目录上可能会有不同的拼写形式，但意思已经很明白了)。 如果你违反此承诺，Distutils "
+"将发出警告但无论如何仍会处理损坏的包。"
 
 #: ../../distutils/setupscript.rst:79
 msgid ""
@@ -110,6 +138,10 @@ msgid ""
 " in any package at all) are in :file:`lib`, modules in the :mod:`foo` "
 "package are in :file:`lib/foo`, and so forth.  Then you would put ::"
 msgstr ""
+"如果你使用不同的约定来布局你的源目录，那也没有问题：你只需提供 ``package_dir`` 选项来告知 Distutils 你的约定。 "
+"例如，假设你将所有For example, say you keep all Python 源代码保存在 :file:`lib` "
+"下，以便“根包”中的模块（即不属于任何包的模块）位于 :file:`lib` 中，:mod:`foo` 包中的模块位于 :file:`lib/foo` "
+"中，依此类推。 那么你应当编写::"
 
 #: ../../distutils/setupscript.rst:88
 msgid ""
@@ -119,6 +151,8 @@ msgid ""
 "``packages = ['foo']``, you are promising that the file "
 ":file:`lib/foo/__init__.py` exists."
 msgstr ""
+"在你的 setup 脚本中。 这个字典的键是包名，空的包名代表根包。 字典的值是相对于你的发布包根目录的目录名。 在本例中，当你声明 "
+"``packages = ['foo']`` 时，你将承诺存在 :file:`lib/foo/__init__.py` 这个文件。"
 
 #: ../../distutils/setupscript.rst:93
 msgid ""
@@ -126,6 +160,8 @@ msgid ""
 ":file:`lib`, the :mod:`foo.bar` package in :file:`lib/bar`, etc.  This would"
 " be written in the setup script as ::"
 msgstr ""
+"另一种可能的约定是将 :mod:`foo` 包直接放在 :file:`lib` 中，将 :mod:`foo.bar` 包放在 "
+":file:`lib/bar` 中等等。 这可以在 setup 脚本中写为 ::"
 
 #: ../../distutils/setupscript.rst:99
 msgid ""
@@ -138,10 +174,15 @@ msgid ""
 "the Distutils will *not* recursively scan your source tree looking for any "
 "directory with an :file:`__init__.py` file.)"
 msgstr ""
+"``package_dir`` 字典中的 ``package: dir`` 条目隐式地应用于 *package* 以下的所有包，因而在这里 "
+":mod:`foo.bar` 的情况会被自动地处理。 在这个示例中，使用 ``packages = ['foo', 'foo.bar']`` 告知 "
+"Distutils 要查找 :file:`lib/__init__.py` 和 :file:`lib/bar/__init__.py`。 （请记住虽然 "
+"``package_dir`` 会递归地应用，但你必须在 ``packages`` 中显式地列出所有的包：Distutils *不会* "
+"递归地扫描你的源代码树来查找任何带有 :file:`__init__.py` 文件的目录。）"
 
 #: ../../distutils/setupscript.rst:112
 msgid "Listing individual modules"
-msgstr ""
+msgstr "列出单独的模块"
 
 #: ../../distutils/setupscript.rst:114
 msgid ""
@@ -151,6 +192,8 @@ msgid ""
 "shown in section :ref:`distutils-simple-example`; here is a slightly more "
 "involved example::"
 msgstr ""
+"对于一个小型的模块分发包，你可能会倾向于列出所有的模块而不是只列出包 --- 特别是在“根包”中只有一个模块（即根本不存在包）的情况下。 "
+"这种最简单的情况见 :ref:`distutils-simple-example` 一节；下面是一个稍微复杂一点的例子::"
 
 #: ../../distutils/setupscript.rst:121
 msgid ""
@@ -161,10 +204,13 @@ msgid ""
 "again, you can override the package/directory correspondence using the "
 "``package_dir`` option."
 msgstr ""
+"这描述了两个模块，其中一个是在 \"root\" 包中，另一个是在 :mod:`pkg` 包中。 同样地，默认的包/目录布局表明这两个模块位于 "
+":file:`mod1.py` 和 :file:`pkg/mod2.py` 中，并且也存在 :file:`pkg/__init__.py`。 "
+"同样地，你可以使用 ``package_dir`` 选项来重载包/目录的对应关系。"
 
 #: ../../distutils/setupscript.rst:131
 msgid "Describing extension modules"
-msgstr ""
+msgstr "描述扩展模块"
 
 #: ../../distutils/setupscript.rst:133
 msgid ""
@@ -175,6 +221,7 @@ msgid ""
 "have to specify the extension name, source file(s), and any compile/link "
 "requirements (include directories, libraries to link with, etc.)."
 msgstr ""
+"正如编写Python扩展模块比编写纯Python模块要复杂一些一样，在Distutils中描述它们也要复杂一些。与纯模块不同，仅仅列出模块或包并期望Distutils出去找到正确的文件是不够的；您必须指定扩展名、源文件和任何编译/链接要求（包括要链接的目录、库等）。"
 
 #: ../../distutils/setupscript.rst:142
 msgid ""
@@ -186,6 +233,9 @@ msgid ""
 "additional instructions to the compiler/linker are needed, describing this "
 "extension is quite simple::"
 msgstr ""
+"所有这些都是通过 :func:`setup` 的另一个关键字参数 ``ext_modules`` 选项实现的。 ``ext_modules`` 是 由 "
+":class:`~distutils.core.Extension` 实例组成的列表，每个实例描述一个扩展模块。 假设你的发行版包括一个扩展模块，名为 "
+":mod:`foo` 并由 :file:`foo.c` 实现。 如果不需要编译器/链接器的额外指令，描述这个扩展很简单::"
 
 #: ../../distutils/setupscript.rst:152
 msgid ""
@@ -193,6 +243,8 @@ msgid ""
 "along with :func:`setup`.  Thus, the setup script for a module distribution "
 "that contains only this one extension and nothing else might be::"
 msgstr ""
+":class:`Extension` 类可以与 :func:`setup` 一起从 :mod:`distutils.core` 导入。 "
+"因此，只包含这一个扩展而不包含其他扩展的模块分发版的安装脚本可能是::"
 
 #: ../../distutils/setupscript.rst:162
 msgid ""
@@ -201,21 +253,23 @@ msgid ""
 "deal of flexibility in describing Python extensions, which is explained in "
 "the following sections."
 msgstr ""
+":class:`Extension` 类（实际上，由 :command:`build_ext` 命令实现的底层扩展构建机制）在描述 Python "
+"扩展时支持很大的灵活性，这将在以下部分中进行解释。"
 
 #: ../../distutils/setupscript.rst:169
 msgid "Extension names and packages"
-msgstr ""
+msgstr "扩展名和软件包"
 
 #: ../../distutils/setupscript.rst:171
 msgid ""
 "The first argument to the :class:`~distutils.core.Extension` constructor is "
 "always the name of the extension, including any package names.  For example,"
 " ::"
-msgstr ""
+msgstr ":class:`~distutils.core.Extension` 构造器的第一个参数始终是扩展的名称，包括任何包名称。 例如，::"
 
 #: ../../distutils/setupscript.rst:176
 msgid "describes an extension that lives in the root package, while ::"
-msgstr ""
+msgstr "描述了根包中的一个扩展，而：::"
 
 #: ../../distutils/setupscript.rst:180
 msgid ""
@@ -224,6 +278,8 @@ msgid ""
 "is where in the filesystem (and therefore where in Python's namespace "
 "hierarchy) the resulting extension lives."
 msgstr ""
+"描述了 :mod:`pkg` 包中的相同扩展。 在这两种情况下，源文件和生成的目标代码是相同的；唯一的区别是所产生的扩展处在文件系统中的何处（相应地在 "
+"Python 的命名空间层级结构中处在何处）。"
 
 #: ../../distutils/setupscript.rst:185
 msgid ""
@@ -231,16 +287,19 @@ msgid ""
 " same base package), use the ``ext_package`` keyword argument to "
 ":func:`setup`.  For example, ::"
 msgstr ""
+"如果在同一个包中（或在同一基本包下）有多个扩展，请使用 :func:`setup` 的关键字参数 ``ext_package``。 例如，::"
 
 #: ../../distutils/setupscript.rst:195
 msgid ""
 "will compile :file:`foo.c` to the extension :mod:`pkg.foo`, and "
 ":file:`bar.c` to :mod:`pkg.subpkg.bar`."
 msgstr ""
+"将把 :file:`foo.c` 编译为扩展 :mod:`pkg.foo`，把 :file:`bar.c` 编译为 "
+":mod:`pkg.subpkg.bar`。"
 
 #: ../../distutils/setupscript.rst:200
 msgid "Extension source files"
-msgstr ""
+msgstr "扩展的源文件"
 
 #: ../../distutils/setupscript.rst:202
 msgid ""
@@ -251,6 +310,9 @@ msgid ""
 "files: :file:`.cc` and :file:`.cpp` seem to be recognized by both Unix and "
 "Windows compilers.)"
 msgstr ""
+":class:`~distutils.core.Extension` 构造器的第二个参数是源文件列表。 由于 Distutils 目前只支持 C、C++"
+" 和 Objective-C 扩展，因此这些扩展通常是 C/C++/Objective-C 源文件。 （请确保使用适当的扩展名来区分 C++ 源文件: "
+":file:`.cc` 和 :file:`.cpp` 看来能够同时被 Unix 和 Windows 编译器所识别。）"
 
 #: ../../distutils/setupscript.rst:209
 msgid ""
@@ -259,16 +321,18 @@ msgid ""
 " will run SWIG on the interface file and compile the resulting C/C++ file "
 "into your extension."
 msgstr ""
+"但是，您也可以在列表中包括 SWIG 接口 (:file:`.i`) 文件；:command:`build_ext` 命令知道如何处理 SWIG "
+"扩展：它将在接口文件上运行 SWIG，并将生成的 C/C++ 文件编译为你的扩展。"
 
 #: ../../distutils/setupscript.rst:216
 msgid ""
 "This warning notwithstanding, options to SWIG can be currently passed like "
 "this::"
-msgstr ""
+msgstr "尽管有此警告，SWIG的选项目前可以这样传递 ::"
 
 #: ../../distutils/setupscript.rst:225
 msgid "Or on the commandline like this::"
-msgstr ""
+msgstr "或者在命令行上，像这样 ::"
 
 #: ../../distutils/setupscript.rst:229
 msgid ""
@@ -278,10 +342,12 @@ msgid ""
 "(:file:`.rc`) files for Visual C++. These will be compiled to binary "
 "resource (:file:`.res`) files and linked into the executable."
 msgstr ""
+"在某些平台上，可以包含由编译器处理并包含在扩展中的非源文件。目前，这只是指Visual "
+"C++的Windows消息文本（:file:`.mc`）文件和资源定义（:file:`.rc`）。这些文件将被编译为二进制资源（:file:`.res`）文件，并链接到可执行文件中。"
 
 #: ../../distutils/setupscript.rst:237
 msgid "Preprocessor options"
-msgstr ""
+msgstr "预处理器选项"
 
 #: ../../distutils/setupscript.rst:239
 msgid ""
@@ -289,12 +355,13 @@ msgid ""
 "you need to specify include directories to search or preprocessor macros to "
 "define/undefine: ``include_dirs``, ``define_macros``, and ``undef_macros``."
 msgstr ""
+"如果你需要指定要搜索的include目录或预处理器宏来define/undefine，那么：:class:`~distutils.core.Extension`的三个可选参数将有所帮助：``include_dirs``、``define_macros``和``undef_macros``。"
 
 #: ../../distutils/setupscript.rst:243
 msgid ""
 "For example, if your extension requires header files in the :file:`include` "
 "directory under your distribution root, use the ``include_dirs`` option::"
-msgstr ""
+msgstr "例如，如果你的扩展需要分发根目录下的 :file:`include` 目录中的头文件，请使用 ``include_dirs`` 选项::"
 
 #: ../../distutils/setupscript.rst:248
 msgid ""
@@ -302,12 +369,13 @@ msgid ""
 "will only be built on Unix systems with X11R6 installed to :file:`/usr`, you"
 " can get away with ::"
 msgstr ""
+"你可以在那里指定绝对目录；如果你知道你的扩展只能在安装到 :file:`/usr` 的 X11R6 的 Unix 系统上构建，那么你就可以::"
 
 #: ../../distutils/setupscript.rst:254
 msgid ""
 "You should avoid this sort of non-portable usage if you plan to distribute "
 "your code: it's probably better to write C code like  ::"
-msgstr ""
+msgstr "如果你计划分发代码，应该避免这种不可移植的用法：最好像这样编写C代码 ::"
 
 #: ../../distutils/setupscript.rst:259
 msgid ""
@@ -321,6 +389,11 @@ msgid ""
 " in this case---is always included in the search path when building Python "
 "extensions, the best approach is to write C code like  ::"
 msgstr ""
+"如果你需要包含来自其它 Python 扩展的头文件，你可以利用这样一个事实，即 Distutils :command:`install_headers`"
+" 命令以一致的方式安装头文件。 例如，Numerical Python 头文件 (在标准 Unix 安装版上) 会安装到 "
+":file:`/usr/local/include/python1.5/Numerical` (具体位置将根据你的平台和 Python "
+"安装版而有所不同）。 由于在构建Python 扩展时，Python include 目录 --- 在本例中为 "
+":file:`/usr/local/include/python1.5` --- 总是会包含在搜索路径中，因此最好的做法是像这样编写 C 代码::"
 
 #: ../../distutils/setupscript.rst:271
 msgid ""
@@ -328,13 +401,15 @@ msgid ""
 "header search path, though, you can find that directory using the Distutils "
 ":mod:`distutils.sysconfig` module::"
 msgstr ""
+"但是，如果必须将 :file:`Numerical` include 目录放在头文件搜索路径中，则可以使用 Distutils  "
+":mod:`distutils.sysconfig` 模块找到该目录::"
 
 #: ../../distutils/setupscript.rst:281
 msgid ""
 "Even though this is quite portable---it will work on any Python "
 "installation, regardless of platform---it's probably easier to just write "
 "your C code in the sensible way."
-msgstr ""
+msgstr "尽管这是非常可移植的——无论平台如何，它都可以在任何Python安装中工作——但以合理的方式编写C代码可能更容易。"
 
 #: ../../distutils/setupscript.rst:285
 msgid ""
@@ -346,18 +421,22 @@ msgid ""
 "your C source: with most compilers, this sets ``FOO`` to the string ``1``.)"
 "  ``undef_macros`` is just a list of macros to undefine."
 msgstr ""
+"您可以使用``define_macros``和``undef_macros``选项 define 和 undefine  "
+"预处理器宏。``define_macros``采用一个``(name, "
+"value)``元组列表，其中``name``是要定义的宏的名称（字符串），``value``是其值：字符串或“``None``。（将宏``FOO``定义为``None``相当于C源代码中的空``#define"
+" FOO``：对于大多数编译器，这会将``FOO``设置为字符串``1``。）``undef_macros``只是一个undefine的宏列表。"
 
 #: ../../distutils/setupscript.rst:293
 msgid "For example::"
-msgstr ""
+msgstr "例如："
 
 #: ../../distutils/setupscript.rst:300
 msgid "is the equivalent of having this at the top of every C source file::"
-msgstr ""
+msgstr "相当于将其放在每个C源文件的顶部 ::"
 
 #: ../../distutils/setupscript.rst:309
 msgid "Library options"
-msgstr ""
+msgstr "库选项"
 
 #: ../../distutils/setupscript.rst:311
 msgid ""
@@ -368,48 +447,50 @@ msgid ""
 "time, and ``runtime_library_dirs`` is a list of directories to  search for "
 "shared (dynamically loaded) libraries at run-time."
 msgstr ""
+"你还可以指定在构建扩展时要链接的库，以及搜索这些库的目录。 ``libraries`` 选项是要链接的库列表，``library_dirs`` "
+"是要在链接时搜索库的目录列表，``runtime_library_dirs`` 是要在运行时搜索共享（动态加载）库的目录的列表。"
 
 #: ../../distutils/setupscript.rst:317
 msgid ""
 "For example, if you need to link against libraries known to be in the "
 "standard library search path on target systems ::"
-msgstr ""
+msgstr "例如，如果你需要链接到目标系统上标准库搜索路径中已知的库 ::"
 
 #: ../../distutils/setupscript.rst:323
 msgid ""
 "If you need to link with libraries in a non-standard location, you'll have "
 "to include the location in ``library_dirs``::"
-msgstr ""
+msgstr "如果你需要链接到非标准位置的库，则必须将该位置包含在 ``library_dirs`` 中::"
 
 #: ../../distutils/setupscript.rst:330
 msgid ""
 "(Again, this sort of non-portable construct should be avoided if you intend "
 "to distribute your code.)"
-msgstr ""
+msgstr "（同样，如果你打算分发代码，应该避免这种不可移植的构造。）"
 
 #: ../../distutils/setupscript.rst:337
 msgid "Other options"
-msgstr ""
+msgstr "其它选项"
 
 #: ../../distutils/setupscript.rst:339
 msgid ""
 "There are still some other options which can be used to handle special "
 "cases."
-msgstr ""
+msgstr "还有一些其它选项可以用于处理特殊情况。"
 
 #: ../../distutils/setupscript.rst:341
 msgid ""
 "The ``optional`` option is a boolean; if it is true, a build failure in the "
 "extension will not abort the build process, but instead simply not install "
 "the failing extension."
-msgstr ""
+msgstr "``optional`` 选项是一个布尔值；如果它为真值，则扩展中的生成失败不会中止生成过程，而是简单地不安装失败的扩展。"
 
 #: ../../distutils/setupscript.rst:345
 msgid ""
 "The ``extra_objects`` option is a list of object files to be passed to the "
 "linker. These files must not have extensions, as the default extension for "
 "the compiler is used."
-msgstr ""
+msgstr "``extra_objects`` 选项是要传递给链接器的对象文件列表。 这些文件不能有扩展名，因为使用的是编译器的默认扩展名。"
 
 #: ../../distutils/setupscript.rst:349
 msgid ""
@@ -417,6 +498,7 @@ msgid ""
 "additional command line options for the respective compiler and linker "
 "command lines."
 msgstr ""
+"``extra_compile_args`` 和 ``extra_link_args`` 可用于为相应的编译器和链接器命令行指定额外的命令行选项。"
 
 #: ../../distutils/setupscript.rst:353
 msgid ""
@@ -425,6 +507,8 @@ msgid ""
 "when building compiled extensions: Distutils  will automatically add "
 "``initmodule`` to the list of exported symbols."
 msgstr ""
+"``export_symbols`` 仅在 Windows 上适用。 它可以包含要导出的符号（函数或变量）列表。 "
+"生成编译的扩展时不需要此选项：Distutils 会自动将 ``initmodule`` 添加到导出的符号列表中。"
 
 #: ../../distutils/setupscript.rst:358
 msgid ""
@@ -433,32 +517,34 @@ msgid ""
 "sources to rebuild extension if any on this files has been modified since "
 "the previous build."
 msgstr ""
+"``depends`` 选项是扩展所依赖的文件列表（例如头文件）。 build "
+"命令将调用源上的编译器以重新生成扩展（如果自上一次生成以来此文件上的任何扩展已被修改）。"
 
 #: ../../distutils/setupscript.rst:364
 msgid "Relationships between Distributions and Packages"
-msgstr ""
+msgstr "分发和软件包之间的关系"
 
 #: ../../distutils/setupscript.rst:366
 msgid "A distribution may relate to packages in three specific ways:"
-msgstr ""
+msgstr "一个分发可能以三种特定方式与软件包相关："
 
 #: ../../distutils/setupscript.rst:368
 msgid "It can require packages or modules."
-msgstr ""
+msgstr "它可能需要软件包或模块。"
 
 #: ../../distutils/setupscript.rst:370
 msgid "It can provide packages or modules."
-msgstr ""
+msgstr "它可能提供软件包或模块。"
 
 #: ../../distutils/setupscript.rst:372
 msgid "It can obsolete packages or modules."
-msgstr ""
+msgstr "它可能废弃软件包或模块。"
 
 #: ../../distutils/setupscript.rst:374
 msgid ""
 "These relationships can be specified using keyword arguments to the "
 ":func:`distutils.core.setup` function."
-msgstr ""
+msgstr "可以使用 :func:`distutils.core.setup` 函数的关键字参数来指定这些关系。"
 
 #: ../../distutils/setupscript.rst:377
 msgid ""
@@ -467,6 +553,8 @@ msgid ""
 "be a list of strings.  Each string specifies a package that is required, and"
 " optionally what versions are sufficient."
 msgstr ""
+"可以通过将 *requires* 关键字参数提供给 :func:`setup` 来指定对其他 Python 模块和包的依赖关系。 其值必须是字符串列表。"
+" 每个字符串都指定了所需的软件包，并可以选择哪些版本满足要求。"
 
 #: ../../distutils/setupscript.rst:382
 msgid ""
@@ -474,49 +562,51 @@ msgid ""
 "should consist entirely of the module or package name. Examples include "
 "``'mymodule'`` and ``'xml.parsers.expat'``."
 msgstr ""
+"要指定需要模块或软件包的任何版本，字符串应该完全由模块或软件包的名称组成。 示例包括 ``'mymodule'`` 和 "
+"``'xml.parsers.expat'``。"
 
 #: ../../distutils/setupscript.rst:386
 msgid ""
 "If specific versions are required, a sequence of qualifiers can be supplied "
 "in parentheses.  Each qualifier may consist of a comparison operator and a "
 "version number.  The accepted comparison operators are::"
-msgstr ""
+msgstr "如果需要特定的版本，可以在括号中提供一系列限定符。每个限定符可以由一个比较运算符和一个版本号组成。可接受的比较运算符为::"
 
 #: ../../distutils/setupscript.rst:393
 msgid ""
 "These can be combined by using multiple qualifiers separated by commas (and "
 "optional whitespace).  In this case, all of the qualifiers must be matched; "
 "a logical AND is used to combine the evaluations."
-msgstr ""
+msgstr "这些可以通过使用逗号分隔的多个限定符（以及可选的空格）进行组合。在这种情况下，所有限定符都必须匹配；使用逻辑AND来组合评估。"
 
 #: ../../distutils/setupscript.rst:397
 msgid "Let's look at a bunch of examples:"
-msgstr ""
+msgstr "让我们看一堆例子："
 
 #: ../../distutils/setupscript.rst:400
 msgid "Requires Expression"
-msgstr ""
+msgstr "Requires 表达式"
 
 #: ../../distutils/setupscript.rst:400 ../../distutils/setupscript.rst:418
 msgid "Explanation"
-msgstr ""
+msgstr "说明"
 
 #: ../../distutils/setupscript.rst:402
 msgid "``==1.0``"
-msgstr ""
+msgstr "``==1.0``"
 
 #: ../../distutils/setupscript.rst:402
 msgid "Only version ``1.0`` is compatible"
-msgstr ""
+msgstr "只有``1.0``版本兼容"
 
 #: ../../distutils/setupscript.rst:404
 msgid "``>1.0, !=1.5.1, <2.0``"
-msgstr ""
+msgstr "``>1.0, !=1.5.1, <2.0``"
 
 #: ../../distutils/setupscript.rst:404
 msgid ""
 "Any version after ``1.0`` and before ``2.0`` is compatible, except ``1.5.1``"
-msgstr ""
+msgstr "``1.0`` 之后和 ``2.0`` 之前的任何版本都是兼容的，``1.5.1`` 除外"
 
 #: ../../distutils/setupscript.rst:408
 msgid ""
@@ -527,30 +617,33 @@ msgid ""
 "optionally identifies the version.  If the version is not specified, it is "
 "assumed to match that of the distribution."
 msgstr ""
+"既然我们可以指定依赖项，我们还需要能够指定我们提供的其它发行版可能需要的内容。这是通过将 *provides* 关键字参数用于 "
+":func:`setup` 来完成的。 该关键字的值是一个字符串列表，每个字符串都命名一个Python模块或软件包，并可选择标识版本。 "
+"如果未指定版本，则假定与该发行版的版本相匹配。"
 
 #: ../../distutils/setupscript.rst:415
 msgid "Some examples:"
-msgstr ""
+msgstr "一些例子："
 
 #: ../../distutils/setupscript.rst:418
 msgid "Provides Expression"
-msgstr ""
+msgstr "Provides 表达式"
 
 #: ../../distutils/setupscript.rst:420
 msgid "``mypkg``"
-msgstr ""
+msgstr "``mypkg``"
 
 #: ../../distutils/setupscript.rst:420
 msgid "Provide ``mypkg``, using the distribution version"
-msgstr ""
+msgstr "Provide ``mypkg``, 使用该分发版的版本"
 
 #: ../../distutils/setupscript.rst:423
 msgid "``mypkg (1.1)``"
-msgstr ""
+msgstr "``mypkg (1.1)``"
 
 #: ../../distutils/setupscript.rst:423
 msgid "Provide ``mypkg`` version 1.1, regardless of the distribution version"
-msgstr ""
+msgstr "提供版本为 1.1的``mypkg``，不管分发版的版本"
 
 #: ../../distutils/setupscript.rst:427
 msgid ""
@@ -561,23 +654,25 @@ msgid ""
 " more version qualifiers.  Version qualifiers are given in parentheses after"
 " the module or package name."
 msgstr ""
+"一个软件包可以使用 *obsoletes* 关键字参数声明它已经废弃了其它软件包。它的值类似于 *requires* "
+"关键字的值：一个给出模块或软件包说明符的字符串列表。每个说明符由一个模块或软件包名称组成，后面可选地跟有一个或多个版本限定符。版本限定符在模块或软件包名称后面的括号中给出。"
 
 #: ../../distutils/setupscript.rst:434
 msgid ""
 "The versions identified by the qualifiers are those that are obsoleted by "
 "the distribution being described.  If no qualifiers are given, all versions "
 "of the named module or package are understood to be obsoleted."
-msgstr ""
+msgstr "限定符标识的版本是那些被所描述的分发版本废弃的版本。如果没有给出限定符，那么指定的模块或软件包的所有版本都被认为是废弃的。"
 
 #: ../../distutils/setupscript.rst:441
 msgid "Installing Scripts"
-msgstr ""
+msgstr "安装脚本"
 
 #: ../../distutils/setupscript.rst:443
 msgid ""
 "So far we have been dealing with pure and non-pure Python modules, which are"
 " usually not run by themselves but imported by scripts."
-msgstr ""
+msgstr "到目前为止，我们一直在处理纯Python模块和非纯Python模块，它们通常不是自己运行的，而是通过脚本导入的。"
 
 #: ../../distutils/setupscript.rst:446
 msgid ""
@@ -590,22 +685,24 @@ msgid ""
 ":option:`!--executable` (or :option:`!-e`) option will allow the interpreter"
 " path to be explicitly overridden."
 msgstr ""
+"脚本是包含Python源代码的文件，旨在从命令行启动。脚本不需要Distutils来做任何非常复杂的事情。唯一聪明的功能是，如果脚本的第一行以``#!``开头并且包含单词“python”，Distutils将调整第一行以引用当前解释器位置。默认情况下，它被替换为当前解释器位置。选项:option:`!"
+"--executable`（或:option:`!-e`）将允许显式覆盖解释器路径。"
 
 #: ../../distutils/setupscript.rst:454
 msgid ""
 "The ``scripts`` option simply is a list of files to be handled in this way."
 "  From the PyXML setup script::"
-msgstr ""
+msgstr "``scripts`` 选项只是要以这种方式处理的文件列表。 从 PyXML 安装脚本 ::"
 
 #: ../../distutils/setupscript.rst:461
 msgid ""
 "All the scripts will also be added to the ``MANIFEST`` file if no template "
 "is provided.  See :ref:`manifest`."
-msgstr ""
+msgstr "如果没有提供模板，所有脚本也将被添加到 ``MANIFEST`` 文件中。请参见 :ref:`manifest`。"
 
 #: ../../distutils/setupscript.rst:469
 msgid "Installing Package Data"
-msgstr ""
+msgstr "安装软件包数据"
 
 #: ../../distutils/setupscript.rst:471
 msgid ""
@@ -614,6 +711,8 @@ msgid ""
 "text files containing documentation that might be of interest to programmers"
 " using the package.  These files are called :dfn:`package data`."
 msgstr ""
+"通常，需要将额外的文件安装到软件包中。这些文件通常是与软件包的实现密切相关的数据，或者是包含使用软件包的程序员可能感兴趣的文档的文本文件。这些文件被称为"
+"  :dfn:`package data`。"
 
 #: ../../distutils/setupscript.rst:476
 msgid ""
@@ -625,51 +724,56 @@ msgid ""
 "appropriate); that is, the files are expected to be part of the package in "
 "the source directories. They may contain glob patterns as well."
 msgstr ""
+"可以使用 :func:`setup` 函数的关键字参数 ``package_data`` 将软件包数据添加到软件包中。 "
+"该值必须是从软件包名到应该复制到软件包中的相对路径名列表的映射。 路径被解释为相对于包含软件包的目录（如果合适，将使用来自 "
+"``package_dir`` 映射的信息）；也就是说，这些文件应该是软件包源目录中的一部分。 它们也可能包含 glob 模式。"
 
 #: ../../distutils/setupscript.rst:484
 msgid ""
 "The path names may contain directory portions; any necessary directories "
 "will be created in the installation."
-msgstr ""
+msgstr "路径名称可以包含目录部分；任何必要的目录都将在安装过程中创建。"
 
 #: ../../distutils/setupscript.rst:487
 msgid ""
 "For example, if a package should contain a subdirectory with several data "
 "files, the files can be arranged like this in the source tree::"
-msgstr ""
+msgstr "例如，如果一个软件包应该包含一个有多个数据文件的子目录，那么这些文件可以在源树中按如下方式排列 ::"
 
 #: ../../distutils/setupscript.rst:500
 msgid "The corresponding call to :func:`setup` might be::"
-msgstr ""
+msgstr "对 :func:`setup` 的相应调用可能是 ::"
 
 #: ../../distutils/setupscript.rst:509
 msgid ""
 "All the files that match ``package_data`` will be added to the ``MANIFEST`` "
 "file if no template is provided.  See :ref:`manifest`."
 msgstr ""
+"如果没有提供模板，则所有与 ``package_data`` 匹配的文件都将添加到 ``MANIFEST`` 文件中。 请参见 "
+":ref:`manifest`。"
 
 #: ../../distutils/setupscript.rst:517
 msgid "Installing Additional Files"
-msgstr ""
+msgstr "安装其它文件"
 
 #: ../../distutils/setupscript.rst:519
 msgid ""
 "The ``data_files`` option can be used to specify additional files needed by "
 "the module distribution: configuration files, message catalogs, data files, "
 "anything which doesn't fit in the previous categories."
-msgstr ""
+msgstr "``data_files`` 选项可用于指定模块分发所需的其它文件：配置文件、消息目录、数据文件，以及任何不属于前述类别的文件。"
 
 #: ../../distutils/setupscript.rst:523
 msgid ""
 "``data_files`` specifies a sequence of (*directory*, *files*) pairs in the "
 "following way::"
-msgstr ""
+msgstr "``data_files`` 以如下方式指定 (*directory*, *files*) 对的序列::"
 
 #: ../../distutils/setupscript.rst:531
 msgid ""
 "Each (*directory*, *files*) pair in the sequence specifies the installation "
 "directory and the files to install there."
-msgstr ""
+msgstr "序列中的每队（*directory*，*files*）指定安装目录和要在其中安装的文件。"
 
 #: ../../distutils/setupscript.rst:534
 msgid ""
@@ -678,6 +782,8 @@ msgid ""
 "specify the directory where the data files will be installed, but you cannot"
 " rename the data files themselves."
 msgstr ""
+"*files* 中的每个文件名都是相对于软件包源发行版顶部的 :file:`setup.py` 脚本进行解释的。 "
+"请注意，您可以指定安装数据文件的目录，但不能重命名数据文件本身。"
 
 #: ../../distutils/setupscript.rst:539
 msgid ""
@@ -689,6 +795,10 @@ msgid ""
 "*files* is used to determine the final location of the installed file; only "
 "the name of the file is used."
 msgstr ""
+"*directory* 应该是一个相对路径。它是相对于安装前缀来解释的（Python 的 ``sys.prefix`` "
+"用于系统安装；``site.USER_BASE`` 用于用户安装）。 Distutils 允许将 *directory* "
+"作为一个绝对的安装路径，但这是不鼓励的，因为它与 wheel 封装格式不兼容。不使用来自 *files* "
+"的目录信息来确定已安装文件的最终位置；只使用文件的名称。"
 
 #: ../../distutils/setupscript.rst:547
 msgid ""
@@ -698,227 +808,232 @@ msgid ""
 "data files directly in the target directory, an empty string should be given"
 " as the directory."
 msgstr ""
+"你可以将 ``data_files`` "
+"选项指定为一个简单的文件序列，而无需指定目标目录，但不建议这样做，在这种情况下，:command:`install` 命令将打印警告。 "
+"要将数据文件直接安装到目标目录中，应提供一个空字符串作为目录。"
 
 #: ../../distutils/setupscript.rst:553
 msgid ""
 "All the files that match ``data_files`` will be added to the ``MANIFEST`` "
 "file if no template is provided.  See :ref:`manifest`."
 msgstr ""
+"如果没有提供模板，则所有与 ``data_files`` 匹配的文件都将添加到 ``MANIFEST`` 文件中。 请参见 "
+":ref:`manifest`。"
 
 #: ../../distutils/setupscript.rst:561
 msgid "Additional meta-data"
-msgstr ""
+msgstr "附加元数据"
 
 #: ../../distutils/setupscript.rst:563
 msgid ""
 "The setup script may include additional meta-data beyond the name and "
 "version. This information includes:"
-msgstr ""
+msgstr "安装脚本可以包括除了名称和版本之外的附加元数据。这些信息包括："
 
 #: ../../distutils/setupscript.rst:567
 msgid "Meta-Data"
-msgstr ""
+msgstr "元数据"
 
 #: ../../distutils/setupscript.rst:567
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: ../../distutils/setupscript.rst:567
 msgid "Value"
-msgstr ""
+msgstr "值"
 
 #: ../../distutils/setupscript.rst:567
 msgid "Notes"
-msgstr ""
+msgstr "备注"
 
 #: ../../distutils/setupscript.rst:569
 msgid "``name``"
-msgstr ""
+msgstr "``name``"
 
 #: ../../distutils/setupscript.rst:569
 msgid "name of the package"
-msgstr ""
+msgstr "包名称"
 
 #: ../../distutils/setupscript.rst:569 ../../distutils/setupscript.rst:571
 #: ../../distutils/setupscript.rst:573 ../../distutils/setupscript.rst:578
 #: ../../distutils/setupscript.rst:585 ../../distutils/setupscript.rst:601
 msgid "short string"
-msgstr ""
+msgstr "短字符串"
 
 #: ../../distutils/setupscript.rst:569 ../../distutils/setupscript.rst:583
 msgid "\\(1)"
-msgstr ""
+msgstr "\\(1)"
 
 #: ../../distutils/setupscript.rst:571
 msgid "``version``"
-msgstr ""
+msgstr "``version``"
 
 #: ../../distutils/setupscript.rst:571
 msgid "version of this release"
-msgstr ""
+msgstr "此发布的版本"
 
 #: ../../distutils/setupscript.rst:571
 msgid "(1)(2)"
-msgstr ""
+msgstr "(1)(2)"
 
 #: ../../distutils/setupscript.rst:573
 msgid "``author``"
-msgstr ""
+msgstr "``author``"
 
 #: ../../distutils/setupscript.rst:573
 msgid "package author's name"
-msgstr ""
+msgstr "软件包作者的姓名"
 
 #: ../../distutils/setupscript.rst:573 ../../distutils/setupscript.rst:575
 #: ../../distutils/setupscript.rst:578 ../../distutils/setupscript.rst:580
 msgid "\\(3)"
-msgstr ""
+msgstr "\\(3)"
 
 #: ../../distutils/setupscript.rst:575
 msgid "``author_email``"
-msgstr ""
+msgstr "``author_email``"
 
 #: ../../distutils/setupscript.rst:575
 msgid "email address of the package author"
-msgstr ""
+msgstr "软件包的作者的电子邮件地址"
 
 #: ../../distutils/setupscript.rst:575 ../../distutils/setupscript.rst:580
 msgid "email address"
-msgstr ""
+msgstr "电子邮件地址"
 
 #: ../../distutils/setupscript.rst:578
 msgid "``maintainer``"
-msgstr ""
+msgstr "``maintainer``"
 
 #: ../../distutils/setupscript.rst:578
 msgid "package maintainer's name"
-msgstr ""
+msgstr "软件包维护者的名字"
 
 #: ../../distutils/setupscript.rst:580
 msgid "``maintainer_email``"
-msgstr ""
+msgstr "``maintainer_email``"
 
 #: ../../distutils/setupscript.rst:580
 msgid "email address of the package maintainer"
-msgstr ""
+msgstr "软件包维护者的电子邮件地址"
 
 #: ../../distutils/setupscript.rst:583
 msgid "``url``"
-msgstr ""
+msgstr "``url``"
 
 #: ../../distutils/setupscript.rst:583
 msgid "home page for the package"
-msgstr ""
+msgstr "软件包的网址"
 
 #: ../../distutils/setupscript.rst:583 ../../distutils/setupscript.rst:592
 msgid "URL"
-msgstr ""
+msgstr "网址"
 
 #: ../../distutils/setupscript.rst:585
 msgid "``description``"
-msgstr ""
+msgstr "``description``"
 
 #: ../../distutils/setupscript.rst:585
 msgid "short, summary description of the package"
-msgstr ""
+msgstr "软件包的简短摘要说明"
 
 #: ../../distutils/setupscript.rst:589
 msgid "``long_description``"
-msgstr ""
+msgstr "``long_description``"
 
 #: ../../distutils/setupscript.rst:589
 msgid "longer description of the package"
-msgstr ""
+msgstr "软件包的详细说明"
 
 #: ../../distutils/setupscript.rst:589
 msgid "long string"
-msgstr ""
+msgstr "长字符串"
 
 #: ../../distutils/setupscript.rst:589
 msgid "\\(4)"
-msgstr ""
+msgstr "\\(4)"
 
 #: ../../distutils/setupscript.rst:592
 msgid "``download_url``"
-msgstr ""
+msgstr "``download_url``"
 
 #: ../../distutils/setupscript.rst:592
 msgid "location where the package may be downloaded"
-msgstr ""
+msgstr "可以下载软件包的网址"
 
 #: ../../distutils/setupscript.rst:595
 msgid "``classifiers``"
-msgstr ""
+msgstr "``classifiers``"
 
 #: ../../distutils/setupscript.rst:595
 msgid "a list of classifiers"
-msgstr ""
+msgstr "分类列表"
 
 #: ../../distutils/setupscript.rst:595 ../../distutils/setupscript.rst:597
 #: ../../distutils/setupscript.rst:599
 msgid "list of strings"
-msgstr ""
+msgstr "字符串列表"
 
 #: ../../distutils/setupscript.rst:595
 msgid "(6)(7)"
-msgstr ""
+msgstr "(6)(7)"
 
 #: ../../distutils/setupscript.rst:597
 msgid "``platforms``"
-msgstr ""
+msgstr "``platforms``"
 
 #: ../../distutils/setupscript.rst:597
 msgid "a list of platforms"
-msgstr ""
+msgstr "平台清单"
 
 #: ../../distutils/setupscript.rst:597 ../../distutils/setupscript.rst:599
 msgid "(6)(8)"
-msgstr ""
+msgstr "(6)(8)"
 
 #: ../../distutils/setupscript.rst:599
 msgid "``keywords``"
-msgstr ""
+msgstr "``keywords``"
 
 #: ../../distutils/setupscript.rst:599
 msgid "a list of keywords"
-msgstr ""
+msgstr "关键字列表"
 
 #: ../../distutils/setupscript.rst:601
 msgid "``license``"
-msgstr ""
+msgstr "``license``"
 
 #: ../../distutils/setupscript.rst:601
 msgid "license for the package"
-msgstr ""
+msgstr "软件包许可证"
 
 #: ../../distutils/setupscript.rst:601
 msgid "\\(5)"
-msgstr ""
+msgstr "\\(5)"
 
 #: ../../distutils/setupscript.rst:604
 msgid "Notes:"
-msgstr ""
+msgstr "注释："
 
 #: ../../distutils/setupscript.rst:607
 msgid "These fields are required."
-msgstr ""
+msgstr "这些字段是必需的。"
 
 #: ../../distutils/setupscript.rst:610
 msgid ""
 "It is recommended that versions take the form *major.minor[.patch[.sub]]*."
-msgstr ""
+msgstr "建议版本采用  *major.minor[.patch[.sub]]* 的形式。"
 
 #: ../../distutils/setupscript.rst:613
 msgid ""
 "Either the author or the maintainer must be identified. If maintainer is "
 "provided, distutils lists it as the author in :file:`PKG-INFO`."
-msgstr ""
+msgstr "必须确定作者或维护者。如果提供了维护者，distutils 会在 :file:`PKG-INFO` 中将其列为作者。"
 
 #: ../../distutils/setupscript.rst:617
 msgid ""
 "The ``long_description`` field is used by PyPI when you publish a package, "
 "to build its project page."
-msgstr ""
+msgstr "PyPI在发布软件包时使用``long_description``字段来构建其项目页面。"
 
 #: ../../distutils/setupscript.rst:621
 msgid ""
@@ -928,15 +1043,17 @@ msgid ""
 "distribution option which is deprecated but still acts as an alias for "
 "``license``."
 msgstr ""
+"``license`` 字段是一个文本，指示软件包中的许可证，其中该许可证不是从 “license” Trove分类器中选择的。请参见 "
+"``Classifier`` 字段。 请注意，有一个 ``licence`` 分发选项，该选项已被弃用，但仍充当 ``license`` 字段的别名。"
 
 #: ../../distutils/setupscript.rst:628
 msgid "This field must be a list."
-msgstr ""
+msgstr "此字段必须是一个列表。"
 
 #: ../../distutils/setupscript.rst:631
 msgid ""
 "The valid classifiers are listed on `PyPI <https://pypi.org/classifiers>`_."
-msgstr ""
+msgstr "有效的分类器在 `PyPI <https://pypi.org/classifiers>`_ 上列出。"
 
 #: ../../distutils/setupscript.rst:635
 msgid ""
@@ -944,32 +1061,34 @@ msgid ""
 " pass a comma-separated string ``'foo, bar'``, it will be converted to "
 "``['foo', 'bar']``, Otherwise, it will be converted to a list of one string."
 msgstr ""
+"为了保持向后兼容性，此字段还接受一个字符串。如果传递逗号分隔的字符串``'foo, bar'``，它将被转换为``['foo', "
+"'bar']``，否则，它将转换为一个字符串列表。"
 
 #: ../../distutils/setupscript.rst:641
 msgid "'short string'"
-msgstr ""
+msgstr "'短字符串'"
 
 #: ../../distutils/setupscript.rst:641
 msgid "A single line of text, not more than 200 characters."
-msgstr ""
+msgstr "一行文字，不超过200个字符。"
 
 #: ../../distutils/setupscript.rst:645
 msgid "'long string'"
-msgstr ""
+msgstr "'长字符串'"
 
 #: ../../distutils/setupscript.rst:644
 msgid ""
 "Multiple lines of plain text in reStructuredText format (see "
 "https://docutils.sourceforge.io/)."
-msgstr ""
+msgstr "reStructuredText格式的多行纯文本（请参阅https://docutils.sourceforge.io/)."
 
 #: ../../distutils/setupscript.rst:648
 msgid "'list of strings'"
-msgstr ""
+msgstr "'字符串列表'"
 
 #: ../../distutils/setupscript.rst:648
 msgid "See below."
-msgstr ""
+msgstr "请参见下文。"
 
 #: ../../distutils/setupscript.rst:650
 msgid ""
@@ -985,42 +1104,46 @@ msgid ""
 "which only fix bugs) and \"pr1,pr2,...,prN\" (for final pre-release release "
 "testing). Some examples:"
 msgstr ""
+"对版本信息进行编码本身就是一门艺术。Python包通常遵循版本格式 *major.minor[.patch][sub]* "
+"。初始的、实验性的软件版本的主数字是0。对于表示包中主要里程碑的版本，主版本会递增。当重要的新特性添加到包中时，次版本编号会增加。当发布错误修复程序时，补丁编号会增加。附加的尾随版本信息有时用于指示子版本。这些是“a1，a2，…，aN”（对于alpha版本，功能和API可能会更改），“b1，b2，…，bN”（针对beta版本，它只修复了错误）和“pr1，pr2，……，prN”（用于最终的预发布测试）。一些例子："
 
 #: ../../distutils/setupscript.rst:662
 msgid "0.1.0"
-msgstr ""
+msgstr "0.1.0"
 
 #: ../../distutils/setupscript.rst:662
 msgid "the first, experimental release of a package"
-msgstr ""
+msgstr "一个软件包的第一个实验性发布"
 
 #: ../../distutils/setupscript.rst:665
 msgid "1.0.1a2"
-msgstr ""
+msgstr "1.0.1a2"
 
 #: ../../distutils/setupscript.rst:665
 msgid "the second alpha release of the first patch version of 1.0"
-msgstr ""
+msgstr "1.0的第一个补丁版本的第二个alpha版本"
 
 #: ../../distutils/setupscript.rst:667
 msgid "``classifiers`` must be specified in a list::"
-msgstr ""
+msgstr "``classifiers`` 必须在列表中指定 ::"
 
 #: ../../distutils/setupscript.rst:688
 msgid ""
 ":class:`~distutils.core.setup` now warns when ``classifiers``, ``keywords`` "
 "or ``platforms`` fields are not specified as a list or a string."
 msgstr ""
+"现在 :class:`~distutils.core.setup` 在 ``classifiers``、``keywords`` 或 "
+"``platforms`` 字段未指定为列表或字符串时发出警告。"
 
 #: ../../distutils/setupscript.rst:695
 msgid "Debugging the setup script"
-msgstr ""
+msgstr "调试安装脚本"
 
 #: ../../distutils/setupscript.rst:697
 msgid ""
 "Sometimes things go wrong, and the setup script doesn't do what the "
 "developer wants."
-msgstr ""
+msgstr "有时会出现问题，并且安装脚本不能执行开发人员想要的操作。"
 
 #: ../../distutils/setupscript.rst:700
 msgid ""
@@ -1032,6 +1155,7 @@ msgid ""
 " or the Python installation is broken because they don't read all the way "
 "down to the bottom and see that it's a permission problem."
 msgstr ""
+"Distutils在运行安装脚本时捕获任何异常，并在脚本终止前打印一条简单的错误消息。这种行为的动机是为了不让那些对Python不太了解并试图安装软件包的管理员感到困惑。如果他们从Distutils的内部深处得到了一个很长的追溯，他们可能会认为这个软件包或Python安装坏了，因为他们没有一直读到底部，看到这是一个权限问题。"
 
 #: ../../distutils/setupscript.rst:708
 msgid ""
@@ -1042,3 +1166,6 @@ msgid ""
 "traceback when an exception occurs, and print the whole command line when an"
 " external program (like a C compiler) fails."
 msgstr ""
+"另一方面，这并不能帮助开发人员找到失败的原因。 为此，:envvar:`DISTUTILS_DEBUG` "
+"环境变量可以设置为除空字符串之外的任何值，distutils 现在将打印有关其正在执行的操作的详细信息，在发生异常时转储完整的回溯，并在外部程序（如 C"
+" 编译器）失败时打印整个命令行。"

@@ -3,6 +3,9 @@
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
+# Translators:
+# Nyuan Zhang, 2025
+# 
 #, fuzzy
 msgid ""
 msgstr ""
@@ -10,6 +13,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-25 16:48+0000\n"
 "PO-Revision-Date: 2025-07-18 20:06+0000\n"
+"Last-Translator: Nyuan Zhang, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,18 +23,18 @@ msgstr ""
 
 #: ../../library/site.rst:2
 msgid ":mod:`site` --- Site-specific configuration hook"
-msgstr ""
+msgstr ":mod:`site` —— 指定域的配置钩子"
 
 #: ../../library/site.rst:7
 msgid "**Source code:** :source:`Lib/site.py`"
-msgstr ""
+msgstr "**源代码:** :source:`Lib/site.py`"
 
 #: ../../library/site.rst:13
 msgid ""
 "**This module is automatically imported during initialization.** The "
 "automatic import can be suppressed using the interpreter's :option:`-S` "
 "option."
-msgstr ""
+msgstr "**这个模块将在初始化时被自动导入。** 此自动导入可以通过使用解释器的 :option:`-S` 选项来屏蔽。"
 
 #: ../../library/site.rst:18
 msgid ""
@@ -40,12 +44,14 @@ msgid ""
 "module search path or additions to the builtins.  To explicitly trigger the "
 "usual site-specific additions, call the :func:`main` function."
 msgstr ""
+"导入此模块将会附加站点专属的路径到模块搜索路径并添加一些内置对象，除非使用了 :option:`-S`。 "
+"在这种情况下，模块可以被安全地导入而不会自动修改模块搜索路径或添加内置对象。 要明确地触发通常站点专属的添加，请调用 :func:`main` 函数。"
 
 #: ../../library/site.rst:24
 msgid ""
 "Importing the module used to trigger paths manipulation even when using "
 ":option:`-S`."
-msgstr ""
+msgstr "在之前即便使用了 :option:`-S`，导入此模块仍然会触发路径操纵。"
 
 #: ../../library/site.rst:31
 msgid ""
@@ -58,10 +64,14 @@ msgid ""
 " it to ``sys.path`` and also inspects the newly added path for configuration"
 " files."
 msgstr ""
+"它会从头部和尾部构建至多四个目录作为起点。 对于头部，它会使用 ``sys.prefix`` 和 "
+"``sys.exec_prefix``；空的头部会被跳过。 对于尾部，它会使用空字符串然后是 :file:`lib/site-packages` (在 "
+"Windows 上) 或 :file:`lib/python{X.Y}/site-packages` (在 Unix 和 macOS 上)。 "
+"对于每个不同的头-尾组合，它会查看其是否指向现有的目录，如果是的话，则将其添加到 ``sys.path`` 并且检查新添加目录中的配置文件。"
 
 #: ../../library/site.rst:40
 msgid "Support for the \"site-python\" directory has been removed."
-msgstr ""
+msgstr "对 \"site-python\" 目录的支持已被移除。"
 
 #: ../../library/site.rst:43
 msgid ""
@@ -74,6 +84,11 @@ msgid ""
 "insensitive), the system-level prefixes will not be searched for site-"
 "packages; otherwise they will."
 msgstr ""
+"如果名为 \"pyvenv.cfg\" 的文件存在于 sys.executable 之上的一个目录中，则 sys.prefix 和 "
+"sys.exec_prefix 将被设置为该目录，并且还会检查 site-packages （ sys.base_prefix 和 "
+"sys.base_exec_prefix 始终是 Python 安装的 \"真实\" 前缀）。 如果 \"pyvenv.cfg\" "
+"（引导程序配置文件）包含设置为非 \"true\"（不区分大小写）的 \"include-system-site-packages\" "
+"键，则不会在系统级前缀中搜索 site-packages；反之则会。"
 
 #: ../../library/site.rst:56
 msgid ""
@@ -86,6 +101,10 @@ msgid ""
 "beginning with ``#`` are skipped.  Lines starting with ``import`` (followed "
 "by space or tab) are executed."
 msgstr ""
+"一个路径配置文件是具有 :file:`{name}.pth` 命名格式的文件，并且存在上面提到的四个目录之一中；它的内容是要添加到 "
+"``sys.path`` 中的额外项目（每行一个）。不存在的项目不会添加到 "
+"``sys.path``，并且不会检查项目指向的是目录还是文件。项目不会被添加到 ``sys.path`` 超过一次。空行和由 ``#`` "
+"起始的行会被跳过。以 ``import`` 开始的行（跟着空格或 TAB）会被执行。"
 
 #: ../../library/site.rst:66
 msgid ""
@@ -98,6 +117,9 @@ msgid ""
 "happens. Limiting a code chunk to a single line is a deliberate measure to "
 "discourage putting anything more complex here."
 msgstr ""
+"每次启动 Python，在 :file:`.pth` 文件中的可执行行都将会被运行，而不管特定的模块实际上是否需要被使用。 "
+"因此，其影响应降至最低。可执行行的主要预期目的是使相关模块可导入（加载第三方导入钩子，调整 :envvar:`PATH` "
+"等）。如果它发生了，任何其他的初始化都应当在模块实际导入之前完成。将代码块限制为一行是一种有意采取的措施，不鼓励在此处放置更复杂的内容。"
 
 #: ../../library/site.rst:81
 msgid ""
@@ -109,16 +131,21 @@ msgid ""
 "configuration files, :file:`foo.pth` and :file:`bar.pth`.  Assume "
 ":file:`foo.pth` contains the following::"
 msgstr ""
+"例如，假设 ``sys.prefix`` 和 ``sys.exec_prefix`` 已经被设置为 :file:`/usr/local`。 Python"
+" X.Y 的库之后被安装为 :file:`/usr/local/lib/python{X.Y}`。假设有一个拥有三个孙目录 :file:`foo`, "
+":file:`bar` 和 :file:`spam` 的子目录 :file:`/usr/local/lib/python{X.Y}/site-"
+"packages`，并且有两个路径配置文件 :file:`foo.pth` 和 :file:`bar.pth`。假定 :file:`foo.pth` "
+"内容如下::"
 
 #: ../../library/site.rst:95
 msgid "and :file:`bar.pth` contains::"
-msgstr ""
+msgstr "并且 :file:`bar.pth` 包含::"
 
 #: ../../library/site.rst:101
 msgid ""
 "Then the following version-specific directories are added to ``sys.path``, "
 "in this order::"
-msgstr ""
+msgstr "则下面特定版目录将以如下顺序被添加到 ``sys.path``。"
 
 #: ../../library/site.rst:107
 msgid ""
@@ -128,10 +155,13 @@ msgid ""
 ":file:`spam` is omitted because it is not mentioned in either path "
 "configuration file."
 msgstr ""
+"请注意 :file:`bletch` 已被省略因为它并不存在；:file:`bar` 目前在 :file:`foo` 目录之前因为 "
+":file:`bar.pth` 按字母顺序排在 :file:`foo.pth` 之前；而 :file:`spam` "
+"已被省略因为它在两个路径配置文件中都未被提及。"
 
 #: ../../library/site.rst:113
 msgid ":mod:`sitecustomize`"
-msgstr ""
+msgstr ":mod:`sitecustomize`"
 
 #: ../../library/site.rst:117
 msgid ""
@@ -146,10 +176,15 @@ msgid ""
 ":mod:`sitecustomize` is ignored.  Any other exception causes a silent and "
 "perhaps mysterious failure of the process."
 msgstr ""
+"在这些路径操作之后，会尝试导入 一个名为 :mod:`sitecustomize` 的模块，它可以执行任意站点专属的定制。 它通常是由系统管理员在 "
+"site-packages 目录下创建的。 如果此导入失败并引发 :exc:`ImportError` 或其子类的异常，并且异常的 "
+":attr:`~ImportError.name` 属性等于 ``'sitecustomize'``，则它会被静默地忽略。 如果 Python "
+"是在没有可用输出流的情况下启动的，例如在 Windows 上使用 :file:`pythonw.exe` (它被默认被用于 IDLE)，则来自 "
+":mod:`sitecustomize` 的输出尝试会被忽略。 任何其他异常都会导致静默且可能令人困惑的进程失败。"
 
 #: ../../library/site.rst:129
 msgid ":mod:`usercustomize`"
-msgstr ""
+msgstr ":mod:`usercustomize`"
 
 #: ../../library/site.rst:133
 msgid ""
@@ -162,6 +197,10 @@ msgid ""
 "exception's :attr:`~ImportError.name` attribute equals to "
 "``'usercustomize'``, it is silently ignored."
 msgstr ""
+"在此之后，会尝试导入一个名为 :mod:`usercustomize` 的模块，如果 :data:`~site.ENABLE_USER_SITE` "
+"为真值，则它可以执行任意的用户专属定制。 这个文件应在用户的 site-packages 目录中创建（见下文），除非被 :option:`-s` "
+"所禁用，在其他情况下该目录都是 ``sys.path`` 的组成部分。 如果此导入失败并引发 :exc:`ImportError` "
+"或其子类异常，并且异常的 :attr:`~ImportError.name` 属性等于 ``'usercustomize'``，它会被静默地忽略。"
 
 #: ../../library/site.rst:141
 msgid ""
@@ -169,10 +208,12 @@ msgid ""
 "are empty, and the path manipulations are skipped; however the import of "
 ":mod:`sitecustomize` and :mod:`usercustomize` is still attempted."
 msgstr ""
+"请注意对于某些非 Unix 系统来说，``sys.prefix`` 和 ``sys.exec_prefix`` "
+"均为空值，并且路径操作会被跳过；但是仍然会尝试导入 :mod:`sitecustomize` 和 :mod:`usercustomize`。"
 
 #: ../../library/site.rst:150
 msgid "Readline configuration"
-msgstr ""
+msgstr "Readline 配置"
 
 #: ../../library/site.rst:152
 msgid ""
@@ -185,18 +226,23 @@ msgid ""
 ":mod:`sitecustomize` or :mod:`usercustomize` module or your "
 ":envvar:`PYTHONSTARTUP` file."
 msgstr ""
+"在支持 :mod:`readline` 的系统上，这个模块也将导入并配置 :mod:`rlcompleter` 模块，如果 Python 是以 "
+":ref:`交互模式 <tut-interactive>` 启动并且不带 :option:`-S` 选项的话。  默认的行为是启用 tab 键补全并使用"
+" :file:`~/.python_history` 作为历史存档文件。 要禁用它，请删除（或重载）你的 :mod:`sitecustomize` 或 "
+":mod:`usercustomize` 模块或 :envvar:`PYTHONSTARTUP` 文件中的 "
+":data:`sys.__interactivehook__` 属性。"
 
 #: ../../library/site.rst:161
 msgid "Activation of rlcompleter and history was made automatic."
-msgstr ""
+msgstr "rlcompleter 和 history 会被自动激活。"
 
 #: ../../library/site.rst:166
 msgid "Module contents"
-msgstr ""
+msgstr "模块内容"
 
 #: ../../library/site.rst:170
 msgid "A list of prefixes for site-packages directories."
-msgstr ""
+msgstr "site-packages 目录的前缀列表。"
 
 #: ../../library/site.rst:175
 msgid ""
@@ -207,6 +253,9 @@ msgid ""
 "reasons (mismatch between user or group id and effective id) or by an "
 "administrator."
 msgstr ""
+"显示用户 site-packages 目录状态的旗标。 ``True`` 意味着它被启用并被添加到 ``sys.path``。 ``False`` "
+"意味着它按照用户请求被禁用 (通过 :option:`-s` 或 :envvar:`PYTHONNOUSERSITE`)。 ``None`` "
+"意味着它因安全理由（user 或 group id 和 effective id 之间不匹配）或是被管理员所禁用。"
 
 #: ../../library/site.rst:185
 msgid ""
@@ -219,6 +268,12 @@ msgid ""
 "This directory is a site directory, which means that :file:`.pth` files in "
 "it will be processed."
 msgstr ""
+"正在运行的 Python 的用户级 site-packages 的路径。 它可以为 ``None``，如果 "
+":func:`getusersitepackages` 尚未被调用的话。 默认值在 UNIX 和非框架 macOS 编译版上为 "
+":file:`~/.local/lib/python{X.Y}/site-packages`，在 macOS 框架编译版上为  "
+":file:`~/Library/Python/{X.Y}/lib/python/site-packages`，而在 Windows 上则为 "
+":file:`{%APPDATA%}\\\\Python\\\\Python{XY}\\\\site-packages`。 "
+"此目录属于站点目录，这意味着其中的 :file:`.pth` 文件将会被处理。"
 
 #: ../../library/site.rst:196
 msgid ""
@@ -238,20 +293,24 @@ msgid ""
 "This function is called automatically when this module is imported, unless "
 "the Python interpreter was started with the :option:`-S` flag."
 msgstr ""
+"将所有的标准站点专属目录添加到模块搜索路径。 这个函数会在导入此模块时被自动调用，除非 Python 解释器启动时附带了 :option:`-S` "
+"旗标。"
 
 #: ../../library/site.rst:212
 msgid "This function used to be called unconditionally."
-msgstr ""
+msgstr "这个函数使用无条件调用。"
 
 #: ../../library/site.rst:218
 msgid ""
 "Add a directory to sys.path and process its :file:`.pth` files.  Typically "
 "used in :mod:`sitecustomize` or :mod:`usercustomize` (see above)."
 msgstr ""
+"将一个目录添加到 sys.path 并处理其 :file:`.pth` 文件。 通常被用于 :mod:`sitecustomize` 或 "
+":mod:`usercustomize` (见下文)。"
 
 #: ../../library/site.rst:224
 msgid "Return a list containing all global site-packages directories."
-msgstr ""
+msgstr "返回包含所有全局 site-packages 目录的列表。"
 
 #: ../../library/site.rst:231
 msgid ""
@@ -259,6 +318,8 @@ msgid ""
 " initialized yet, this function will also set it, respecting "
 ":envvar:`PYTHONUSERBASE`."
 msgstr ""
+"返回用户基准目录的路径 :data:`USER_BASE`。 如果它尚未被初始化，则此函数还将参照 :envvar:`PYTHONUSERBASE` "
+"来设置它。"
 
 #: ../../library/site.rst:240
 msgid ""
@@ -268,16 +329,19 @@ msgid ""
 "site-packages was added to ``sys.path`` :data:`ENABLE_USER_SITE` should be "
 "used."
 msgstr ""
+"返回用户专属 site-packages 目录的路径 :data:`USER_SITE`。 如果它尚未被初始化，则此函数还将参照 "
+":data:`USER_BASE` 来设置它。 要确定用户专属 site-packages 是否已被添加到 ``sys.path`` 则应当使用 "
+":data:`ENABLE_USER_SITE`。"
 
 #: ../../library/site.rst:252
 msgid "Command Line Interface"
-msgstr ""
+msgstr "命令行界面"
 
 #: ../../library/site.rst:256
 msgid ""
 "The :mod:`site` module also provides a way to get the user directories from "
 "the command line:"
-msgstr ""
+msgstr ":mod:`site` 模块还提供了一个从命令行获取用户目录的方式:"
 
 #: ../../library/site.rst:264
 msgid ""
@@ -286,20 +350,22 @@ msgid ""
 ":data:`USER_BASE` and whether the directory exists, then the same thing for "
 ":data:`USER_SITE`, and finally the value of :data:`ENABLE_USER_SITE`."
 msgstr ""
+"如果它被不带参数地调用，它将在标准输出打印 :data:`sys.path` 的内容，再打印 :data:`USER_BASE` "
+"的值以及该目录是否存在，然后打印 :data:`USER_SITE` 的相应信息，最后打印 :data:`ENABLE_USER_SITE` 的值。"
 
 #: ../../library/site.rst:271
 msgid "Print the path to the user base directory."
-msgstr ""
+msgstr "输出用户基本的路径。"
 
 #: ../../library/site.rst:275
 msgid "Print the path to the user site-packages directory."
-msgstr ""
+msgstr "输出用户site-packages目录的路径。"
 
 #: ../../library/site.rst:277
 msgid ""
 "If both options are given, user base and user site will be printed (always "
 "in this order), separated by :data:`os.pathsep`."
-msgstr ""
+msgstr "如果同时给出了两个选项，则将打印用户基准目录和用户站点信息（总是按此顺序），并以 :data:`os.pathsep` 分隔。"
 
 #: ../../library/site.rst:280
 msgid ""
@@ -308,59 +374,61 @@ msgid ""
 " the user, ``2`` if it is disabled for security reasons or by an "
 "administrator, and a value greater than 2 if there is an error."
 msgstr ""
+"如果给出了其中一个选项，脚本将退出并返回以下值中的一个：如果用户级 site-packages 目录被启用则为 ``0``，如果它被用户禁用则为 "
+"``1``，如果它因安全理由或被管理员禁用则为 ``2``，如果发生错误则为大于 2 的值。"
 
 #: ../../library/site.rst:287
 msgid ":pep:`370` -- Per user site-packages directory"
-msgstr ""
+msgstr ":pep:`370` -- 分用户的 site-packages 目录"
 
 #: ../../library/site.rst:288
 msgid ":ref:`sys-path-init` -- The initialization of :data:`sys.path`."
-msgstr ""
+msgstr ":ref:`sys-path-init` -- :data:`sys.path` 的初始化。"
 
 #: ../../library/site.rst:16
 msgid "module"
-msgstr ""
+msgstr "module"
 
 #: ../../library/site.rst:16
 msgid "search"
-msgstr ""
+msgstr "搜索"
 
 #: ../../library/site.rst:16 ../../library/site.rst:77
 msgid "path"
-msgstr ""
+msgstr "path"
 
 #: ../../library/site.rst:28
 msgid "site-packages"
-msgstr ""
+msgstr "site-packages"
 
 #: ../../library/site.rst:28
 msgid "directory"
-msgstr ""
+msgstr "directory"
 
 #: ../../library/site.rst:52
 msgid "# (hash)"
-msgstr ""
+msgstr "# (hash)"
 
 #: ../../library/site.rst:52
 msgid "comment"
-msgstr ""
+msgstr "注释"
 
 #: ../../library/site.rst:52
 msgid "statement"
-msgstr ""
+msgstr "statement -- 语句"
 
 #: ../../library/site.rst:52
 msgid "import"
-msgstr ""
+msgstr "import"
 
 #: ../../library/site.rst:77
 msgid "package"
-msgstr ""
+msgstr "包"
 
 #: ../../library/site.rst:77
 msgid "configuration"
-msgstr ""
+msgstr "配置"
 
 #: ../../library/site.rst:77
 msgid "file"
-msgstr ""
+msgstr "文件"
