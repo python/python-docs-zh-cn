@@ -4,25 +4,18 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# 汪心禾 <wangxinhe06@gmail.com>, 2024
-# 钢 彭 <szhairui@gmail.com>, 2024
-# Zombie110year <zombie110year@gmail.com>, 2024
-# ppcfish <ppcfish@gmail.com>, 2024
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
-# Alpha Du <alphanow@gmail.com>, 2024
-# 稀饭~~ <wangwhai@qq.com>, 2024
-# Dai Xu <daixu61@hotmail.com>, 2024
-# 汇民 王 <whuim@qq.com>, 2025
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-04 14:20+0000\n"
-"PO-Revision-Date: 2021-06-28 00:49+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"POT-Creation-Date: 2025-07-25 14:21+0000\n"
+"PO-Revision-Date: 2025-07-18 18:48+0000\n"
+"Last-Translator: 汇民 王 <whuim@qq.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -862,23 +855,26 @@ msgid ""
 "if supported by the runtime.  In the :term:`free-threaded <free threading>` "
 "build, this allows the interpreter to avoid reference count adjustments to "
 "*obj*, which may improve multi-threaded performance.  The tradeoff is that "
-"*obj* will only be deallocated by the tracing garbage collector."
+"*obj* will only be deallocated by the tracing garbage collector, and not "
+"when the interpreter no longer has any references to it."
 msgstr ""
 "在 *obj* 上启用 `推迟引用计数 <https://peps.python.org/pep-0703/#deferred-reference-"
 "counting>`_，如果运行时支持的话。 在 :term:`自由线程 <free threading>` 构建版中，这将允许解释器避免对 *obj*"
-" 的引用计数调整，这可以提升多线程性能。 其代价是 *obj* 将只能由在追踪的垃圾回收器来释放。"
+" 的引用计数调整，这可以提升多线程性能。其权衡之处在于，*obj* "
+"对象仅会在追踪式垃圾回收器运行时被释放，而不会在解释器不再持有该对象的任何引用时立即释放。"
 
-#: ../../c-api/object.rst:601
+#: ../../c-api/object.rst:602
 msgid ""
 "This function returns ``1`` if deferred reference counting is enabled on "
-"*obj* (including when it was enabled before the call), and ``0`` if deferred"
-" reference counting is not supported or if the hint was ignored by the "
-"runtime. This function is thread-safe, and cannot fail."
+"*obj*, and ``0`` if deferred reference counting is not supported or if the "
+"hint was ignored by the interpreter, such as when deferred reference "
+"counting is already enabled on *obj*. This function is thread-safe, and "
+"cannot fail."
 msgstr ""
-"如果在 *obj* 上启用了推迟引用计数（包括在调用之前已启用的情况）则此函数将返回 ``1``，如果推迟引用计数不受运行时支持或者被其忽略 则返回 "
-"``0``。 此函数是线程安全的，并且一定不会执行失败。"
+"如果 *obj* 上启用了延迟引用计数，此函数返回 ``1``；若延迟引用计数不被支持，或解释器忽略了该提示（例如 *obj* "
+"上已启用延迟引用计数），则返回 ``0``。该函数是线程安全的，且不会执行失败。"
 
-#: ../../c-api/object.rst:606
+#: ../../c-api/object.rst:607
 msgid ""
 "This function does nothing on builds with the :term:`GIL` enabled, which do "
 "not support deferred reference counting. This also does nothing if *obj* is "
@@ -889,13 +885,15 @@ msgstr ""
 "未被垃圾回收器追踪则此函数也不会做任何事 (参见 :func:`gc.is_tracked` 和 "
 ":c:func:`PyObject_GC_IsTracked`)。"
 
-#: ../../c-api/object.rst:611
+#: ../../c-api/object.rst:612
 msgid ""
 "This function is intended to be used soon after *obj* is created, by the "
-"code that creates it."
-msgstr "此函数应当在 *obj* 被创建之后立即供创建它的代码使用。"
+"code that creates it, such as in the object's "
+":c:member:`~PyTypeObject.tp_new` slot."
+msgstr ""
+"此函数应当在 *obj* 被创建之后立即供创建它的代码使用，就如在对象 :c:member:`~PyTypeObject.tp_new` 的槽位中那样。"
 
-#: ../../c-api/object.rst:618
+#: ../../c-api/object.rst:620
 msgid ""
 "Check if *obj* is a unique temporary object. Returns ``1`` if *obj* is known"
 " to be a unique temporary object, and ``0`` otherwise.  This function cannot"
@@ -905,7 +903,7 @@ msgstr ""
 "检测 *obj* 是否是一个单独临时对象。 如果确定 *obj* 是一个单独临时对象则返回 ``1``，否则返回 ``0``。 "
 "此函数一定不会执行失败，但该检测是偏保守的，在某些情况下即使 *obj* 是一个单独临时对象也可能返回 ``0``。"
 
-#: ../../c-api/object.rst:624
+#: ../../c-api/object.rst:626
 msgid ""
 "If an object is a unique temporary, it is guaranteed that the current code "
 "has the only reference to the object. For arguments to C functions, this "
@@ -920,23 +918,23 @@ msgstr ""
 "3.14开始，解释器在将对象加载到操作数堆栈时，通过在可能的情况下 :term:`借用 <borrowed reference>` "
 "引用，在内部避免了一些引用计数修改，这意味着引用计数``1``本身并不能保证函数参数被唯一引用。"
 
-#: ../../c-api/object.rst:633
+#: ../../c-api/object.rst:635
 msgid ""
 "In the example below, ``my_func`` is called with a unique temporary object "
 "as its argument::"
 msgstr "在下面的例子中，调用``my_func``时使用一个唯一的临时对象作为参数::"
 
-#: ../../c-api/object.rst:636
+#: ../../c-api/object.rst:638
 msgid "my_func([1, 2, 3])"
 msgstr "my_func([1, 2, 3])"
 
-#: ../../c-api/object.rst:638
+#: ../../c-api/object.rst:640
 msgid ""
 "In the example below, ``my_func`` is **not** called with a unique temporary "
 "object as its argument, even if its refcount is ``1``::"
 msgstr "在下面的例子中，调用``my_func``时 *不是* 使用一个唯一的临时对象作为参数，即使它的refcount是``1``::"
 
-#: ../../c-api/object.rst:641
+#: ../../c-api/object.rst:643
 msgid ""
 "my_list = [1, 2, 3]\n"
 "my_func(my_list)"
@@ -944,30 +942,30 @@ msgstr ""
 "my_list = [1, 2, 3]\n"
 "my_func(my_list)"
 
-#: ../../c-api/object.rst:644
+#: ../../c-api/object.rst:646
 msgid "See also the function :c:func:`Py_REFCNT`."
 msgstr "另请参阅 :c:func:`Py_REFCNT` 函数。"
 
-#: ../../c-api/object.rst:650
+#: ../../c-api/object.rst:652
 msgid ""
 "This function returns non-zero if *obj* is :term:`immortal`, and zero "
 "otherwise. This function cannot fail."
 msgstr "如果 *obj* 是 :term:`immortal`，这个函数返回非零，否则返回零。 这个函数不会失败。"
 
-#: ../../c-api/object.rst:655
+#: ../../c-api/object.rst:657
 msgid ""
 "Objects that are immortal in one CPython version are not guaranteed to be "
 "immortal in another."
 msgstr "在一个CPython版本中是不朽的对象不能保证在另一个CPython版本中还是不朽的。"
 
-#: ../../c-api/object.rst:662
+#: ../../c-api/object.rst:664
 msgid ""
 "Increments the reference count of *obj* if it is not zero.  Returns ``1`` if"
 " the object's reference count was successfully incremented. Otherwise, this "
 "function returns ``0``."
 msgstr "如果 *obj* 的引用计数不为零，则增加引用计数。如果对象的引用计数已成功递增，则返回``1``。否则，此函数返回``0``。"
 
-#: ../../c-api/object.rst:666
+#: ../../c-api/object.rst:668
 msgid ""
 ":c:func:`PyUnstable_EnableTryIncRef` must have been called earlier on *obj* "
 "or this function may spuriously return ``0`` in the :term:`free threading` "
@@ -976,13 +974,13 @@ msgstr ""
 ":c:func:`PyUnstable_EnableTryIncRef` 必须先前在 *obj* 上被调用，否则此函数可能在 :term:`free "
 "threading` 构建中错误地返回 ``0``。"
 
-#: ../../c-api/object.rst:670
+#: ../../c-api/object.rst:672
 msgid ""
 "This function is logically equivalent to the following C code, except that "
 "it behaves atomically in the :term:`free threading` build::"
 msgstr "此函数在逻辑上等效于以下C代码，除了它在 :term:`free threading` 构建中的行为是原子性的::"
 
-#: ../../c-api/object.rst:673
+#: ../../c-api/object.rst:675
 msgid ""
 "if (Py_REFCNT(op) > 0) {\n"
 "   Py_INCREF(op);\n"
@@ -996,13 +994,13 @@ msgstr ""
 "}\n"
 "return 0;"
 
-#: ../../c-api/object.rst:679
+#: ../../c-api/object.rst:681
 msgid ""
 "This is intended as a building block for managing weak references without "
 "the overhead of a Python :ref:`weak reference object <weakrefobjects>`."
 msgstr "这旨在作为一个构建块，用于管理弱引用，而不会产生Python :ref:`弱引用对象 <weakrefobjects>` 的开销。"
 
-#: ../../c-api/object.rst:682
+#: ../../c-api/object.rst:684
 msgid ""
 "Typically, correct use of this function requires support from *obj*'s "
 "deallocator (:c:member:`~PyTypeObject.tp_dealloc`). For example, the "
@@ -1013,7 +1011,7 @@ msgstr ""
 "例如，下面的草图可以用来实现一个“weakmap”，就像一个特定类型的 :py:class:`~weakref.WeakValueDictionary`"
 " 一样："
 
-#: ../../c-api/object.rst:688
+#: ../../c-api/object.rst:690
 msgid ""
 "PyMutex mutex;\n"
 "\n"
@@ -1099,7 +1097,7 @@ msgstr ""
 "    PyMutex_Unlock(&mutex);\n"
 "}"
 
-#: ../../c-api/object.rst:736
+#: ../../c-api/object.rst:738
 msgid ""
 "Enables subsequent uses of :c:func:`PyUnstable_TryIncRef` on *obj*.  The "
 "caller must hold a :term:`strong reference` to *obj* when calling this."
@@ -1107,17 +1105,17 @@ msgstr ""
 "允许在 *obj* 上后续使用 :c:func:`PyUnstable_TryIncRef`。 调用者在调用时必须持有 *obj* 的 "
 ":term:`strong reference`。"
 
-#: ../../c-api/object.rst:743
+#: ../../c-api/object.rst:745
 msgid "Determine if *op* only has one reference."
 msgstr "确定 *op* 是否只有一个引用。"
 
-#: ../../c-api/object.rst:745
+#: ../../c-api/object.rst:747
 msgid ""
 "On GIL-enabled builds, this function is equivalent to :c:expr:`Py_REFCNT(op)"
 " == 1`."
 msgstr "在启用GIL的构建中，此函数等价于 :c:expr:`Py_REFCNT(op) == 1`。"
 
-#: ../../c-api/object.rst:748
+#: ../../c-api/object.rst:750
 msgid ""
 "On a :term:`free threaded <free threading>` build, this checks if *op*'s "
 ":term:`reference count` is equal to one and additionally checks if *op* is "
@@ -1128,7 +1126,7 @@ msgstr ""
 "是否等于1，并检查 *op* 是否仅由该线程使用。 :c:expr:`Py_REFCNT(op) == 1` 在自由线程构建中 *不是* "
 "线程安全的；更喜欢这个函数。"
 
-#: ../../c-api/object.rst:753
+#: ../../c-api/object.rst:755
 msgid ""
 "The caller must hold an :term:`attached thread state`, despite the fact that"
 " this function doesn't call into the Python interpreter. This function "
