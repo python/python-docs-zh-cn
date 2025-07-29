@@ -1,26 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001 Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# banxi <banxi1988@gmail.com>, 2021
-# ww song <sww4718168@gmail.com>, 2021
-# df2dc1c92e792f7ae8417c51df43db8f_594d92a <0f49be28017426edb1db1a2ab6e67088_717605>, 2021
-# ppcfish <ppcfish@gmail.com>, 2021
-# WH-2099 <wh2099@outlook.com>, 2021
-# lian Wu (Wulian) <xiguawulian@gmail.com>, 2024
-# Zhikang Yan <2951256653@qq.com>, 2024
-# Freesand Leo <yuqinju@163.com>, 2025
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.14\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 02:53-0300\n"
-"PO-Revision-Date: 2021-06-28 00:53+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"POT-Creation-Date: 2025-07-25 15:00+0000\n"
+"PO-Revision-Date: 2025-07-18 19:21+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2027,34 +2020,48 @@ msgid ""
 "        return self.f\n"
 "\n"
 "    def __call__(self, *args, **kwds):\n"
-"        return self.f(*args, **kwds)\n"
-"\n"
-"    @property\n"
-"    def __annotations__(self):\n"
-"        return self.f.__annotations__"
+"        return self.f(*args, **kwds)"
 msgstr ""
+"import functools\n"
+"\n"
+"class StaticMethod:\n"
+"    \"Emulate PyStaticMethod_Type() in Objects/funcobject.c\"\n"
+"\n"
+"    def __init__(self, f):\n"
+"        self.f = f\n"
+"        functools.update_wrapper(self, f)\n"
+"\n"
+"    def __get__(self, obj, objtype=None):\n"
+"        return self.f\n"
+"\n"
+"    def __call__(self, *args, **kwds):\n"
+"        return self.f(*args, **kwds)"
 
-#: ../../howto/descriptor.rst:1352
+#: ../../howto/descriptor.rst:1348
 msgid ""
 "The :func:`functools.update_wrapper` call adds a ``__wrapped__`` attribute "
 "that refers to the underlying function.  Also it carries forward the "
-"attributes necessary to make the wrapper look like the wrapped function, "
-"including :attr:`~function.__name__`, :attr:`~function.__qualname__`, and "
-":attr:`~function.__doc__`."
+"attributes necessary to make the wrapper look like the wrapped function: "
+":attr:`~function.__name__`, :attr:`~function.__qualname__`, "
+":attr:`~function.__doc__`, and :attr:`~function.__annotations__`."
 msgstr ""
+":func:`functools.update_wrapper` 调用增加了一个指向下层函数的 ``__wrapped__`` 属性。 "
+"它还会向前传递必要的属性以使此包装器看起来像是被包装的函数: :attr:`~function.__name__`, "
+":attr:`~function.__qualname__`, :attr:`~function.__doc__` 以及 "
+":attr:`~function.__annotations__`。"
 
-#: ../../howto/descriptor.rst:1421
+#: ../../howto/descriptor.rst:1417
 msgid "Class methods"
 msgstr "类方法"
 
-#: ../../howto/descriptor.rst:1423
+#: ../../howto/descriptor.rst:1419
 msgid ""
 "Unlike static methods, class methods prepend the class reference to the "
 "argument list before calling the function.  This format is the same for "
 "whether the caller is an object or a class:"
 msgstr "与静态方法不同，类方法在调用函数之前将类引用放在参数列表的最前。无论调用方是对象还是类，此格式相同："
 
-#: ../../howto/descriptor.rst:1427
+#: ../../howto/descriptor.rst:1423
 msgid ""
 "class F:\n"
 "    @classmethod\n"
@@ -2066,7 +2073,7 @@ msgstr ""
 "    def f(cls, x):\n"
 "        return cls.__name__, x"
 
-#: ../../howto/descriptor.rst:1434
+#: ../../howto/descriptor.rst:1430
 msgid ""
 ">>> F.f(3)\n"
 "('F', 3)\n"
@@ -2078,7 +2085,7 @@ msgstr ""
 ">>> F().f(3)\n"
 "('F', 3)"
 
-#: ../../howto/descriptor.rst:1441
+#: ../../howto/descriptor.rst:1437
 msgid ""
 "This behavior is useful whenever the method only needs to have a class "
 "reference and does not rely on data stored in a specific instance.  One use "
@@ -2089,7 +2096,7 @@ msgstr ""
 "当方法仅需要具有类引用并且确实依赖于存储在特定实例中的数据时，此行为就很有用。类方法的一种用途是创建备用类构造函数。例如，类方法  "
 ":func:`dict.fromkeys` 从键列表创建一个新字典。纯 Python 的等价实现是："
 
-#: ../../howto/descriptor.rst:1447
+#: ../../howto/descriptor.rst:1443
 msgid ""
 "class Dict(dict):\n"
 "    @classmethod\n"
@@ -2109,11 +2116,11 @@ msgstr ""
 "            d[key] = value\n"
 "        return d"
 
-#: ../../howto/descriptor.rst:1458
+#: ../../howto/descriptor.rst:1454
 msgid "Now a new dictionary of unique keys can be constructed like this:"
 msgstr "现在可以这样构造一个新的唯一键字典："
 
-#: ../../howto/descriptor.rst:1460
+#: ../../howto/descriptor.rst:1456
 msgid ""
 ">>> d = Dict.fromkeys('abracadabra')\n"
 ">>> type(d) is Dict\n"
@@ -2127,13 +2134,13 @@ msgstr ""
 ">>> d\n"
 "{'a': None, 'b': None, 'r': None, 'c': None, 'd': None}"
 
-#: ../../howto/descriptor.rst:1468
+#: ../../howto/descriptor.rst:1464
 msgid ""
 "Using the non-data descriptor protocol, a pure Python version of "
 ":func:`classmethod` would look like this:"
 msgstr "使用非数据描述器协议，纯 Python 版本的 :func:`classmethod` 如下："
 
-#: ../../howto/descriptor.rst:1471
+#: ../../howto/descriptor.rst:1467
 msgid ""
 "import functools\n"
 "\n"
@@ -2163,7 +2170,7 @@ msgstr ""
 "            cls = type(obj)\n"
 "        return MethodType(self.f, cls)"
 
-#: ../../howto/descriptor.rst:1533
+#: ../../howto/descriptor.rst:1529
 msgid ""
 "The :func:`functools.update_wrapper` call in ``ClassMethod`` adds a "
 "``__wrapped__`` attribute that refers to the underlying function.  Also it "
@@ -2177,24 +2184,24 @@ msgstr ""
 ":attr:`~function.__name__`, :attr:`~function.__qualname__`, "
 ":attr:`~function.__doc__` 以及 :attr:`~function.__annotations__`。"
 
-#: ../../howto/descriptor.rst:1542
+#: ../../howto/descriptor.rst:1538
 msgid "Member objects and __slots__"
 msgstr "成员对象和 __slots__"
 
-#: ../../howto/descriptor.rst:1544
+#: ../../howto/descriptor.rst:1540
 msgid ""
 "When a class defines ``__slots__``, it replaces instance dictionaries with a"
 " fixed-length array of slot values.  From a user point of view that has "
 "several effects:"
 msgstr "当一个类定义了 ``__slots__``，它会用一个固定长度的 slot 值数组来替换实例字典。 从用户的视角看，效果是这样的："
 
-#: ../../howto/descriptor.rst:1548
+#: ../../howto/descriptor.rst:1544
 msgid ""
 "1. Provides immediate detection of bugs due to misspelled attribute "
 "assignments.  Only attribute names specified in ``__slots__`` are allowed:"
 msgstr "1. 提供对由错误拼写的属性赋值导致的程序缺陷的即时检测。只允许在 ``__slots__`` 中指定的属性名称："
 
-#: ../../howto/descriptor.rst:1551
+#: ../../howto/descriptor.rst:1547
 msgid ""
 "class Vehicle:\n"
 "    __slots__ = ('id_number', 'make', 'model')"
@@ -2202,7 +2209,7 @@ msgstr ""
 "class Vehicle:\n"
 "    __slots__ = ('id_number', 'make', 'model')"
 
-#: ../../howto/descriptor.rst:1556
+#: ../../howto/descriptor.rst:1552
 msgid ""
 ">>> auto = Vehicle()\n"
 ">>> auto.id_nubmer = 'VYE483814LQEX'\n"
@@ -2216,13 +2223,13 @@ msgstr ""
 "    ...\n"
 "AttributeError: 'Vehicle' object has no attribute 'id_nubmer'"
 
-#: ../../howto/descriptor.rst:1564
+#: ../../howto/descriptor.rst:1560
 msgid ""
 "2. Helps create immutable objects where descriptors manage access to private"
 " attributes stored in ``__slots__``:"
 msgstr "2. 帮助创建由描述器来管理对保存在 ``__slots__`` 中的私有属性的访问的不可变对象："
 
-#: ../../howto/descriptor.rst:1567
+#: ../../howto/descriptor.rst:1563
 msgid ""
 "class Immutable:\n"
 "\n"
@@ -2256,7 +2263,7 @@ msgstr ""
 "    def name(self):                         # 只读描述器\n"
 "        return self._name"
 
-#: ../../howto/descriptor.rst:1585
+#: ../../howto/descriptor.rst:1581
 msgid ""
 ">>> mark = Immutable('Botany', 'Mark Watney')\n"
 ">>> mark.dept\n"
@@ -2282,7 +2289,7 @@ msgstr ""
 "    ...\n"
 "AttributeError: 'Immutable' object has no attribute 'location'"
 
-#: ../../howto/descriptor.rst:1599
+#: ../../howto/descriptor.rst:1595
 msgid ""
 "3. Saves memory.  On a 64-bit Linux build, an instance with two attributes "
 "takes 48 bytes with ``__slots__`` and 152 bytes without.  This `flyweight "
@@ -2293,20 +2300,20 @@ msgstr ""
 "152 个字节。 这种 `flyweight design pattern "
 "<https://en.wikipedia.org/wiki/Flyweight_pattern>`_ 通常仅在要创建大量实例时才能显示效果。"
 
-#: ../../howto/descriptor.rst:1604
+#: ../../howto/descriptor.rst:1600
 msgid ""
 "4. Improves speed.  Reading instance variables is 35% faster with "
 "``__slots__`` (as measured with Python 3.10 on an Apple M1 processor)."
 msgstr ""
 "4. 提高速度。使用 ``__slots__`` 读取实例变量的速度提高了 35%（在 Apple M1 处理器上使用 Python 3.10 测量）。"
 
-#: ../../howto/descriptor.rst:1607
+#: ../../howto/descriptor.rst:1603
 msgid ""
 "5. Blocks tools like :func:`functools.cached_property` which require an "
 "instance dictionary to function correctly:"
 msgstr "5. 阻止 :func:`functools.cached_property` 之类需要实例字典才能正常运作的工具："
 
-#: ../../howto/descriptor.rst:1610
+#: ../../howto/descriptor.rst:1606
 msgid ""
 "from functools import cached_property\n"
 "\n"
@@ -2328,7 +2335,7 @@ msgstr ""
 "        return 4 * sum((-1.0)**n / (2.0*n + 1.0)\n"
 "                       for n in reversed(range(100_000)))"
 
-#: ../../howto/descriptor.rst:1622
+#: ../../howto/descriptor.rst:1618
 msgid ""
 ">>> CP().pi\n"
 "Traceback (most recent call last):\n"
@@ -2340,7 +2347,7 @@ msgstr ""
 "  ...\n"
 "TypeError: No '__dict__' attribute on 'CP' instance to cache 'pi' property."
 
-#: ../../howto/descriptor.rst:1629
+#: ../../howto/descriptor.rst:1625
 msgid ""
 "It is not possible to create an exact drop-in pure Python version of "
 "``__slots__`` because it requires direct access to C structures and control "
@@ -2353,7 +2360,7 @@ msgstr ""
 "但是，我们可以构建一个非常相似的模拟版，其中作为 slot 的实际 C 结构体由一个私有的 ``_slotvalues`` 列表来模拟。 "
 "对该私有结构体的读写操作将由成员描述器来管理："
 
-#: ../../howto/descriptor.rst:1636
+#: ../../howto/descriptor.rst:1632
 msgid ""
 "null = object()\n"
 "\n"
@@ -2427,13 +2434,13 @@ msgstr ""
 "        'Emulate member_repr() in Objects/descrobject.c'\n"
 "        return f'<Member {self.name!r} of {self.clsname!r}>'"
 
-#: ../../howto/descriptor.rst:1674
+#: ../../howto/descriptor.rst:1670
 msgid ""
 "The :meth:`!type.__new__` method takes care of adding member objects to "
 "class variables:"
 msgstr ":meth:`!type.__new__` 方法负责将成员对象添加到类变量："
 
-#: ../../howto/descriptor.rst:1677
+#: ../../howto/descriptor.rst:1673
 msgid ""
 "class Type(type):\n"
 "    'Simulate how the type metaclass adds member objects for slots'\n"
@@ -2457,14 +2464,14 @@ msgstr ""
 "            mapping[name] = Member(name, clsname, offset)\n"
 "        return type.__new__(mcls, clsname, bases, mapping, **kwargs)"
 
-#: ../../howto/descriptor.rst:1690
+#: ../../howto/descriptor.rst:1686
 msgid ""
 "The :meth:`object.__new__` method takes care of creating instances that have"
 " slots instead of an instance dictionary.  Here is a rough simulation in "
 "pure Python:"
 msgstr ":meth:`object.__new__` 方法负责创建具有 slot 而非实例字典的实例。 以下是一个纯 Python 的粗略模拟版："
 
-#: ../../howto/descriptor.rst:1694
+#: ../../howto/descriptor.rst:1690
 msgid ""
 "class Object:\n"
 "    'Simulate how object.__new__() allocates memory for __slots__'\n"
@@ -2524,14 +2531,14 @@ msgstr ""
 "            )\n"
 "        super().__delattr__(name)"
 
-#: ../../howto/descriptor.rst:1725
+#: ../../howto/descriptor.rst:1721
 msgid ""
 "To use the simulation in a real class, just inherit from :class:`!Object` "
 "and set the :term:`metaclass` to :class:`Type`:"
 msgstr ""
 "要在真实的类中使用此模拟，只需从 :class:`!Object` 继承并将 :term:`metaclass` 设为 :class:`Type`:"
 
-#: ../../howto/descriptor.rst:1728
+#: ../../howto/descriptor.rst:1724
 msgid ""
 "class H(Object, metaclass=Type):\n"
 "    'Instance variables stored in slots'\n"
@@ -2551,12 +2558,12 @@ msgstr ""
 "        self.x = x\n"
 "        self.y = y"
 
-#: ../../howto/descriptor.rst:1739
+#: ../../howto/descriptor.rst:1735
 msgid ""
 "At this point, the metaclass has loaded member objects for *x* and *y*::"
 msgstr "这时，metaclass 已经为 *x* 和 *y* 加载了成员对象："
 
-#: ../../howto/descriptor.rst:1741
+#: ../../howto/descriptor.rst:1737
 msgid ""
 ">>> from pprint import pp\n"
 ">>> pp(dict(vars(H)))\n"
@@ -2576,13 +2583,13 @@ msgstr ""
 " 'x': <Member 'x' of 'H'>,\n"
 " 'y': <Member 'y' of 'H'>}"
 
-#: ../../howto/descriptor.rst:1760
+#: ../../howto/descriptor.rst:1756
 msgid ""
 "When instances are created, they have a ``slot_values`` list where the "
 "attributes are stored:"
 msgstr "当实例被创建时，它们将拥有一个用于存放属性的 ``slot_values`` 列表："
 
-#: ../../howto/descriptor.rst:1763
+#: ../../howto/descriptor.rst:1759
 msgid ""
 ">>> h = H(10, 20)\n"
 ">>> vars(h)\n"
@@ -2598,11 +2605,11 @@ msgstr ""
 ">>> vars(h)\n"
 "{'_slotvalues': [55, 20]}"
 
-#: ../../howto/descriptor.rst:1772
+#: ../../howto/descriptor.rst:1768
 msgid "Misspelled or unassigned attributes will raise an exception:"
 msgstr "错误拼写或未赋值的属性将引发一个异常："
 
-#: ../../howto/descriptor.rst:1774
+#: ../../howto/descriptor.rst:1770
 msgid ""
 ">>> h.xz\n"
 "Traceback (most recent call last):\n"

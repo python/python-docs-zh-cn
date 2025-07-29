@@ -1,26 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001 Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# 叶浚安 <ye.pandaaaa906@gmail.com>, 2021
-# Harry Liu. <harry.python@gmail.com>, 2021
-# Jiu Hong Jiang <julse@qq.com>, 2021
-# Kevin Deng <kevindeng55+transifex@gmail.com>, 2021
-# Jiuh.star <jiuh.star@gmail.com>, 2021
-# ppcfish <ppcfish@gmail.com>, 2023
-# sgqy <sgqyzh@gmail.com>, 2023
-# Freesand Leo <yuqinju@163.com>, 2025
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.14\n"
+"Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 02:53-0300\n"
-"PO-Revision-Date: 2021-06-28 00:52+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"POT-Creation-Date: 2025-07-25 15:00+0000\n"
+"PO-Revision-Date: 2025-07-18 19:21+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -103,11 +96,11 @@ msgid ""
 "    iternextfunc tp_iternext;\n"
 "\n"
 "    /* Attribute descriptor and subclassing stuff */\n"
-"    PyMethodDef *tp_methods;\n"
-"    PyMemberDef *tp_members;\n"
-"    PyGetSetDef *tp_getset;\n"
+"    struct PyMethodDef *tp_methods;\n"
+"    struct PyMemberDef *tp_members;\n"
+"    struct PyGetSetDef *tp_getset;\n"
 "    // Strong reference on a heap type, borrowed reference on a static type\n"
-"    PyTypeObject *tp_base;\n"
+"    struct _typeobject *tp_base;\n"
 "    PyObject *tp_dict;\n"
 "    descrgetfunc tp_descr_get;\n"
 "    descrsetfunc tp_descr_set;\n"
@@ -119,14 +112,12 @@ msgid ""
 "    inquiry tp_is_gc; /* For PyObject_IS_GC */\n"
 "    PyObject *tp_bases;\n"
 "    PyObject *tp_mro; /* method resolution order */\n"
-"    PyObject *tp_cache; /* no longer used */\n"
-"    void *tp_subclasses;  /* for static builtin types this is an index */\n"
-"    PyObject *tp_weaklist; /* not used for static builtin types */\n"
+"    PyObject *tp_cache;\n"
+"    PyObject *tp_subclasses;\n"
+"    PyObject *tp_weaklist;\n"
 "    destructor tp_del;\n"
 "\n"
-"    /* Type attribute cache version tag. Added in version 2.6.\n"
-"     * If zero, the cache is invalid and must be initialized.\n"
-"     */\n"
+"    /* Type attribute cache version tag. Added in version 2.6 */\n"
 "    unsigned int tp_version_tag;\n"
 "\n"
 "    destructor tp_finalize;\n"
@@ -134,15 +125,94 @@ msgid ""
 "\n"
 "    /* bitset of which type-watchers care about this type */\n"
 "    unsigned char tp_watched;\n"
-"\n"
-"    /* Number of tp_version_tag values used.\n"
-"     * Set to _Py_ATTR_CACHE_UNUSED if the attribute cache is\n"
-"     * disabled for this type (e.g. due to custom MRO entries).\n"
-"     * Otherwise, limited to MAX_VERSIONS_PER_CLASS (defined elsewhere).\n"
-"     */\n"
-"    uint16_t tp_versions_used;\n"
 "} PyTypeObject;\n"
 msgstr ""
+"typedef struct _typeobject {\n"
+"    PyObject_VAR_HEAD\n"
+"    const char *tp_name; /* 用于打印，格式为 \"<module>.<name>\" */\n"
+"    Py_ssize_t tp_basicsize, tp_itemsize; /* 用于分配 */\n"
+"\n"
+"    /* 用于实现标准操作的方法 */\n"
+"\n"
+"    destructor tp_dealloc;\n"
+"    Py_ssize_t tp_vectorcall_offset;\n"
+"    getattrfunc tp_getattr;\n"
+"    setattrfunc tp_setattr;\n"
+"    PyAsyncMethods *tp_as_async; /* 原名为 tp_compare (Python 2)\n"
+"                                    或 tp_reserved (Python 3) */\n"
+"    reprfunc tp_repr;\n"
+"\n"
+"    /* 用于标准类的方法集 */\n"
+"\n"
+"    PyNumberMethods *tp_as_number;\n"
+"    PySequenceMethods *tp_as_sequence;\n"
+"    PyMappingMethods *tp_as_mapping;\n"
+"\n"
+"    /* 更多标准操作（这些用于二进制兼容） */\n"
+"\n"
+"    hashfunc tp_hash;\n"
+"    ternaryfunc tp_call;\n"
+"    reprfunc tp_str;\n"
+"    getattrofunc tp_getattro;\n"
+"    setattrofunc tp_setattro;\n"
+"\n"
+"    /* 用于以输入/输出缓冲区方式访问对象的函数 */\n"
+"    PyBufferProcs *tp_as_buffer;\n"
+"\n"
+"    /* 用于定义可选/扩展特性是否存在的旗标 */\n"
+"    unsigned long tp_flags;\n"
+"\n"
+"    const char *tp_doc; /* 文档字符串 */\n"
+"\n"
+"    /* 在 2.0 发布版中分配的含义 */\n"
+"    /* 为所有可访问的对象调用函数 */\n"
+"    traverseproc tp_traverse;\n"
+"\n"
+"    /* 删除对所包含对象的引用 */\n"
+"    inquiry tp_clear;\n"
+"\n"
+"    /* 在 2.1 发布版中分配的含义 */\n"
+"    /* 富比较操作 */\n"
+"    richcmpfunc tp_richcompare;\n"
+"\n"
+"    /* 弱引用的启用 */\n"
+"    Py_ssize_t tp_weaklistoffset;\n"
+"\n"
+"    /* 迭代器 */\n"
+"    getiterfunc tp_iter;\n"
+"    iternextfunc tp_iternext;\n"
+"\n"
+"    /* 属性描述器和子类化内容 */\n"
+"    struct PyMethodDef *tp_methods;\n"
+"    struct PyMemberDef *tp_members;\n"
+"    struct PyGetSetDef *tp_getset;\n"
+"    // 堆类型的强引用，静态类型的借入引用\n"
+"    struct _typeobject *tp_base;\n"
+"    PyObject *tp_dict;\n"
+"    descrgetfunc tp_descr_get;\n"
+"    descrsetfunc tp_descr_set;\n"
+"    Py_ssize_t tp_dictoffset;\n"
+"    initproc tp_init;\n"
+"    allocfunc tp_alloc;\n"
+"    newfunc tp_new;\n"
+"    freefunc tp_free; /* 低层级的释放内存例程 */\n"
+"    inquiry tp_is_gc; /* For PyObject_IS_GC */\n"
+"    PyObject *tp_bases;\n"
+"    PyObject *tp_mro; /* 方法解析顺序 */\n"
+"    PyObject *tp_cache;\n"
+"    PyObject *tp_subclasses;\n"
+"    PyObject *tp_weaklist;\n"
+"    destructor tp_del;\n"
+"\n"
+"    /* 类型属性缓存版本标签。 在 2.6 版中添加 */\n"
+"    unsigned int tp_version_tag;\n"
+"\n"
+"    destructor tp_finalize;\n"
+"    vectorcallfunc tp_vectorcall;\n"
+"\n"
+"    /* 类型监视器针对此类型的位设置 */\n"
+"    unsigned char tp_watched;\n"
+"} PyTypeObject;\n"
 
 #: ../../extending/newtypes.rst:20
 msgid ""
@@ -226,34 +296,46 @@ msgstr ""
 #: ../../extending/newtypes.rst:72
 msgid ""
 "static void\n"
-"newdatatype_dealloc(PyObject *op)\n"
+"newdatatype_dealloc(newdatatypeobject *obj)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
-"    free(self->obj_UnderlyingDatatypePtr);\n"
-"    Py_TYPE(self)->tp_free(self);\n"
+"    free(obj->obj_UnderlyingDatatypePtr);\n"
+"    Py_TYPE(obj)->tp_free((PyObject *)obj);\n"
 "}"
 msgstr ""
+"static void\n"
+"newdatatype_dealloc(newdatatypeobject *obj)\n"
+"{\n"
+"    free(obj->obj_UnderlyingDatatypePtr);\n"
+"    Py_TYPE(obj)->tp_free((PyObject *)obj);\n"
+"}"
 
-#: ../../extending/newtypes.rst:80
+#: ../../extending/newtypes.rst:79
 msgid ""
 "If your type supports garbage collection, the destructor should call "
 ":c:func:`PyObject_GC_UnTrack` before clearing any member fields::"
 msgstr "如果你的类型支持垃圾回收，则析构器应当在清理任何成员字段之前调用 :c:func:`PyObject_GC_UnTrack`::"
 
-#: ../../extending/newtypes.rst:83
+#: ../../extending/newtypes.rst:82
 msgid ""
 "static void\n"
-"newdatatype_dealloc(PyObject *op)\n"
+"newdatatype_dealloc(newdatatypeobject *obj)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
-"    PyObject_GC_UnTrack(op);\n"
-"    Py_CLEAR(self->other_obj);\n"
+"    PyObject_GC_UnTrack(obj);\n"
+"    Py_CLEAR(obj->other_obj);\n"
 "    ...\n"
-"    Py_TYPE(self)->tp_free(self);\n"
+"    Py_TYPE(obj)->tp_free((PyObject *)obj);\n"
 "}"
 msgstr ""
+"static void\n"
+"newdatatype_dealloc(newdatatypeobject *obj)\n"
+"{\n"
+"    PyObject_GC_UnTrack(obj);\n"
+"    Py_CLEAR(obj->other_obj);\n"
+"    ...\n"
+"    Py_TYPE(obj)->tp_free((PyObject *)obj);\n"
+"}"
 
-#: ../../extending/newtypes.rst:97
+#: ../../extending/newtypes.rst:95
 msgid ""
 "One important requirement of the deallocator function is that it leaves any "
 "pending exceptions alone.  This is important since deallocators are "
@@ -270,7 +352,7 @@ msgstr ""
 "一个重要的释放器函数实现要求是把所有未决异常放着不动。这很重要是因为释放器会被解释器频繁的调用，当栈异常退出时(而非正常返回)，不会有任何办法保护释放器看到一个异常尚未被设置。此事释放器的任何行为都会导致额外增加的Python代码来检查异常是否被设置。这可能导致解释器的误导性错误。正确的保护方法是，在任何不安全的操作前，保存未决异常，然后在其完成后恢复。者可以通过"
 " :c:func:`PyErr_Fetch` 和 :c:func:`PyErr_Restore` 函数来实现::"
 
-#: ../../extending/newtypes.rst:109
+#: ../../extending/newtypes.rst:107
 msgid ""
 "static void\n"
 "my_dealloc(PyObject *obj)\n"
@@ -285,23 +367,46 @@ msgid ""
 "        PyErr_Fetch(&err_type, &err_value, &err_traceback);\n"
 "\n"
 "        cbresult = PyObject_CallNoArgs(self->my_callback);\n"
-"        if (cbresult == NULL) {\n"
-"           PyErr_WriteUnraisable(self->my_callback);\n"
-"        }\n"
-"        else {\n"
+"        if (cbresult == NULL)\n"
+"            PyErr_WriteUnraisable(self->my_callback);\n"
+"        else\n"
 "            Py_DECREF(cbresult);\n"
-"        }\n"
 "\n"
 "        /* This restores the saved exception state */\n"
 "        PyErr_Restore(err_type, err_value, err_traceback);\n"
 "\n"
 "        Py_DECREF(self->my_callback);\n"
 "    }\n"
-"    Py_TYPE(self)->tp_free(self);\n"
+"    Py_TYPE(obj)->tp_free((PyObject*)self);\n"
 "}"
 msgstr ""
+"static void\n"
+"my_dealloc(PyObject *obj)\n"
+"{\n"
+"    MyObject *self = (MyObject *) obj;\n"
+"    PyObject *cbresult;\n"
+"\n"
+"    if (self->my_callback != NULL) {\n"
+"        PyObject *err_type, *err_value, *err_traceback;\n"
+"\n"
+"        /* 这里保存当前异常状态 */\n"
+"        PyErr_Fetch(&err_type, &err_value, &err_traceback);\n"
+"\n"
+"        cbresult = PyObject_CallNoArgs(self->my_callback);\n"
+"        if (cbresult == NULL)\n"
+"            PyErr_WriteUnraisable(self->my_callback);\n"
+"        else\n"
+"            Py_DECREF(cbresult);\n"
+"\n"
+"        /* 这里恢复被保存的异常状态 */\n"
+"        PyErr_Restore(err_type, err_value, err_traceback);\n"
+"\n"
+"        Py_DECREF(self->my_callback);\n"
+"    }\n"
+"    Py_TYPE(obj)->tp_free((PyObject*)self);\n"
+"}"
 
-#: ../../extending/newtypes.rst:138
+#: ../../extending/newtypes.rst:134
 msgid ""
 "There are limitations to what you can safely do in a deallocator function. "
 "First, if your type supports garbage collection (using "
@@ -322,7 +427,7 @@ msgstr ""
 " 的调用 (如上面的示例所做的) 最终都可能会再次调用 "
 ":c:member:`~PyTypeObject.tp_dealloc`，导致双重释放并发生崩溃。"
 
-#: ../../extending/newtypes.rst:147
+#: ../../extending/newtypes.rst:143
 msgid ""
 "Starting with Python 3.4, it is recommended not to put any complex "
 "finalization code in :c:member:`~PyTypeObject.tp_dealloc`, and instead use "
@@ -331,15 +436,15 @@ msgstr ""
 "从 Python 3.4 开始，推荐不要在 :c:member:`~PyTypeObject.tp_dealloc` 放复杂的终结代码，而是使用新的 "
 ":c:member:`~PyTypeObject.tp_finalize` 类型方法。"
 
-#: ../../extending/newtypes.rst:152
+#: ../../extending/newtypes.rst:148
 msgid ":pep:`442` explains the new finalization scheme."
 msgstr ":pep:`442` 解释了新的终结方案。"
 
-#: ../../extending/newtypes.rst:159
+#: ../../extending/newtypes.rst:155
 msgid "Object Presentation"
 msgstr "对象展示"
 
-#: ../../extending/newtypes.rst:161
+#: ../../extending/newtypes.rst:157
 msgid ""
 "In Python, there are two ways to generate a textual representation of an "
 "object: the :func:`repr` function, and the :func:`str` function.  (The "
@@ -349,7 +454,7 @@ msgstr ""
 "在 Python 中，有两种方式可以生成对象的文本表示: :func:`repr` 函数和 :func:`str` 函数。 (:func:`print`"
 " 函数会直接调用 :func:`str`。) 这些处理程序都是可选的。"
 
-#: ../../extending/newtypes.rst:167
+#: ../../extending/newtypes.rst:163
 msgid ""
 "reprfunc tp_repr;\n"
 "reprfunc tp_str;"
@@ -357,7 +462,7 @@ msgstr ""
 "reprfunc tp_repr;\n"
 "reprfunc tp_str;"
 
-#: ../../extending/newtypes.rst:170
+#: ../../extending/newtypes.rst:166
 msgid ""
 "The :c:member:`~PyTypeObject.tp_repr` handler should return a string object "
 "containing a representation of the instance for which it is called.  Here is"
@@ -366,18 +471,23 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_repr` 处理程序应该返回一个字符串对象，其中包含调用它的实例的表示形式。 "
 "下面是一个简单的例子::"
 
-#: ../../extending/newtypes.rst:174
+#: ../../extending/newtypes.rst:170
 msgid ""
 "static PyObject *\n"
-"newdatatype_repr(PyObject *op)\n"
+"newdatatype_repr(newdatatypeobject *obj)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
 "    return PyUnicode_FromFormat(\"Repr-ified_newdatatype{{size:%d}}\",\n"
-"                                self->obj_UnderlyingDatatypePtr->size);\n"
+"                                obj->obj_UnderlyingDatatypePtr->size);\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"newdatatype_repr(newdatatypeobject *obj)\n"
+"{\n"
+"    return PyUnicode_FromFormat(\"Repr-ified_newdatatype{{size:%d}}\",\n"
+"                                obj->obj_UnderlyingDatatypePtr->size);\n"
+"}"
 
-#: ../../extending/newtypes.rst:182
+#: ../../extending/newtypes.rst:177
 msgid ""
 "If no :c:member:`~PyTypeObject.tp_repr` handler is specified, the "
 "interpreter will supply a representation that uses the type's "
@@ -387,7 +497,7 @@ msgstr ""
 "如果没有指定 :c:member:`~PyTypeObject.tp_repr` 处理器，解释器将提供一个使用类型的 "
 ":c:member:`~PyTypeObject.tp_name` 的表示形式以及对象的唯一标识值。"
 
-#: ../../extending/newtypes.rst:186
+#: ../../extending/newtypes.rst:181
 msgid ""
 "The :c:member:`~PyTypeObject.tp_str` handler is to :func:`str` what the "
 ":c:member:`~PyTypeObject.tp_repr` handler described above is to "
@@ -403,26 +513,31 @@ msgstr ""
 "函数非常相似，但其结果字符串是供人类查看的。 如果未指定 :c:member:`~PyTypeObject.tp_str`，则会使用 "
 ":c:member:`~PyTypeObject.tp_repr` 处理器来代替。"
 
-#: ../../extending/newtypes.rst:193
+#: ../../extending/newtypes.rst:188
 msgid "Here is a simple example::"
 msgstr "下面是一个简单的例子::"
 
-#: ../../extending/newtypes.rst:195
+#: ../../extending/newtypes.rst:190
 msgid ""
 "static PyObject *\n"
-"newdatatype_str(PyObject *op)\n"
+"newdatatype_str(newdatatypeobject *obj)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
 "    return PyUnicode_FromFormat(\"Stringified_newdatatype{{size:%d}}\",\n"
-"                                self->obj_UnderlyingDatatypePtr->size);\n"
+"                                obj->obj_UnderlyingDatatypePtr->size);\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"newdatatype_str(newdatatypeobject *obj)\n"
+"{\n"
+"    return PyUnicode_FromFormat(\"Stringified_newdatatype{{size:%d}}\",\n"
+"                                obj->obj_UnderlyingDatatypePtr->size);\n"
+"}"
 
-#: ../../extending/newtypes.rst:206
+#: ../../extending/newtypes.rst:200
 msgid "Attribute Management"
 msgstr "属性管理"
 
-#: ../../extending/newtypes.rst:208
+#: ../../extending/newtypes.rst:202
 msgid ""
 "For every object which can support attributes, the corresponding type must "
 "provide the functions that control how the attributes are resolved.  There "
@@ -435,7 +550,7 @@ msgstr ""
 "需要有一个能够检索属性的函数（如果定义了任何属性）还要有另一个函数负责设置属性（如果允许设置属性）。 "
 "移除属性是一种特殊情况，在此情况下要传给处理器的新值为 ``NULL``。"
 
-#: ../../extending/newtypes.rst:214
+#: ../../extending/newtypes.rst:208
 msgid ""
 "Python supports two pairs of attribute handlers; a type that supports "
 "attributes only needs to implement the functions for one pair.  The "
@@ -447,7 +562,7 @@ msgstr ""
 "Python 支持两对属性处理器；一个支持属性操作的类型只需要实现其中一对的函数。 两者的差别在于一对接受 :c:expr:`char\\*` "
 "作为属性名称，而另一对则接受 :c:expr:`PyObject*`。 每种类型都可以选择使用对于实现的便利性来说更有意义的那一对。 ::"
 
-#: ../../extending/newtypes.rst:220
+#: ../../extending/newtypes.rst:214
 msgid ""
 "getattrfunc  tp_getattr;        /* char * version */\n"
 "setattrfunc  tp_setattr;\n"
@@ -461,7 +576,7 @@ msgstr ""
 "getattrofunc tp_getattro;       /* PyObject * 版本 */\n"
 "setattrofunc tp_setattro;"
 
-#: ../../extending/newtypes.rst:226
+#: ../../extending/newtypes.rst:220
 msgid ""
 "If accessing attributes of an object is always a simple operation (this will"
 " be explained shortly), there are generic implementations which can be used "
@@ -474,35 +589,35 @@ msgstr ""
 "如果访问一个对象的属性总是为简单操作（这将在下文进行解释），则有一些泛用实现可被用来提供 :c:expr:`PyObject*` 版本的属性管理函数。 "
 "从 Python 2.2 开始对于类型专属的属性处理器的实际需要几乎已完全消失，尽管还存在着许多尚未理新为使用某种新的可选泛用机制的例子。"
 
-#: ../../extending/newtypes.rst:237
+#: ../../extending/newtypes.rst:231
 msgid "Generic Attribute Management"
 msgstr "泛型属性管理"
 
-#: ../../extending/newtypes.rst:239
+#: ../../extending/newtypes.rst:233
 msgid ""
 "Most extension types only use *simple* attributes.  So, what makes the "
 "attributes simple?  There are only a couple of conditions that must be met:"
 msgstr "大多数扩展类型只使用 **简单** 属性，那么，是什么让属性变得“简单”呢？只需要满足下面几个条件："
 
-#: ../../extending/newtypes.rst:242
+#: ../../extending/newtypes.rst:236
 msgid ""
 "The name of the attributes must be known when :c:func:`PyType_Ready` is "
 "called."
 msgstr "当调用 :c:func:`PyType_Ready` 时，必须知道属性的名称。"
 
-#: ../../extending/newtypes.rst:245
+#: ../../extending/newtypes.rst:239
 msgid ""
 "No special processing is needed to record that an attribute was looked up or"
 " set, nor do actions need to be taken based on the value."
 msgstr "不需要特殊的处理来记录属性是否被查找或设置，也不需要根据值采取操作。"
 
-#: ../../extending/newtypes.rst:248
+#: ../../extending/newtypes.rst:242
 msgid ""
 "Note that this list does not place any restrictions on the values of the "
 "attributes, when the values are computed, or how relevant data is stored."
 msgstr "请注意，此列表不对属性的值、值的计算时间或相关数据的存储方式施加任何限制。"
 
-#: ../../extending/newtypes.rst:251
+#: ../../extending/newtypes.rst:245
 msgid ""
 "When :c:func:`PyType_Ready` is called, it uses three tables referenced by "
 "the type object to create :term:`descriptor`\\s which are placed in the "
@@ -520,11 +635,11 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_getattro` 和 "
 ":c:member:`~PyTypeObject.tp_setattro` 字段保持为 ``NULL``，以允许由基础类型处理这些属性。"
 
-#: ../../extending/newtypes.rst:259
+#: ../../extending/newtypes.rst:253
 msgid "The tables are declared as three fields of the type object::"
 msgstr "表被声明为object::类型的三个字段::"
 
-#: ../../extending/newtypes.rst:261
+#: ../../extending/newtypes.rst:255
 msgid ""
 "struct PyMethodDef *tp_methods;\n"
 "struct PyMemberDef *tp_members;\n"
@@ -534,7 +649,7 @@ msgstr ""
 "struct PyMemberDef *tp_members;\n"
 "struct PyGetSetDef *tp_getset;"
 
-#: ../../extending/newtypes.rst:265
+#: ../../extending/newtypes.rst:259
 msgid ""
 "If :c:member:`~PyTypeObject.tp_methods` is not ``NULL``, it must refer to an"
 " array of :c:type:`PyMethodDef` structures.  Each entry in the table is an "
@@ -543,7 +658,7 @@ msgstr ""
 "如果 :c:member:`~PyTypeObject.tp_methods` 不为 ``NULL``，则它必须指向一个由 "
 ":c:type:`PyMethodDef` 结构体组成的数组。 表中的每个条目都是该结构体的一个实例::"
 
-#: ../../extending/newtypes.rst:269
+#: ../../extending/newtypes.rst:263
 msgid ""
 "typedef struct PyMethodDef {\n"
 "    const char  *ml_name;       /* method name */\n"
@@ -559,7 +674,7 @@ msgstr ""
 "    const char  *ml_doc;        /* 文档字符串 */\n"
 "} PyMethodDef;"
 
-#: ../../extending/newtypes.rst:276
+#: ../../extending/newtypes.rst:270
 msgid ""
 "One entry should be defined for each method provided by the type; no entries"
 " are needed for methods inherited from a base type.  One additional entry is"
@@ -569,7 +684,7 @@ msgstr ""
 "应当为该类型所提供的每个方法都应定义一个条目；从基类型继承来的方法无需定义条目。 还需要在末尾加一个额外的条目；它是一个标记数组结束的哨兵条目。 "
 "该哨兵条目的 :c:member:`~PyMethodDef.ml_name` 字段必须为 ``NULL``。"
 
-#: ../../extending/newtypes.rst:281
+#: ../../extending/newtypes.rst:275
 msgid ""
 "The second table is used to define attributes which map directly to data "
 "stored in the instance.  A variety of primitive C types are supported, and "
@@ -577,7 +692,7 @@ msgid ""
 "defined as::"
 msgstr "第二个表被用来定义要直接映射到实例中的数据的属性。 各种原始 C 类型均受到支持，并且访问方式可以为只读或读写。 表中的结构体被定义为::"
 
-#: ../../extending/newtypes.rst:285
+#: ../../extending/newtypes.rst:279
 msgid ""
 "typedef struct PyMemberDef {\n"
 "    const char *name;\n"
@@ -595,7 +710,7 @@ msgstr ""
 "    const char *doc;\n"
 "} PyMemberDef;"
 
-#: ../../extending/newtypes.rst:293
+#: ../../extending/newtypes.rst:287
 msgid ""
 "For each entry in the table, a :term:`descriptor` will be constructed and "
 "added to the type which will be able to extract a value from the instance "
@@ -612,7 +727,7 @@ msgstr ""
 ":c:member:`~PyMemberDef.flags` 字段用于保存控制属性要如何被访问的旗标：你可以将其设为 "
 ":c:macro:`Py_READONLY` 以防止 Python 代码设置它。"
 
-#: ../../extending/newtypes.rst:301
+#: ../../extending/newtypes.rst:295
 msgid ""
 "An interesting advantage of using the :c:member:`~PyTypeObject.tp_members` "
 "table to build descriptors that are used at runtime is that any attribute "
@@ -625,7 +740,7 @@ msgstr ""
 "表来构建用于运行时的描述器还有一个有趣的优点是任何以这种方式定义的属性都可以简单地通过在表中提供文本来设置一个相关联的文档字符串。 "
 "一个应用程序可以使用自省 API 从类对象获取描述器，并使用其 :attr:`~type.__doc__` 属性来获取文档字符串。"
 
-#: ../../extending/newtypes.rst:307
+#: ../../extending/newtypes.rst:301
 msgid ""
 "As with the :c:member:`~PyTypeObject.tp_methods` table, a sentinel entry "
 "with a :c:member:`~PyMethodDef.ml_name` value of ``NULL`` is required."
@@ -633,11 +748,11 @@ msgstr ""
 "与 :c:member:`~PyTypeObject.tp_methods` 表一样，需要有一个值为 ``NULL`` 的 "
 ":c:member:`~PyMethodDef.ml_name` 哨兵条目。"
 
-#: ../../extending/newtypes.rst:321
+#: ../../extending/newtypes.rst:315
 msgid "Type-specific Attribute Management"
 msgstr "类型专属的属性管理"
 
-#: ../../extending/newtypes.rst:323
+#: ../../extending/newtypes.rst:317
 msgid ""
 "For simplicity, only the :c:expr:`char\\*` version will be demonstrated "
 "here; the type of the name parameter is the only difference between the "
@@ -651,7 +766,7 @@ msgstr ""
 ":c:expr:`PyObject*` 风格接口之间的唯一区别。 这个示例实际上做了与上面的泛用示例相同的事情，但没有使用在 Python 2.2 "
 "中增加的泛用支持。 它解释了处理器函数是如何被调用的，因此如果你确实需要扩展它们的功能，你就会明白有什么是需要做的。"
 
-#: ../../extending/newtypes.rst:331
+#: ../../extending/newtypes.rst:325
 msgid ""
 "The :c:member:`~PyTypeObject.tp_getattr` handler is called when the object "
 "requires an attribute look-up.  It is called in the same situations where "
@@ -660,28 +775,41 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_getattr` 处理器会在对象需要进行属性查找时被调用。 它被调用的场合与一个类的 "
 ":meth:`~object.__getattr__` 方法要被调用的场合相同。"
 
-#: ../../extending/newtypes.rst:335
+#: ../../extending/newtypes.rst:329
 msgid "Here is an example::"
 msgstr "例如："
 
-#: ../../extending/newtypes.rst:337
+#: ../../extending/newtypes.rst:331
 msgid ""
 "static PyObject *\n"
-"newdatatype_getattr(PyObject *op, char *name)\n"
+"newdatatype_getattr(newdatatypeobject *obj, char *name)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
-"    if (strcmp(name, \"data\") == 0) {\n"
-"        return PyLong_FromLong(self->data);\n"
+"    if (strcmp(name, \"data\") == 0)\n"
+"    {\n"
+"        return PyLong_FromLong(obj->data);\n"
 "    }\n"
 "\n"
 "    PyErr_Format(PyExc_AttributeError,\n"
 "                 \"'%.100s' object has no attribute '%.400s'\",\n"
-"                 Py_TYPE(self)->tp_name, name);\n"
+"                 Py_TYPE(obj)->tp_name, name);\n"
 "    return NULL;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"newdatatype_getattr(newdatatypeobject *obj, char *name)\n"
+"{\n"
+"    if (strcmp(name, \"data\") == 0)\n"
+"    {\n"
+"        return PyLong_FromLong(obj->data);\n"
+"    }\n"
+"\n"
+"    PyErr_Format(PyExc_AttributeError,\n"
+"                 \"'%.100s' object has no attribute '%.400s'\",\n"
+"                 Py_TYPE(obj)->tp_name, name);\n"
+"    return NULL;\n"
+"}"
 
-#: ../../extending/newtypes.rst:351
+#: ../../extending/newtypes.rst:345
 msgid ""
 "The :c:member:`~PyTypeObject.tp_setattr` handler is called when the "
 ":meth:`~object.__setattr__` or :meth:`~object.__delattr__` method of a class"
@@ -695,25 +823,31 @@ msgstr ""
 "下面是一个简单地引发异常的例子；如果这确实是你想要的，则 :c:member:`~PyTypeObject.tp_setattr` 处理器应当被设为 "
 "``NULL``。 ::"
 
-#: ../../extending/newtypes.rst:357
+#: ../../extending/newtypes.rst:351
 msgid ""
 "static int\n"
-"newdatatype_setattr(PyObject *op, char *name, PyObject *v)\n"
+"newdatatype_setattr(newdatatypeobject *obj, char *name, PyObject *v)\n"
 "{\n"
 "    PyErr_Format(PyExc_RuntimeError, \"Read-only attribute: %s\", name);\n"
 "    return -1;\n"
 "}"
 msgstr ""
+"static int\n"
+"newdatatype_setattr(newdatatypeobject *obj, char *name, PyObject *v)\n"
+"{\n"
+"    PyErr_Format(PyExc_RuntimeError, \"Read-only attribute: %s\", name);\n"
+"    return -1;\n"
+"}"
 
-#: ../../extending/newtypes.rst:365
+#: ../../extending/newtypes.rst:359
 msgid "Object Comparison"
 msgstr "对象比较"
 
-#: ../../extending/newtypes.rst:369
+#: ../../extending/newtypes.rst:363
 msgid "richcmpfunc tp_richcompare;"
 msgstr "richcmpfunc tp_richcompare;"
 
-#: ../../extending/newtypes.rst:371
+#: ../../extending/newtypes.rst:365
 msgid ""
 "The :c:member:`~PyTypeObject.tp_richcompare` handler is called when "
 "comparisons are needed.  It is analogous to the :ref:`rich comparison "
@@ -724,7 +858,7 @@ msgstr ""
 "<richcmpfuncs>`，例如 :meth:`!__lt__`，并会被 :c:func:`PyObject_RichCompare` 和 "
 ":c:func:`PyObject_RichCompareBool` 调用。"
 
-#: ../../extending/newtypes.rst:376
+#: ../../extending/newtypes.rst:370
 msgid ""
 "This function is called with two Python objects and the operator as "
 "arguments, where the operator is one of ``Py_EQ``, ``Py_NE``, ``Py_LE``, "
@@ -739,19 +873,17 @@ msgstr ""
 "``Py_True`` 或 ``Py_False``，如果比较操作未被实现并应尝试其他对象比较方法时则返回 "
 "``Py_NotImplemented``，或者如果设置了异常则返回 ``NULL``。"
 
-#: ../../extending/newtypes.rst:384
+#: ../../extending/newtypes.rst:378
 msgid ""
 "Here is a sample implementation, for a datatype that is considered equal if "
 "the size of an internal pointer is equal::"
 msgstr "下面是一个示例实现，该数据类型如果内部指针的大小相等就认为是相等的::"
 
-#: ../../extending/newtypes.rst:387
+#: ../../extending/newtypes.rst:381
 msgid ""
 "static PyObject *\n"
-"newdatatype_richcmp(PyObject *lhs, PyObject *rhs, int op)\n"
+"newdatatype_richcmp(newdatatypeobject *obj1, newdatatypeobject *obj2, int op)\n"
 "{\n"
-"    newdatatypeobject *obj1 = (newdatatypeobject *) lhs;\n"
-"    newdatatypeobject *obj2 = (newdatatypeobject *) rhs;\n"
 "    PyObject *result;\n"
 "    int c, size1, size2;\n"
 "\n"
@@ -770,21 +902,45 @@ msgid ""
 "    case Py_GE: c = size1 >= size2; break;\n"
 "    }\n"
 "    result = c ? Py_True : Py_False;\n"
-"    return Py_NewRef(result);\n"
+"    Py_INCREF(result);\n"
+"    return result;\n"
 " }"
 msgstr ""
+"static PyObject *\n"
+"newdatatype_richcmp(newdatatypeobject *obj1, newdatatypeobject *obj2, int op)\n"
+"{\n"
+"    PyObject *result;\n"
+"    int c, size1, size2;\n"
+"\n"
+"    /* 省略了确保两个参数均为 newdatatype 类型的代码 */\n"
+"\n"
+"    size1 = obj1->obj_UnderlyingDatatypePtr->size;\n"
+"    size2 = obj2->obj_UnderlyingDatatypePtr->size;\n"
+"\n"
+"    switch (op) {\n"
+"    case Py_LT: c = size1 <  size2; break;\n"
+"    case Py_LE: c = size1 <= size2; break;\n"
+"    case Py_EQ: c = size1 == size2; break;\n"
+"    case Py_NE: c = size1 != size2; break;\n"
+"    case Py_GT: c = size1 >  size2; break;\n"
+"    case Py_GE: c = size1 >= size2; break;\n"
+"    }\n"
+"    result = c ? Py_True : Py_False;\n"
+"    Py_INCREF(result);\n"
+"    return result;\n"
+" }"
 
-#: ../../extending/newtypes.rst:415
+#: ../../extending/newtypes.rst:408
 msgid "Abstract Protocol Support"
 msgstr "抽象协议支持"
 
-#: ../../extending/newtypes.rst:417
+#: ../../extending/newtypes.rst:410
 msgid ""
 "Python supports a variety of *abstract* 'protocols;' the specific interfaces"
 " provided to use these interfaces are documented in :ref:`abstract`."
 msgstr "Python 支持多种 *抽象* '协议'；被提供来使用这些接口的专门接口说明请在 :ref:`abstract` 中查看。"
 
-#: ../../extending/newtypes.rst:421
+#: ../../extending/newtypes.rst:414
 msgid ""
 "A number of these abstract interfaces were defined early in the development "
 "of the Python implementation.  In particular, the number, mapping, and "
@@ -803,7 +959,7 @@ msgstr ""
 "对于较新的协议来说在主类型对象中还有额外的槽位，并带有一个预设旗标位来指明存在该槽位并应当由解释器来检查。 （此旗标位并不会指明槽位值非 "
 "``NULL`` 的情况，可以设置该旗标来指明一个槽位的存在，但此本位仍可能保持未填充的状态。） ::"
 
-#: ../../extending/newtypes.rst:432
+#: ../../extending/newtypes.rst:425
 msgid ""
 "PyNumberMethods   *tp_as_number;\n"
 "PySequenceMethods *tp_as_sequence;\n"
@@ -813,7 +969,7 @@ msgstr ""
 "PySequenceMethods *tp_as_sequence;\n"
 "PyMappingMethods  *tp_as_mapping;"
 
-#: ../../extending/newtypes.rst:436
+#: ../../extending/newtypes.rst:429
 msgid ""
 "If you wish your object to be able to act like a number, a sequence, or a "
 "mapping object, then you place the address of a structure that implements "
@@ -827,32 +983,39 @@ msgstr ""
 ":c:type:`PySequenceMethods` 或 :c:type:`PyMappingMethods`, 的结构体的地址。 "
 "你要负责将适当的值填入这些结构体。 你可以在 Python 源代码发布版的 :file:`Objects` 目录中找到这些对象各自的用法示例。 ::"
 
-#: ../../extending/newtypes.rst:443
+#: ../../extending/newtypes.rst:436
 msgid "hashfunc tp_hash;"
 msgstr "hashfunc tp_hash;"
 
-#: ../../extending/newtypes.rst:445
+#: ../../extending/newtypes.rst:438
 msgid ""
 "This function, if you choose to provide it, should return a hash number for "
 "an instance of your data type. Here is a simple example::"
 msgstr "如果你选择提供此函数，则它应当为你的数据类型的实例返回一个哈希数值。 下面是一个简单的示例::"
 
-#: ../../extending/newtypes.rst:448
+#: ../../extending/newtypes.rst:441
 msgid ""
 "static Py_hash_t\n"
-"newdatatype_hash(PyObject *op)\n"
+"newdatatype_hash(newdatatypeobject *obj)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
 "    Py_hash_t result;\n"
-"    result = self->some_size + 32767 * self->some_number;\n"
-"    if (result == -1) {\n"
-"        result = -2;\n"
-"    }\n"
+"    result = obj->some_size + 32767 * obj->some_number;\n"
+"    if (result == -1)\n"
+"       result = -2;\n"
 "    return result;\n"
 "}"
 msgstr ""
+"static Py_hash_t\n"
+"newdatatype_hash(newdatatypeobject *obj)\n"
+"{\n"
+"    Py_hash_t result;\n"
+"    result = obj->some_size + 32767 * obj->some_number;\n"
+"    if (result == -1)\n"
+"       result = -2;\n"
+"    return result;\n"
+"}"
 
-#: ../../extending/newtypes.rst:460
+#: ../../extending/newtypes.rst:451
 msgid ""
 ":c:type:`Py_hash_t` is a signed integer type with a platform-varying width. "
 "Returning ``-1`` from :c:member:`~PyTypeObject.tp_hash` indicates an error, "
@@ -863,11 +1026,11 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_hash` 返回 ``-1`` "
 "表示发生了错误，这就是为什么你应当注意避免在哈希运算成功时返回它，如上面所演示的。"
 
-#: ../../extending/newtypes.rst:467
+#: ../../extending/newtypes.rst:458
 msgid "ternaryfunc tp_call;"
 msgstr "ternaryfunc tp_call;"
 
-#: ../../extending/newtypes.rst:469
+#: ../../extending/newtypes.rst:460
 msgid ""
 "This function is called when an instance of your data type is \"called\", "
 "for example, if ``obj1`` is an instance of your data type and the Python "
@@ -877,23 +1040,23 @@ msgstr ""
 "此函数会在“调用”你的数据类型实例时被调用，举例来说，如果 ``obj1`` 是你的数据类型的实例而 Python 脚本包含了 "
 "``obj1('hello')``，则将唤起 :c:member:`~PyTypeObject.tp_call` 处理器。"
 
-#: ../../extending/newtypes.rst:473
+#: ../../extending/newtypes.rst:464
 msgid "This function takes three arguments:"
 msgstr "此函数接受三个参数:"
 
-#: ../../extending/newtypes.rst:475
+#: ../../extending/newtypes.rst:466
 msgid ""
 "*self* is the instance of the data type which is the subject of the call. If"
 " the call is ``obj1('hello')``, then *self* is ``obj1``."
 msgstr "*self* 是作为调用目标的数据类型实例。 如果调用是 ``obj1('hello')``，则 *self* 为 ``obj1``。"
 
-#: ../../extending/newtypes.rst:478
+#: ../../extending/newtypes.rst:469
 msgid ""
 "*args* is a tuple containing the arguments to the call.  You can use "
 ":c:func:`PyArg_ParseTuple` to extract the arguments."
 msgstr "*args* 是包含调用参数的元组。 你可以使用 :c:func:`PyArg_ParseTuple` 来提取参数。"
 
-#: ../../extending/newtypes.rst:481
+#: ../../extending/newtypes.rst:472
 msgid ""
 "*kwds* is a dictionary of keyword arguments that were passed. If this is "
 "non-``NULL`` and you support keyword arguments, use "
@@ -906,16 +1069,15 @@ msgstr ""
 ":c:func:`PyArg_ParseTupleAndKeywords` 来提取参数。 如果你不想支持关键字参数而它为非 ``NULL`` "
 "值，则会引发 :exc:`TypeError` 并附带一个提示不支持关键字参数的消息。"
 
-#: ../../extending/newtypes.rst:487
+#: ../../extending/newtypes.rst:478
 msgid "Here is a toy ``tp_call`` implementation::"
 msgstr "下面是一个演示性的 ``tp_call`` 实现::"
 
-#: ../../extending/newtypes.rst:489
+#: ../../extending/newtypes.rst:480
 msgid ""
 "static PyObject *\n"
-"newdatatype_call(PyObject *op, PyObject *args, PyObject *kwds)\n"
+"newdatatype_call(newdatatypeobject *obj, PyObject *args, PyObject *kwds)\n"
 "{\n"
-"    newdatatypeobject *self = (newdatatypeobject *) op;\n"
 "    PyObject *result;\n"
 "    const char *arg1;\n"
 "    const char *arg2;\n"
@@ -926,13 +1088,30 @@ msgid ""
 "    }\n"
 "    result = PyUnicode_FromFormat(\n"
 "        \"Returning -- value: [%d] arg1: [%s] arg2: [%s] arg3: [%s]\\n\",\n"
-"        self->obj_UnderlyingDatatypePtr->size,\n"
+"        obj->obj_UnderlyingDatatypePtr->size,\n"
 "        arg1, arg2, arg3);\n"
 "    return result;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"newdatatype_call(newdatatypeobject *obj, PyObject *args, PyObject *kwds)\n"
+"{\n"
+"    PyObject *result;\n"
+"    const char *arg1;\n"
+"    const char *arg2;\n"
+"    const char *arg3;\n"
+"\n"
+"    if (!PyArg_ParseTuple(args, \"sss:call\", &arg1, &arg2, &arg3)) {\n"
+"        return NULL;\n"
+"    }\n"
+"    result = PyUnicode_FromFormat(\n"
+"        \"Returning -- value: [%d] arg1: [%s] arg2: [%s] arg3: [%s]\\n\",\n"
+"        obj->obj_UnderlyingDatatypePtr->size,\n"
+"        arg1, arg2, arg3);\n"
+"    return result;\n"
+"}"
 
-#: ../../extending/newtypes.rst:510
+#: ../../extending/newtypes.rst:500
 msgid ""
 "/* Iterators */\n"
 "getiterfunc tp_iter;\n"
@@ -942,7 +1121,7 @@ msgstr ""
 "getiterfunc tp_iter;\n"
 "iternextfunc tp_iternext;"
 
-#: ../../extending/newtypes.rst:514
+#: ../../extending/newtypes.rst:504
 msgid ""
 "These functions provide support for the iterator protocol.  Both handlers "
 "take exactly one parameter, the instance for which they are being called, "
@@ -957,7 +1136,7 @@ msgstr ""
 ":meth:`~object.__iter__` 方法，而 :c:member:`~PyTypeObject.tp_iternext` 对应于 "
 "Python :meth:`~iterator.__next__` 方法。"
 
-#: ../../extending/newtypes.rst:521
+#: ../../extending/newtypes.rst:511
 msgid ""
 "Any :term:`iterable` object must implement the "
 ":c:member:`~PyTypeObject.tp_iter` handler, which must return an "
@@ -967,7 +1146,7 @@ msgstr ""
 "任何 :term:`iterable` 对象都必须实现 :c:member:`~PyTypeObject.tp_iter` 处理器，该处理器必须返回一个"
 " :term:`iterator` 对象。 下面是与 Python 类所应用的同一个指导原则:"
 
-#: ../../extending/newtypes.rst:525
+#: ../../extending/newtypes.rst:515
 msgid ""
 "For collections (such as lists and tuples) which can support multiple "
 "independent iterators, a new iterator should be created and returned by each"
@@ -976,7 +1155,7 @@ msgstr ""
 "对于可以支持多个独立迭代器的多项集（如列表和元组），则应当在每次调用 :c:member:`~PyTypeObject.tp_iter` "
 "时创建并返回一个新的迭代器。"
 
-#: ../../extending/newtypes.rst:528
+#: ../../extending/newtypes.rst:518
 msgid ""
 "Objects which can only be iterated over once (usually due to side effects of"
 " iteration, such as file objects) can implement "
@@ -988,7 +1167,7 @@ msgstr ""
 ":c:member:`~PyTypeObject.tp_iter` -- 并且为此还应当实现 "
 ":c:member:`~PyTypeObject.tp_iternext`  处理器。"
 
-#: ../../extending/newtypes.rst:533
+#: ../../extending/newtypes.rst:523
 msgid ""
 "Any :term:`iterator` object should implement both "
 ":c:member:`~PyTypeObject.tp_iter` and :c:member:`~PyTypeObject.tp_iternext`."
@@ -1010,11 +1189,11 @@ msgstr ""
 "而不设置异常，或者也可以在返回 ``NULL`` 的基础上 *额外* 设置 :exc:`StopIteration`；避免异常可以产生更好的性能。 "
 "如果发生了实际的错误，则 :c:member:`~PyTypeObject.tp_iternext` 应当总是设置一个异常并返回 ``NULL``。"
 
-#: ../../extending/newtypes.rst:549
+#: ../../extending/newtypes.rst:539
 msgid "Weak Reference Support"
 msgstr "弱引用支持"
 
-#: ../../extending/newtypes.rst:551
+#: ../../extending/newtypes.rst:541
 msgid ""
 "One of the goals of Python's weak reference implementation is to allow any "
 "type to participate in the weak reference mechanism without incurring the "
@@ -1022,11 +1201,11 @@ msgid ""
 msgstr ""
 "One of the goals of Python 弱引用实现的目标之一是允许任意类型参与弱引用机制而不会在重视性能的对象（例如数字）上产生额外开销。"
 
-#: ../../extending/newtypes.rst:556
+#: ../../extending/newtypes.rst:546
 msgid "Documentation for the :mod:`weakref` module."
 msgstr ":mod:`weakref` 模块的文档。"
 
-#: ../../extending/newtypes.rst:558
+#: ../../extending/newtypes.rst:548
 msgid ""
 "For an object to be weakly referenceable, the extension type must set the "
 "``Py_TPFLAGS_MANAGED_WEAKREF`` bit of the :c:member:`~PyTypeObject.tp_flags`"
@@ -1037,12 +1216,12 @@ msgstr ""
 "``Py_TPFLAGS_MANAGED_WEAKREF`` 比特位。 旧式的 "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` 字段应当保持为零。"
 
-#: ../../extending/newtypes.rst:563
+#: ../../extending/newtypes.rst:553
 msgid ""
 "Concretely, here is how the statically declared type object would look::"
 msgstr "具体地说，以下就是静态声明的类型对象的样子::"
 
-#: ../../extending/newtypes.rst:565
+#: ../../extending/newtypes.rst:555
 msgid ""
 "static PyTypeObject TrivialType = {\n"
 "    PyVarObject_HEAD_INIT(NULL, 0)\n"
@@ -1056,30 +1235,38 @@ msgstr ""
 "    .tp_flags = Py_TPFLAGS_MANAGED_WEAKREF | ...,\n"
 "};"
 
-#: ../../extending/newtypes.rst:572
+#: ../../extending/newtypes.rst:562
 msgid ""
 "The only further addition is that ``tp_dealloc`` needs to clear any weak "
 "references (by calling :c:func:`PyObject_ClearWeakRefs`)::"
 msgstr ""
 "唯一的额外补充是 ``tp_dealloc`` 需要清除任何弱引用 (通过调用 :c:func:`PyObject_ClearWeakRefs`)::"
 
-#: ../../extending/newtypes.rst:575
+#: ../../extending/newtypes.rst:565
 msgid ""
 "static void\n"
-"Trivial_dealloc(PyObject *op)\n"
+"Trivial_dealloc(TrivialObject *self)\n"
 "{\n"
 "    /* Clear weakrefs first before calling any destructors */\n"
-"    PyObject_ClearWeakRefs(op);\n"
+"    PyObject_ClearWeakRefs((PyObject *) self);\n"
 "    /* ... remainder of destruction code omitted for brevity ... */\n"
-"    Py_TYPE(op)->tp_free(op);\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
 "}"
 msgstr ""
+"static void\n"
+"Trivial_dealloc(TrivialObject *self)\n"
+"{\n"
+"    /* 在调用任何析构器之前先清除弱引用 */\n"
+"    PyObject_ClearWeakRefs((PyObject *) self);\n"
+"    /* ... 省略了析构代码的其余部分以使代码简短 ... */\n"
+"    Py_TYPE(self)->tp_free((PyObject *) self);\n"
+"}"
 
-#: ../../extending/newtypes.rst:586
+#: ../../extending/newtypes.rst:576
 msgid "More Suggestions"
 msgstr "更多建议"
 
-#: ../../extending/newtypes.rst:588
+#: ../../extending/newtypes.rst:578
 msgid ""
 "In order to learn how to implement any specific method for your new data "
 "type, get the :term:`CPython` source code.  Go to the :file:`Objects` "
@@ -1090,7 +1277,7 @@ msgstr ""
 "为了学习如何为你的新数据类型实现任何特定方法，请获取 :term:`CPython` 源代码。 进入 :file:`Objects` 目录，然后在 C "
 "源文件中搜索 ``tp_`` 加上你想要的函数 (例如，``tp_richcompare``)。 你将找到你想要实现的函数的例子。"
 
-#: ../../extending/newtypes.rst:594
+#: ../../extending/newtypes.rst:584
 msgid ""
 "When you need to verify that an object is a concrete instance of the type "
 "you are implementing, use the :c:func:`PyObject_TypeCheck` function.  A "
@@ -1098,7 +1285,7 @@ msgid ""
 msgstr ""
 "当你需要验证一个对象是否为你实现的类型的具体实例时，请使用 :c:func:`PyObject_TypeCheck` 函数。 它的一个用法示例如下::"
 
-#: ../../extending/newtypes.rst:598
+#: ../../extending/newtypes.rst:588
 msgid ""
 "if (!PyObject_TypeCheck(some_object, &MyType)) {\n"
 "    PyErr_SetString(PyExc_TypeError, \"arg #1 not a mything\");\n"
@@ -1110,20 +1297,20 @@ msgstr ""
 "    return NULL;\n"
 "}"
 
-#: ../../extending/newtypes.rst:604
+#: ../../extending/newtypes.rst:594
 msgid "Download CPython source releases."
 msgstr "下载CPython源代码版本。"
 
-#: ../../extending/newtypes.rst:605
+#: ../../extending/newtypes.rst:595
 msgid "https://www.python.org/downloads/source/"
 msgstr "https://www.python.org/downloads/source/"
 
-#: ../../extending/newtypes.rst:607
+#: ../../extending/newtypes.rst:597
 msgid ""
 "The CPython project on GitHub, where the CPython source code is developed."
 msgstr "GitHub上开发CPython源代码的CPython项目。"
 
-#: ../../extending/newtypes.rst:608
+#: ../../extending/newtypes.rst:598
 msgid "https://github.com/python/cpython"
 msgstr "https://github.com/python/cpython"
 
@@ -1147,26 +1334,26 @@ msgstr "最终化"
 msgid "finalization, of objects"
 msgstr "最终化，对象"
 
-#: ../../extending/newtypes.rst:93
+#: ../../extending/newtypes.rst:91
 msgid "PyErr_Fetch (C function)"
 msgstr "PyErr_Fetch (C 函数)"
 
-#: ../../extending/newtypes.rst:93
+#: ../../extending/newtypes.rst:91
 msgid "PyErr_Restore (C function)"
 msgstr "PyErr_Restore (C 函数)"
 
-#: ../../extending/newtypes.rst:154
+#: ../../extending/newtypes.rst:150
 msgid "string"
 msgstr "string"
 
-#: ../../extending/newtypes.rst:154
+#: ../../extending/newtypes.rst:150
 msgid "object representation"
 msgstr "对象的表示"
 
-#: ../../extending/newtypes.rst:154
+#: ../../extending/newtypes.rst:150
 msgid "built-in function"
 msgstr "内置函数"
 
-#: ../../extending/newtypes.rst:154
+#: ../../extending/newtypes.rst:150
 msgid "repr"
 msgstr "repr"
