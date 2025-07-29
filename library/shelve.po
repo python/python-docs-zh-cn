@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2024, Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-27 14:50+0000\n"
-"PO-Revision-Date: 2024-05-11 00:33+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
+"POT-Creation-Date: 2025-07-25 16:03+0000\n"
+"PO-Revision-Date: 2025-07-18 19:58+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -317,6 +317,35 @@ msgid ""
 "\n"
 "d.close()                  # close it"
 msgstr ""
+"import shelve\n"
+"\n"
+"d = shelve.open(filename)  # 打开 -- 文件可能带有低层级库\n"
+"                           # 所添加的后缀\n"
+"\n"
+"d[key] = data              # 将 data 存储到 key 位置 (如果使用现有的 key\n"
+"                           # 则会覆盖旧数据)\n"
+"data = d[key]              # 获取 key 位置上 data 的拷贝 (如果 key 不存在\n"
+"                           # 则会引发 KeyError)\n"
+"del d[key]                 # 删除 key 位置上的 data (如果 key 不存在\n"
+"                           # 则会引发 KeyError)\n"
+"\n"
+"flag = key in d            # 如果 key 存在则为真值\n"
+"klist = list(d.keys())     # 由全部现有 key 组成的列表 (会很慢!)\n"
+"\n"
+"# 由于 d 打开时未设置 writeback=True，需要注意：\n"
+"d['xx'] = [0, 1, 2]        # 这将符合预期，但是...\n"
+"d['xx'].append(3)          # *这将不符合预期！* -- d['xx'] 仍为 [0, 1, 2]！\n"
+"\n"
+"# 由于 d 打开时未设置 writeback=True，你需要小心地编码：\n"
+"temp = d['xx']             # 提取副本\n"
+"temp.append(5)             # 修改副本\n"
+"d['xx'] = temp             # 将副本存储回去，以使其持久化\n"
+"\n"
+"# 或者，d=shelve.open(filename,writeback=True) 将允许你\n"
+"# 编码 d['xx'].append(5) 并使其符合预期，但是它也会\n"
+"# 消耗更多内存并使 d.close() 操作变慢。\n"
+"\n"
+"d.close()                  # 关闭它"
 
 #: ../../library/shelve.rst:218
 msgid "Module :mod:`dbm`"

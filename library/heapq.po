@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2024, Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-13 14:48+0000\n"
-"PO-Revision-Date: 2024-05-11 00:33+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
+"POT-Creation-Date: 2025-07-25 16:03+0000\n"
+"PO-Revision-Date: 2025-07-18 19:58+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -406,6 +406,33 @@ msgid ""
 "            return task\n"
 "    raise KeyError('pop from an empty priority queue')"
 msgstr ""
+"pq = []                         # 由在堆中处理的条目组成的列表\n"
+"entry_finder = {}               # 从任务到条目的映射\n"
+"REMOVED = '<removed-task>'      # 已移除任务的占位符\n"
+"counter = itertools.count()     # 唯一序列计数\n"
+"\n"
+"def add_task(task, priority=0):\n"
+"    '新增任务或更新现有任务的优先级'\n"
+"    if task in entry_finder:\n"
+"        remove_task(task)\n"
+"    count = next(counter)\n"
+"    entry = [priority, count, task]\n"
+"    entry_finder[task] = entry\n"
+"    heappush(pq, entry)\n"
+"\n"
+"def remove_task(task):\n"
+"    '将现有任务标记为已移除。 如未找到则引发 KeyError。'\n"
+"    entry = entry_finder.pop(task)\n"
+"    entry[-1] = REMOVED\n"
+"\n"
+"def pop_task():\n"
+"    '移除并返回最低优先级的任务。 如为空则引发 KeyError。'\n"
+"    while pq:\n"
+"        priority, count, task = heappop(pq)\n"
+"        if task is not REMOVED:\n"
+"            del entry_finder[task]\n"
+"            return task\n"
+"    raise KeyError('pop from an empty priority queue')"
 
 #: ../../library/heapq.rst:241
 msgid "Theory"

@@ -1,19 +1,19 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2024, Python Software Foundation
+# Copyright (C) 2001-2025, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 19:07+0000\n"
-"PO-Revision-Date: 2024-05-11 00:33+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
+"POT-Creation-Date: 2025-07-25 16:03+0000\n"
+"PO-Revision-Date: 2025-07-18 19:57+0000\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid ":mod:`audioop` --- Manipulate raw audio data"
 msgstr ":mod:`audioop` --- 处理原始音频数据"
 
-#: ../../library/audioop.rst:11
+#: ../../library/audioop.rst:8
 msgid ""
 "The :mod:`audioop` module is deprecated (see :pep:`PEP 594 <594#audioop>` "
 "for details)."
@@ -218,6 +218,12 @@ msgstr ""
 "在某些音频格式（如 .WAV 文件）中，16、24 和 32 位采样是有符号的，但 8 位采样是无符号的。因此，当将这些格式转换为 8 "
 "位宽采样时，还需使结果加上 128::"
 
+#: ../../library/audioop.rst:163
+msgid ""
+"new_frames = audioop.lin2lin(frames, old_width, 1)\n"
+"new_frames = audioop.bias(new_frames, 1, 128)"
+msgstr ""
+
 #: ../../library/audioop.rst:166
 msgid ""
 "The same, in reverse, has to be applied when converting from 8 to 16, 24 or "
@@ -323,6 +329,18 @@ msgstr ""
 "请注意，诸如 :func:`.mul` 或 :func:`.max` "
 "之类的操作在单声道和立体声间没有区别，即所有采样都作相同处理。如果出现问题，应先将立体声片段拆分为两个单声道片段，之后再重组。以下是如何进行该操作的示例::"
 
+#: ../../library/audioop.rst:249
+msgid ""
+"def mul_stereo(sample, width, lfactor, rfactor):\n"
+"    lsample = audioop.tomono(sample, width, 1, 0)\n"
+"    rsample = audioop.tomono(sample, width, 0, 1)\n"
+"    lsample = audioop.mul(lsample, width, lfactor)\n"
+"    rsample = audioop.mul(rsample, width, rfactor)\n"
+"    lsample = audioop.tostereo(lsample, width, 1, 0)\n"
+"    rsample = audioop.tostereo(rsample, width, 0, 1)\n"
+"    return audioop.add(lsample, rsample, width)"
+msgstr ""
+
 #: ../../library/audioop.rst:258
 msgid ""
 "If you use the ADPCM coder to build network packets and you want your "
@@ -355,6 +373,22 @@ msgid ""
 msgstr ""
 "乍看之下 :func:`find\\*` "
 "例程可能有些可笑。它们主要是用于回声消除，一种快速有效的方法是选取输出样本中能量最高的片段，在输入样本中定位该片段，然后从输入样本中减去整个输出样本::"
+
+#: ../../library/audioop.rst:275
+msgid ""
+"def echocancel(outputdata, inputdata):\n"
+"    pos = audioop.findmax(outputdata, 800)    # one tenth second\n"
+"    out_test = outputdata[pos*2:]\n"
+"    in_test = inputdata[pos*2:]\n"
+"    ipos, factor = audioop.findfit(in_test, out_test)\n"
+"    # Optional (for better cancellation):\n"
+"    # factor = audioop.findfactor(in_test[ipos*2:ipos*2+len(out_test)],\n"
+"    #              out_test)\n"
+"    prefill = '\\0'*(pos+ipos)*2\n"
+"    postfill = '\\0'*(len(inputdata)-len(prefill)-len(outputdata))\n"
+"    outputdata = prefill + audioop.mul(outputdata, 2, -factor) + postfill\n"
+"    return audioop.add(inputdata, outputdata, 2)"
+msgstr ""
 
 #: ../../library/audioop.rst:24
 msgid "Intel/DVI ADPCM"
