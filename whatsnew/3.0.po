@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 19:22+0000\n"
-"PO-Revision-Date: 2022-11-05 17:23+0000\n"
+"POT-Creation-Date: 2025-07-25 18:10+0000\n"
+"PO-Revision-Date: 2025-07-18 20:10+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -317,6 +317,16 @@ msgid ""
 ":exc:`UnicodeDecodeError` if it contained non-ASCII values.  This value-"
 "specific behavior has caused numerous sad faces over the years."
 msgstr ""
+"Python 3.0 використовує поняття *текст* і (двійкові) *дані* замість рядків "
+"Unicode і 8-бітних рядків. Весь текст є Unicode; однак *закодований* Unicode"
+" представлений як двійкові дані. Для зберігання тексту використовується тип "
+":class:`str`, а для зберігання даних — :class:`bytes`. Найбільша відмінність"
+" із ситуацією 2.x полягає в тому, що будь-яка спроба змішати текст і дані в "
+"Python 3.0 викликає :exc:`TypeError`, тоді як якби ви змішали Unicode та "
+"8-бітні рядки в Python 2.x, це спрацювало б якщо 8-бітний рядок містив лише "
+"7-бітні (ASCII) байти, але ви отримаєте :exc:`UnicodeDecodeError`, якщо він "
+"містив значення, відмінні від ASCII. Ця ціннісна поведінка викликала багато "
+"сумних облич протягом багатьох років."
 
 #: ../../whatsnew/3.0.rst:250
 msgid ""
@@ -328,6 +338,13 @@ msgid ""
 ":class:`str` for binary or encoded data only.  Then the ``2to3`` tool will "
 "do most of the work for you."
 msgstr ""
+"Як наслідок цієї зміни у філософії, майже весь код, який використовує "
+"Unicode, кодування або двійкові дані, швидше за все, має змінитися. Зміна на"
+" краще, оскільки у світі 2.x було багато помилок, пов’язаних зі змішуванням "
+"кодованого та незакодованого тексту. Щоб підготуватися до Python 2.x, "
+"почніть використовувати :class:`unicode` для всього незакодованого тексту та"
+" :class:`str` лише для двійкових або закодованих даних. Тоді інструмент "
+"``2to3`` зробить більшу частину роботи за вас."
 
 #: ../../whatsnew/3.0.rst:258
 msgid ""
@@ -343,6 +360,11 @@ msgid ""
 ":class:`bytes` to :class:`str`.  You can also use ``bytes(s, encoding=...)``"
 " and ``str(b, encoding=...)``, respectively."
 msgstr ""
+"Оскільки типи :class:`str` і :class:`bytes` не можна змішувати, ви завжди "
+"повинні явно конвертувати між ними. Використовуйте :meth:`str.encode` для "
+"переходу від :class:`str` до :class:`bytes` і :meth:`bytes.decode` для "
+"переходу від :class:`bytes` до :class:`str`. Ви також можете використовувати"
+" ``bytes(s, encoding=...)`` та ``str(b, encoding=...)`` відповідно."
 
 #: ../../whatsnew/3.0.rst:268
 msgid ""
@@ -397,6 +419,23 @@ msgid ""
 "have a way to override the encoding. There is no longer any need for using "
 "the encoding-aware streams in the :mod:`codecs` module."
 msgstr ""
+"Файли, відкриті як текстові файли (досі стандартний режим для :func:`open`),"
+" завжди використовують кодування для відображення між рядками (у пам’яті) та"
+" байтами (на диску). Двійкові файли (відкриті за допомогою ``b`` в аргументі"
+" mode) завжди використовують байти в пам’яті. Це означає, що якщо файл "
+"відкрито з використанням неправильного режиму або кодування, введення-"
+"виведення, ймовірно, голосно завершиться помилкою, замість того, щоб мовчки "
+"видати неправильні дані. Це також означає, що навіть користувачі Unix "
+"повинні будуть вказати правильний режим (текстовий або двійковий) під час "
+"відкриття файлу. Існує залежне від платформи кодування за замовчуванням, яке"
+" на платформах Unixy можна встановити за допомогою змінної середовища "
+"``LANG`` (і іноді також за допомогою деяких інших змінних середовища, "
+"пов’язаних із місцевими стандартами). У багатьох випадках, але не у всіх, "
+"системою за замовчуванням є UTF-8; ви ніколи не повинні розраховувати на це "
+"замовчування. Будь-яка програма, яка читає або записує більше ніж чистий "
+"текст ASCII, ймовірно, повинна мати спосіб заміни кодування. Більше немає "
+"необхідності використовувати потоки з урахуванням кодування в модулі "
+":mod:`codecs`."
 
 #: ../../whatsnew/3.0.rst:304
 msgid ""
@@ -424,6 +463,19 @@ msgid ""
 "of strings, filenames that cannot be decoded properly are omitted rather "
 "than raising :exc:`UnicodeError`."
 msgstr ""
+"Імена файлів передаються та повертаються з API як рядки (Unicode). Це може "
+"спричинити проблеми, пов’язані з певною платформою, оскільки на деяких "
+"платформах імена файлів є довільними рядками байтів. (З іншого боку, у "
+"Windows імена файлів зберігаються у форматі Юнікод.) Як обхідний шлях, "
+"більшість API (наприклад, :func:`open` і багато функцій у модулі :mod:`os`),"
+" які приймають імена файлів, приймають: об’єкти :class:`bytes`, а також "
+"рядки, а кілька API мають спосіб запитувати значення, що повертається "
+":class:`bytes`. Таким чином, :func:`os.listdir` повертає список екземплярів "
+":class:`bytes`, якщо аргумент є екземпляром :class:`bytes`, а "
+":func:`os.getcwdb` повертає поточний робочий каталог як екземпляр "
+":class:`bytes`. Зауважте, що коли :func:`os.listdir` повертає список рядків,"
+" імена файлів, які не можна правильно розшифрувати, пропускаються, а не "
+"викликають :exc:`UnicodeError`."
 
 #: ../../whatsnew/3.0.rst:325
 msgid ""
@@ -490,6 +542,13 @@ msgid ""
 "intent is to encourage experimentation through metaclasses, decorators or "
 "frameworks."
 msgstr ""
+":pep:`3107`: Аргумент функції та анотації значення, що повертається. Це "
+"забезпечує стандартизований спосіб анотування параметрів функції та "
+"значення, що повертається. Немає жодної семантики, пов’язаної з такими "
+"анотаціями, за винятком того, що їх можна перевірити під час виконання за "
+"допомогою атрибута :attr:`__annotations__`. Мета полягає в тому, щоб "
+"заохотити експериментувати за допомогою метакласів, декораторів або "
+"фреймворків."
 
 #: ../../whatsnew/3.0.rst:363
 msgid ""
@@ -516,6 +575,9 @@ msgid ""
 "now assign directly to a variable in an outer (but non-global) scope.  "
 ":keyword:`!nonlocal` is a new reserved word."
 msgstr ""
+":pep:`3104`: :keyword:`nonlocal` оператор. Використовуючи ``nonlocal x``, "
+"тепер ви можете призначати безпосередньо змінній у зовнішній (але не "
+"глобальній) області. :keyword:`!nonlocal` — нове зарезервоване слово."
 
 #: ../../whatsnew/3.0.rst:378
 msgid ""
@@ -524,10 +586,14 @@ msgid ""
 "``rest`` object is always a (possibly empty) list; the right-hand side may "
 "be any iterable.  Example::"
 msgstr ""
+":pep:`3132`: Розширене ітераційне розпакування. Тепер ви можете писати такі "
+"речі, як ``a, b, *rest = some_sequence``. І навіть ``*rest, a = stuff``. "
+"Об'єкт ``rest`` завжди є (можливо, порожнім) списком; права частина може "
+"бути будь-якою ітерованою. Приклад::"
 
 #: ../../whatsnew/3.0.rst:385
 msgid "This sets *a* to ``0``, *b* to ``4``, and *rest* to ``[1, 2, 3]``."
-msgstr ""
+msgstr "Це встановлює *a* на ``0``, *b* на ``4``, а *rest* на ``[1, 2, 3]``."
 
 #: ../../whatsnew/3.0.rst:387
 msgid ""
@@ -535,6 +601,8 @@ msgid ""
 " as ``dict(stuff)`` but is more flexible.  (This is :pep:`274` vindicated. "
 ":-)"
 msgstr ""
+"Розуміння словника: ``{k: v for k, v in stuff}`` означає те саме, що "
+"``dict(stuff)``, але є більш гнучким. (Це :pep:`274` підтверджено. :-)"
 
 #: ../../whatsnew/3.0.rst:391
 msgid ""
@@ -543,24 +611,34 @@ msgid ""
 "``{x for x in stuff}`` means the same thing as ``set(stuff)`` but is more "
 "flexible."
 msgstr ""
+"Встановіть літерали, напр. ``{1, 2}``. Зауважте, що ``{}`` є порожнім "
+"словником; використовуйте ``set()`` для порожнього набору. Також "
+"підтримується розуміння набору; наприклад, ``{x for x in stuff}`` означає те"
+" саме, що ``set(stuff)``, але є більш гнучким."
 
 #: ../../whatsnew/3.0.rst:396
 msgid ""
 "New octal literals, e.g. ``0o720`` (already in 2.6).  The old octal literals"
 " (``0720``) are gone."
 msgstr ""
+"Нові вісімкові літерали, напр. ``0o720`` (вже у 2.6). Старі вісімкові "
+"літерали (``0720``) зникли."
 
 #: ../../whatsnew/3.0.rst:399
 msgid ""
 "New binary literals, e.g. ``0b1010`` (already in 2.6), and there is a new "
 "corresponding built-in function, :func:`bin`."
 msgstr ""
+"Нові бінарні літерали, напр. ``0b1010`` (вже у 2.6), і є нова відповідна "
+"вбудована функція, :func:`bin`."
 
 #: ../../whatsnew/3.0.rst:402
 msgid ""
 "Bytes literals are introduced with a leading ``b`` or ``B``, and there is a "
 "new corresponding built-in function, :func:`bytes`."
 msgstr ""
+"Байтові літерали представлено з ``b`` або ``B`` на початку, і є нова "
+"відповідна вбудована функція, :func:`bytes`."
 
 #: ../../whatsnew/3.0.rst:406
 msgid "Changed Syntax"
@@ -620,6 +698,12 @@ msgid ""
 "inside a :func:`list` constructor, and in particular the loop control "
 "variables are no longer leaked into the surrounding scope."
 msgstr ""
+"Розуміння списків більше не підтримує синтаксичну форму :samp:`[... для "
+"{var} в {item1}, {item2}, ...]`. Замість цього використовуйте :samp:`[... "
+"для {var} в ({item1}, {item2}, ...)]`. Також зауважте, що розуміння списків "
+"має іншу семантику: вони ближчі до синтаксичного цукру для виразу генератора"
+" всередині конструктора :func:`list`, і, зокрема, керуючі змінні циклу "
+"більше не просочуються в навколишню область."
 
 #: ../../whatsnew/3.0.rst:444
 msgid ""
@@ -640,14 +724,18 @@ msgid ""
 ":pep:`3113`: Tuple parameter unpacking removed.  You can no longer write "
 "``def foo(a, (b, c)): ...``. Use ``def foo(a, b_c): b, c = b_c`` instead."
 msgstr ""
+":pep:`3113`: вилучено розпакування параметрів кортежу. Ви більше не можете "
+"писати ``def foo(a, (b, c)): ...``. Замість цього використовуйте ``def "
+"foo(a, b_c): b, c = b_c``."
 
 #: ../../whatsnew/3.0.rst:456
 msgid "Removed backticks (use :func:`repr` instead)."
 msgstr ""
+"Видалено зворотні галочки (замість цього використовуйте :func:`repr`)."
 
 #: ../../whatsnew/3.0.rst:458
 msgid "Removed ``<>`` (use ``!=`` instead)."
-msgstr ""
+msgstr "Видалено ``<>`` (замість цього використовуйте ``!=``)."
 
 #: ../../whatsnew/3.0.rst:460
 msgid ""
@@ -656,20 +744,26 @@ msgid ""
 " note that :func:`exec` no longer takes a stream argument; instead of "
 "``exec(f)`` you can use ``exec(f.read())``."
 msgstr ""
+"Видалено ключове слово: :func:`exec` більше не є ключовим словом; воно "
+"залишається як функція. (На щастя, синтаксис функції також був прийнятий у "
+"2.x.) Також зауважте, що :func:`exec` більше не приймає аргумент потоку; "
+"замість ``exec(f)`` ви можете використовувати ``exec(f.read())``."
 
 #: ../../whatsnew/3.0.rst:465
 msgid "Integer literals no longer support a trailing ``l`` or ``L``."
-msgstr ""
+msgstr "Цілі літерали більше не підтримують кінцеві ``l`` або ``L``."
 
 #: ../../whatsnew/3.0.rst:467
 msgid "String literals no longer support a leading ``u`` or ``U``."
-msgstr ""
+msgstr "Рядкові літерали більше не підтримують початок ``u`` або ``U``."
 
 #: ../../whatsnew/3.0.rst:469
 msgid ""
 "The :keyword:`from` *module* :keyword:`import` ``*`` syntax is only allowed "
 "at the module level, no longer inside functions."
 msgstr ""
+"Синтаксис :keyword:`from` *module* :keyword:`import` ``*`` дозволений лише "
+"на рівні модуля, більше не всередині функцій."
 
 #: ../../whatsnew/3.0.rst:472
 msgid ""
@@ -677,14 +771,17 @@ msgid ""
 "import {name}`.  All :keyword:`import` forms not starting with ``.`` are "
 "interpreted as absolute imports.  (:pep:`328`)"
 msgstr ""
+"Єдиним прийнятним синтаксисом для відносного імпорту є :samp:`from "
+".[{module}] import {name}`. Усі форми :keyword:`import`, які не починаються "
+"з ``.``, інтерпретуються як абсолютні імпорти. (:pep:`328`)"
 
 #: ../../whatsnew/3.0.rst:476
 msgid "Classic classes are gone."
-msgstr ""
+msgstr "Класичні заняття зникли."
 
 #: ../../whatsnew/3.0.rst:480
 msgid "Changes Already Present In Python 2.6"
-msgstr ""
+msgstr "Зміни вже присутні в Python 2.6"
 
 #: ../../whatsnew/3.0.rst:482
 msgid ""
@@ -694,6 +791,10 @@ msgid ""
 "corresponding sections in :ref:`whats-new-in-2.6` should be consulted for "
 "longer descriptions."
 msgstr ""
+"Оскільки багато користувачів, ймовірно, переходять прямо з Python 2.5 на "
+"Python 3.0, цей розділ нагадує читачеві про нові функції, які спочатку були "
+"розроблені для Python 3.0, але які були перенесені на Python 2.6. Додаткові "
+"описи можна знайти у відповідних розділах :ref:`whats-new-in-2.6`."
 
 #: ../../whatsnew/3.0.rst:488
 msgid ""
@@ -701,12 +802,17 @@ msgid ""
 "and no longer needs to be imported from the :mod:`__future__`. Also check "
 "out :ref:`new-26-context-managers` and :ref:`new-module-contextlib`."
 msgstr ""
+":ref:`pep-0343`. Оператор :keyword:`with` тепер є стандартною функцією, і "
+"його більше не потрібно імпортувати з :mod:`__future__`. Також перегляньте "
+":ref:`new-26-context-managers` і :ref:`new-module-contextlib`."
 
 #: ../../whatsnew/3.0.rst:493
 msgid ""
 ":ref:`pep-0366`.  This enhances the usefulness of the :option:`-m` option "
 "when the referenced module lives in a package."
 msgstr ""
+":ref:`pep-0366`. Це підвищує корисність опції :option:`-m`, коли модуль, на "
+"який посилається, живе в пакеті."
 
 #: ../../whatsnew/3.0.rst:496
 msgid ":ref:`pep-0370`."
@@ -725,12 +831,20 @@ msgid ""
 "API for string formatting, and to start deprecating the ``%`` operator in "
 "Python 3.1."
 msgstr ""
+":ref:`pep-3101`. Примітка: в описі 2.6 згадується метод :meth:`format` як "
+"для 8-бітних рядків, так і для рядків Unicode. У версії 3.0 тільки тип "
+":class:`str` (текстові рядки з підтримкою Unicode) підтримує цей метод; тип "
+":class:`bytes` не має. План полягає в тому, щоб згодом зробити це єдиним API"
+" для форматування рядків і почати не підтримувати оператор ``%`` у Python "
+"3.1."
 
 #: ../../whatsnew/3.0.rst:507
 msgid ""
 ":ref:`pep-3105`.  This is now a standard feature and no longer needs to be "
 "imported from :mod:`__future__`.  More details were given above."
 msgstr ""
+":ref:`pep-3105`. Тепер це стандартна функція, і її більше не потрібно "
+"імпортувати з :mod:`__future__`. Детальніше було наведено вище."
 
 #: ../../whatsnew/3.0.rst:510
 msgid ""
@@ -738,6 +852,10 @@ msgid ""
 " now standard and :keyword:`!except` *exc*, *var* is no longer supported.  "
 "(Of course, the :keyword:`!as` *var* part is still optional.)"
 msgstr ""
+":ref:`pep-3110`. Синтаксис :keyword:`except` *exc* :keyword:`!as` *var* "
+"тепер є стандартним, а :keyword:`!except` *exc*, *var* більше не "
+"підтримується. (Звичайно, частина :keyword:`!as` *var* все ще "
+"необов’язкова.)"
 
 #: ../../whatsnew/3.0.rst:515
 msgid ""
@@ -745,6 +863,9 @@ msgid ""
 " like ``b'...'``, ``b\"\"\"...\"\"\"``, and ``br\"...\"``) now produces a "
 "literal of type :class:`bytes`."
 msgstr ""
+":ref:`pep-3112`. Нотація рядкового літералу ``b\"...\"`` (і його варіанти, "
+"такі як ``b'...'``, ``b\"\"\"...\"\"\"`` і ``br\" ...\"``) тепер створює "
+"літерал типу :class:`bytes`."
 
 #: ../../whatsnew/3.0.rst:519
 msgid ""
@@ -767,6 +888,9 @@ msgid ""
 ":ref:`pep-3118`.  The old builtin :func:`buffer` is now really gone; the new"
 " builtin :func:`memoryview` provides (mostly) similar functionality."
 msgstr ""
+":ref:`pep-3118`. Старий вбудований :func:`buffer` тепер справді зник; новий "
+"вбудований :func:`memoryview` забезпечує (в основному) подібну "
+"функціональність."
 
 #: ../../whatsnew/3.0.rst:533
 msgid ""
@@ -776,12 +900,19 @@ msgid ""
 ":class:`list` conform to the :class:`collections.MutableMapping` and "
 ":class:`collections.MutableSequence` ABCs, respectively."
 msgstr ""
+":ref:`pep-3119`. Модуль :mod:`abc` і ABC, визначені в модулі "
+":mod:`collections`, тепер відіграють дещо помітнішу роль у мові, а також "
+"такі вбудовані типи колекцій, як :class:`dict` і :class:`list` відповідає "
+"ABC :class:`collections.MutableMapping` і "
+":class:`collections.MutableSequence` відповідно."
 
 #: ../../whatsnew/3.0.rst:539
 msgid ""
 ":ref:`pep-3127`.  As mentioned above, the new octal literal notation is the "
 "only one supported, and binary literals have been added."
 msgstr ""
+":ref:`pep-3127`. Як згадувалося вище, нова нотація вісімкових літералів є "
+"єдиною, що підтримується, і додано двійкові літерали."
 
 #: ../../whatsnew/3.0.rst:543
 msgid ":ref:`pep-3129`."
@@ -793,6 +924,9 @@ msgid ""
 "defining Python's \"numeric tower\".  Also note the new :mod:`fractions` "
 "module which implements :class:`numbers.Rational`."
 msgstr ""
+":ref:`pep-3141`. Модуль :mod:`numbers` є ще одним новим використанням ABC, "
+"що визначає \"числову вежу\" Python. Також зверніть увагу на новий модуль "
+":mod:`fractions`, який реалізує :class:`numbers.Rational`."
 
 #: ../../whatsnew/3.0.rst:551
 msgid "Library Changes"
@@ -804,6 +938,9 @@ msgid ""
 "extensive changes to the standard library.  :pep:`3108` is the reference for"
 " the major changes to the library.  Here's a capsule review:"
 msgstr ""
+"Через обмеження часу цей документ не вичерпно охоплює дуже великі зміни "
+"стандартної бібліотеки. :pep:`3108` є посиланням на основні зміни в "
+"бібліотеці. Ось огляд капсули:"
 
 #: ../../whatsnew/3.0.rst:558
 msgid ""
@@ -830,6 +967,8 @@ msgid ""
 "Some modules were renamed because their old name disobeyed :pep:`8`, or for "
 "various other reasons.  Here's the list:"
 msgstr ""
+"Деякі модулі були перейменовані через те, що їхня стара назва не відповідала"
+" :pep:`8`, або з інших причин. Ось список:"
 
 #: ../../whatsnew/3.0.rst:576
 msgid "Old Name"
@@ -923,6 +1062,8 @@ msgid ""
 "Some related modules have been grouped into packages, and usually the "
 "submodule names have been simplified.  The resulting new packages are:"
 msgstr ""
+"Деякі пов’язані модулі були згруповані в пакети, і зазвичай назви підмодулів"
+" були спрощені. Отримані нові пакети:"
 
 #: ../../whatsnew/3.0.rst:606
 msgid ""
@@ -947,6 +1088,10 @@ msgid ""
 ":mod:`tkinter`.  Also note that as of Python 2.6, the functionality of "
 ":mod:`turtle` has been greatly enhanced."
 msgstr ""
+":mod:`tkinter` (усі пов’язані з :mod:`Tkinter` модулі, крім :mod:`turtle`). "
+"Цільова аудиторія :mod:`turtle` не дуже дбає про :mod:`tkinter`. Також "
+"зауважте, що починаючи з Python 2.6, функціональність :mod:`turtle` була "
+"значно розширена."
 
 #: ../../whatsnew/3.0.rst:620
 msgid ""
@@ -964,6 +1109,7 @@ msgstr ""
 msgid ""
 "Some other changes to standard library modules, not covered by :pep:`3108`:"
 msgstr ""
+"Деякі інші зміни до модулів стандартної бібліотеки, не охоплені :pep:`3108`:"
 
 #: ../../whatsnew/3.0.rst:629
 msgid "Killed :mod:`sets`.  Use the built-in :func:`set` class."
@@ -975,6 +1121,10 @@ msgid ""
 ":func:`sys.exc_clear`, :data:`sys.exc_type`, :data:`sys.exc_value`, "
 ":data:`sys.exc_traceback`.  (Note that :data:`sys.last_type` etc. remain.)"
 msgstr ""
+"Очищення модуля :mod:`sys`: видалено :func:`sys.exitfunc`, "
+":func:`sys.exc_clear`, :data:`sys.exc_type`, :data:`sys.exc_value`, "
+":data:`sys.exc_traceback`. (Зверніть увагу, що :data:`sys.last_type` тощо "
+"залишаються.)"
 
 #: ../../whatsnew/3.0.rst:636
 msgid ""
@@ -983,12 +1133,18 @@ msgid ""
 "the ``'c'`` typecode for array is gone -- use either ``'b'`` for bytes or "
 "``'u'`` for Unicode characters."
 msgstr ""
+"Очищення типу :class:`array.array`: методи :meth:`read` і :meth:`write` "
+"зникли; замість цього використовуйте :meth:`fromfile` і :meth:`tofile`. Крім"
+" того, код типу ``'c'`` для масиву зник — використовуйте ``'b'`` для байтів "
+"або ``'u'`` для символів Unicode."
 
 #: ../../whatsnew/3.0.rst:642
 msgid ""
 "Cleanup of the :mod:`operator` module: removed :func:`sequenceIncludes` and "
 ":func:`isCallable`."
 msgstr ""
+"Очищення модуля :mod:`operator`: видалено :func:`sequenceIncludes` і "
+":func:`isCallable`."
 
 #: ../../whatsnew/3.0.rst:645
 msgid ""
@@ -1000,7 +1156,7 @@ msgstr ""
 #: ../../whatsnew/3.0.rst:649
 msgid ""
 "Cleanup of the :mod:`random` module: removed the :func:`jumpahead` API."
-msgstr ""
+msgstr "Очищення модуля :mod:`random`: видалено API :func:`jumpahead`."
 
 #: ../../whatsnew/3.0.rst:651
 msgid "The :mod:`new` module is gone."
@@ -1011,12 +1167,16 @@ msgid ""
 "The functions :func:`os.tmpnam`, :func:`os.tempnam` and :func:`os.tmpfile` "
 "have been removed in favor of the :mod:`tempfile` module."
 msgstr ""
+"Функції :func:`os.tmpnam`, :func:`os.tempnam` і :func:`os.tmpfile` було "
+"видалено на користь модуля :mod:`tempfile`."
 
 #: ../../whatsnew/3.0.rst:657
 msgid ""
 "The :mod:`tokenize` module has been changed to work with bytes.  The main "
 "entry point is now :func:`tokenize.tokenize`, instead of generate_tokens."
 msgstr ""
+"Модуль :mod:`tokenize` змінено для роботи з байтами. Головною точкою входу "
+"тепер є :func:`tokenize.tokenize` замість generate_tokens."
 
 #: ../../whatsnew/3.0.rst:661
 msgid ""
@@ -1026,6 +1186,12 @@ msgid ""
 "friends had locale-specific behavior, which is a bad idea for such "
 "attractively named global \"constants\".)"
 msgstr ""
+":data:`string.letters` и его друзья (:data:`string.lowercase` и "
+":data:`string.uppercase`) исчезли. Вместо этого используйте "
+":data:`string.ascii_letters` и т.д. (Причина удаления заключается в том, что"
+" :data:`string.letters` и его друзья имели поведение, специфичное для "
+"локали, что является плохой идеей для таких глобальных «констант» с "
+"привлекательными именами.)"
 
 #: ../../whatsnew/3.0.rst:668
 msgid ""
@@ -1034,10 +1200,15 @@ msgid ""
 "most global namespaces is unchanged.  To modify a builtin, you should use "
 ":mod:`builtins`, not :data:`__builtins__`!"
 msgstr ""
+"Змінено назву модуля :mod:`__builtin__` на :mod:`builtins` (видалення "
+"підкреслення, додавання 's'). Змінна :data:`__builtins__`, що міститься в "
+"більшості глобальних просторів імен, не змінюється. Щоб змінити вбудований "
+"модуль, ви повинні використовувати :mod:`builtins`, а не "
+":data:`__builtins__`!"
 
 #: ../../whatsnew/3.0.rst:675
 msgid ":pep:`3101`: A New Approach To String Formatting"
-msgstr ""
+msgstr ":pep:`3101`: Новий підхід до форматування рядків"
 
 #: ../../whatsnew/3.0.rst:677
 msgid ""
@@ -1046,16 +1217,22 @@ msgid ""
 "supported;  it will  be deprecated in  Python 3.1  and removed from the "
 "language at some later time.)  Read :pep:`3101` for the full scoop."
 msgstr ""
+"Нова система для вбудованих операцій форматування рядка замінює оператор "
+"форматування рядка ``%``. (Однак оператор ``%`` все ще підтримується; він "
+"буде застарілим у Python 3.1 і пізніше буде видалено з мови.) Прочитайте "
+":pep:`3101`, щоб отримати повну інформацію."
 
 #: ../../whatsnew/3.0.rst:685
 msgid "Changes To Exceptions"
-msgstr ""
+msgstr "Зміни винятків"
 
 #: ../../whatsnew/3.0.rst:687
 msgid ""
 "The APIs for raising and catching exception have been cleaned up and new "
 "powerful features added:"
 msgstr ""
+"Було очищено API для виклику та перехоплення винятків і додано нові потужні "
+"функції:"
 
 #: ../../whatsnew/3.0.rst:690
 msgid ""
@@ -1066,6 +1243,12 @@ msgid ""
 "be raised, and placed no restriction on what you can catch.)  As a "
 "consequence, string exceptions are finally truly and utterly dead."
 msgstr ""
+":pep:`352`: усі винятки мають бути отримані (прямо чи опосередковано) з "
+":exc:`BaseException`. Це корінь ієрархії винятків. Це не нова рекомендація, "
+"але *вимога* для успадкування від :exc:`BaseException` є новою. (Python 2.6 "
+"все ще дозволяв створювати класичні класи та не накладав обмежень на те, що "
+"ви можете перехопити.) Як наслідок, виключення рядків остаточно по-"
+"справжньому й повністю мертві."
 
 #: ../../whatsnew/3.0.rst:698
 msgid ""
@@ -1076,16 +1259,24 @@ msgid ""
 " except for this latter category is to use :keyword:`except` "
 ":exc:`Exception`."
 msgstr ""
+"Майже всі винятки насправді мають походити від :exc:`Exception`; "
+":exc:`BaseException` слід використовувати лише як базовий клас для винятків,"
+" які слід обробляти лише на верхньому рівні, наприклад :exc:`SystemExit` або"
+" :exc:`KeyboardInterrupt`. Рекомендована ідіома для обробки всіх винятків, "
+"крім цієї останньої категорії, полягає в використанні :keyword:`except` "
+":exc:`Exception`."
 
 #: ../../whatsnew/3.0.rst:705
 msgid ":exc:`StandardError` was removed."
-msgstr ""
+msgstr ":exc:`StandardError` видалено."
 
 #: ../../whatsnew/3.0.rst:707
 msgid ""
 "Exceptions no longer behave as sequences.  Use the :attr:`args` attribute "
 "instead."
 msgstr ""
+"Винятки більше не діють як послідовності. Натомість використовуйте атрибут "
+":attr:`args`."
 
 #: ../../whatsnew/3.0.rst:710
 msgid ""
@@ -1103,6 +1294,10 @@ msgid ""
 "{variable}`.  Moreover, the *variable* is explicitly deleted when the "
 ":keyword:`except` block is left."
 msgstr ""
+":pep:`3110`: Перехоплення винятків. Тепер ви повинні використовувати "
+":samp:`крім {SomeException} як {variable}` замість :samp:`крім "
+"{SomeException}, {variable}`. Крім того, *змінна* явно видаляється, коли "
+"залишається блок :keyword:`except`."
 
 #: ../../whatsnew/3.0.rst:722
 msgid ""
@@ -1141,20 +1336,26 @@ msgid ""
 "extension module.  For example, ``error code 193`` is now ``%1 is not a "
 "valid Win32 application``.  Strings now deal with non-English locales."
 msgstr ""
+"Покращено кілька повідомлень про винятки, коли Windows не вдається "
+"завантажити модуль розширення. Наприклад, ``код помилки 193`` тепер ``%1 не "
+"є дійсною програмою Win32``. Рядки тепер мають справу з неанглійськими "
+"локалями."
 
 #: ../../whatsnew/3.0.rst:755
 msgid "Miscellaneous Other Changes"
-msgstr ""
+msgstr "Інші інші зміни"
 
 #: ../../whatsnew/3.0.rst:758
 msgid "Operators And Special Methods"
-msgstr ""
+msgstr "Оператори та спеціальні методи"
 
 #: ../../whatsnew/3.0.rst:760
 msgid ""
 "``!=`` now returns the opposite of ``==``, unless ``==`` returns "
 ":data:`NotImplemented`."
 msgstr ""
+"``!=`` тепер повертає протилежність ``==``, якщо ``==`` не повертає "
+":data:`NotImplemented`."
 
 #: ../../whatsnew/3.0.rst:763
 msgid ""
@@ -1162,6 +1363,8 @@ msgid ""
 "referencing a method as a class attribute, you now get a plain function "
 "object."
 msgstr ""
+"Поняття \"незв'язаних методів\" було видалено з мови. Посилаючись на метод "
+"як на атрибут класу, тепер ви отримуєте звичайний об’єкт функції."
 
 #: ../../whatsnew/3.0.rst:767
 msgid ""
@@ -1170,12 +1373,18 @@ msgid ""
 "j))`` (or :meth:`__setitem__` or :meth:`__delitem__`, when used as an "
 "assignment or deletion target, respectively)."
 msgstr ""
+":meth:`__getslice__`, :meth:`__setslice__` і :meth:`__delslice__` були "
+"вбиті. Синтаксис ``a[i:j]`` тепер перекладається на ``a.__getitem__(slice(i,"
+" j))`` (або :meth:`__setitem__` або :meth:`__delitem__`, коли "
+"використовується як ціль призначення або видалення відповідно)."
 
 #: ../../whatsnew/3.0.rst:773
 msgid ""
 ":pep:`3114`: the standard :meth:`next` method has been renamed to "
 ":meth:`~iterator.__next__`."
 msgstr ""
+":pep:`3114`: стандартний метод :meth:`next` було перейменовано на "
+":meth:`~iterator.__next__`."
 
 #: ../../whatsnew/3.0.rst:776
 msgid ""
@@ -1183,10 +1392,13 @@ msgid ""
 ":func:`oct` and :func:`hex` use :meth:`__index__` now to convert the "
 "argument to an integer."
 msgstr ""
+"Спеціальні методи :meth:`__oct__` і :meth:`__hex__` видалено -- :func:`oct` "
+"і :func:`hex` тепер використовують :meth:`__index__` для перетворення "
+"аргументу в ціле число."
 
 #: ../../whatsnew/3.0.rst:780
 msgid "Removed support for :attr:`__members__` and :attr:`__methods__`."
-msgstr ""
+msgstr "Видалено підтримку :attr:`__members__` і :attr:`__methods__`."
 
 #: ../../whatsnew/3.0.rst:782
 msgid ""
@@ -1206,7 +1418,7 @@ msgstr ""
 
 #: ../../whatsnew/3.0.rst:795
 msgid "Builtins"
-msgstr ""
+msgstr "Вбудовані"
 
 #: ../../whatsnew/3.0.rst:797
 msgid ""
@@ -1216,6 +1428,11 @@ msgid ""
 "automatically be chosen.  With arguments, the behavior of :func:`super` is "
 "unchanged."
 msgstr ""
+":pep:`3135`: Нове :func:`super`. Тепер ви можете викликати :func:`super` без"
+" аргументів і (припускаючи, що це в звичайному методі екземпляра, "
+"визначеному всередині оператора :keyword:`class`) правильний клас і "
+"екземпляр будуть вибрані автоматично. З аргументами поведінка :func:`super` "
+"не змінюється."
 
 #: ../../whatsnew/3.0.rst:803
 msgid ""
@@ -1225,12 +1442,19 @@ msgid ""
 "input is terminated prematurely. To get the old behavior of :func:`input`, "
 "use ``eval(input())``."
 msgstr ""
+":pep:`3111`: :func:`raw_input` було перейменовано на :func:`input`. Тобто "
+"нова функція :func:`input` зчитує рядок із :data:`sys.stdin` і повертає його"
+" без кінцевого символу нового рядка. Він викликає :exc:`EOFError`, якщо "
+"введення завершується передчасно. Щоб отримати стару поведінку "
+":func:`input`, використовуйте ``eval(input())``."
 
 #: ../../whatsnew/3.0.rst:809
 msgid ""
 "A new built-in function :func:`next` was added to call the "
 ":meth:`~iterator.__next__` method on an object."
 msgstr ""
+"Додано нову вбудовану функцію :func:`next` для виклику методу "
+":meth:`~iterator.__next__` для об’єкта."
 
 #: ../../whatsnew/3.0.rst:812
 msgid ""
@@ -1242,15 +1466,24 @@ msgid ""
 "a single argument and a value of the same type as ``x`` when called with two"
 " arguments."
 msgstr ""
+"Змінено стратегію округлення функції :func:`round` і тип повернення. Точні "
+"половинні випадки тепер округлюються до найближчого парного результату "
+"замість нуля. (Наприклад, ``round(2.5)`` тепер повертає ``2``, а не ``3``.) "
+"``round(x[, n])`` тепер делегує ``x.__round__([ n])`` замість того, щоб "
+"завжди повертати число з плаваючою точкою. Зазвичай він повертає ціле число,"
+" якщо викликається з одним аргументом, і значення того самого типу, що й "
+"``x``, коли викликається з двома аргументами."
 
 #: ../../whatsnew/3.0.rst:821
 msgid "Moved :func:`intern` to :func:`sys.intern`."
-msgstr ""
+msgstr "Переміщено :func:`intern` до :func:`sys.intern`."
 
 #: ../../whatsnew/3.0.rst:823
 msgid ""
 "Removed: :func:`apply`.  Instead of ``apply(f, args)`` use ``f(*args)``."
 msgstr ""
+"Видалено: :func:`apply`. Замість ``apply(f, args)`` використовуйте "
+"``f(*args)``."
 
 #: ../../whatsnew/3.0.rst:826
 msgid ""
@@ -1258,24 +1491,34 @@ msgid ""
 "``isinstance(f, collections.Callable)``.  The :func:`operator.isCallable` "
 "function is also gone."
 msgstr ""
+"Видалено :func:`callable`. Замість ``callable(f)`` ви можете використовувати"
+" ``isinstance(f, collections.Callable)``. Функція "
+":func:`operator.isCallable` також зникла."
 
 #: ../../whatsnew/3.0.rst:830
 msgid ""
 "Removed :func:`coerce`.  This function no longer serves a purpose now that "
 "classic classes are gone."
 msgstr ""
+"Видалено :func:`coerce`. Ця функція більше не служить меті, оскільки "
+"класичні класи зникли."
 
 #: ../../whatsnew/3.0.rst:833
 msgid ""
 "Removed :func:`execfile`.  Instead of ``execfile(fn)`` use "
 "``exec(open(fn).read())``."
 msgstr ""
+"Видалено :func:`execfile`. Замість ``execfile(fn)`` використовуйте "
+"``exec(open(fn).read())``."
 
 #: ../../whatsnew/3.0.rst:836
 msgid ""
 "Removed the :class:`file` type.  Use :func:`open`.  There are now several "
 "different kinds of streams that open can return in the :mod:`io` module."
 msgstr ""
+"Видалено тип :class:`file`. Використовуйте :func:`open`. Зараз існує кілька "
+"різних типів потоків, які відкриваються і можуть повертатися в модулі "
+":mod:`io`."
 
 #: ../../whatsnew/3.0.rst:839
 msgid ""
@@ -1283,6 +1526,9 @@ msgid ""
 " however, 99 percent of the time an explicit :keyword:`for` loop is more "
 "readable."
 msgstr ""
+"Видалено :func:`reduce`. Використовуйте :func:`functools.reduce`, якщо вам "
+"це дійсно потрібно; однак у 99% випадків явний цикл :keyword:`for` "
+"читабельніший."
 
 #: ../../whatsnew/3.0.rst:843
 msgid "Removed :func:`reload`.  Use :func:`imp.reload`."
@@ -1292,6 +1538,8 @@ msgstr ""
 msgid ""
 "Removed. :meth:`dict.has_key` -- use the :keyword:`in` operator instead."
 msgstr ""
+"Видалено. :meth:`dict.has_key` -- замість цього використовуйте оператор "
+":keyword:`in`."
 
 #: ../../whatsnew/3.0.rst:852
 msgid "Build and C API Changes"
@@ -1301,13 +1549,15 @@ msgstr "构建和 C API 的改变"
 msgid ""
 "Due to time constraints, here is a *very* incomplete list of changes to the "
 "C API."
-msgstr ""
+msgstr "Через обмеження часу ось *дуже* неповний список змін до C API."
 
 #: ../../whatsnew/3.0.rst:857
 msgid ""
 "Support for several platforms was dropped, including but not limited to Mac "
 "OS 9, BeOS, RISCOS, Irix, and Tru64."
 msgstr ""
+"Було припинено підтримку кількох платформ, зокрема Mac OS 9, BeOS, RISCOS, "
+"Irix і Tru64."
 
 #: ../../whatsnew/3.0.rst:860
 msgid ":pep:`3118`: New Buffer API."
@@ -1315,15 +1565,15 @@ msgstr ":pep:`3118`: 新的缓冲区 API。"
 
 #: ../../whatsnew/3.0.rst:862
 msgid ":pep:`3121`: Extension Module Initialization & Finalization."
-msgstr ""
+msgstr ":pep:`3121`: Ініціалізація та завершення модуля розширення."
 
 #: ../../whatsnew/3.0.rst:864
 msgid ":pep:`3123`: Making :c:macro:`PyObject_HEAD` conform to standard C."
-msgstr ""
+msgstr ":pep:`3123`: Приведення :c:macro:`PyObject_HEAD` до стандарту C."
 
 #: ../../whatsnew/3.0.rst:866
 msgid "No more C API support for restricted execution."
-msgstr ""
+msgstr "Більше немає підтримки C API для обмеженого виконання."
 
 #: ../../whatsnew/3.0.rst:868
 msgid ""
@@ -1339,12 +1589,17 @@ msgid ""
 ":c:func:`PyImport_ImportModule` but won't block on the import lock "
 "(returning an error instead)."
 msgstr ""
+"Новий C API :c:func:`PyImport_ImportModuleNoBlock`, працює як "
+":c:func:`PyImport_ImportModule`, але не блокує блокування імпорту (натомість"
+" повертає помилку)."
 
 #: ../../whatsnew/3.0.rst:875
 msgid ""
 "Renamed the boolean conversion C-level slot and method: ``nb_nonzero`` is "
 "now ``nb_bool``."
 msgstr ""
+"Перейменовано слот і метод логічного перетворення C-рівня: ``nb_nonzero`` "
+"тепер ``nb_bool``."
 
 #: ../../whatsnew/3.0.rst:878
 msgid ""
@@ -1362,6 +1617,10 @@ msgid ""
 "biggest cause is the removal of special-casing for small integers. There's "
 "room for improvement, but it will happen after 3.0 is released!"
 msgstr ""
+"Кінцевим результатом узагальнень 3.0 є те, що Python 3.0 виконує тест "
+"pystone приблизно на 10% повільніше, ніж Python 2.5. Швидше за все, "
+"найбільшою причиною є видалення спеціального регістра для малих цілих чисел."
+" Є місце для вдосконалення, але це станеться після випуску 3.0!"
 
 #: ../../whatsnew/3.0.rst:896
 msgid "Porting To Python 3.0"
@@ -1372,16 +1631,21 @@ msgid ""
 "For porting existing Python 2.5 or 2.6 source code to Python 3.0, the best "
 "strategy is the following:"
 msgstr ""
+"Для перенесення існуючого вихідного коду Python 2.5 або 2.6 на Python 3.0 "
+"найкраща стратегія така:"
 
 #: ../../whatsnew/3.0.rst:901
 msgid "(Prerequisite:) Start with excellent test coverage."
-msgstr ""
+msgstr "(Обов’язкова умова:) Почніть із чудового тестового покриття."
 
 #: ../../whatsnew/3.0.rst:903
 msgid ""
 "Port to Python 2.6.  This should be no more work than the average port from "
 "Python 2.x to Python 2.(x+1).  Make sure all your tests pass."
 msgstr ""
+"Порт на Python 2.6. Це повинно бути не більше роботи, ніж середнє "
+"перенесення з Python 2.x на Python 2. (x+1). Переконайтеся, що всі ваші "
+"тести пройдені."
 
 #: ../../whatsnew/3.0.rst:907
 msgid ""
@@ -1390,6 +1654,11 @@ msgid ""
 "Run your test suite again, and fix code that you get warnings about until "
 "there are no warnings left, and all your tests still pass."
 msgstr ""
+"(Досі використовується 2.6:) Увімкніть перемикач командного рядка "
+":option:`!-3`. Це вмикає попередження про функції, які буде видалено (або "
+"змінено) у версії 3.0. Знову запустіть набір тестів і виправте код, про який"
+" ви отримуєте попередження, доки попередження не зникнуть, і всі ваші тести "
+"все одно пройдуть."
 
 #: ../../whatsnew/3.0.rst:913
 msgid ""
@@ -1398,6 +1667,11 @@ msgid ""
 "translation under Python 3.0.  Manually fix up any remaining issues, fixing "
 "problems until all tests pass again."
 msgstr ""
+"Запустіть перекладач ``2to3`` з джерела в джерело над вашим деревом "
+"вихідного коду. (Див. :ref:`2to3-reference`, щоб дізнатися більше про цей "
+"інструмент.) Запустіть результат перекладу під Python 3.0. Вручну вирішуйте "
+"проблеми, що залишилися, виправляючи проблеми, доки всі тести не пройдуть "
+"знову."
 
 #: ../../whatsnew/3.0.rst:918
 msgid ""
@@ -1409,8 +1683,15 @@ msgid ""
 "the source code and running the ``2to3`` translator again, rather than "
 "editing the 3.0 version of the source code."
 msgstr ""
+"Не рекомендується намагатися написати вихідний код, який працює без змін під"
+" Python 2.6 і 3.0; вам доведеться використовувати дуже спотворений стиль "
+"кодування, напр. уникнення операторів ``print``, метакласів і багато іншого."
+" Якщо ви підтримуєте бібліотеку, яка має підтримувати як Python 2.6, так і "
+"Python 3.0, найкращим підходом є змінити крок 3 вище, відредагувавши версію "
+"вихідного коду 2.6 і знову запустивши перекладач ``2to3`` замість "
+"редагування Версія вихідного коду 3.0."
 
 #: ../../whatsnew/3.0.rst:927
 msgid ""
 "For porting C extensions to Python 3.0, please see :ref:`cporting-howto`."
-msgstr ""
+msgstr "Для перенесення розширень C на Python 3.0 див. :ref:`cporting-howto`."

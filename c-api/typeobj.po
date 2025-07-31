@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Freesand Leo <yuqinju@163.com>, 2024
+# Freesand Leo <yuqinju@163.com>, 2025
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2025
 # 
 #, fuzzy
@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 19:22+0000\n"
-"PO-Revision-Date: 2022-11-05 17:21+0000\n"
+"POT-Creation-Date: 2025-07-25 18:10+0000\n"
+"PO-Revision-Date: 2025-07-18 20:08+0000\n"
 "Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -2619,6 +2619,11 @@ msgid ""
 "the instance layout and setting the "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` of that slot's offset."
 msgstr ""
+"Якщо тип, визначений оператором класу, не має оголошення "
+":attr:`~object.__slots__`, і жоден із його базових типів не має слабких "
+"посилань, тип стає слабко посилальним шляхом додавання слота заголовка "
+"списку слабких посилань до макета екземпляра та встановлення "
+":c:member:`~PyTypeObject.tp_weaklistoffset` зміщення цього слота."
 
 #: ../../c-api/typeobj.rst:1525
 msgid ""
@@ -2627,6 +2632,10 @@ msgid ""
 "instances of the type, and the slot's offset is stored in the type's "
 ":c:member:`~PyTypeObject.tp_weaklistoffset`."
 msgstr ""
+"Коли оголошення типу :attr:`__slots__` містить слот під назвою "
+":attr:`__weakref__`, цей слот стає заголовком списку слабких посилань для "
+"екземплярів типу, а зсув слота зберігається в "
+":c:member:`~PyTypeObject.tp_weaklistoffset` типу."
 
 #: ../../c-api/typeobj.rst:1530
 msgid ""
@@ -2634,6 +2643,9 @@ msgid ""
 ":attr:`__weakref__`, the type inherits its "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` from its base type."
 msgstr ""
+"Якщо оголошення типу :attr:`__slots__` не містить слота з назвою "
+":attr:`__weakref__`, тип успадковує свій "
+":c:member:`~PyTypeObject.tp_weaklistoffset` від свого базового типу."
 
 #: ../../c-api/typeobj.rst:1537
 msgid ""
@@ -2867,6 +2879,17 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_dictoffset` should be set to ``-4`` to indicate "
 "that the dictionary is at the very end of the structure."
 msgstr ""
+"Якщо значення цього поля більше нуля, воно визначає зміщення від початку "
+"структури екземпляра. Якщо значення менше нуля, воно визначає зміщення від "
+"*кінця* структури екземпляра. Від’ємне зміщення є дорожчим у використанні, і"
+" його слід використовувати лише тоді, коли структура екземпляра містить "
+"частину змінної довжини. Це використовується, наприклад, для додавання "
+"словника змінних примірників до підтипів :class:`str` або :class:`tuple`. "
+"Зауважте, що в цьому випадку поле :c:member:`~PyTypeObject.tp_basicsize` має"
+" враховувати словник, доданий у кінець, навіть якщо словник не включено до "
+"основного макета об’єкта. У системі з розміром покажчика 4 байти "
+":c:member:`~PyTypeObject.tp_dictoffset` має бути встановлено на ``-4``, щоб "
+"вказати, що словник знаходиться в самому кінці структури."
 
 #: ../../c-api/typeobj.rst:1731
 msgid ""
@@ -2893,6 +2916,11 @@ msgid ""
 "dictionary is always found via :c:member:`~PyTypeObject.tp_dictoffset`, this"
 " should not be a problem."
 msgstr ""
+"Це поле успадковується підтипами, але перегляньте наведені нижче правила. "
+"Підтип може замінити це зміщення; це означає, що екземпляри підтипу "
+"зберігають словник зі зміщенням різниці, ніж базовий тип. Оскільки словник "
+"завжди можна знайти через :c:member:`~PyTypeObject.tp_dictoffset`, це не "
+"повинно бути проблемою."
 
 #: ../../c-api/typeobj.rst:1751
 msgid ""
@@ -2901,6 +2929,10 @@ msgid ""
 " a dictionary slot is added to the instance layout and the "
 ":c:member:`~PyTypeObject.tp_dictoffset` is set to that slot's offset."
 msgstr ""
+"Якщо тип, визначений оператором класу, не має оголошення "
+":attr:`~object.__slots__`, і жоден із його базових типів не має словника "
+"змінної екземпляра, слот словника додається до макета екземпляра та "
+":c:member:`~PyTypeObject.tp_dictoffset` встановлено на зміщення цього слота."
 
 #: ../../c-api/typeobj.rst:1756
 msgid ""
@@ -2908,6 +2940,9 @@ msgid ""
 "declaration, the type inherits its :c:member:`~PyTypeObject.tp_dictoffset` "
 "from its base type."
 msgstr ""
+"Коли тип, визначений оператором класу, має оголошення :attr:`__slots__`, тип"
+" успадковує свій :c:member:`~PyTypeObject.tp_dictoffset` від свого базового "
+"типу."
 
 #: ../../c-api/typeobj.rst:1759
 msgid ""
@@ -2916,6 +2951,9 @@ msgid ""
 "Maybe this should be added as a feature just like :attr:`__weakref__` "
 "though.)"
 msgstr ""
+"(Додавання слота з іменем :attr:`~object.__dict__` до оголошення "
+":attr:`__slots__` не має очікуваного ефекту, це лише викликає плутанину. "
+"Можливо, це слід додати як функцію, як :attr:`__weakref__` хоча.)"
 
 #: ../../c-api/typeobj.rst:1765
 msgid ""
@@ -3315,6 +3353,9 @@ msgid ""
 ":c:func:`PyType_FromSpec`, :c:func:`PyType_FromSpecWithBases`, or "
 ":c:func:`PyType_FromModuleAndSpec`."
 msgstr ""
+"Це робиться шляхом заповнення структури :c:type:`PyType_Spec` і виклику "
+":c:func:`PyType_FromSpec`, :c:func:`PyType_FromSpecWithBases` або "
+":c:func:`PyType_FromModuleAndSpec`."
 
 #: ../../c-api/typeobj.rst:2109
 msgid "Number Object Structures"
