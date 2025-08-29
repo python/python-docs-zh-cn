@@ -6,15 +6,16 @@
 # Translators:
 # python-doc bot, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
+# 汇民 王 <whuim@qq.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 20:38+0000\n"
+"POT-Creation-Date: 2025-08-21 14:19+0000\n"
 "PO-Revision-Date: 2025-08-02 17:34+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"Last-Translator: 汇民 王 <whuim@qq.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -462,6 +463,9 @@ msgid ""
 " rest of the library user's application.  Always document if your library "
 "requires a specific start method."
 msgstr ""
+"使用 :mod:`multiprocessing` 模块或 "
+":class:`~concurrent.futures.ProcessPoolExecutor` "
+"类的库，其设计应允许用户提供自定义的进程池上下文。在库内部使用特定的进程上下文可能会导致与库用户应用程序的其他部分不兼容。如果你的库需要特定的启动方法，请务必在文档中明确说明。"
 
 #: ../../library/multiprocessing.rst:249
 msgid ""
@@ -1043,7 +1047,7 @@ msgid ""
 "If a subclass overrides the constructor, it must make sure it invokes the "
 "base class constructor (``super().__init__()``) before doing anything else "
 "to the process."
-msgstr ""
+msgstr "如果子类重载了构造函数，必须确保在执行任何其他进程操作之前调用基类构造函数（``super().__init__()``）。"
 
 #: ../../library/multiprocessing.rst:553
 msgid ""
@@ -1052,6 +1056,9 @@ msgid ""
 ":class:`concurrent.futures.ProcessPoolExecutor` from a REPL with a locally "
 "defined *target* function."
 msgstr ""
+"通常情况下，:class:`Process` 类的所有参数都必须是可序列化的（picklable）。当尝试从交互式解释器（REPL）中创建 "
+":class:`Process` 实例，或使用 :class:`concurrent.futures.ProcessPoolExecutor` "
+"并传入本地定义的 *target* 函数时，经常会遇到此要求。"
 
 #: ../../library/multiprocessing.rst:558
 msgid ""
@@ -1060,10 +1067,12 @@ msgid ""
 "starting as *target* must have been defined within an importable module in "
 "order to be loaded during unpickling."
 msgstr ""
+"若在当前交互式解释器（REPL）会话中传递一个可调用对象，当子进程启动时，会导致其因未捕获的 :exc:`AttributeError` 异常而崩溃 "
+"—— 因为作为 *target* 的函数必须定义在可导入的模块中，才能在反序列化（unpickling）过程中被正确加载。"
 
 #: ../../library/multiprocessing.rst:563
 msgid "Example of this uncatchable error from the child::"
-msgstr ""
+msgstr "子进程中此类不可捕获错误的示例::"
 
 #: ../../library/multiprocessing.rst:565
 msgid ""
@@ -1080,6 +1089,18 @@ msgid ""
 ">>> process\n"
 "<SpawnProcess name='SpawnProcess-1' pid=379473 parent=378707 stopped exitcode=1>"
 msgstr ""
+">>> import multiprocessing as mp\n"
+">>> def knigit():\n"
+"...     print(\"Ni!\")\n"
+"...\n"
+">>> process = mp.Process(target=knigit)\n"
+">>> process.start()\n"
+">>> Traceback (most recent call last):\n"
+"  File \".../multiprocessing/spawn.py\", line ..., in spawn_main\n"
+"  File \".../multiprocessing/spawn.py\", line ..., in _main\n"
+"AttributeError: module '__main__' has no attribute 'knigit'\n"
+">>> process\n"
+"<SpawnProcess name='SpawnProcess-1' pid=379473 parent=378707 stopped exitcode=1>"
 
 #: ../../library/multiprocessing.rst:578
 msgid ""
@@ -1088,6 +1109,9 @@ msgid ""
 "no longer the default on any platform.  See :ref:`multiprocessing-start-"
 "methods`. See also :gh:`132898`."
 msgstr ""
+"有关详细信息，请参阅 :ref:`multiprocessing-programming-spawn`。需要注意的是，若使用 ``\"fork\"`` "
+"启动方法，此限制并不适用——不过自 Python 3.14 起，该启动方法已不再是任何平台上的默认选项。更多启动方法相关信息，请参阅 "
+":ref:`multiprocessing-start-methods`。另请参阅 :gh:`132898`。"
 
 #: ../../library/multiprocessing.rst:584
 msgid "Added the *daemon* parameter."
@@ -1734,12 +1758,14 @@ msgid ""
 ":meth:`~Queue.get`, :meth:`~Queue.put` and :meth:`~Queue.empty` methods must"
 " no longer be called."
 msgstr ""
+"队列关闭后不得再继续使用。例如，不应再调用 :meth:`~Queue.get`、:meth:`~Queue.put` 和 "
+":meth:`~Queue.empty` 等方法。"
 
 #: ../../library/multiprocessing.rst:985
 msgid ""
 "The background thread will quit once it has flushed all buffered data to the"
 " pipe.  This is called automatically when the queue is garbage collected."
-msgstr ""
+msgstr "后台线程会在将所有缓冲数据刷新到管道后退出。当队列被垃圾回收时，此操作会自动执行。"
 
 #: ../../library/multiprocessing.rst:991
 msgid ""
@@ -5213,6 +5239,9 @@ msgid ""
 "that instances will be picklable when the :meth:`Process.start "
 "<multiprocessing.Process.start>` method is called."
 msgstr ""
+"请确保传递给 :class:`~multiprocessing.Process` 类的所有参数都是可序列化的（picklable）。此外，如果你重写了 "
+"``Process.__init__`` 方法，必须保证当调用 :meth:`Process.start "
+"<multiprocessing.Process.start>` 方法启动进程时，进程实例是可序列化的。"
 
 #: ../../library/multiprocessing.rst:3106
 msgid "Global variables"
