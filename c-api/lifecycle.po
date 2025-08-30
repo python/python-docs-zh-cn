@@ -1,0 +1,453 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# python-doc bot, 2025
+# Freesand Leo <yuqinju@163.com>, 2025
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-29 14:17+0000\n"
+"PO-Revision-Date: 2025-08-02 17:33+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../c-api/lifecycle.rst:6
+msgid "Object Life Cycle"
+msgstr "对象生命周期"
+
+#: ../../c-api/lifecycle.rst:8
+msgid ""
+"This section explains how a type's slots relate to each other throughout the"
+" life of an object.  It is not intended to be a complete canonical reference"
+" for the slots; instead, refer to the slot-specific documentation in "
+":ref:`type-structs` for details about a particular slot."
+msgstr ""
+"本章节介绍了在一个对象的整个生命周期内类型的槽位是如何彼此相互关联的。 在此并不打算做成针对这些槽位的完整规范参考文档；对于此种需求，请参阅 "
+":ref:`type-structs` 中槽位专属文档了解特定槽位的详情。"
+
+#: ../../c-api/lifecycle.rst:15
+msgid "Life Events"
+msgstr "生命周期事件"
+
+#: ../../c-api/lifecycle.rst:17
+msgid ""
+"The figure below illustrates the order of events that can occur throughout "
+"an object's life.  An arrow from *A* to *B* indicates that event *B* can "
+"occur after event *A* has occurred, with the arrow's label indicating the "
+"condition that must be true for *B* to occur after *A*."
+msgstr ""
+"下图说明了在对象的整个生命周期中可能发生的事件的顺序。从 *A* 到 *B* 的箭头表示事件 *B* 可以在事件 *A* "
+"发生之后发生，箭头的标签表示在事件 *A* 之后发生 *B* 的条件必须为真。"
+
+#: ../../c-api/lifecycle.rst:55 ../../c-api/lifecycle.rst:62
+msgid ""
+"Diagram showing events in an object's life.  Explained in detail below."
+msgstr "显示对象生命周期中的事件的图表。详细解释如下。"
+
+#: ../../c-api/lifecycle.rst:70
+msgid "Explanation:"
+msgstr "解释："
+
+#: ../../c-api/lifecycle.rst:72
+msgid "When a new object is constructed by calling its type:"
+msgstr "当通过调用其类型构造一个新对象时："
+
+#: ../../c-api/lifecycle.rst:74
+msgid ":c:member:`~PyTypeObject.tp_new` is called to create a new object."
+msgstr "调用 :c:member:`~PyTypeObject.tp_new` 来创建一个新对象。"
+
+#: ../../c-api/lifecycle.rst:75
+msgid ""
+":c:member:`~PyTypeObject.tp_alloc` is directly called by "
+":c:member:`~PyTypeObject.tp_new` to allocate the memory for the new object."
+msgstr ""
+":c:member:`~PyTypeObject.tp_alloc` 由 :c:member:`~PyTypeObject.tp_new` "
+"直接调用，为新对象分配内存。"
+
+#: ../../c-api/lifecycle.rst:78
+msgid ""
+":c:member:`~PyTypeObject.tp_init` initializes the newly created object. "
+":c:member:`!tp_init` can be called again to re-initialize an object, if "
+"desired. The :c:member:`!tp_init` call can also be skipped entirely, for "
+"example by Python code calling :py:meth:`~object.__new__`."
+msgstr ""
+":c:member:`~PyTypeObject.tp_init` 初始化新创建的对象。 如果需要，可以再次调用 "
+":c:member:`!tp_init` 来重新初始化对象。 也可以完全跳过 :c:member:`!tp_init` 调用，例如 Python "
+"代码调用 :py:meth:`~object.__new__`。"
+
+#: ../../c-api/lifecycle.rst:83
+msgid "After :c:member:`!tp_init` completes, the object is ready to use."
+msgstr "在 :c:member:`!tp_init` 完成之后，对象就可以使用了。"
+
+#: ../../c-api/lifecycle.rst:84
+msgid "Some time after the last reference to an object is removed:"
+msgstr "在最后一个对象的引用被删除后的一段时间："
+
+#: ../../c-api/lifecycle.rst:86
+msgid ""
+"If an object is not marked as *finalized*, it might be finalized by marking "
+"it as *finalized* and calling its :c:member:`~PyTypeObject.tp_finalize` "
+"function.  Python does *not* finalize an object when the last reference to "
+"it is deleted; use :c:func:`PyObject_CallFinalizerFromDealloc` to ensure "
+"that :c:member:`~PyTypeObject.tp_finalize` is always called."
+msgstr ""
+"如果一个对象没有被标记为 *finalized*，它可以通过将其标记为 *finalized* 并调用它的 "
+":c:member:`~PyTypeObject.tp_finalize` 函数来终结。 当一个对象的最后一个引用被删除时，Python并 *不* "
+"终结它；使用 :c:func:`PyObject_CallFinalizerFromDealloc` 来确保总是调用了 "
+":c:member:`~PyTypeObject.tp_finalize`。"
+
+#: ../../c-api/lifecycle.rst:92
+msgid ""
+"If the object is marked as finalized, :c:member:`~PyTypeObject.tp_clear` "
+"might be called by the garbage collector to clear references held by the "
+"object.  It is *not* called when the object's reference count reaches zero."
+msgstr ""
+"如果该对象被标记为已终结，垃圾收集器可能会调用 :c:member:`~PyTypeObject.tp_clear` "
+"来清除该对象持有的引用。当该对象的引用计数达到零时，*不* 调用它。"
+
+#: ../../c-api/lifecycle.rst:96
+msgid ""
+":c:member:`~PyTypeObject.tp_dealloc` is called to destroy the object. To "
+"avoid code duplication, :c:member:`~PyTypeObject.tp_dealloc` typically calls"
+" into :c:member:`~PyTypeObject.tp_clear` to free up the object's references."
+msgstr ""
+"调用 :c:member:`~PyTypeObject.tp_dealloc` 来销毁该对象。 "
+"为了避免代码重复，:c:member:`~PyTypeObject.tp_dealloc` 通常调用 "
+":c:member:`~PyTypeObject.tp_clear` 来释放该对象的引用。"
+
+#: ../../c-api/lifecycle.rst:100
+msgid ""
+"When :c:member:`~PyTypeObject.tp_dealloc` finishes object destruction, it "
+"directly calls :c:member:`~PyTypeObject.tp_free` (usually set to "
+":c:func:`PyObject_Free` or :c:func:`PyObject_GC_Del` automatically as "
+"appropriate for the type) to deallocate the memory."
+msgstr ""
+"当 :c:member:`~PyTypeObject.tp_dealloc` 完成对象销毁时，它直接调用 "
+":c:member:`~PyTypeObject.tp_free` (通常根据类型自动设置为 :c:func:`PyObject_Free` 或 "
+":c:func:`PyObject_GC_Del`) 来释放内存。"
+
+#: ../../c-api/lifecycle.rst:105
+msgid ""
+"The :c:member:`~PyTypeObject.tp_finalize` function is permitted to add a "
+"reference to the object if desired.  If it does, the object is "
+"*resurrected*, preventing its pending destruction.  (Only "
+":c:member:`!tp_finalize` is allowed to resurrect an object; "
+":c:member:`~PyTypeObject.tp_clear` and :c:member:`~PyTypeObject.tp_dealloc` "
+"cannot without calling into :c:member:`!tp_finalize`.)  Resurrecting an "
+"object may or may not cause the object's *finalized* mark to be removed.  "
+"Currently, Python does not remove the *finalized* mark from a resurrected "
+"object if it supports garbage collection (i.e., the "
+":c:macro:`Py_TPFLAGS_HAVE_GC` flag is set) but does remove the mark if the "
+"object does not support garbage collection; either or both of these "
+"behaviors may change in the future."
+msgstr ""
+":c:member:`~PyTypeObject.tp_finalize` 函数被允许在需要时增加对象的引用计数。 如果该函数执行此操作，那么对象将被 "
+"*复活*，从而阻止其即将发生的销毁。 只有 :c:member:`!tp_finalize` "
+"能够复活对象；:c:member:`~PyTypeObject.tp_clear` 和 "
+":c:member:`~PyTypeObject.tp_dealloc` 在不调用 :c:member:`!tp_finalize` "
+"的情况下不能实现此操作。 对象复活后，其 *已终结* 标记可能被移除也可能保留。 当前 Python 的实现逻辑是：如果对象支持垃圾回收（即设置了 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 标志位），那么保留复活对象的 *已终结* 标记；如果不支持垃圾回收，那么移除该标记。 "
+"此行为在未来版本中可能发生变更。"
+
+#: ../../c-api/lifecycle.rst:118
+msgid ""
+":c:member:`~PyTypeObject.tp_dealloc` can optionally call "
+":c:member:`~PyTypeObject.tp_finalize` via "
+":c:func:`PyObject_CallFinalizerFromDealloc` if it wishes to reuse that code "
+"to help with object destruction.  This is recommended because it guarantees "
+"that :c:member:`!tp_finalize` is always called before destruction.  See the "
+":c:member:`~PyTypeObject.tp_dealloc` documentation for example code."
+msgstr ""
+":c:member:`~PyTypeObject.tp_dealloc` 可以通过 "
+":c:func:`PyObject_CallFinalizerFromDealloc` 选择性地调用 "
+":c:member:`~PyTypeObject.tp_finalize`，如果它希望重用该代码来帮助对象销毁。 "
+"建议这样做，因为它保证总是在销毁之前调用:c:member:`!tp_finalize`。 请参阅 "
+":c:member:`~PyTypeObject.tp_dealloc` 文档获取示例代码。"
+
+#: ../../c-api/lifecycle.rst:125
+msgid ""
+"If the object is a member of a :term:`cyclic isolate` and either "
+":c:member:`~PyTypeObject.tp_clear` fails to break the reference cycle or the"
+" cyclic isolate is not detected (perhaps :func:`gc.disable` was called, or "
+"the :c:macro:`Py_TPFLAGS_HAVE_GC` flag was erroneously omitted in one of the"
+" involved types), the objects remain indefinitely uncollectable (they "
+"\"leak\").  See :data:`gc.garbage`."
+msgstr ""
+"如果对象是 :term:`cyclic isolate` 的成员，并且 :c:member:`~PyTypeObject.tp_clear` "
+"未能打破循环引用或未检测到循环隔离（可能调用了 :func:`gc.disable`，或者在所涉及的类型之一中错误地省略了 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 标志），则对象将无限期地保持不可收集（它们“泄漏”）。 参见 "
+":data:`gc.garbage`。"
+
+#: ../../c-api/lifecycle.rst:132
+msgid ""
+"If the object is marked as supporting garbage collection (the "
+":c:macro:`Py_TPFLAGS_HAVE_GC` flag is set in "
+":c:member:`~PyTypeObject.tp_flags`), the following events are also possible:"
+msgstr ""
+"如果对象被标记为支持垃圾收集（在 :c:member:`~PyTypeObject.tp_flags` 中设置了 "
+":c:macro:`Py_TPFLAGS_HAVE_GC` 标志），则也可能发生以下事件："
+
+#: ../../c-api/lifecycle.rst:136
+msgid ""
+"The garbage collector occasionally calls "
+":c:member:`~PyTypeObject.tp_traverse` to identify :term:`cyclic isolates "
+"<cyclic isolate>`."
+msgstr ""
+"垃圾回收器偶尔会调用 :c:member:`~PyTypeObject.tp_traverse` 来识别 :term:`循环隔离 <cyclic "
+"isolate>`。"
+
+#: ../../c-api/lifecycle.rst:139
+msgid ""
+"When the garbage collector discovers a :term:`cyclic isolate`, it finalizes "
+"one of the objects in the group by marking it as *finalized* and calling its"
+" :c:member:`~PyTypeObject.tp_finalize` function, if it has one. This repeats"
+" until the cyclic isolate doesn't exist or all of the objects have been "
+"finalized."
+msgstr ""
+"当垃圾回收器发现一个 :term:`cyclic isolate` 时，它通过将组中的一个对象标记为 *finalized* 并调用其 "
+":c:member:`~PyTypeObject.tp_finalize` 函数（如果有的话）来终结该对象。 "
+"这样重复，直到循环隔离不存在或所有对象都已终结。"
+
+#: ../../c-api/lifecycle.rst:144
+msgid ""
+":c:member:`~PyTypeObject.tp_finalize` is permitted to resurrect the object "
+"by adding a reference from outside the :term:`cyclic isolate`.  The new "
+"reference causes the group of objects to no longer form a cyclic isolate "
+"(the reference cycle may still exist, but if it does the objects are no "
+"longer isolated)."
+msgstr ""
+"允许 :c:member:`~PyTypeObject.tp_finalize` 通过添加来自 :term:`cyclic isolate` "
+"外部的引用来复活对象。 新的引用导致对象组不再形成循环隔离（循环引用可能仍然存在，但如果存在，则对象不再被隔离）。"
+
+#: ../../c-api/lifecycle.rst:149
+msgid ""
+"When the garbage collector discovers a :term:`cyclic isolate` and all of the"
+" objects in the group have already been marked as *finalized*, the garbage "
+"collector clears one or more of the uncleared objects in the group (possibly"
+" concurrently) by calling each's :c:member:`~PyTypeObject.tp_clear` "
+"function.  This repeats as long as the cyclic isolate still exists and not "
+"all of the objects have been cleared."
+msgstr ""
+"当垃圾回收器发现 :term:`cyclic isolate` 并且组中的所有对象已经被标记为 *finalized* 时，垃圾回收器通过调用每个对象的"
+" :c:member:`~PyTypeObject.tp_clear` 函数来清除组中一个或多个未清除的对象（可能并发）。 "
+"只要循环隔离仍然存在并且未清除所有对象，就会重复此操作。"
+
+#: ../../c-api/lifecycle.rst:158
+msgid "Cyclic Isolate Destruction"
+msgstr "循环隔离销毁"
+
+#: ../../c-api/lifecycle.rst:160
+msgid ""
+"Listed below are the stages of life of a hypothetical :term:`cyclic isolate`"
+" that continues to exist after each member object is finalized or cleared.  "
+"It is a memory leak if a cyclic isolate progresses through all of these "
+"stages; it should vanish once all objects are cleared, if not sooner.  A "
+"cyclic isolate can vanish either because the reference cycle is broken or "
+"because the objects are no longer isolated due to finalizer resurrection "
+"(see :c:member:`~PyTypeObject.tp_finalize`)."
+msgstr ""
+"以下描述了一个假设性的 :term:`cyclic isolate` 在其每个成员对象都被终结或清除后仍能持续存在。 "
+"如果一个循环隔离体完整经历了所有这些阶段而未消失则构成内存泄漏。 正常情况下当所有对象被清除或是更早时循环隔离体就应当消失。 "
+"循环隔离体的消失可能是由于引用循环被打破或是因为对象因终结器复活而不再处于隔离状态 (参见 "
+":c:member:`~PyTypeObject.tp_finalize`)。"
+
+#: ../../c-api/lifecycle.rst:168
+msgid ""
+"**Reachable** (not yet a cyclic isolate): All objects are in their normal, "
+"reachable state.  A reference cycle could exist, but an external reference "
+"means the objects are not yet isolated."
+msgstr "**可获取** (尚未循环隔离)：所有对象均处于正常的可获取状态。 可能存在引用循环，但有外部引用意味着对象还未被隔离。"
+
+#: ../../c-api/lifecycle.rst:171
+msgid ""
+"**Unreachable but consistent:** The final reference from outside the cyclic "
+"group of objects has been removed, causing the objects to become isolated "
+"(thus a cyclic isolate is born).  None of the group's objects have been "
+"finalized or cleared yet.  The cyclic isolate remains at this stage until "
+"some future run of the garbage collector (not necessarily the next run "
+"because the next run might not scan every object)."
+msgstr ""
+"**不可达但一致：** "
+"来自循环对象组外部的最后引用已被删除，导致对象被隔离（因此产生了循环隔离）。该组的所有对象还没有终结或清除。循环隔离一直保持在这个阶段，直到垃圾回收器的某个未来运行（不一定是下一次运行，因为下一次运行可能不会扫描每个对象）。"
+
+#: ../../c-api/lifecycle.rst:177
+msgid ""
+"**Mix of finalized and not finalized:** Objects in a cyclic isolate are "
+"finalized one at a time, which means that there is a period of time when the"
+" cyclic isolate is composed of a mix of finalized and non-finalized objects."
+" Finalization order is unspecified, so it can appear random.  A finalized "
+"object must behave in a sane manner when non-finalized objects interact with"
+" it, and a non-finalized object must be able to tolerate the finalization of"
+" an arbitrary subset of its referents."
+msgstr ""
+"**已终结和未终结对象的混合情况：** 在循环隔离组（cyclic "
+"isolate）中，对象的终结是逐个进行的。这意味着会存在一个阶段，循环隔离组中同时包含已终结（finalized）和未终结（non-"
+"finalized）的对象。由于终结顺序是不确定的，其表现可能看似随机。已终结对象在被未终结对象交互时应当保持合理行为，未终结对象应当能够容忍其任意部分引用对象被终结。"
+
+#: ../../c-api/lifecycle.rst:184
+msgid ""
+"**All finalized:** All objects in a cyclic isolate are finalized before any "
+"of them are cleared."
+msgstr "**已全部终结：** 循环隔离中的所有对象在清除它们之前都已终结。"
+
+#: ../../c-api/lifecycle.rst:186
+msgid ""
+"**Mix of finalized and cleared:** The objects can be cleared serially or "
+"concurrently (but with the :term:`GIL` held); either way, some will finish "
+"before others.  A finalized object must be able to tolerate the clearing of "
+"a subset of its referents.  :pep:`442` calls this stage \"cyclic trash\"."
+msgstr ""
+"**已终结和已清除的混合：** 对象可以被串行或并发地清除 (但持有 :term:`GIL`)；不管怎样，有些对象会比其他对象先完成。 "
+"一个已终结对象必须能够容忍其部分引用对象被清除。 :pep:`442` 称这个阶段为“循环垃圾”。"
+
+#: ../../c-api/lifecycle.rst:190
+msgid ""
+"**Leaked:** If a cyclic isolate still exists after all objects in the group "
+"have been finalized and cleared, then the objects remain indefinitely "
+"uncollectable (see :data:`gc.garbage`).  It is a bug if a cyclic isolate "
+"reaches this stage---it means the :c:member:`~PyTypeObject.tp_clear` methods"
+" of the participating objects have failed to break the reference cycle as "
+"required."
+msgstr ""
+"**泄漏：** 如果在组中的所有对象都已终结并清除后循环隔离仍然存在，则对象仍然无限期不可 lknhy (参见 :data:`gc.garbage`)。"
+" 如果循环隔离达到这个阶段，这是一个 bug —— 这意味着参与对象的 :c:member:`~PyTypeObject.tp_clear` "
+"方法未能按要求打破循环引用。"
+
+#: ../../c-api/lifecycle.rst:197
+msgid ""
+"If :c:member:`~PyTypeObject.tp_clear` did not exist, then Python would have "
+"no way to safely break a reference cycle.  Simply destroying an object in a "
+"cyclic isolate would result in a dangling pointer, triggering undefined "
+"behavior when an object referencing the destroyed object is itself "
+"destroyed.  The clearing step makes object destruction a two-phase process: "
+"first :c:member:`~PyTypeObject.tp_clear` is called to partially destroy the "
+"objects enough to detangle them from each other, then "
+":c:member:`~PyTypeObject.tp_dealloc` is called to complete the destruction."
+msgstr ""
+"如果类型对象中的 :c:member:`~PyTypeObject.tp_clear` 成员不存在，那么Python "
+"将无法安全地打破引用循环（reference cycle）。如果直接销毁循环孤立组中的对象，那么会导致悬垂指针（dangling "
+"pointer），当其他对象引用该已销毁对象时，会引发未定义行为（undefined behavior）。 "
+"清除（clearing）操作将对象销毁分为两个阶段： 首先调用 :c:member:`~PyTypeObject.tp_clear` "
+"部分销毁对象，解除循环引用； 随后调用 :c:member:`~PyTypeObject.tp_dealloc` 完成最终销毁。 "
+
+#: ../../c-api/lifecycle.rst:206
+msgid ""
+"Unlike clearing, finalization is not a phase of destruction.  A finalized "
+"object must still behave properly by continuing to fulfill its design "
+"contracts.  An object's finalizer is allowed to execute arbitrary Python "
+"code, and is even allowed to prevent the impending destruction by adding a "
+"reference. The finalizer is only related to destruction by call order---if "
+"it runs, it runs before destruction, which starts with "
+":c:member:`~PyTypeObject.tp_clear` (if called) and concludes with "
+":c:member:`~PyTypeObject.tp_dealloc`."
+msgstr ""
+"与清除不同的是，终结不是一个破坏阶段。 一个已终结的对象必须通过继续履行其设计契约而保持正确的行为。 一个对象的终结器允许执行任意 Python "
+"代码，甚至允许通过添加引用来防止即将发生的销毁。 终结器只通过调用顺序与销毁相关 —— 如果它运行，它在销毁之前运行，销毁以 "
+":c:member:`~PyTypeObject.tp_clear` (如果被调用) 开始，并以 "
+":c:member:`~PyTypeObject.tp_dealloc` 结束。"
+
+#: ../../c-api/lifecycle.rst:214
+msgid ""
+"The finalization step is not necessary to safely reclaim the objects in a "
+"cyclic isolate, but its existence makes it easier to design types that "
+"behave in a sane manner when objects are cleared.  Clearing an object might "
+"necessarily leave it in a broken, partially destroyed state---it might be "
+"unsafe to call any of the cleared object's methods or access any of its "
+"attributes.  With finalization, only finalized objects can possibly interact"
+" with cleared objects; non-finalized objects are guaranteed to interact with"
+" only non-cleared (but potentially finalized) objects."
+msgstr ""
+"对于安全回收循环隔离体中的对象而言，终结步骤并非必要，但是，该机制的存在能让类型设计更易于实现合理的清理行为。清除对象时或许不可避免地会使其处于损坏的、部分销毁的状态——此时调用被清除对象的任何方法或访问其属性都可能是不安全的。通过终结机制，只有已完成终结的对象才有可能与被清除对象交互；未终结的对象则保证只会与未被清除（但可能已完成终结）的对象进行交互。"
+
+#: ../../c-api/lifecycle.rst:223
+msgid "To summarize the possible interactions:"
+msgstr "总结一下可能的交互："
+
+#: ../../c-api/lifecycle.rst:225
+msgid ""
+"A non-finalized object might have references to or from non-finalized and "
+"finalized objects, but not to or from cleared objects."
+msgstr "一个未终结的对象可能有对（或来自）未终结和已终结对象的引用，但不能有对（或来自）已清除对象的引用。"
+
+#: ../../c-api/lifecycle.rst:227
+msgid ""
+"A finalized object might have references to or from non-finalized, "
+"finalized, and cleared objects."
+msgstr "一个已终结的对象可能有对（或来自）未终结、已终结和已清除对象的引用。"
+
+#: ../../c-api/lifecycle.rst:229
+msgid ""
+"A cleared object might have references to or from finalized and cleared "
+"objects, but not to or from non-finalized objects."
+msgstr "一个已清除的对象可能有对（或来自）已终结和已清除对象的引用，但不能有对（或来自）未终结对象的引用。"
+
+#: ../../c-api/lifecycle.rst:232
+msgid ""
+"Without any reference cycles, an object can be simply destroyed once its "
+"last reference is deleted; the finalization and clearing steps are not "
+"necessary to safely reclaim unused objects.  However, it can be useful to "
+"automatically call :c:member:`~PyTypeObject.tp_finalize` and "
+":c:member:`~PyTypeObject.tp_clear` before destruction anyway because type "
+"design is simplified when all objects always experience the same series of "
+"events regardless of whether they participated in a cyclic isolate.  Python "
+"currently only calls :c:member:`~PyTypeObject.tp_finalize` and "
+":c:member:`~PyTypeObject.tp_clear` as needed to destroy a cyclic isolate; "
+"this may change in a future version."
+msgstr ""
+"在没有引用循环的情况下，对象只需在最后一个引用被删除时即可直接销毁，此时无需执行最终化（finalize）和清理（clear）步骤也能安全回收对象。即便如此，在销毁前自动调用"
+" :c:member:`~PyTypeObject.tp_finalize` 和 :c:member:`~PyTypeObject.tp_clear` "
+"仍具有实际意义：这能统一所有对象的销毁流程，无论它们是否参与过循环引用隔离区（cyclic isolate），类型设计会更简洁。当前 Python "
+"仅在需要销毁循环引用隔离区时才调用 :c:member:`~PyTypeObject.tp_finalize` 和 "
+":c:member:`~PyTypeObject.tp_clear`。未来版本可能调整这一行为。"
+
+#: ../../c-api/lifecycle.rst:244
+msgid "Functions"
+msgstr "函数"
+
+#: ../../c-api/lifecycle.rst:246
+msgid "To allocate and free memory, see :ref:`allocating-objects`."
+msgstr "要分配和释放内存，请参阅 :ref:`allocating-objects`。"
+
+#: ../../c-api/lifecycle.rst:251
+msgid ""
+"Finalizes the object as described in :c:member:`~PyTypeObject.tp_finalize`. "
+"Call this function (or :c:func:`PyObject_CallFinalizerFromDealloc`) instead "
+"of calling :c:member:`~PyTypeObject.tp_finalize` directly because this "
+"function may deduplicate multiple calls to :c:member:`!tp_finalize`. "
+"Currently, calls are only deduplicated if the type supports garbage "
+"collection (i.e., the :c:macro:`Py_TPFLAGS_HAVE_GC` flag is set); this may "
+"change in the future."
+msgstr ""
+"按照 :c:member:`~PyTypeObject.tp_finalize` 中描述的方式终结对象。 调用这个函数 (或 "
+":c:func:`PyObject_CallFinalizerFromDealloc`)，而不是直接调用 "
+":c:member:`~PyTypeObject.tp_finalize`，因为这个函数可能会重复多次调用 "
+":c:member:`!tp_finalize`。 目前，只有当类型支持垃圾回收（即设置了 :c:macro:`Py_TPFLAGS_HAVE_GC` "
+"标志）时，才会重复调用；这在未来可能会改变。"
+
+#: ../../c-api/lifecycle.rst:262
+msgid ""
+"Same as :c:func:`PyObject_CallFinalizer` but meant to be called at the "
+"beginning of the object's destructor (:c:member:`~PyTypeObject.tp_dealloc`)."
+" There must not be any references to the object.  If the object's finalizer "
+"resurrects the object, this function returns -1; no further destruction "
+"should happen.  Otherwise, this function returns 0 and destruction can "
+"continue normally."
+msgstr ""
+"与 :c:func:`PyObject_CallFinalizer` 相同但确定要在对象构造器的开始位置被调用 "
+"(:c:member:`~PyTypeObject.tp_dealloc`)。 必须没有任何指向对象的引用。 如果对象的终结器复活了该对象，此函数将返回"
+" -1；不会再发生销毁操作。 在其他情况下，此函数将返回 0 并且销毁操作可正常继续。"
+
+#: ../../c-api/lifecycle.rst:271
+msgid ":c:member:`~PyTypeObject.tp_dealloc` for example code."
+msgstr ":c:member:`~PyTypeObject.tp_dealloc` 用于示例代码。"

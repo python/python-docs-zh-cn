@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-21 14:19+0000\n"
+"POT-Creation-Date: 2025-08-29 14:17+0000\n"
 "PO-Revision-Date: 2025-08-02 17:33+0000\n"
 "Last-Translator: 汇民 王 <whuim@qq.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -3558,19 +3558,26 @@ msgstr ""
 
 #: ../../c-api/init.rst:2466
 msgid ""
-"Critical sections avoid deadlocks by implicitly suspending active critical "
-"sections and releasing the locks during calls to "
-":c:func:`PyEval_SaveThread`. When :c:func:`PyEval_RestoreThread` is called, "
-"the most recent critical section is resumed, and its locks reacquired.  This"
-" means the critical section API provides weaker guarantees than traditional "
-"locks -- they are useful because their behavior is similar to the "
-":term:`GIL`."
+"Critical sections are intended to be used for custom types implemented in "
+"C-API extensions. They should generally not be used with built-in types like"
+" :class:`list` and :class:`dict` because their public C-APIs already use "
+"critical sections internally, with the notable exception of "
+":c:func:`PyDict_Next`, which requires critical section to be acquired "
+"externally."
 msgstr ""
-"关键节机制通过在调用 :c:func:`PyEval_SaveThread` 期间隐式地挂起活动的关键节并释放锁来避免死锁。 当 "
-":c:func:`PyEval_RestoreThread` 被调用时，最近的关键节将被恢复，并重新获取它的锁。 这意味着关键节 API "
-"提供了与传统锁相比更弱的保证 -- 它们有用是因为它们的行为与 :term:`GIL` 类似。"
 
 #: ../../c-api/init.rst:2473
+msgid ""
+"Critical sections avoid deadlocks by implicitly suspending active critical "
+"sections, hence, they do not provide exclusive access such as provided by "
+"traditional locks like :c:type:`PyMutex`.  When a critical section is "
+"started, the per-object lock for the object is acquired. If the code "
+"executed inside the critical section calls C-API functions then it can "
+"suspend the critical section thereby releasing the per-object lock, so other"
+" threads can acquire the per-object lock for the same object."
+msgstr ""
+
+#: ../../c-api/init.rst:2481
 msgid ""
 "Variants that accept :c:type:`PyMutex` pointers rather than Python objects "
 "are also available. Use these variants to start a critical section in a "
@@ -3582,7 +3589,7 @@ msgstr ""
 "时（例如，在处理未继承或封装 :c:type:`PyObject` 的 C 类型，但仍需以可能导致死锁的方式调用 C API "
 "的情况下），可使用这些变体函数来启动临界区。"
 
-#: ../../c-api/init.rst:2479
+#: ../../c-api/init.rst:2487
 msgid ""
 "The functions and structs used by the macros are exposed for cases where C "
 "macros are not available. They should only be used as in the given macro "
@@ -3592,7 +3599,7 @@ msgstr ""
 "宏所使用的函数和结构体是针对 C 宏不可用的场景而公开的。 它们应当仅被用于给定的宏扩展中。 请注意这些结构体的大小和内容在未来的 Python "
 "版本中可能发生改变。"
 
-#: ../../c-api/init.rst:2486
+#: ../../c-api/init.rst:2494
 msgid ""
 "Operations that need to lock two objects at once must use "
 ":c:macro:`Py_BEGIN_CRITICAL_SECTION2`.  You *cannot* use nested critical "
@@ -3603,11 +3610,11 @@ msgstr ""
 "需要同时锁定两个对象的操作必须使用 :c:macro:`Py_BEGIN_CRITICAL_SECTION2`。 你 *不可* "
 "使用嵌套的关键节来同时锁定一个以上的对象，因为内层的关键节可能会挂起外层的关键节。  这个 API 没有提供同时锁定两个以上对象的办法。"
 
-#: ../../c-api/init.rst:2492
+#: ../../c-api/init.rst:2500
 msgid "Example usage::"
 msgstr "用法示例::"
 
-#: ../../c-api/init.rst:2494
+#: ../../c-api/init.rst:2502
 msgid ""
 "static PyObject *\n"
 "set_field(MyObject *self, PyObject *value)\n"
@@ -3627,7 +3634,7 @@ msgstr ""
 "   Py_RETURN_NONE;\n"
 "}"
 
-#: ../../c-api/init.rst:2503
+#: ../../c-api/init.rst:2511
 msgid ""
 "In the above example, :c:macro:`Py_SETREF` calls :c:macro:`Py_DECREF`, which"
 " can call arbitrary code through an object's deallocation function.  The "
@@ -3640,19 +3647,19 @@ msgstr ""
 ":c:macro:`Py_DECREF`，它可以通过一个对象的取消分配函数来调用任意代码。 当由最终化器触发的代码发生阻塞并调用 "
 ":c:func:`PyEval_SaveThread` 时关键节 API 将通过允许运行临时挂起关键节来避免由于重入和锁顺序导致的潜在死锁。"
 
-#: ../../c-api/init.rst:2511
+#: ../../c-api/init.rst:2519
 msgid ""
 "Acquires the per-object lock for the object *op* and begins a critical "
 "section."
 msgstr "为对象 *op* 获取每对象锁并开始一个关键节。"
 
-#: ../../c-api/init.rst:2514 ../../c-api/init.rst:2528
-#: ../../c-api/init.rst:2545 ../../c-api/init.rst:2560
-#: ../../c-api/init.rst:2574 ../../c-api/init.rst:2591
+#: ../../c-api/init.rst:2522 ../../c-api/init.rst:2536
+#: ../../c-api/init.rst:2553 ../../c-api/init.rst:2568
+#: ../../c-api/init.rst:2582 ../../c-api/init.rst:2599
 msgid "In the free-threaded build, this macro expands to::"
 msgstr "在自由线程构建版中，该宏将扩展为::"
 
-#: ../../c-api/init.rst:2516
+#: ../../c-api/init.rst:2524
 msgid ""
 "{\n"
 "    PyCriticalSection _py_cs;\n"
@@ -3662,15 +3669,15 @@ msgstr ""
 "    PyCriticalSection _py_cs;\n"
 "    PyCriticalSection_Begin(&_py_cs, (PyObject*)(op))"
 
-#: ../../c-api/init.rst:2520 ../../c-api/init.rst:2566
+#: ../../c-api/init.rst:2528 ../../c-api/init.rst:2574
 msgid "In the default build, this macro expands to ``{``."
 msgstr "在默认构建版中，该宏将扩展为 ``{``。"
 
-#: ../../c-api/init.rst:2526
+#: ../../c-api/init.rst:2534
 msgid "Locks the mutex *m* and begins a critical section."
 msgstr "锁定互斥锁 *m* 并开始一个临界区。"
 
-#: ../../c-api/init.rst:2530
+#: ../../c-api/init.rst:2538
 msgid ""
 "{\n"
 "     PyCriticalSection _py_cs;\n"
@@ -3680,7 +3687,7 @@ msgstr ""
 "     PyCriticalSection _py_cs;\n"
 "     PyCriticalSection_BeginMutex(&_py_cs, m)"
 
-#: ../../c-api/init.rst:2534
+#: ../../c-api/init.rst:2542
 msgid ""
 "Note that unlike :c:macro:`Py_BEGIN_CRITICAL_SECTION`, there is no cast for "
 "the argument of the macro - it must be a :c:type:`PyMutex` pointer."
@@ -3688,15 +3695,15 @@ msgstr ""
 "需要注意的是，与 :c:macro:`Py_BEGIN_CRITICAL_SECTION` 不同，该宏的参数 **无需强制类型转换**——它必须是一个 "
 ":c:type:`PyMutex` 指针。"
 
-#: ../../c-api/init.rst:2537 ../../c-api/init.rst:2583
+#: ../../c-api/init.rst:2545 ../../c-api/init.rst:2591
 msgid "On the default build, this macro expands to ``{``."
 msgstr "在默认构建版中，该宏将扩展为 ``{``。"
 
-#: ../../c-api/init.rst:2543
+#: ../../c-api/init.rst:2551
 msgid "Ends the critical section and releases the per-object lock."
 msgstr "结束关键节并释放每对象锁。"
 
-#: ../../c-api/init.rst:2547
+#: ../../c-api/init.rst:2555
 msgid ""
 "    PyCriticalSection_End(&_py_cs);\n"
 "}"
@@ -3704,18 +3711,18 @@ msgstr ""
 "    PyCriticalSection_End(&_py_cs);\n"
 "}"
 
-#: ../../c-api/init.rst:2550 ../../c-api/init.rst:2596
+#: ../../c-api/init.rst:2558 ../../c-api/init.rst:2604
 msgid "In the default build, this macro expands to ``}``."
 msgstr "在默认构建版中，该宏将扩展为 ``}``。"
 
-#: ../../c-api/init.rst:2556
+#: ../../c-api/init.rst:2564
 msgid ""
 "Acquires the per-objects locks for the objects *a* and *b* and begins a "
 "critical section.  The locks are acquired in a consistent order (lowest "
 "address first) to avoid lock ordering deadlocks."
 msgstr "为对象 *a* 和 *b* 获取每对象锁并开始一个关键节。 这些锁是按连续顺序获取的（最低的地址在最前）以避免锁顺序列死锁。"
 
-#: ../../c-api/init.rst:2562
+#: ../../c-api/init.rst:2570
 msgid ""
 "{\n"
 "    PyCriticalSection2 _py_cs2;\n"
@@ -3725,11 +3732,11 @@ msgstr ""
 "    PyCriticalSection2 _py_cs2;\n"
 "    PyCriticalSection2_Begin(&_py_cs2, (PyObject*)(a), (PyObject*)(b))"
 
-#: ../../c-api/init.rst:2572
+#: ../../c-api/init.rst:2580
 msgid "Locks the mutexes *m1* and *m2* and begins a critical section."
 msgstr "锁定互斥锁 *m1* 和 *m2* 并开始一个临界区。"
 
-#: ../../c-api/init.rst:2576
+#: ../../c-api/init.rst:2584
 msgid ""
 "{\n"
 "     PyCriticalSection2 _py_cs2;\n"
@@ -3739,7 +3746,7 @@ msgstr ""
 "     PyCriticalSection2 _py_cs2;\n"
 "     PyCriticalSection2_BeginMutex(&_py_cs2, m1, m2)"
 
-#: ../../c-api/init.rst:2580
+#: ../../c-api/init.rst:2588
 msgid ""
 "Note that unlike :c:macro:`Py_BEGIN_CRITICAL_SECTION2`, there is no cast for"
 " the arguments of the macro - they must be :c:type:`PyMutex` pointers."
@@ -3747,11 +3754,11 @@ msgstr ""
 "需要注意的是，与 :c:macro:`Py_BEGIN_CRITICAL_SECTION2` 不同，该宏的参数 **无需强制类型转换**——它们必须是 "
 ":c:type:`PyMutex` 指针。"
 
-#: ../../c-api/init.rst:2589
+#: ../../c-api/init.rst:2597
 msgid "Ends the critical section and releases the per-object locks."
 msgstr "结束关键节并释放每对象锁。"
 
-#: ../../c-api/init.rst:2593
+#: ../../c-api/init.rst:2601
 msgid ""
 "    PyCriticalSection2_End(&_py_cs2);\n"
 "}"
