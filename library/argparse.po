@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-25 14:21+0000\n"
+"POT-Creation-Date: 2025-09-19 14:16+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: python-doc bot, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1466,26 +1466,20 @@ msgstr ""
 
 #: ../../library/argparse.rst:777
 msgid ""
-"``'append'`` - This stores a list, and appends each argument value to the "
-"list. It is useful to allow an option to be specified multiple times. If the"
-" default value is non-empty, the default elements will be present in the "
-"parsed value for the option, with any values from the command line appended "
-"after those default values. Example usage::"
+"``'append'`` - This appends each argument value to a list. It is useful for "
+"allowing an option to be specified multiple times. If the default value is a"
+" non-empty list, the parsed value will start with the default list's "
+"elements and any values from the command line will be appended after those "
+"default values. Example usage::"
 msgstr ""
-"``'append'`` - 存储一个列表，并将每个参数值添加到该列表。 它适用于允许可多次指定的选项。 "
-"如果默认值非空，则默认的元素将出现在该选项的已解析值中，并将所有来自命令行的值添加在默认值之后。 示例用法::"
 
 #: ../../library/argparse.rst:783
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
-">>> parser.add_argument('--foo', action='append')\n"
+">>> parser.add_argument('--foo', action='append', default=['0'])\n"
 ">>> parser.parse_args('--foo 1 --foo 2'.split())\n"
-"Namespace(foo=['1', '2'])"
+"Namespace(foo=['0', '1', '2'])"
 msgstr ""
-">>> parser = argparse.ArgumentParser()\n"
-">>> parser.add_argument('--foo', action='append')\n"
-">>> parser.parse_args('--foo 1 --foo 2'.split())\n"
-"Namespace(foo=['1', '2'])"
 
 #: ../../library/argparse.rst:788
 msgid ""
@@ -1864,13 +1858,9 @@ msgid ""
 "(like ``-f`` or ``--foo``) and ``nargs='?'``.  This creates an optional "
 "argument that can be followed by zero or one command-line arguments. When "
 "parsing the command line, if the option string is encountered with no "
-"command-line argument following it, the value of ``const`` will be assumed "
-"to be ``None`` instead.  See the nargs_ description for examples."
+"command-line argument following it, the value from ``const`` will be used. "
+"See the nargs_ description for examples."
 msgstr ""
-"当 :meth:`~ArgumentParser.add_argument` 附带选项字符串 (如 ``-f`` 或 ``--foo``) 和 "
-"``nargs='?'`` 被调用的时候。 这会创建一个可以跟随零到一个命令行参数的选项参数。 "
-"当解析该命令行时，如果选项字符串没有跟随任何命令行参数，``const`` 的值将被假定为以 ``None`` 代替。 请参阅 nargs_ "
-"描述中的示例。"
 
 #: ../../library/argparse.rst:987
 msgid ""
@@ -2178,27 +2168,32 @@ msgstr ""
 
 #: ../../library/argparse.rst:1145
 msgid ""
-"Note that inclusion in the *choices* sequence is checked after any type_ "
-"conversions have been performed, so the type of the objects in the *choices*"
-" sequence should match the type_ specified."
-msgstr ""
-"注意包括在 *choices* 序列中的内容会在执行任意 type_ 转换之后被检查，因此 *choices* 序列中对象的类型应当与指定的 type_"
-" 相匹配。"
-
-#: ../../library/argparse.rst:1149
-msgid ""
 "Any sequence can be passed as the *choices* value, so :class:`list` objects,"
 " :class:`tuple` objects, and custom sequences are all supported."
 msgstr ""
 "任何序列都可作为 *choices* 值传入，因此 :class:`list` 对象、:class:`tuple` 对象以及自定义序列都是受支持的。"
 
-#: ../../library/argparse.rst:1152
+#: ../../library/argparse.rst:1148
 msgid ""
 "Use of :class:`enum.Enum` is not recommended because it is difficult to "
 "control its appearance in usage, help, and error messages."
 msgstr "不建议使用 :class:`enum.Enum`，因为要控制其在用法、帮助和错误消息中的外观是很困难的。"
 
-#: ../../library/argparse.rst:1155
+#: ../../library/argparse.rst:1151
+msgid ""
+"Note that *choices* are checked after any type_ conversions have been "
+"performed, so objects in *choices* should match the type_ specified. This "
+"can make *choices* appear unfamiliar in usage, help, or error messages."
+msgstr ""
+
+#: ../../library/argparse.rst:1156
+msgid ""
+"To keep *choices* user-friendly, consider a custom type wrapper that "
+"converts and formats values, or omit type_ and handle conversion in your "
+"application code."
+msgstr ""
+
+#: ../../library/argparse.rst:1160
 msgid ""
 "Formatted choices override the default *metavar* which is normally derived "
 "from *dest*.  This is usually what you want because the user never sees the "
@@ -2208,11 +2203,11 @@ msgstr ""
 "已格式化的选项会覆盖默认的 *metavar*，该值一般是派生自 *dest*。 这通常就是你所需要的，因为用户永远不会看到 *dest* 形参。 "
 "如果不想要这样的显示（或许因为有很多选择），只需指定一个显式的 metavar_。"
 
-#: ../../library/argparse.rst:1164
+#: ../../library/argparse.rst:1169
 msgid "required"
 msgstr "required"
 
-#: ../../library/argparse.rst:1166
+#: ../../library/argparse.rst:1171
 msgid ""
 "In general, the :mod:`!argparse` module assumes that flags like ``-f`` and "
 "``--bar`` indicate *optional* arguments, which can always be omitted at the "
@@ -2223,7 +2218,7 @@ msgstr ""
 "参数，它们总是可以在命令行中被省略。 要让一个选项成为 *必需*，则可以将 ``True`` 作为 ``required=`` 关键字参数传给 "
 ":meth:`~ArgumentParser.add_argument`::"
 
-#: ../../library/argparse.rst:1171
+#: ../../library/argparse.rst:1176
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', required=True)\n"
@@ -2241,7 +2236,7 @@ msgstr ""
 "usage: [-h] --foo FOO\n"
 ": error: the following arguments are required: --foo"
 
-#: ../../library/argparse.rst:1179
+#: ../../library/argparse.rst:1184
 msgid ""
 "As the example shows, if an option is marked as ``required``, "
 ":meth:`~ArgumentParser.parse_args` will report an error if that option is "
@@ -2250,17 +2245,17 @@ msgstr ""
 "如这个例子所示，如果一个选项被标记为 "
 "``required``，则当该选项未在命令行中出现时，:meth:`~ArgumentParser.parse_args` 将会报告一个错误。"
 
-#: ../../library/argparse.rst:1185
+#: ../../library/argparse.rst:1190
 msgid ""
 "Required options are generally considered bad form because users expect "
 "*options* to be *optional*, and thus they should be avoided when possible."
 msgstr "必需的选项通常被认为是不适宜的，因为用户会预期 *options* 都是 *可选的*，因此在可能的情况下应当避免使用它们。"
 
-#: ../../library/argparse.rst:1192
+#: ../../library/argparse.rst:1197
 msgid "help"
 msgstr "help"
 
-#: ../../library/argparse.rst:1194
+#: ../../library/argparse.rst:1199
 msgid ""
 "The ``help`` value is a string containing a brief description of the "
 "argument. When a user requests help (usually by using ``-h`` or ``--help`` "
@@ -2270,7 +2265,7 @@ msgstr ""
 "``help`` 值是一个包含参数的简短描述的字符串。 当用户请求帮助时（一般是通过在命令行中使用 ``-h`` 或 ``--help`` "
 "的方式），这些 ``help`` 描述信息将随每个参数一同显示。"
 
-#: ../../library/argparse.rst:1199
+#: ../../library/argparse.rst:1204
 msgid ""
 "The ``help`` strings can include various format specifiers to avoid "
 "repetition of things like the program name or the argument default_.  The "
@@ -2282,7 +2277,7 @@ msgstr ""
 " 和传给 :meth:`~ArgumentParser.add_argument` 的大部分关键字参数，例如 ``%(default)s``, "
 "``%(type)s`` 等等::"
 
-#: ../../library/argparse.rst:1204
+#: ../../library/argparse.rst:1209
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='frobble')\n"
 ">>> parser.add_argument('bar', nargs='?', type=int, default=42,\n"
@@ -2308,20 +2303,20 @@ msgstr ""
 "options:\n"
 " -h, --help  show this help message and exit"
 
-#: ../../library/argparse.rst:1216
+#: ../../library/argparse.rst:1221
 msgid ""
 "As the help string supports %-formatting, if you want a literal ``%`` to "
 "appear in the help string, you must escape it as ``%%``."
 msgstr "由于帮助字符串支持 %-formatting，如果你希望在帮助字符串中显示 ``%`` 字面值，你必须将其转义为 ``%%``。"
 
-#: ../../library/argparse.rst:1219
+#: ../../library/argparse.rst:1224
 msgid ""
 ":mod:`!argparse` supports silencing the help entry for certain options, by "
 "setting the ``help`` value to ``argparse.SUPPRESS``::"
 msgstr ""
 ":mod:`!argparse` 支持静默特定选面的帮助条目，具体方式是将 ``help`` 值设为 ``argparse.SUPPRESS``::"
 
-#: ../../library/argparse.rst:1222
+#: ../../library/argparse.rst:1227
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='frobble')\n"
 ">>> parser.add_argument('--foo', help=argparse.SUPPRESS)\n"
@@ -2339,11 +2334,11 @@ msgstr ""
 "options:\n"
 "  -h, --help  show this help message and exit"
 
-#: ../../library/argparse.rst:1234
+#: ../../library/argparse.rst:1239
 msgid "metavar"
 msgstr "metavar"
 
-#: ../../library/argparse.rst:1236
+#: ../../library/argparse.rst:1241
 msgid ""
 "When :class:`ArgumentParser` generates help messages, it needs some way to "
 "refer to each expected argument.  By default, :class:`!ArgumentParser` "
@@ -2359,7 +2354,7 @@ msgstr ""
 " 值将被直接使用，而对于可选参数动作，dest_ 值将被转为大写形式。 因此，对于 ``dest='bar'`` 位置参数的引用形式将为 "
 "``bar``。 带有单个命令行参数的可选参数 ``--foo`` 的引用形式将为 ``FOO``。 一个样例::"
 
-#: ../../library/argparse.rst:1245
+#: ../../library/argparse.rst:1250
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo')\n"
@@ -2391,11 +2386,11 @@ msgstr ""
 " -h, --help  show this help message and exit\n"
 " --foo FOO"
 
-#: ../../library/argparse.rst:1260
+#: ../../library/argparse.rst:1265
 msgid "An alternative name can be specified with ``metavar``::"
 msgstr "可以使用 ``metavar`` 来指定一个替代名称::"
 
-#: ../../library/argparse.rst:1262
+#: ../../library/argparse.rst:1267
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', metavar='YYY')\n"
@@ -2427,7 +2422,7 @@ msgstr ""
 " -h, --help  show this help message and exit\n"
 " --foo YYY"
 
-#: ../../library/argparse.rst:1277
+#: ../../library/argparse.rst:1282
 msgid ""
 "Note that ``metavar`` only changes the *displayed* name - the name of the "
 "attribute on the :meth:`~ArgumentParser.parse_args` object is still "
@@ -2436,7 +2431,7 @@ msgstr ""
 "请注意 ``metavar`` 仅改变 *显示的* 名称 -  :meth:`~ArgumentParser.parse_args` "
 "对象的属性名称仍然会由 dest_ 值确定。"
 
-#: ../../library/argparse.rst:1281
+#: ../../library/argparse.rst:1286
 msgid ""
 "Different values of ``nargs`` may cause the metavar to be used multiple "
 "times. Providing a tuple to ``metavar`` specifies a different display for "
@@ -2444,7 +2439,7 @@ msgid ""
 msgstr ""
 "不同的 ``nargs`` 值可能导致 metavar 被多次使用。 提供一个元组给 ``metavar`` 即为每个参数指定不同的显示信息::"
 
-#: ../../library/argparse.rst:1285
+#: ../../library/argparse.rst:1290
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('-x', nargs=2)\n"
@@ -2468,11 +2463,11 @@ msgstr ""
 " -x X X\n"
 " --foo bar baz"
 
-#: ../../library/argparse.rst:1300
+#: ../../library/argparse.rst:1305
 msgid "dest"
 msgstr "dest"
 
-#: ../../library/argparse.rst:1302
+#: ../../library/argparse.rst:1307
 msgid ""
 "Most :class:`ArgumentParser` actions add some value as an attribute of the "
 "object returned by :meth:`~ArgumentParser.parse_args`.  The name of this "
@@ -2485,7 +2480,7 @@ msgstr ""
 "所返回对象的一个属性。 该属性的名称由 :meth:`~ArgumentParser.add_argument` 的 ``dest`` 关键字参数确定。"
 " 对于位置参数动作，``dest`` 通常会作为 :meth:`~ArgumentParser.add_argument` 的第一个参数提供::"
 
-#: ../../library/argparse.rst:1309
+#: ../../library/argparse.rst:1314
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('bar')\n"
@@ -2497,7 +2492,7 @@ msgstr ""
 ">>> parser.parse_args(['XXX'])\n"
 "Namespace(bar='XXX')"
 
-#: ../../library/argparse.rst:1314
+#: ../../library/argparse.rst:1319
 msgid ""
 "For optional argument actions, the value of ``dest`` is normally inferred "
 "from the option strings.  :class:`ArgumentParser` generates the value of "
@@ -2512,7 +2507,7 @@ msgstr ""
 "``--`` 字符串来生成 ``dest`` 的值。 如果没有提供长选项字符串，则 ``dest`` 将通过接受第一个短选项字符串并去掉开头的 "
 "``-`` 字符来获得。 任何内部的 ``-`` 字符都将被转换为 ``_`` 字符以确保字符串是有效的属性名称。 下面的例子显示了这种行为::"
 
-#: ../../library/argparse.rst:1323
+#: ../../library/argparse.rst:1328
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('-f', '--foo-bar', '--foo')\n"
@@ -2530,11 +2525,11 @@ msgstr ""
 ">>> parser.parse_args('--foo 1 -y 2'.split())\n"
 "Namespace(foo_bar='1', x='2')"
 
-#: ../../library/argparse.rst:1331
+#: ../../library/argparse.rst:1336
 msgid "``dest`` allows a custom attribute name to be provided::"
 msgstr "``dest`` 允许提供自定义属性名称::"
 
-#: ../../library/argparse.rst:1333
+#: ../../library/argparse.rst:1338
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', dest='bar')\n"
@@ -2546,11 +2541,11 @@ msgstr ""
 ">>> parser.parse_args('--foo XXX'.split())\n"
 "Namespace(bar='XXX')"
 
-#: ../../library/argparse.rst:1342
+#: ../../library/argparse.rst:1347
 msgid "deprecated"
 msgstr "deprecated"
 
-#: ../../library/argparse.rst:1344
+#: ../../library/argparse.rst:1349
 msgid ""
 "During a project's lifetime, some arguments may need to be removed from the "
 "command line. Before removing them, you should inform your users that the "
@@ -2565,7 +2560,7 @@ msgstr ""
 "关键字参数指明参数已被弃用并将在未来被移除，其默认值为 ``False``。 对于每个参数，如果 ``deprecated`` 为 "
 "``True``，那么当该参数被使用时会打印一条警告到 :data:`sys.stderr`::"
 
-#: ../../library/argparse.rst:1354
+#: ../../library/argparse.rst:1359
 msgid ""
 ">>> import argparse\n"
 ">>> parser = argparse.ArgumentParser(prog='snake.py')\n"
@@ -2585,11 +2580,11 @@ msgstr ""
 "snake.py: warning: option '--legs' is deprecated\n"
 "Namespace(legs=4)"
 
-#: ../../library/argparse.rst:1367
+#: ../../library/argparse.rst:1372
 msgid "Action classes"
 msgstr "Action 类"
 
-#: ../../library/argparse.rst:1369
+#: ../../library/argparse.rst:1374
 msgid ""
 ":class:`!Action` classes implement the Action API, a callable which returns "
 "a callable which processes arguments from the command-line. Any object which"
@@ -2599,7 +2594,7 @@ msgstr ""
 ":class:`!Action` 类实现了 Action API，是一个返回可调用对象的可调用对象，它返回的可调用对象将处理来自命令行的参数。 "
 "任何遵循此 API 的对象均可作为 ``action`` 形参传给 :meth:`~ArgumentParser.add_argument`。"
 
-#: ../../library/argparse.rst:1378
+#: ../../library/argparse.rst:1383
 msgid ""
 ":class:`!Action` objects are used by an :class:`ArgumentParser` to represent"
 " the information needed to parse a single argument from one or more strings "
@@ -2611,7 +2606,7 @@ msgstr ""
 "用来代表从命令行中的一个或多个字符串中解析出单个参数所必须的信息。 :class:`!Action` 类必须接受两个位置参数加上传给 "
 ":meth:`ArgumentParser.add_argument` 的除了 ``action`` 本身的任何关键字参数。"
 
-#: ../../library/argparse.rst:1384
+#: ../../library/argparse.rst:1389
 msgid ""
 "Instances of :class:`!Action` (or return value of any callable to the "
 "``action`` parameter) should have attributes :attr:`!dest`, "
@@ -2623,19 +2618,19 @@ msgstr ""
 ":attr:`!option_strings`, :attr:`!default`, :attr:`!type`, :attr:`!required`,"
 " :attr:`!help` 等属性。 确定这些属性的最容易的方式是调用 :meth:`!Action.__init__`。"
 
-#: ../../library/argparse.rst:1392
+#: ../../library/argparse.rst:1397
 msgid ""
 ":class:`!Action` instances should be callable, so subclasses must override "
 "the :meth:`!__call__` method, which should accept four parameters:"
 msgstr ""
 ":class:`!Action` 的实例应当为可调用对象，因此所有子类都必须重写 :meth:`!__call__` 方法，它应当接受四个形参："
 
-#: ../../library/argparse.rst:1395
+#: ../../library/argparse.rst:1400
 msgid ""
 "*parser* - The :class:`ArgumentParser` object which contains this action."
 msgstr "*parser* - 包含此动作的 :class:`ArgumentParser` 对象。"
 
-#: ../../library/argparse.rst:1397
+#: ../../library/argparse.rst:1402
 msgid ""
 "*namespace* - The :class:`Namespace` object that will be returned by "
 ":meth:`~ArgumentParser.parse_args`.  Most actions add an attribute to this "
@@ -2644,7 +2639,7 @@ msgstr ""
 "*namespace* - 将由 :meth:`~ArgumentParser.parse_args` 返回的 :class:`Namespace` "
 "对象。 大多数动作会使用 :func:`setattr` 为此对象添加一个属性。"
 
-#: ../../library/argparse.rst:1401
+#: ../../library/argparse.rst:1406
 msgid ""
 "*values* - The associated command-line arguments, with any type conversions "
 "applied.  Type conversions are specified with the type_ keyword argument to "
@@ -2653,7 +2648,7 @@ msgstr ""
 "*values* - 关联的命令行参数，并提供要应用的类型转换。 类型转换是由传给 "
 ":meth:`~ArgumentParser.add_argument` 的 type_ 关键字参数指定的。"
 
-#: ../../library/argparse.rst:1405
+#: ../../library/argparse.rst:1410
 msgid ""
 "*option_string* - The option string that was used to invoke this action. The"
 " ``option_string`` argument is optional, and will be absent if the action is"
@@ -2662,7 +2657,7 @@ msgstr ""
 "*option_string* - 被用于唤起此动作的选项字符串。 ``option_string`` "
 "参数是可选的，并且在动作被关联到位置参数时将被略去。"
 
-#: ../../library/argparse.rst:1409
+#: ../../library/argparse.rst:1414
 msgid ""
 "The :meth:`!__call__` method may perform arbitrary actions, but will "
 "typically set attributes on the ``namespace`` based on ``dest`` and "
@@ -2671,7 +2666,7 @@ msgstr ""
 ":meth:`!__call__` 方法可以执行任意动作，但通常将基于 ``dest`` 和 ``values`` 来设置 ``namespace`` "
 "的属性。"
 
-#: ../../library/argparse.rst:1414
+#: ../../library/argparse.rst:1419
 msgid ""
 ":class:`!Action` subclasses can define a :meth:`!format_usage` method that "
 "takes no argument and return a string which will be used when printing the "
@@ -2681,7 +2676,7 @@ msgstr ""
 ":class:`!Action` 子类可以定义 :meth:`!format_usage` "
 "方法，该方法不接受任何参数并返回一个将被用于打印程序的用法说明的字符串。 如果未提供此方法，则将使用适当的默认值。"
 
-#: ../../library/argparse.rst:1420
+#: ../../library/argparse.rst:1425
 msgid ""
 "A subclass of :class:`Action` for handling boolean flags with positive and "
 "negative options. Adding a single argument such as ``--foo`` automatically "
@@ -2692,7 +2687,7 @@ msgstr ""
 "的单个参数时，该子类会自动同时创建 ``--foo`` 和 ``--no-foo`` 两个选项，并分别存储 ``True`` 和 ``False`` "
 "值::"
 
-#: ../../library/argparse.rst:1425
+#: ../../library/argparse.rst:1430
 msgid ""
 ">>> import argparse\n"
 ">>> parser = argparse.ArgumentParser()\n"
@@ -2706,17 +2701,17 @@ msgstr ""
 ">>> parser.parse_args(['--no-foo'])\n"
 "Namespace(foo=False)"
 
-#: ../../library/argparse.rst:1435
+#: ../../library/argparse.rst:1440
 msgid "The parse_args() method"
 msgstr "parse_args() 方法"
 
-#: ../../library/argparse.rst:1439
+#: ../../library/argparse.rst:1444
 msgid ""
 "Convert argument strings to objects and assign them as attributes of the "
 "namespace.  Return the populated namespace."
 msgstr "将参数字符串转换为对象并将其设为命名空间的属性。 返回带有成员的命名空间。"
 
-#: ../../library/argparse.rst:1442
+#: ../../library/argparse.rst:1447
 msgid ""
 "Previous calls to :meth:`add_argument` determine exactly what objects are "
 "created and how they are assigned. See the documentation for "
@@ -2725,23 +2720,23 @@ msgstr ""
 "之前对 :meth:`add_argument` 的调用决定了哪些对象会被创建以及它们如何被赋值。 请参阅 :meth:`!add_argument` "
 "的文档了解详情。"
 
-#: ../../library/argparse.rst:1446
+#: ../../library/argparse.rst:1451
 msgid ""
 "args_ - List of strings to parse.  The default is taken from "
 ":data:`sys.argv`."
 msgstr "args_ - 要解析的字符串列表。 默认值是从 :data:`sys.argv` 获取。"
 
-#: ../../library/argparse.rst:1449
+#: ../../library/argparse.rst:1454
 msgid ""
 "namespace_ - An object to take the attributes.  The default is a new empty "
 ":class:`Namespace` object."
 msgstr "namespace_ - 用于获取属性的对象。 默认值是一个新的空 :class:`Namespace` 对象。"
 
-#: ../../library/argparse.rst:1454
+#: ../../library/argparse.rst:1459
 msgid "Option value syntax"
 msgstr "选项值语法"
 
-#: ../../library/argparse.rst:1456
+#: ../../library/argparse.rst:1461
 msgid ""
 "The :meth:`~ArgumentParser.parse_args` method supports several ways of "
 "specifying the value of an option (if it takes one).  In the simplest case, "
@@ -2750,7 +2745,7 @@ msgstr ""
 ":meth:`~ArgumentParser.parse_args` 方法支持多种指定选项值的方式（如果它接受选项的话）。 "
 "在最简单的情况下，选项和它的值是作为两个单独参数传入的::"
 
-#: ../../library/argparse.rst:1460
+#: ../../library/argparse.rst:1465
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('-x')\n"
@@ -2768,14 +2763,14 @@ msgstr ""
 ">>> parser.parse_args(['--foo', 'FOO'])\n"
 "Namespace(foo='FOO', x=None)"
 
-#: ../../library/argparse.rst:1468
+#: ../../library/argparse.rst:1473
 msgid ""
 "For long options (options with names longer than a single character), the "
 "option and value can also be passed as a single command-line argument, using"
 " ``=`` to separate them::"
 msgstr "对于长选项（名称长度超过一个字符的选项），选项和值也可以作为单个命令行参数传入，使用 ``=`` 分隔它们即可::"
 
-#: ../../library/argparse.rst:1472
+#: ../../library/argparse.rst:1477
 msgid ""
 ">>> parser.parse_args(['--foo=FOO'])\n"
 "Namespace(foo='FOO', x=None)"
@@ -2783,13 +2778,13 @@ msgstr ""
 ">>> parser.parse_args(['--foo=FOO'])\n"
 "Namespace(foo='FOO', x=None)"
 
-#: ../../library/argparse.rst:1475
+#: ../../library/argparse.rst:1480
 msgid ""
 "For short options (options only one character long), the option and its "
 "value can be concatenated::"
 msgstr "对于短选项（长度只有一个字符的选项），选项和它的值可以拼接在一起::"
 
-#: ../../library/argparse.rst:1478
+#: ../../library/argparse.rst:1483
 msgid ""
 ">>> parser.parse_args(['-xX'])\n"
 "Namespace(foo=None, x='X')"
@@ -2797,13 +2792,13 @@ msgstr ""
 ">>> parser.parse_args(['-xX'])\n"
 "Namespace(foo=None, x='X')"
 
-#: ../../library/argparse.rst:1481
+#: ../../library/argparse.rst:1486
 msgid ""
 "Several short options can be joined together, using only a single ``-`` "
 "prefix, as long as only the last option (or none of them) requires a value::"
 msgstr "有些短选项可以使用单个 ``-`` 前缀来进行合并，如果仅有最后一个选项（或没有任何选项）需要值的话::"
 
-#: ../../library/argparse.rst:1484
+#: ../../library/argparse.rst:1489
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('-x', action='store_true')\n"
@@ -2819,11 +2814,11 @@ msgstr ""
 ">>> parser.parse_args(['-xyzZ'])\n"
 "Namespace(x=True, y=True, z='Z')"
 
-#: ../../library/argparse.rst:1493
+#: ../../library/argparse.rst:1498
 msgid "Invalid arguments"
 msgstr "无效的参数"
 
-#: ../../library/argparse.rst:1495
+#: ../../library/argparse.rst:1500
 msgid ""
 "While parsing the command line, :meth:`~ArgumentParser.parse_args` checks "
 "for a variety of errors, including ambiguous options, invalid types, invalid"
@@ -2833,7 +2828,7 @@ msgstr ""
 "在解析命令行时，:meth:`~ArgumentParser.parse_args` "
 "会检测多种错误，包括有歧义的选项、无效的类型、无效的选项、错误的位置参数个数等等。 当遇到这种错误时，它将退出并打印出错误文本同时附带用法消息::"
 
-#: ../../library/argparse.rst:1500
+#: ../../library/argparse.rst:1505
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('--foo', type=int)\n"
@@ -2873,11 +2868,11 @@ msgstr ""
 "usage: PROG [-h] [--foo FOO] [bar]\n"
 "PROG: error: extra arguments found: badger"
 
-#: ../../library/argparse.rst:1521
+#: ../../library/argparse.rst:1526
 msgid "Arguments containing ``-``"
 msgstr "包含 ``-`` 的参数"
 
-#: ../../library/argparse.rst:1523
+#: ../../library/argparse.rst:1528
 msgid ""
 "The :meth:`~ArgumentParser.parse_args` method attempts to give errors "
 "whenever the user has clearly made a mistake, but some situations are "
@@ -2893,7 +2888,7 @@ msgstr ""
 ":meth:`~ArgumentParser.parse_args` "
 "方法在此会谨慎行事：位置参数只有在它们看起来像负数并且解析器中没有任何选项看起来像负数时才能以 ``-`` 打头。::"
 
-#: ../../library/argparse.rst:1531
+#: ../../library/argparse.rst:1536
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('-x')\n"
@@ -2955,7 +2950,7 @@ msgstr ""
 "usage: PROG [-h] [-1 ONE] [foo]\n"
 "PROG: error: argument -1: expected one argument"
 
-#: ../../library/argparse.rst:1561
+#: ../../library/argparse.rst:1566
 msgid ""
 "If you have positional arguments that must begin with ``-`` and don't look "
 "like negative numbers, you can insert the pseudo-argument ``'--'`` which "
@@ -2965,7 +2960,7 @@ msgstr ""
 "如果你有必须以 ``-`` 打头的位置参数并且看起来不像负数，你可以插入伪参数 ``'--'`` 以告诉 "
 ":meth:`~ArgumentParser.parse_args` 在那之后的内容是一个位置参数::"
 
-#: ../../library/argparse.rst:1566
+#: ../../library/argparse.rst:1571
 msgid ""
 ">>> parser.parse_args(['--', '-f'])\n"
 "Namespace(foo='-f', one=None)"
@@ -2973,18 +2968,18 @@ msgstr ""
 ">>> parser.parse_args(['--', '-f'])\n"
 "Namespace(foo='-f', one=None)"
 
-#: ../../library/argparse.rst:1569
+#: ../../library/argparse.rst:1574
 msgid ""
 "See also :ref:`the argparse howto on ambiguous arguments <specifying-"
 "ambiguous-arguments>` for more details."
 msgstr ""
 "另请参阅 :ref:`针对有歧义参数的 argparse 指引 <specifying-ambiguous-arguments>` 来了解更多细节。"
 
-#: ../../library/argparse.rst:1575
+#: ../../library/argparse.rst:1580
 msgid "Argument abbreviations (prefix matching)"
 msgstr "参数缩写（前缀匹配）"
 
-#: ../../library/argparse.rst:1577
+#: ../../library/argparse.rst:1582
 msgid ""
 "The :meth:`~ArgumentParser.parse_args` method :ref:`by default "
 "<allow_abbrev>` allows long options to be abbreviated to a prefix, if the "
@@ -2993,7 +2988,7 @@ msgstr ""
 ":meth:`~ArgumentParser.parse_args` 方法 :ref:`在默认情况下 <allow_abbrev>` "
 "允许将长选项缩写为前缀，如果缩写无歧义（即前缀与一个特定选项相匹配）的话::"
 
-#: ../../library/argparse.rst:1581
+#: ../../library/argparse.rst:1586
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> parser.add_argument('-bacon')\n"
@@ -3017,17 +3012,17 @@ msgstr ""
 "usage: PROG [-h] [-bacon BACON] [-badger BADGER]\n"
 "PROG: error: ambiguous option: -ba could match -badger, -bacon"
 
-#: ../../library/argparse.rst:1592
+#: ../../library/argparse.rst:1597
 msgid ""
 "An error is produced for arguments that could produce more than one options."
 " This feature can be disabled by setting :ref:`allow_abbrev` to ``False``."
 msgstr "可产生一个以上选项的参数会引发错误。 此特定可通过将 :ref:`allow_abbrev` 设为 ``False`` 来禁用。"
 
-#: ../../library/argparse.rst:1598
+#: ../../library/argparse.rst:1603
 msgid "Beyond ``sys.argv``"
 msgstr "在 ``sys.argv`` 以外"
 
-#: ../../library/argparse.rst:1600
+#: ../../library/argparse.rst:1605
 msgid ""
 "Sometimes it may be useful to have an :class:`ArgumentParser` parse "
 "arguments other than those of :data:`sys.argv`.  This can be accomplished by"
@@ -3037,7 +3032,7 @@ msgstr ""
 "有时在 :data:`sys.argv` 以外增加 :class:`ArgumentParser` 解析参数也很有用处。 这可以通过将一个字符串列表传给"
 " :meth:`~ArgumentParser.parse_args` 来实现。 它适用于在交互提示符下进行测试::"
 
-#: ../../library/argparse.rst:1605
+#: ../../library/argparse.rst:1610
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument(\n"
@@ -3063,17 +3058,17 @@ msgstr ""
 ">>> parser.parse_args(['1', '2', '3', '4', '--sum'])\n"
 "Namespace(accumulate=<built-in function sum>, integers=[1, 2, 3, 4])"
 
-#: ../../library/argparse.rst:1620
+#: ../../library/argparse.rst:1625
 msgid "The Namespace object"
 msgstr "命名空间对象"
 
-#: ../../library/argparse.rst:1624
+#: ../../library/argparse.rst:1629
 msgid ""
 "Simple class used by default by :meth:`~ArgumentParser.parse_args` to create"
 " an object holding attributes and return it."
 msgstr "由 :meth:`~ArgumentParser.parse_args` 默认使用的简单类，可创建一个存放属性的对象并将其返回。"
 
-#: ../../library/argparse.rst:1627
+#: ../../library/argparse.rst:1632
 msgid ""
 "This class is deliberately simple, just an :class:`object` subclass with a "
 "readable string representation. If you prefer to have dict-like view of the "
@@ -3082,7 +3077,7 @@ msgstr ""
 "这个类被有意做得很简单，只是一个具有可读字符串表示形式的 :class:`object`。 如果你更喜欢类似字典的属性视图，你可以使用标准 Python"
 " 中惯常的 :func:`vars`::"
 
-#: ../../library/argparse.rst:1631
+#: ../../library/argparse.rst:1636
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo')\n"
@@ -3096,7 +3091,7 @@ msgstr ""
 ">>> vars(args)\n"
 "{'foo': 'BAR'}"
 
-#: ../../library/argparse.rst:1637
+#: ../../library/argparse.rst:1642
 msgid ""
 "It may also be useful to have an :class:`ArgumentParser` assign attributes "
 "to an already existing object, rather than a new :class:`Namespace` object."
@@ -3105,7 +3100,7 @@ msgstr ""
 "另一个用处是让 :class:`ArgumentParser` 为一个已存在对象而不是为一个新的 :class:`Namespace` 对象的属性赋值。"
 " 这可以通过指定 ``namespace=`` 关键字参数来实现::"
 
-#: ../../library/argparse.rst:1641
+#: ../../library/argparse.rst:1646
 msgid ""
 ">>> class C:\n"
 "...     pass\n"
@@ -3127,15 +3122,15 @@ msgstr ""
 ">>> c.foo\n"
 "'BAR'"
 
-#: ../../library/argparse.rst:1653
+#: ../../library/argparse.rst:1658
 msgid "Other utilities"
 msgstr "其它实用工具"
 
-#: ../../library/argparse.rst:1656
+#: ../../library/argparse.rst:1661
 msgid "Sub-commands"
 msgstr "子命令"
 
-#: ../../library/argparse.rst:1663
+#: ../../library/argparse.rst:1668
 msgid ""
 "Many programs split up their functionality into a number of subcommands, for"
 " example, the ``svn`` program can invoke subcommands like ``svn checkout``, "
@@ -3157,70 +3152,70 @@ msgstr ""
 ":meth:`~_SubParsersAction.add_parser`，它接受一个命令名称和任意多个 "
 ":class:`!ArgumentParser` 构造器参数，并返回一个可以通常方式进行修改的 :class:`!ArgumentParser` 对象。"
 
-#: ../../library/argparse.rst:1675
+#: ../../library/argparse.rst:1680
 msgid "Description of parameters:"
 msgstr "形参的描述"
 
-#: ../../library/argparse.rst:1677
+#: ../../library/argparse.rst:1682
 msgid ""
 "*title* - title for the sub-parser group in help output; by default "
 "\"subcommands\" if description is provided, otherwise uses title for "
 "positional arguments"
 msgstr "*title* - 帮助输出中子解析器分组的标题；如果提供了描述则默认为 \"subcommands\"，否则使用位置参数的标题"
 
-#: ../../library/argparse.rst:1681
+#: ../../library/argparse.rst:1686
 msgid ""
 "*description* - description for the sub-parser group in help output, by "
 "default ``None``"
 msgstr "*description* - 帮助输出中对子解析器组的描述，默认为 ``None``"
 
-#: ../../library/argparse.rst:1684
+#: ../../library/argparse.rst:1689
 msgid ""
 "*prog* - usage information that will be displayed with sub-command help, by "
 "default the name of the program and any positional arguments before the "
 "subparser argument"
 msgstr "*prog* - 将与子命令帮助一同显示的用法信息，默认为程序名称和子解析器参数之前的任何位置参数"
 
-#: ../../library/argparse.rst:1688
+#: ../../library/argparse.rst:1693
 msgid ""
 "*parser_class* - class which will be used to create sub-parser instances, by"
 " default the class of the current parser (e.g. :class:`ArgumentParser`)"
 msgstr ""
 "*parser_class* - 将被用于创建子解析器实例的类，默认为当前解析器类 (例如 :class:`ArgumentParser`)"
 
-#: ../../library/argparse.rst:1691
+#: ../../library/argparse.rst:1696
 msgid ""
 "action_ - the basic type of action to be taken when this argument is "
 "encountered at the command line"
 msgstr "action_ - 当此参数在命令行中出现时要执行动作的基本类型"
 
-#: ../../library/argparse.rst:1694
+#: ../../library/argparse.rst:1699
 msgid ""
 "dest_ - name of the attribute under which sub-command name will be stored; "
 "by default ``None`` and no value is stored"
 msgstr "dest_ - 将被用于保存子命令名称的属性名；默认为 ``None`` 即不保存任何值"
 
-#: ../../library/argparse.rst:1697
+#: ../../library/argparse.rst:1702
 msgid ""
 "required_ - Whether or not a subcommand must be provided, by default "
 "``False`` (added in 3.7)"
 msgstr "required_ - 是否必须要提供子命令，默认为 ``False`` (在 3.7 中新增)"
 
-#: ../../library/argparse.rst:1700
+#: ../../library/argparse.rst:1705
 msgid "help_ - help for sub-parser group in help output, by default ``None``"
 msgstr "help_ - 在输出帮助中的子解析器分组帮助信息，默认为 ``None``"
 
-#: ../../library/argparse.rst:1702
+#: ../../library/argparse.rst:1707
 msgid ""
 "metavar_ - string presenting available subcommands in help; by default it is"
 " ``None`` and presents subcommands in form {cmd1, cmd2, ..}"
 msgstr "metavar_ - 帮助信息中表示可用子命令的字符串；默认为 ``None`` 并以 {cmd1, cmd2, ..} 的形式表示子命令"
 
-#: ../../library/argparse.rst:1705
+#: ../../library/argparse.rst:1710
 msgid "Some example usage::"
 msgstr "一些使用示例::"
 
-#: ../../library/argparse.rst:1707
+#: ../../library/argparse.rst:1712
 msgid ""
 ">>> # create the top-level parser\n"
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
@@ -3260,7 +3255,7 @@ msgstr ""
 ">>> parser.parse_args(['--foo', 'b', '--baz', 'Z'])\n"
 "Namespace(baz='Z', foo=True)"
 
-#: ../../library/argparse.rst:1726
+#: ../../library/argparse.rst:1731
 msgid ""
 "Note that the object returned by :meth:`parse_args` will only contain "
 "attributes for the main parser and the subparser that was selected by the "
@@ -3273,7 +3268,7 @@ msgstr ""
 "因此在上面的例子中，当指定了 ``a`` 命令时，将只存在 ``foo`` 和 ``bar`` 属性，而当指定了 ``b`` 命令时，则只存在 "
 "``foo`` 和 ``baz`` 属性。"
 
-#: ../../library/argparse.rst:1733
+#: ../../library/argparse.rst:1738
 msgid ""
 "Similarly, when a help message is requested from a subparser, only the help "
 "for that particular parser will be printed.  The help message will not "
@@ -3285,7 +3280,7 @@ msgstr ""
 "（每个子解析器命令一条帮助消息，但是，也可以像上面那样通过将 ``help=`` 参数传入 "
 ":meth:`~_SubParsersAction.add_parser` 来给出。）"
 
-#: ../../library/argparse.rst:1741
+#: ../../library/argparse.rst:1746
 msgid ""
 ">>> parser.parse_args(['--help'])\n"
 "usage: PROG [-h] [--foo] {a,b} ...\n"
@@ -3343,7 +3338,7 @@ msgstr ""
 "  -h, --help     show this help message and exit\n"
 "  --baz {X,Y,Z}  baz help"
 
-#: ../../library/argparse.rst:1769
+#: ../../library/argparse.rst:1774
 msgid ""
 "The :meth:`add_subparsers` method also supports ``title`` and "
 "``description`` keyword arguments.  When either is present, the subparser's "
@@ -3352,7 +3347,7 @@ msgstr ""
 ":meth:`add_subparsers` 方法也支持 ``title`` 和 ``description`` 关键字参数。 "
 "当两者都存在时，子解析器的命令将出现在输出帮助消息中它们自己的分组内。 例如::"
 
-#: ../../library/argparse.rst:1773
+#: ../../library/argparse.rst:1778
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> subparsers = parser.add_subparsers(title='subcommands',\n"
@@ -3388,7 +3383,7 @@ msgstr ""
 "\n"
 "  {foo,bar}   additional help"
 
-#: ../../library/argparse.rst:1790
+#: ../../library/argparse.rst:1795
 msgid ""
 "Furthermore, :meth:`~_SubParsersAction.add_parser` supports an additional "
 "*aliases* argument, which allows multiple strings to refer to the same "
@@ -3398,7 +3393,7 @@ msgstr ""
 "此外，:meth:`~_SubParsersAction.add_parser` 还支持附加的 *aliases* "
 "参数，它允许多个字符串指向同一个子解析器。 下面的例子，类似于 ``svn``，将别名 ``co`` 设为 ``checkout`` 的缩写形式::"
 
-#: ../../library/argparse.rst:1795
+#: ../../library/argparse.rst:1800
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> subparsers = parser.add_subparsers()\n"
@@ -3414,14 +3409,14 @@ msgstr ""
 ">>> parser.parse_args(['co', 'bar'])\n"
 "Namespace(foo='bar')"
 
-#: ../../library/argparse.rst:1802
+#: ../../library/argparse.rst:1807
 msgid ""
 ":meth:`~_SubParsersAction.add_parser` supports also an additional "
 "*deprecated* argument, which allows to deprecate the subparser."
 msgstr ""
 ":meth:`~_SubParsersAction.add_parser` 也支持附加的 *deprecated* 参数，它允许弃用子解析器。"
 
-#: ../../library/argparse.rst:1816
+#: ../../library/argparse.rst:1821
 msgid ""
 "One particularly effective way of handling subcommands is to combine the use"
 " of the :meth:`add_subparsers` method with calls to :meth:`set_defaults` so "
@@ -3431,7 +3426,7 @@ msgstr ""
 "一个特别有效的处理子命令的方式是将 :meth:`add_subparsers` 方法与对 :meth:`set_defaults` "
 "的调用结合起来使用以便每个子解析器能知道应当执行哪个 Python 函数。 例如::"
 
-#: ../../library/argparse.rst:1821
+#: ../../library/argparse.rst:1826
 msgid ""
 ">>> # subcommand functions\n"
 ">>> def foo(args):\n"
@@ -3497,7 +3492,7 @@ msgstr ""
 ">>> args.func(args)\n"
 "((XYZYX))"
 
-#: ../../library/argparse.rst:1853
+#: ../../library/argparse.rst:1858
 msgid ""
 "This way, you can let :meth:`parse_args` do the job of calling the "
 "appropriate function after argument parsing is complete.  Associating "
@@ -3510,7 +3505,7 @@ msgstr ""
 "像这样将函数关联到动作通常是你处理每个子解析器的不同动作的最简便方式。 但是，如果有必要检查被唤起的子解析器的名称，则 "
 ":meth:`add_subparsers` 调用的 ``dest`` 关键字参数将可实现::"
 
-#: ../../library/argparse.rst:1860
+#: ../../library/argparse.rst:1865
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> subparsers = parser.add_subparsers(dest='subparser_name')\n"
@@ -3530,21 +3525,21 @@ msgstr ""
 ">>> parser.parse_args(['2', 'frobble'])\n"
 "Namespace(subparser_name='2', y='frobble')"
 
-#: ../../library/argparse.rst:1869
+#: ../../library/argparse.rst:1874
 msgid "New *required* keyword-only parameter."
 msgstr "新增 *required* 仅限关键字形参。"
 
-#: ../../library/argparse.rst:1872
+#: ../../library/argparse.rst:1877
 msgid ""
 "Subparser's *prog* is no longer affected by a custom usage message in the "
 "main parser."
 msgstr "子解析器的 *prog* 将不再受主解析器中自定义用法说明消息的影响。"
 
-#: ../../library/argparse.rst:1878
+#: ../../library/argparse.rst:1883
 msgid "FileType objects"
 msgstr "FileType 对象"
 
-#: ../../library/argparse.rst:1882
+#: ../../library/argparse.rst:1887
 msgid ""
 "The :class:`FileType` factory creates objects that can be passed to the type"
 " argument of :meth:`ArgumentParser.add_argument`.  Arguments that have "
@@ -3556,7 +3551,7 @@ msgstr ""
 "参数传入的对象。 以 :class:`FileType` "
 "对象作为其类型的参数将使用命令行参数以所请求模式、缓冲区大小、编码格式和错误处理方式打开文件（请参阅 :func:`open` 函数了解详情）::"
 
-#: ../../library/argparse.rst:1888
+#: ../../library/argparse.rst:1893
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--raw', type=argparse.FileType('wb', 0))\n"
@@ -3570,7 +3565,7 @@ msgstr ""
 ">>> parser.parse_args(['--raw', 'raw.dat', 'file.txt'])\n"
 "Namespace(out=<_io.TextIOWrapper name='file.txt' mode='w' encoding='UTF-8'>, raw=<_io.FileIO name='raw.dat' mode='wb'>)"
 
-#: ../../library/argparse.rst:1894
+#: ../../library/argparse.rst:1899
 msgid ""
 "FileType objects understand the pseudo-argument ``'-'`` and automatically "
 "convert this into :data:`sys.stdin` for readable :class:`FileType` objects "
@@ -3579,7 +3574,7 @@ msgstr ""
 "FileType 对象能理解伪参数 ``'-'`` 并会自动将其转换为 :data:`sys.stdin` 用于可读的 "
 ":class:`FileType` 对象以及 :data:`sys.stdout` 用于可写的 :class:`FileType` 对象::"
 
-#: ../../library/argparse.rst:1898
+#: ../../library/argparse.rst:1903
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('infile', type=argparse.FileType('r'))\n"
@@ -3591,7 +3586,7 @@ msgstr ""
 ">>> parser.parse_args(['-'])\n"
 "Namespace(infile=<_io.TextIOWrapper name='<stdin>' encoding='UTF-8'>)"
 
-#: ../../library/argparse.rst:1905
+#: ../../library/argparse.rst:1910
 msgid ""
 "If one argument uses *FileType* and then a subsequent argument fails, an "
 "error is reported but the file is not automatically closed. This can also "
@@ -3602,15 +3597,15 @@ msgstr ""
 "如果一个参数使用 *FileType*，然后随后的参数失败，则报告错误，但文件不会自动关闭。 这也会破坏输出文件。 "
 "在这种情况下，最好等到解析器运行之后，然后使用 :keyword:`with` 语句来管理文件。"
 
-#: ../../library/argparse.rst:1911
+#: ../../library/argparse.rst:1916
 msgid "Added the *encodings* and *errors* parameters."
 msgstr "增加了 *encodings* 和 *errors* 形参。"
 
-#: ../../library/argparse.rst:1918
+#: ../../library/argparse.rst:1923
 msgid "Argument groups"
 msgstr "参数组"
 
-#: ../../library/argparse.rst:1923
+#: ../../library/argparse.rst:1928
 msgid ""
 "By default, :class:`ArgumentParser` groups command-line arguments into "
 "\"positional arguments\" and \"options\" when displaying help messages. When"
@@ -3621,7 +3616,7 @@ msgstr ""
 "在默认情况下，:class:`ArgumentParser` 会在显示帮助消息时将命令行参数分为“位置参数”和“选项”两组。 "
 "当存在比默认更好的分组概念时，可以使用 :meth:`!add_argument_group` 方法来创建适当的分组::"
 
-#: ../../library/argparse.rst:1929
+#: ../../library/argparse.rst:1934
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG', add_help=False)\n"
 ">>> group = parser.add_argument_group('group')\n"
@@ -3645,7 +3640,7 @@ msgstr ""
 "  bar    bar help\n"
 "  --foo FOO  foo help"
 
-#: ../../library/argparse.rst:1940
+#: ../../library/argparse.rst:1945
 msgid ""
 "The :meth:`add_argument_group` method returns an argument group object which"
 " has an :meth:`~ArgumentParser.add_argument` method just like a regular "
@@ -3660,7 +3655,7 @@ msgstr ""
 "当一个参数被加入分组时，解析器儒将地它视为一个正常的参数，但是会在单独的帮助消息分组中显示该参数。 "
 ":meth:`!add_argument_group` 方法接受 *title* 和 *description* 参数以使用它们来定制显示内容::"
 
-#: ../../library/argparse.rst:1948
+#: ../../library/argparse.rst:1953
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG', add_help=False)\n"
 ">>> group1 = parser.add_argument_group('group1', 'group1 description')\n"
@@ -3698,7 +3693,7 @@ msgstr ""
 "\n"
 "  --bar BAR  bar help"
 
-#: ../../library/argparse.rst:1966
+#: ../../library/argparse.rst:1971
 msgid ""
 "The optional, keyword-only parameters argument_default_ and "
 "conflict_handler_ allow for finer-grained control of the behavior of the "
@@ -3709,13 +3704,13 @@ msgstr ""
 "可选的仅限关键字形参 argument_default_ 和 conflict_handler_ 允许对参数分组行为进行更细粒度的控制。 这些形参具有与"
 " :class:`ArgumentParser` 构造器中相同的含义，但是专门应用于参数分组而不是整个解析器。"
 
-#: ../../library/argparse.rst:1971
+#: ../../library/argparse.rst:1976
 msgid ""
 "Note that any arguments not in your user-defined groups will end up back in "
 "the usual \"positional arguments\" and \"optional arguments\" sections."
 msgstr "请注意任意不在你的自定义分组中的参数最终都将回到通常的“位置参数”和“可选参数”分组中。"
 
-#: ../../library/argparse.rst:1974
+#: ../../library/argparse.rst:1979
 msgid ""
 "Calling :meth:`add_argument_group` on an argument group now raises an "
 "exception. This nesting was never supported, often failed to work correctly,"
@@ -3724,22 +3719,22 @@ msgstr ""
 "在参数分组上调用 :meth:`add_argument_group` 现在会引发异常。 "
 "这样的嵌套从未受到支持，经常无法正确工作，并且是由于继承而在无意中对外公开的。"
 
-#: ../../library/argparse.rst:1979
+#: ../../library/argparse.rst:1984
 msgid "Passing prefix_chars_ to :meth:`add_argument_group` is now deprecated."
 msgstr "将 prefix_chars_ 传给 :meth:`add_argument_group` 的做法现在已被弃用。"
 
-#: ../../library/argparse.rst:1985
+#: ../../library/argparse.rst:1990
 msgid "Mutual exclusion"
 msgstr "互斥"
 
-#: ../../library/argparse.rst:1989
+#: ../../library/argparse.rst:1994
 msgid ""
 "Create a mutually exclusive group. :mod:`!argparse` will make sure that only"
 " one of the arguments in the mutually exclusive group was present on the "
 "command line::"
 msgstr "创建一个互斥分组。 :mod:`!argparse` 将会确保互斥分组中只有一个参数在命令行中可用::"
 
-#: ../../library/argparse.rst:1993
+#: ../../library/argparse.rst:1998
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> group = parser.add_mutually_exclusive_group()\n"
@@ -3765,7 +3760,7 @@ msgstr ""
 "usage: PROG [-h] [--foo | --bar]\n"
 "PROG: error: argument --bar: not allowed with argument --foo"
 
-#: ../../library/argparse.rst:2005
+#: ../../library/argparse.rst:2010
 msgid ""
 "The :meth:`add_mutually_exclusive_group` method also accepts a *required* "
 "argument, to indicate that at least one of the mutually exclusive arguments "
@@ -3774,7 +3769,7 @@ msgstr ""
 ":meth:`add_mutually_exclusive_group` 方法也接受一个 *required* "
 "参数，表示在互斥组中至少有一个参数是需要的::"
 
-#: ../../library/argparse.rst:2009
+#: ../../library/argparse.rst:2014
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> group = parser.add_mutually_exclusive_group(required=True)\n"
@@ -3792,7 +3787,7 @@ msgstr ""
 "usage: PROG [-h] (--foo | --bar)\n"
 "PROG: error: one of the arguments --foo --bar is required"
 
-#: ../../library/argparse.rst:2017
+#: ../../library/argparse.rst:2022
 msgid ""
 "Note that currently mutually exclusive argument groups do not support the "
 "*title* and *description* arguments of "
@@ -3803,7 +3798,7 @@ msgstr ""
 "请注意当前互斥的参数组不支持 :meth:`~ArgumentParser.add_argument_group` 的 *title* 和 "
 "*description* 参数。 但是，互斥的参数数可以被添加到具有 title 和 description 的参数组中。 例如::"
 
-#: ../../library/argparse.rst:2023
+#: ../../library/argparse.rst:2028
 msgid ""
 ">>> parser = argparse.ArgumentParser(prog='PROG')\n"
 ">>> group = parser.add_argument_group('Group title', 'Group description')\n"
@@ -3839,7 +3834,7 @@ msgstr ""
 "  --foo FOO   foo help\n"
 "  --bar BAR   bar help"
 
-#: ../../library/argparse.rst:2040
+#: ../../library/argparse.rst:2045
 msgid ""
 "Calling :meth:`add_argument_group` or :meth:`add_mutually_exclusive_group` "
 "on a mutually exclusive group now raises an exception. This nesting was "
@@ -3849,11 +3844,11 @@ msgstr ""
 "在互斥组上调用 :meth:`add_argument_group` 或 :meth:`add_mutually_exclusive_group` "
 "现在会引发异常。 这种嵌套从未得到支持，经常不能正确工作，并在无意中通过继承暴露出来。"
 
-#: ../../library/argparse.rst:2048
+#: ../../library/argparse.rst:2053
 msgid "Parser defaults"
 msgstr "解析器默认值"
 
-#: ../../library/argparse.rst:2052
+#: ../../library/argparse.rst:2057
 msgid ""
 "Most of the time, the attributes of the object returned by "
 ":meth:`parse_args` will be fully determined by inspecting the command-line "
@@ -3864,7 +3859,7 @@ msgstr ""
 "在大多数时候，:meth:`parse_args` 所返回对象的属性将完全通过检查命令行参数和参数动作来确定。 :meth:`set_defaults`"
 " 则允许加入一些无须任何命令行检查的额外属性::"
 
-#: ../../library/argparse.rst:2058
+#: ../../library/argparse.rst:2063
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('foo', type=int)\n"
@@ -3878,12 +3873,12 @@ msgstr ""
 ">>> parser.parse_args(['736'])\n"
 "Namespace(bar=42, baz='badger', foo=736)"
 
-#: ../../library/argparse.rst:2064
+#: ../../library/argparse.rst:2069
 msgid ""
 "Note that parser-level defaults always override argument-level defaults::"
 msgstr "请注意解析器层级的默认值总是会覆盖参数层级的默认值::"
 
-#: ../../library/argparse.rst:2066
+#: ../../library/argparse.rst:2071
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', default='bar')\n"
@@ -3897,7 +3892,7 @@ msgstr ""
 ">>> parser.parse_args([])\n"
 "Namespace(foo='spam')"
 
-#: ../../library/argparse.rst:2072
+#: ../../library/argparse.rst:2077
 msgid ""
 "Parser-level defaults can be particularly useful when working with multiple "
 "parsers.  See the :meth:`~ArgumentParser.add_subparsers` method for an "
@@ -3906,7 +3901,7 @@ msgstr ""
 "解析器层级默认值在需要多解析器时会特别有用。 请参阅 :meth:`~ArgumentParser.add_subparsers` "
 "方法了解此类型的一个示例。"
 
-#: ../../library/argparse.rst:2078
+#: ../../library/argparse.rst:2083
 msgid ""
 "Get the default value for a namespace attribute, as set by either "
 ":meth:`~ArgumentParser.add_argument` or by "
@@ -3915,7 +3910,7 @@ msgstr ""
 "获取一个命名空间属性的默认值，该值是由 :meth:`~ArgumentParser.add_argument` 或 "
 ":meth:`~ArgumentParser.set_defaults` 设置的::"
 
-#: ../../library/argparse.rst:2082
+#: ../../library/argparse.rst:2087
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', default='badger')\n"
@@ -3927,11 +3922,11 @@ msgstr ""
 ">>> parser.get_default('foo')\n"
 "'badger'"
 
-#: ../../library/argparse.rst:2089
+#: ../../library/argparse.rst:2094
 msgid "Printing help"
 msgstr "打印帮助"
 
-#: ../../library/argparse.rst:2091
+#: ../../library/argparse.rst:2096
 msgid ""
 "In most typical applications, :meth:`~ArgumentParser.parse_args` will take "
 "care of formatting and printing any usage or error messages.  However, "
@@ -3940,7 +3935,7 @@ msgstr ""
 "在大多数典型应用中，:meth:`~ArgumentParser.parse_args` 将负责任何用法和错误消息的格式化和打印。 "
 "但是，也可使用某些其他格式化方法:"
 
-#: ../../library/argparse.rst:2097
+#: ../../library/argparse.rst:2102
 msgid ""
 "Print a brief description of how the :class:`ArgumentParser` should be "
 "invoked on the command line.  If *file* is ``None``, :data:`sys.stdout` is "
@@ -3949,7 +3944,7 @@ msgstr ""
 "打印一段简短描述，说明应当如何在命令行中唤起 :class:`ArgumentParser`。 如果 *file* 为 ``None``，则默认使用 "
 ":data:`sys.stdout`。"
 
-#: ../../library/argparse.rst:2103
+#: ../../library/argparse.rst:2108
 msgid ""
 "Print a help message, including the program usage and information about the "
 "arguments registered with the :class:`ArgumentParser`.  If *file* is "
@@ -3958,29 +3953,29 @@ msgstr ""
 "打印一条帮助消息，包括程序用法和通过 :class:`ArgumentParser` 注册的相关参数信息。 如果 *file* 为 "
 "``None``，则默认使用 :data:`sys.stdout`。"
 
-#: ../../library/argparse.rst:2107
+#: ../../library/argparse.rst:2112
 msgid ""
 "There are also variants of these methods that simply return a string instead"
 " of printing it:"
 msgstr "还存在这些方法的几个变化形式，它们只返回字符串而不打印消息:"
 
-#: ../../library/argparse.rst:2112
+#: ../../library/argparse.rst:2117
 msgid ""
 "Return a string containing a brief description of how the "
 ":class:`ArgumentParser` should be invoked on the command line."
 msgstr "返回一个包含简短描述的字符串，说明应当如何在命令行中唤起 :class:`ArgumentParser`。"
 
-#: ../../library/argparse.rst:2117
+#: ../../library/argparse.rst:2122
 msgid ""
 "Return a string containing a help message, including the program usage and "
 "information about the arguments registered with the :class:`ArgumentParser`."
 msgstr "反回一个包含帮助消息的字符串，包括程序用法和通过 :class:`ArgumentParser` 注册的相关参数信息。"
 
-#: ../../library/argparse.rst:2122
+#: ../../library/argparse.rst:2127
 msgid "Partial parsing"
 msgstr "部分解析"
 
-#: ../../library/argparse.rst:2126
+#: ../../library/argparse.rst:2131
 msgid ""
 "Sometimes a script only needs to handle a specific set of command-line "
 "arguments, leaving any unrecognized arguments for another script or program."
@@ -3990,7 +3985,7 @@ msgstr ""
 "有时一个脚本只需要处理特定的命令行参数集合，把不能识别的参数留给其他脚本或程序。 "
 "在这种情况下，:meth:`~ArgumentParser.parse_known_args` 方法就会很有用处。"
 
-#: ../../library/argparse.rst:2131
+#: ../../library/argparse.rst:2136
 msgid ""
 "This method works similarly to :meth:`~ArgumentParser.parse_args`, but it "
 "does not raise an error for extra, unrecognized arguments. Instead, it "
@@ -4000,7 +3995,7 @@ msgstr ""
 "此方法的运作方式与 :meth:`~ArgumentParser.parse_args` 类似，但它不会针对额外的不能识别的参数引发错误。 "
 "它会解析已知参数并返回一个包含已填充命名空间和不能识别的参数列表的二元组。"
 
-#: ../../library/argparse.rst:2138
+#: ../../library/argparse.rst:2143
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo', action='store_true')\n"
@@ -4014,7 +4009,7 @@ msgstr ""
 ">>> parser.parse_known_args(['--foo', '--badger', 'BAR', 'spam'])\n"
 "(Namespace(bar='BAR', foo=True), ['--badger', 'spam'])"
 
-#: ../../library/argparse.rst:2145
+#: ../../library/argparse.rst:2150
 msgid ""
 ":ref:`Prefix matching <prefix-matching>` rules apply to "
 ":meth:`~ArgumentParser.parse_known_args`. The parser may consume an option "
@@ -4025,11 +4020,11 @@ msgstr ""
 ":meth:`~ArgumentParser.parse_known_args`。 "
 "一个解析器即使在某个选项只是已知选项的前缀时也能读取该选项，而不是将其放入剩余参数列表。"
 
-#: ../../library/argparse.rst:2152
+#: ../../library/argparse.rst:2157
 msgid "Customizing file parsing"
 msgstr "自定义文件解析"
 
-#: ../../library/argparse.rst:2156
+#: ../../library/argparse.rst:2161
 msgid ""
 "Arguments that are read from a file (see the *fromfile_prefix_chars* keyword"
 " argument to the :class:`ArgumentParser` constructor) are read one argument "
@@ -4039,7 +4034,7 @@ msgstr ""
 "从文件读取的参数（见 :class:`ArgumentParser` 的 *fromfile_prefix_chars* "
 "关键字参数）将是一行读取一个参数。 :meth:`convert_arg_line_to_args` 可被重写以使用更复杂的读取方式。"
 
-#: ../../library/argparse.rst:2161
+#: ../../library/argparse.rst:2166
 msgid ""
 "This method takes a single argument *arg_line* which is a string read from "
 "the argument file.  It returns a list of arguments parsed from this string. "
@@ -4048,13 +4043,13 @@ msgstr ""
 "此方法接受从参数文件读取的字符串形式的单个参数 *arg_line*。 它返回从该字符串解析出的参数列表。 "
 "此方法将在每次按顺序从参数文件读取一行时被调用一次。"
 
-#: ../../library/argparse.rst:2165
+#: ../../library/argparse.rst:2170
 msgid ""
 "A useful override of this method is one that treats each space-separated "
 "word as an argument.  The following example demonstrates how to do this::"
 msgstr "此方法的一个有用的重写是将每个以空格分隔的单词视为一个参数。 下面的例子演示了如何实现这一点::"
 
-#: ../../library/argparse.rst:2168
+#: ../../library/argparse.rst:2173
 msgid ""
 "class MyArgumentParser(argparse.ArgumentParser):\n"
 "    def convert_arg_line_to_args(self, arg_line):\n"
@@ -4064,11 +4059,11 @@ msgstr ""
 "    def convert_arg_line_to_args(self, arg_line):\n"
 "        return arg_line.split()"
 
-#: ../../library/argparse.rst:2174
+#: ../../library/argparse.rst:2179
 msgid "Exiting methods"
 msgstr "退出方法"
 
-#: ../../library/argparse.rst:2178
+#: ../../library/argparse.rst:2183
 msgid ""
 "This method terminates the program, exiting with the specified *status* and,"
 " if given, it prints a *message* to :data:`sys.stderr` before that. The user"
@@ -4077,7 +4072,7 @@ msgstr ""
 "此方法将终结程序，退出时附带指定的 *status*，并且如果给出了 *message* 则会在退出前将其打印到 :data:`sys.stderr`。"
 " 用户可重写此方法以不同方式来处理这些步骤::"
 
-#: ../../library/argparse.rst:2182
+#: ../../library/argparse.rst:2187
 msgid ""
 "class ErrorCatchingArgumentParser(argparse.ArgumentParser):\n"
 "    def exit(self, status=0, message=None):\n"
@@ -4091,17 +4086,17 @@ msgstr ""
 "            raise Exception(f'Exiting because of an error: {message}')\n"
 "        exit(status)"
 
-#: ../../library/argparse.rst:2190
+#: ../../library/argparse.rst:2195
 msgid ""
 "This method prints a usage message, including the *message*, to "
 ":data:`sys.stderr` and terminates the program with a status code of 2."
 msgstr "此方法将把用法消息包括 *message* 打印到 :data:`sys.stderr` 并附带状态码 2 终结程序。"
 
-#: ../../library/argparse.rst:2195
+#: ../../library/argparse.rst:2200
 msgid "Intermixed parsing"
 msgstr "混合解析"
 
-#: ../../library/argparse.rst:2200
+#: ../../library/argparse.rst:2205
 msgid ""
 "A number of Unix commands allow the user to intermix optional arguments with"
 " positional arguments.  The :meth:`~ArgumentParser.parse_intermixed_args` "
@@ -4111,7 +4106,7 @@ msgstr ""
 "许多 Unix 命令允许用户混用可选参数与位置参数。 :meth:`~ArgumentParser.parse_intermixed_args` 和 "
 ":meth:`~ArgumentParser.parse_known_intermixed_args` 方法均支持这种解析风格。"
 
-#: ../../library/argparse.rst:2205
+#: ../../library/argparse.rst:2210
 msgid ""
 "These parsers do not support all the :mod:`!argparse` features, and will "
 "raise exceptions if unsupported features are used.  In particular, "
@@ -4121,7 +4116,7 @@ msgstr ""
 "这些解析器并不支持所有的 :mod:`!argparse` 特性，并且当不受支持的特性被使用时将会引发异常。 "
 "具体来说，子解析器以及同时包括可选参数和位置参数的互斥分组是不受支持的。"
 
-#: ../../library/argparse.rst:2210
+#: ../../library/argparse.rst:2215
 msgid ""
 "The following example shows the difference between "
 ":meth:`~ArgumentParser.parse_known_args` and "
@@ -4133,7 +4128,7 @@ msgstr ""
 ":meth:`~ArgumentParser.parse_intermixed_args` 之间的差异：前者会将 ``['2', '3']`` "
 "返回为未解析的参数，而后者会将所有位置参数收集至 ``rest`` 中。 ::"
 
-#: ../../library/argparse.rst:2216
+#: ../../library/argparse.rst:2221
 msgid ""
 ">>> parser = argparse.ArgumentParser()\n"
 ">>> parser.add_argument('--foo')\n"
@@ -4153,7 +4148,7 @@ msgstr ""
 ">>> parser.parse_intermixed_args('doit 1 --foo bar 2 3'.split())\n"
 "Namespace(cmd='doit', foo='bar', rest=[1, 2, 3])"
 
-#: ../../library/argparse.rst:2225
+#: ../../library/argparse.rst:2230
 msgid ""
 ":meth:`~ArgumentParser.parse_known_intermixed_args` returns a two item tuple"
 " containing the populated namespace and the list of remaining argument "
@@ -4164,11 +4159,11 @@ msgstr ""
 "返回由两个条目组成的元组，其中包含带成员的命名空间以及剩余参数字符串列表。 当存在任何剩余的未解析参数字符串时 "
 ":meth:`~ArgumentParser.parse_intermixed_args` 将引发一个错误。"
 
-#: ../../library/argparse.rst:2234
+#: ../../library/argparse.rst:2239
 msgid "Registering custom types or actions"
 msgstr "注册自定义的类型或动作"
 
-#: ../../library/argparse.rst:2238
+#: ../../library/argparse.rst:2243
 msgid ""
 "Sometimes it's desirable to use a custom string in error messages to provide"
 " more user-friendly output. In these cases, :meth:`!register` can be used to"
@@ -4178,7 +4173,7 @@ msgstr ""
 "在某些时候有必要在错误消息中使用自定义的字符串以提供对用户更友好的输出。 在这种情况下，可以使用 :meth:`!register` "
 "来注册带有解析器的自定义动作或类型并允许你按其注册名称而非其可调用对象名称来引用该类型。"
 
-#: ../../library/argparse.rst:2243
+#: ../../library/argparse.rst:2248
 msgid ""
 "The :meth:`!register` method accepts three arguments - a *registry_name*, "
 "specifying the internal registry where the object will be stored (e.g., "
@@ -4188,12 +4183,12 @@ msgstr ""
 ":meth:`!register` 方法接受三个参数 —— *registry_name*，指定将要存储对象的内部注册表 (例如 ``action``,"
 " ``type``)，*value*，将要注册对象对应的键，以及 object，将要注册的可调用对象。"
 
-#: ../../library/argparse.rst:2248
+#: ../../library/argparse.rst:2253
 msgid ""
 "The following example shows how to register a custom type with a parser::"
 msgstr "下面的例子演示了如何注册一个带解析器的自定义类型::"
 
-#: ../../library/argparse.rst:2250
+#: ../../library/argparse.rst:2255
 msgid ""
 ">>> import argparse\n"
 ">>> parser = argparse.ArgumentParser()\n"
@@ -4217,26 +4212,26 @@ msgstr ""
 "usage: PROG [-h] [--foo FOO]\n"
 "PROG: error: argument --foo: invalid 'hexadecimal integer' value: '1.2'"
 
-#: ../../library/argparse.rst:2262
+#: ../../library/argparse.rst:2267
 msgid "Exceptions"
 msgstr "异常"
 
-#: ../../library/argparse.rst:2266
+#: ../../library/argparse.rst:2271
 msgid "An error from creating or using an argument (optional or positional)."
 msgstr "来自创建或使用某个参数的消息（可选或位置参数）。"
 
-#: ../../library/argparse.rst:2268
+#: ../../library/argparse.rst:2273
 msgid ""
 "The string value of this exception is the message, augmented with "
 "information about the argument that caused it."
 msgstr "此异常的字符串值即异常消息，并附带有导致该异常的参数的相关信息。"
 
-#: ../../library/argparse.rst:2273
+#: ../../library/argparse.rst:2278
 msgid ""
 "Raised when something goes wrong converting a command line string to a type."
 msgstr "当从一个命令行字符串到特定类型的转换出现问题时引发。"
 
-#: ../../library/argparse.rst:2277
+#: ../../library/argparse.rst:2282
 msgid "Guides and Tutorials"
 msgstr "指南与教程"
 
