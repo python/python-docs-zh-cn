@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-03 15:28+0000\n"
+"POT-Creation-Date: 2025-09-22 20:37+0000\n"
 "PO-Revision-Date: 2025-09-22 16:50+0000\n"
 "Last-Translator: python-doc bot, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1364,6 +1364,11 @@ msgid ""
 "`SQLite transaction behaviour`_, implicit :ref:`transaction management "
 "<sqlite3-controlling-transactions>` is performed."
 msgstr ""
+"该属性控制由 :mod:`!sqlite3` 模块执行的 :ref:`事务处理 <sqlite3-controlling-transactions>` "
+"。如果将该属性设置为 ``None`` ，那么事务将永远不会被隐式地打开。如果将它设置为 ``\"DEFERRED\"`` 、 "
+"``\"IMMEDIATE\"`` 、 ``\"EXCLUSIVE\"`` 中的任意一个，那么 :ref:`事务管理 (transaction "
+"management) <sqlite3-controlling-transactions>` 将会隐式地根据其对应的 `SQLite "
+"transaction behaviour`_ 执行。"
 
 #: ../../library/sqlite3.rst:1244
 msgid ""
@@ -1467,6 +1472,9 @@ msgid ""
 "no open transaction, a transaction is implicitly opened before executing "
 "*sql*."
 msgstr ""
+"如果属性 :attr:`~Connection.isolation_level` 的值不是 ``None``，并且*sql* 是一个 "
+"``INSERT``、``UPDATE``、 ``DELETE``、 或 ``REPLACE`` 语句，并且现在没有打开的事务 "
+"(transaction) ，那么在执行 *sql* 语句前将会隐式打开一个事务。"
 
 #: ../../library/sqlite3.rst:1339
 msgid "Use :meth:`executescript` to execute multiple SQL statements."
@@ -1515,6 +1523,9 @@ msgid ""
 "implicit transaction control is performed; any transaction control must be "
 "added to *sql_script*."
 msgstr ""
+"执行形式参数 *sql_script* 中的 SQL 语句。如果在执行时仍有一个未决事务 (pending transaction) "
+"，那么首先会隐式地执行一个 ``COMMIT`` 语句。请注意，除此之外，它不会执行任何隐式的事务控制；因此，任何关于事务控制的内容都应添加到 "
+"*sql_script* 中。"
 
 #: ../../library/sqlite3.rst:1388
 msgid "*sql_script* must be a :class:`string <str>`."
@@ -1986,13 +1997,15 @@ msgstr ""
 
 #: ../../library/sqlite3.rst:1783
 msgid "Default adapters and converters"
-msgstr ""
+msgstr "默认适配器和转换器"
 
 #: ../../library/sqlite3.rst:1785
 msgid ""
 "There are default adapters for the date and datetime types in the datetime "
 "module. They will be sent as ISO dates/ISO timestamps to SQLite."
 msgstr ""
+"对于 datetime 模块中的 date 和 datetime 类型已提供了默认的适配器。 它们将会以 ISO 日期/ISO 时间戳的形式发给 "
+"SQLite。"
 
 #: ../../library/sqlite3.rst:1788
 msgid ""
@@ -2000,6 +2013,8 @@ msgid ""
 ":class:`datetime.date` and under the name \"timestamp\" for "
 ":class:`datetime.datetime`."
 msgstr ""
+"默认转换器使用的注册名称是针对 :class:`datetime.date` 的 \"date\" 和针对 "
+":class:`datetime.datetime` 的 \"timestamp\"。"
 
 #: ../../library/sqlite3.rst:1792
 msgid ""
@@ -2007,17 +2022,19 @@ msgid ""
 "fiddling in most cases. The format of the adapters is also compatible with "
 "the experimental SQLite date/time functions."
 msgstr ""
+"通过这种方式，你可以在大多数情况下使用 Python 的 date/timestamp 对象而无须任何额外处理。 适配器的格式还与实验性的 SQLite"
+" date/time 函数兼容。"
 
 #: ../../library/sqlite3.rst:1796
 msgid "The following example demonstrates this."
-msgstr ""
+msgstr "下面的示例演示了这一点。"
 
 #: ../../library/sqlite3.rst:1800
 msgid ""
 "If a timestamp stored in SQLite has a fractional part longer than 6 numbers,"
 " its value will be truncated to microsecond precision by the timestamp "
 "converter."
-msgstr ""
+msgstr "如果存储在 SQLite 中的时间戳的小数位多于 6 个数字，则时间戳转换器会将该值截断至微秒精度。"
 
 #: ../../library/sqlite3.rst:1806
 msgid ""
@@ -2067,6 +2084,11 @@ msgid ""
 "subclass), which must contain keys for all named parameters; any extra items"
 " are ignored. Here's an example of both styles:"
 msgstr ""
+"一条SQL语句可能使用这两种占位符中的一种：? 标记（或称问号标记风格 qmark style）或具名占位符（或称具名风格 named "
+"style）。对于问号标记风格，*parameters* 必须是一个长度与 ? 标记 的数量匹配的序列 "
+"(:term:`sequence`)，否则将会抛出 :exc:`ProgrammingError` 错误。 对于具名风格，*parameters* "
+"必须是一个 :class:`dict` 或是其子类的实例，同时该实例必须包括所有具名占位符所对应的键。 "
+"其中，该实例中不为具名占位符所对应的键将会被忽略。这里是上述两种风格的示例："
 
 #: ../../library/sqlite3.rst:1877
 msgid ""
@@ -2232,12 +2254,15 @@ msgid ""
 "fails, or if the body of the ``with`` statement raises an uncaught "
 "exception, the transaction is rolled back."
 msgstr ""
+"一个 :class:`Connection` 对象可以像一个上下文管理器 (context manager) "
+"那般被使用，在这种情况下当离开上下文管理器的主体时，将会自动提交或回滚打开的事务。如果 :keyword:`with` "
+"语句的主体在没有异常的情况下完成，那么事务便会被提交；如果提交失败，或者 ``with`` 语句的主体引发了一个未被捕获异常，那么事务将会回滚。"
 
 #: ../../library/sqlite3.rst:2170
 msgid ""
 "If there is no open transaction upon leaving the body of the ``with`` "
 "statement, the context manager is a no-op."
-msgstr ""
+msgstr "如果在离开 ``with`` 语句的主体时没有打开的事务，那么上下文管理器是无用的。"
 
 #: ../../library/sqlite3.rst:2174
 msgid ""
@@ -2411,7 +2436,7 @@ msgstr "事务控制"
 msgid ""
 "The :mod:`!sqlite3` module does not adhere to the transaction handling "
 "recommended by :pep:`249`."
-msgstr ""
+msgstr ":mod:`!sqlite3` 模块并不遵守 :pep:`249` 所推荐的事务控制规范。"
 
 #: ../../library/sqlite3.rst:2402
 msgid ""
