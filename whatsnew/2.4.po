@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-03 16:35+0000\n"
+"POT-Creation-Date: 2025-09-23 17:40+0000\n"
 "PO-Revision-Date: 2025-09-22 17:56+0000\n"
 "Last-Translator: python-doc bot, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1382,6 +1382,8 @@ msgid ""
 "primary effect is to make :file:`.pyc` files significantly smaller. "
 "(Contributed by Martin von Löwis.)"
 msgstr ""
+":mod:`marshal` 模块现在在解包数据结构时共享内部字符串。这可能会缩小某些 pickle 字符串的大小，但主要效果是使 "
+":file:`.pyc` 文件显著变小。（由 Martin von Löwis 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1194
 msgid ""
@@ -1398,6 +1400,9 @@ msgid ""
 " or item; these callables make excellent data extractors when used with "
 ":func:`map` or :func:`sorted`.  For example::"
 msgstr ""
+":mod:`operator` 模块新增了两个函数，``attrgetter(attr)`` 和 "
+"``itemgetter(index)``。这两个函数都返回一个接受单个参数并返回相应属性或项的可调用对象；这些可调用对象在与 :func:`map` "
+"或 :func:`sorted` 一起使用时，是非常优秀的数据提取器。例如："
 
 #: ../../whatsnew/2.4.rst:1214
 msgid ""
@@ -1407,6 +1412,9 @@ msgid ""
 " can now include the string ``'%default'``, which will be replaced by the "
 "option's default value.  (Contributed by Greg Ward.)"
 msgstr ""
+":mod:`optparse` 模块进行了多项更新。该模块现在通过 :func:`gettext.gettext` 传递其消息，使得可以国际化 "
+"Optik 的帮助和错误消息。选项的帮助消息现在可以包含字符串 ``'%default'``，该字符串将被选项的默认值替换。（由 Greg Ward "
+"贡献。）"
 
 #: ../../whatsnew/2.4.rst:1220
 msgid ""
@@ -1425,6 +1433,8 @@ msgid ""
 "to platform-specific sources of randomness such as :file:`/dev/urandom` on "
 "Linux or the Windows CryptoAPI.  (Contributed by Trevor Perrin.)"
 msgstr ""
+":mod:`os` 模块新增了 ``urandom(n)`` 函数，返回一个包含 *n* 字节随机数据的字符串。该函数提供了对平台特定随机源（如 "
+"Linux 上的 :file:`/dev/urandom` 或 Windows CryptoAPI）的访问。（由 Trevor Perrin 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1231
 msgid ""
@@ -1434,6 +1444,9 @@ msgid ""
 "false if *path* is a symlink that points to a destination that doesn't "
 "exist. (Contributed by Beni Cherniavsky.)"
 msgstr ""
+"另一个新函数：``os.path.lexists(path)`` 如果指定的文件存在（无论是否为符号链接）则返回 true。这与现有的 "
+"``os.path.exists(path)`` 函数不同，后者在 *path* 是指向不存在目标的符号链接时返回 false。（由 Beni "
+"Cherniavsky 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1237
 msgid ""
@@ -1462,6 +1475,9 @@ msgid ""
 "arbitrarily large random numbers more efficient.  (Contributed by Raymond "
 "Hettinger.)"
 msgstr ""
+":mod:`random` 模块有一个新方法 ``getrandbits(N)``，返回一个长度为 *N* 位的长整数。现有的 "
+":meth:`randrange` 方法现在在适当的情况下使用 :meth:`getrandbits`，使得生成任意大的随机数更加高效。（由 "
+"Raymond Hettinger 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1252
 msgid ""
@@ -1473,6 +1489,9 @@ msgid ""
 "string; if the group didn't match, the pattern *B* will be used instead. "
 "(Contributed by Gustavo Niemeyer.)"
 msgstr ""
+":mod:`re` 模块接受的正则表达式语言扩展了简单的条件表达式，写作 ``(?(group)A|B)``。*group* 可以是数字组 ID 或用 "
+"``(?P<group>...)`` 在表达式中提前定义的组名。如果指定的组匹配，正则表达式模式 *A* 将被用于测试字符串；如果组未匹配，则使用模式 "
+"*B*。（由 Gustavo Niemeyer 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1259
 msgid ""
@@ -1487,6 +1506,10 @@ msgid ""
 "segfault. Python 2.4's regular expression engine can match this pattern "
 "without problems."
 msgstr ""
+"由于 Gustavo Niemeyer 大量工作，:mod:`re` 模块也不再是递归的。在递归正则表达式引擎中，某些模式会导致大量 C "
+"栈空间被消耗，甚至可能溢出栈。例如，如果你将一个 30000 字节的 ``a`` 字符串与表达式 ``(a|b)+`` "
+"匹配，每个字符会消耗一个栈帧。Python 2.3 试图检查栈溢出并抛出 :exc:`RuntimeError` "
+"异常，但某些模式可以绕过检查，如果你运气不好，Python 可能会段错误。Python 2.4 的正则表达式引擎可以无问题地匹配此模式。"
 
 #: ../../whatsnew/2.4.rst:1269
 msgid ""
@@ -1496,6 +1519,9 @@ msgid ""
 "would quietly accept this, but 2.4 will raise a :exc:`RuntimeError` "
 "exception."
 msgstr ""
+":mod:`signal` 模块现在对 :func:`signal.signal` 函数的参数进行更严格的错误检查。例如，你不能在 "
+":const:`SIGKILL` 信号上设置处理程序；之前的 Python 版本会默默接受这一点，但 2.4 版本将引发一个 "
+":exc:`RuntimeError` 异常。"
 
 #: ../../whatsnew/2.4.rst:1274
 msgid ""
@@ -1504,6 +1530,8 @@ msgid ""
 "the service name for a given port number. (Contributed by Dave Cole and "
 "Barry Warsaw.)"
 msgstr ""
+":mod:`socket` 模块新增了两个函数。:func:`socketpair` 返回一对已连接的套接字，而 "
+"``getservbyport(port)`` 用于查找给定端口号的服务名称。（由 Dave Cole 和 Barry Warsaw 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1279
 msgid ""
@@ -1512,6 +1540,8 @@ msgid ""
 " exit functions.  Eventually :func:`sys.exitfunc` will become a purely "
 "internal interface, accessed only by :mod:`atexit`."
 msgstr ""
+":func:`sys.exitfunc` 函数已被弃用。代码应使用现有的 :mod:`atexit` 模块，它能正确处理调用多个退出函数。最终 "
+":func:`sys.exitfunc` 将成为一个纯内部接口，仅由 :mod:`atexit` 访问。"
 
 #: ../../whatsnew/2.4.rst:1284
 msgid ""
@@ -1525,6 +1555,8 @@ msgid ""
 "thread-local data.  The module contains a :class:`local` class whose "
 "attribute values are local to different threads. ::"
 msgstr ""
+":mod:`threading` 模块现在有了一种优雅简洁的方式来支持线程本地数据。该模块包含一个 :class:`local` "
+"类，其属性值对不同线程是本地的。::"
 
 #: ../../whatsnew/2.4.rst:1297
 msgid ""
@@ -1532,6 +1564,8 @@ msgid ""
 ":attr:`number` and :attr:`url` attributes.  You can subclass :class:`local` "
 "to initialize attributes or to add methods. (Contributed by Jim Fulton.)"
 msgstr ""
+"其他线程可以为 :attr:`number` 和 :attr:`url` 属性分配和检索它们自己的值。你可以子类化 :class:`local` "
+"来初始化属性或添加方法。（由 Jim Fulton 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1301
 msgid ""
@@ -1539,6 +1573,8 @@ msgid ""
 "collection during the timing loop.  This change makes consecutive timings "
 "more comparable.  (Contributed by Raymond Hettinger.)"
 msgstr ""
+":mod:`timeit` 模块现在在计时循环中自动禁用周期性垃圾收集。这一改变使得连续计时更具可比性。（由 Raymond Hettinger "
+"贡献。）"
 
 #: ../../whatsnew/2.4.rst:1305
 msgid ""
@@ -1547,6 +1583,8 @@ msgid ""
 "sockets, and regular expression pattern objects. (Contributed by Raymond "
 "Hettinger.)"
 msgstr ""
+":mod:`weakref` 模块现在支持更多种类的对象，包括 Python "
+"函数、类实例、集合、冻结集合、双端队列、数组、文件、套接字和正则表达式模式对象。（由 Raymond Hettinger 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1310
 msgid ""
@@ -1582,6 +1620,8 @@ msgid ""
 "applications can use the Mozilla or Lynx cookie files, and one that stores "
 "cookies in the same format as the Perl libwww library."
 msgstr ""
+"为了跨会话存储 Cookie，提供了两种 Cookie 罐的实现：一种以 Netscape 格式存储 Cookie，以便应用程序可以使用 Mozilla"
+" 或 Lynx 的 Cookie 文件，另一种以与 Perl libwww 库相同的格式存储 Cookie。"
 
 #: ../../whatsnew/2.4.rst:1337
 msgid ""
@@ -1605,22 +1645,24 @@ msgid ""
 ":func:`doctest.testmod`, but the refactorings allow customizing the module's"
 " operation in various ways"
 msgstr ""
+"由于 Edward Loper 和 Tim Peters 的贡献，:mod:`doctest` 模块进行了大量重构。测试仍然可以简单到只需运行 "
+":func:`doctest.testmod`，但重构允许以各种方式自定义模块的操作。"
 
 #: ../../whatsnew/2.4.rst:1354
 msgid ""
 "The new :class:`DocTestFinder` class extracts the tests from a given  "
 "object's docstrings::"
-msgstr ""
+msgstr "新的 :class:`DocTestFinder` 类从给定对象的文档字符串中提取测试："
 
 #: ../../whatsnew/2.4.rst:1370
 msgid ""
 "The new :class:`DocTestRunner` class then runs individual tests and can "
 "produce a summary of the results::"
-msgstr ""
+msgstr "新的 :class:`DocTestRunner` 类然后运行单个测试并可以生成结果摘要："
 
 #: ../../whatsnew/2.4.rst:1379
 msgid "The above example produces the following output::"
-msgstr ""
+msgstr "上述示例生成以下输出："
 
 #: ../../whatsnew/2.4.rst:1387
 msgid ""
@@ -1629,6 +1671,9 @@ msgid ""
 "number of different flags that customize its behaviour; ambitious users can "
 "also write a completely new subclass of :class:`OutputChecker`."
 msgstr ""
+":class:`DocTestRunner` 使用一个 :class:`OutputChecker` "
+"类的实例来比较预期输出和实际输出。这个类接受多个不同的标志来定制其行为；有野心的用户也可以编写一个全新的 :class:`OutputChecker` "
+"子类。"
 
 #: ../../whatsnew/2.4.rst:1392
 msgid ""
@@ -1637,10 +1682,12 @@ msgid ""
 "the expected output matches any substring,  making it easier to accommodate "
 "outputs that vary in minor ways::"
 msgstr ""
+"默认的输出检查器提供了一些方便的功能。例如，使用 :const:`doctest.ELLIPSIS` "
+"选项标志，预期输出中的省略号（``...``）可以匹配任何子字符串，这使得更容易适应在细小方面有所变化的输出::"
 
 #: ../../whatsnew/2.4.rst:1403
 msgid "Another special string, ``<BLANKLINE>``, matches a blank line::"
-msgstr ""
+msgstr "另一个特殊字符串，``<BLANKLINE>``, 匹配一个空行::"
 
 #: ../../whatsnew/2.4.rst:1411
 msgid ""
@@ -1649,12 +1696,15 @@ msgid ""
 ":const:`doctest.REPORT_CDIFF` (context diffs), or "
 ":const:`doctest.REPORT_NDIFF` (delta-style) option flags.  For example::"
 msgstr ""
+"另一个新功能是通过指定 :const:`doctest.REPORT_UDIFF` (统一差异) "
+"、:const:`doctest.REPORT_CDIFF` (上下文差异) 或 :const:`doctest.REPORT_NDIFF` "
+"(增量式差异) 选项标志，生成输出差异风格的显示。例如::"
 
 #: ../../whatsnew/2.4.rst:1427
 msgid ""
 "Running the above function's tests with :const:`doctest.REPORT_UDIFF` "
 "specified, you get the following output:"
-msgstr ""
+msgstr "在指定 :const:`doctest.REPORT_UDIFF` 的情况下运行上述函数的测试，你会得到以下输出："
 
 #: ../../whatsnew/2.4.rst:1448
 msgid "Build and C API Changes"
@@ -1670,6 +1720,8 @@ msgid ""
 "extension functions: :c:macro:`Py_RETURN_NONE`, :c:macro:`Py_RETURN_TRUE`, "
 "and :c:macro:`Py_RETURN_FALSE`. (Contributed by Brett Cannon.)"
 msgstr ""
+"为常见扩展函数返回值添加了三个新的便利宏：:c:macro:`Py_RETURN_NONE`、:c:macro:`Py_RETURN_TRUE` 和 "
+":c:macro:`Py_RETURN_FALSE`。（由 Brett Cannon 贡献。）"
 
 #: ../../whatsnew/2.4.rst:1456
 msgid ""
@@ -1683,6 +1735,8 @@ msgid ""
 "tuples from a variable length argument list of Python objects.  (Contributed"
 " by Raymond Hettinger.)"
 msgstr ""
+"一个新的函数 ``PyTuple_Pack(N, obj1, obj2, ..., "
+"objN)``，可以从一个可变长度的Python对象参数列表中构造元组。（由Raymond Hettinger贡献。）"
 
 #: ../../whatsnew/2.4.rst:1463
 msgid ""
@@ -1690,6 +1744,8 @@ msgid ""
 "lookups without masking exceptions raised during the look-up process. "
 "(Contributed by Raymond Hettinger.)"
 msgstr ""
+"一个新的函数 ``PyDict_Contains(d, k)``，实现了快速的字典查找，而不会掩盖查找过程中引发的异常。（由Raymond "
+"Hettinger贡献。）"
 
 #: ../../whatsnew/2.4.rst:1467
 msgid ""
@@ -1711,6 +1767,9 @@ msgid ""
 ":c:func:`PyArg_ParseTupleAndKeywords` but takes a  :c:type:`va_list` instead"
 " of a number of arguments. (Contributed by Greg Chapman.)"
 msgstr ""
+"一个新的函数 :c:func:`PyArg_VaParseTupleAndKeywords`，与 "
+":c:func:`PyArg_ParseTupleAndKeywords` 相同，但接受一个 :c:type:`va_list` "
+"而不是参数数量。（由Greg Chapman贡献。）"
 
 #: ../../whatsnew/2.4.rst:1479
 msgid ""
@@ -1732,6 +1791,11 @@ msgid ""
 "platform, though that processor architecture doesn't call that register "
 "\"the TSC register\".  (Contributed by Jeremy Hylton.)"
 msgstr ""
+"Python现在可以内置对解释器本身的额外分析功能，旨在帮助开发Python核心的人员。向 :program:`configure` 脚本提供 "
+":option:`!--enable-profiling` 选项将允许您使用 :program:`gprof` 对解释器进行分析，提供 "
+":option:`!--with-tsc` 开关则启用使用Pentium的时间戳计数器寄存器进行分析。请注意，:option:`!--with-tsc`"
+" 开关命名略有不当，因为该分析功能在PowerPC平台上也能工作，尽管该处理器架构不将该寄存器称为“TSC寄存器”。（由Jeremy "
+"Hylton贡献。）"
 
 #: ../../whatsnew/2.4.rst:1494
 msgid ""
@@ -1747,7 +1811,7 @@ msgstr "移植专属的改变"
 msgid ""
 "The Windows port now builds under MSVC++ 7.1 as well as version 6. "
 "(Contributed by Martin von Löwis.)"
-msgstr ""
+msgstr "Windows端口现在可以在MSVC++ 7.1以及版本6下构建。（由Martin von Löwis贡献。）"
 
 #: ../../whatsnew/2.4.rst:1510
 msgid "Porting to Python 2.4"
@@ -1765,6 +1829,7 @@ msgid ""
 "trigger a :exc:`FutureWarning` and return  a value limited to 32 or 64 bits;"
 " instead they return a long integer."
 msgstr ""
+"左移操作和过大的十六进制/八进制常量不再触发 :exc:`FutureWarning`，并且返回一个限制在32或64位的值；相反，它们返回一个长整数。"
 
 #: ../../whatsnew/2.4.rst:1522
 msgid ""
@@ -1772,6 +1837,8 @@ msgid ""
 "empty list instead of raising a :exc:`TypeError` exception if called with no"
 " arguments."
 msgstr ""
+":func:`zip` 内置函数和 :func:`itertools.izip` 现在在无参数调用时返回一个空列表，而不是抛出 "
+":exc:`TypeError` 异常。"
 
 #: ../../whatsnew/2.4.rst:1526
 msgid ""
@@ -1780,6 +1847,8 @@ msgid ""
 "different classes will now always be unequal, and  relative comparisons "
 "(``<``, ``>``) will raise a :exc:`TypeError`."
 msgstr ""
+"您不能再比较由 :mod:`datetime` 模块提供的 :class:`date` 和 :class:`~datetime.datetime` "
+"实例。不同类的两个实例现在将始终不相等，并且相对比较（``<``，``>``）将抛出 :exc:`TypeError`。"
 
 #: ../../whatsnew/2.4.rst:1531
 msgid ""
@@ -1793,6 +1862,7 @@ msgid ""
 " the wrong order.  This has been corrected; applications relying on the "
 "wrong order need to be fixed."
 msgstr ""
+":func:`LexicalHandler.startDTD` 过去接收公共和系统 ID 的顺序错误。这已被纠正；依赖错误顺序的应用程序需要修复。"
 
 #: ../../whatsnew/2.4.rst:1538
 msgid ""
