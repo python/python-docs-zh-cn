@@ -4171,13 +4171,15 @@ msgstr ""
 msgid ""
 "The build process now creates the necessary files for pkg-config support.  "
 "(Contributed by Clinton Roy; :issue:`3585`.)"
-msgstr ""
+msgstr "构建过程现在创建必要的文件以支持 pkg-config。（由 Clinton Roy 贡献；参见 :issue:`3585`。）"
 
 #: ../../whatsnew/2.7.rst:2274
 msgid ""
 "The build process now supports Subversion 1.7.  (Contributed by Arfrever "
 "Frehtes Taifersar Arahesis; :issue:`6094`.)"
 msgstr ""
+"构建过程现在支持 Subversion 1.7。（由 Arfrever Frehtes Taifersar Arahesis 贡献；参见 "
+":issue:`6094`。）"
 
 #: ../../whatsnew/2.7.rst:2281
 msgid "Capsules"
@@ -4194,6 +4196,11 @@ msgid ""
 "the ``void *`` pointer, which will usually point to an array of pointers to "
 "the module's various API functions."
 msgstr ""
+"Python 3.1 新增了一种 C 数据类型 :c:type:`PyCapsule`，用于为扩展模块提供 C 语言 API "
+"接口。胶囊（capsule）本质上是 C 语言中 ``void *`` 指针的封装载体，并作为模块属性对外暴露；例如，:mod:`socket` 模块的"
+" API 通过 ``socket.CAPI`` 暴露，而 :mod:`unicodedata` 模块则暴露了 "
+"``ucnhash_CAPI``。其他扩展模块可以导入该模块，访问其字典以获取胶囊对象，进而获取其中的 ``void *`` "
+"指针——该指针通常指向一个指针数组，其中包含模块各类 API 函数的地址。"
 
 #: ../../whatsnew/2.7.rst:2292
 msgid ""
@@ -4204,6 +4211,9 @@ msgid ""
 "Capsules know their own name, and getting the pointer requires providing the"
 " name:"
 msgstr ""
+"已经有一个用于此目的的现有数据类型，:c:type:`!PyCObject`，但它不提供类型安全。用纯 Python 编写的恶意代码可能会通过从模块 A"
+" 获取 :c:type:`!PyCObject` 并以某种方式将其替换为模块 B 中的 :c:type:`!PyCObject` "
+"来导致段错误。胶囊知道它们自己的名称，获取指针需要提供名称："
 
 #: ../../whatsnew/2.7.rst:2299
 msgid ""
@@ -4216,6 +4226,14 @@ msgid ""
 "\n"
 "vtable = PyCapsule_GetPointer(capsule, \"mymodule.CAPI\");"
 msgstr ""
+"void *vtable;\n"
+"\n"
+"if (!PyCapsule_IsValid(capsule, \"mymodule.CAPI\") {\n"
+"        PyErr_SetString(PyExc_ValueError, \"argument type invalid\");\n"
+"        return NULL;\n"
+"}\n"
+"\n"
+"vtable = PyCapsule_GetPointer(capsule, \"mymodule.CAPI\");"
 
 #: ../../whatsnew/2.7.rst:2310
 msgid ""
@@ -4224,6 +4242,8 @@ msgid ""
 "the mismatched name and return false.  Refer to :ref:`using-capsules` for "
 "more information on using these objects."
 msgstr ""
+"你可以确信 ``vtable`` 指向你所期望的内容。如果传递了不同的胶囊，:c:func:`PyCapsule_IsValid` "
+"会检测到不匹配的名称并返回 false。有关使用这些对象的更多信息，请参阅 :ref:`using-capsules`。"
 
 #: ../../whatsnew/2.7.rst:2315
 msgid ""
@@ -4233,12 +4253,16 @@ msgid ""
 ":c:type:`!PyCObject` interface.  Use of :c:func:`!PyCObject_AsVoidPtr` will "
 "signal a :exc:`PendingDeprecationWarning`, which is silent by default."
 msgstr ""
+"Python 2.7 现在内部使用胶囊来提供各种扩展模块 API，但 :c:func:`!PyCObject_AsVoidPtr` "
+"已被修改以处理胶囊，保留了与 :c:type:`!PyCObject` 接口的编译时兼容性。使用 "
+":c:func:`!PyCObject_AsVoidPtr` 将发出 "
+":exc:`PendingDeprecationWarning`，默认情况下是静默的。"
 
 #: ../../whatsnew/2.7.rst:2322
 msgid ""
 "Implemented in Python 3.1 and backported to 2.7 by Larry Hastings; discussed"
 " in :issue:`5630`."
-msgstr ""
+msgstr "在 Python 3.1 中实现并向下移植到 2.7，由 Larry Hastings 完成；在 :issue:`5630` 中讨论。"
 
 #: ../../whatsnew/2.7.rst:2329
 msgid "Port-Specific Changes: Windows"
@@ -4252,6 +4276,11 @@ msgid ""
 ":data:`~msvcrt.LIBRARIES_ASSEMBLY_NAME_PREFIX`. (Contributed by David "
 "Cournapeau; :issue:`4365`.)"
 msgstr ""
+":mod:`msvcrt` 模块现在包含来自 :file:`crtassem.h` "
+"头文件的一些常量：:data:`~msvcrt.CRT_ASSEMBLY_VERSION`、 "
+":data:`~msvcrt.VC_ASSEMBLY_PUBLICKEYTOKEN` 和 "
+":data:`~msvcrt.LIBRARIES_ASSEMBLY_NAME_PREFIX`。（由 David Cournapeau 贡献；参见 "
+":issue:`4365`。）"
 
 #: ../../whatsnew/2.7.rst:2338
 msgid ""
@@ -4263,6 +4292,11 @@ msgid ""
 "were also tested and documented. (Implemented by Brian Curtin: "
 ":issue:`7347`.)"
 msgstr ""
+"用于访问注册表的 :mod:`_winreg <winreg>` 模块现在实现了 :func:`~winreg.CreateKeyEx` 和 "
+":func:`~winreg.DeleteKeyEx` "
+"函数，这些是之前支持函数的扩展版本，它们接受几个额外的参数。:func:`~winreg.DisableReflectionKey`、 "
+":func:`~winreg.EnableReflectionKey` 和 :func:`~winreg.QueryReflectionKey` "
+"也经过了测试和文档记录。（由 Brian Curtin 实现：:issue:`7347`。）"
 
 #: ../../whatsnew/2.7.rst:2346
 msgid ""
@@ -4270,6 +4304,8 @@ msgid ""
 "native thread-local storage functions are now used. (Contributed by Kristján"
 " Valur Jónsson; :issue:`3582`.)"
 msgstr ""
+"新的 :c:func:`!_beginthreadex` API 用于启动线程，现在使用了本地线程局部存储函数。（由 Kristján Valur "
+"Jónsson 贡献；参见 :issue:`3582`。）"
 
 #: ../../whatsnew/2.7.rst:2350
 msgid ""
@@ -4280,18 +4316,25 @@ msgid ""
 "subprocesses; any other value will use the :c:func:`!TerminateProcess` API."
 "  (Contributed by Miki Tebeka; :issue:`1220212`.)"
 msgstr ""
+":func:`os.kill` 函数现在在 Windows 上工作。信号值可以是常量 :const:`~signal.CTRL_C_EVENT`、 "
+":const:`~signal.CTRL_BREAK_EVENT` 或任何整数。前两个常量将向子进程发送 :kbd:`Control-C` 和 "
+":kbd:`Control-Break` 键盘事件；任何其他值将使用 :c:func:`!TerminateProcess` API。（由 Miki "
+"Tebeka 贡献；参见 :issue:`1220212`。）"
 
 #: ../../whatsnew/2.7.rst:2357
 msgid ""
 "The :func:`os.listdir` function now correctly fails for an empty path.  "
 "(Fixed by Hirokazu Yamamoto; :issue:`5913`.)"
 msgstr ""
+":func:`os.listdir` 函数现在在空路径时正确地失败。（由 Hirokazu Yamamoto 修复；参见 :issue:`5913`。）"
 
 #: ../../whatsnew/2.7.rst:2360
 msgid ""
 "The :mod:`mimetypes` module will now read the MIME database from the Windows"
 " registry when initializing. (Patch by Gabriel Genellina; :issue:`4969`.)"
 msgstr ""
+":mod:`mimetypes` 模块在初始化时现在会从 Windows 注册表读取 MIME 数据库。（由 Gabriel Genellina "
+"提供补丁；参见 :issue:`4969`。）"
 
 #: ../../whatsnew/2.7.rst:2367
 msgid "Port-Specific Changes: Mac OS X"
@@ -4304,6 +4347,9 @@ msgid ""
 "installation and a user-installed copy of the same version. (Changed by "
 "Ronald Oussoren; :issue:`4865`.)"
 msgstr ""
+"路径 ``/Library/Python/2.7/site-packages`` 现在附加到 "
+"``sys.path``，以便在系统安装和用户安装的同一版本的副本之间共享添加的包。（由 Ronald Oussoren 更改；参见 "
+":issue:`4865`。）"
 
 #: ../../whatsnew/2.7.rst:2376
 msgid ""
@@ -4316,6 +4362,11 @@ msgid ""
 "installed for the system Python will no longer be shared with user-installed"
 " Pythons. (:issue:`28440`)"
 msgstr ""
+"自2.7.13版本起，这一变更已被移除。``/Library/Python/2.7/site-packages``，即Apple提供的系统Python "
+"2.7所使用的site-packages目录，不再被追加到用户安装的Python（例如通过python.org安装器安装的Python）的 "
+"``sys.path`` 中。自 macOS 10.12 起，Apple 更改了系统 site-packages "
+"目录的配置方式，这可能导致安装pip组件（如setuptools）失败。为系统 Python 安装的包将不再与用户安装的 Python 共享。(参见 "
+":issue:`28440`)"
 
 #: ../../whatsnew/2.7.rst:2387
 msgid "Port-Specific Changes: FreeBSD"
@@ -4329,6 +4380,9 @@ msgid ""
 "select an alternate routing table, is now available in the :mod:`socket` "
 "module.  (Added by Kyle VanderBeek; :issue:`8235`.)"
 msgstr ""
+"FreeBSD 7.1中的 :const:`!SO_SETFIB` 常量，用于与 :func:`~socket.socket` 方法的 "
+":func:`~socket.socket.getsockopt`/:func:`~socket.socket.setsockopt` "
+"一起选择备用路由表，现在已在 :mod:`socket` 模块中提供。（由 Kyle VanderBeek 添加;参见 :issue:`8235`。）"
 
 #: ../../whatsnew/2.7.rst:2395
 msgid "Other Changes and Fixes"
@@ -4343,12 +4397,17 @@ msgid ""
 "measure computing throughput, thread switching latency, and IO processing "
 "bandwidth when performing several tasks using a varying number of threads."
 msgstr ""
+"两个基准测试脚本，:file:`iobench` 和 :file:`ccbench`，已被添加到 :file:`Tools` "
+"目录中。:file:`iobench` 用于测量内置文件I/O对象（由 :func:`open` 返回）在进行各种操作时的速度，而 "
+":file:`ccbench` 是一个并发基准测试，旨在测量在使用不同数量线程执行多个任务时的计算吞吐量、线程切换延迟和IO处理带宽。"
 
 #: ../../whatsnew/2.7.rst:2405
 msgid ""
 "The :file:`Tools/i18n/msgfmt.py` script now understands plural forms in "
 ":file:`.po` files.  (Fixed by Martin von Löwis; :issue:`5464`.)"
 msgstr ""
+":file:`Tools/i18n/msgfmt.py` 脚本现在能够理解 :file:`.po` 文件中的复数形式。（由 Martin von "
+"Löwis 修复;参见 :issue:`5464`。）"
 
 #: ../../whatsnew/2.7.rst:2409
 msgid ""
@@ -4359,6 +4418,10 @@ msgid ""
 "or is accessed through different paths.  (Patch by Ziga Seilnacht and Jean-"
 "Paul Calderone; :issue:`1180193`.)"
 msgstr ""
+"当从具有现有 :file:`.py` 对应文件的 :file:`.pyc` 或 :file:`.pyo` "
+"文件导入模块时，如果原始文件名已过时，则生成的代码对象的 :attr:`~codeobject.co_filename` "
+"属性将被覆盖。这可能发生在文件被重命名、移动或通过不同路径访问时。（由 Ziga Seilnacht 和 Jean-Paul Calderone "
+"提供补丁;参见 :issue:`1180193`。)"
 
 #: ../../whatsnew/2.7.rst:2416
 msgid ""
@@ -4367,6 +4430,8 @@ msgid ""
 ":option:`!-r` option that executes tests in random order. The :option:`!-r` "
 "option also reports the seed that was used (Added by Collin Winter.)"
 msgstr ""
+":file:`regrtest.py` 脚本现在接受一个 :option:`!--randseed=` 开关，该开关需要一个整数作为随机种子，用于 "
+":option:`!-r` 选项以随机顺序执行测试。:option:`!-r` 选项还会报告所使用的种子（由 Collin Winter 添加）。"
 
 #: ../../whatsnew/2.7.rst:2422
 msgid ""
@@ -4378,6 +4443,11 @@ msgid ""
 "with a new :option:`!-F` switch that runs selected tests in a loop until "
 "they fail.  (Added by Antoine Pitrou; :issue:`7312`.)"
 msgstr ""
+"另一个 :file:`regrtest.py` 开关是 "
+":option:`!-j`，它需要一个整数来指定并行运行的测试数量。这可以减少多核机器上的总运行时间。此选项与多个其他选项兼容，包括已知会产生长运行时间的"
+" :option:`!-R` 开关（由 Antoine Pitrou 添加，参见 :issue:`6152`）。这也可以与新的 "
+":option:`!-F` 开关一起使用，该开关会循环运行选定的测试，直到它们失败为止（由 Antoine Pitrou 添加；参见 "
+":issue:`7312`）。"
 
 #: ../../whatsnew/2.7.rst:2431
 msgid ""
@@ -4385,6 +4455,8 @@ msgid ""
 "``'-'`` as an argument, which will read standard input for the list of "
 "filenames to be compiled.  (Contributed by Piotr Ożarowski; :issue:`8233`.)"
 msgstr ""
+"当作为脚本执行时，:file:`py_compile.py` 模块现在接受 ``'-'`` 作为参数，这将从标准输入读取要编译的文件名列表（由 "
+"Piotr Ożarowski 贡献；参见 :issue:`8233`）。"
 
 #: ../../whatsnew/2.7.rst:2439
 msgid "Porting to Python 2.7"
@@ -4402,6 +4474,8 @@ msgid ""
 "will now call :meth:`~object.__int__` on non-float, non-integer arguments "
 "that are supplied to it.  (Fixed by Alexander Belopolsky; :issue:`1533`.)"
 msgstr ""
+":func:`range` 函数现在更一致地处理其参数；它将调用 :meth:`~object.__int__` "
+"方法来处理提供给它的非浮点、非整数参数（由 Alexander Belopolsky 修复；参见 :issue:`1533`）。"
 
 #: ../../whatsnew/2.7.rst:2449
 msgid ""
@@ -4410,6 +4484,8 @@ msgid ""
 "matches the precision used by :func:`str`. (Changed by Eric Smith; "
 ":issue:`5920`.)"
 msgstr ""
+"字符串的 :meth:`format` 方法将浮点数和复数的默认精度从 6 小数位改为 12 小数位，这与 :func:`str` 使用的精度一致（由 "
+"Eric Smith 更改；参见 :issue:`5920`）。"
 
 #: ../../whatsnew/2.7.rst:2454
 msgid ""
@@ -4419,6 +4495,9 @@ msgid ""
 "instance.  This affects new-style classes (derived from :class:`object`) and"
 " C extension types.  (:issue:`6101`.)"
 msgstr ""
+"由于对 :keyword:`with` 语句的优化，特殊方法 :meth:`~object.__enter__` 和 "
+":meth:`~object.__exit__` 必须属于对象的类型，不能直接附加到对象的实例上。这影响新式类（从 :class:`object` "
+"派生）和 C 扩展类型（参见 :issue:`6101`）。"
 
 #: ../../whatsnew/2.7.rst:2460
 msgid ""
@@ -4427,6 +4506,9 @@ msgid ""
 "exception, not an instance.  This was fixed in 2.7, so *exc_value* will be "
 "an instance as expected.  (Fixed by Florent Xicluna; :issue:`7853`.)"
 msgstr ""
+"由于 Python 2.6 中的一个 bug，传递给 :meth:`~object.__exit__` 方法的 *exc_value* "
+"参数通常是异常的字符串表示，而不是实例。这在 2.7 中已修复，因此 *exc_value* 将如预期那样是一个实例。（由 Florent "
+"Xicluna 修复；参见 :issue:`7853`。）"
 
 #: ../../whatsnew/2.7.rst:2470
 msgid "In the standard library:"
@@ -4440,6 +4522,9 @@ msgid ""
 "now raise the exception. (Reported by Mark Leander, patch by Anand B. Pillai"
 " and Alexander Belopolsky; :issue:`7150`.)"
 msgstr ""
+"涉及 :class:`~datetime.datetime` 实例的操作，如果结果年份超出支持范围，并不总是引发 "
+":exc:`OverflowError`。现在此类错误将更仔细地检查，并会引发异常。（由 Mark Leander 报告，Anand B. Pillai"
+" 和 Alexander Belopolsky 提供补丁；参见 :issue:`7150`。）"
 
 #: ../../whatsnew/2.7.rst:2478
 msgid ""
@@ -4448,6 +4533,9 @@ msgid ""
 "  This has been changed to right-alignment, which might change the output of"
 " your programs. (Changed by Mark Dickinson; :issue:`6857`.)"
 msgstr ""
+"当使用 :class:`~decimal.Decimal` 实例与字符串的 :meth:`format` "
+"方法时，默认对齐方式之前是左对齐。这已更改为右对齐，可能会改变你的程序输出。（由 Mark Dickinson 更改；参见 "
+":issue:`6857`。）"
 
 #: ../../whatsnew/2.7.rst:2490
 msgid ""
@@ -4456,6 +4544,9 @@ msgid ""
 "like ``<?xml-stylesheet href=\"#style1\"?>``) or comment (which looks like "
 "``<!-- comment -->``). (Patch by Neil Muller; :issue:`2746`.)"
 msgstr ""
+":mod:`xml.etree.ElementTree` 库在输出 XML 处理指令（看起来像 ``<?xml-stylesheet "
+"href=\"#style1\"?>``）或注释（看起来像 ``<!-- comment -->``）时，不再转义与符号“&”和尖括号“<>”。（由 "
+"Neil Muller 提供补丁；参见 :issue:`2746`。）"
 
 #: ../../whatsnew/2.7.rst:2496
 msgid ""
@@ -4463,6 +4554,8 @@ msgid ""
 "nothing when a negative length is requested, as other file-like objects do."
 "  (:issue:`7348`)."
 msgstr ""
+":class:`~io.StringIO` 对象的 :meth:`!readline` "
+"方法在请求负长度时现在不执行任何操作，与其他文件类对象一致。（参见 :issue:`7348`。）"
 
 #: ../../whatsnew/2.7.rst:2539
 msgid "For C extensions:"
@@ -4474,6 +4567,8 @@ msgid ""
 "of functions will now raise a :exc:`TypeError` exception instead of "
 "triggering a :exc:`DeprecationWarning` (:issue:`5080`)."
 msgstr ""
+"使用整数格式代码与 ``PyArg_Parse*`` 函数族的 C 扩展现在将引发 :exc:`TypeError` 异常，而不是触发 "
+":exc:`DeprecationWarning` (参见 :issue:`5080`。) "
 
 #: ../../whatsnew/2.7.rst:2545
 msgid ""
@@ -4481,6 +4576,8 @@ msgid ""
 ":c:func:`!PyOS_ascii_strtod` and :c:func:`!PyOS_ascii_atof` functions, which"
 " are now deprecated."
 msgstr ""
+"使用新的 :c:func:`PyOS_string_to_double` 函数，而不是已弃用的旧函数 "
+":c:func:`!PyOS_ascii_strtod` 和 :c:func:`!PyOS_ascii_atof`。"
 
 #: ../../whatsnew/2.7.rst:2549
 msgid "For applications that embed Python:"
@@ -4497,7 +4594,7 @@ msgstr ""
 
 #: ../../whatsnew/2.7.rst:2564
 msgid "New Features Added to Python 2.7 Maintenance Releases"
-msgstr ""
+msgstr "Python 2.7 维护版本中添加的新特性"
 
 #: ../../whatsnew/2.7.rst:2566
 msgid ""
@@ -4507,17 +4604,19 @@ msgid ""
 " can't be adequately addressed by either adding the new feature solely to "
 "Python 3, or else by publishing it on the Python Package Index."
 msgstr ""
+"当情况确实需要时，新特性可能会添加到 Python 2.7 的维护版本中。任何此类添加必须经过 Python "
+"增强提案（PEP）流程，并充分说明为什么不能仅通过将新功能添加到 Python 3 或将其发布到 Python 包索引来妥善解决。"
 
 #: ../../whatsnew/2.7.rst:2572
 msgid ""
 "In addition to the specific proposals listed below, there is a general "
 "exemption allowing new ``-3`` warnings to be added in any Python 2.7 "
 "maintenance release."
-msgstr ""
+msgstr "除了下面列出的具体提案外，还有一个一般性豁免，允许在任何 Python 2.7 维护版本中添加新的 ``-3`` 警告。"
 
 #: ../../whatsnew/2.7.rst:2578
 msgid "Two new environment variables for debug mode"
-msgstr ""
+msgstr "调试模式的两个新环境变量"
 
 #: ../../whatsnew/2.7.rst:2580
 msgid ""
@@ -4525,6 +4624,8 @@ msgid ""
 ":envvar:`!PYTHONSHOWREFCOUNT` environment variable now must also be set. "
 "(Contributed by Victor Stinner; :issue:`31733`.)"
 msgstr ""
+"在调试模式下，默认不写入 ``[xxx refs]`` 统计信息，现在还必须设置 :envvar:`!PYTHONSHOWREFCOUNT` "
+"环境变量。（由 Victor Stinner 贡献；参见 :issue:`31733`。）"
 
 #: ../../whatsnew/2.7.rst:2584
 msgid ""
@@ -4534,10 +4635,13 @@ msgid ""
 "now dumped into stderr, rather than stdout. (Contributed by Victor Stinner; "
 ":issue:`31692`.)"
 msgstr ""
+"当 Python 编译时定义了 ``COUNT_ALLOC``，默认不再转储分配计数：现在还必须设置 "
+":envvar:`!PYTHONSHOWALLOCCOUNT` 环境变量。此外，分配计数现在转储到 stderr，而不是 stdout。（由 "
+"Victor Stinner 贡献；参见 :issue:`31692`。）"
 
 #: ../../whatsnew/2.7.rst:2593
 msgid "PEP 434: IDLE Enhancement Exception for All Branches"
-msgstr ""
+msgstr "PEP 434：针对所有分支的 IDLE 增强功能豁免提案"
 
 #: ../../whatsnew/2.7.rst:2595
 msgid ""
@@ -4546,12 +4650,14 @@ msgid ""
 "possible for the IDLE developers to provide a more consistent user "
 "experience across all supported versions of Python 2 and 3."
 msgstr ""
+":pep:`434` 描述了对随 Python 一起提供的 IDLE 开发环境所做的更改的一般性豁免。此豁免使 IDLE 开发人员能够在所有受支持的 "
+"Python 2 和 3 版本中提供更一致的用户体验。"
 
 #: ../../whatsnew/2.7.rst:2600
 msgid ""
 "For details of any IDLE changes, refer to the NEWS file for the specific "
 "release."
-msgstr ""
+msgstr "有关 IDLE 任何变更的详细信息，请参考特定版本的 NEWS 文件。"
 
 #: ../../whatsnew/2.7.rst:2605
 msgid "PEP 466: Network Security Enhancements for Python 2.7"
@@ -4563,6 +4669,7 @@ msgid ""
 " have been approved for inclusion in Python 2.7 maintenance releases, with "
 "the first of those changes appearing in the Python 2.7.7 release."
 msgstr ""
+":pep:`466` 描述了一系列已获批准纳入 Python 2.7 维护版本的网络安全增强提案，其中首个变更出现在 Python 2.7.7 版本中。"
 
 #: ../../whatsnew/2.7.rst:2611
 msgid ":pep:`466` related features added in Python 2.7.7:"
@@ -4574,12 +4681,16 @@ msgid ""
 "attack resistant comparison operation available to Python 2 applications. "
 "(Contributed by Alex Gaynor; :issue:`21306`.)"
 msgstr ""
+":func:`hmac.compare_digest` 从 Python 3 向下移植，以向 Python 2 应用提供抵抗定时攻击的比较操作。（由 "
+"Alex Gaynor 贡献；参见 :issue:`21306`。）"
 
 #: ../../whatsnew/2.7.rst:2617
 msgid ""
 "OpenSSL 1.0.1g was upgraded in the official Windows installers published on "
 "python.org. (Contributed by Zachary Ware; :issue:`21462`.)"
 msgstr ""
+"官方 Windows 安装程序中的 OpenSSL 1.0.1g 已在 python.org 上升级。（由 Zachary Ware 贡献；参见 "
+":issue:`21462`。）"
 
 #: ../../whatsnew/2.7.rst:2620
 msgid ":pep:`466` related features added in Python 2.7.8:"
@@ -4591,6 +4702,8 @@ msgid ""
 "algorithm suitable for secure password storage broadly available to Python 2"
 " applications. (Contributed by Alex Gaynor; :issue:`21304`.)"
 msgstr ""
+":func:`hashlib.pbkdf2_hmac` 从 Python 3 向下移植，以向 Python 2 "
+"应用广泛提供适用于安全密码存储的哈希算法。（由 Alex Gaynor 贡献；参见 :issue:`21304`。）"
 
 #: ../../whatsnew/2.7.rst:2626
 msgid ""
@@ -4598,6 +4711,8 @@ msgid ""
 " python.org. (Contributed by Zachary Ware in :issue:`21671` for "
 ":cve:`2014-0224`.)"
 msgstr ""
+"官方 Windows 安装程序中的 OpenSSL 1.0.1h 已在 python.org 上升级。（由 Zachary Ware 针对 "
+":cve:`2014-0224`在 :issue:`21671` 中贡献。）"
 
 #: ../../whatsnew/2.7.rst:2629
 msgid ":pep:`466` related features added in Python 2.7.9:"
@@ -4610,12 +4725,15 @@ msgid ""
 "platform certificate store, the :class:`~ssl.SSLContext` class, and other "
 "features. (Contributed by Alex Gaynor and David Reid; :issue:`21308`.)"
 msgstr ""
+"大部分 Python 3.4 的 :mod:`ssl` 模块已向下移植。这意味着 :mod:`ssl` 现在支持服务器名称指示、TLS1.x "
+"设置、访问平台证书存储、:class:`~ssl.SSLContext` 类以及其他特性。（由 Alex Gaynor 和 David Reid "
+"贡献；参见 :issue:`21308`。）"
 
 #: ../../whatsnew/2.7.rst:2636
 msgid ""
 "Refer to the \"Version added: 2.7.9\" notes in the module documentation for "
 "specific details."
-msgstr ""
+msgstr "有关具体细节，请参阅模块文档中标记为\"Version added: 2.7.9\"的说明注释。"
 
 #: ../../whatsnew/2.7.rst:2639
 msgid ""
@@ -4623,6 +4741,8 @@ msgid ""
 "``/dev/urandom`` instead of reopening ``/dev/urandom`` on every call. "
 "(Contributed by Alex Gaynor; :issue:`21305`.)"
 msgstr ""
+":func:`os.urandom` 已更改，以缓存对 ``/dev/urandom`` 的文件描述符，而不是在每次调用时重新打开 "
+"``/dev/urandom``。（由 Alex Gaynor 贡献；参见 :issue:`21305`。）"
 
 #: ../../whatsnew/2.7.rst:2643
 msgid ""
@@ -4631,6 +4751,9 @@ msgid ""
 "it easier for Python 2 applications to select the strongest available hash "
 "algorithm. (Contributed by Alex Gaynor in :issue:`21307`)"
 msgstr ""
+":data:`hashlib.algorithms_guaranteed` 和 :data:`hashlib.algorithms_available`"
+" 从 Python 3 向下移植，以简化 Python 2 应用选择最强可用哈希算法的过程。（由 Alex Gaynor 在 "
+":issue:`21307` 中贡献）"
 
 #: ../../whatsnew/2.7.rst:2650
 msgid "PEP 477: Backport ensurepip (PEP 453) to Python 2.7"
@@ -4642,6 +4765,8 @@ msgid ""
 " improved documentation that was enabled by it in the Python 2.7 maintenance"
 " releases, appearing first in the Python 2.7.9 release."
 msgstr ""
+":pep:`477` 批准将 :pep:`453` ensurepip 模块及其启用的新增文档纳入 Python 2.7 维护版本，首次出现在 "
+"Python 2.7.9 版本中。"
 
 #: ../../whatsnew/2.7.rst:2658
 msgid "Bootstrapping pip By Default"
@@ -4656,6 +4781,9 @@ msgid ""
 " to the latest version of ``pip`` that is available at the time of creating "
 "the release candidate."
 msgstr ""
+"新的 :mod:`ensurepip` 模块（定义于 :pep:`453`）提供了一个标准的跨平台机制，用于将 pip 安装程序引导到 Python "
+"安装中。Python 2.7.9 中包含的 ``pip`` 版本是 ``pip`` 1.5.6，未来的 2.7.x "
+"维护版本将更新捆绑版本为创建发布候选时最新的 ``pip`` 版本。"
 
 #: ../../whatsnew/2.7.rst:2667
 msgid ""
@@ -4663,6 +4791,8 @@ msgid ""
 "on all platforms (where X.Y stands for the version of the Python "
 "installation), along with the ``pip`` Python package and its dependencies."
 msgstr ""
+"默认情况下，命令 ``pip``、``pipX`` 和 ``pipX.Y`` 将在所有平台上安装（其中 X.Y 代表 Python "
+"安装的版本），同时安装 ``pip`` Python 包及其依赖项。"
 
 #: ../../whatsnew/2.7.rst:2671
 msgid ""
@@ -4671,6 +4801,9 @@ msgid ""
 "``pip`` by default.  This behaviour can be controlled through configure "
 "options, and overridden through Makefile options."
 msgstr ""
+"对于 CPython :ref:`在 POSIX 系统上的源代码构建 <building-python-on-unix>`，``make "
+"install`` 和 ``make altinstall`` 命令默认不会自动安装 ``pip``。这种行为可以通过配置选项控制，并通过 "
+"Makefile 选项覆盖。"
 
 #: ../../whatsnew/2.7.rst:2676
 msgid ""
@@ -4693,6 +4826,8 @@ msgid ""
 "directions on how to install them on that platform (usually using the system"
 " package manager)."
 msgstr ""
+"如 :pep:`在 PEP 中讨论的 <0477#disabling-ensurepip-by-downstream-"
+"distributors>`，平台打包者可以选择默认不安装这些命令，只要在调用时，它们提供清晰简单的说明，说明如何在那个平台上安装它们（通常使用系统包管理器）。"
 
 #: ../../whatsnew/2.7.rst:2690
 msgid "Documentation Changes"
@@ -4748,6 +4883,10 @@ msgid ""
 " the hostname being requested by default, significantly improving security "
 "for many applications. This change was made in the Python 2.7.9 release."
 msgstr ""
+":pep:`476` 更新了 :mod:`httplib <http>` 及其使用的模块，例如 :mod:`urllib2 "
+"<urllib.request>` 和 :mod:`xmlrpclib "
+"<xmlrpc.client>`，现在默认验证服务器提供的证书是否由平台信任存储中的证书颁发机构签名，且其主机名与请求的主机名匹配，显著提高了许多应用程序的安全性。这一更改在"
+" Python 2.7.9 版本中实现。"
 
 #: ../../whatsnew/2.7.rst:2721
 msgid ""
@@ -4769,6 +4908,17 @@ msgid ""
 "\n"
 "urllib2.urlopen(\"https://invalid-cert\", context=context)"
 msgstr ""
+"import urllib2\n"
+"import ssl\n"
+"\n"
+"# 这将禁用所有验证\n"
+"context = ssl._create_unverified_context()\n"
+"\n"
+"# 这允许为特定主机使用特定证书，该证书不需要\n"
+"# 在信任存储中\n"
+"context = ssl.create_default_context(cafile=\"/path/to/file.crt\")\n"
+"\n"
+"urllib2.urlopen(\"https://invalid-cert\", context=context)"
 
 #: ../../whatsnew/2.7.rst:2738
 msgid "PEP 493: HTTPS verification migration tools for Python 2.7"
@@ -4782,13 +4932,15 @@ msgid ""
 "certificates when establishing client HTTPS connections.  These additions "
 "were made in the Python 2.7.12 release."
 msgstr ""
+":pep:`493` 提供了额外的迁移工具，以支持对包含依赖历史宽松服务器证书处理的应用程序和服务的环境进行更渐进的基础设施升级过程。这些添加内容在 "
+"Python 2.7.12 版本中实现。"
 
 #: ../../whatsnew/2.7.rst:2746
 msgid ""
 "These tools are intended for use in cases where affected applications and "
 "services can't be modified to explicitly pass a more permissive SSL context "
 "when establishing the connection."
-msgstr ""
+msgstr "这些工具旨在用于那些无法修改以显式传递更宽松 SSL 上下文的应用程序和服务，在建立连接时使用。"
 
 #: ../../whatsnew/2.7.rst:2750
 msgid ""
@@ -4797,6 +4949,8 @@ msgid ""
 "entire Python process back to the default permissive behaviour of Python "
 "2.7.8 and earlier."
 msgstr ""
+"对于完全无法修改的应用程序和服务，可以设置新的 ``PYTHONHTTPSVERIFY`` 环境变量为 ``0``，以将整个 Python 进程恢复到 "
+"Python 2.7.8 及早期版本的默认宽松行为。"
 
 #: ../../whatsnew/2.7.rst:2755
 msgid ""
@@ -4804,6 +4958,8 @@ msgid ""
 " overall application can be, the new :func:`!ssl._https_verify_certificates`"
 " function can be used to adjust the default behaviour at runtime."
 msgstr ""
+"对于连接建立代码无法修改，但整体应用程序可以修改的情况，可以使用新的 :func:`!ssl._https_verify_certificates` "
+"函数来调整运行时的默认行为。"
 
 #: ../../whatsnew/2.7.rst:2761
 msgid "New ``make regen-all`` build target"
