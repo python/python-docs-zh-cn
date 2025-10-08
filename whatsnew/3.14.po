@@ -261,6 +261,8 @@ msgid ""
 "It is no longer necessary to enclose annotations in strings if they contain "
 "forward references."
 msgstr ""
+"这一改进旨在使得 Python 中的标注在大多数情况下具有更好的性能和可用性。 定义标注的运行时开销被最小化，但仍可在运行时对标注进行内省。  "
+"当标注包含前向引用时也不再需要将其包裹在字符串中。"
 
 #: ../../whatsnew/3.14.rst:162
 msgid ""
@@ -313,32 +315,36 @@ msgid ""
 "guidance on changes that may be needed due to these changes, though in the "
 "majority of cases, code will continue working as-is."
 msgstr ""
+":ref:`移植 <whatsnew314-porting-annotations>` "
+"一节包含了有关因这些改变而可能需要的修改指导，不过大大部分情况下，原来的代码将可继续工作。"
 
 #: ../../whatsnew/3.14.rst:189
 msgid ""
 "(Contributed by Jelle Zijlstra in :pep:`749` and :gh:`119180`; :pep:`649` "
 "was written by Larry Hastings.)"
 msgstr ""
+"（由 Jelle Zijlstra 在 :pep:`749` 和 :gh:`119180` 中贡献；:pep:`649` 由 Larry "
+"Hastings 编写。）"
 
 #: ../../whatsnew/3.14.rst:194
 msgid ":pep:`649`"
-msgstr ""
+msgstr ":pep:`649`"
 
 #: ../../whatsnew/3.14.rst:195
 msgid "Deferred Evaluation Of Annotations Using Descriptors"
-msgstr ""
+msgstr "使用描述器进行标注的迟延求值"
 
 #: ../../whatsnew/3.14.rst:196
 msgid ":pep:`749`"
-msgstr ""
+msgstr ":pep:`749`"
 
 #: ../../whatsnew/3.14.rst:197
 msgid "Implementing PEP 649"
-msgstr ""
+msgstr "实现 PEP 649"
 
 #: ../../whatsnew/3.14.rst:203
 msgid ":pep:`734`: Multiple interpreters in the standard library"
-msgstr ""
+msgstr ":pep:`734`: 标准库中的多解释器"
 
 #: ../../whatsnew/3.14.rst:205
 msgid ""
@@ -347,18 +353,20 @@ msgid ""
 "separate copies is called an 'interpreter'. However, the feature had been "
 "available only through the :ref:`C-API <sub-interpreter-support>`."
 msgstr ""
+"CPython 运行时支持在同一个进程中同时运行多个 Python 的副本并且已经这样做了 20 多年。 每个这样的副本被称为‘解释器’。 "
+"不过，该特性过去只能通过 :ref:`C-API <sub-interpreter-support>` 来使用。."
 
 #: ../../whatsnew/3.14.rst:211
 msgid ""
 "That limitation is removed in Python 3.14, with the new "
 ":mod:`concurrent.interpreters` module."
-msgstr ""
+msgstr "由于新增的 :mod:`concurrent.interpreters` 模块，此限制已在 Python 3.14 中被移除。"
 
 #: ../../whatsnew/3.14.rst:214
 msgid ""
 "There are at least two notable reasons why using multiple interpreters has "
 "significant benefits:"
-msgstr ""
+msgstr "至少有两个重要理由能说明为何使用多解释器可以带来显著的益处："
 
 #: ../../whatsnew/3.14.rst:217
 msgid "they support a new (to Python), human-friendly concurrency model"
@@ -376,6 +384,8 @@ msgid ""
 "human brain. That especially applies to plain threads (for example, "
 ":mod:`threading`), where all memory is shared between all threads."
 msgstr ""
+"对于某些用例来说，软件中的并发机制能够在更高的层级上提升效率并简化设计。 与此同时，实现和维护除最简单形式以外的并发逻辑对人脑来说都很困难。 "
+"这一点尤其适用于普通线程 (例如 :mod:`threading`)，其中所有的线程之间会共享所有的内存。"
 
 #: ../../whatsnew/3.14.rst:227
 msgid ""
@@ -384,6 +394,8 @@ msgid ""
 "other programming languages, like Smalltalk, Erlang, Haskell, and Go. Think "
 "of multiple interpreters like threads but with opt-in sharing."
 msgstr ""
+"通过多个隔离的解释器，你可以利用一类在其他编程语言像 Smalltalk, Erlang, Haskell 和 Go 中已成功运用的并发模型，如 CSP"
+" 或表演者模型等。 可以将多个解释器视为具有可选择共享资源的线程。"
 
 #: ../../whatsnew/3.14.rst:233
 msgid ""
@@ -392,6 +404,8 @@ msgid ""
 ":pep:`684`). This unlocks a variety of CPU-intensive use cases for Python "
 "that were limited by the :term:`GIL`."
 msgstr ""
+"关于多核并行：从 Python 3.12 开始，各个解释器彼此已实现足够的隔离从而可以并行使用 (参见 :pep:`684`)。 这使得 Python "
+"能够解锁许多曾经受限于 :term:`GIL` 的 CPU 密集型应用场景。"
 
 #: ../../whatsnew/3.14.rst:238
 msgid ""
@@ -403,6 +417,10 @@ msgid ""
 "process). Think of multiple interpreters as having the isolation of "
 "processes with the efficiency of threads."
 msgstr ""
+"使用多个解释器在许多方面与 :mod:`multiprocessing` "
+"类似，因为它们都提供了相互隔离的逻辑“进程”，在默认情况下不共享资源并可并行运行。 "
+"然而，在使用多个解释器时，应用程序将使用更少的系统资源并具有更高的运行效率（因为它们仍处于同一个进程内）。 "
+"可以将多个解释器视为即具有进程级别的隔离性又具有线程级别的高效率。"
 
 #: ../../whatsnew/3.14.rst:249
 msgid ""
@@ -412,6 +430,8 @@ msgid ""
 "limitations, which will improve significantly now that the feature is "
 "finally going mainstream."
 msgstr ""
+"尽管此特性已存在了数十年，但由于认知度较低且缺少标准库模块支持，多解释器并未被广泛使用。 "
+"因此，目前它仍存在一些明显的限制，但现在此特性终会走向主流并将迅速改进。"
 
 #: ../../whatsnew/3.14.rst:255
 msgid "Current limitations:"
@@ -425,7 +445,7 @@ msgstr "启动每个解释器尚未经过优化。"
 msgid ""
 "each interpreter uses more memory than necessary (work continues on "
 "extensive internal sharing between interpreters)"
-msgstr ""
+msgstr "每个解释器会占用超出实际需要的内存（正在持续努力实现解释器之间充分的内部共享）"
 
 #: ../../whatsnew/3.14.rst:260
 msgid ""
@@ -438,7 +458,7 @@ msgid ""
 "many third-party extension modules on PyPI are not yet compatible with "
 "multiple interpreters (all standard library extension modules *are* "
 "compatible)"
-msgstr ""
+msgstr "PyPI 上的许多第三方扩展模块尚未与多解释器实现兼容（所有标准库扩展模块 *已经* 兼容）"
 
 #: ../../whatsnew/3.14.rst:265
 msgid ""
@@ -453,6 +473,8 @@ msgid ""
 "packages. Depending on the use case, the limitations may not have much "
 "impact, so try it out!"
 msgstr ""
+"这些限制的影响将取决于未来 CPython 的改进、解释器的使用方式，以及社区通过 PyPI 软件包能解决哪些问题。 "
+"根据具体应用场景，这些限制可能并不会有太大影响，因此不妨尝试一下！"
 
 #: ../../whatsnew/3.14.rst:273
 msgid ""
@@ -486,7 +508,7 @@ msgstr ""
 
 #: ../../whatsnew/3.14.rst:293
 msgid "(Contributed by Eric Snow in :gh:`134939`.)"
-msgstr ""
+msgstr "（由 Eric Snow 在 :gh:`134939` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:295
 msgid ":pep:`734`"
@@ -741,7 +763,7 @@ msgstr ""
 
 #: ../../whatsnew/3.14.rst:478
 msgid "Free-threaded mode improvements"
-msgstr ""
+msgstr "自由线程模式的改进"
 
 #: ../../whatsnew/3.14.rst:480
 msgid ""
@@ -821,6 +843,13 @@ msgid ""
 "    ^^^^^^\n"
 "SyntaxError: invalid syntax. Did you mean 'while'?"
 msgstr ""
+">>> whille True:\n"
+"...     pass\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1\n"
+"    whille True:\n"
+"    ^^^^^^\n"
+"SyntaxError: invalid syntax. Did you mean 'while'?"
 
 #: ../../whatsnew/3.14.rst:542
 msgid ""
@@ -1067,6 +1096,13 @@ msgid ""
 "ratio = len(compressed) / len(data)\n"
 "print(f\"Achieved compression ratio of {ratio}\")"
 msgstr ""
+"from compression import zstd\n"
+"import math\n"
+"\n"
+"data = str(math.pi).encode() * 20\n"
+"compressed = zstd.compress(data)\n"
+"ratio = len(compressed) / len(data)\n"
+"print(f\"Achieved compression ratio of {ratio}\")"
 
 #: ../../whatsnew/3.14.rst:679
 msgid ""
@@ -1144,6 +1180,28 @@ msgid ""
 "if __name__ == '__main__':\n"
 "    asyncio.run(main())"
 msgstr ""
+"import asyncio\n"
+"\n"
+"async def play_track(track):\n"
+"    await asyncio.sleep(5)\n"
+"    print(f'🎵 Finished: {track}')\n"
+"\n"
+"async def play_album(name, tracks):\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        for track in tracks:\n"
+"            tg.create_task(play_track(track), name=track)\n"
+"\n"
+"async def main():\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        tg.create_task(\n"
+"          play_album('Sundowning', ['TNDNBTG', 'Levitate']),\n"
+"          name='Sundowning')\n"
+"        tg.create_task(\n"
+"          play_album('TMBTE', ['DYWTYLM', 'Aqua Regia']),\n"
+"          name='TMBTE')\n"
+"\n"
+"if __name__ == '__main__':\n"
+"    asyncio.run(main())"
 
 #: ../../whatsnew/3.14.rst:737
 msgid ""
@@ -1457,7 +1515,7 @@ msgstr ""
 
 #: ../../whatsnew/3.14.rst:913
 msgid "PEP 758: Allow ``except`` and ``except*`` expressions without brackets"
-msgstr ""
+msgstr "PEP 758: 允许不带圆括号的 ``except`` 和 ``except*`` 表达式"
 
 #: ../../whatsnew/3.14.rst:915
 msgid ""
@@ -1473,12 +1531,16 @@ msgid ""
 "except TimeoutError, ConnectionRefusedError:\n"
 "    print('The network has ceased to be!')"
 msgstr ""
+"try:\n"
+"    connect_to_server()\n"
+"except TimeoutError, ConnectionRefusedError:\n"
+"    print('The network has ceased to be!')"
 
 #: ../../whatsnew/3.14.rst:927
 msgid ""
 "(Contributed by Pablo Galindo and Brett Cannon in :pep:`758` and "
 ":gh:`131831`.)"
-msgstr ""
+msgstr "（由 Pablo Galindo 和 Brett Cannon 在 :pep:`758` 和 :gh:`131831` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:933
 msgid "PEP 765: Control flow in :keyword:`finally` blocks"
@@ -2005,6 +2067,8 @@ msgid ""
 ":class:`~decimal.Decimal`. (Contributed by Serhiy Storchaka in "
 ":gh:`121798`.)"
 msgstr ""
+"增加 :meth:`.Decimal.from_number` 作为 :class:`~decimal.Decimal` 的替代性构造器。 （由 "
+"Serhiy Storchaka 在 :gh:`121798` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:1273
 msgid ""
@@ -2012,6 +2076,8 @@ msgid ""
 "corresponding to the IEEE 754 (2008) decimal interchange formats. "
 "(Contributed by Sergey B Kirpichev in :gh:`53032`.)"
 msgstr ""
+"对外公开 :func:`~decimal.IEEEContext` 以支持创建对应与 IEEE 754 (2008) 十进制交换格式的上下文。 （由 "
+"Sergey B Kirpichev 在 :gh:`53032` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:1279 ../../whatsnew/3.14.rst:2197
 msgid "difflib"
