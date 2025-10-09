@@ -679,6 +679,8 @@ msgid ""
 "debugging capabilities, meaning that unsafe alternatives are no longer "
 "required."
 msgstr ""
+"Python 3.14 引入了一个零开销的调试接口，它允许调试器和性能分析工具安全地附加到正在运行的 Python 进程而不会停止或重启它们。 "
+"这显著加强了 Python 的调试能力，意味着不安全的替代方案已不再需要。"
 
 #: ../../whatsnew/3.14.rst:393
 msgid ""
@@ -688,12 +690,14 @@ msgid ""
 "Python applications in real-time, which is a crucial capability for high-"
 "availability systems and production environments."
 msgstr ""
+"新的接口为附加调试器代码提供了安全的执行点而无需修改解释器的正常执行路径或增加任何运行时开销。 因此，相关工具现在可以实时地对 Python "
+"应用程序进行检查和交互，这对于高可用性系统和生产环境来说是非常关键的能力。"
 
 #: ../../whatsnew/3.14.rst:400
 msgid ""
 "For convenience, this interface is implemented in the "
 ":func:`sys.remote_exec` function. For example:"
-msgstr ""
+msgstr "出于便捷性考虑，本接口是在 :func:`sys.remote_exec` 函数中实现的。 例如："
 
 #: ../../whatsnew/3.14.rst:403
 msgid ""
@@ -708,6 +712,16 @@ msgid ""
 "print('Behold! An offering:')\n"
 "sys.remote_exec(1234, script_path)"
 msgstr ""
+"import sys\n"
+"from tempfile import NamedTemporaryFile\n"
+"\n"
+"with NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:\n"
+"    script_path = f.name\n"
+"    f.write(f'import my_debugger; my_debugger.connect({os.getpid()})')\n"
+"\n"
+"# 在进程 PID 1234 中执行\n"
+"print('Behold! An offering:')\n"
+"sys.remote_exec(1234, script_path)"
 
 #: ../../whatsnew/3.14.rst:417
 msgid ""
@@ -1175,6 +1189,8 @@ msgid ""
 " asynchronous tasks, available via ``python -m asyncio ps PID`` or ``python "
 "-m asyncio pstree PID``."
 msgstr ""
+"新增了一个使用异步任务来检查正在运行的 Python 进程的命令行界面，可通过 ``python -m asyncio ps PID`` 或 "
+"``python -m asyncio pstree PID`` 来使用。"
 
 #: ../../whatsnew/3.14.rst:697
 msgid ""
