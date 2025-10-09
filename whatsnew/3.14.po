@@ -486,6 +486,9 @@ msgid ""
 ":term:`GIL`. Likewise, libraries on PyPI are expected to emerge for high-"
 "level abstractions on top of interpreters."
 msgstr ""
+"此外，未来的 CPython 发布版将进一步减少甚至消除这种开销并提供一些不太适合放到 PyPI 上的工具，大多数限制也可以通过扩展模块来解决，这意味着"
+" PyPI 包可以为 3.14 填补各种功能缺口，甚至能上溯到 3.12 即解释器最终实现真正的隔离并停止共享 :term:`GIL` 的时候。 "
+"同样地，预计在 PyPI 上将产生基于多解释器的高层级抽象库。"
 
 #: ../../whatsnew/3.14.rst:281
 msgid ""
@@ -497,6 +500,10 @@ msgid ""
 "cpython>`, so the ongoing work in the community in that area will help "
 "accelerate support for multiple interpreters."
 msgstr ""
+"关于扩展模块，已在推进一些 PyPI 项目的更新，还有如 Cython, pybind11, nanobind 和 PyO3 这样的工具。 "
+"有关隔离扩展模块的具体步骤可参看 :ref:`isolating-extensions-howto`。 隔离模块与支持 :ref:`自由线程 "
+"<whatsnew314-free-threaded-cpython>` "
+"所需的工作有大量重叠，因此社区在该领域的持续努力将有助于加快对多解释器的支持进程。"
 
 #: ../../whatsnew/3.14.rst:290
 msgid ""
@@ -516,7 +523,7 @@ msgstr ":pep:`734`"
 
 #: ../../whatsnew/3.14.rst:301
 msgid ":pep:`750`: Template string literals"
-msgstr ""
+msgstr ":pep:`750`: 模板字符串字面值"
 
 #: ../../whatsnew/3.14.rst:303
 msgid ""
@@ -525,10 +532,12 @@ msgid ""
 "object representing the static and interpolated parts of the string, instead"
 " of a simple :class:`str`."
 msgstr ""
+"模板字符串是一种用于定制字符串处理的新机制。 它们共享与 f-字符串类似的语法，但与 "
+"f-字符串不同，它们返回一个代表字符串的静态和插值部分的对象，而不是简单的 :class:`str`。"
 
 #: ../../whatsnew/3.14.rst:308
 msgid "To write a t-string, use a ``'t'`` prefix instead of an ``'f'``:"
-msgstr ""
+msgstr "要编写 t-字符串，应使用 ``'t'`` 前缀而不是 ``'f'``:"
 
 #: ../../whatsnew/3.14.rst:310
 msgid ""
@@ -537,6 +546,10 @@ msgid ""
 ">>> type(template)\n"
 "<class 'string.templatelib.Template'>"
 msgstr ""
+">>> variety = 'Stilton'\n"
+">>> template = t'Try some {variety} cheese!'\n"
+">>> type(template)\n"
+"<class 'string.templatelib.Template'>"
 
 #: ../../whatsnew/3.14.rst:317
 msgid ""
@@ -545,12 +558,16 @@ msgid ""
 "combined. Iterate over :class:`!Template` instances to access their parts in"
 " order:"
 msgstr ""
+":class:`~string.templatelib.Template` 对象在字符串的静态和插值（以花括号标示）在被组合 *之前* "
+"提供对它们的访问。 迭代 :class:`!Template` 实例可以按顺序访问其的各个部分："
 
 #: ../../whatsnew/3.14.rst:326
 msgid ""
 ">>> list(template)\n"
 "['Try some ', Interpolation('Stilton', 'variety', None, ''), ' cheese!']"
 msgstr ""
+">>> list(template)\n"
+"['Try some ', Interpolation('Stilton', 'variety', None, ''), ' cheese!']"
 
 #: ../../whatsnew/3.14.rst:331
 msgid ""
@@ -558,6 +575,8 @@ msgid ""
 "For example, here's a function that renders static parts lowercase and "
 ":class:`~string.templatelib.Interpolation` instances uppercase:"
 msgstr ""
+"编写（或调用）代码对 :class:`!Template` 实例进行处理是很容易的。 例如，下面的函数可将静态部分转为小写而将 "
+":class:`~string.templatelib.Interpolation` 实例转为大写："
 
 #: ../../whatsnew/3.14.rst:335
 msgid ""
@@ -577,6 +596,21 @@ msgid ""
 "template = t'Mister {name}'\n"
 "assert lower_upper(template) == 'mister WENSLYDALE'"
 msgstr ""
+"from string.templatelib import Interpolation\n"
+"\n"
+"def lower_upper(template):\n"
+"    \"\"\"Render static parts lowercase and interpolations uppercase.\"\"\"\n"
+"    parts = []\n"
+"    for part in template:\n"
+"        if isinstance(part, Interpolation):\n"
+"            parts.append(str(part.value).upper())\n"
+"        else:\n"
+"            parts.append(part.lower())\n"
+"    return ''.join(parts)\n"
+"\n"
+"name = 'Wenslydale'\n"
+"template = t'Mister {name}'\n"
+"assert lower_upper(template) == 'mister WENSLYDALE'"
 
 #: ../../whatsnew/3.14.rst:353
 msgid ""
