@@ -750,6 +750,10 @@ msgid ""
 "``yield``\\ s it receives up the call chain. In this case, that's back to "
 "``... = coroutine.send(None)`` on line 16."
 msgstr ""
+":ref:`yield <yieldexpr>` 像往常一样暂停执行并将控制权返回给调用者。 在上面的例子中，第 3 行的 ``yield`` 被第 "
+"11 行的 ``... = await rock`` 调用。 更宽泛地说，``await`` 会调用给定对象的 "
+":meth:`~object.__await__` 方法。 ``await`` 还会做一件非常特别的事情：它会将接收到的任何 ``yield`` "
+"沿着调用链向上传播（或称“传递”）。 在本例中，这将回到第 16 行的 ``... = coroutine.send(None)``。"
 
 #: ../../howto/a-conceptual-overview-of-asyncio.rst:415
 msgid ""
@@ -848,6 +852,8 @@ msgid ""
 " the status and result of that computation, kind of like a status light "
 "(red, yellow, or green) or indicator."
 msgstr ""
+"Future 对象有几个重要的属性。 其一是它的状态，可以是“待处理”、“已取消”或“已完成”。 其二是它的结果，当状态转换为已完成时它就会被设定。 "
+"与协程不同，Future 并不代表要执行的实际计算；相反，它代表该计算的状态和结果，有点像一个状态灯（红色、黄色或绿色）或指示器。"
 
 #: ../../howto/a-conceptual-overview-of-asyncio.rst:471
 msgid ""
@@ -889,6 +895,8 @@ msgid ""
 "coroutine. We want that task to finish only after three seconds have "
 "elapsed, but without preventing other tasks from running."
 msgstr ""
+"这个代码段在为事件循环注册了一些任务然后等待由 ``asyncio.create_task`` 创建的任务，它包装在 "
+"``async_sleep(3)`` 协程中。 我们希望该任务在三秒之后才结束，但不会阻止其他任务的运行。"
 
 #: ../../howto/a-conceptual-overview-of-asyncio.rst:499
 msgid ""
@@ -977,6 +985,9 @@ msgid ""
 "offers more clarity, not to mention it's somewhat cheating to use "
 "``asyncio.sleep`` when showcasing how to implement it!"
 msgstr ""
+"下面，我们将使用一个相当简单的 ``YieldToEventLoop()`` 对象从其 ``__await__`` 方法中 "
+"``yield``，将控制权交还给事件循环。 这实际上与调用 ``asyncio.sleep(0)`` 相同，但这种方式更为明晰，更不用说在展示如何实现"
+" ``asyncio.sleep`` 时直接使用它有点作弊！"
 
 #: ../../howto/a-conceptual-overview-of-asyncio.rst:548
 msgid ""
@@ -992,6 +1003,12 @@ msgid ""
 "least* three seconds, rather than exactly three seconds. Note this is also "
 "true of ``asyncio.sleep``."
 msgstr ""
+"与往常一样，事件循环会轮番处理其任务，给予它们控制权并在它们暂停或完成时收回控制权。 运行 ``_sleep_watcher(...)`` 协程的 "
+"``watcher_task`` 将在事件循环的每个完整周期中被唤起一次。 "
+"在每次恢复时，它将检查时间，如果经过的时间不够，则会再次暂停并将控制权交还给事件循环。 "
+"一旦经过了足够的时间，``_sleep_watcher(...)`` 会将该 Future 标记为已完成并通过退出无限的 ``while`` "
+"循环来结束执行。 鉴于这个辅助任务在事件循环的每个周期中只会被唤起一次，因此你应该注意到这个异步休眠将 *至少* 休眠三秒，而不是恰好三秒。 请注意 "
+"``asyncio.sleep`` 也同样如此。"
 
 #: ../../howto/a-conceptual-overview-of-asyncio.rst:564
 msgid ""
