@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-15 14:12+0000\n"
+"POT-Creation-Date: 2025-11-17 14:14+0000\n"
 "PO-Revision-Date: 2025-09-16 00:02+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -3456,6 +3456,9 @@ msgid ""
 "(Contributed by Pablo Galindo Salgado, Matt Wozniski, and Ivona Stojanovic "
 "in :gh:`131591`.)"
 msgstr ""
+"增加 :func:`sys.remote_exec` 以实现新的外部调试器接口。 请参阅 :ref:`PEP 768 "
+"<whatsnew314-remote-debugging>` 了解详情。 （由 Pablo Galindo Salgado, Matt "
+"Wozniski 和 Ivona Stojanovic 在 :gh:`131591` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:1883
 msgid ""
@@ -3476,6 +3479,9 @@ msgid ""
 ":monitoring-event:`!BRANCH` event. (Contributed by Mark Shannon in "
 ":gh:`122548`.)"
 msgstr ""
+"新增两个监视事件 :monitoring-event:`BRANCH_LEFT` 和 :monitoring-event:`BRANCH_RIGHT`。"
+" 它们将替代并弃用 :monitoring-event:`!BRANCH` 事件。 （由 Mark Shannon 在 :gh:`122548` "
+"中贡献。）.)"
 
 #: ../../whatsnew/3.14.rst:1898
 msgid "sysconfig"
@@ -3609,6 +3615,9 @@ msgid ""
 "two syntaxes, but leads to some differences in behavior that may affect "
 "users who introspect types at runtime:"
 msgstr ""
+"现在 :class:`types.UnionType` 和 :class:`typing.Union` 类型互为别名，这意味着旧式联合（通过 "
+"``Union[int, str]`` 创建）和新式联合（通过 ``int | str`` 创建）现在都会创建相同的运行时类型的实例。 "
+"这统一了两种语法形式的行为，但也导致了一些行为差异并可能影响在运行时对类型进行内省的用户："
 
 #: ../../whatsnew/3.14.rst:1977
 msgid ""
@@ -3616,6 +3625,8 @@ msgid ""
 "representation in :func:`repr`. For example, ``repr(Union[int, str])`` is "
 "now ``\"int | str\"`` instead of ``\"typing.Union[int, str]\"``."
 msgstr ""
+"两种创建联合的语法现在将在 :func:`repr` 中产生相同的字符串表示形式。 例如，``repr(Union[int, str])`` 现在将为 "
+"``\"int | str\"`` 而不是 ``\"typing.Union[int, str]\"``。"
 
 #: ../../whatsnew/3.14.rst:1982
 msgid ""
@@ -3633,6 +3644,12 @@ msgid ""
 "therefore unlikely that this change will cause a significant increase in "
 "memory usage for most users."
 msgstr ""
+"使用旧语法创建的联合将不再被缓存。 在之前版本中，多次运行 ``Union[int, str]`` 会返回同一个对象 (``Union[int, "
+"str] is Union[int, str]`` 将为 ``True``)，但现在会返回两个不同的对象。 请使用 ``==`` "
+"来比较联合是否相等，而不要用 ``is``。 新式联合从未以这种方式进行缓存。 这一变化可能会增加某些程序的内存占用，这些程序会通过下标 "
+"``typing.Union`` 创建大量联合。 不过，有几个因素会缓解这种开销：由于 :pep:`649` 的引入在 Python 3.14 "
+"中默认不再对标注中使用的联合进行求值；:class:`types.UnionType` 的实例本身要比之前 Python 版本中 ``Union[]``"
+" 返回的对象小得多；并且移除缓存也节省了部分空间。 因此对于大多数用户来说这一变化不太可能导致内存占用的显著增加。"
 
 #: ../../whatsnew/3.14.rst:1998
 msgid ""
@@ -3643,6 +3660,9 @@ msgid ""
 " helpers like :func:`~typing.get_origin` and :func:`typing.get_args` instead"
 " of relying on private implementation details."
 msgstr ""
+"在之前版本中，旧式联合是使用私有类 ``typing._UnionGenericAlias`` 来实现的。 "
+"该类对当前的实现来说已不再需要，但它仍被保留用于向下兼容，计划在 Python 3.17 中移除。 用户应当使用写入文档的内省辅助函数如 "
+":func:`~typing.get_origin` 和 :func:`typing.get_args` 而不是依赖私有的实现细节。"
 
 #: ../../whatsnew/3.14.rst:2007
 msgid ""
@@ -3944,6 +3964,10 @@ msgid ""
 " tasks running in all threads. (Contributed by Kumar Aditya in "
 ":gh:`107803`.)"
 msgstr ""
+"在为 :class:`原生任务 <asyncio.Task>` 实现新的每线程双链表之后标准的基准测试结果有 10-20% "
+"的提升，同时还减少了内存使用。 这使得外部内省工具如 :ref:`python -m asyncio pstree "
+"<whatsnew314-asyncio-introspection>` 能够对在所有线程中运行的 asyncio 任务的调用图进行内省。 （由 "
+"Kumar Aditya 在 :gh:`107803` 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:2173
 msgid ""
@@ -5766,6 +5790,11 @@ msgid ""
 "by Lysandros Nikolaou and others in :gh:`132661`; see also :ref:`PEP 750: "
 "Template strings <whatsnew314-template-string-literals>`)."
 msgstr ""
+"增加 :opcode:`BUILD_INTERPOLATION` 和 :opcode:`BUILD_TEMPLATE` 操作码分别用于构造新的 "
+":class:`~string.templatelib.Interpolation` 和 "
+":class:`~string.templatelib.Template` 实例。 （由 Lysandros Nikolaou 等人在 "
+":gh:`132661` 中贡献；另请参阅 :ref:`PEP 750: Template strings <whatsnew314-template-"
+"string-literals>`。）"
 
 #: ../../whatsnew/3.14.rst:2730
 msgid ""
@@ -5835,6 +5864,9 @@ msgid ""
 "of annotations <whatsnew314-deferred-annotations>`. (Contributed by Jelle "
 "Zijlstra in :gh:`130907`.)"
 msgstr ""
+"增加 :opcode:`!ANNOTATIONS_PLACEHOLDER` 伪指令以支持部分执行的使用 :ref:`标注迟延求值 "
+"<whatsnew314-deferred-annotations>` 的模块级标注。 （由 Jelle Zijlstra 在 :gh:`130907`"
+" 中贡献。）"
 
 #: ../../whatsnew/3.14.rst:2766
 msgid ""
@@ -5932,6 +5964,9 @@ msgid ""
 "this PEP only provides a single choice to embed Python, instead of having "
 "two 'Python' and 'Isolated' choices (PEP 587), to further simplify the API."
 msgstr ""
+":pep:`587` 'Python 初始化配置' 统一了所有配置 Python 初始化的方式。 这个 PEP 还将 Python "
+"的预初始化和初始化配置整合至单个 API 中。 此外，这个 PEP 只提供了单个选项用于嵌入 Python，而不是有 'Python' 和 '隔离' "
+"两种选项 (PEP 587)，以进一步简化 API。"
 
 #: ../../whatsnew/3.14.rst:2821
 msgid ""
@@ -5940,6 +5975,8 @@ msgid ""
 "(such as emulating the full functionality of CPython's CLI, including its "
 "configuration mechanisms)."
 msgstr ""
+"较低层级的 PEP 587 PyConfig API 仍然保留用于需要有与 CPython 实现细节较高耦合度的使用场景（如模拟 CPython 的 "
+"CLI 的完整功能，包括其配置机制）。"
 
 #: ../../whatsnew/3.14.rst:2826 ../../whatsnew/3.14.rst:2853
 #: ../../whatsnew/3.14.rst:2873
@@ -7116,6 +7153,11 @@ msgid ""
 "new :ref:`default interactive shell <tut-interactive>`. (Contributed by R. "
 "Hood Chatham in :gh:`127146`, :gh:`127683`, and :gh:`136931`.)"
 msgstr ""
+":pep:`776`: Emscripten 现在是官方支持的 :pep:`第 3 层级 <11#tier-3>` 平台。 作为此项工作的一部分，在 "
+"`Emscripten libc`__ 中有超过 25 个程序缺陷被修复。 Emscripten 现在包括了对 :mod:`ctypes`, "
+":mod:`termios` 和 :mod:`fcntl` 的支持，以及对新的 :ref:`默认交互式 shell <tut-interactive>`"
+" 的实验性支持。 （由 R. Hood Chatham 在 :gh:`127146`, :gh:`127683` 和 :gh:`136931` "
+"中贡献。）"
 
 #: ../../whatsnew/3.14.rst:3098
 msgid "Official Android binary releases are now provided on python.org__."
@@ -7263,13 +7305,15 @@ msgid ""
 "<https://discuss.python.org/t/37075>`__ where free-threaded Python is "
 "officially supported but still optional."
 msgstr ""
+"自由线程的 Python 构建版现在已被支持而不再是实验性的。 这是自由线程 Python 获得官方支持但仍为可选项的 `第二阶段 "
+"<https://discuss.python.org/t/37075>`__ 的开始。"
 
 #: ../../whatsnew/3.14.rst:3185
 msgid ""
 "The free-threading team are confident that the project is on the right path,"
 " and appreciate the continued dedication from everyone working to make free-"
 "threading ready for broader adoption across the Python community."
-msgstr ""
+msgstr "自由线程团队相信此项目走在正确的路径上，并赞赏各位持续努力的贡献使得自由线程特性已准备好在 Python 社区获得更广泛的接受。"
 
 #: ../../whatsnew/3.14.rst:3189
 msgid ""
@@ -7278,6 +7322,8 @@ msgid ""
 "supported Python build option now and into the future, and that it will not "
 "be removed without a proper deprecation schedule."
 msgstr ""
+"随着这个 PEP 被提议和被接受，Python 开发者社区应当广泛宣传自由线程已成为受支持的 Python "
+"构建选项并将在未来继续发展，它不会在没有适当弃用计划的情况下被移除。"
 
 #: ../../whatsnew/3.14.rst:3194
 msgid ""
@@ -7287,6 +7333,8 @@ msgid ""
 "both within CPython itself and the community. This decision is for the "
 "future."
 msgstr ""
+"任何过渡到 `第三阶段 <https://discuss.python.org/t/37075>`__，即将自由线程作为 Python "
+"默认或唯一的构建版的决定尚未明确作出，这取决于 CPython 本身和社区内部的许多因素。 这个决定会留给未来。"
 
 #: ../../whatsnew/3.14.rst:3201
 msgid ":pep:`779`"
@@ -7368,6 +7416,9 @@ msgid ""
 ":mod:`multiprocessing` and :class:`~concurrent.futures.ProcessPoolExecutor`,"
 " instead of *fork*."
 msgstr ""
+"在 macOS 以外的 Unix 平台上，*forkserver* 现在是用于 :mod:`multiprocessing` 和 "
+":class:`~concurrent.futures.ProcessPoolExecutor` 的默认 :ref:`启动方法 "
+"<multiprocessing-start-methods>`，代替了 *fork*。"
 
 #: ../../whatsnew/3.14.rst:3250
 msgid ""
@@ -7392,6 +7443,8 @@ msgid ""
 "This change does not affect Windows or macOS, where :ref:`'spawn' "
 "<multiprocessing-start-method-spawn>` remains the default start method."
 msgstr ""
+"这一更改不会影响 Windows 或 macOS，在这两个平台上 :ref:`'spawn' <multiprocessing-start-"
+"method-spawn>` 仍是默认的启动方法。remains the default start method."
 
 #: ../../whatsnew/3.14.rst:3260
 msgid ""
@@ -7435,6 +7488,10 @@ msgid ""
 " that interacts with annotations should continue to work, some undocumented "
 "details may behave differently."
 msgstr ""
+"标注的运行时行为在多个方面发生了改变；请参阅 :ref:`上文 <whatsnew314-deferred-annotations>` 了解详情。 "
+"虽然大多数与标注交互的代码应该能继续工作，但某些未写入文档的细节行为可能有所不同。for details. While most code that "
+"interacts with annotations should continue to work, some undocumented "
+"details may behave differently."
 
 #: ../../whatsnew/3.14.rst:3286
 msgid ""
@@ -7442,6 +7499,8 @@ msgid ""
 "on failure instead of ``0`` and ``2`` on incorrect command-line parameters "
 "instead of ``1``. Error messages are now printed to stderr."
 msgstr ""
+"由于要将 :mod:`mimetypes` CLI 对外公开，现在当它执行失败时的退出码将为 ``1`` 而不是 "
+"``0``，当有不正确的命令行形参时的退出码为 ``2`` 而不是 ``1``。 错误消息现在将被打印到 stderr。"
 
 #: ../../whatsnew/3.14.rst:3291
 msgid ""
