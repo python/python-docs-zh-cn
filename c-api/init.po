@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-21 14:14+0000\n"
+"POT-Creation-Date: 2025-11-25 14:15+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -1885,7 +1885,7 @@ msgstr ""
 " 处于 :term:`已附加 <attached thread state>` 状态，否则会导致死锁。 调用此函数返回后，*tstate* "
 "将被附加到当前线程。"
 
-#: ../../c-api/init.rst:1244 ../../c-api/init.rst:1631
+#: ../../c-api/init.rst:1244 ../../c-api/init.rst:1688
 msgid ""
 "Calling this function from a thread when the runtime is finalizing will hang"
 " the thread until the program exits, even if the thread was not created by "
@@ -1896,7 +1896,7 @@ msgstr ""
 ":ref:`cautions-regarding-runtime-finalization`。"
 
 #: ../../c-api/init.rst:1249 ../../c-api/init.rst:1333
-#: ../../c-api/init.rst:1641
+#: ../../c-api/init.rst:1698
 msgid ""
 "Hangs the current thread, rather than terminating it, if called while the "
 "interpreter is finalizing."
@@ -2298,79 +2298,138 @@ msgid ""
 msgstr "另请参阅 :c:func:`PyEval_SetTrace` 和 :c:func:`PyEval_SetProfile` 函数。"
 
 #: ../../c-api/init.rst:1536
+msgid ""
+"Set the stack protection start address and stack protection size of a Python"
+" thread state."
+msgstr "设置一个 Python 线程状态的栈保护起始地址和栈保护大小。"
+
+#: ../../c-api/init.rst:1539
+msgid ""
+"On success, return ``0``. On failure, set an exception and return ``-1``."
+msgstr "成功时，返回 ``0``。 失败时，设置一个异常并返回 ``-1``。"
+
+#: ../../c-api/init.rst:1542
+msgid ""
+"CPython implements :ref:`recursion control <recursion>` for C code by "
+"raising :py:exc:`RecursionError` when it notices that the machine execution "
+"stack is close to overflow. See for example the "
+":c:func:`Py_EnterRecursiveCall` function. For this, it needs to know the "
+"location of the current thread's stack, which it normally gets from the "
+"operating system. When the stack is changed, for example using context "
+"switching techniques like the Boost library's ``boost::context``, you must "
+"call :c:func:`~PyUnstable_ThreadState_SetStackProtection` to inform CPython "
+"of the change."
+msgstr ""
+
+#: ../../c-api/init.rst:1551
+msgid ""
+"Call :c:func:`~PyUnstable_ThreadState_SetStackProtection` either before or "
+"after changing the stack. Do not call any other Python C API between the "
+"call and the stack change."
+msgstr ""
+
+#: ../../c-api/init.rst:1556
+msgid ""
+"See :c:func:`PyUnstable_ThreadState_ResetStackProtection` for undoing this "
+"operation."
+msgstr ""
+
+#: ../../c-api/init.rst:1562 ../../c-api/init.rst:1582
+msgid ""
+"This function was added in a bugfix release, and extensions that use it will"
+" be incompatible with Python 3.14.0. Most packaging tools for Python are not"
+" able to handle this incompatibility automatically, and will need explicit "
+"configuration. When using PyPA standards (wheels and source distributions), "
+"specify ``Requires-Python: != 3.14.0.*`` in `core metadata "
+"<https://packaging.python.org/en/latest/specifications/core-"
+"metadata/#requires-python>`_."
+msgstr ""
+
+#: ../../c-api/init.rst:1573
+msgid ""
+"Reset the stack protection start address and stack protection size of a "
+"Python thread state to the operating system defaults."
+msgstr ""
+
+#: ../../c-api/init.rst:1576
+msgid ""
+"See :c:func:`PyUnstable_ThreadState_SetStackProtection` for an explanation."
+msgstr "请参阅 :c:func:`PyUnstable_ThreadState_SetStackProtection` 查看相关说明。"
+
+#: ../../c-api/init.rst:1593
 msgid "Get the current interpreter."
 msgstr "获取当前解释器。"
 
-#: ../../c-api/init.rst:1538
+#: ../../c-api/init.rst:1595
 msgid ""
 "Issue a fatal error if there no :term:`attached thread state`. It cannot "
 "return NULL."
 msgstr "如果不存在 :term:`attached thread state`，则触发致命错误。此函数不会返回 NULL。"
 
-#: ../../c-api/init.rst:1546
+#: ../../c-api/init.rst:1603
 msgid ""
 "Return the interpreter's unique ID.  If there was any error in doing so then"
 " ``-1`` is returned and an error is set."
 msgstr "返回解释器的唯一 ID。 如果执行过程中发生任何错误则将返回 ``-1`` 并设置错误。"
 
-#: ../../c-api/init.rst:1549 ../../c-api/init.rst:2164
-#: ../../c-api/init.rst:2171 ../../c-api/init.rst:2190
-#: ../../c-api/init.rst:2197
+#: ../../c-api/init.rst:1606 ../../c-api/init.rst:2221
+#: ../../c-api/init.rst:2228 ../../c-api/init.rst:2247
+#: ../../c-api/init.rst:2254
 msgid "The caller must have an :term:`attached thread state`."
 msgstr "调用方必须有已附加的线程状态 :term:`attached thread state`。"
 
-#: ../../c-api/init.rst:1556
+#: ../../c-api/init.rst:1613
 msgid ""
 "Return a dictionary in which interpreter-specific data may be stored. If "
 "this function returns ``NULL`` then no exception has been raised and the "
 "caller should assume no interpreter-specific dict is available."
 msgstr "返回一个存储解释器专属数据的字典。 如果此函数返回 ``NULL`` 则没有任何异常被引发并且调用方应当将解释器专属字典视为不可用。"
 
-#: ../../c-api/init.rst:1560
+#: ../../c-api/init.rst:1617
 msgid ""
 "This is not a replacement for :c:func:`PyModule_GetState()`, which "
 "extensions should use to store interpreter-specific state information."
 msgstr "这不是 :c:func:`PyModule_GetState()` 的替代，扩展仍应使用它来存储解释器专属的状态信息。"
 
-#: ../../c-api/init.rst:1563
+#: ../../c-api/init.rst:1620
 msgid ""
 "The returned dictionary is borrowed from the interpreter and is valid until "
 "interpreter shutdown."
 msgstr "返回的字典是从解释器借入的并将保持可用直到解释器关闭。"
 
-#: ../../c-api/init.rst:1571
+#: ../../c-api/init.rst:1628
 msgid "Type of a frame evaluation function."
 msgstr "帧评估函数的类型"
 
-#: ../../c-api/init.rst:1573
+#: ../../c-api/init.rst:1630
 msgid ""
 "The *throwflag* parameter is used by the ``throw()`` method of generators: "
 "if non-zero, handle the current exception."
 msgstr "*throwflag* 形参将由生成器的 ``throw()`` 方法来使用：如为非零值，则处理当前异常。"
 
-#: ../../c-api/init.rst:1576
+#: ../../c-api/init.rst:1633
 msgid "The function now takes a *tstate* parameter."
 msgstr "此函数现在可接受一个 *tstate* 形参。"
 
-#: ../../c-api/init.rst:1579
+#: ../../c-api/init.rst:1636
 msgid ""
 "The *frame* parameter changed from ``PyFrameObject*`` to "
 "``_PyInterpreterFrame*``."
 msgstr "*frame* 形参由 ``PyFrameObject*`` 改为 ``_PyInterpreterFrame*``。"
 
-#: ../../c-api/init.rst:1584
+#: ../../c-api/init.rst:1641
 msgid "Get the frame evaluation function."
 msgstr "获取帧评估函数。"
 
-#: ../../c-api/init.rst:1586 ../../c-api/init.rst:1594
+#: ../../c-api/init.rst:1643 ../../c-api/init.rst:1651
 msgid "See the :pep:`523` \"Adding a frame evaluation API to CPython\"."
 msgstr "请参阅 :pep:`523` \"Adding a frame evaluation API to CPython\"。"
 
-#: ../../c-api/init.rst:1592
+#: ../../c-api/init.rst:1649
 msgid "Set the frame evaluation function."
 msgstr "设置帧评估函数。"
 
-#: ../../c-api/init.rst:1601
+#: ../../c-api/init.rst:1658
 msgid ""
 "Return a dictionary in which extensions can store thread-specific state "
 "information.  Each extension should use a unique key to use to store state "
@@ -2383,7 +2442,7 @@ msgstr ""
 " 处于 :term:`已附加 <attached thread state>` 状态时，调用此函数是安全的。 如果此函数返回 "
 "``NULL``，则表示没有引发异常，调用者应假定没有线程状态被附加。"
 
-#: ../../c-api/init.rst:1611
+#: ../../c-api/init.rst:1668
 msgid ""
 "Asynchronously raise an exception in a thread. The *id* argument is the "
 "thread id of the target thread; *exc* is the exception object to be raised. "
@@ -2399,13 +2458,13 @@ msgstr ""
 "返回被修改的线程状态数量；通常为 1，如果找不到线程 ID 则返回 0。如果 *exc* 为 ``NULL``，则清除该线程的待处理异常（如果有）。 "
 "此函数不会引发任何异常。"
 
-#: ../../c-api/init.rst:1619
+#: ../../c-api/init.rst:1676
 msgid ""
 "The type of the *id* parameter changed from :c:expr:`long` to "
 ":c:expr:`unsigned long`."
 msgstr "*id* 形参的类型已从 :c:expr:`long` 变为 :c:expr:`unsigned long`。"
 
-#: ../../c-api/init.rst:1625
+#: ../../c-api/init.rst:1682
 msgid ""
 ":term:`Attach <attached thread state>` *tstate* to the current thread, which"
 " must not be ``NULL`` or already :term:`attached <attached thread state>`."
@@ -2413,12 +2472,12 @@ msgstr ""
 "将 *tstate* :term:`附加 <attached thread state>` 到当前线程，当前线程不能为 ``NULL`` 或者已经 "
 ":term:`附加线程状态 <attached thread state>`。"
 
-#: ../../c-api/init.rst:1628
+#: ../../c-api/init.rst:1685
 msgid ""
 "The calling thread must not already have an :term:`attached thread state`."
 msgstr "调用方线程不能已经具有 :term:`attached thread state`。"
 
-#: ../../c-api/init.rst:1636
+#: ../../c-api/init.rst:1693
 msgid ""
 "Updated to be consistent with :c:func:`PyEval_RestoreThread`, "
 ":c:func:`Py_END_ALLOW_THREADS`, and :c:func:`PyGILState_Ensure`, and "
@@ -2427,13 +2486,13 @@ msgstr ""
 "已被更新为与 :c:func:`PyEval_RestoreThread`, :c:func:`Py_END_ALLOW_THREADS` 和 "
 ":c:func:`PyGILState_Ensure` 保持一致，如果在解释器正在最终化时被调用则会终结当前线程。"
 
-#: ../../c-api/init.rst:1645
+#: ../../c-api/init.rst:1702
 msgid ""
 ":c:func:`PyEval_RestoreThread` is a higher-level function which is always "
 "available (even when threads have not been initialized)."
 msgstr ":c:func:`PyEval_RestoreThread` 是一个始终可用的（即使线程尚未初始化）更高层级函数。"
 
-#: ../../c-api/init.rst:1651
+#: ../../c-api/init.rst:1708
 msgid ""
 "Detach the :term:`attached thread state`. The *tstate* argument, which must "
 "not be ``NULL``, is only used to check that it represents the "
@@ -2442,17 +2501,17 @@ msgstr ""
 "分离 :term:`attached thread state`。 *tstate* 参数必须不为 ``NULL``，该参数仅被用于检查它是否代表 "
 ":term:`attached thread state` --- 如果不是，则会报告一个致命级错误。"
 
-#: ../../c-api/init.rst:1656
+#: ../../c-api/init.rst:1713
 msgid ""
 ":c:func:`PyEval_SaveThread` is a higher-level function which is always "
 "available (even when threads have not been initialized)."
 msgstr ":c:func:`PyEval_SaveThread` 是一个始终可用的（即使线程尚未初始化）更高层级函数。"
 
-#: ../../c-api/init.rst:1663
+#: ../../c-api/init.rst:1720
 msgid "Sub-interpreter support"
 msgstr "子解释器支持"
 
-#: ../../c-api/init.rst:1665
+#: ../../c-api/init.rst:1722
 msgid ""
 "While in most uses, you will only embed a single Python interpreter, there "
 "are cases where you need to create several independent interpreters in the "
@@ -2462,7 +2521,7 @@ msgstr ""
 "虽然在大多数用例中，你都只会嵌入一个单独的 Python 解释器，但某些场景需要你在同一个进程甚至同一个线程中创建多个独立的解释器。 "
 "子解释器让你能够做到这一点。"
 
-#: ../../c-api/init.rst:1670
+#: ../../c-api/init.rst:1727
 msgid ""
 "The \"main\" interpreter is the first one created when the runtime "
 "initializes. It is usually the only Python interpreter in a process.  Unlike"
@@ -2476,14 +2535,14 @@ msgstr ""
 "与子解释器不同，主解释器具有唯一的进程全局责任比如信号处理等。 它还负责在运行时初始化期间的执行并且通常还是运行时最终化期间的活动解释器。 "
 ":c:func:`PyInterpreterState_Main` 函数将返回一个指向其状态的指针。"
 
-#: ../../c-api/init.rst:1677
+#: ../../c-api/init.rst:1734
 msgid ""
 "You can switch between sub-interpreters using the "
 ":c:func:`PyThreadState_Swap` function. You can create and destroy them using"
 " the following functions:"
 msgstr "你可以使用 :c:func:`PyThreadState_Swap` 函数在子解释器之间进行切换。 你可以使用下列函数来创建和销毁它们："
 
-#: ../../c-api/init.rst:1683
+#: ../../c-api/init.rst:1740
 msgid ""
 "Structure containing most parameters to configure a sub-interpreter. Its "
 "values are used only in :c:func:`Py_NewInterpreterFromConfig` and never "
@@ -2492,17 +2551,17 @@ msgstr ""
 "包含用于配置子解释器的大部分形参的结构体。 其值仅在 :c:func:`Py_NewInterpreterFromConfig` "
 "中被使用而绝不会被运行时所修改。"
 
-#: ../../c-api/init.rst:1689
+#: ../../c-api/init.rst:1746
 msgid "Structure fields:"
 msgstr "结构体字段:"
 
-#: ../../c-api/init.rst:1693
+#: ../../c-api/init.rst:1750
 msgid ""
 "If this is ``0`` then the sub-interpreter will use its own \"object\" "
 "allocator state. Otherwise it will use (share) the main interpreter's."
 msgstr "如果该值为 ``0`` 则子解释器将使用自己的“对象”分配器状态。 否则它将使用（共享）主解释器的状态。"
 
-#: ../../c-api/init.rst:1697
+#: ../../c-api/init.rst:1754
 msgid ""
 "If this is ``0`` then "
 ":c:member:`~PyInterpreterConfig.check_multi_interp_extensions` must be ``1``"
@@ -2513,19 +2572,19 @@ msgstr ""
 " 必须为 ``1`` (非零值)。 如果该值为 ``1`` 则 :c:member:`~PyInterpreterConfig.gil` 不可为 "
 ":c:macro:`PyInterpreterConfig_OWN_GIL`。"
 
-#: ../../c-api/init.rst:1705
+#: ../../c-api/init.rst:1762
 msgid ""
 "If this is ``0`` then the runtime will not support forking the process in "
 "any thread where the sub-interpreter is currently active. Otherwise fork is "
 "unrestricted."
 msgstr "如果该值为 ``0`` 则运行时将不支持在当前激活了子解释器的任何线程中 fork 进程。 否则 fork 将不受限制。"
 
-#: ../../c-api/init.rst:1709
+#: ../../c-api/init.rst:1766
 msgid ""
 "Note that the :mod:`subprocess` module still works when fork is disallowed."
 msgstr "请注意当 fork 被禁止时 :mod:`subprocess` 模块将仍然可用。"
 
-#: ../../c-api/init.rst:1714
+#: ../../c-api/init.rst:1771
 msgid ""
 "If this is ``0`` then the runtime will not support replacing the current "
 "process via exec (e.g. :func:`os.execv`) in any thread where the sub-"
@@ -2534,18 +2593,18 @@ msgstr ""
 "如果该值为 ``0`` 则运行时将不支持在当前激活了子解释器的任何线程中通过 exec (例如 :func:`os.execv`) 替换当前进程。 否则"
 " exec 将不受限制。"
 
-#: ../../c-api/init.rst:1719
+#: ../../c-api/init.rst:1776
 msgid ""
 "Note that the :mod:`subprocess` module still works when exec is disallowed."
 msgstr "请注意当 exec 被禁止时 :mod:`subprocess` 模块将仍然可用。"
 
-#: ../../c-api/init.rst:1724
+#: ../../c-api/init.rst:1781
 msgid ""
 "If this is ``0`` then the sub-interpreter's :mod:`threading` module won't "
 "create threads. Otherwise threads are allowed."
 msgstr "如果该值为 ``0`` 则子解释器的 :mod:`threading` 模块将不会创建线程。 否则线程将被允许。"
 
-#: ../../c-api/init.rst:1730
+#: ../../c-api/init.rst:1787
 msgid ""
 "If this is ``0`` then the sub-interpreter's :mod:`threading` module won't "
 "create daemon threads. Otherwise daemon threads are allowed (as long as "
@@ -2554,7 +2613,7 @@ msgstr ""
 "如果该值为 ``0`` 则子解释器的 :mod:`threading` 模块将不会创建守护线程。 否则将允许守护线程（只要 "
 ":c:member:`~PyInterpreterConfig.allow_threads` 是非零值）。"
 
-#: ../../c-api/init.rst:1737
+#: ../../c-api/init.rst:1794
 msgid ""
 "If this is ``0`` then all extension modules may be imported, including "
 "legacy (single-phase init) modules, in any thread where the sub-interpreter "
@@ -2565,7 +2624,7 @@ msgstr ""
 "如果该值为 ``0`` 则所有扩展模块均可在当前子解释器被激活的任何线程中被导入，包括旧式的 (单阶段初始化) 模块。 否则将只有多阶段初始化扩展模块 "
 "(参见 :pep:`489`) 可以被导入。 (另请参阅 :c:macro:`Py_mod_multiple_interpreters`。)"
 
-#: ../../c-api/init.rst:1744
+#: ../../c-api/init.rst:1801
 msgid ""
 "This must be ``1`` (non-zero) if "
 ":c:member:`~PyInterpreterConfig.use_main_obmalloc` is ``0``."
@@ -2573,25 +2632,25 @@ msgstr ""
 "如果 :c:member:`~PyInterpreterConfig.use_main_obmalloc` 为 ``0`` 则该值必须为 ``1`` "
 "(非零值)。"
 
-#: ../../c-api/init.rst:1749
+#: ../../c-api/init.rst:1806
 msgid ""
 "This determines the operation of the GIL for the sub-interpreter. It may be "
 "one of the following:"
 msgstr "这将确定针对子解释器的 GIL 操作方式。 它可以是以下的几种之一："
 
-#: ../../c-api/init.rst:1756
+#: ../../c-api/init.rst:1813
 msgid "Use the default selection (:c:macro:`PyInterpreterConfig_SHARED_GIL`)."
 msgstr "使用默认选择 (:c:macro:`PyInterpreterConfig_SHARED_GIL`)。"
 
-#: ../../c-api/init.rst:1760
+#: ../../c-api/init.rst:1817
 msgid "Use (share) the main interpreter's GIL."
 msgstr "使用（共享）主解释器的 GIL。"
 
-#: ../../c-api/init.rst:1764
+#: ../../c-api/init.rst:1821
 msgid "Use the sub-interpreter's own GIL."
 msgstr "使用子解释器自己的 GIL。"
 
-#: ../../c-api/init.rst:1766
+#: ../../c-api/init.rst:1823
 msgid ""
 "If this is :c:macro:`PyInterpreterConfig_OWN_GIL` then "
 ":c:member:`PyInterpreterConfig.use_main_obmalloc` must be ``0``."
@@ -2599,7 +2658,7 @@ msgstr ""
 "如果该值为 :c:macro:`PyInterpreterConfig_OWN_GIL` 则 "
 ":c:member:`PyInterpreterConfig.use_main_obmalloc` 必须为 ``0``。"
 
-#: ../../c-api/init.rst:1780
+#: ../../c-api/init.rst:1837
 msgid ""
 "Create a new sub-interpreter.  This is an (almost) totally separate "
 "environment for the execution of Python code.  In particular, the new "
@@ -2617,13 +2676,13 @@ msgstr ""
 "``sys.argv`` 变量。 它具有新的标准 I/O 流文件对象 ``sys.stdin``, ``sys.stdout`` 和 "
 "``sys.stderr`` (不过这些对象都指向相同的底层文件描述符)。"
 
-#: ../../c-api/init.rst:1790
+#: ../../c-api/init.rst:1847
 msgid ""
 "The given *config* controls the options with which the interpreter is "
 "initialized."
 msgstr "给定的 *config* 控制着初始化解释器所使用的选项。"
 
-#: ../../c-api/init.rst:1793
+#: ../../c-api/init.rst:1850
 msgid ""
 "Upon success, *tstate_p* will be set to the first :term:`thread state` "
 "created in the new sub-interpreter.  This thread state is :term:`attached "
@@ -2638,7 +2697,7 @@ msgstr ""
 "*tstate_p* 将被设为 ``NULL``；不会设置任何异常因为异常状态是存储在 :term:`attached thread state` "
 "中的，而它并不一定存在。"
 
-#: ../../c-api/init.rst:1802
+#: ../../c-api/init.rst:1859
 msgid ""
 "Like all other Python/C API functions, an :term:`attached thread state` must"
 " be present before calling this function, but it might be detached upon "
@@ -2656,13 +2715,13 @@ msgstr ""
 "当函数返回时，新解释器的 :term:`thread state` 将 :term:`已附加 <attached thread state>` "
 "到当前线程，而先前解释器的 :term:`attached thread state` 将保持分离状态。"
 
-#: ../../c-api/init.rst:1813
+#: ../../c-api/init.rst:1870
 msgid ""
 "Sub-interpreters are most effective when isolated from each other, with "
 "certain functionality restricted::"
 msgstr "子解释器在彼此相互隔离，并让特定功能受限的情况下是最有效率的::"
 
-#: ../../c-api/init.rst:1816
+#: ../../c-api/init.rst:1873
 msgid ""
 "PyInterpreterConfig config = {\n"
 "    .use_main_obmalloc = 0,\n"
@@ -2694,7 +2753,7 @@ msgstr ""
 "    Py_ExitStatusException(status);\n"
 "}"
 
-#: ../../c-api/init.rst:1831
+#: ../../c-api/init.rst:1888
 msgid ""
 "Note that the config is used only briefly and does not get modified. During "
 "initialization the config's values are converted into various "
@@ -2704,11 +2763,11 @@ msgstr ""
 "请注意该配置只会被短暂使用而不会被修改。 在初始化期间配置的值会被转换成各种 :c:type:`PyInterpreterState` 值。 "
 "配置的只读副本可以被内部存储于 :c:type:`PyInterpreterState` 中。"
 
-#: ../../c-api/init.rst:1840
+#: ../../c-api/init.rst:1897
 msgid "Extension modules are shared between (sub-)interpreters as follows:"
 msgstr "扩展模块将以如下方式在（子）解释器之间共享："
 
-#: ../../c-api/init.rst:1842
+#: ../../c-api/init.rst:1899
 msgid ""
 "For modules using multi-phase initialization, e.g. "
 ":c:func:`PyModule_FromDefAndSpec`, a separate module object is created and "
@@ -2718,7 +2777,7 @@ msgstr ""
 "对于使用多阶段初始化的模块 ，例如 :c:func:`PyModule_FromDefAndSpec`，将为每个解释器创建并初始化一个单独的模块对象。 "
 "只有 C 层级的静态和全局变量能在这些模块 对象之间共享。"
 
-#: ../../c-api/init.rst:1848
+#: ../../c-api/init.rst:1905
 msgid ""
 "For modules using single-phase initialization, e.g. "
 ":c:func:`PyModule_Create`, the first time a particular extension is "
@@ -2734,7 +2793,7 @@ msgstr ""
 " (浅) 拷贝。 当同一扩展被另一个 (子) 解释器导入时，将初始化一个新模块并填充该拷贝的内容；扩展的 ``init`` 函数不会被调用。 "
 "因此模块字典中的对象最终会被 (子) 解释器所共享，这可能会导致预期之外的行为  (参见下文的 `Bugs and caveats`_)。"
 
-#: ../../c-api/init.rst:1859
+#: ../../c-api/init.rst:1916
 msgid ""
 "Note that this is different from what happens when an extension is imported "
 "after the interpreter has been completely re-initialized by calling "
@@ -2747,7 +2806,7 @@ msgstr ""
 "完全重新初始化解释器之后导入扩展时所发生的情况；对于那种情况，扩展的 ``initmodule`` 函数 *会被* 再次调用。 "
 "与多阶段初始化一样，这意味着只有 C 层级的静态和全局变量能在这些模块之间共享。"
 
-#: ../../c-api/init.rst:1879
+#: ../../c-api/init.rst:1936
 msgid ""
 "Create a new sub-interpreter.  This is essentially just a wrapper around "
 ":c:func:`Py_NewInterpreterFromConfig` with a config that preserves the "
@@ -2758,7 +2817,7 @@ msgstr ""
 "新建一个子解释器。 这在本质上只是针对 :c:func:`Py_NewInterpreterFromConfig` 的包装器，其配置保留了现有的行为。 "
 "结果是一个未隔离的子解释器，它会共享主解释器的 GIL，允许 fork/exec，允许守护线程，也允许单阶段初始化模块。"
 
-#: ../../c-api/init.rst:1891
+#: ../../c-api/init.rst:1948
 msgid ""
 "Destroy the (sub-)interpreter represented by the given :term:`thread state`."
 " The given thread state must be :term:`attached <attached thread state>`. "
@@ -2768,17 +2827,17 @@ msgstr ""
 "销毁由给定 :term:`thread state` 表示的（子）解释器。给定的线程状态必须处于 :term:`已附加 <attached thread"
 " state>` 状态。调用返回时，将不存在任何 :term:`attached thread state`。 与此解释器关联的所有线程状态都会被销毁。"
 
-#: ../../c-api/init.rst:1896
+#: ../../c-api/init.rst:1953
 msgid ""
 ":c:func:`Py_FinalizeEx` will destroy all sub-interpreters that haven't been "
 "explicitly destroyed at that point."
 msgstr ":c:func:`Py_FinalizeEx` 将销毁所有在当前时间点上尚未被明确销毁的子解释器。"
 
-#: ../../c-api/init.rst:1903
+#: ../../c-api/init.rst:1960
 msgid "A Per-Interpreter GIL"
 msgstr "解释器级 GIL"
 
-#: ../../c-api/init.rst:1905
+#: ../../c-api/init.rst:1962
 msgid ""
 "Using :c:func:`Py_NewInterpreterFromConfig` you can create a sub-interpreter"
 " that is completely isolated from other interpreters, including having its "
@@ -2794,7 +2853,7 @@ msgstr ""
 "代码时单个 Python 进程可以真正地利用多个 CPU 核心。 这种隔离还能鼓励开发者采取不同于仅使用线程的并发方式。 (参见 :pep:`554` "
 "和 :pep:`684` )。"
 
-#: ../../c-api/init.rst:1915
+#: ../../c-api/init.rst:1972
 msgid ""
 "Using an isolated interpreter requires vigilance in preserving that "
 "isolation.  That especially means not sharing any objects or mutable state "
@@ -2812,7 +2871,7 @@ msgstr ""
 "针对此问题的一种简单但效率较低的解决方式是在使用某些状态 (或对象) 时总是使用一个全局锁。 或者，对象实际上不可变的对象 (如整数或字符串) "
 "可以通过将其设为 :term:`immortal` 对象而无视其引用计数来确保其安全性。 事实上，对于内置单例、小整数和其他一些内置对象都是这样做的。"
 
-#: ../../c-api/init.rst:1926
+#: ../../c-api/init.rst:1983
 msgid ""
 "If you preserve isolation then you will have access to proper multi-core "
 "computing without the complications that come with free-threading. Failure "
@@ -2822,7 +2881,7 @@ msgstr ""
 "如果你能保持隔离状态那么你将能获得真正的多核计算能力而不会遇到自由线程所带来的复杂性。 "
 "如果未能保持隔离状态那么你将面对自由线程所带来的全部后果，包括线程竞争和难以调试的崩溃。"
 
-#: ../../c-api/init.rst:1931
+#: ../../c-api/init.rst:1988
 msgid ""
 "Aside from that, one of the main challenges of using multiple isolated "
 "interpreters is how to communicate between them safely (not break isolation)"
@@ -2834,11 +2893,11 @@ msgstr ""
 "除此之外，使用多个相互隔离的解释器的一个主要挑战是如何在它们之间安全 (不破坏隔离状态)、高效地进行通信。 运行时和标准库还没有为此提供任何标准方式。 "
 "未来的标准库模块将会帮助减少保持隔离状态所需的工作量并为解释器之间的数据通信（和共享）公开有效的工具。"
 
-#: ../../c-api/init.rst:1942
+#: ../../c-api/init.rst:1999
 msgid "Bugs and caveats"
 msgstr "错误和警告"
 
-#: ../../c-api/init.rst:1944
+#: ../../c-api/init.rst:2001
 msgid ""
 "Because sub-interpreters (and the main interpreter) are part of the same "
 "process, the insulation between them isn't perfect --- for example, using "
@@ -2855,7 +2914,7 @@ msgstr ""
 "解释器之间共享扩展的方式，某些扩展可能无法正常工作；在使用单阶段初始化或者 (静态) 全局变量时尤其如此。 "
 "在一个子解释器中创建的对象有可能被插入到另一个 (子) 解释器的命名空间中；这种情况应当尽可能地避免。"
 
-#: ../../c-api/init.rst:1954
+#: ../../c-api/init.rst:2011
 msgid ""
 "Special care should be taken to avoid sharing user-defined functions, "
 "methods, instances or classes between sub-interpreters, since import "
@@ -2866,7 +2925,7 @@ msgstr ""
 "应当特别注意避免在子解释器之间共享用户自定义的函数、方法、实例或类，因为由这些对象执行的导入 操作可能会影响错误的已加载模块的 (子) 解释器的字典。 "
 "同样重要的一点是应当避免共享可被上述对象访问的对象 。"
 
-#: ../../c-api/init.rst:1960
+#: ../../c-api/init.rst:2017
 msgid ""
 "Also note that combining this functionality with ``PyGILState_*`` APIs is "
 "delicate, because these APIs assume a bijection between Python thread states"
@@ -2883,18 +2942,18 @@ msgstr ""
 "此外，使用这些 API 以允许从非 Python 创建的线程调用 Python 代码的扩展 (如 :mod:`ctypes`) "
 "在使用子解释器时很可能会出现问题。"
 
-#: ../../c-api/init.rst:1971
+#: ../../c-api/init.rst:2028
 msgid "Asynchronous Notifications"
 msgstr "异步通知"
 
-#: ../../c-api/init.rst:1973
+#: ../../c-api/init.rst:2030
 msgid ""
 "A mechanism is provided to make asynchronous notifications to the main "
 "interpreter thread.  These notifications take the form of a function pointer"
 " and a void pointer argument."
 msgstr "提供了一种向主解释器线程发送异步通知的机制。 这些通知将采用函数指针和空指针参数的形式。"
 
-#: ../../c-api/init.rst:1980
+#: ../../c-api/init.rst:2037
 msgid ""
 "Schedule a function to be called from the main interpreter thread.  On "
 "success, ``0`` is returned and *func* is queued for being called in the main"
@@ -2903,7 +2962,7 @@ msgstr ""
 "将一个函数加入从主解释器线程调用的计划任务。 成功时，将返回 ``0`` 并将 *func* 加入要被主线程调用的等待队列。 失败时，将返回 "
 "``-1`` 但不会设置任何异常。"
 
-#: ../../c-api/init.rst:1984
+#: ../../c-api/init.rst:2041
 msgid ""
 "When successfully queued, *func* will be *eventually* called from the main "
 "interpreter thread with the argument *arg*.  It will be called "
@@ -2913,17 +2972,17 @@ msgstr ""
 "当成功加入队列后，*func* 将 *最终* 附带参数 *arg* 被主解释器线程调用。 对于正常运行的 Python "
 "代码来说它将被异步地调用，但要同时满足以下两个条件："
 
-#: ../../c-api/init.rst:1989
+#: ../../c-api/init.rst:2046
 msgid "on a :term:`bytecode` boundary;"
 msgstr "位于 :term:`bytecode` 的边界上；"
 
-#: ../../c-api/init.rst:1990
+#: ../../c-api/init.rst:2047
 msgid ""
 "with the main thread holding an :term:`attached thread state` (*func* can "
 "therefore use the full C API)."
 msgstr "主线程持有一个 :term:`attached thread state` (因此 *func* 可以使用完整的 C API)。"
 
-#: ../../c-api/init.rst:1993
+#: ../../c-api/init.rst:2050
 msgid ""
 "*func* must return ``0`` on success, or ``-1`` on failure with an exception "
 "set.  *func* won't be interrupted to perform another asynchronous "
@@ -2934,7 +2993,7 @@ msgstr ""
 "不会被中断来递归地执行另一个异步通知，但如果 :term:`thread state <attached thread state>` "
 "已被分离则它仍可被中断以切换线程。"
 
-#: ../../c-api/init.rst:1998
+#: ../../c-api/init.rst:2055
 msgid ""
 "This function doesn't need an :term:`attached thread state`. However, to "
 "call this function in a subinterpreter, the caller must have an "
@@ -2944,7 +3003,7 @@ msgstr ""
 "此函数不需要 :term:`attached thread state`。 不过，要在子解释器中调用此函数，调用方必须具有 "
 ":term:`attached thread state`。 否则，函数 *func* 可能会被安排给错误的解释器来调用。"
 
-#: ../../c-api/init.rst:2003
+#: ../../c-api/init.rst:2060
 msgid ""
 "This is a low-level function, only useful for very special cases. There is "
 "no guarantee that *func* will be called as quick as possible.  If the main "
@@ -2957,7 +3016,7 @@ msgstr ""
 "将不会在系统调用返回之前被调用。 此函数 通常 **不适合** 从任意 C 线程调用 Python 代码。 作为替代，请使用 "
 ":ref:`PyGILStateAPI <gilstate>`。"
 
-#: ../../c-api/init.rst:2012
+#: ../../c-api/init.rst:2069
 msgid ""
 "If this function is called in a subinterpreter, the function *func* is now "
 "scheduled to be called from the subinterpreter, rather than being called "
@@ -2966,24 +3025,24 @@ msgid ""
 msgstr ""
 "如果此函数在子解释器中被调用，则函数 *func* 将被安排在子解释器中调用，而不是在主解释器中调用。现在每个子解释器都有自己的计划调用列表。"
 
-#: ../../c-api/init.rst:2018
+#: ../../c-api/init.rst:2075
 msgid ""
 "This function now always schedules *func* to be run in the main interpreter."
 msgstr "此函数现在总是会安排 *func* 在主解释器中运行。to be run in the main interpreter."
 
-#: ../../c-api/init.rst:2025
+#: ../../c-api/init.rst:2082
 msgid ""
 "Execute all pending calls. This is usually executed automatically by the "
 "interpreter."
 msgstr "执行所有待命的调用。 这通常会由解释器自动执行。"
 
-#: ../../c-api/init.rst:2028
+#: ../../c-api/init.rst:2085
 msgid ""
 "This function returns ``0`` on success, and returns ``-1`` with an exception"
 " set on failure."
 msgstr "此函数成功时返回 ``0``，失败时返回 ``-1`` 并设置一个异常。"
 
-#: ../../c-api/init.rst:2031
+#: ../../c-api/init.rst:2088
 msgid ""
 "If this is not called in the main thread of the main interpreter, this "
 "function does nothing and returns ``0``. The caller must hold an "
@@ -2992,22 +3051,22 @@ msgstr ""
 "如果此函数不是在主解释器的主线程中被调用，它将不会任何事并返回 ``0``。 调用方必须持有 :term:`attached thread "
 "state`。"
 
-#: ../../c-api/init.rst:2037
+#: ../../c-api/init.rst:2094
 msgid "This function only runs pending calls in the main interpreter."
 msgstr "此函数将只在主解释器中运行待命的调用。"
 
-#: ../../c-api/init.rst:2044
+#: ../../c-api/init.rst:2101
 msgid "Profiling and Tracing"
 msgstr "分析和跟踪"
 
-#: ../../c-api/init.rst:2049
+#: ../../c-api/init.rst:2106
 msgid ""
 "The Python interpreter provides some low-level support for attaching "
 "profiling and execution tracing facilities.  These are used for profiling, "
 "debugging, and coverage analysis tools."
 msgstr "Python 解释器为附加的性能分析和执行跟踪工具提供了一些低层级的支持。 它们可被用于性能分析、调试和覆盖分析工具。"
 
-#: ../../c-api/init.rst:2053
+#: ../../c-api/init.rst:2110
 msgid ""
 "This C interface allows the profiling or tracing code to avoid the overhead "
 "of calling through Python-level callable objects, making a direct C function"
@@ -3019,7 +3078,7 @@ msgstr ""
 "这个 C 接口允许性能分析或跟踪代码避免调用 Python 层级的可调用对象带来的开销，它能直接执行 C 函数调用。 "
 "此工具的基本属性没有变化；这个接口允许针对每个线程安装跟踪函数，并且向跟踪函数报告的基本事件与之前版本中向 Python 层级跟踪函数报告的事件相同。"
 
-#: ../../c-api/init.rst:2063
+#: ../../c-api/init.rst:2120
 msgid ""
 "The type of the trace function registered using :c:func:`PyEval_SetProfile` "
 "and :c:func:`PyEval_SetTrace`. The first parameter is the object passed to "
@@ -3037,66 +3096,66 @@ msgstr ""
 ":c:data:`PyTrace_C_EXCEPTION`, :c:data:`PyTrace_C_RETURN` 或 "
 ":c:data:`PyTrace_OPCODE` 中的一个，而 *arg* 将依赖于 *what* 的值："
 
-#: ../../c-api/init.rst:2072
+#: ../../c-api/init.rst:2129
 msgid "Value of *what*"
 msgstr "*what* 的值"
 
-#: ../../c-api/init.rst:2072
+#: ../../c-api/init.rst:2129
 msgid "Meaning of *arg*"
 msgstr "*arg* 的含义"
 
-#: ../../c-api/init.rst:2074
+#: ../../c-api/init.rst:2131
 msgid ":c:data:`PyTrace_CALL`"
 msgstr ":c:data:`PyTrace_CALL`"
 
-#: ../../c-api/init.rst:2074 ../../c-api/init.rst:2079
-#: ../../c-api/init.rst:2090
+#: ../../c-api/init.rst:2131 ../../c-api/init.rst:2136
+#: ../../c-api/init.rst:2147
 msgid "Always :c:data:`Py_None`."
 msgstr "总是 :c:data:`Py_None`."
 
-#: ../../c-api/init.rst:2076
+#: ../../c-api/init.rst:2133
 msgid ":c:data:`PyTrace_EXCEPTION`"
 msgstr ":c:data:`PyTrace_EXCEPTION`"
 
-#: ../../c-api/init.rst:2076
+#: ../../c-api/init.rst:2133
 msgid "Exception information as returned by :func:`sys.exc_info`."
 msgstr ":func:`sys.exc_info` 返回的异常信息。"
 
-#: ../../c-api/init.rst:2079
+#: ../../c-api/init.rst:2136
 msgid ":c:data:`PyTrace_LINE`"
 msgstr ":c:data:`PyTrace_LINE`"
 
-#: ../../c-api/init.rst:2081
+#: ../../c-api/init.rst:2138
 msgid ":c:data:`PyTrace_RETURN`"
 msgstr ":c:data:`PyTrace_RETURN`"
 
-#: ../../c-api/init.rst:2081
+#: ../../c-api/init.rst:2138
 msgid ""
 "Value being returned to the caller, or ``NULL`` if caused by an exception."
 msgstr "返回给调用方的值，或者如果是由异常导致的则返回 ``NULL``。"
 
-#: ../../c-api/init.rst:2084
+#: ../../c-api/init.rst:2141
 msgid ":c:data:`PyTrace_C_CALL`"
 msgstr ":c:data:`PyTrace_C_CALL`"
 
-#: ../../c-api/init.rst:2084 ../../c-api/init.rst:2086
-#: ../../c-api/init.rst:2088
+#: ../../c-api/init.rst:2141 ../../c-api/init.rst:2143
+#: ../../c-api/init.rst:2145
 msgid "Function object being called."
 msgstr "正在调用函数对象。"
 
-#: ../../c-api/init.rst:2086
+#: ../../c-api/init.rst:2143
 msgid ":c:data:`PyTrace_C_EXCEPTION`"
 msgstr ":c:data:`PyTrace_C_EXCEPTION`"
 
-#: ../../c-api/init.rst:2088
+#: ../../c-api/init.rst:2145
 msgid ":c:data:`PyTrace_C_RETURN`"
 msgstr ":c:data:`PyTrace_C_RETURN`"
 
-#: ../../c-api/init.rst:2090
+#: ../../c-api/init.rst:2147
 msgid ":c:data:`PyTrace_OPCODE`"
 msgstr ":c:data:`PyTrace_OPCODE`"
 
-#: ../../c-api/init.rst:2095
+#: ../../c-api/init.rst:2152
 msgid ""
 "The value of the *what* parameter to a :c:type:`Py_tracefunc` function when "
 "a new call to a function or method is being reported, or a new entry into a "
@@ -3107,7 +3166,7 @@ msgstr ""
 "当对一个函数或方法的新调用被报告，或是向一个生成器增加新条目时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。 "
 "请注意针对生成器函数的迭代器的创建情况不会被报告因为在相应的帧中没有向 Python字节码转移控制权。"
 
-#: ../../c-api/init.rst:2104
+#: ../../c-api/init.rst:2161
 msgid ""
 "The value of the *what* parameter to a :c:type:`Py_tracefunc` function when "
 "an exception has been raised.  The callback function is called with this "
@@ -3122,7 +3181,7 @@ msgstr ""
 "的值调用回调函数，在此之后该异常将会被设置在正在执行的帧中。 这样做的效果是当异常传播导致 Python "
 "栈展开时，被调用的回调函数将随异常传播返回到每个帧。 只有跟踪函数才会接收到这些事件；性能分析器并不需要它们。"
 
-#: ../../c-api/init.rst:2115
+#: ../../c-api/init.rst:2172
 msgid ""
 "The value passed as the *what* parameter to a :c:type:`Py_tracefunc` "
 "function (but not a profiling function) when a line-number event is being "
@@ -3132,31 +3191,31 @@ msgstr ""
 "当一个行编号事件被报告时传给 :c:type:`Py_tracefunc` 函数 (但不会传给性能分析函数) 的 *what* 形参的值。 它可以通过将"
 " :attr:`~frame.f_trace_lines` 设为 *0* 在某个帧中被禁用。"
 
-#: ../../c-api/init.rst:2123
+#: ../../c-api/init.rst:2180
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a call is about to return."
 msgstr "当一个调用即将返回时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
-#: ../../c-api/init.rst:2129
+#: ../../c-api/init.rst:2186
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function is about to be called."
 msgstr "当一个 C 函数即将被调用时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
-#: ../../c-api/init.rst:2135
+#: ../../c-api/init.rst:2192
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has raised an exception."
 msgstr "当一个 C 函数引发异常时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
-#: ../../c-api/init.rst:2141
+#: ../../c-api/init.rst:2198
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions when "
 "a C function has returned."
 msgstr "当一个 C 函数返回时传给 :c:type:`Py_tracefunc` 函数的 *what* 形参的值。"
 
-#: ../../c-api/init.rst:2147
+#: ../../c-api/init.rst:2204
 msgid ""
 "The value for the *what* parameter to :c:type:`Py_tracefunc` functions (but "
 "not profiling functions) when a new opcode is about to be executed.  This "
@@ -3166,7 +3225,7 @@ msgstr ""
 "当一个新操作码即将被执行时传给 :c:type:`Py_tracefunc` 函数 (但不会传给性能分析函数) 的 *what* 形参的值。 "
 "在默认情况下此事件不会被发送：它必须通过在某个帧上将 :attr:`~frame.f_trace_opcodes` 设为 *1* 来显式地请求。"
 
-#: ../../c-api/init.rst:2155
+#: ../../c-api/init.rst:2212
 msgid ""
 "Set the profiler function to *func*.  The *obj* parameter is passed to the "
 "function as its first parameter, and may be any Python object, or ``NULL``."
@@ -3181,11 +3240,11 @@ msgstr ""
 ":c:data:`PyTrace_LINE` :c:data:`PyTrace_OPCODE` 和 "
 ":c:data:`PyTrace_EXCEPTION` 以外的所有被监控事件进行调用。"
 
-#: ../../c-api/init.rst:2162
+#: ../../c-api/init.rst:2219
 msgid "See also the :func:`sys.setprofile` function."
 msgstr "另请参阅 :func:`sys.setprofile` 函数。"
 
-#: ../../c-api/init.rst:2168
+#: ../../c-api/init.rst:2225
 msgid ""
 "Like :c:func:`PyEval_SetProfile` but sets the profile function in all "
 "running threads belonging to the current interpreter instead of the setting "
@@ -3193,13 +3252,13 @@ msgid ""
 msgstr ""
 "类似于 :c:func:`PyEval_SetProfile` 但会在属于当前解释器的所有在运行线程中设置性能分析函数而不是仅在当前线程上设置。"
 
-#: ../../c-api/init.rst:2173
+#: ../../c-api/init.rst:2230
 msgid ""
 "As :c:func:`PyEval_SetProfile`, this function ignores any exceptions raised "
 "while setting the profile functions in all threads."
 msgstr "与 :c:func:`PyEval_SetProfile` 一样，该函数会忽略任何被引发的异常同时在所有线程中设置性能分析函数。"
 
-#: ../../c-api/init.rst:2181
+#: ../../c-api/init.rst:2238
 msgid ""
 "Set the tracing function to *func*.  This is similar to "
 ":c:func:`PyEval_SetProfile`, except the tracing function does receive line-"
@@ -3215,28 +3274,28 @@ msgstr ""
 ":c:data:`PyTrace_C_CALL`、:c:data:`PyTrace_C_EXCEPTION` 或 "
 ":c:data:`PyTrace_C_RETURN` 作为 *what* 形参的值。"
 
-#: ../../c-api/init.rst:2188
+#: ../../c-api/init.rst:2245
 msgid "See also the :func:`sys.settrace` function."
 msgstr "另请参阅 :func:`sys.settrace` 函数。"
 
-#: ../../c-api/init.rst:2194
+#: ../../c-api/init.rst:2251
 msgid ""
 "Like :c:func:`PyEval_SetTrace` but sets the tracing function in all running "
 "threads belonging to the current interpreter instead of the setting it only "
 "on the current thread."
 msgstr "类似于 :c:func:`PyEval_SetTrace` 但会在属于当前解释器的所有在运行线程中设置跟踪函数而不是仅在当前线程上设置。"
 
-#: ../../c-api/init.rst:2199
+#: ../../c-api/init.rst:2256
 msgid ""
 "As :c:func:`PyEval_SetTrace`, this function ignores any exceptions raised "
 "while setting the trace functions in all threads."
 msgstr "与 :c:func:`PyEval_SetTrace` 一样，该函数会忽略任何被引发的异常同时在所有线程中设置跟踪函数。"
 
-#: ../../c-api/init.rst:2205
+#: ../../c-api/init.rst:2262
 msgid "Reference tracing"
 msgstr "引用追踪"
 
-#: ../../c-api/init.rst:2211
+#: ../../c-api/init.rst:2268
 msgid ""
 "The type of the trace function registered using "
 ":c:func:`PyRefTracer_SetTracer`. The first parameter is a Python object that"
@@ -3250,19 +3309,19 @@ msgstr ""
 ":c:data:`PyRefTracer_DESTROY` 时）的 Python 对象。 **data** 参数是当 "
 ":c:func:`PyRefTracer_SetTracer` 被调用时所提供的不透明指针。"
 
-#: ../../c-api/init.rst:2221
+#: ../../c-api/init.rst:2278
 msgid ""
 "The value for the *event* parameter to :c:type:`PyRefTracer` functions when "
 "a Python object has been created."
 msgstr "当一个 Python 对象被创建时传给 :c:type:`PyRefTracer` 函数的 *event* 形参。"
 
-#: ../../c-api/init.rst:2226
+#: ../../c-api/init.rst:2283
 msgid ""
 "The value for the *event* parameter to :c:type:`PyRefTracer` functions when "
 "a Python object has been destroyed."
 msgstr "当一个 Python 对象被销毁时传给 :c:type:`PyRefTracer` 函数的 *event* 形参。"
 
-#: ../../c-api/init.rst:2231
+#: ../../c-api/init.rst:2288
 msgid ""
 "Register a reference tracer function. The function will be called when a new"
 " Python has been created or when an object is going to be destroyed. If "
@@ -3273,7 +3332,7 @@ msgstr ""
 "注册一个引用追踪函数。 该函数将在新的 Python 对象被创建或对象被销毁时被调用。 如果提供了 **data** "
 "则它必须是一个当追踪函数被调用时所提供的不透明指针。 成功时返回 ``0``。 发生错误时将设置一个异常并返回 ``-1``。"
 
-#: ../../c-api/init.rst:2237
+#: ../../c-api/init.rst:2294
 msgid ""
 "Not that tracer functions **must not** create Python objects inside or "
 "otherwise the call will be re-entrant. The tracer also **must not** clear "
@@ -3283,12 +3342,12 @@ msgstr ""
 "追踪函数 **不可** 在内部创建 Python 对象否则调用将被重入。 追踪器也 **不可** 清除任何现有异常或设置异常。 "
 "每次当追踪器被调用时都将激活一个 :term:`thread state`。"
 
-#: ../../c-api/init.rst:2242 ../../c-api/init.rst:2253
+#: ../../c-api/init.rst:2299 ../../c-api/init.rst:2310
 msgid ""
 "There must be an :term:`attached thread state` when calling this function."
 msgstr "当调用此函数时必须有一个 :term:`attached thread state`。"
 
-#: ../../c-api/init.rst:2248
+#: ../../c-api/init.rst:2305
 msgid ""
 "Get the registered reference tracer function and the value of the opaque "
 "data pointer that was registered when :c:func:`PyRefTracer_SetTracer` was "
@@ -3298,49 +3357,49 @@ msgstr ""
 "获取已注册的引用追踪函数以及当 :c:func:`PyRefTracer_SetTracer` 被调用时所注册的不透明数据指针的值。 "
 "如果未注册任何追踪器则此函数将返回 NULL 并将 **data** 指针设为 NULL。"
 
-#: ../../c-api/init.rst:2260
+#: ../../c-api/init.rst:2317
 msgid "Advanced Debugger Support"
 msgstr "高级调试器支持"
 
-#: ../../c-api/init.rst:2265
+#: ../../c-api/init.rst:2322
 msgid ""
 "These functions are only intended to be used by advanced debugging tools."
 msgstr "这些函数仅供高级调试工具使用。"
 
-#: ../../c-api/init.rst:2270
+#: ../../c-api/init.rst:2327
 msgid ""
 "Return the interpreter state object at the head of the list of all such "
 "objects."
 msgstr "将解释器状态对象返回到由所有此类对象组成的列表的开头。"
 
-#: ../../c-api/init.rst:2275
+#: ../../c-api/init.rst:2332
 msgid "Return the main interpreter state object."
 msgstr "返回主解释器状态对象。"
 
-#: ../../c-api/init.rst:2280
+#: ../../c-api/init.rst:2337
 msgid ""
 "Return the next interpreter state object after *interp* from the list of all"
 " such objects."
 msgstr "从由解释器状态对象组成的列表中返回 *interp* 之后的下一项。"
 
-#: ../../c-api/init.rst:2286
+#: ../../c-api/init.rst:2343
 msgid ""
 "Return the pointer to the first :c:type:`PyThreadState` object in the list "
 "of threads associated with the interpreter *interp*."
 msgstr "在由与解释器 *interp* 相关联的线程组成的列表中返回指向第一个 :c:type:`PyThreadState` 对象的指针。"
 
-#: ../../c-api/init.rst:2292
+#: ../../c-api/init.rst:2349
 msgid ""
 "Return the next thread state object after *tstate* from the list of all such"
 " objects belonging to the same :c:type:`PyInterpreterState` object."
 msgstr ""
 "从由属于同一个 :c:type:`PyInterpreterState` 对象的线程状态对象组成的列表中返回 *tstate* 之后的下一项。"
 
-#: ../../c-api/init.rst:2299
+#: ../../c-api/init.rst:2356
 msgid "Thread Local Storage Support"
 msgstr "线程本地存储支持"
 
-#: ../../c-api/init.rst:2303
+#: ../../c-api/init.rst:2360
 msgid ""
 "The Python interpreter provides low-level support for thread-local storage "
 "(TLS) which wraps the underlying native TLS implementation to support the "
@@ -3353,7 +3412,7 @@ msgstr ""
 "API (:class:`threading.local`)。 CPython 的 C 层级 API 与 pthreads 和 Windows "
 "所提供的类似：使用一个线程键和函数来为每个线程关联一个 :c:expr:`void*` 值。"
 
-#: ../../c-api/init.rst:2310
+#: ../../c-api/init.rst:2367
 msgid ""
 "A :term:`thread state` does *not* need to be :term:`attached <attached "
 "thread state>` when calling these functions; they suppl their own locking."
@@ -3361,14 +3420,14 @@ msgstr ""
 "当调用这些函数时 *不需要* :term:`附加 <attached thread state>` 一个 :term:`thread "
 "state`；它们会提供自己的锁机制。"
 
-#: ../../c-api/init.rst:2313
+#: ../../c-api/init.rst:2370
 msgid ""
 "Note that :file:`Python.h` does not include the declaration of the TLS APIs,"
 " you need to include :file:`pythread.h` to use thread-local storage."
 msgstr ""
 "请注意 :file:`Python.h` 并不包括 TLS API 的声明，你需要包括 :file:`pythread.h` 来使用线程本地存储。"
 
-#: ../../c-api/init.rst:2317
+#: ../../c-api/init.rst:2374
 msgid ""
 "None of these API functions handle memory management on behalf of the "
 ":c:expr:`void*` values.  You need to allocate and deallocate them yourself. "
@@ -3378,11 +3437,11 @@ msgstr ""
 "这些 API 函数都不会为 :c:expr:`void*` 的值处理内存管理问题。 你需要自己分配和释放它们。 如果 :c:expr:`void*` "
 "值碰巧为 :c:expr:`PyObject*`，这些函数也不会对它们执行引用计数操作。"
 
-#: ../../c-api/init.rst:2325
+#: ../../c-api/init.rst:2382
 msgid "Thread Specific Storage (TSS) API"
 msgstr "线程专属存储 (TSS) API"
 
-#: ../../c-api/init.rst:2327
+#: ../../c-api/init.rst:2384
 msgid ""
 "TSS API is introduced to supersede the use of the existing TLS API within "
 "the CPython interpreter.  This API uses a new type :c:type:`Py_tss_t` "
@@ -3391,11 +3450,11 @@ msgstr ""
 "引入 TSSAPI 是为了取代 CPython 解释器中现有 TLS API 的使用。 该 API 使用一个新类型 :c:type:`Py_tss_t`"
 " 而不是 :c:expr:`int` 来表示线程键。"
 
-#: ../../c-api/init.rst:2333
+#: ../../c-api/init.rst:2390
 msgid "\"A New C-API for Thread-Local Storage in CPython\" (:pep:`539`)"
 msgstr "\"A New C-API for Thread-Local Storage in CPython\" (:pep:`539`)"
 
-#: ../../c-api/init.rst:2338
+#: ../../c-api/init.rst:2395
 msgid ""
 "This data structure represents the state of a thread key, the definition of "
 "which may depend on the underlying TLS implementation, and it has an "
@@ -3403,7 +3462,7 @@ msgid ""
 "public members in this structure."
 msgstr "该数据结构表示线程键的状态，其定义可能依赖于下层的 TLS 实现，并且它有一个表示键初始化状态的内部字段。 该结构体中不存在公有成员。"
 
-#: ../../c-api/init.rst:2343
+#: ../../c-api/init.rst:2400
 msgid ""
 "When :ref:`Py_LIMITED_API <stable>` is not defined, static allocation of "
 "this type by :c:macro:`Py_tss_NEEDS_INIT` is allowed."
@@ -3411,7 +3470,7 @@ msgstr ""
 "当未定义 :ref:`Py_LIMITED_API <stable>` 时，允许由 :c:macro:`Py_tss_NEEDS_INIT` "
 "执行此类型的静态分配。"
 
-#: ../../c-api/init.rst:2349
+#: ../../c-api/init.rst:2406
 msgid ""
 "This macro expands to the initializer for :c:type:`Py_tss_t` variables. Note"
 " that this macro won't be defined with :ref:`Py_LIMITED_API <stable>`."
@@ -3419,11 +3478,11 @@ msgstr ""
 "这个宏将扩展为 :c:type:`Py_tss_t` 变量的初始化器。 请注意这个宏不会用 :ref:`Py_LIMITED_API <stable>`"
 " 来定义。"
 
-#: ../../c-api/init.rst:2354
+#: ../../c-api/init.rst:2411
 msgid "Dynamic Allocation"
 msgstr "动态分配"
 
-#: ../../c-api/init.rst:2356
+#: ../../c-api/init.rst:2413
 msgid ""
 "Dynamic allocation of the :c:type:`Py_tss_t`, required in extension modules "
 "built with :ref:`Py_LIMITED_API <stable>`, where static allocation of this "
@@ -3432,7 +3491,7 @@ msgstr ""
 ":c:type:`Py_tss_t` 的动态分配，在使用 :ref:`Py_LIMITED_API <stable>` "
 "编译的扩展模块中是必须的，在这些模块由于此类型的实现在编译时是不透明的因此它不可能静态分配。"
 
-#: ../../c-api/init.rst:2363
+#: ../../c-api/init.rst:2420
 msgid ""
 "Return a value which is the same state as a value initialized with "
 ":c:macro:`Py_tss_NEEDS_INIT`, or ``NULL`` in the case of dynamic allocation "
@@ -3440,7 +3499,7 @@ msgid ""
 msgstr ""
 "返回一个与使用 :c:macro:`Py_tss_NEEDS_INIT` 初始化的值的状态相同的值，或者当动态分配失败时则返回 ``NULL``。"
 
-#: ../../c-api/init.rst:2370
+#: ../../c-api/init.rst:2427
 msgid ""
 "Free the given *key* allocated by :c:func:`PyThread_tss_alloc`, after first "
 "calling :c:func:`PyThread_tss_delete` to ensure any associated thread locals"
@@ -3449,17 +3508,17 @@ msgstr ""
 "在首次调用 :c:func:`PyThread_tss_delete` 以确保任何相关联的线程局部变量已被撤销赋值之后释放由 "
 ":c:func:`PyThread_tss_alloc` 所分配的给定的 *key*。 如果 *key* 参数为 ``NULL`` 则这将无任何操作。"
 
-#: ../../c-api/init.rst:2376
+#: ../../c-api/init.rst:2433
 msgid ""
 "A freed key becomes a dangling pointer. You should reset the key to "
 "``NULL``."
 msgstr "被释放的 key 将变成一个悬空指针。 你应当将 key 重置为 ``NULL``。"
 
-#: ../../c-api/init.rst:2381
+#: ../../c-api/init.rst:2438
 msgid "Methods"
 msgstr "方法"
 
-#: ../../c-api/init.rst:2383
+#: ../../c-api/init.rst:2440
 msgid ""
 "The parameter *key* of these functions must not be ``NULL``.  Moreover, the "
 "behaviors of :c:func:`PyThread_tss_set` and :c:func:`PyThread_tss_get` are "
@@ -3470,7 +3529,7 @@ msgstr ""
 ":c:func:`PyThread_tss_create` 初始化则 :c:func:`PyThread_tss_set` 和 "
 ":c:func:`PyThread_tss_get` 的行为将是未定义的。"
 
-#: ../../c-api/init.rst:2391
+#: ../../c-api/init.rst:2448
 msgid ""
 "Return a non-zero value if the given :c:type:`Py_tss_t` has been initialized"
 " by :c:func:`PyThread_tss_create`."
@@ -3478,7 +3537,7 @@ msgstr ""
 "如果给定的 :c:type:`Py_tss_t` 已通过has been initialized by "
 ":c:func:`PyThread_tss_create` 被初始化则返回一个非零值。"
 
-#: ../../c-api/init.rst:2397
+#: ../../c-api/init.rst:2454
 msgid ""
 "Return a zero value on successful initialization of a TSS key.  The behavior"
 " is undefined if the value pointed to by the *key* argument is not "
@@ -3489,7 +3548,7 @@ msgstr ""
 "当成功初始化一个 TSS 键时将返回零值。 如果 *key* 参数所指向的值未被 :c:macro:`Py_tss_NEEDS_INIT` "
 "初始化则其行为是未定义的。 此函数可在相同的键上重复调用 -- 在已初始化的键上调用它将不执行任何操作并立即成功返回。"
 
-#: ../../c-api/init.rst:2406
+#: ../../c-api/init.rst:2463
 msgid ""
 "Destroy a TSS key to forget the values associated with the key across all "
 "threads, and change the key's initialization state to uninitialized.  A "
@@ -3500,7 +3559,7 @@ msgstr ""
 "销毁一个 TSS 键以便在所有线程中遗忘与该键相关联的值，并将该键的初始化状态改为未初始化的。 已销毁的键可以通过 "
 ":c:func:`PyThread_tss_create` 再次被初始化。 此函数可以在同一个键上重复调用 -- 但在一个已被销毁的键上调用将是无效的。"
 
-#: ../../c-api/init.rst:2415
+#: ../../c-api/init.rst:2472
 msgid ""
 "Return a zero value to indicate successfully associating a :c:expr:`void*` "
 "value with a TSS key in the current thread.  Each thread has a distinct "
@@ -3509,7 +3568,7 @@ msgstr ""
 "返回零值来表示成功将一个 :c:expr:`void*` 值与当前线程中的 TSS 键相关联。 每个线程都有一个从键到 :c:expr:`void*` "
 "值的独立映射。"
 
-#: ../../c-api/init.rst:2422
+#: ../../c-api/init.rst:2479
 msgid ""
 "Return the :c:expr:`void*` value associated with a TSS key in the current "
 "thread.  This returns ``NULL`` if no value is associated with the key in the"
@@ -3517,17 +3576,17 @@ msgid ""
 msgstr ""
 "返回当前线程中与一个 TSS 键相关联的 :c:expr:`void*` 值。 如果当前线程中没有与该键相关联的值则返回 ``NULL``。"
 
-#: ../../c-api/init.rst:2430
+#: ../../c-api/init.rst:2487
 msgid "Thread Local Storage (TLS) API"
 msgstr "线程本地存储 (TLS) API"
 
-#: ../../c-api/init.rst:2432
+#: ../../c-api/init.rst:2489
 msgid ""
 "This API is superseded by :ref:`Thread Specific Storage (TSS) API <thread-"
 "specific-storage-api>`."
 msgstr "此 API 已被 :ref:`线程专属存储 (TSS) API <thread-specific-storage-api>` 所取代。"
 
-#: ../../c-api/init.rst:2437
+#: ../../c-api/init.rst:2494
 msgid ""
 "This version of the API does not support platforms where the native TLS key "
 "is defined in a way that cannot be safely cast to ``int``.  On such "
@@ -3538,31 +3597,31 @@ msgstr ""
 "这个 API 版本不支持原生 TLS 键采用无法被安全转换为 ``int`` 的的定义方式的平台。 "
 "在这样的平台上，:c:func:`PyThread_create_key` 将立即返回一个失败状态，并且其他 TLS 函数在这样的平台上也都无效。"
 
-#: ../../c-api/init.rst:2442
+#: ../../c-api/init.rst:2499
 msgid ""
 "Due to the compatibility problem noted above, this version of the API should"
 " not be used in new code."
 msgstr "由于上面提到的兼容性问题，不应在新代码中使用此版本的API。"
 
-#: ../../c-api/init.rst:2453
+#: ../../c-api/init.rst:2510
 msgid "Synchronization Primitives"
 msgstr "同步原语"
 
-#: ../../c-api/init.rst:2455
+#: ../../c-api/init.rst:2512
 msgid "The C-API provides a basic mutual exclusion lock."
 msgstr "C-API 提供了一个基本的互斥锁。"
 
-#: ../../c-api/init.rst:2459
+#: ../../c-api/init.rst:2516
 msgid ""
 "A mutual exclusion lock.  The :c:type:`!PyMutex` should be initialized to "
 "zero to represent the unlocked state.  For example::"
 msgstr "一个互斥锁。 :c:type:`!PyMutex` 应当被初始化为零以代表未加锁状态。 例如::"
 
-#: ../../c-api/init.rst:2462
+#: ../../c-api/init.rst:2519
 msgid "PyMutex mutex = {0};"
 msgstr "PyMutex mutex = {0};"
 
-#: ../../c-api/init.rst:2464
+#: ../../c-api/init.rst:2521
 msgid ""
 "Instances of :c:type:`!PyMutex` should not be copied or moved.  Both the "
 "contents and address of a :c:type:`!PyMutex` are meaningful, and it must "
@@ -3571,7 +3630,7 @@ msgstr ""
 ":c:type:`!PyMutex` 的实例不应被拷贝或移动。 :c:type:`!PyMutex` "
 "的内容和地址都是有意义的，它必须在内存中保持一个固定的、可写的位置。"
 
-#: ../../c-api/init.rst:2470
+#: ../../c-api/init.rst:2527
 msgid ""
 "A :c:type:`!PyMutex` currently occupies one byte, but the size should be "
 "considered unstable.  The size may change in future Python releases without "
@@ -3580,7 +3639,7 @@ msgstr ""
 ":c:type:`!PyMutex` 目前占用一个字节，但这个大小应当被视为是不稳定的。 这个大小可能在未来的 Python "
 "发布版中发生改变而不会设置弃用期。"
 
-#: ../../c-api/init.rst:2478
+#: ../../c-api/init.rst:2535
 msgid ""
 "Lock mutex *m*.  If another thread has already locked it, the calling thread"
 " will block until the mutex is unlocked.  While blocked, the thread will "
@@ -3590,28 +3649,28 @@ msgstr ""
 "锁定互斥锁 *m*。 如果另一个线程已经锁定了它，调用方线程将会阻塞直到互斥锁被解锁。 在阻塞期间，如果线程存在 :term:`线程状态 "
 "<attached thread state>` 则会临时释放它。"
 
-#: ../../c-api/init.rst:2486
+#: ../../c-api/init.rst:2543
 msgid ""
 "Unlock mutex *m*. The mutex must be locked --- otherwise, the function will "
 "issue a fatal error."
 msgstr "解锁互斥锁 *m*。 该互斥锁必须已被锁定 --- 否则，此函数将发生致命错误。"
 
-#: ../../c-api/init.rst:2493
+#: ../../c-api/init.rst:2550
 msgid "Returns non-zero if the mutex *m* is currently locked, zero otherwise."
 msgstr "若互斥锁 *m* 当前处于锁定状态，则返回非零值；否则返回零。"
 
-#: ../../c-api/init.rst:2497
+#: ../../c-api/init.rst:2554
 msgid ""
 "This function is intended for use in assertions and debugging only and "
 "should not be used to make concurrency control decisions, as the lock state "
 "may change immediately after the check."
 msgstr "此函数仅适用于断言和调试场景，请勿将其用于并发控制决策，因为锁状态可能在检查后立即发生变化。"
 
-#: ../../c-api/init.rst:2506
+#: ../../c-api/init.rst:2563
 msgid "Python Critical Section API"
 msgstr "Python 关键节 API"
 
-#: ../../c-api/init.rst:2508
+#: ../../c-api/init.rst:2565
 msgid ""
 "The critical section API provides a deadlock avoidance layer on top of per-"
 "object locks for :term:`free-threaded <free threading>` CPython.  They are "
@@ -3621,7 +3680,7 @@ msgstr ""
 "此关键节 API 为 :term:`自由线程 <free threading>` CPython 的每对象锁之上提供了一个死锁避免层。 它们旨在替代对 "
 ":term:`global interpreter lock` 的依赖，而在具有全局解释器锁的 Python 版本上将不做任何操作。"
 
-#: ../../c-api/init.rst:2513
+#: ../../c-api/init.rst:2570
 msgid ""
 "Critical sections are intended to be used for custom types implemented in "
 "C-API extensions. They should generally not be used with built-in types like"
@@ -3633,7 +3692,7 @@ msgstr ""
 "关键节被设计用于在 C-API 扩展中实现的自定义类型。 它们通常不应当被用于内置类型如 :class:`list` 和 :class:`dict` "
 "因为它们的公有 C-API 已经在内部使用了关键节，一个显著的例外是 :c:func:`PyDict_Next`，它需要在外部获取关键节。"
 
-#: ../../c-api/init.rst:2520
+#: ../../c-api/init.rst:2577
 msgid ""
 "Critical sections avoid deadlocks by implicitly suspending active critical "
 "sections, hence, they do not provide exclusive access such as provided by "
@@ -3647,7 +3706,7 @@ msgstr ""
 "当一个关键节启动时，将会获取对象的每对象锁。 如果关键节内部执行的代码调用了 C-API "
 "函数那么它可以挂起关键节从而释放这个每对象锁，这样其他线程就可以获取同一个对象的每对象锁。"
 
-#: ../../c-api/init.rst:2528
+#: ../../c-api/init.rst:2585
 msgid ""
 "Variants that accept :c:type:`PyMutex` pointers rather than Python objects "
 "are also available. Use these variants to start a critical section in a "
@@ -3659,7 +3718,7 @@ msgstr ""
 "的场景中时（例如，处理一个既未继承也未封装 :c:type:`PyObject` 的 C 类型，但仍需以可能导致死锁的方式调用 C "
 "API），请使用这些变体来启动临界区。"
 
-#: ../../c-api/init.rst:2534
+#: ../../c-api/init.rst:2591
 msgid ""
 "The functions and structs used by the macros are exposed for cases where C "
 "macros are not available. They should only be used as in the given macro "
@@ -3669,7 +3728,7 @@ msgstr ""
 "宏所使用的函数和结构体是针对 C 宏不可用的场景而公开的。 它们应当仅被用于给定的宏扩展中。 请注意这些结构体的大小和内容在未来的 Python "
 "版本中可能发生改变。"
 
-#: ../../c-api/init.rst:2541
+#: ../../c-api/init.rst:2598
 msgid ""
 "Operations that need to lock two objects at once must use "
 ":c:macro:`Py_BEGIN_CRITICAL_SECTION2`.  You *cannot* use nested critical "
@@ -3680,11 +3739,11 @@ msgstr ""
 "需要同时锁定两个对象的操作必须使用 :c:macro:`Py_BEGIN_CRITICAL_SECTION2`。 你 *不可* "
 "使用嵌套的关键节来同时锁定一个以上的对象，因为内层的关键节可能会挂起外层的关键节。  这个 API 没有提供同时锁定两个以上对象的办法。"
 
-#: ../../c-api/init.rst:2547
+#: ../../c-api/init.rst:2604
 msgid "Example usage::"
 msgstr "用法示例::"
 
-#: ../../c-api/init.rst:2549
+#: ../../c-api/init.rst:2606
 msgid ""
 "static PyObject *\n"
 "set_field(MyObject *self, PyObject *value)\n"
@@ -3704,7 +3763,7 @@ msgstr ""
 "   Py_RETURN_NONE;\n"
 "}"
 
-#: ../../c-api/init.rst:2558
+#: ../../c-api/init.rst:2615
 msgid ""
 "In the above example, :c:macro:`Py_SETREF` calls :c:macro:`Py_DECREF`, which"
 " can call arbitrary code through an object's deallocation function.  The "
@@ -3717,19 +3776,19 @@ msgstr ""
 ":c:macro:`Py_DECREF`，它可以通过一个对象的取消分配函数来调用任意代码。 当由最终化器触发的代码发生阻塞并调用 "
 ":c:func:`PyEval_SaveThread` 时关键节 API 将通过允许运行临时挂起关键节来避免由于重入和锁顺序导致的潜在死锁。"
 
-#: ../../c-api/init.rst:2566
+#: ../../c-api/init.rst:2623
 msgid ""
 "Acquires the per-object lock for the object *op* and begins a critical "
 "section."
 msgstr "为对象 *op* 获取每对象锁并开始一个关键节。"
 
-#: ../../c-api/init.rst:2569 ../../c-api/init.rst:2583
-#: ../../c-api/init.rst:2600 ../../c-api/init.rst:2615
-#: ../../c-api/init.rst:2629 ../../c-api/init.rst:2646
+#: ../../c-api/init.rst:2626 ../../c-api/init.rst:2640
+#: ../../c-api/init.rst:2657 ../../c-api/init.rst:2672
+#: ../../c-api/init.rst:2686 ../../c-api/init.rst:2703
 msgid "In the free-threaded build, this macro expands to::"
 msgstr "在自由线程构建版中，该宏将扩展为::"
 
-#: ../../c-api/init.rst:2571
+#: ../../c-api/init.rst:2628
 msgid ""
 "{\n"
 "    PyCriticalSection _py_cs;\n"
@@ -3739,15 +3798,15 @@ msgstr ""
 "    PyCriticalSection _py_cs;\n"
 "    PyCriticalSection_Begin(&_py_cs, (PyObject*)(op))"
 
-#: ../../c-api/init.rst:2575 ../../c-api/init.rst:2621
+#: ../../c-api/init.rst:2632 ../../c-api/init.rst:2678
 msgid "In the default build, this macro expands to ``{``."
 msgstr "在默认构建版中，该宏将扩展为 ``{``。"
 
-#: ../../c-api/init.rst:2581
+#: ../../c-api/init.rst:2638
 msgid "Locks the mutex *m* and begins a critical section."
 msgstr "锁定互斥锁 *m* 并开始一个临界区。"
 
-#: ../../c-api/init.rst:2585
+#: ../../c-api/init.rst:2642
 msgid ""
 "{\n"
 "     PyCriticalSection _py_cs;\n"
@@ -3757,7 +3816,7 @@ msgstr ""
 "     PyCriticalSection _py_cs;\n"
 "     PyCriticalSection_BeginMutex(&_py_cs, m)"
 
-#: ../../c-api/init.rst:2589
+#: ../../c-api/init.rst:2646
 msgid ""
 "Note that unlike :c:macro:`Py_BEGIN_CRITICAL_SECTION`, there is no cast for "
 "the argument of the macro - it must be a :c:type:`PyMutex` pointer."
@@ -3765,15 +3824,15 @@ msgstr ""
 "需要注意的是，与 :c:macro:`Py_BEGIN_CRITICAL_SECTION` 不同，此宏的参数无需类型转换——它必须是一个 "
 ":c:type:`PyMutex` 指针。"
 
-#: ../../c-api/init.rst:2592 ../../c-api/init.rst:2638
+#: ../../c-api/init.rst:2649 ../../c-api/init.rst:2695
 msgid "On the default build, this macro expands to ``{``."
 msgstr "在默认构建版中，该宏将扩展为 ``{``。"
 
-#: ../../c-api/init.rst:2598
+#: ../../c-api/init.rst:2655
 msgid "Ends the critical section and releases the per-object lock."
 msgstr "结束关键节并释放每对象锁。"
 
-#: ../../c-api/init.rst:2602
+#: ../../c-api/init.rst:2659
 msgid ""
 "    PyCriticalSection_End(&_py_cs);\n"
 "}"
@@ -3781,18 +3840,18 @@ msgstr ""
 "    PyCriticalSection_End(&_py_cs);\n"
 "}"
 
-#: ../../c-api/init.rst:2605 ../../c-api/init.rst:2651
+#: ../../c-api/init.rst:2662 ../../c-api/init.rst:2708
 msgid "In the default build, this macro expands to ``}``."
 msgstr "在默认构建版中，该宏将扩展为 ``}``。"
 
-#: ../../c-api/init.rst:2611
+#: ../../c-api/init.rst:2668
 msgid ""
 "Acquires the per-objects locks for the objects *a* and *b* and begins a "
 "critical section.  The locks are acquired in a consistent order (lowest "
 "address first) to avoid lock ordering deadlocks."
 msgstr "为对象 *a* 和 *b* 获取每对象锁并开始一个关键节。 这些锁是按连续顺序获取的（最低的地址在最前）以避免锁顺序列死锁。"
 
-#: ../../c-api/init.rst:2617
+#: ../../c-api/init.rst:2674
 msgid ""
 "{\n"
 "    PyCriticalSection2 _py_cs2;\n"
@@ -3802,11 +3861,11 @@ msgstr ""
 "    PyCriticalSection2 _py_cs2;\n"
 "    PyCriticalSection2_Begin(&_py_cs2, (PyObject*)(a), (PyObject*)(b))"
 
-#: ../../c-api/init.rst:2627
+#: ../../c-api/init.rst:2684
 msgid "Locks the mutexes *m1* and *m2* and begins a critical section."
 msgstr "锁定互斥锁 *m1* 和 *m2* 并开始一个临界区。"
 
-#: ../../c-api/init.rst:2631
+#: ../../c-api/init.rst:2688
 msgid ""
 "{\n"
 "     PyCriticalSection2 _py_cs2;\n"
@@ -3816,7 +3875,7 @@ msgstr ""
 "     PyCriticalSection2 _py_cs2;\n"
 "     PyCriticalSection2_BeginMutex(&_py_cs2, m1, m2)"
 
-#: ../../c-api/init.rst:2635
+#: ../../c-api/init.rst:2692
 msgid ""
 "Note that unlike :c:macro:`Py_BEGIN_CRITICAL_SECTION2`, there is no cast for"
 " the arguments of the macro - they must be :c:type:`PyMutex` pointers."
@@ -3824,11 +3883,11 @@ msgstr ""
 "需要注意的是，与 :c:macro:`Py_BEGIN_CRITICAL_SECTION2` 不同，此宏的参数无需类型转换——它们必须是 "
 ":c:type:`PyMutex` 指针。"
 
-#: ../../c-api/init.rst:2644
+#: ../../c-api/init.rst:2701
 msgid "Ends the critical section and releases the per-object locks."
 msgstr "结束关键节并释放每对象锁。"
 
-#: ../../c-api/init.rst:2648
+#: ../../c-api/init.rst:2705
 msgid ""
 "    PyCriticalSection2_End(&_py_cs2);\n"
 "}"
@@ -3849,22 +3908,22 @@ msgid "path (in module sys)"
 msgstr "path (在 sys 模块中)"
 
 #: ../../c-api/init.rst:350 ../../c-api/init.rst:712 ../../c-api/init.rst:1228
-#: ../../c-api/init.rst:1772 ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:1829 ../../c-api/init.rst:1928
 msgid "module"
 msgstr "module"
 
-#: ../../c-api/init.rst:350 ../../c-api/init.rst:1772
-#: ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:350 ../../c-api/init.rst:1829
+#: ../../c-api/init.rst:1928
 msgid "builtins"
 msgstr "builtins"
 
-#: ../../c-api/init.rst:350 ../../c-api/init.rst:1772
-#: ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:350 ../../c-api/init.rst:1829
+#: ../../c-api/init.rst:1928
 msgid "__main__"
 msgstr "__main__"
 
-#: ../../c-api/init.rst:350 ../../c-api/init.rst:1772
-#: ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:350 ../../c-api/init.rst:1829
+#: ../../c-api/init.rst:1928
 msgid "sys"
 msgstr "sys"
 
@@ -3876,8 +3935,8 @@ msgstr "搜索"
 msgid "path"
 msgstr "path"
 
-#: ../../c-api/init.rst:350 ../../c-api/init.rst:1836
-#: ../../c-api/init.rst:1889
+#: ../../c-api/init.rst:350 ../../c-api/init.rst:1893
+#: ../../c-api/init.rst:1946
 msgid "Py_FinalizeEx (C function)"
 msgstr "Py_FinalizeEx (C 函数)"
 
@@ -3973,22 +4032,22 @@ msgstr "PyEval_RestoreThread()"
 msgid "_thread"
 msgstr "_thread"
 
-#: ../../c-api/init.rst:1772 ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:1829 ../../c-api/init.rst:1928
 msgid "stdout (in module sys)"
 msgstr "stdout (在 sys 模块中)"
 
-#: ../../c-api/init.rst:1772 ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:1829 ../../c-api/init.rst:1928
 msgid "stderr (in module sys)"
 msgstr "stderr (在 sys 模块中)"
 
-#: ../../c-api/init.rst:1772 ../../c-api/init.rst:1871
+#: ../../c-api/init.rst:1829 ../../c-api/init.rst:1928
 msgid "stdin (in module sys)"
 msgstr "stdin (在 sys 模块中)"
 
-#: ../../c-api/init.rst:1836
+#: ../../c-api/init.rst:1893
 msgid "Py_Initialize (C function)"
 msgstr "Py_Initialize (C 函数)"
 
-#: ../../c-api/init.rst:1866
+#: ../../c-api/init.rst:1923
 msgid "close (in module os)"
 msgstr "close (在 os 模块中)"
