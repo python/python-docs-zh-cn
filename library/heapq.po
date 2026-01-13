@@ -4,16 +4,16 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# python-doc bot, 2025
+# python-doc bot, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 14:19+0000\n"
+"POT-Creation-Date: 2026-01-13 14:20+0000\n"
 "PO-Revision-Date: 2025-09-16 00:01+0000\n"
-"Last-Translator: python-doc bot, 2025\n"
+"Last-Translator: python-doc bot, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -116,11 +116,15 @@ msgid "The following functions are provided for min-heaps:"
 msgstr "最小堆提供了下列函数："
 
 #: ../../library/heapq.rst:63
+msgid "Transform list *x* into a min-heap, in-place, in linear time."
+msgstr "将列表 *x* 转换为最小堆，在线性时间内原地修改。"
+
+#: ../../library/heapq.rst:68
 msgid ""
 "Push the value *item* onto the *heap*, maintaining the min-heap invariant."
 msgstr "将值 *item* 推至 *heap* 中，保持最小堆的不变性。"
 
-#: ../../library/heapq.rst:68
+#: ../../library/heapq.rst:73
 msgid ""
 "Pop and return the smallest item from the *heap*, maintaining the min-heap "
 "invariant.  If the heap is empty, :exc:`IndexError` is raised.  To access "
@@ -129,7 +133,7 @@ msgstr ""
 "从 *heap* 弹出并返回最小的项，保持最小堆的不变性。 如果堆为空，则会引发 :exc:`IndexError`。 "
 "要访问最小的项而不弹出它，可以使用 ``heap[0]``。"
 
-#: ../../library/heapq.rst:75
+#: ../../library/heapq.rst:80
 msgid ""
 "Push *item* on the heap, then pop and return the smallest item from the "
 "*heap*.  The combined action runs more efficiently than :func:`heappush` "
@@ -137,10 +141,6 @@ msgid ""
 msgstr ""
 "将 *item* 放入堆中，然后弹出并返回 *heap* 的最小元素。该组合操作比先调用 :func:`heappush` 再调用 "
 ":func:`heappop` 运行起来更有效率。"
-
-#: ../../library/heapq.rst:82
-msgid "Transform list *x* into a min-heap, in-place, in linear time."
-msgstr "将列表 *x* 转换为最小堆，在线性时间内原地修改。"
 
 #: ../../library/heapq.rst:87
 msgid ""
@@ -365,10 +365,60 @@ msgstr ""
 "(1, 'write spec')"
 
 #: ../../library/heapq.rst:235
+msgid "Other Applications"
+msgstr ""
+
+#: ../../library/heapq.rst:237
+msgid ""
+"`Medians <https://en.wikipedia.org/wiki/Median>`_ are a measure of central "
+"tendency for a set of numbers.  In distributions skewed by outliers, the "
+"median provides a more stable estimate than an average (arithmetic mean).  A"
+" running median is an `online algorithm "
+"<https://en.wikipedia.org/wiki/Online_algorithm>`_ that updates continuously"
+" as new data arrives."
+msgstr ""
+
+#: ../../library/heapq.rst:244
+msgid ""
+"A running median can be efficiently implemented by balancing two heaps, a "
+"max-heap for values at or below the midpoint and a min-heap for values above"
+" the midpoint.  When the two heaps have the same size, the new median is the"
+" average of the tops of the two heaps; otherwise, the median is at the top "
+"of the larger heap::"
+msgstr ""
+
+#: ../../library/heapq.rst:250
+msgid ""
+"def running_median(iterable):\n"
+"    \"Yields the cumulative median of values seen so far.\"\n"
+"\n"
+"    lo = []  # max-heap\n"
+"    hi = []  # min-heap (same size as or one smaller than lo)\n"
+"\n"
+"    for x in iterable:\n"
+"        if len(lo) == len(hi):\n"
+"            heappush_max(lo, heappushpop(hi, x))\n"
+"            yield lo[0]\n"
+"        else:\n"
+"            heappush(hi, heappushpop_max(lo, x))\n"
+"            yield (lo[0] + hi[0]) / 2"
+msgstr ""
+
+#: ../../library/heapq.rst:264
+msgid "For example::"
+msgstr "例如："
+
+#: ../../library/heapq.rst:266
+msgid ""
+">>> list(running_median([5.0, 9.0, 4.0, 12.0, 8.0, 9.0]))\n"
+"[5.0, 7.0, 5.0, 7.0, 8.0, 8.5]"
+msgstr ""
+
+#: ../../library/heapq.rst:271
 msgid "Priority Queue Implementation Notes"
 msgstr "优先队列实现说明"
 
-#: ../../library/heapq.rst:237
+#: ../../library/heapq.rst:273
 msgid ""
 "A `priority queue <https://en.wikipedia.org/wiki/Priority_queue>`_ is common"
 " use for a heap, and it presents several implementation challenges:"
@@ -376,31 +426,31 @@ msgstr ""
 "`优先队列 <https://en.wikipedia.org/wiki/Priority_queue>`_ "
 "是堆的常用场合，并且它的实现包含了多个挑战："
 
-#: ../../library/heapq.rst:240
+#: ../../library/heapq.rst:276
 msgid ""
 "Sort stability:  how do you get two tasks with equal priorities to be "
 "returned in the order they were originally added?"
 msgstr "排序稳定性：如何让两个相同优先级的任务按它们最初被加入队列的顺序返回？"
 
-#: ../../library/heapq.rst:243
+#: ../../library/heapq.rst:279
 msgid ""
 "Tuple comparison breaks for (priority, task) pairs if the priorities are "
 "equal and the tasks do not have a default comparison order."
 msgstr "如果 priority 相同且 task 之间未定义默认比较顺序，则两个 (priority, task) 元组之间的比较会报错。"
 
-#: ../../library/heapq.rst:246
+#: ../../library/heapq.rst:282
 msgid ""
 "If the priority of a task changes, how do you move it to a new position in "
 "the heap?"
 msgstr "如果任务优先级发生改变，你该如何将其移至堆中的新位置？"
 
-#: ../../library/heapq.rst:249
+#: ../../library/heapq.rst:285
 msgid ""
 "Or if a pending task needs to be deleted, how do you find it and remove it "
 "from the queue?"
 msgstr "或者如果一个挂起的任务需要被删除，你该如何找到它并将其移出队列？"
 
-#: ../../library/heapq.rst:252
+#: ../../library/heapq.rst:288
 msgid ""
 "A solution to the first two challenges is to store entries as 3-element list"
 " including the priority, an entry count, and the task.  The entry count "
@@ -412,14 +462,14 @@ msgstr ""
 "针对前两项挑战的一种解决方案是将条目保存为包含优先级、条目计数和任务对象 3 个元素的列表。 "
 "条目计数可用来打破平局，这样具有相同优先级的任务将按它们的添加顺序返回。 并且由于没有哪两个条目计数是相同的，元组比较将永远不会直接比较两个任务。"
 
-#: ../../library/heapq.rst:258
+#: ../../library/heapq.rst:294
 msgid ""
 "Another solution to the problem of non-comparable tasks is to create a "
 "wrapper class that ignores the task item and only compares the priority "
 "field::"
 msgstr "两个 task 之间不可比的问题的另一种解决方案是——创建一个忽略 task，只比较 priority 字段的包装器类："
 
-#: ../../library/heapq.rst:261
+#: ../../library/heapq.rst:297
 msgid ""
 "from dataclasses import dataclass, field\n"
 "from typing import Any\n"
@@ -437,14 +487,14 @@ msgstr ""
 "    priority: int\n"
 "    item: Any=field(compare=False)"
 
-#: ../../library/heapq.rst:269
+#: ../../library/heapq.rst:305
 msgid ""
 "The remaining challenges revolve around finding a pending task and making "
 "changes to its priority or removing it entirely.  Finding a task can be done"
 " with a dictionary pointing to an entry in the queue."
 msgstr "其余的挑战主要包括找到挂起的任务并修改其优先级或将其完全移除。 找到一个任务可使用一个指向队列中条目的字典来实现。"
 
-#: ../../library/heapq.rst:273
+#: ../../library/heapq.rst:309
 msgid ""
 "Removing the entry or changing its priority is more difficult because it "
 "would break the heap structure invariants.  So, a possible solution is to "
@@ -453,7 +503,7 @@ msgstr ""
 "移除条目或改变其优先级的操作实现起来更为困难，因为它会破坏堆结构不变量。 "
 "因此，一种可能的解决方案是将条目标记为已移除，再添加一个改变了优先级的新条目::"
 
-#: ../../library/heapq.rst:277
+#: ../../library/heapq.rst:313
 msgid ""
 "pq = []                         # list of entries arranged in a heap\n"
 "entry_finder = {}               # mapping of tasks to entries\n"
@@ -511,11 +561,11 @@ msgstr ""
 "            return task\n"
 "    raise KeyError('pop from an empty priority queue')"
 
-#: ../../library/heapq.rst:307
+#: ../../library/heapq.rst:343
 msgid "Theory"
 msgstr "理论"
 
-#: ../../library/heapq.rst:309
+#: ../../library/heapq.rst:345
 msgid ""
 "Heaps are arrays for which ``a[k] <= a[2*k+1]`` and ``a[k] <= a[2*k+2]`` for"
 " all *k*, counting elements from 0.  For the sake of comparison, non-"
@@ -525,13 +575,13 @@ msgstr ""
 "堆是通过数组来实现的，其中的元素从 0 开始计数，对于所有的 *k* 都有 ``a[k] <= a[2*k+1]`` 且 ``a[k] <= "
 "a[2*k+2]``。 为了便于比较，不存在的元素被视为无穷大。 堆最有趣的特性在于 ``a[0]`` 总是其中最小的元素。"
 
-#: ../../library/heapq.rst:314
+#: ../../library/heapq.rst:350
 msgid ""
 "The strange invariant above is meant to be an efficient memory "
 "representation for a tournament.  The numbers below are *k*, not ``a[k]``::"
 msgstr "上面的特殊不变量是用来作为一场锦标赛的高效内存表示。 下面的数字是 *k* 而不是 ``a[k]``::"
 
-#: ../../library/heapq.rst:317
+#: ../../library/heapq.rst:353
 msgid ""
 "                               0\n"
 "\n"
@@ -553,7 +603,7 @@ msgstr ""
 "\n"
 "15 16   17 18   19 20   21 22   23 24   25 26   27 28   29 30"
 
-#: ../../library/heapq.rst:327
+#: ../../library/heapq.rst:363
 msgid ""
 "In the tree above, each cell *k* is topping ``2*k+1`` and ``2*k+2``. In a "
 "usual binary tournament we see in sports, each cell is the winner over the "
@@ -570,7 +620,7 @@ msgstr ""
 "但是，在许多采用这种锦标赛模式的计算机应用程序中，我们并不需要追溯胜者的历史。 "
 "为了获得更高的内存利用效率，当一个胜者晋级时，我们会用较低层级的另一条目来替代它，因此规则变为一个单元和它之下的两个单元包含三个不同条目，上方单元“胜过”了两个下方单元。"
 
-#: ../../library/heapq.rst:336
+#: ../../library/heapq.rst:372
 msgid ""
 "If this heap invariant is protected at all time, index 0 is clearly the "
 "overall winner.  The simplest algorithmic way to remove it and find the "
@@ -584,7 +634,7 @@ msgstr ""
 "号单元）移至 0 号位，然后将这个新的 0 号沿着树结构下行，不断进行值的交换，直到不变性得到重建。 这显然会是树中条目总数的对数。 "
 "通过迭代所有条目，你将得到一个 *O*\\ (*n* log *n*) 复杂度的排序。"
 
-#: ../../library/heapq.rst:343
+#: ../../library/heapq.rst:379
 msgid ""
 "A nice feature of this sort is that you can efficiently insert new items "
 "while the sort is going on, provided that the inserted items are not "
@@ -600,7 +650,7 @@ msgstr ""
 "当一个事件将其他事件排入执行计划时，它们的调试时间向未来方向延长，这样它们可方便地入堆。 因此，堆结构很适宜用来实现调度器，我的 MIDI "
 "音序器就是用的这个 :-)。"
 
-#: ../../library/heapq.rst:352
+#: ../../library/heapq.rst:388
 msgid ""
 "Various structures for implementing schedulers have been extensively "
 "studied, and heaps are good for this, as they are reasonably speedy, the "
@@ -611,7 +661,7 @@ msgstr ""
 "用于实现调度器的各种结构都得到了充分的研究，堆是非常适宜的一种，因为它们的速度相当快，并且几乎是恒定的，最坏的情况与平均情况没有太大差别。 "
 "虽然还存在其他总体而言更高效的实现方式，但其最坏的情况却可能非常糟糕。"
 
-#: ../../library/heapq.rst:358
+#: ../../library/heapq.rst:394
 msgid ""
 "Heaps are also very useful in big disk sorts.  You most probably all know "
 "that a big sort implies producing \"runs\" (which are pre-sorted sequences, "
@@ -629,7 +679,7 @@ msgstr ""
 "锦标赛模式是达成此目标的好办法。 "
 "如果你使用全部有用内存来进行锦标赛，替换和安排恰好适合当前运行轮次的条目，你将可以对于随机输入生成两倍于内存大小的运行轮次，对于模糊排序的输入还会有更好的效果。"
 
-#: ../../library/heapq.rst:368
+#: ../../library/heapq.rst:404
 msgid ""
 "Moreover, if you output the 0'th item on disk and get an input which may not"
 " fit in the current tournament (because the value \"wins\" over the last "
@@ -643,17 +693,17 @@ msgstr ""
 "被释放的内存可以被巧妙地立即重用以逐步构建第二个堆，其增长速度与第一个堆的缩减速度正好相同。 当第一个堆完全消失时，你可以切换新堆并启动新的运行轮次。 "
 "这样做既聪明又高效！"
 
-#: ../../library/heapq.rst:376
+#: ../../library/heapq.rst:412
 msgid ""
 "In a word, heaps are useful memory structures to know.  I use them in a few "
 "applications, and I think it is good to keep a 'heap' module around. :-)"
 msgstr "总之，堆是值得了解的有用内存结构。 我在一些应用中用到了它们，并且认为保留一个 'heap' 模块是很有意义的。 :-)"
 
-#: ../../library/heapq.rst:380
+#: ../../library/heapq.rst:416
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../library/heapq.rst:381
+#: ../../library/heapq.rst:417
 msgid ""
 "The disk balancing algorithms which are current, nowadays, are more annoying"
 " than clever, and this is a consequence of the seeking capabilities of the "
