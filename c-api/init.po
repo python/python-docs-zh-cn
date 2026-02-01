@@ -1637,6 +1637,11 @@ msgid ""
 "finalization attempts to acquire a lock owned by the blocked thread, or "
 "otherwise waits on the blocked thread."
 msgstr ""
+"如果除最终化线程之外的任何线程试图在最终化期间获取 GIL，无论是显式地通过 :c:func:`PyGILState_Ensure`, "
+":c:macro:`Py_END_ALLOW_THREADS`, :c:func:`PyEval_AcquireThread` 或 "
+":c:func:`!PyEval_AcquireLock`，还是当解释器让出 GIL 后隐式地尝试重新获取，该线程都将进入 **永久阻塞状态** "
+"并保持该状态直到程序退出。 "
+"在多数情况下这都不会有什么损害，但如果在最终化的后期试图获取由被阻塞线程持有的锁，或以其他方式等待被阻塞线程响应则可能导致死锁。"
 
 #: ../../c-api/init.rst:1104
 msgid ""
@@ -1649,6 +1654,9 @@ msgid ""
 "majority of C code in the CPython ecosystem to use those with error "
 "handling."
 msgstr ""
+"太过粗暴？是的。 但这能防止随机崩溃和/或当这些线程在 CPython 3.13.7 及更早版本中被强制退出时意外跳过调用栈上游的 C++ 最终化过程。"
+" CPython 运行时的 GIL 获取 C API 从来没有在 GIL 获取过程中考虑任何错误报告或处理机制以允许优雅地退出这种情况。 "
+"改变此机制需要新的稳定 C API 并重写 CPython 生态系统中的大部分 C 代码来为它们增加错误处理。"
 
 #: ../../c-api/init.rst:1114
 msgid "High-level API"
