@@ -749,6 +749,13 @@ msgid ""
 "handlers, object finalizers, or any code that may be run while flushing the "
 "stdout and stderr files."
 msgstr ""
+"**程序缺陷与注意事项：** 模块和模块内对象的销毁顺序是随机的；这可能导致析构器 (:meth:`~object.__del__` 方法) "
+"在它们要依赖其他对象（甚至函数）或模块时执行失败。 由 Python 动态加载的扩展模块不会被卸载。 由 Python "
+"解释器分配的少量内存可能不会被释放（如果你发现内存泄漏，请提交报告）。 关联到对象间循环引用的内存不会被释放。 某些由扩展模块分配的内存可能不会被释放。"
+" 某些扩展在它们的初始化例程被多次调用时可能无法正常工作；如果应用程序多次调用 :c:func:`Py_Initialize` 和 "
+":c:func:`Py_FinalizeEx` 就可能出现这种情况。 :c:func:`Py_FinalizeEx` 不可被自身递归调用。 "
+"因此，它不能被任何可能作为解释器关闭流程的一部分的代码所调用，如 :py:mod:`atexit` 处理器对象终结器或任何会在刷新 stdout 和 "
+"stderr 文件时运行的代码。"
 
 #: ../../c-api/init.rst:456
 msgid ""
@@ -2767,7 +2774,7 @@ msgid ""
 "If this is not called in the main thread of the main interpreter, this "
 "function does nothing and returns ``0``. The caller must hold the "
 ":term:`GIL`."
-msgstr ""
+msgstr "如果此函数不是在主解释器的主线程中被调用的，它将不做任何事并返回 ``0``。 调用方必须持有 :term:`GIL`。"
 
 #: ../../c-api/init.rst:1982
 msgid "This function only runs pending calls in the main interpreter."
