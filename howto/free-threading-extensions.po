@@ -6,15 +6,16 @@
 # Translators:
 # python-doc bot, 2025
 # Freesand Leo <yuqinju@163.com>, 2025
+# 99 <wh2099@pm.me>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-09 14:13+0000\n"
+"POT-Creation-Date: 2026-02-07 14:20+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2025\n"
+"Last-Translator: 99 <wh2099@pm.me>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,7 +49,7 @@ msgid ""
 "threaded build::"
 msgstr ""
 "CPython C API 提供了 ``Py_GIL_DISABLED`` 宏，它在自由线程构建中被定义为 "
-"``1``，而在常规构建中未被定义。你可以使用它让代码仅在自由线程构建中运行："
+"``1``，而在常规构建中未被定义。你可以使用它让代码仅在自由线程构建中运行::"
 
 #: ../../howto/free-threading-extensions.rst:22
 msgid ""
@@ -249,7 +250,7 @@ msgid ""
 "the dictionary while iterating over it if the dictionary may be concurrently"
 " modified::"
 msgstr ""
-"一个值得注意的例外是 :c:func:`PyDict_Next`，它不会锁定目录。 在迭代目录时如果该目录可能被并发地修改那么你应当使用 "
+"一个值得注意的例外是 :c:func:`PyDict_Next`，它不会锁定字典。 在迭代字典时如果该字典可能被并发地修改那么你应当使用 "
 ":c:macro:`Py_BEGIN_CRITICAL_SECTION` 来保护它::"
 
 #: ../../howto/free-threading-extensions.rst:137
@@ -503,7 +504,7 @@ msgstr ""
 
 #: ../../howto/free-threading-extensions.rst:257
 msgid "Critical Sections"
-msgstr "关键节"
+msgstr "临界区"
 
 #: ../../howto/free-threading-extensions.rst:261
 msgid ""
@@ -594,7 +595,7 @@ msgstr ""
 "Py_END_CRITICAL_SECTION();\n"
 "return result;\n"
 "\n"
-"// 写入计数，从new_count中获取引用\n"
+"// 写入计数，消耗来自 new_count 的引用\n"
 "Py_BEGIN_CRITICAL_SECTION(obj);\n"
 "obj->count = new_count;\n"
 "Py_END_CRITICAL_SECTION();"
@@ -621,20 +622,20 @@ msgstr "此行为类似于当线程执行阻塞型调用时 GIL 的行为。 主
 
 #: ../../howto/free-threading-extensions.rst:323
 msgid "Critical sections operate on a per-object basis rather than globally"
-msgstr "关键节的运作是基于每个对象的而不是全局的"
+msgstr "临界区的运作是基于每个对象的而不是全局的"
 
 #: ../../howto/free-threading-extensions.rst:325
 msgid ""
 "Critical sections follow a stack discipline within each thread (the "
 "\"begin\" and \"end\" macros enforce this since they must be paired and "
 "within the same scope)"
-msgstr "关键节遵循设置于每个线程内部的纪律栈（\"begin\" 和 \"end\" 宏将应用该纪律栈，因为它们必须成对出现并位于相同作用域中）"
+msgstr "临界区在每个线程内遵循栈纪律（\"begin\" 和 \"end\" 宏强制执行此纪律，因为它们必须成对出现并位于相同作用域中）"
 
 #: ../../howto/free-threading-extensions.rst:328
 msgid ""
 "Critical sections automatically release and reacquire locks around potential"
 " blocking operations"
-msgstr "关键节会针对潜在的阻塞型操作自动释放和重新获取锁"
+msgstr "临界区会针对潜在的阻塞型操作自动释放和重新获取锁"
 
 #: ../../howto/free-threading-extensions.rst:332
 msgid "Deadlock Avoidance"
@@ -642,20 +643,20 @@ msgstr "避免死锁"
 
 #: ../../howto/free-threading-extensions.rst:334
 msgid "Critical sections help avoid deadlocks in two ways:"
-msgstr "关键节通过两种方式帮助避免死锁："
+msgstr "临界区通过两种方式帮助避免死锁："
 
 #: ../../howto/free-threading-extensions.rst:336
 msgid ""
 "If a thread tries to acquire a lock that's already held by another thread, "
 "it first suspends all of its active critical sections, temporarily releasing"
 " their locks"
-msgstr "如果一个线程试图获取某个已被其他线程持有的锁，它会先挂起该线程的所有关键节，临时释放它们的锁。"
+msgstr "如果一个线程试图获取某个已被其他线程持有的锁，它会先挂起该线程的所有临界区，暂时释放它们的锁。"
 
 #: ../../howto/free-threading-extensions.rst:340
 msgid ""
 "When the blocking operation completes, only the top-most critical section is"
 " reacquired first"
-msgstr "当阻塞型操作完成时，只有最顶端的关键节会被首先重新获取"
+msgstr "当阻塞型操作完成时，只有最顶端的临界区会被首先重新获取"
 
 #: ../../howto/free-threading-extensions.rst:343
 msgid ""
@@ -664,7 +665,7 @@ msgid ""
 "Instead, use :c:macro:`Py_BEGIN_CRITICAL_SECTION2` to lock two objects "
 "simultaneously."
 msgstr ""
-"这意味着你不能依赖嵌套的关键节来同时锁定多个对象，因为内层的关键节可能挂起外层的关键节。 作为替代，请使用 "
+"这意味着你不能依赖嵌套的临界区来同时锁定多个对象，因为内层的临界区可能挂起外层的临界区。 作为替代，请使用 "
 ":c:macro:`Py_BEGIN_CRITICAL_SECTION2` 来同时锁定两个对象。"
 
 #: ../../howto/free-threading-extensions.rst:347
@@ -677,9 +678,9 @@ msgid ""
 "released.  If :c:type:`PyMutex` is used without a critical section, it will "
 "not be released and therefore does not get the same deadlock avoidance."
 msgstr ""
-"请注意上面描述的锁只是基于 :c:type:`PyMutex` 的锁。 关键节实现并不知道或影响其他正在使用的锁定机制，比如 POSIX 互斥锁。 "
-"还要注意当任何 :c:type:`PyMutex` 发生阻塞时并导致关键节被挂起，只有属性关键节一部分的互斥锁才会被释放。 如果 "
-":c:type:`PyMutex` 在没有关键节的情况下使用，它将不会被释放因此不会得到同样的死锁避免。"
+"请注意上面描述的锁只是基于 :c:type:`PyMutex` 的锁。 临界区实现并不知道或影响其他正在使用的锁定机制，比如 POSIX 互斥锁。 "
+"还要注意当任何 :c:type:`PyMutex` 发生阻塞并导致临界区被挂起时，只有属于临界区一部分的互斥锁才会被释放。 如果 "
+":c:type:`PyMutex` 在没有临界区的情况下使用，它将不会被释放，因此不会得到同样的死锁避免。"
 
 #: ../../howto/free-threading-extensions.rst:356
 msgid "Important Considerations"
@@ -701,7 +702,7 @@ msgid ""
 " I/O), all locks held by the thread via critical sections will be released. "
 "This is similar to how the GIL can be released during blocking calls."
 msgstr ""
-"因为锁可以临时释放（挂起），所以进入临界区并不能保证在整个临界区期间对受保护资源的独占访问。如果临界区内的代码调用另一个阻塞函数（例如，获取另一个锁、执行阻塞I/O），则该线程通过临界区持有的所有锁将被释放。这类似于在阻塞调用期间释放GIL的方式。"
+"因为锁可以暂时释放（挂起），所以进入临界区并不能保证在整个临界区期间对受保护资源的独占访问。如果临界区内的代码调用另一个阻塞函数（例如，获取另一个锁、执行阻塞I/O），则该线程通过临界区持有的所有锁将被释放。这类似于在阻塞调用期间释放GIL的方式。"
 
 #: ../../howto/free-threading-extensions.rst:369
 msgid ""
@@ -769,6 +770,10 @@ msgid ""
 "`CIBW_ENABLE to cpython-freethreading "
 "<https://cibuildwheel.pypa.io/en/stable/options/#enable>`_."
 msgstr ""
+"`pypa/cibuildwheel <https://github.com/pypa/cibuildwheel>`_ 支持 Python 3.13 和"
+" 3.14 的自由线程构建版。 在 Python 3.14 上，默认将构建自由线程版。 在 Python 3.13 上，你需要将 "
+"`CIBW_ENABLE 设为 cpython-freethreading "
+"<https://cibuildwheel.pypa.io/en/stable/options/#enable>`_。"
 
 #: ../../howto/free-threading-extensions.rst:405
 msgid "Limited C API and Stable ABI"
