@@ -4,17 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# python-doc bot, 2025
 # 99 <wh2099@pm.me>, 2026
+# python-doc bot, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-09 14:46+0000\n"
+"POT-Creation-Date: 2026-03-21 14:21+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: 99 <wh2099@pm.me>, 2026\n"
+"Last-Translator: python-doc bot, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -314,6 +314,7 @@ msgstr ""
 "asyncio.run(main())"
 
 #: ../../library/asyncio-dev.rst:174 ../../library/asyncio-dev.rst:219
+#: ../../library/asyncio-dev.rst:393 ../../library/asyncio-dev.rst:450
 msgid "Output::"
 msgstr "输出::"
 
@@ -468,3 +469,292 @@ msgstr ""
 "  File \"../t.py\", line 4, in bug\n"
 "    raise Exception(\"not consumed\")\n"
 "Exception: not consumed"
+
+#: ../../library/asyncio-dev.rst:254
+msgid "Asynchronous generators best practices"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:256
+msgid ""
+"Writing correct and efficient asyncio code requires awareness of certain "
+"pitfalls. This section outlines essential best practices that can save you "
+"hours of debugging."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:261
+msgid "Close asynchronous generators explicitly"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:263
+msgid ""
+"It is recommended to manually close the :term:`asynchronous generator "
+"<asynchronous generator iterator>`. If a generator exits early - for "
+"example, due to an exception raised in the body of an ``async for`` loop - "
+"its asynchronous cleanup code may run in an unexpected context. This can "
+"occur after the tasks it depends on have completed, or during the event loop"
+" shutdown when the async-generator's garbage collection hook is called."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:271
+msgid ""
+"To avoid this, explicitly close the generator by calling its "
+":meth:`~agen.aclose` method, or use the :func:`contextlib.aclosing` context "
+"manager::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:275
+msgid ""
+"import asyncio\n"
+"import contextlib\n"
+"\n"
+"async def gen():\n"
+"  yield 1\n"
+"  yield 2\n"
+"\n"
+"async def func():\n"
+"  async with contextlib.aclosing(gen()) as g:\n"
+"    async for x in g:\n"
+"      break  # Don't iterate until the end\n"
+"\n"
+"asyncio.run(func())"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:289
+msgid ""
+"As noted above, the cleanup code for these asynchronous generators is "
+"deferred. The following example demonstrates that the finalization of an "
+"asynchronous generator can occur in an unexpected order::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:293
+msgid ""
+"import asyncio\n"
+"work_done = False\n"
+"\n"
+"async def cursor():\n"
+"    try:\n"
+"        yield 1\n"
+"    finally:\n"
+"        assert work_done\n"
+"\n"
+"async def rows():\n"
+"    global work_done\n"
+"    try:\n"
+"        yield 2\n"
+"    finally:\n"
+"        await asyncio.sleep(0.1) # immitate some async work\n"
+"        work_done = True\n"
+"\n"
+"\n"
+"async def main():\n"
+"    async for c in cursor():\n"
+"        async for r in rows():\n"
+"            break\n"
+"        break\n"
+"\n"
+"asyncio.run(main())"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:319
+msgid "For this example, we get the following output::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:321
+msgid ""
+"unhandled exception during asyncio.run() shutdown\n"
+"task: <Task finished name='Task-3' coro=<<async_generator_athrow without __name__>()> exception=AssertionError()>\n"
+"Traceback (most recent call last):\n"
+"  File \"example.py\", line 6, in cursor\n"
+"    yield 1\n"
+"asyncio.exceptions.CancelledError\n"
+"\n"
+"During handling of the above exception, another exception occurred:\n"
+"\n"
+"Traceback (most recent call last):\n"
+"  File \"example.py\", line 8, in cursor\n"
+"    assert work_done\n"
+"           ^^^^^^^^^\n"
+"AssertionError"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:336
+msgid ""
+"The ``cursor()`` asynchronous generator was finalized before the ``rows`` "
+"generator - an unexpected behavior."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:339
+msgid ""
+"The example can be fixed by explicitly closing the ``cursor`` and ``rows`` "
+"async-generators::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:342
+msgid ""
+"async def main():\n"
+"    async with contextlib.aclosing(cursor()) as cursor_gen:\n"
+"        async for c in cursor_gen:\n"
+"            async with contextlib.aclosing(rows()) as rows_gen:\n"
+"                async for r in rows_gen:\n"
+"                    break\n"
+"            break"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:352
+msgid "Create asynchronous generators only when the event loop is running"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:354
+msgid ""
+"It is recommended to create :term:`asynchronous generators <asynchronous "
+"generator iterator>` only after the event loop has been created."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:358
+msgid ""
+"To ensure that asynchronous generators close reliably, the event loop uses "
+"the :func:`sys.set_asyncgen_hooks` function to register callback functions. "
+"These callbacks update the list of running asynchronous generators to keep "
+"it in a consistent state."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:363
+msgid ""
+"When the :meth:`loop.shutdown_asyncgens() <asyncio.loop.shutdown_asyncgens>`"
+" function is called, the running generators are stopped gracefully and the "
+"list is cleared."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:367
+msgid ""
+"The asynchronous generator invokes the corresponding system hook during its "
+"first iteration. At the same time, the generator records that the hook has "
+"been called and does not call it again."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:371
+msgid ""
+"Therefore, if iteration begins before the event loop is created, the event "
+"loop will not be able to add the generator to its list of active generators "
+"because the hooks are set after the generator attempts to call them. "
+"Consequently, the event loop will not be able to terminate the generator if "
+"necessary."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:377
+msgid "Consider the following example::"
+msgstr "比如下面的例子::"
+
+#: ../../library/asyncio-dev.rst:379
+msgid ""
+"import asyncio\n"
+"\n"
+"async def agenfn():\n"
+"    try:\n"
+"        yield 10\n"
+"    finally:\n"
+"        await asyncio.sleep(0)\n"
+"\n"
+"\n"
+"with asyncio.Runner() as runner:\n"
+"    agen = agenfn()\n"
+"    print(runner.run(anext(agen)))\n"
+"    del agen"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:395
+msgid ""
+"10\n"
+"Exception ignored while closing generator <async_generator object agenfn at 0x000002F71CD10D70>:\n"
+"Traceback (most recent call last):\n"
+"  File \"example.py\", line 13, in <module>\n"
+"    del agen\n"
+"        ^^^^\n"
+"RuntimeError: async generator ignored GeneratorExit"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:403
+msgid "This example can be fixed as follows::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:405
+msgid ""
+"import asyncio\n"
+"\n"
+"async def agenfn():\n"
+"    try:\n"
+"        yield 10\n"
+"    finally:\n"
+"        await asyncio.sleep(0)\n"
+"\n"
+"async def main():\n"
+"    agen = agenfn()\n"
+"    print(await anext(agen))\n"
+"    del agen\n"
+"\n"
+"asyncio.run(main())"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:422
+msgid "Avoid concurrent iteration and closure of the same generator"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:424
+msgid ""
+"Async generators may be reentered while another :meth:`~agen.__anext__` / "
+":meth:`~agen.athrow` / :meth:`~agen.aclose` call is in progress. This may "
+"lead to an inconsistent state of the async generator and can cause errors."
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:429
+msgid "Let's consider the following example::"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:431
+msgid ""
+"import asyncio\n"
+"\n"
+"async def consumer():\n"
+"    for idx in range(100):\n"
+"        await asyncio.sleep(0)\n"
+"        message = yield idx\n"
+"        print('received', message)\n"
+"\n"
+"async def amain():\n"
+"    agenerator = consumer()\n"
+"    await agenerator.asend(None)\n"
+"\n"
+"    fa = asyncio.create_task(agenerator.asend('A'))\n"
+"    fb = asyncio.create_task(agenerator.asend('B'))\n"
+"    await fa\n"
+"    await fb\n"
+"\n"
+"asyncio.run(amain())"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:452
+msgid ""
+"received A\n"
+"Traceback (most recent call last):\n"
+"  File \"test.py\", line 38, in <module>\n"
+"    asyncio.run(amain())\n"
+"    ~~~~~~~~~~~^^^^^^^^^\n"
+"  File \"Lib/asyncio/runners.py\", line 204, in run\n"
+"    return runner.run(main)\n"
+"           ~~~~~~~~~~^^^^^^\n"
+"  File \"Lib/asyncio/runners.py\", line 127, in run\n"
+"    return self._loop.run_until_complete(task)\n"
+"           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n"
+"  File \"Lib/asyncio/base_events.py\", line 719, in run_until_complete\n"
+"    return future.result()\n"
+"           ~~~~~~~~~~~~~^^\n"
+"  File \"test.py\", line 36, in amain\n"
+"    await fb\n"
+"RuntimeError: anext(): asynchronous generator is already running"
+msgstr ""
+
+#: ../../library/asyncio-dev.rst:471
+msgid ""
+"Therefore, it is recommended to avoid using asynchronous generators in "
+"parallel tasks or across multiple event loops."
+msgstr ""
