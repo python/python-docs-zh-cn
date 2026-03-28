@@ -6,6 +6,7 @@
 # Translators:
 # python-doc bot, 2025
 # 99 <wh2099@pm.me>, 2026
+# Silver Teal, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
@@ -319,11 +320,11 @@ msgstr ""
 "\n"
 "async def main():\n"
 "    # 如果我们只调用 \"nested()\" 则无事发生。\n"
-"    # 一个协程对象会被创建但是不会被等待，\n"
+"    # 一个协程对象被创建但是没有被等待，\n"
 "    # 因此它 *根本不会运行*。\n"
 "    nested()  # 将引发 \"RuntimeWarning\"。\n"
 "\n"
-"    # 现在让我们改为等待它：\n"
+"    # 现在让我们等待它：\n"
 "    print(await nested())  # 将打印 \"42\"。\n"
 "\n"
 "asyncio.run(main())"
@@ -356,7 +357,7 @@ msgid ""
 "When a coroutine is wrapped into a *Task* with functions like "
 ":func:`asyncio.create_task` the coroutine is automatically scheduled to run "
 "soon::"
-msgstr "当一个协程通过 :func:`asyncio.create_task` 等函数被封装为一个 *任务*，该协程会被自动调度执行::"
+msgstr "当一个协程被 :func:`asyncio.create_task` 等函数封装为一个 *任务* 时，该协程会被自动调度执行::"
 
 #: ../../library/asyncio-task.rst:187
 msgid ""
@@ -382,12 +383,11 @@ msgstr ""
 "    return 42\n"
 "\n"
 "async def main():\n"
-"    # 将 nested() 加入计划任务\n"
-"    # 立即与 \"main()\" 并发运行。\n"
+"    # 调度 nested() 与 \"main()\" 并发运行。\n"
 "    task = asyncio.create_task(nested())\n"
 "\n"
-"    # 现在可以使用 \"task\" 来取消 \"nested()\"，\n"
-"    # 或简单地等待它直到它被完成：\n"
+"    # 现在可以通过 \"task\" 来取消 \"nested()\"，\n"
+"    # 也可以等待 \"task\" 直到它被完成：\n"
 "    await task\n"
 "\n"
 "asyncio.run(main())"
@@ -489,7 +489,7 @@ msgid ""
 "later. If *eager_start* is not passed the mode set by "
 ":meth:`loop.set_task_factory` will be used."
 msgstr ""
-"一个可选的仅限关键字的 *eager_start* 参数允许指定任务是应该在调用 create_task 期间紧急执行，还是稍后调度。如果没有传递 "
+"一个可选的仅限关键字的 *eager_start* 参数允许指定任务是应该在调用 create_task 期间主动执行，还是应稍后被调度。如果没有传递 "
 "*eager_start*，则会使用 :meth:`loop.set_task_factory` 设置的模式。"
 
 #: ../../library/asyncio-task.rst:259
@@ -600,7 +600,7 @@ msgstr ""
 
 #: ../../library/asyncio-task.rst:328
 msgid "Task groups"
-msgstr ""
+msgstr "任务组"
 
 #: ../../library/asyncio-task.rst:330
 msgid ""
@@ -762,14 +762,14 @@ msgstr "改进了同时处理内部和外部取消操作以及正确保留取消
 
 #: ../../library/asyncio-task.rst:431
 msgid "Terminating a task group"
-msgstr ""
+msgstr "终止一个任务组"
 
 #: ../../library/asyncio-task.rst:433
 msgid ""
 "While terminating a task group is not natively supported by the standard "
 "library, termination can be achieved by adding an exception-raising task to "
 "the task group and ignoring the raised exception:"
-msgstr "虽然标准库没有对终结任务组的原生支持，但可通过向任务组添加一个引发异常的任务并无视被引发的异常来达成终结效果："
+msgstr "虽然标准库没有对终止任务组的原生支持，但可通过向任务组添加一个引发异常的任务并无视被引发的异常来达成终止的效果："
 
 #: ../../library/asyncio-task.rst:437
 msgid ""
@@ -826,7 +826,7 @@ msgstr ""
 "            group.create_task(job(2, 1.5))\n"
 "            # 休眠 1 秒\n"
 "            await asyncio.sleep(1)\n"
-"            # 添加一个引发异常的任务以强制终结分组\n"
+"            # 添加一个引发异常的任务以强制终止任务组\n"
 "            group.create_task(force_terminate_task_group())\n"
 "    except* TerminateTaskGroup:\n"
 "        pass\n"
@@ -895,6 +895,19 @@ msgid ""
 "\n"
 "asyncio.run(display_date())"
 msgstr ""
+"import asyncio\n"
+"import datetime as dt\n"
+"\n"
+"async def display_date():\n"
+"    loop = asyncio.get_running_loop()\n"
+"    end_time = loop.time() + 5.0\n"
+"    while True:\n"
+"        print(dt.datetime.now())\n"
+"        if (loop.time() + 1.0) >= end_time:\n"
+"            break\n"
+"        await asyncio.sleep(1)\n"
+"\n"
+"asyncio.run(display_date())"
 
 #: ../../library/asyncio-task.rst:515 ../../library/asyncio-task.rst:613
 #: ../../library/asyncio-task.rst:712 ../../library/asyncio-task.rst:890
@@ -908,7 +921,7 @@ msgstr "如果 *delay* 为 :data:`~math.nan` 则会引发 :exc:`ValueError`。"
 
 #: ../../library/asyncio-task.rst:523
 msgid "Running tasks concurrently"
-msgstr ""
+msgstr "并发地运行任务"
 
 #: ../../library/asyncio-task.rst:527
 msgid ""
@@ -971,8 +984,8 @@ msgid ""
 "*TaskGroup* will, while *gather* will not, cancel the remaining scheduled "
 "tasks."
 msgstr ""
-"一个创建然后并发地运行任务等待它们完成的新选择是 :class:`asyncio.TaskGroup`。 *TaskGroup* "
-"提供了针对调度嵌套子任务的比 *gather* 更强的安全保证：如果一个任务（或子任务，即由某个任务负责调度的任务）引发了异常，*TaskGroup* "
+"一个创建、并发地运行任务并等待它们完成的新选择是 :class:`asyncio.TaskGroup`。 *TaskGroup* "
+"针对嵌套子任务的调度提供比 *gather* 更强的安全保证：如果一个任务（或子任务，即由某个任务调度的任务）引发了异常，*TaskGroup* "
 "将取消剩余的已排期任务，而 *gather* 不会这样做。"
 
 #: ../../library/asyncio-task.rst:566
@@ -1024,7 +1037,7 @@ msgstr ""
 "    return f\n"
 "\n"
 "async def main():\n"
-"    # 将三个调用 *并发地* 加入计划任务：\n"
+"    # *并发地* 调度这三次调用：\n"
 "    L = await asyncio.gather(\n"
 "        factorial(\"A\", 2),\n"
 "        factorial(\"B\", 3),\n"
@@ -1074,7 +1087,7 @@ msgstr "如果未提供位置参数或者并非所有位置参数均为 Future �
 
 #: ../../library/asyncio-task.rst:625
 msgid "Eager task factory"
-msgstr ""
+msgstr "主动任务工厂"
 
 #: ../../library/asyncio-task.rst:629
 msgid "A task factory for eager task execution."
@@ -1090,8 +1103,8 @@ msgid ""
 "scheduling is avoided for coroutines that complete synchronously."
 msgstr ""
 "当使用这个工厂函数时 (通过 :meth:`loop.set_task_factory(asyncio.eager_task_factory) "
-"<loop.set_task_factory>`)，协程将在 :class:`Task` 构造期间同步地开始执行。 "
-"任务仅会在它们阻塞时被加入事件循环上的计划任务。这可以达成性能提升因为对同步完成的协程来说可以避免循环调度的开销。"
+"<loop.set_task_factory>`)，协程将在 :class:`Task` "
+"被构造时同步开始执行。仅当任务面临阻塞时，它们才会被调度到事件循环上。这将避免可同步完成的协程被调度到事件循环所带来的开销，从而可以达成性能提升。"
 
 #: ../../library/asyncio-task.rst:637
 msgid ""
@@ -1107,8 +1120,7 @@ msgid ""
 "change may introduce behavior changes to existing applications. For example,"
 " the application's task execution order is likely to change."
 msgstr ""
-"协程的立即执行是一项语义改变。如果协程返回或引发异常，其任务将不会被加入事件循环上的计划任务。 "
-"如果协程执行发生阻塞，其任务将被加入事件循环上的计划任务。这项改变可能会向现有应用程序引入行为变化。例如，应用程序的任务执行顺序可能会发生改变。"
+"协程的就地执行是一项语义改变。如果协程返回或引发异常，任务将永远不会被调度到事件循环上。如果协程的执行发生阻塞，任务将会被调度到事件循环上。这项改变可能会向现有应用程序引入行为变化。例如，应用程序的任务执行顺序可能会发生改变。"
 
 #: ../../library/asyncio-task.rst:653
 msgid ""
@@ -1139,7 +1151,7 @@ msgstr ""
 
 #: ../../library/asyncio-task.rst:668
 msgid "Shielding from cancellation"
-msgstr ""
+msgstr "屏蔽取消操作"
 
 #: ../../library/asyncio-task.rst:672
 msgid ""
@@ -1506,7 +1518,7 @@ msgstr "引发 :exc:`TimeoutError` 而不是 :exc:`asyncio.TimeoutError`。"
 
 #: ../../library/asyncio-task.rst:898
 msgid "Waiting primitives"
-msgstr ""
+msgstr "等待原语"
 
 #: ../../library/asyncio-task.rst:903
 msgid ""
@@ -1675,7 +1687,7 @@ msgstr ""
 "tasks = [ipv4_connect, ipv6_connect]\n"
 "\n"
 "for next_connect in as_completed(tasks):\n"
-"    # next_connect 不是原始任务对象之一。\n"
+"    # next_connect 不是原始 Task 对象之一。\n"
 "    # 它必须被等待以获取结果值或是引发\n"
 "    # 接下来要结束的可等待对象的异常。\n"
 "    reader, writer = await next_connect"
@@ -1705,7 +1717,7 @@ msgstr ""
 
 #: ../../library/asyncio-task.rst:1018
 msgid "Running in threads"
-msgstr ""
+msgstr "在线程中运行"
 
 #: ../../library/asyncio-task.rst:1023
 msgid "Asynchronously run function *func* in a separate thread."
@@ -1809,7 +1821,7 @@ msgstr ""
 
 #: ../../library/asyncio-task.rst:1078
 msgid "Scheduling from other threads"
-msgstr ""
+msgstr "跨线程调度"
 
 #: ../../library/asyncio-task.rst:1082
 msgid "Submit a coroutine to the given event loop.  Thread-safe."
@@ -2013,14 +2025,14 @@ msgstr "如果 *obj* 是一个协程对象则返回 ``True``。"
 
 #: ../../library/asyncio-task.rst:1202
 msgid "Task object"
-msgstr ""
+msgstr "Task 对象"
 
 #: ../../library/asyncio-task.rst:1206
 msgid ""
 "A :class:`Future-like <Future>` object that runs a Python :ref:`coroutine "
 "<coroutine>`.  Not thread-safe."
 msgstr ""
-"一个与 :class:`Future 类似 <Future>` 的对象，可运行 Python :ref:`协程 <coroutine>`。非线程安全。"
+"一个运行 Python :ref:`协程 <coroutine>` 的 :class:`Future-like <Future>` 对象。 非线程安全。"
 
 #: ../../library/asyncio-task.rst:1209
 msgid ""
@@ -2281,7 +2293,7 @@ msgstr "*value* 参数可以为任意对象，它随后会被转换为字符串�
 msgid ""
 "In the default Task implementation, the name will be visible in the "
 ":func:`repr` output of a task object."
-msgstr "在默认的 Task 实现中，名称将在任务对象的 :func:`repr` 输出中可见。"
+msgstr "在默认的 Task 实现中，名称将在 Task 对象的 :func:`repr` 输出中可见。"
 
 #: ../../library/asyncio-task.rst:1399
 msgid "Request the Task to be cancelled."
