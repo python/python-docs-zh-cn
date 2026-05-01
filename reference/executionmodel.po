@@ -1,19 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2025, Python Software Foundation
+# Copyright (C) 2001-2026, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # python-doc bot, 2025
+# 99 <wh2099@pm.me>, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-03 14:16+0000\n"
+"POT-Creation-Date: 2026-05-01 15:37+0000\n"
 "PO-Revision-Date: 2025-09-15 01:05+0000\n"
-"Last-Translator: python-doc bot, 2025\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -647,11 +649,314 @@ msgstr ""
 "另请参看  :ref:`try` 小节中对 :keyword:`try` 语句的描述以及 :ref:`raise` 小节中对 "
 ":keyword:`raise` 语句的描述。"
 
-#: ../../reference/executionmodel.rst:395
+#: ../../reference/executionmodel.rst:397
+msgid "Runtime Components"
+msgstr "运行时组件"
+
+#: ../../reference/executionmodel.rst:400
+msgid "General Computing Model"
+msgstr "通用计算模型"
+
+#: ../../reference/executionmodel.rst:402
+msgid ""
+"Python's execution model does not operate in a vacuum.  It runs on a host "
+"machine and through that host's runtime environment, including its operating"
+" system (OS), if there is one.  When a program runs, the conceptual layers "
+"of how it runs on the host look something like this:"
+msgstr ""
+"Python 的执行模型并非是在真空中运作的。 它存在于一台主机并通过该主机的运行时环境运行，包括其中的操作系统 (OS)，如果有具体操作系统的话。 "
+"当一个程序运行时，决定它如何在主机上运行的各个概念层大致是这样的："
+
+#: ../../reference/executionmodel.rst:0
+msgid "**host machine**"
+msgstr "**主机**"
+
+#: ../../reference/executionmodel.rst:0
+msgid "**process** (global resources)"
+msgstr "**进程** (全局资源)"
+
+#: ../../reference/executionmodel.rst:0
+msgid "**thread** (runs machine code)"
+msgstr "**线程** (运行机器码)"
+
+#: ../../reference/executionmodel.rst:412
+msgid ""
+"Each process represents a program running on the host.  Think of each "
+"process itself as the data part of its program.  Think of the process' "
+"threads as the execution part of the program.  This distinction will be "
+"important to understand the conceptual Python runtime."
+msgstr ""
+"每个进程代表一个在主机上运行的程序。 可以将每个进程本身视作其程序的数据部分。 可以将进程的各个线程视为程序的执行部分。 这一区别对于理解  "
+"Python 运行时的概念是很重要的。"
+
+#: ../../reference/executionmodel.rst:417
+msgid ""
+"The process, as the data part, is the execution context in which the program"
+" runs.  It mostly consists of the set of resources assigned to the program "
+"by the host, including memory, signals, file handles, sockets, and "
+"environment variables."
+msgstr "进程作为数据部分，是程序运行所在的执行上下文。 它主要由主机分配给程序的资源集合组成，包括内存、信号、文件句柄、套接字以及环境变量等。"
+
+#: ../../reference/executionmodel.rst:422
+msgid ""
+"Processes are isolated and independent from one another.  (The same is true "
+"for hosts.)  The host manages the process' access to its assigned resources,"
+" in addition to coordinating between processes."
+msgstr "进程之间是相互隔离与独立的。 （对于主机来说也是如此。） 主机管理进程对其所分配资源的访问，并在进程之间进行协调。"
+
+#: ../../reference/executionmodel.rst:426
+msgid ""
+"Each thread represents the actual execution of the program's machine code, "
+"running relative to the resources assigned to the program's process.  It's "
+"strictly up to the host how and when that execution takes place."
+msgstr "每个线程代表程序的机器码的实际执行，它们相对于分配给程序的进程的资源来运行。 实际执行是如何以及何时发生完全取决于具体主机。"
+
+#: ../../reference/executionmodel.rst:431
+msgid ""
+"From the point of view of Python, a program always starts with exactly one "
+"thread.  However, the program may grow to run in multiple simultaneous "
+"threads.  Not all hosts support multiple threads per process, but most do.  "
+"Unlike processes, threads in a process are not isolated and independent from"
+" one another.  Specifically, all threads in a process share all of the "
+"process' resources."
+msgstr ""
+"从 Python 的角度来看，程序开始时总是只有一个线程。 但是，程序可能会发展为在多个线程中同时运行。 "
+"并非所有主机都支持在每个进程中有多个线程，但多数确实如此。 与进程不同，进程中的线程并非相互隔离和独立的。 "
+"具体来说，一个进程中的所有线程都共享进程的所有资源。"
+
+#: ../../reference/executionmodel.rst:438
+msgid ""
+"The fundamental point of threads is that each one does *run* independently, "
+"at the same time as the others.  That may be only conceptually at the same "
+"time (\"concurrently\") or physically (\"in parallel\").  Either way, the "
+"threads effectively run at a non-synchronized rate."
+msgstr ""
+"线程的基本要点是每一个线程都独立 *运行*，并与其他线程同时运行。 这种同时可能只是概念上的（“并发”）也可能是物理上的（“并行”）。 "
+"无论哪种方式，线程实际上都是以非同步的速率运行的。"
+
+#: ../../reference/executionmodel.rst:446
+msgid ""
+"That non-synchronized rate means none of the process' memory is guaranteed "
+"to stay consistent for the code running in any given thread.  Thus multi-"
+"threaded programs must take care to coordinate access to intentionally "
+"shared resources.  Likewise, they must take care to be absolutely diligent "
+"about not accessing any *other* resources in multiple threads; otherwise two"
+" threads running at the same time might accidentally interfere with each "
+"other's use of some shared data.  All this is true for both Python programs "
+"and the Python runtime."
+msgstr ""
+"所谓非同步的速率意味着进程的任何内存都不保证对在任何给定线程中运行的代码是固定的。 因此多线程的程序必须小心协调对有意共享的资源的访问。 "
+"类似地，它们也必须非常小心注意不要访问多线程中的任何 *其它* 资源；否则同时运行的两个线程可能会意外地干涉彼此对某些共享数据的使用。 这一点对于 "
+"Python 程序和 Python 运行时来说都是如此。"
+
+#: ../../reference/executionmodel.rst:456
+msgid ""
+"The cost of this broad, unstructured requirement is the tradeoff for the "
+"kind of raw concurrency that threads provide.  The alternative to the "
+"required discipline generally means dealing with non-deterministic bugs and "
+"data corruption."
+msgstr "这种宽泛、非结构化要求的代价就是对线程所提供的初级并发特性的权衡。 违反所要求的纪律通常就意味着需要处理非确定性的程序错误和数据损坏。"
+
+#: ../../reference/executionmodel.rst:462
+msgid "Python Runtime Model"
+msgstr "Python 运行时模型"
+
+#: ../../reference/executionmodel.rst:464
+msgid ""
+"The same conceptual layers apply to each Python program, with some extra "
+"data layers specific to Python:"
+msgstr "相同的概念层级将应用于每个 Python 程序，并带有一些 Python 专属的数据层级："
+
+#: ../../reference/executionmodel.rst:0
+msgid "Python global runtime (*state*)"
+msgstr "Python 全局运行时 (*状态*)"
+
+#: ../../reference/executionmodel.rst:0
+msgid "Python interpreter (*state*)"
+msgstr "Python 解释器 (*状态*)"
+
+#: ../../reference/executionmodel.rst:0
+msgid "**thread** (runs Python bytecode and \"C-API\")"
+msgstr "**线程** (运行 Python 字节码和 \"C-API\")"
+
+#: ../../reference/executionmodel.rst:0
+msgid "Python thread *state*"
+msgstr "Python 线程 *状态*"
+
+#: ../../reference/executionmodel.rst:474
+msgid ""
+"At the conceptual level: when a Python program starts, it looks exactly like"
+" that diagram, with one of each.  The runtime may grow to include multiple "
+"interpreters, and each interpreter may grow to include multiple thread "
+"states."
+msgstr ""
+"在概念层级上：当一个 Python 程序启动时，它会完全符合上图的样子，每层各有一个。 "
+"运行时可能发展为包括多个解释器，而每个解释器可能发展为包括多个线程状态。"
+
+#: ../../reference/executionmodel.rst:481
+msgid ""
+"A Python implementation won't necessarily implement the runtime layers "
+"distinctly or even concretely.  The only exception is places where distinct "
+"layers are directly specified or exposed to users, like through the "
+":mod:`threading` module."
+msgstr ""
+"一个 Python 具体实现不一定需要实现单独甚至实体的层级。 唯一的例外是将单独的层级直接指明或暴露给用户，例如通过 :mod:`threading`"
+" 模块的情况。"
+
+#: ../../reference/executionmodel.rst:488
+msgid ""
+"The initial interpreter is typically called the \"main\" interpreter. Some "
+"Python implementations, like CPython, assign special roles to the main "
+"interpreter."
+msgstr "初始的解释器通常称为“主”解释器。 某些 Python 实现，像是 CPython，会给主解释器分配特殊角色。"
+
+#: ../../reference/executionmodel.rst:492
+msgid ""
+"Likewise, the host thread where the runtime was initialized is known as the "
+"\"main\" thread.  It may be different from the process' initial thread, "
+"though they are often the same.  In some cases \"main thread\" may be even "
+"more specific and refer to the initial thread state. A Python runtime might "
+"assign specific responsibilities to the main thread, such as handling "
+"signals."
+msgstr ""
+"类似地，运行时初始化所在的主机线程被称为“主”线程。 它可能不同于进程的初始线程，不过往往是同一个。 "
+"在某些情况下“主线程”概念甚至可能更严格地限定为初始线程状态。 Python 运行时可能会赋予主线程一些专属任务，例如处理信号等。"
+
+#: ../../reference/executionmodel.rst:499
+msgid ""
+"As a whole, the Python runtime consists of the global runtime state, "
+"interpreters, and thread states.  The runtime ensures all that state stays "
+"consistent over its lifetime, particularly when used with multiple host "
+"threads."
+msgstr ""
+"作为一个整体，Python 运行时是由全局运行时状态、解释器和线程状态组成的。 "
+"运行时会确保所有状态在其生命期内保持一致，特别是在使用多个主机线程的情况下。"
+
+#: ../../reference/executionmodel.rst:504
+msgid ""
+"The global runtime, at the conceptual level, is just a set of interpreters."
+"  While those interpreters are otherwise isolated and independent from one "
+"another, they may share some data or other resources.  The runtime is "
+"responsible for managing these global resources safely.  The actual nature "
+"and management of these resources is implementation-specific.  Ultimately, "
+"the external utility of the global runtime is limited to managing "
+"interpreters."
+msgstr ""
+"在概念层级上，全局运行时只是多个解释器的集合。 虽然这些解释器基本上是相互隔离彼此独立的，但它们可能会共享某些数据或其他资源。 "
+"运行时要负责安全地管理这些资源。  这些资源的实际性质和管理方式取决于具体实现。 最终，全局运行时的对外功能仅限于管理解释器。"
+
+#: ../../reference/executionmodel.rst:512
+msgid ""
+"In contrast, an \"interpreter\" is conceptually what we would normally think"
+" of as the (full-featured) \"Python runtime\".  When machine code executing "
+"in a host thread interacts with the Python runtime, it calls into Python in "
+"the context of a specific interpreter."
+msgstr ""
+"作为对比，“解释器”在概念层级上就是我们通常认为是（具备完整功能的）“Python 运行时”。 当在一个主机线程中执行的机器码与 Python "
+"运行时交互时，它将在特定的解释器上下文中对 Python 发起调用。"
+
+#: ../../reference/executionmodel.rst:519
+msgid ""
+"The term \"interpreter\" here is not the same as the \"bytecode "
+"interpreter\", which is what regularly runs in threads, executing compiled "
+"Python code."
+msgstr "这里使用的“解释器”一词不同于“字节码解释器”，后者通常运行于线程之中，执行已编译的 Python 代码。"
+
+#: ../../reference/executionmodel.rst:523
+msgid ""
+"In an ideal world, \"Python runtime\" would refer to what we currently call "
+"\"interpreter\".  However, it's been called \"interpreter\" at least since "
+"introduced in 1997 (`CPython:a027efa5b`_)."
+msgstr ""
+"在一个理想世界中，“Python 运行时”应该是指现在我们称为“解释器”的东西。 但是，它至少从 1997 年被引入开始就一直称为“解释器”了 "
+"(`CPython:a027efa5b`_)。"
+
+#: ../../reference/executionmodel.rst:529
+msgid ""
+"Each interpreter completely encapsulates all of the non-process-global, non-"
+"thread-specific state needed for the Python runtime to work. Notably, the "
+"interpreter's state persists between uses.  It includes fundamental data "
+"like :data:`sys.modules`.  The runtime ensures multiple threads using the "
+"same interpreter will safely share it between them."
+msgstr ""
+"每个解释器都完整地包裹了 Python 运行时工作所需的所有非进程全局、非线程专属的状态。 值得注意的是，解释器的状态在多次使用之间是持久的。 "
+"它包括一些基础数据如 :data:`sys.modules`。 运行时会确保使用同一解释器的多个线程在它们之间安全地共享这些数据。"
+
+#: ../../reference/executionmodel.rst:536
+msgid ""
+"A Python implementation may support using multiple interpreters at the same "
+"time in the same process.  They are independent and isolated from one "
+"another.  For example, each interpreter has its own :data:`sys.modules`."
+msgstr ""
+"Python 的具体实现可能会支持在同一进程中同时使用多个解释器。 它们是彼此独立并且相互隔离的。 例如，每个解释器都有自己的 "
+":data:`sys.modules`。"
+
+#: ../../reference/executionmodel.rst:541
+msgid ""
+"For thread-specific runtime state, each interpreter has a set of thread "
+"states, which it manages, in the same way the global runtime contains a set "
+"of interpreters.  It can have thread states for as many host threads as it "
+"needs.  It may even have multiple thread states for the same host thread, "
+"though that isn't as common."
+msgstr ""
+"对于线程专属的运行时状态，每个解释器都具有一组线程状态，由它进行管理，其方式与全局运行时包含一组解释器的方式相同。 "
+"它可以根据需要包含任意多个主机线程的线程状态。 它甚至可以包含同一主机线程的多个线程状态，不过这种情况并不常见。"
+
+#: ../../reference/executionmodel.rst:547
+msgid ""
+"Each thread state, conceptually, has all the thread-specific runtime data an"
+" interpreter needs to operate in one host thread.  The thread state includes"
+" the current raised exception and the thread's Python call stack.  It may "
+"include other thread-specific resources."
+msgstr ""
+"在概念层级上，每个线程状态都拥有解释器在一个主机线程中动作所需的所有线程专属运行时数据。 线程状态包括当前引发的异常和线程的 Python 调用栈。 "
+"它还可能包括其他线程专属的资源。"
+
+#: ../../reference/executionmodel.rst:554
+msgid ""
+"The term \"Python thread\" can sometimes refer to a thread state, but "
+"normally it means a thread created using the :mod:`threading` module."
+msgstr "“Python 线程”一词有时是指一个线程状态，但通常它都表示使用 :mod:`threading` 模块创建的线程。"
+
+#: ../../reference/executionmodel.rst:557
+msgid ""
+"Each thread state, over its lifetime, is always tied to exactly one "
+"interpreter and exactly one host thread.  It will only ever be used in that "
+"thread and with that interpreter."
+msgstr "在其生命期内，每个线程状态总是关联到一个特定的解释器和一个特定的主机线程。 它将仅在这个线程的这个解释器中被使用。"
+
+#: ../../reference/executionmodel.rst:561
+msgid ""
+"Multiple thread states may be tied to the same host thread, whether for "
+"different interpreters or even the same interpreter.  However, for any given"
+" host thread, only one of the thread states tied to it can be used by the "
+"thread at a time."
+msgstr ""
+"多个线程状态可以关联到同一个主机线程，无论它们是属于不同的解释器还是相同的解释器。 "
+"不过，对于任意给定的主机线程，同一时刻只有一个与其关联的线程状态可以被该线程使用。"
+
+#: ../../reference/executionmodel.rst:566
+msgid ""
+"Thread states are isolated and independent from one another and don't share "
+"any data, except for possibly sharing an interpreter and objects or other "
+"resources belonging to that interpreter."
+msgstr "线程状态是彼此隔离并相互独立且不会共享任何数据，除了可能会共享一个解释器以及归属于该解释器的对象或其他资源。"
+
+#: ../../reference/executionmodel.rst:570
+msgid ""
+"Once a program is running, new Python threads can be created using the "
+":mod:`threading` module (on platforms and Python implementations that "
+"support threads).  Additional processes can be created using the :mod:`os`, "
+":mod:`subprocess`, and :mod:`multiprocessing` modules. Coroutines (async) "
+"can be run using :mod:`asyncio` in each interpreter, typically only in a "
+"single thread (often the main thread)."
+msgstr ""
+
+#: ../../reference/executionmodel.rst:580
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../reference/executionmodel.rst:396
+#: ../../reference/executionmodel.rst:581
 msgid ""
 "This limitation occurs because the code that is executed by these operations"
 " is not available at the time the module is compiled."
