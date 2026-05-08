@@ -11,9 +11,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.14\n"
+"Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 14:20+0000\n"
+"POT-Creation-Date: 2026-05-08 18:34+0000\n"
 "PO-Revision-Date: 2025-09-16 00:02+0000\n"
 "Last-Translator: 99 <wh2099@pm.me>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -589,63 +589,30 @@ msgid ""
 "if spec.loader is None:\n"
 "    # unsupported\n"
 "    raise ImportError\n"
-"if spec.origin is None and spec.submodule_search_locations is not None:\n"
-"    # namespace package\n"
-"    sys.modules[spec.name] = module\n"
-"elif not hasattr(spec.loader, 'exec_module'):\n"
-"    module = spec.loader.load_module(spec.name)\n"
-"else:\n"
-"    sys.modules[spec.name] = module\n"
+"\n"
+"sys.modules[spec.name] = module\n"
+"try:\n"
+"    spec.loader.exec_module(module)\n"
+"except BaseException:\n"
 "    try:\n"
-"        spec.loader.exec_module(module)\n"
-"    except BaseException:\n"
-"        try:\n"
-"            del sys.modules[spec.name]\n"
-"        except KeyError:\n"
-"            pass\n"
-"        raise\n"
+"        del sys.modules[spec.name]\n"
+"    except KeyError:\n"
+"        pass\n"
+"    raise\n"
 "return sys.modules[spec.name]"
 msgstr ""
-"module = None\n"
-"if spec.loader is not None and hasattr(spec.loader, 'create_module'):\n"
-"    # 假定 'exec_module' 也将在该加载器上定义。\n"
-"    module = spec.loader.create_module(spec)\n"
-"if module is None:\n"
-"    module = ModuleType(spec.name)\n"
-"# 导入相关的模块属性在此设置：\n"
-"_init_module_attrs(spec, module)\n"
-"\n"
-"if spec.loader is None:\n"
-"    # 不受支持\n"
-"    raise ImportError\n"
-"if spec.origin is None and spec.submodule_search_locations is not None:\n"
-"    # 命名空间包\n"
-"    sys.modules[spec.name] = module\n"
-"elif not hasattr(spec.loader, 'exec_module'):\n"
-"    module = spec.loader.load_module(spec.name)\n"
-"else:\n"
-"    sys.modules[spec.name] = module\n"
-"    try:\n"
-"        spec.loader.exec_module(module)\n"
-"    except BaseException:\n"
-"        try:\n"
-"            del sys.modules[spec.name]\n"
-"        except KeyError:\n"
-"            pass\n"
-"        raise\n"
-"return sys.modules[spec.name]"
 
-#: ../../reference/import.rst:379
+#: ../../reference/import.rst:374
 msgid "Note the following details:"
 msgstr "请注意以下细节:"
 
-#: ../../reference/import.rst:381
+#: ../../reference/import.rst:376
 msgid ""
 "If there is an existing module object with the given name in "
 ":data:`sys.modules`, import will have already returned it."
 msgstr "如果在 :data:`sys.modules` 中存在指定名称的模块对象，导入操作会已经将其返回。"
 
-#: ../../reference/import.rst:384
+#: ../../reference/import.rst:379
 msgid ""
 "The module will exist in :data:`sys.modules` before the loader executes the "
 "module code.  This is crucial because the module code may (directly or "
@@ -657,7 +624,7 @@ msgstr ""
 "这一点很关键，因为该模块代码可能（直接或间接地）导入其自身；预先将其添加到 :data:`sys.modules` "
 "可防止在最坏情况下的无限递归和最好情况下的多次加载。"
 
-#: ../../reference/import.rst:390
+#: ../../reference/import.rst:385
 msgid ""
 "If loading fails, the failing module -- and only the failing module -- gets "
 "removed from :data:`sys.modules`.  Any module already in the "
@@ -669,7 +636,7 @@ msgstr ""
 ":data:`sys.modules` 缓存的模块，以及任何作为附带影响被成功加载的模块仍会保留在缓存中。 "
 "这与重新加载不同，后者会把即使加载失败的模块也保留在 :data:`sys.modules` 中。"
 
-#: ../../reference/import.rst:396
+#: ../../reference/import.rst:391
 msgid ""
 "After the module is created but before execution, the import machinery sets "
 "the import-related module attributes (\"_init_module_attrs\" in the pseudo-"
@@ -679,33 +646,35 @@ msgstr ""
 "在模块创建完成但还未执行之前，导入机制会设置导入相关模块属性（在上面的示例伪代码中为 “_init_module_attrs”），详情参见 "
 ":ref:`后续部分 <import-mod-attrs>`。"
 
-#: ../../reference/import.rst:401
+#: ../../reference/import.rst:396
 msgid ""
 "Module execution is the key moment of loading in which the module's "
 "namespace gets populated.  Execution is entirely delegated to the loader, "
 "which gets to decide what gets populated and how."
 msgstr "模块执行是加载的关键时刻，在此期间将填充模块的命名空间。 执行会完全委托给加载器，由加载器决定要填充的内容和方式。"
 
-#: ../../reference/import.rst:405
+#: ../../reference/import.rst:400
 msgid ""
 "The module created during loading and passed to exec_module() may not be the"
 " one returned at the end of import [#fnlo]_."
 msgstr "在加载过程中创建并传递给 exec_module() 的模块并不一定就是在导入结束时返回的模块 [#fnlo]_。"
 
-#: ../../reference/import.rst:408
+#: ../../reference/import.rst:403
 msgid ""
 "The import system has taken over the boilerplate responsibilities of "
 "loaders.  These were previously performed by the "
-":meth:`importlib.abc.Loader.load_module` method."
+"``importlib.abc.Loader.load_module`` method."
 msgstr ""
-"导入系统已经接管了加载器建立样板的责任。 这些在以前是由 :meth:`importlib.abc.Loader.load_module` "
-"方法来执行的。"
 
-#: ../../reference/import.rst:414
+#: ../../reference/import.rst:408
+msgid "The ``load_module`` method is no longer used."
+msgstr ""
+
+#: ../../reference/import.rst:412
 msgid "Loaders"
 msgstr "加载器"
 
-#: ../../reference/import.rst:416
+#: ../../reference/import.rst:414
 msgid ""
 "Module loaders provide the critical function of loading: module execution. "
 "The import machinery calls the :meth:`importlib.abc.Loader.exec_module` "
@@ -715,11 +684,11 @@ msgstr ""
 "模块加载器提供关键的加载功能：模块执行。 导入机制调用 :meth:`importlib.abc.Loader.exec_module` "
 "方法并传入一个参数来执行模块对象。 从 :meth:`~importlib.abc.Loader.exec_module` 返回的任何值都将被忽略。"
 
-#: ../../reference/import.rst:421
+#: ../../reference/import.rst:419
 msgid "Loaders must satisfy the following requirements:"
 msgstr "加载器必须满足下列要求:"
 
-#: ../../reference/import.rst:423
+#: ../../reference/import.rst:421
 msgid ""
 "If the module is a Python module (as opposed to a built-in module or a "
 "dynamically loaded extension), the loader should execute the module's code "
@@ -728,7 +697,7 @@ msgstr ""
 "如果模块是一个 Python 模块（而非内置模块或动态加载的扩展），加载器应该在模块的全局命名空间 (``module.__dict__``) "
 "中执行模块的代码。"
 
-#: ../../reference/import.rst:427
+#: ../../reference/import.rst:425
 msgid ""
 "If the loader cannot execute the module, it should raise an "
 ":exc:`ImportError`, although any other exception raised during "
@@ -737,7 +706,7 @@ msgstr ""
 "如果加载器无法执行指定模块，它应该引发 :exc:`ImportError`，不过在 "
 ":meth:`~importlib.abc.Loader.exec_module` 期间引发的任何其他异常也会被传播。"
 
-#: ../../reference/import.rst:431
+#: ../../reference/import.rst:429
 msgid ""
 "In many cases, the finder and loader can be the same object; in such cases "
 "the :meth:`~importlib.abc.MetaPathFinder.find_spec` method would just return"
@@ -746,7 +715,7 @@ msgstr ""
 "在许多情况下，查找器和加载器可以是同一对象；在此情况下 :meth:`~importlib.abc.MetaPathFinder.find_spec` "
 "方法将返回一个规格说明，其中加载器会被设为 ``self``。"
 
-#: ../../reference/import.rst:435
+#: ../../reference/import.rst:433
 msgid ""
 "Module loaders may opt in to creating the module object during loading by "
 "implementing a :meth:`~importlib.abc.Loader.create_module` method. It takes "
@@ -759,20 +728,18 @@ msgstr ""
 "它接受一个参数，即模块规格说明，并返回新的模块对象供加载期间使用。 ``create_module()`` 不需要在模块对象上设置任何属性。 "
 "如果该方法返回 ``None``，导入机制将自行创建新模块。"
 
-#: ../../reference/import.rst:442
+#: ../../reference/import.rst:440
 msgid "The :meth:`~importlib.abc.Loader.create_module` method of loaders."
 msgstr "加载器的 :meth:`~importlib.abc.Loader.create_module` 方法。"
 
-#: ../../reference/import.rst:445
+#: ../../reference/import.rst:443
 msgid ""
-"The :meth:`~importlib.abc.Loader.load_module` method was replaced by "
+"The ``importlib.abc.Loader.load_module`` method was replaced by "
 ":meth:`~importlib.abc.Loader.exec_module` and the import machinery assumed "
 "all the boilerplate responsibilities of loading."
 msgstr ""
-":meth:`~importlib.abc.Loader.load_module` 方法被 "
-":meth:`~importlib.abc.Loader.exec_module` 所替代，导入机制会对加载的所有样板责任作出假定。"
 
-#: ../../reference/import.rst:450
+#: ../../reference/import.rst:448
 msgid ""
 "For compatibility with existing loaders, the import machinery will use the "
 "``load_module()`` method of loaders if it exists and the loader does not "
@@ -782,7 +749,7 @@ msgstr ""
 "为了与现有的加载器兼容，导入机制会使用导入器的 ``load_module()`` 方法，如果它存在且导入器也未实现 "
 "``exec_module()``。 但是，``load_module()`` 现已弃用，加载器应该转而实现 ``exec_module()``。"
 
-#: ../../reference/import.rst:455
+#: ../../reference/import.rst:453
 msgid ""
 "The ``load_module()`` method must implement all the boilerplate loading "
 "functionality described above in addition to executing the module.  All the "
@@ -790,7 +757,7 @@ msgid ""
 msgstr ""
 "除了执行模块之外，``load_module()`` 方法必须实现上文描述的所有样板加载功能。 所有相同的限制仍然适用，并带有一些附加规定:"
 
-#: ../../reference/import.rst:459
+#: ../../reference/import.rst:457
 msgid ""
 "If there is an existing module object with the given name in "
 ":data:`sys.modules`, the loader must use that existing module. (Otherwise, "
@@ -802,13 +769,13 @@ msgstr ""
 ":func:`importlib.reload` 将无法正确工作。） 如果该名称模块不存在于 :data:`sys.modules` "
 "中，加载器必须创建一个新的模块对象并将其加入 :data:`sys.modules`。"
 
-#: ../../reference/import.rst:465
+#: ../../reference/import.rst:463
 msgid ""
 "The module *must* exist in :data:`sys.modules` before the loader executes "
 "the module code, to prevent unbounded recursion or multiple loading."
 msgstr "在加载器执行模块代码之前，模块 *必须* 存在于 :data:`sys.modules` 之中，以防止无限递归或多次加载。"
 
-#: ../../reference/import.rst:469
+#: ../../reference/import.rst:467
 msgid ""
 "If loading fails, the loader must remove any modules it has inserted into "
 ":data:`sys.modules`, but it must remove **only** the failing module(s), and "
@@ -817,7 +784,7 @@ msgstr ""
 "如果加载失败，加载器必须移除任何它已加入到 :data:`sys.modules` 中的模块，但它必须 **仅限** "
 "移除加载失败的模块，且所移除的模块应为加载器自身显式加载的。"
 
-#: ../../reference/import.rst:474
+#: ../../reference/import.rst:472
 msgid ""
 "A :exc:`DeprecationWarning` is raised when ``exec_module()`` is defined but "
 "``create_module()`` is not."
@@ -825,22 +792,22 @@ msgstr ""
 "当 ``exec_module()`` 已定义但 ``create_module()`` 未定义时将引发 "
 ":exc:`DeprecationWarning`。"
 
-#: ../../reference/import.rst:478
+#: ../../reference/import.rst:476
 msgid ""
 "An :exc:`ImportError` is raised when ``exec_module()`` is defined but "
 "``create_module()`` is not."
 msgstr ""
 "当 ``exec_module()`` 已定义但 ``create_module()`` 未定义时将引发 :exc:`ImportError`。"
 
-#: ../../reference/import.rst:482
+#: ../../reference/import.rst:480
 msgid "Use of ``load_module()`` will raise :exc:`ImportWarning`."
 msgstr "使用 ``load_module()`` 将引发 :exc:`ImportWarning`。"
 
-#: ../../reference/import.rst:486
+#: ../../reference/import.rst:484
 msgid "Submodules"
 msgstr "子模块"
 
-#: ../../reference/import.rst:488
+#: ../../reference/import.rst:486
 msgid ""
 "When a submodule is loaded using any mechanism (e.g. ``importlib`` APIs, the"
 " ``import`` or ``import-from`` statements, or built-in ``__import__()``) a "
@@ -854,7 +821,7 @@ msgstr ""
 "``foo``，则在导入 ``spam.foo`` 之后，``spam`` 将具有一个 绑定到相应子模块的 ``foo`` 属性。 "
 "假如现在有如下的目录结构::"
 
-#: ../../reference/import.rst:495
+#: ../../reference/import.rst:493
 msgid ""
 "spam/\n"
 "    __init__.py\n"
@@ -864,21 +831,21 @@ msgstr ""
 "    __init__.py\n"
 "    foo.py"
 
-#: ../../reference/import.rst:499
+#: ../../reference/import.rst:497
 msgid "and ``spam/__init__.py`` has the following line in it::"
 msgstr "并且 ``spam/__init__.py`` 中有如下几行内容::"
 
-#: ../../reference/import.rst:501
+#: ../../reference/import.rst:499
 msgid "from .foo import Foo"
 msgstr "from .foo import Foo"
 
-#: ../../reference/import.rst:503
+#: ../../reference/import.rst:501
 msgid ""
 "then executing the following puts name bindings for ``foo`` and ``Foo`` in "
 "the ``spam`` module::"
 msgstr "那么执行如下代码将把 ``foo`` 和 ``Foo`` 的名称绑定添加到 ``spam`` 模块中::"
 
-#: ../../reference/import.rst:506
+#: ../../reference/import.rst:504
 msgid ""
 ">>> import spam\n"
 ">>> spam.foo\n"
@@ -892,7 +859,7 @@ msgstr ""
 ">>> spam.Foo\n"
 "<class 'spam.foo.Foo'>"
 
-#: ../../reference/import.rst:512
+#: ../../reference/import.rst:510
 msgid ""
 "Given Python's familiar name binding rules this might seem surprising, but "
 "it's actually a fundamental feature of the import system.  The invariant "
@@ -904,11 +871,11 @@ msgstr ""
 "``sys.modules['spam']`` 和 ``sys.modules['spam.foo']`` "
 "(例如在上述导入之后就是如此)，则后者必须显示为前者的 ``foo`` 属性。"
 
-#: ../../reference/import.rst:521
+#: ../../reference/import.rst:519
 msgid "Module specs"
 msgstr "模块规格说明"
 
-#: ../../reference/import.rst:523
+#: ../../reference/import.rst:521
 msgid ""
 "The import machinery uses a variety of information about each module during "
 "import, especially before loading.  Most of the information is common to all"
@@ -918,7 +885,7 @@ msgstr ""
 "导入机制在导入期间会使用有关每个模块的多种信息，特别是加载之前。 大多数信息都是所有模块通用的。 "
 "模块规格说明的目的是基于每个模块来封装这些导入相关信息。"
 
-#: ../../reference/import.rst:528
+#: ../../reference/import.rst:526
 msgid ""
 "Using a spec during import allows state to be transferred between import "
 "system components, e.g. between the finder that creates the module spec and "
@@ -929,7 +896,7 @@ msgstr ""
 "在导入期间使用规格说明可允许状态在导入系统各组件之间传递，例如在创建模块规格说明的查找器和执行模块的加载器之间。 "
 "最重要的一点是，它允许导入机制执行加载的样板操作，在没有模块规格说明的情况下这是加载器的责任。"
 
-#: ../../reference/import.rst:534
+#: ../../reference/import.rst:532
 msgid ""
 "The module's spec is exposed as :attr:`module.__spec__`. Setting "
 ":attr:`!__spec__` appropriately applies equally to :ref:`modules initialized"
@@ -940,17 +907,17 @@ msgstr ""
 ":ref:`解释器启动期间初始化的模块 <programs>`。 唯一的例外是 ``__main__``，其中的 :attr:`!__spec__` 会"
 " :ref:`在某些情况下设为 None <main_spec>`。"
 
-#: ../../reference/import.rst:540
+#: ../../reference/import.rst:538
 msgid ""
 "See :class:`~importlib.machinery.ModuleSpec` for details on the contents of "
 "the module spec."
 msgstr "请参阅 :class:`~importlib.machinery.ModuleSpec` 了解有关模块规格的详细内容。"
 
-#: ../../reference/import.rst:548
+#: ../../reference/import.rst:546
 msgid "__path__ attributes on modules"
 msgstr "模块的 __path__ 属性"
 
-#: ../../reference/import.rst:550
+#: ../../reference/import.rst:548
 msgid ""
 "The :attr:`~module.__path__` attribute should be a (possibly empty) "
 ":term:`sequence` of strings enumerating the locations where the package's "
@@ -960,7 +927,7 @@ msgstr ""
 ":attr:`~module.__path__` 属性应当是一个（可能为空的）枚举将用于查找包的子模块的位置的字符串 :term:`sequence`。"
 " 根据定义，如果一个模块具有 :attr:`!__path__` 属性，它就是一个 :term:`package`。"
 
-#: ../../reference/import.rst:555
+#: ../../reference/import.rst:553
 msgid ""
 "A package's :attr:`~module.__path__` attribute is used during imports of its"
 " subpackages. Within the import machinery, it functions much the same as "
@@ -972,7 +939,7 @@ msgstr ""
 "基本相同，即在导入期间提供一个模块搜索位置列表。 但是，:attr:`!__path__` 相比 :data:`!sys.path` "
 "通常要受到更多约束。"
 
-#: ../../reference/import.rst:562
+#: ../../reference/import.rst:560
 msgid ""
 "The same rules used for :data:`sys.path` also apply to a package's "
 ":attr:`!__path__`. :data:`sys.path_hooks` (described below) are consulted "
@@ -981,7 +948,7 @@ msgstr ""
 "作用于 :data:`sys.path` 的规则同样适用于包的 :attr:`!__path__`。 :data:`sys.path_hooks` "
 "(见下文) 会在遍历包的 :attr:`!__path__` 时被查询。"
 
-#: ../../reference/import.rst:566
+#: ../../reference/import.rst:564
 msgid ""
 "A package's ``__init__.py`` file may set or alter the package's "
 ":attr:`~module.__path__` attribute, and this was typically the way namespace"
@@ -995,18 +962,18 @@ msgstr ""
 "之前实现命名空间包的典型方式。 随着 :pep:`420` 的引入，命名空间包不再需要提供仅包含 :attr:`!__path__` 操控代码的 "
 "``__init__.py`` 文件；导入机制会自动为命名空间包正确地设置 :attr:`!__path__`。"
 
-#: ../../reference/import.rst:575
+#: ../../reference/import.rst:573
 msgid "Module reprs"
 msgstr "模块的 repr"
 
-#: ../../reference/import.rst:577
+#: ../../reference/import.rst:575
 msgid ""
 "By default, all modules have a usable repr, however depending on the "
 "attributes set above, and in the module's spec, you can more explicitly "
 "control the repr of module objects."
 msgstr "默认情况下，全部模块都具有一个可用的 repr，但是你可以依据上述的属性设置，在模块的规格说明中更为显式地控制模块对象的 repr。"
 
-#: ../../reference/import.rst:581
+#: ../../reference/import.rst:579
 msgid ""
 "If the module has a spec (``__spec__``), the import machinery will try to "
 "generate a repr from it.  If that fails or there is no spec, the import "
@@ -1019,11 +986,11 @@ msgstr ""
 "spec，导入系统将使用模块中的各种可用信息来制作一个默认 repr。 它将尝试使用 ``module.__name__``, "
 "``module.__file__`` 以及 ``module.__loader__`` 作为 repr 的输入，并将任何丢失的信息赋为默认值。"
 
-#: ../../reference/import.rst:588
+#: ../../reference/import.rst:586
 msgid "Here are the exact rules used:"
 msgstr "以下是所使用的确切规则:"
 
-#: ../../reference/import.rst:590
+#: ../../reference/import.rst:588
 msgid ""
 "If the module has a ``__spec__`` attribute, the information in the spec is "
 "used to generate the repr.  The \"name\", \"loader\", \"origin\", and "
@@ -1032,13 +999,13 @@ msgstr ""
 "如果模块具有 ``__spec__`` 属性，其中的规格信息会被用来生成 repr。 被查询的属性有 \"name\", \"loader\", "
 "\"origin\" 和 \"has_location\" 等等。"
 
-#: ../../reference/import.rst:594
+#: ../../reference/import.rst:592
 msgid ""
 "If the module has a ``__file__`` attribute, this is used as part of the "
 "module's repr."
 msgstr "如果模块具有 ``__file__`` 属性，这会被用作模块 repr 的一部分。"
 
-#: ../../reference/import.rst:597
+#: ../../reference/import.rst:595
 msgid ""
 "If the module has no ``__file__`` but does have a ``__loader__`` that is not"
 " ``None``, then the loader's repr is used as part of the module's repr."
@@ -1046,11 +1013,11 @@ msgstr ""
 "如果模块没有 ``__file__`` 但是有 ``__loader__`` 且取值不为 ``None``，则加载器的 repr 会被用作模块 repr"
 " 的一部分。"
 
-#: ../../reference/import.rst:600
+#: ../../reference/import.rst:598
 msgid "Otherwise, just use the module's ``__name__`` in the repr."
 msgstr "对于其他情况，仅在 repr 中使用模块的 ``__name__``。"
 
-#: ../../reference/import.rst:602
+#: ../../reference/import.rst:600
 msgid ""
 "Use of :meth:`!module_repr`, having been deprecated since Python 3.4, was "
 "removed in Python 3.12 and is no longer called during the resolution of a "
@@ -1059,11 +1026,11 @@ msgstr ""
 ":meth:`!module_repr` 自 Python 3.4 起已被弃用，在 Python 3.12 中已被移除且不会在模块的 repr "
 "计算期间被调用。"
 
-#: ../../reference/import.rst:610
+#: ../../reference/import.rst:608
 msgid "Cached bytecode invalidation"
 msgstr "已缓存字节码的失效"
 
-#: ../../reference/import.rst:612
+#: ../../reference/import.rst:610
 msgid ""
 "Before Python loads cached bytecode from a ``.pyc`` file, it checks whether "
 "the cache is up-to-date with the source ``.py`` file. By default, Python "
@@ -1076,7 +1043,7 @@ msgstr ""
 "通过在所写入缓存文件中保存源文件的最新修改时间戳和大小来实现这一点。 "
 "在运行时，导入系统会通过比对缓存文件中保存的元数据和源文件的元数据确定该缓存的有效性。"
 
-#: ../../reference/import.rst:619
+#: ../../reference/import.rst:617
 msgid ""
 "Python also supports \"hash-based\" cache files, which store a hash of the "
 "source file's contents rather than its metadata. There are two variants of "
@@ -1095,17 +1062,17 @@ msgstr ""
 "文件，只要其存在 Python 就会直接认定缓存文件有效。 确定基于哈希的 ``.pyc`` 文件有效性的行为可通过 :option:`--check-"
 "hash-based-pycs` 旗标来重载。"
 
-#: ../../reference/import.rst:630
+#: ../../reference/import.rst:628
 msgid ""
 "Added hash-based ``.pyc`` files. Previously, Python only supported "
 "timestamp-based invalidation of bytecode caches."
 msgstr "增加了基于哈希的 ``.pyc`` 文件。在此之前，Python 只支持基于时间戳来确定字节码缓存的有效性。"
 
-#: ../../reference/import.rst:636
+#: ../../reference/import.rst:634
 msgid "The Path Based Finder"
 msgstr "基于路径的查找器"
 
-#: ../../reference/import.rst:641
+#: ../../reference/import.rst:639
 msgid ""
 "As mentioned previously, Python comes with several default meta path "
 "finders. One of these, called the :term:`path based finder` "
@@ -1117,14 +1084,14 @@ msgstr ""
 "(:class:`~importlib.machinery.PathFinder`)，它会搜索包含一个 :term:`路径条目 <path "
 "entry>` 列表的 :term:`import path`。 每个路径条目指定一个用于搜索模块的位置。"
 
-#: ../../reference/import.rst:647
+#: ../../reference/import.rst:645
 msgid ""
 "The path based finder itself doesn't know how to import anything. Instead, "
 "it traverses the individual path entries, associating each of them with a "
 "path entry finder that knows how to handle that particular kind of path."
 msgstr "基于路径的查找器自身并不知道如何进行导入。 它只是遍历单独的路径条目，将它们各自关联到某个知道如何处理特定类型路径的路径条目查找器。"
 
-#: ../../reference/import.rst:651
+#: ../../reference/import.rst:649
 msgid ""
 "The default set of path entry finders implement all the semantics for "
 "finding modules on the file system, handling special file types such as "
@@ -1138,14 +1105,14 @@ msgstr ""
 "字节码 (``.pyc`` 文件) 以及共享库 (例如 ``.so`` 文件)。 在标准库中 :mod:`zipimport` "
 "模块的支持下，默认路径条目查找器还能处理所有来自 zip 文件的上述文件类型。"
 
-#: ../../reference/import.rst:658
+#: ../../reference/import.rst:656
 msgid ""
 "Path entries need not be limited to file system locations.  They can refer "
 "to URLs, database queries, or any other location that can be specified as a "
 "string."
 msgstr "路径条目不必仅限于文件系统位置。 它们可以指向 URL、数据库查询或可以用字符串指定的任何其他位置。"
 
-#: ../../reference/import.rst:662
+#: ../../reference/import.rst:660
 msgid ""
 "The path based finder provides additional hooks and protocols so that you "
 "can extend and customize the types of searchable path entries.  For example,"
@@ -1159,7 +1126,7 @@ msgstr ""
 "HTTP 语义在网络上查找模块的钩子。 这个钩子（可调用对象）应当返回一个支持下述协议的 :term:`path entry "
 "finder`，以被用来获取一个专门针对来自网络的模块的加载器。"
 
-#: ../../reference/import.rst:670
+#: ../../reference/import.rst:668
 msgid ""
 "A word of warning: this section and the previous both use the term *finder*,"
 " distinguishing between them by using the terms :term:`meta path finder` and"
@@ -1174,7 +1141,7 @@ msgstr ""
 "这两种类型的查找器非常相似，支持相似的协议，且在导入过程中以相似的方式运作，但关键的一点是要记住它们是有微妙差异的。 "
 "特别地，元路径查找器作用于导入过程的开始，主要是启动 :data:`sys.meta_path` 遍历。"
 
-#: ../../reference/import.rst:678
+#: ../../reference/import.rst:676
 msgid ""
 "By contrast, path entry finders are in a sense an implementation detail of "
 "the path based finder, and in fact, if the path based finder were to be "
@@ -1184,11 +1151,11 @@ msgstr ""
 "相比之下，路径条目查找器在某种意义上说是基于路径的查找器的实现细节，实际上，如果需要从 :data:`sys.meta_path` "
 "移除基于路径的查找器，并不会有任何路径条目查找器被唤起。"
 
-#: ../../reference/import.rst:685
+#: ../../reference/import.rst:683
 msgid "Path entry finders"
 msgstr "路径条目查找器"
 
-#: ../../reference/import.rst:693
+#: ../../reference/import.rst:691
 msgid ""
 "The :term:`path based finder` is responsible for finding and loading Python "
 "modules and packages whose location is specified with a string :term:`path "
@@ -1198,7 +1165,7 @@ msgstr ""
 ":term:`path based finder` 会负责查找和加载通过 :term:`path entry` 字符串来指定位置的 Python "
 "模块和包。 多数路径条目所指定的是文件系统中的位置，但它们并不必受限于此。"
 
-#: ../../reference/import.rst:698
+#: ../../reference/import.rst:696
 msgid ""
 "As a meta path finder, the :term:`path based finder` implements the "
 ":meth:`~importlib.abc.MetaPathFinder.find_spec` protocol previously "
@@ -1209,7 +1176,7 @@ msgstr ""
 ":meth:`~importlib.abc.MetaPathFinder.find_spec` "
 "协议，但是它还对外公开了一些附加钩子，可被用来定制模块如何从 :term:`import path` 查找和加载。"
 
-#: ../../reference/import.rst:703
+#: ../../reference/import.rst:701
 msgid ""
 "Three variables are used by the :term:`path based finder`, :data:`sys.path`,"
 " :data:`sys.path_hooks` and :data:`sys.path_importer_cache`.  The "
@@ -1220,7 +1187,7 @@ msgstr ""
 ":data:`sys.path_importer_cache`。 包对象的 ``__path__`` 属性也会被使用。 "
 "它们提供了可用于定制导入机制的额外方式。"
 
-#: ../../reference/import.rst:708
+#: ../../reference/import.rst:706
 msgid ""
 ":data:`sys.path` contains a list of strings providing search locations for "
 "modules and packages.  It is initialized from the :envvar:`PYTHONPATH` "
@@ -1236,7 +1203,7 @@ msgstr ""
 "文件及其他可用于搜索模块的潜在“位置“（参见 :mod:`site` 模块），例如 URL 或数据库查询等。 在 :data:`sys.path` "
 "中应当只有字符串；所有其他数据类型都会被忽略。"
 
-#: ../../reference/import.rst:717
+#: ../../reference/import.rst:715
 msgid ""
 "The :term:`path based finder` is a :term:`meta path finder`, so the import "
 "machinery begins the :term:`import path` search by calling the path based "
@@ -1254,7 +1221,7 @@ msgstr ""
 "参数时，它将是一个可遍历的字符串列表 —— 通常为用来在其内部进行导入的包的 ``__path__`` 属性。 如果 ``path`` 参数为 "
 "``None``，这表示最高层级的导入，将会使用 :data:`sys.path`。"
 
-#: ../../reference/import.rst:726
+#: ../../reference/import.rst:724
 msgid ""
 "The path based finder iterates over every entry in the search path, and for "
 "each of these, looks for an appropriate :term:`path entry finder` "
@@ -1277,7 +1244,7 @@ msgstr ""
 "finder` 的高耗费搜索只需进行一次。 用户代码可以自由地从 :data:`sys.path_importer_cache` "
 "移除缓存条目以强制基于路径的查找器再次执行路径条目搜索。"
 
-#: ../../reference/import.rst:739
+#: ../../reference/import.rst:737
 msgid ""
 "If the path entry is not present in the cache, the path based finder "
 "iterates over every callable in :data:`sys.path_hooks`.  Each of the "
@@ -1300,7 +1267,7 @@ msgstr ""
 "每个钩子应该期待接收一个字符串或字节串对象；字节串对象的编码由钩子决定（例如可以是文件系统使用的编码、UTF-8 "
 "或其它编码），如果钩子无法解码参数，它应该引发 :exc:`ImportError`。"
 
-#: ../../reference/import.rst:753
+#: ../../reference/import.rst:751
 msgid ""
 "If :data:`sys.path_hooks` iteration ends with no :term:`path entry finder` "
 "being returned, then the path based finder's "
@@ -1314,7 +1281,7 @@ msgstr ""
 ":data:`sys.path_importer_cache` 中存入 ``None`` (表示此路径条目没有对应的查找器) 并返回 "
 "``None``，表示此 :term:`meta path finder` 无法找到该模块。"
 
-#: ../../reference/import.rst:760
+#: ../../reference/import.rst:758
 msgid ""
 "If a :term:`path entry finder` *is* returned by one of the :term:`path entry"
 " hook` callables on :data:`sys.path_hooks`, then the following protocol is "
@@ -1324,7 +1291,7 @@ msgstr ""
 "如果 :data:`sys.path_hooks` 中的某个 :term:`path entry hook` 可调用对象的返回值 *是* 一个 "
 ":term:`path entry finder`，则以下协议会被用来向查找器请求一个模块的规格说明，并在加载该模块时被使用。"
 
-#: ../../reference/import.rst:765
+#: ../../reference/import.rst:763
 msgid ""
 "The current working directory -- denoted by an empty string -- is handled "
 "slightly differently from other entries on :data:`sys.path`. First, if the "
@@ -1340,11 +1307,11 @@ msgstr ""
 "其次，每次模块查找都会对当前工作目录的值进行全新查找。 第三，由 :data:`sys.path_importer_cache` 使用并由 "
 ":meth:`importlib.machinery.PathFinder.find_spec` 返回的路径将是实际的当前工作目录而非空字符串。"
 
-#: ../../reference/import.rst:775
+#: ../../reference/import.rst:773
 msgid "Path entry finder protocol"
 msgstr "路径条目查找器协议"
 
-#: ../../reference/import.rst:777
+#: ../../reference/import.rst:775
 msgid ""
 "In order to support imports of modules and initialized packages and also to "
 "contribute portions to namespace packages, path entry finders must implement"
@@ -1353,7 +1320,7 @@ msgstr ""
 "为了支持模块和已初始化包的导入，也为了给命名空间包提供组成部分，路径条目查找器必须实现 "
 ":meth:`~importlib.abc.PathEntryFinder.find_spec` 方法。"
 
-#: ../../reference/import.rst:781
+#: ../../reference/import.rst:779
 msgid ""
 ":meth:`~importlib.abc.PathEntryFinder.find_spec` takes two arguments: the "
 "fully qualified name of the module being imported, and the (optional) target"
@@ -1364,7 +1331,7 @@ msgstr ""
 "接受两个参数，即要导入模块的完整限定名称，以及（可选的）目标模块。 ``find_spec()`` 返回模块的完全填充好的规格说明。 "
 "这个规格说明总是包含“加载器”集合（但有一个例外）。"
 
-#: ../../reference/import.rst:786
+#: ../../reference/import.rst:784
 msgid ""
 "To indicate to the import machinery that the spec represents a namespace "
 ":term:`portion`, the path entry finder sets ``submodule_search_locations`` "
@@ -1373,7 +1340,7 @@ msgstr ""
 "为了向导入机制提示该规格说明代表一个命名空间 :term:`portion`，路径条目查找器会将 "
 "``submodule_search_locations`` 设为一个包含该部分的列表。"
 
-#: ../../reference/import.rst:790
+#: ../../reference/import.rst:788
 msgid ""
 ":meth:`~importlib.abc.PathEntryFinder.find_spec` replaced "
 ":meth:`!find_loader` and :meth:`!find_module`, both of which are now "
@@ -1382,7 +1349,7 @@ msgstr ""
 ":meth:`~importlib.abc.PathEntryFinder.find_spec` 替代了 :meth:`!find_loader` 和 "
 ":meth:`!find_module`，这两者现在都已被弃用，但会在 ``find_spec()`` 未定义时被使用。"
 
-#: ../../reference/import.rst:796
+#: ../../reference/import.rst:794
 msgid ""
 "Older path entry finders may implement one of these two deprecated methods "
 "instead of ``find_spec()``.  The methods are still respected for the sake of"
@@ -1392,7 +1359,7 @@ msgstr ""
 "较旧的路径条目查找器可能会实现这两个已弃用的方法中的一个而没有实现 ``find_spec()``。 为保持向后兼容，这两个方法仍会被接受。 "
 "但是，如果在路径条目查找器上实现了 ``find_spec()``，这两个遗留方法就会被忽略。"
 
-#: ../../reference/import.rst:801
+#: ../../reference/import.rst:799
 msgid ""
 ":meth:`!find_loader` takes one argument, the fully qualified name of the "
 "module being imported.  ``find_loader()`` returns a 2-tuple where the first "
@@ -1401,7 +1368,7 @@ msgstr ""
 ":meth:`!find_loader` 接受一个参数，即要导入模块的完整限定名称。 ``find_loader()`` 返回一个 2 "
 "元组，其中第一项是加载器而第二项是命名空间 :term:`portion`。"
 
-#: ../../reference/import.rst:806
+#: ../../reference/import.rst:804
 msgid ""
 "For backwards compatibility with other implementations of the import "
 "protocol, many path entry finders also support the same, traditional "
@@ -1413,7 +1380,7 @@ msgstr ""
 "为了向后兼容其他导入协议的实现，许多路径条目查找器也同样支持元路径查找器所支持的传统 ``find_module()`` 方法。 但是路径条目查找器 "
 "``find_module()`` 方法的调用绝不会带有 ``path`` 参数（它们被期望记录来自对路径钩子初始调用的恰当路径信息）。"
 
-#: ../../reference/import.rst:813
+#: ../../reference/import.rst:811
 msgid ""
 "The ``find_module()`` method on path entry finders is deprecated, as it does"
 " not allow the path entry finder to contribute portions to namespace "
@@ -1425,7 +1392,7 @@ msgstr ""
 "``find_loader()`` 和 ``find_module()`` 同时存在于一个路径条目查找器中，导入系统将总是调用 "
 "``find_loader()`` 而不选择 ``find_module()``。"
 
-#: ../../reference/import.rst:819
+#: ../../reference/import.rst:817
 msgid ""
 "Calls to :meth:`!find_module` and :meth:`!find_loader` by the import system "
 "will raise :exc:`ImportWarning`."
@@ -1433,29 +1400,29 @@ msgstr ""
 "导入系统对 :meth:`!find_module` 和 :meth:`!find_loader` 的调用将引发 "
 ":exc:`ImportWarning`。"
 
-#: ../../reference/import.rst:824
+#: ../../reference/import.rst:822
 msgid "``find_module()`` and ``find_loader()`` have been removed."
 msgstr "``find_module()`` 和 ``find_loader()`` 已被移除。"
 
-#: ../../reference/import.rst:829
+#: ../../reference/import.rst:827
 msgid "Replacing the standard import system"
 msgstr "替换标准导入系统"
 
-#: ../../reference/import.rst:831
+#: ../../reference/import.rst:829
 msgid ""
 "The most reliable mechanism for replacing the entire import system is to "
 "delete the default contents of :data:`sys.meta_path`, replacing them "
 "entirely with a custom meta path hook."
 msgstr "替换整个导入系统的最可靠机制是移除 :data:`sys.meta_path` 的默认内容，将其完全替换为自定义的元路径钩子。"
 
-#: ../../reference/import.rst:835
+#: ../../reference/import.rst:833
 msgid ""
 "If it is acceptable to only alter the behaviour of import statements without"
 " affecting other APIs that access the import system, then replacing the "
 "builtin :func:`__import__` function may be sufficient."
 msgstr "如果仅改变导入语句的行为而不影响其他访问导入系统的 API 是可接受的，那么替换 :func:`__import__` 函数可能就够了。"
 
-#: ../../reference/import.rst:839
+#: ../../reference/import.rst:837
 msgid ""
 "To selectively prevent the import of some modules from a hook early on the "
 "meta path (rather than disabling the standard import system entirely), it is"
@@ -1469,11 +1436,11 @@ msgstr ""
 ":exc:`ModuleNotFoundError` 而非返回 ``None`` 就足够了。 "
 "返回后者表示元路径搜索应当继续，而引发异常则会立即终止搜索。"
 
-#: ../../reference/import.rst:849
+#: ../../reference/import.rst:847
 msgid "Package Relative Imports"
 msgstr "包相对导入"
 
-#: ../../reference/import.rst:851
+#: ../../reference/import.rst:849
 msgid ""
 "Relative imports use leading dots. A single leading dot indicates a relative"
 " import, starting with the current package. Two or more leading dots "
@@ -1484,7 +1451,7 @@ msgstr ""
 "相对导入使用前缀点号。 一个前缀点号表示相对导入从当前包开始。 两个或更多前缀点号表示对当前包的上级包的相对导入，第一个点号之后的每个点号代表一级。 "
 "例如，给定以下的包布局结构::"
 
-#: ../../reference/import.rst:856
+#: ../../reference/import.rst:854
 msgid ""
 "package/\n"
 "    __init__.py\n"
@@ -1508,14 +1475,14 @@ msgstr ""
 "        moduleZ.py\n"
 "    moduleA.py"
 
-#: ../../reference/import.rst:867
+#: ../../reference/import.rst:865
 msgid ""
 "In either ``subpackage1/moduleX.py`` or ``subpackage1/__init__.py``, the "
 "following are valid relative imports::"
 msgstr ""
 "不论是在 ``subpackage1/moduleX.py`` 还是 ``subpackage1/__init__.py`` 中，以下导入都是有效的::"
 
-#: ../../reference/import.rst:870
+#: ../../reference/import.rst:868
 msgid ""
 "from .moduleY import spam\n"
 "from .moduleY import spam as ham\n"
@@ -1531,7 +1498,7 @@ msgstr ""
 "from ..subpackage2.moduleZ import eggs\n"
 "from ..moduleA import foo"
 
-#: ../../reference/import.rst:877
+#: ../../reference/import.rst:875
 msgid ""
 "Absolute imports may use either the ``import <>`` or ``from <> import <>`` "
 "syntax, but relative imports may only use the second form; the reason for "
@@ -1539,21 +1506,21 @@ msgid ""
 msgstr ""
 "绝对导入可以使用 ``import <>`` 或 ``from <> import <>`` 语法，但相对导入只能使用第二种形式；其中的原因在于::"
 
-#: ../../reference/import.rst:881
+#: ../../reference/import.rst:879
 msgid "import XXX.YYY.ZZZ"
 msgstr "import XXX.YYY.ZZZ"
 
-#: ../../reference/import.rst:883
+#: ../../reference/import.rst:881
 msgid ""
 "should expose ``XXX.YYY.ZZZ`` as a usable expression, but .moduleY is not a "
 "valid expression."
 msgstr "应当提供 ``XXX.YYY.ZZZ`` 作为可用表达式，但 .moduleY 不是一个有效的表达式。"
 
-#: ../../reference/import.rst:890
+#: ../../reference/import.rst:888
 msgid "Special considerations for __main__"
 msgstr "有关 __main__ 的特殊事项"
 
-#: ../../reference/import.rst:892
+#: ../../reference/import.rst:890
 msgid ""
 "The :mod:`__main__` module is a special case relative to Python's import "
 "system.  As noted :ref:`elsewhere <programs>`, the ``__main__`` module is "
@@ -1567,17 +1534,17 @@ msgstr ""
 "中所述，``__main__`` 模块是在解释器启动时直接初始化的，与 :mod:`sys` 和 :mod:`builtins` 很类似。 "
 "但是，与那两者不同，它并不被严格归类为内置模块。 这是因为 ``__main__`` 被初始化的方式依赖于唤起解释器所附带的旗标和其他选项。"
 
-#: ../../reference/import.rst:903
+#: ../../reference/import.rst:901
 msgid "__main__.__spec__"
 msgstr "__main__.__spec__"
 
-#: ../../reference/import.rst:905
+#: ../../reference/import.rst:903
 msgid ""
 "Depending on how :mod:`__main__` is initialized, ``__main__.__spec__`` gets "
 "set appropriately or to ``None``."
 msgstr "根据 :mod:`__main__` 被初始化的方式，``__main__.__spec__`` 会被设置相应值或是 ``None``。"
 
-#: ../../reference/import.rst:908
+#: ../../reference/import.rst:906
 msgid ""
 "When Python is started with the :option:`-m` option, ``__spec__`` is set to "
 "the module spec of the corresponding module or package. ``__spec__`` is also"
@@ -1587,7 +1554,7 @@ msgstr ""
 "当 Python 附加 :option:`-m` 选项启动时，``__spec__`` 会被设为相应模块或包的模块规格说明。 ``__spec__`` "
 "也会在 ``__main__`` 模块作为执行某个目录，zip 文件或其它 :data:`sys.path` 条目的一部分加载时被填充。"
 
-#: ../../reference/import.rst:913
+#: ../../reference/import.rst:911
 msgid ""
 "In :ref:`the remaining cases <using-on-interface-options>` "
 "``__main__.__spec__`` is set to ``None``, as the code used to populate the "
@@ -1596,23 +1563,23 @@ msgstr ""
 "在 :ref:`其余的情况 <using-on-interface-options>` 下 ``__main__.__spec__`` 会被设为 "
 "``None``，因为用于填充 :mod:`__main__` 的代码不直接与可导入的模块相对应:"
 
-#: ../../reference/import.rst:917
+#: ../../reference/import.rst:915
 msgid "interactive prompt"
 msgstr "交互型提示"
 
-#: ../../reference/import.rst:918
+#: ../../reference/import.rst:916
 msgid ":option:`-c` option"
 msgstr ":option:`-c` 选项"
 
-#: ../../reference/import.rst:919
+#: ../../reference/import.rst:917
 msgid "running from stdin"
 msgstr "从 stdin 运行"
 
-#: ../../reference/import.rst:920
+#: ../../reference/import.rst:918
 msgid "running directly from a source or bytecode file"
 msgstr "直接从源码或字节码文件运行"
 
-#: ../../reference/import.rst:922
+#: ../../reference/import.rst:920
 msgid ""
 "Note that ``__main__.__spec__`` is always ``None`` in the last case, *even "
 "if* the file could technically be imported directly as a module instead. Use"
@@ -1622,7 +1589,7 @@ msgstr ""
 "请注意在最后一种情况中 ``__main__.__spec__`` 总是为 ``None``，*即使* 文件从技术上说可以作为一个模块被导入。 "
 "如果想要让 :mod:`__main__` 中的元数据生效，请使用 :option:`-m` 开关。"
 
-#: ../../reference/import.rst:927
+#: ../../reference/import.rst:925
 msgid ""
 "Note also that even when ``__main__`` corresponds with an importable module "
 "and ``__main__.__spec__`` is set accordingly, they're still considered "
@@ -1634,11 +1601,11 @@ msgstr ""
 "*不同的* 模块。 这是由于以下事实：使用 ``if __name__ == \"__main__\":``  检测来保护的代码块仅会在模块被用来填充 "
 "``__main__`` 命名空间时而非普通的导入时被执行。"
 
-#: ../../reference/import.rst:935
+#: ../../reference/import.rst:933
 msgid "References"
 msgstr "参考文献"
 
-#: ../../reference/import.rst:937
+#: ../../reference/import.rst:935
 msgid ""
 "The import machinery has evolved considerably since Python's early days.  "
 "The original `specification for packages "
@@ -1648,13 +1615,13 @@ msgstr ""
 "导入机制自 Python 诞生之初至今已发生了很大的变化。 原始的 `包规格说明 "
 "<https://www.python.org/doc/essays/packages/>`_ 仍然可以查阅，但在撰写该文档之后许多相关细节已被修改。"
 
-#: ../../reference/import.rst:942
+#: ../../reference/import.rst:940
 msgid ""
 "The original specification for :data:`sys.meta_path` was :pep:`302`, with "
 "subsequent extension in :pep:`420`."
 msgstr "原始的 :data:`sys.meta_path` 规格说明见 :pep:`302`，后续的扩展说明见 :pep:`420`。"
 
-#: ../../reference/import.rst:945
+#: ../../reference/import.rst:943
 msgid ""
 ":pep:`420` introduced :term:`namespace packages <namespace package>` for "
 "Python 3.3.  :pep:`420` also introduced the :meth:`!find_loader` protocol as"
@@ -1663,13 +1630,13 @@ msgstr ""
 ":pep:`420` 为 Python 3.3 引入了 :term:`命名空间包 <namespace package>`。 :pep:`420` "
 "还引入了 :meth:`!find_loader` 协议作为 :meth:`!find_module` 的替代。"
 
-#: ../../reference/import.rst:949
+#: ../../reference/import.rst:947
 msgid ""
 ":pep:`366` describes the addition of the ``__package__`` attribute for "
 "explicit relative imports in main modules."
 msgstr ":pep:`366` 描述了新增的 ``__package__`` 属性，用于在模块中的显式相对导入。"
 
-#: ../../reference/import.rst:952
+#: ../../reference/import.rst:950
 msgid ""
 ":pep:`328` introduced absolute and explicit relative imports and initially "
 "proposed ``__name__`` for semantics :pep:`366` would eventually specify for "
@@ -1678,11 +1645,11 @@ msgstr ""
 ":pep:`328` 引入了绝对和显式相对导入，并初次提出了 ``__name__`` 语义，最终由 :pep:`366` 为 "
 "``__package__`` 加入规范描述。"
 
-#: ../../reference/import.rst:956
+#: ../../reference/import.rst:954
 msgid ":pep:`338` defines executing modules as scripts."
 msgstr ":pep:`338` 定义了将模块作为脚本执行。"
 
-#: ../../reference/import.rst:958
+#: ../../reference/import.rst:956
 msgid ""
 ":pep:`451` adds the encapsulation of per-module import state in spec "
 "objects.  It also off-loads most of the boilerplate responsibilities of "
@@ -1693,15 +1660,15 @@ msgstr ""
 ":pep:`451` 在 spec 对象中增加了对每个模块导入状态的封装。 它还将加载器的大部分样板责任移交回导入机制中。 "
 "这些改变允许弃用导入系统中的一些 API 并为查找器和加载器增加一些新的方法。"
 
-#: ../../reference/import.rst:965
+#: ../../reference/import.rst:963
 msgid "Footnotes"
 msgstr "备注"
 
-#: ../../reference/import.rst:966
+#: ../../reference/import.rst:964
 msgid "See :class:`types.ModuleType`."
 msgstr "参见 :class:`types.ModuleType`。"
 
-#: ../../reference/import.rst:968
+#: ../../reference/import.rst:966
 msgid ""
 "The importlib implementation avoids using the return value directly. "
 "Instead, it gets the module object by looking the module name up in "
@@ -1786,22 +1753,22 @@ msgstr "sys.meta_path"
 msgid "find_spec"
 msgstr "find_spec"
 
-#: ../../reference/import.rst:638
+#: ../../reference/import.rst:636
 msgid "path based finder"
 msgstr "path based finder -- 基于路径的查找器"
 
-#: ../../reference/import.rst:687
+#: ../../reference/import.rst:685
 msgid "sys.path"
 msgstr "sys.path"
 
-#: ../../reference/import.rst:687
+#: ../../reference/import.rst:685
 msgid "sys.path_hooks"
 msgstr "sys.path_hooks"
 
-#: ../../reference/import.rst:687
+#: ../../reference/import.rst:685
 msgid "sys.path_importer_cache"
 msgstr "sys.path_importer_cache"
 
-#: ../../reference/import.rst:687
+#: ../../reference/import.rst:685
 msgid "PYTHONPATH"
 msgstr "PYTHONPATH"
