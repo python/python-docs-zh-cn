@@ -1,0 +1,78 @@
+name: Update Transifex Config
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-config:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
+        include:
+          - version: "3.10"
+            tx_project: "python-310"
+          - version: "3.11"
+            tx_project: "python-311"
+          - version: "3.12"
+            tx_project: "python-312"
+          - version: "3.13"
+            tx_project: "python-313"
+          - version: "3.14"
+            tx_project: "python-314"
+          - version: "3.15"
+            tx_project: "python-newest"
+    steps:
+      - name: Checkout repository at version branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout CPython
+        uses: actions/checkout@v4
+        with:
+          repository: 'python/cpython'
+          ref: ${{ matrix.version }}
+          path: cpython
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Install Transifex CLI
+        run: |
+          mkdir -p /tmp
+          curl -o- https://raw.githubusercontent.com/transifex/cli/master/install.sh | bash
+          sudo mv ~/bin/tx /usr/local/bin/tx
+
+      - name: Generate Transifex config
+        run: |
+          python .github/scripts/generate_tx_config.py \
+            --project-name "${{ matrix.tx_project }}" \
+            --doc-path "./cpython/Doc"
+        env:
+          TX_TOKEN: ${{ secrets.TRANSIFEX_APIKEY }}
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet .tx/config; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure git
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git add .tx/config
+          git commit -m "chore: update Transifex config for Python ${{ matrix.version }}"
+          git push
