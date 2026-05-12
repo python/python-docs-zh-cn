@@ -12,11 +12,16 @@ Maintained versions:
    * - Version
      - Sync status
      - Translation progress
+   * - `3.15 <https://github.com/python/python-docs-zh-cn/tree/3.15>`_
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-315/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-315
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.15%2F.stat.json&query=%24.translation&label=zh-CN
+          :target: https://app.transifex.com/python-doc/python-newest/
    * - `3.14 <https://github.com/python/python-docs-zh-cn/tree/3.14>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-314/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-314
      - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.14%2F.stat.json&query=%24.translation&label=zh-CN
-          :target: https://app.transifex.com/python-doc/python-newest/
+          :target: https://app.transifex.com/python-doc/python-314/
    * - `3.13 <https://github.com/python/python-docs-zh-cn/tree/3.13>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-313/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-313
@@ -37,11 +42,6 @@ Maintained versions:
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
      - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.10%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-310/
-   * - `3.9 <https://github.com/python/python-docs-zh-cn/tree/3.9>`_
-     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-39/badge.svg
-          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-39
-     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.9%2F.stat.json&query=%24.translation&label=zh-CN
-          :target: https://app.transifex.com/python-doc/python-39/
 
 EOL versions:
 
@@ -51,6 +51,11 @@ EOL versions:
    * - Version
      - Sync status
      - Translation progress
+   * - `3.9 <https://github.com/python/python-docs-zh-cn/tree/3.9>`_
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-39/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-39
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.9%2F.stat.json&query=%24.translation&label=zh-CN
+          :target: https://app.transifex.com/python-doc/python-39/
    * - `3.8 <https://github.com/python/python-docs-zh-cn/tree/3.8>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-38/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-38
