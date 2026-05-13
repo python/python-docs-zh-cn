@@ -1,0 +1,997 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# 99 <wh2099@pm.me>, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.14\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-03 14:43+0000\n"
+"PO-Revision-Date: 2026-02-27 14:38+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../library/threadsafety.rst:5
+msgid "Thread Safety Guarantees"
+msgstr "线程安全性保证"
+
+#: ../../library/threadsafety.rst:7
+msgid ""
+"This page documents thread-safety guarantees for built-in types in Python's "
+"free-threaded build. The guarantees described here apply when using Python "
+"with the :term:`GIL` disabled (free-threaded mode). When the GIL is enabled,"
+" most operations are implicitly serialized."
+msgstr ""
+"本页面记录了针对 Python 自由线程构建版中内置类型的线程安全保证。 在此描述的保证适用于 Python 禁用了 :term:`GIL` "
+"的情况（即自由线程模式）。 当启用 GIL 时，大多数操作都是隐式地串行的。"
+
+#: ../../library/threadsafety.rst:12
+msgid ""
+"For general guidance on writing thread-safe code in free-threaded Python, "
+"see :ref:`freethreading-python-howto`."
+msgstr ""
+"有关如何在自由线程版 Python 中编写线程安全代码的通用指导，请参阅 :ref:`freethreading-python-howto`。"
+
+#: ../../library/threadsafety.rst:19
+msgid "Thread safety levels"
+msgstr "线程安全性级别"
+
+#: ../../library/threadsafety.rst:21
+msgid ""
+"The C API documentation uses the following levels to describe the thread "
+"safety guarantees of each function. The levels are listed from least to most"
+" safe."
+msgstr "C API 文档使用下列级别来描述每个函数的线程安全性保证。 这些级别按从最低到最高的安全性排列。"
+
+#: ../../library/threadsafety.rst:28
+msgid "Incompatible"
+msgstr "不兼容"
+
+#: ../../library/threadsafety.rst:30
+msgid ""
+"A function or operation that cannot be made safe for concurrent use even "
+"with external synchronization. Incompatible code typically accesses global "
+"state in an unsynchronized way and must only be called from a single thread "
+"throughout the program's lifetime."
+msgstr ""
+"即便使用外部同步化也无法确保并发使用安全性的函数或操作。 不兼容的代码通常会以非同步方式访问全局状态并且在整个程序生命周期中只能从一个线程调用。"
+
+#: ../../library/threadsafety.rst:35
+msgid ""
+"Example: a function that modifies process-wide state such as signal handlers"
+" or environment variables, where concurrent calls from any threads, even "
+"with external locking, can conflict with the runtime or other libraries."
+msgstr "例如：会修改进程级状态如信号处理器或环境变量的函数，当从任意线程调用时，即便使用了外部锁机制，也可能与运行时或其他库发生冲突。"
+
+#: ../../library/threadsafety.rst:42
+msgid "Compatible"
+msgstr "兼容的"
+
+#: ../../library/threadsafety.rst:44
+msgid ""
+"A function or operation that is safe to call from multiple threads "
+"*provided* the caller supplies appropriate external synchronization, for "
+"example by holding a :term:`lock` for the duration of each call. Without "
+"such synchronization, concurrent calls may produce :term:`race conditions "
+"<race condition>` or :term:`data races <data race>`."
+msgstr ""
+"*只要* 调用方提供了适当的外部同步化，例如通过在每次调用期间持有 :term:`lock` 锁，即可安全地从多个线程调用的函数或操作。 "
+"没有这样的同步化，并发调用可能会产生 :term:`竞争条件 <race condition>` 或 :term:`数据竞争 <data race>`。"
+
+#: ../../library/threadsafety.rst:50
+msgid ""
+"Example: a function that reads from or writes to an object whose internal "
+"state is not protected by a lock. Callers must ensure that no two threads "
+"access the same object at the same time."
+msgstr "例如：针对一个内部状态没有锁保护的对象执行读取或写入的函数。 调用方必须确保不会有两个线程同时访问同一个对象。"
+
+#: ../../library/threadsafety.rst:57
+msgid "Safe on distinct objects"
+msgstr "在单独对象上安全"
+
+#: ../../library/threadsafety.rst:59
+msgid ""
+"A function or operation that is safe to call from multiple threads without "
+"external synchronization, as long as each thread operates on a **different**"
+" object. Two threads may call the function at the same time, but they must "
+"not pass the same object (or objects that share underlying state) as "
+"arguments."
+msgstr ""
+"只要每个线程是在 **不同** 对象上操作，即可安全地从多个线程调用的函数或操作。 "
+"两个线程可以同时调用该函数，但它们不能传入同一个对象（或共享底层状态的不同对象）作为参数。"
+
+#: ../../library/threadsafety.rst:65
+msgid ""
+"Example: a function that modifies fields of a struct using non-atomic "
+"writes. Two threads can each call the function on their own struct instance "
+"safely, but concurrent calls on the *same* instance require external "
+"synchronization."
+msgstr ""
+"例如：使用非原子化写入来修改一个结构体的字段的函数。 两个线程可以分别在它们各自的结构体实例上安全地调用该函数，但在 *相同* "
+"实例上并发调用则需要外部同步化。"
+
+#: ../../library/threadsafety.rst:73
+msgid "Safe on shared objects"
+msgstr "在共享对象上安全"
+
+#: ../../library/threadsafety.rst:75
+msgid ""
+"A function or operation that is safe for concurrent use on the **same** "
+"object. The implementation uses internal synchronization (such as "
+":term:`per-object locks <per-object lock>` or :ref:`critical sections "
+"<python-critical-section-api>`) to protect shared mutable state, so callers "
+"do not need to supply their own locking."
+msgstr ""
+"在 **相同** 对象上可安全地并发使用的函数或操作。 具体实现会使用内部同步化 (如 :term:`每对象锁 <per-object lock>` 或"
+" :ref:`关键节 <python-critical-section-api>`) 来保护共享的可变状态，这样调用方就不需要提供它们自己的锁机制。"
+
+#: ../../library/threadsafety.rst:81
+msgid ""
+"Example: :c:func:`PyList_GetItemRef` can be called from multiple threads on "
+"the same :c:type:`PyListObject` - it uses internal synchronization to "
+"serialize access."
+msgstr ""
+"例如：可以从多个线程在同一个 :c:type:`PyListObject` 上调用 :c:func:`PyList_GetItemRef` —— "
+"它将使用内部同步化来序列化访问。it uses internal synchronization to serialize access."
+
+#: ../../library/threadsafety.rst:88
+msgid "Atomic"
+msgstr "原子化的"
+
+#: ../../library/threadsafety.rst:90
+msgid ""
+"A function or operation that appears :term:`atomic <atomic operation>` with "
+"respect to other threads - it executes instantaneously from the perspective "
+"of other threads. This is the strongest form of thread safety."
+msgstr ""
+"对于其他线程来说是 :term:`原子化的 <atomic operation>` 函数或操作 —— 即从其他线程的视角看来是瞬间执行的。 "
+"这是线程安全性的最强形式。"
+
+#: ../../library/threadsafety.rst:94
+msgid ""
+"Example: :c:func:`PyMutex_IsLocked` performs an atomic read of the mutex "
+"state and can be called from any thread at any time."
+msgstr "例如：对于互斥状态 :c:func:`PyMutex_IsLocked` 会执行原子化的读取因而可在任何时刻从任意线程调用。"
+
+#: ../../library/threadsafety.rst:101
+msgid "Thread safety for list objects"
+msgstr "列表对象的线程安全性"
+
+#: ../../library/threadsafety.rst:103
+msgid ""
+"Reading a single element from a :class:`list` is :term:`atomic <atomic "
+"operation>`:"
+msgstr "从 :class:`list` 读取一个元素属于 :term:`原子化的操作 <atomic operation>`:"
+
+#: ../../library/threadsafety.rst:106
+msgid "lst[i]   # list.__getitem__"
+msgstr "lst[i]   # list.__getitem__"
+
+#: ../../library/threadsafety.rst:111
+msgid ""
+"The following methods traverse the list and use :term:`atomic <atomic "
+"operation>` reads of each item to perform their function. That means that "
+"they may return results affected by concurrent modifications:"
+msgstr ""
+"下列方法会遍历列表并使用 :term:`原子化操作 <atomic operation>` 读取每个条目来执行其函数。 "
+"这意味着它们可能返回受并发修改影响的结果："
+
+#: ../../library/threadsafety.rst:115
+msgid ""
+"item in lst\n"
+"lst.index(item)\n"
+"lst.count(item)"
+msgstr ""
+"item in lst\n"
+"lst.index(item)\n"
+"lst.count(item)"
+
+#: ../../library/threadsafety.rst:122
+msgid ""
+"All of the above operations avoid acquiring :term:`per-object locks <per-"
+"object lock>`. They do not block concurrent modifications. Other operations "
+"that hold a lock will not block these from observing intermediate states."
+msgstr ""
+"上述操作都会避免获取 :term:`每对象锁 <per-object lock>`。 它们不会阻塞并发的修改。 "
+"其他持有锁的操作也不会在观察中间状态时阻塞这些操作。"
+
+#: ../../library/threadsafety.rst:127
+msgid ""
+"All other operations from here on block using the :term:`per-object lock`."
+msgstr "从这里开始的所有其他操作都会使用 :term:`per-object lock` 来阻塞执行。"
+
+#: ../../library/threadsafety.rst:129
+msgid ""
+"Writing a single item via ``lst[i] = x`` is safe to call from multiple "
+"threads and will not corrupt the list."
+msgstr "从多个线程通过 ``lst[i] = x`` 对单个条目的写入调用是安全的并且不会破坏列表。"
+
+#: ../../library/threadsafety.rst:132
+msgid ""
+"The following operations return new objects and appear :term:`atomic <atomic"
+" operation>` to other threads:"
+msgstr "下列操作会返回新的对象并且对其他线程来说是 :term:`原子化的 <atomic operation>`:"
+
+#: ../../library/threadsafety.rst:135
+msgid ""
+"lst1 + lst2    # concatenates two lists into a new list\n"
+"x * lst        # repeats lst x times into a new list\n"
+"lst.copy()     # returns a shallow copy of the list"
+msgstr ""
+"lst1 + lst2    # 将两个列表拼接为一个新列表\n"
+"x * lst        # 将列表重复 x 次成为一个新列表\n"
+"lst.copy()     # 返回列表的浅拷贝"
+
+#: ../../library/threadsafety.rst:142
+msgid ""
+"The following methods that only operate on a single element with no shifting"
+" required are :term:`atomic <atomic operation>`:"
+msgstr "以下仅在单个元素上执行操作而无需变换位置的方法都是 :term:`原子化的 <atomic operation>`:"
+
+#: ../../library/threadsafety.rst:145
+msgid ""
+"lst.append(x)  # append to the end of the list, no shifting required\n"
+"lst.pop()      # pop element from the end of the list, no shifting required"
+msgstr ""
+"lst.append(x)  # 添加到列表末尾，无需变换位置\n"
+"lst.pop()      # 从列表末尾弹出元素，无需变换位置"
+
+#: ../../library/threadsafety.rst:151
+msgid ""
+"The :meth:`~list.clear` method is also :term:`atomic <atomic operation>`. "
+"Other threads cannot observe elements being removed."
+msgstr ""
+":meth:`~list.clear` 方法也是 :term:`原子化的 <atomic operation>`。其他线程无法观察到被移除的元素。"
+
+#: ../../library/threadsafety.rst:154
+msgid ""
+"The :meth:`~list.sort` method is not :term:`atomic <atomic operation>`. "
+"Other threads cannot observe intermediate states during sorting, but the "
+"list appears empty for the duration of the sort."
+msgstr ""
+":meth:`~list.sort` 方法不是 :term:`原子化的 <atomic operation>`。 "
+"其他线程无法观察排序期间的中间状态，在排序期间列表将显示为空。"
+
+#: ../../library/threadsafety.rst:158
+msgid ""
+"The following operations may allow :term:`lock-free` operations to observe "
+"intermediate states since they modify multiple elements in place:"
+msgstr "以下操作可以允许 :term:`lock-free` 操作来观察中间状态因为它们会原地修改多个元素。"
+
+#: ../../library/threadsafety.rst:161
+msgid ""
+"lst.insert(idx, item)  # shifts elements\n"
+"lst.pop(idx)           # idx not at the end of the list, shifts elements\n"
+"lst *= x               # copies elements in place"
+msgstr ""
+"lst.insert(idx, item)  # 改变元素位置\n"
+"lst.pop(idx)           # idx 不在列表末尾，会改变元素位置\n"
+"lst *= x               # 原地拷贝元素"
+
+#: ../../library/threadsafety.rst:168
+msgid ""
+"The :meth:`~list.remove` method may allow concurrent modifications since "
+"element comparison may execute arbitrary Python code (via "
+":meth:`~object.__eq__`)."
+msgstr ""
+":meth:`~list.remove` 方法可允许并发修改因为元素比较可能执行任意 Python 代码 (通过 "
+":meth:`~object.__eq__`)."
+
+#: ../../library/threadsafety.rst:172
+msgid ""
+":meth:`~list.extend` is safe to call from multiple threads.  However, its "
+"guarantees depend on the iterable passed to it. If it is a :class:`list`, a "
+":class:`tuple`, a :class:`set`, a :class:`frozenset`, a :class:`dict` or a "
+":ref:`dictionary view object <dict-views>` (but not their subclasses), the "
+"``extend`` operation is safe from concurrent modifications to the iterable. "
+"Otherwise, an iterator is created which can be concurrently modified by "
+"another thread.  The same applies to inplace concatenation of a list with "
+"other iterables when using ``lst += iterable``."
+msgstr ""
+"从多个线程调用 :meth:`~list.extend` 是安全的。不过，这项保证依赖于传给它的可迭代对象。如果它是 :class:`list`, "
+":class:`tuple`, :class:`set`, :class:`frozenset`, :class:`dict` 或 "
+":ref:`字典视图对象 <dict-views>` (但不能是它们的子类)，对于此可迭代对象进行的并发修改来说 ``extend`` 操作是安全的。 "
+"在其他情况下，则会创建可被另一个线程并发修改的可迭代对象。这种情况同样适合当使用 ``lst += iterable`` "
+"将一个列表与另一个可迭代对象进行原地拼接的场合。"
+
+#: ../../library/threadsafety.rst:181
+msgid ""
+"Similarly, assigning to a list slice with ``lst[i:j] = iterable`` is safe to"
+" call from multiple threads, but ``iterable`` is only locked when it is also"
+" a :class:`list` (but not its subclasses)."
+msgstr ""
+"类似地，使用 ``lst[i:j] = iterable`` 对一个列表切片赋值的操作从多个线程调用也是安全的，但是 ``iterable`` "
+"仅在它也是 :class:`list` (但不是其子类) 的时候才会被锁定。"
+
+#: ../../library/threadsafety.rst:185
+msgid ""
+"Operations that involve multiple accesses, as well as iteration, are never "
+"atomic. For example:"
+msgstr "涉及到多线程访问，以及迭代的操作一定是非原子化的。例如："
+
+#: ../../library/threadsafety.rst:188
+msgid ""
+"# NOT atomic: read-modify-write\n"
+"lst[i] = lst[i] + 1\n"
+"\n"
+"# NOT atomic: check-then-act\n"
+"if lst:\n"
+"    item = lst.pop()\n"
+"\n"
+"# NOT thread-safe: iteration while modifying\n"
+"for item in lst:\n"
+"    process(item)  # another thread may modify lst"
+msgstr ""
+"# 非原子化：读取 - 修改 - 写入\\nlst[i] = lst[i] + 1\n"
+"\n"
+"# 非原子化：检测 - 等待 - 执行\\nif lst:\n"
+"    item = lst.pop()\n"
+"\n"
+"# 非线程安全：在修改期间迭代\n"
+"for item in lst:\n"
+"    process(item)  # 其他线程可能修改 lst"
+
+#: ../../library/threadsafety.rst:202
+msgid ""
+"Consider external synchronization when sharing :class:`list` instances "
+"across threads."
+msgstr "当在线程间共享 :class:`list` 实例时可考虑进行外部同步。"
+
+#: ../../library/threadsafety.rst:209
+msgid "Thread safety for dict objects"
+msgstr "字典对象的线程安全性"
+
+#: ../../library/threadsafety.rst:211
+msgid ""
+"Creating a dictionary with the :class:`dict` constructor is atomic when the "
+"argument to it is a :class:`dict` or a :class:`tuple`. When using the "
+":meth:`dict.fromkeys` method, dictionary creation is atomic when the "
+"argument is a :class:`dict`, :class:`tuple`, :class:`set` or "
+":class:`frozenset`."
+msgstr ""
+"使用 :class:`dict` 构造器创建字典在传入的参数为 :class:`dict` 或 :class:`tuple` 时是原子化的。 如果使用 "
+":meth:`dict.fromkeys` 方法，字典创建在参数为 :class:`dict`, :class:`tuple`, "
+":class:`set` 或 :class:`frozenset` 时是原子化的。."
+
+#: ../../library/threadsafety.rst:217
+msgid ""
+"The following operations and functions are :term:`lock-free` and "
+":term:`atomic <atomic operation>`."
+msgstr "以下操作和函数都是 :term:`lock-free` 和 :term:`原子化 <atomic operation>` 的。"
+
+#: ../../library/threadsafety.rst:220
+msgid ""
+"d[key]       # dict.__getitem__\n"
+"d.get(key)   # dict.get\n"
+"key in d     # dict.__contains__\n"
+"len(d)       # dict.__len__"
+msgstr ""
+"d[key]       # dict.__getitem__\n"
+"d.get(key)   # dict.get\n"
+"key in d     # dict.__contains__\n"
+"len(d)       # dict.__len__"
+
+#: ../../library/threadsafety.rst:228
+msgid "All other operations from here on hold the :term:`per-object lock`."
+msgstr "从这里开始的所有其他操作都会持有 :term:`per-object lock`。"
+
+#: ../../library/threadsafety.rst:230
+msgid ""
+"Writing or removing a single item is safe to call from multiple threads and "
+"will not corrupt the dictionary:"
+msgstr "写入或移除单个条目的操作从多个线程调用是安全的并且不会破坏字典："
+
+#: ../../library/threadsafety.rst:233
+msgid ""
+"d[key] = value        # write\n"
+"del d[key]            # delete\n"
+"d.pop(key)            # remove and return\n"
+"d.popitem()           # remove and return last item\n"
+"d.setdefault(key, v)  # insert if missing"
+msgstr ""
+"d[key] = value        # 写入\n"
+"del d[key]            # 删除\n"
+"d.pop(key)            # 移除并返回\n"
+"d.popitem()           # 移除并返回最后一项\n"
+"d.setdefault(key, v)  # 如果缺失则插入"
+
+#: ../../library/threadsafety.rst:242
+msgid ""
+"These operations may compare keys using :meth:`~object.__eq__`, which can "
+"execute arbitrary Python code. During such comparisons, the dictionary may "
+"be modified by another thread. For built-in types like :class:`str`, "
+":class:`int`, and :class:`float`, that implement :meth:`~object.__eq__` in "
+"C, the underlying lock is not released during comparisons and this is not a "
+"concern."
+msgstr ""
+"这些操作可能会使用 :meth:`~object.__eq__` 对键进行比较，这可以执行任意 Python 代码。 "
+"在这种比较期间，字典可能会被其他线程修改。 对于内置类型如 :class:`str`, :class:`int` 和 "
+":class:`float`，它们是用 C 来实现 :meth:`~object.__eq__` 的，下层的锁在比较期间不会被释放所以这不是问题。"
+
+#: ../../library/threadsafety.rst:249
+msgid ""
+"The following operations return new objects and hold the :term:`per-object "
+"lock` for the duration of the operation:"
+msgstr "下列操作会返回新的对象并在操作期间持有 :term:`per-object lock`:"
+
+#: ../../library/threadsafety.rst:252
+msgid ""
+"d.copy()      # returns a shallow copy of the dictionary\n"
+"d | other     # merges two dicts into a new dict\n"
+"d.keys()      # returns a new dict_keys view object\n"
+"d.values()    # returns a new dict_values view object\n"
+"d.items()     # returns a new dict_items view object"
+msgstr ""
+"d.copy()      # 返回一个字典的浅拷贝\n"
+"d | other     # 将两个字典合并为一个新字典\n"
+"d.keys()      # 返回一个新的 dict_keys 视图对象\n"
+"d.values()    # 返回一个新的 dict_values 视图对象\n"
+"d.items()     # 返回一个新的 dict_items 视图对象"
+
+#: ../../library/threadsafety.rst:261
+msgid ""
+"The :meth:`~dict.clear` method holds the lock for its duration. Other "
+"threads cannot observe elements being removed."
+msgstr ":meth:`~dict.clear` 方法会在其执行期间持有锁。 其他线程无法观察到元素被移除。"
+
+#: ../../library/threadsafety.rst:264
+msgid ""
+"The following operations lock both dictionaries. For :meth:`~dict.update` "
+"and ``|=``, this applies only when the other operand is a :class:`dict` that"
+" uses the standard dict iterator (but not subclasses that override "
+"iteration). For equality comparison, this applies to :class:`dict` and its "
+"subclasses:"
+msgstr ""
+"下列操作会同时锁定两个字典。 对于 :meth:`~dict.update` 和 "
+"``|=``，这仅在另一个操作数是使用标准字典迭代器（不能是重写了迭代操作的子类）的 :class:`dict` 时才适用。 对于相等性比较，这适用于 "
+":class:`dict` 及其子类："
+
+#: ../../library/threadsafety.rst:270
+msgid ""
+"d.update(other_dict)  # both locked when other_dict is a dict\n"
+"d |= other_dict       # both locked when other_dict is a dict\n"
+"d == other_dict       # both locked for dict and subclasses"
+msgstr ""
+"d.update(other_dict)  # 当 other_dict 为字典时双方都会被锁定\n"
+"d |= other_dict       # 当 other_dict 为字典时双方都会被锁定\n"
+"d == other_dict       # 对于字典及其子类双方都会被锁定"
+
+#: ../../library/threadsafety.rst:277
+msgid ""
+"All comparison operations also compare values using :meth:`~object.__eq__`, "
+"so for non-built-in types the lock may be released during comparison."
+msgstr "所有比较操作也都会使用 :meth:`~object.__eq__` 来比较值，因此对于非内置类型来说锁可能会在比较期间被释放。"
+
+#: ../../library/threadsafety.rst:280
+msgid ""
+":meth:`~dict.fromkeys` locks both the new dictionary and the iterable when "
+"the iterable is exactly a :class:`dict`, :class:`set`, or :class:`frozenset`"
+" (not subclasses):"
+msgstr ""
+"当可迭代对象为 :class:`dict`, :class:`set` 或 :class:`frozenset` (不能为其子类) 时 "
+":meth:`~dict.fromkeys` 会同时锁定新字典和可迭代对象："
+
+#: ../../library/threadsafety.rst:284
+msgid ""
+"dict.fromkeys(a_dict)      # locks both\n"
+"dict.fromkeys(a_set)       # locks both\n"
+"dict.fromkeys(a_frozenset) # locks both"
+msgstr ""
+"dict.fromkeys(a_dict)      # 双方均锁定\n"
+"dict.fromkeys(a_set)       # 双方均锁定\n"
+"dict.fromkeys(a_frozenset) # 双方均锁定"
+
+#: ../../library/threadsafety.rst:291
+msgid ""
+"When updating from a non-dict iterable, only the target dictionary is "
+"locked. The iterable may be concurrently modified by another thread:"
+msgstr "当使用非字典可迭代对象进行更新时，只有目标字典会被锁定。 可迭代对象可能会被其他线程并发地修改："
+
+#: ../../library/threadsafety.rst:294
+msgid ""
+"d.update(iterable)        # iterable is not a dict: only d locked\n"
+"d |= iterable             # iterable is not a dict: only d locked\n"
+"dict.fromkeys(iterable)   # iterable is not a dict/set/frozenset: only result locked"
+msgstr ""
+"d.update(iterable)        # iterable 不是字典：仅 d 被锁定\n"
+"d |= iterable             # iterable 不是字典：仅 d 被锁定\n"
+"dict.fromkeys(iterable)   # iterable 不是字典 dict/set/frozenset：仅结果被锁定"
+
+#: ../../library/threadsafety.rst:301 ../../library/threadsafety.rst:434
+#: ../../library/threadsafety.rst:525
+msgid ""
+"Operations that involve multiple accesses, as well as iteration, are never "
+"atomic:"
+msgstr "涉及多线程访问，以及迭代的操作肯定是非原子化的："
+
+#: ../../library/threadsafety.rst:304
+msgid ""
+"# NOT atomic: read-modify-write\n"
+"d[key] = d[key] + 1\n"
+"\n"
+"# NOT atomic: check-then-act (TOCTOU)\n"
+"if key in d:\n"
+"    del d[key]\n"
+"\n"
+"# NOT thread-safe: iteration while modifying\n"
+"for key, value in d.items():\n"
+"    process(key)  # another thread may modify d"
+msgstr ""
+"# 非原子化：读取-修改-写入\n"
+"d[key] = d[key] + 1\n"
+"\n"
+"# 非原子化：先检查再执行（TOCTOU）\n"
+"if key in d:\n"
+"    del d[key]\n"
+"\n"
+"# 非线程安全：在修改时迭代\n"
+"for key, value in d.items():\n"
+"    process(key)  # another thread may modify d"
+
+#: ../../library/threadsafety.rst:318
+msgid ""
+"To avoid time-of-check to time-of-use (TOCTOU) issues, use atomic operations"
+" or handle exceptions:"
+msgstr "要避免检查时和使用时脱节（TOCTOU）问题，应使用原子化操作或处理异常："
+
+#: ../../library/threadsafety.rst:321
+msgid ""
+"# Use pop() with default instead of check-then-delete\n"
+"d.pop(key, None)\n"
+"\n"
+"# Or handle the exception\n"
+"try:\n"
+"    del d[key]\n"
+"except KeyError:\n"
+"    pass"
+msgstr ""
+"# 使用带默认值的而不是先检查再删除\n"
+"d.pop(key, None)\n"
+"\n"
+"# 或者处理异常\n"
+"try:\n"
+"    del d[key]\n"
+"except KeyError:\n"
+"    pass"
+
+#: ../../library/threadsafety.rst:333
+msgid ""
+"To safely iterate over a dictionary that may be modified by another thread, "
+"iterate over a copy:"
+msgstr "要安全地迭代可能会被另一个线程修改的字典，可以迭代其拷贝："
+
+#: ../../library/threadsafety.rst:336
+msgid ""
+"# Make a copy to iterate safely\n"
+"for key, value in d.copy().items():\n"
+"    process(key)"
+msgstr ""
+"# 拷贝以安全地迭代\n"
+"for key, value in d.copy().items():\n"
+"    process(key)"
+
+#: ../../library/threadsafety.rst:343
+msgid ""
+"Consider external synchronization when sharing :class:`dict` instances "
+"across threads."
+msgstr "在线程间共享 :class:`dict` 实例时可考虑进行外部同步。"
+
+#: ../../library/threadsafety.rst:350
+msgid "Thread safety for set objects"
+msgstr "集合对象的线程安全性"
+
+#: ../../library/threadsafety.rst:352 ../../library/threadsafety.rst:457
+msgid ""
+"The :func:`len` function is lock-free and :term:`atomic <atomic operation>`."
+msgstr ":func:`len` 函数是免加锁且 :term:`原子化 <atomic operation>` 的。"
+
+#: ../../library/threadsafety.rst:354
+msgid ""
+"The following read operation is lock-free. It does not block concurrent "
+"modifications and may observe intermediate states from operations that hold "
+"the per-object lock:"
+msgstr "以下读取操作是免锁的。 它不会阻塞并发修改并可以观察持有每对象锁的操作的中间状态："
+
+#: ../../library/threadsafety.rst:358
+msgid "elem in s    # set.__contains__"
+msgstr "elem in s    # set.__contains__"
+
+#: ../../library/threadsafety.rst:363
+msgid ""
+"This operation may compare elements using :meth:`~object.__eq__`, which can "
+"execute arbitrary Python code. During such comparisons, the set may be "
+"modified by another thread. For built-in types like :class:`str`, "
+":class:`int`, and :class:`float`, :meth:`!__eq__` does not release the "
+"underlying lock during comparisons and this is not a concern."
+msgstr ""
+"此操作可能会使用 :meth:`~object.__eq__` 对元素进行比较，这可以执行任意 Python 代码。 "
+"在这种比较期间，集合可能会被其他线程修改。 对于内置类型如 :class:`str`, :class:`int` 和 :class:`float`, "
+":meth:`!__eq__` 不会在比较期间释放下层的锁因而这不会有问题。"
+
+#: ../../library/threadsafety.rst:369 ../../library/threadsafety.rst:470
+msgid "All other operations from here on hold the per-object lock."
+msgstr ""
+"从这里开始的所有其他操作都会持有每对象锁。All other operations from here on hold the per-object "
+"lock."
+
+#: ../../library/threadsafety.rst:371
+msgid ""
+"Adding or removing a single element is safe to call from multiple threads "
+"and will not corrupt the set:"
+msgstr "添加或移除单个元素的操作从多个线程调用是安全的并且不会破坏集合："
+
+#: ../../library/threadsafety.rst:374
+msgid ""
+"s.add(elem)      # add element\n"
+"s.remove(elem)   # remove element, raise if missing\n"
+"s.discard(elem)  # remove element if present\n"
+"s.pop()          # remove and return arbitrary element"
+msgstr ""
+"s.add(elem)      # 添加元素\n"
+"s.remove(elem)   # 移除元素，如不存在则引发异常\n"
+"s.discard(elem)  # 元素如存在则移除\n"
+"s.pop()          # 移除并返回任意元素"
+
+#: ../../library/threadsafety.rst:382
+msgid ""
+"These operations also compare elements, so the same :meth:`~object.__eq__` "
+"considerations as above apply."
+msgstr "这些操作也会对元素进行比较，因此也适用与上文相同的 :meth:`~object.__eq__` 考量。"
+
+#: ../../library/threadsafety.rst:385
+msgid ""
+"The :meth:`~set.copy` method returns a new object and holds the per-object "
+"lock for the duration so that it is always atomic."
+msgstr ":meth:`~set.copy` 方法会返回新的对象并在执行期间持有每对象锁因此它始终是原子化的。"
+
+#: ../../library/threadsafety.rst:388
+msgid ""
+"The :meth:`~set.clear` method holds the lock for its duration. Other threads"
+" cannot observe elements being removed."
+msgstr ":meth:`~set.clear` 方法会在其执行期间持有锁。 其他线程无法观察到元素被移除。"
+
+#: ../../library/threadsafety.rst:391
+msgid ""
+"The following operations only accept :class:`set` or :class:`frozenset` as "
+"operands and always lock both objects:"
+msgstr "下列操作仅接受 :class:`set` 或 :class:`frozenset` 作为操作数并且总是同时锁定两个对象："
+
+#: ../../library/threadsafety.rst:394
+msgid ""
+"s |= other                   # other must be set/frozenset\n"
+"s &= other                   # other must be set/frozenset\n"
+"s -= other                   # other must be set/frozenset\n"
+"s ^= other                   # other must be set/frozenset\n"
+"s & other                    # other must be set/frozenset\n"
+"s | other                    # other must be set/frozenset\n"
+"s - other                    # other must be set/frozenset\n"
+"s ^ other                    # other must be set/frozenset"
+msgstr ""
+"s |= other                   # other 必须为 set/frozenset\n"
+"s &= other                   # other 必须为 set/frozenset\n"
+"s -= other                   # other 必须为 set/frozenset\n"
+"s ^= other                   # other 必须为 set/frozenset\n"
+"s & other                    # other 必须为 set/frozenset\n"
+"s | other                    # other 必须为 set/frozenset\n"
+"s - other                    # other 必须为 set/frozenset\n"
+"s ^ other                    # other 必须为 set/frozenset"
+
+#: ../../library/threadsafety.rst:406
+msgid ""
+":meth:`set.update`, :meth:`set.union`, :meth:`set.intersection` and "
+":meth:`set.difference` can take multiple iterables as arguments. They all "
+"iterate through all the passed iterables and do the following:"
+msgstr ""
+":meth:`set.update`, :meth:`set.union`, :meth:`set.intersection` 和 "
+":meth:`set.difference` 可接受多个可迭代对象作为参数。 它们将迭代所传入的所有可迭代对象并执行以下操作："
+
+#: ../../library/threadsafety.rst:410
+msgid ":meth:`set.update` and :meth:`set.union` lock both objects only when"
+msgstr ":meth:`set.update` 和 :meth:`set.union` 仅对以下情况同时锁定两个操作数"
+
+#: ../../library/threadsafety.rst:411
+msgid ""
+"the other operand is a :class:`set`, :class:`frozenset`, or :class:`dict`."
+msgstr "另一个操作数为 :class:`set`, :class:`frozenset` 或 :class:`dict`。"
+
+#: ../../library/threadsafety.rst:412
+msgid ":meth:`set.intersection` and :meth:`set.difference` always try to lock"
+msgstr ":meth:`set.intersection` 和 :meth:`set.difference` 总是会尝试锁定"
+
+#: ../../library/threadsafety.rst:413
+msgid "all objects."
+msgstr "所有对象。"
+
+#: ../../library/threadsafety.rst:415
+msgid ":meth:`set.symmetric_difference` tries to lock both objects."
+msgstr ":meth:`set.symmetric_difference` 会尝试同时锁定两个对象。"
+
+#: ../../library/threadsafety.rst:417
+msgid ""
+"The update variants of the above methods also have some differences between "
+"them:"
+msgstr "以上方法的更新形式也存在一些不同之处："
+
+#: ../../library/threadsafety.rst:420
+msgid ":meth:`set.difference_update` and :meth:`set.intersection_update` try"
+msgstr ":meth:`set.difference_update` 和 :meth:`set.intersection_update` 会尝试"
+
+#: ../../library/threadsafety.rst:421
+msgid "to lock all objects one-by-one."
+msgstr "一个接一个地锁定所有对象。"
+
+#: ../../library/threadsafety.rst:422
+msgid ""
+":meth:`set.symmetric_difference_update` only locks the arguments if it is"
+msgstr ":meth:`set.symmetric_difference_update` 锁定参数仅针对"
+
+#: ../../library/threadsafety.rst:423
+msgid "of type :class:`set`, :class:`frozenset`, or :class:`dict`."
+msgstr ":class:`set`, :class:`frozenset` 或 :class:`dict` 类型。"
+
+#: ../../library/threadsafety.rst:425
+msgid "The following methods always try to lock both objects:"
+msgstr "下列方法总是会尝试锁定双方对象："
+
+#: ../../library/threadsafety.rst:427
+msgid ""
+"s.isdisjoint(other)          # both locked\n"
+"s.issubset(other)            # both locked\n"
+"s.issuperset(other)          # both locked"
+msgstr ""
+"s.isdisjoint(other)          # 锁定双方\n"
+"s.issubset(other)            # 锁定双方\n"
+"s.issuperset(other)          # 锁定双方"
+
+#: ../../library/threadsafety.rst:437
+msgid ""
+"# NOT atomic: check-then-act\n"
+"if elem in s:\n"
+"      s.remove(elem)\n"
+"\n"
+"# NOT thread-safe: iteration while modifying\n"
+"for elem in s:\n"
+"      process(elem)  # another thread may modify s"
+msgstr ""
+"# 非原子化的：检查 - 执行\n"
+"if elem in s:\n"
+"      s.remove(elem)\n"
+"\n"
+"# 非线程安全的：在修改期间迭代\n"
+"for elem in s:\n"
+"      process(elem)  # 另一个线程可能会修改 s"
+
+#: ../../library/threadsafety.rst:448
+msgid ""
+"Consider external synchronization when sharing :class:`set` instances across"
+" threads.  See :ref:`freethreading-python-howto` for more information."
+msgstr ""
+"当在线程间共享 :class:`set` 实例时可考虑进行外部同步。 详情参见 :ref:`freethreading-python-howto`。"
+
+#: ../../library/threadsafety.rst:455
+msgid "Thread safety for bytearray objects"
+msgstr "bytearray 对象的线程安全性"
+
+#: ../../library/threadsafety.rst:459
+msgid ""
+"Concatenation and comparisons use the buffer protocol, which prevents "
+"resizing but does not hold the per-object lock. These operations may observe"
+" intermediate states from concurrent modifications:"
+msgstr ""
+
+#: ../../library/threadsafety.rst:463
+msgid ""
+"ba + other    # may observe concurrent writes\n"
+"ba == other   # may observe concurrent writes\n"
+"ba < other    # may observe concurrent writes"
+msgstr ""
+
+#: ../../library/threadsafety.rst:472
+msgid ""
+"Reading a single element or slice is safe to call from multiple threads:"
+msgstr ""
+
+#: ../../library/threadsafety.rst:474
+msgid ""
+"ba[i]        # bytearray.__getitem__\n"
+"ba[i:j]      # slice"
+msgstr ""
+"ba[i]        # bytearray.__getitem__\n"
+"ba[i:j]      # 切片"
+
+#: ../../library/threadsafety.rst:480
+msgid ""
+"The following operations are safe to call from multiple threads and will not"
+" corrupt the bytearray:"
+msgstr "下列操作从多个线程调用是安全的并且不会破坏字节数组："
+
+#: ../../library/threadsafety.rst:483
+msgid ""
+"ba[i] = x         # write single byte\n"
+"ba[i:j] = values  # write slice\n"
+"ba.append(x)      # append single byte\n"
+"ba.extend(other)  # extend with iterable\n"
+"ba.insert(i, x)   # insert single byte\n"
+"ba.pop()          # remove and return last byte\n"
+"ba.pop(i)         # remove and return byte at index\n"
+"ba.remove(x)      # remove first occurrence\n"
+"ba.reverse()      # reverse in place\n"
+"ba.clear()        # remove all bytes"
+msgstr ""
+"ba[i] = x         # 写入单个字节\n"
+"ba[i:j] = values  # 写入切片\n"
+"ba.append(x)      # 添加单个字节\n"
+"ba.extend(other)  # 用可迭代对象扩展\n"
+"ba.insert(i, x)   # 插入单个字节\n"
+"ba.pop()          # 移除并返回末尾字节\n"
+"ba.pop(i)         # 移除并返回指定位置的字节\n"
+"ba.remove(x)      # 移除第首次出现的值\n"
+"ba.reverse()      # 原地反转\n"
+"ba.clear()        # 移除所有字节"
+
+#: ../../library/threadsafety.rst:497
+msgid ""
+"Slice assignment locks both objects when *values* is a :class:`bytearray`:"
+msgstr "当 *values* 为 :class:`bytearray` 时切片赋值会将两个对象都锁定："
+
+#: ../../library/threadsafety.rst:499
+msgid "ba[i:j] = other_bytearray  # both locked"
+msgstr "ba[i:j] = other_bytearray  # 两者都将被锁定"
+
+#: ../../library/threadsafety.rst:504
+msgid ""
+"The following operations return new objects and hold the per-object lock for"
+" the duration:"
+msgstr "下列操作会返回新的对象并在执行期间拥有每对象锁："
+
+#: ../../library/threadsafety.rst:507
+msgid ""
+"ba.copy()     # returns a shallow copy\n"
+"ba * n        # repeat into new bytearray"
+msgstr ""
+"ba.copy()     # 返回一个浅拷贝\n"
+"ba * n        # 对新的 bytearray 执行重复"
+
+#: ../../library/threadsafety.rst:513
+msgid "The membership test holds the lock for its duration:"
+msgstr "成员检测会在执行期间持有锁："
+
+#: ../../library/threadsafety.rst:515
+msgid "x in ba       # bytearray.__contains__"
+msgstr "x in ba       # bytearray.__contains__"
+
+#: ../../library/threadsafety.rst:520
+msgid ""
+"All other bytearray methods (such as :meth:`~bytearray.find`, "
+":meth:`~bytearray.replace`, :meth:`~bytearray.split`, "
+":meth:`~bytearray.decode`, etc.) hold the per-object lock for their "
+"duration."
+msgstr ""
+"所有其他 bytearray 方法 (如 :meth:`~bytearray.find`, :meth:`~bytearray.replace`, "
+":meth:`~bytearray.split`, :meth:`~bytearray.decode` 等) 会在其执行期间持有每对象锁。"
+
+#: ../../library/threadsafety.rst:528
+msgid ""
+"# NOT atomic: check-then-act\n"
+"if x in ba:\n"
+"    ba.remove(x)\n"
+"\n"
+"# NOT thread-safe: iteration while modifying\n"
+"for byte in ba:\n"
+"    process(byte)  # another thread may modify ba"
+msgstr ""
+"# 非原子化的：检查-执行\n"
+"if x in ba:\n"
+"    ba.remove(x)\n"
+"\n"
+"# 非线程安全的：在修改期间迭代\n"
+"for byte in ba:\n"
+"    process(byte)  # 另一个线程可能会修改 ba"
+
+#: ../../library/threadsafety.rst:539
+msgid ""
+"To safely iterate over a bytearray that may be modified by another thread, "
+"iterate over a copy:"
+msgstr "要安全地迭代可能会被另一个线程修改的 bytearray，可以迭代其拷贝："
+
+#: ../../library/threadsafety.rst:542
+msgid ""
+"# Make a copy to iterate safely\n"
+"for byte in ba.copy():\n"
+"    process(byte)"
+msgstr ""
+"# 创建一个拷贝以安全地迭代\n"
+"for byte in ba.copy():\n"
+"    process(byte)"
+
+#: ../../library/threadsafety.rst:549
+msgid ""
+"Consider external synchronization when sharing :class:`bytearray` instances "
+"across threads.  See :ref:`freethreading-python-howto` for more information."
+msgstr ""
+"在跨线程共享 :class:`bytearray` 实例时可考虑进行外部同步化。 详情参见 :ref:`freethreading-python-"
+"howto`。"
+
+#: ../../library/threadsafety.rst:556
+msgid "Thread safety for memoryview objects"
+msgstr "memoryview 对象的线程安全性"
+
+#: ../../library/threadsafety.rst:558
+msgid ""
+":class:`memoryview` objects provide access to the internal data of an "
+"underlying object without copying. Thread safety depends on both the "
+"memoryview itself and the underlying buffer exporter."
+msgstr ""
+":class:`memoryview` 对象提供对下层对象内部数据的访问而不会拷贝它。 线程安全性同时依赖于 memoryview "
+"本身和下层的缓冲区导出器。"
+
+#: ../../library/threadsafety.rst:562
+msgid ""
+"The memoryview implementation uses atomic operations to track its own "
+"exports in the :term:`free-threaded build`. Creating and releasing a "
+"memoryview are thread-safe. Attribute access (e.g., "
+":attr:`~memoryview.shape`, :attr:`~memoryview.format`) reads fields that are"
+" immutable for the lifetime of the memoryview, so concurrent reads are safe "
+"as long as the memoryview has not been released."
+msgstr ""
+
+#: ../../library/threadsafety.rst:569
+msgid ""
+"However, the actual data accessed through the memoryview is owned by the "
+"underlying object. Concurrent access to this data is only safe if the "
+"underlying object supports it:"
+msgstr ""
+
+#: ../../library/threadsafety.rst:573
+msgid ""
+"For immutable objects like :class:`bytes`, concurrent reads through multiple"
+" memoryviews are safe."
+msgstr ""
+
+#: ../../library/threadsafety.rst:576
+msgid ""
+"For mutable objects like :class:`bytearray`, reading and writing the same "
+"memory region from multiple threads without external synchronization is not "
+"safe and may result in data corruption. Note that even read-only memoryviews"
+" of mutable objects do not prevent data races if the underlying object is "
+"modified from another thread."
+msgstr ""
+
+#: ../../library/threadsafety.rst:583
+msgid ""
+"# NOT safe: concurrent writes to the same buffer\n"
+"data = bytearray(1000)\n"
+"view = memoryview(data)\n"
+"# Thread 1: view[0:500] = b'x' * 500\n"
+"# Thread 2: view[0:500] = b'y' * 500"
+msgstr ""
+
+#: ../../library/threadsafety.rst:592
+msgid ""
+"# Safe: use a lock for concurrent access\n"
+"import threading\n"
+"lock = threading.Lock()\n"
+"data = bytearray(1000)\n"
+"view = memoryview(data)\n"
+"\n"
+"with lock:\n"
+"    view[0:500] = b'x' * 500"
+msgstr ""
+
+#: ../../library/threadsafety.rst:604
+msgid ""
+"Resizing or reallocating the underlying object (such as calling "
+":meth:`bytearray.resize`) while a memoryview is exported raises "
+":exc:`BufferError`. This is enforced regardless of threading."
+msgstr ""
