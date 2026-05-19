@@ -213,6 +213,8 @@ msgid ""
 "imports at the top of the file while only paying the loading cost for "
 "modules you actually use."
 msgstr ""
+"Python 现在会使用新的 ``lazy`` 软关键字通过显式的 :keyword:`lazy` 导入提供一种更清晰的解决方案。Python "
+"将延迟实际的模块加载直到所导入的名称首次被使用。 这在组织方面给予你在文件顶部声明所有导入的便利同时只付出你实际使用模块的加载耗时。"
 
 #: ../../whatsnew/3.15.rst:130
 msgid ""
@@ -222,6 +224,9 @@ msgid ""
 " The actual module loading happens transparently when you first access the "
 "name:"
 msgstr ""
+"``lazy`` 关键字同时适用于 ``import`` 和 ``from ... import`` 语句。 当你使用 ``lazy import "
+"heavy_module`` 的写法时，Python 不会立即加载该模块。 作为替代，它将创建一个轻量的代理对象。 "
+"实际的模块加载会在你首次访问该名称时透明地发生："
 
 #: ../../whatsnew/3.15.rst:136
 msgid ""
@@ -233,6 +238,13 @@ msgid ""
 "data = json.loads('{\"key\": \"value\"}')  # json loads here\n"
 "p = Path(\".\")  # pathlib loads here"
 msgstr ""
+"lazy import json\n"
+"lazy from pathlib import Path\n"
+"\n"
+"print(\"Starting up...\")  # json 和 pathlib 尚未加载\n"
+"\n"
+"data = json.loads('{\"key\": \"value\"}')  # json 在这里加载\n"
+"p = Path(\".\")  # pathlib 在这里加载"
 
 #: ../../whatsnew/3.15.rst:146
 msgid ""
@@ -241,6 +253,8 @@ msgid ""
 " The deferred loading reduces startup latency without requiring code "
 "restructuring or conditional imports scattered throughout the codebase."
 msgstr ""
+"这种机制特别适用于在最高层级导入大批模块但在任何给定运行中仅使用它们的一个子集的应用程序。 "
+"延迟加载可减少启动反应时间而无需代码重新调整结构或在代码库中零散使用有条件的导入。"
 
 #: ../../whatsnew/3.15.rst:151
 msgid ""
@@ -250,6 +264,8 @@ msgid ""
 " the location where the name was accessed and the original import statement,"
 " making it straightforward to diagnose and debug the failure."
 msgstr ""
+"对于加载惰性导入模块失败的情况（例如，当模块不存在时），Python 会在首次使用时而不是导入时引发异常。 相关的回溯将同时包括名称被访问的位置和初始的"
+" import 语句，以使对失败的诊断和调试更为直观。"
 
 #: ../../whatsnew/3.15.rst:157
 msgid ""
