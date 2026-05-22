@@ -6,6 +6,7 @@
 # Translators:
 # python-doc bot, 2025
 # 99 <wh2099@pm.me>, 2026
+# lian Wu (Wulian) <xiguawulian@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
@@ -13,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-08 18:34+0000\n"
+"POT-Creation-Date: 2026-05-21 16:35+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -119,23 +120,25 @@ msgstr "稳定应用程序二进制接口"
 msgid ""
 "Python's :dfn:`Stable ABI` allows extensions to be compatible with multiple "
 "versions of Python, without recompilation."
-msgstr ""
+msgstr "Python 的 :dfn:`稳定 ABI` 允许扩展在不重新编译的情况下兼容多个 Python 版本。"
 
 #: ../../c-api/stable.rst:65
 msgid ""
 "For simplicity, this document talks about *extensions*, but Stable ABI works"
 " the same way for all uses of the API – for example, embedding Python."
-msgstr ""
+msgstr "为简单起见，本文档会讨论 *扩展*，但稳定 ABI 对 API 的所有使用方式都同样适用 —— 例如嵌入 Python。"
 
 #: ../../c-api/stable.rst:68
 msgid "There are two Stable ABIs:"
-msgstr ""
+msgstr "有两种稳定 ABI："
 
 #: ../../c-api/stable.rst:70
 msgid ""
 "``abi3``, introduced in Python 3.2, is compatible with **non**-:term:`free-"
 "threaded <free-threaded build>` builds of CPython."
 msgstr ""
+"``abi3`` 于 Python 3.2 中引入，兼容 CPython 的 **非**:term:`自由线程 <free-threaded "
+"build>` 构建。"
 
 #: ../../c-api/stable.rst:73
 msgid ""
@@ -143,10 +146,12 @@ msgid ""
 "threaded <free-threaded build>` builds of CPython. It has stricter API "
 "limitations than ``abi3``."
 msgstr ""
+"``abi3t`` 于 Python 3.15 中引入，兼容 CPython 的 :term:`自由线程 <free-threaded build>` "
+"构建。它具有比 ``abi3`` 更严格的 API 限制。"
 
 #: ../../c-api/stable.rst:79
 msgid "``abi3t`` was added in :pep:`803`"
-msgstr ""
+msgstr "``abi3t`` 是在 :pep:`803` 中添加的"
 
 #: ../../c-api/stable.rst:81
 msgid ""
@@ -155,6 +160,8 @@ msgid ""
 "threaded and non-free-threaded builds of Python. Currently, this has no "
 "downsides compared to compiling for ``abi3t`` only."
 msgstr ""
+"扩展可以同时针对 ``abi3`` 和 ``abi3t`` *二者* 进行编译；其结果将同时兼容 Python "
+"的自由线程构建和非自由线程构建。目前，与仅针对 ``abi3t`` 编译相比，这样做没有缺点。"
 
 #: ../../c-api/stable.rst:86
 msgid ""
@@ -163,6 +170,8 @@ msgid ""
 "extension compiled for Stable ABI 3.x is ABI-compatible with Python 3.x and "
 "above."
 msgstr ""
+"每个稳定 ABI 都使用 Python 版本号的前两个数字作为版本号。例如，稳定 ABI 3.14 对应 Python 3.14。针对稳定 ABI "
+"3.x 编译的扩展与 Python 3.x 及更高版本保持 ABI 兼容。"
 
 #: ../../c-api/stable.rst:91
 msgid ""
@@ -170,6 +179,8 @@ msgid ""
 "API. This subset is known as the :dfn:`Limited API`; its contents are "
 ":ref:`listed below <limited-api-list>`."
 msgstr ""
+"以稳定 ABI 为目标的扩展只能使用 C API 的一个受限子集。该子集称为 :dfn:`受限 API`；其内容在 :ref:`下文列出 "
+"<limited-api-list>`。"
 
 #: ../../c-api/stable.rst:95
 msgid ""
@@ -177,6 +188,8 @@ msgid ""
 "``python3.dll`` rather than a version-specific library such as "
 "``python39.dll``. This library only exposes the relevant symbols."
 msgstr ""
+"在 Windows 上，使用稳定 ABI 的扩展应当链接到 ``python3.dll``，而不是链接到版本专属库，例如 "
+"``python39.dll``。这个库只会公开相关符号。"
 
 #: ../../c-api/stable.rst:100
 msgid ""
@@ -187,6 +200,10 @@ msgid ""
 "back to ``abi3t``. Thus, extensions compatible with both ABIs should use the"
 " ``abi3t`` tag."
 msgstr ""
+"在某些平台上，Python 会查找并加载名称带有 ``abi3`` 或 ``abi3t`` 标签的共享库文件（例如 "
+"``mymodule.abi3.so``）。:term:`自由线程 <free-threaded build>` 解释器只识别 ``abi3t`` "
+"标签，而非自由线程解释器会优先使用 ``abi3``，但会回退到 ``abi3t``。因此，同时兼容这两种 ABI 的扩展应使用 ``abi3t`` "
+"标签。"
 
 #: ../../c-api/stable.rst:107
 msgid ""
@@ -197,18 +214,22 @@ msgid ""
 "that, for example, extensions built for Stable ABI 3.10 are not installed "
 "for lower versions of Python."
 msgstr ""
+"Python 不一定会检查它所加载的扩展是否具有兼容的 ABI。建议扩展作者使用 :c:macro:`Py_mod_abi` 槽位或 "
+":c:func:`PyABIInfo_Check` 函数添加检查，但用户（或其打包工具）最终需要负责确保，例如，针对稳定 ABI 3.10 "
+"构建的扩展不会被安装到更低版本的 Python 中。"
 
 #: ../../c-api/stable.rst:115
 msgid ""
 "All functions in Stable ABI are present as functions in Python's shared "
-"library, not solely as macros. This makes them usable are usable from "
-"languages that don't use the C preprocessor, including Python's "
-":py:mod:`ctypes`."
+"library, not solely as macros. This makes them usable in languages that "
+"don't use the C preprocessor, including Python's :py:mod:`ctypes`."
 msgstr ""
+"稳定 ABI 中的所有函数都以函数的形式存在于 Python 的共享库中，而不是仅以宏的形式存在。这使得它们可用于不使用 C 预处理器的语言，包括 "
+"Python 的 :py:mod:`ctypes`。"
 
 #: ../../c-api/stable.rst:124
 msgid "Compiling for Stable ABI"
-msgstr ""
+msgstr "针对稳定 ABI 编译"
 
 #: ../../c-api/stable.rst:128
 msgid ""
@@ -217,16 +238,18 @@ msgid ""
 " with extension filenames and other metadata. Prefer using such a mechanism,"
 " if it exists, over defining the macros manually."
 msgstr ""
+"构建工具（例如 meson-python、scikit-build-core 或 "
+"Setuptools）通常具有用于设置宏，并将这些宏与扩展文件名和其他元数据同步的机制。如果存在这样的机制，应优先使用它，而不是手动定义宏。"
 
 #: ../../c-api/stable.rst:134
 msgid ""
 "The rest of this section is mainly relevant for tool authors, and for people"
 " who compile extensions manually."
-msgstr ""
+msgstr "本节的其余部分主要与工具作者以及手动编译扩展的人相关。"
 
 #: ../../c-api/stable.rst:137
 msgid "`list of recommended tools`_ in the Python Packaging User Guide"
-msgstr ""
+msgstr "Python 打包用户指南中的 `推荐工具列表`_"
 
 #: ../../c-api/stable.rst:141
 msgid ""
@@ -236,6 +259,8 @@ msgid ""
 "value rather than the version of the Python headers you are compiling "
 "against."
 msgstr ""
+"要针对稳定 ABI 编译，请将以下一个或两个宏定义为你的扩展应支持的最低 Python 版本，格式为 "
+":c:macro:`Py_PACK_VERSION`。通常，你应选择一个具体值，而不是正在用于编译的 Python 头文件版本。"
 
 #: ../../c-api/stable.rst:147
 msgid ""
@@ -244,6 +269,8 @@ msgid ""
 "use the numeric value directly. For reference, the values for a few recent "
 "Python versions are:"
 msgstr ""
+"这些宏必须在包含 ``Python.h`` 之前定义。由于此时 :c:macro:`Py_PACK_VERSION` "
+"尚不可用，你需要直接使用数值。作为参考，几个较新 Python 版本对应的值如下："
 
 #: ../../c-api/stable.rst:1
 msgid ""
@@ -254,6 +281,12 @@ msgid ""
 "0x30e0000  /* Py_PACK_VERSION(3.14) */\n"
 "0x30f0000  /* Py_PACK_VERSION(3.15) */"
 msgstr ""
+"0x30a0000  /* Py_PACK_VERSION(3.10) */\n"
+"0x30b0000  /* Py_PACK_VERSION(3.11) */\n"
+"0x30c0000  /* Py_PACK_VERSION(3.12) */\n"
+"0x30d0000  /* Py_PACK_VERSION(3.13) */\n"
+"0x30e0000  /* Py_PACK_VERSION(3.14) */\n"
+"0x30f0000  /* Py_PACK_VERSION(3.15) */"
 
 #: ../../c-api/stable.rst:154
 msgid ""
@@ -263,6 +296,9 @@ msgid ""
 "compiler but should not be used directly. When both are defined, "
 "``Python.h`` will only expose API compatible with both Stable ABIs."
 msgstr ""
+"当定义其中一个宏时，``Python.h`` 将只公开与给定稳定 ABI 兼容的 API —— 即 :ref:`受限 API <limited-api-"
+"list>`，以及一些需要对编译器可见、但不应直接使用的定义。当二者都被定义时，``Python.h`` 将只公开同时兼容这两种稳定 ABI 的 "
+"API。"
 
 #: ../../c-api/stable.rst:163
 msgid ""
@@ -270,6 +306,8 @@ msgid ""
 "build>` of CPython. See :ref:`above <abi3-compiling>` for common "
 "information."
 msgstr ""
+"目标为 ``abi3``，也就是 CPython 的非 :term:`自由线程构建 <free-threaded build>`。 通用信息请参见 "
+":ref:`上文 <abi3-compiling>`。"
 
 #: ../../c-api/stable.rst:169
 msgid ""
@@ -277,28 +315,34 @@ msgid ""
 "build>` of CPython. See :ref:`above <abi3-compiling>` for common "
 "information."
 msgstr ""
+"目标为 ``abi3t``，也就是 CPython 的 :term:`自由线程构建 <free-threaded build>`。通用信息请参见 "
+":ref:`上文 <abi3-compiling>`。"
 
 #: ../../c-api/stable.rst:175
 msgid ""
 "Both macros specify a target ABI; the different naming style is due to "
 "backwards compatibility."
-msgstr ""
+msgstr "这两个宏都会指定一个目标 ABI；命名风格不同是出于向后兼容。"
 
 #: ../../c-api/stable.rst:178
 msgid "Historical note"
-msgstr ""
+msgstr "历史说明"
 
 #: ../../c-api/stable.rst:180
 msgid ""
 "You can also define ``Py_LIMITED_API`` as ``3``. This works the same as "
 "``0x03020000`` (Python 3.2, the version that introduced Stable ABI)."
 msgstr ""
+"你也可以将 ``Py_LIMITED_API`` 定义为 ``3``。 这与 ``0x03020000`` (Python 3.2，即引入稳定 ABI "
+"的版本) 的作用相同。"
 
 #: ../../c-api/stable.rst:183
 msgid ""
 "When both are defined, ``Python.h`` may, or may not, redefine "
 ":c:macro:`!Py_LIMITED_API` to match :c:macro:`!Py_TARGET_ABI3T`."
 msgstr ""
+"当二者都被定义时，``Python.h`` 可能会，也可能不会，重新定义 :c:macro:`!Py_LIMITED_API` 以匹配 "
+":c:macro:`!Py_TARGET_ABI3T`。"
 
 #: ../../c-api/stable.rst:186
 msgid ""
@@ -307,27 +351,30 @@ msgid ""
 ":c:macro:`!Py_LIMITED_API`. This means that there are two ways to build for "
 "both ``abi3`` and ``abi3t``:"
 msgstr ""
+"在 :term:`自由线程构建 <free-threaded build>` 上 —— 也就是定义了 "
+":c:macro:`Py_GIL_DISABLED` 时 —— :c:macro:`!Py_TARGET_ABI3T` 默认取 "
+":c:macro:`!Py_LIMITED_API` 的值。这意味着有两种方式可以同时针对 ``abi3`` 和 ``abi3t`` 构建："
 
 #: ../../c-api/stable.rst:191
 msgid ""
 "define both :c:macro:`!Py_LIMITED_API` and :c:macro:`!Py_TARGET_ABI3T`, or"
-msgstr ""
+msgstr "同时定义 :c:macro:`!Py_LIMITED_API` 和 :c:macro:`!Py_TARGET_ABI3T`，或者"
 
 #: ../../c-api/stable.rst:192
 msgid "define only :c:macro:`!Py_LIMITED_API` and:"
-msgstr ""
+msgstr "只定义 :c:macro:`!Py_LIMITED_API`，并且："
 
 #: ../../c-api/stable.rst:194
 msgid "on Windows, define :c:macro:`!Py_GIL_DISABLED`;"
-msgstr ""
+msgstr "在 Windows 上，定义 :c:macro:`!Py_GIL_DISABLED`；"
 
 #: ../../c-api/stable.rst:195
 msgid "on other systems, use the headers of free-threaded build of Python."
-msgstr ""
+msgstr "在其他系统上，使用 Python 自由线程构建的头文件。"
 
 #: ../../c-api/stable.rst:201
 msgid "Stable ABI Scope and Performance"
-msgstr ""
+msgstr "稳定 ABI 的范围与性能"
 
 #: ../../c-api/stable.rst:203
 msgid ""
@@ -336,6 +383,7 @@ msgid ""
 "compatibility with Stable ABI will require some changes to an extension's "
 "source code."
 msgstr ""
+"稳定 ABI 的目标是允许完成完整 C API 能做到的所有事情，但可能会带来性能损失。通常，与稳定 ABI 兼容会要求对扩展的源代码做出一些修改。"
 
 #: ../../c-api/stable.rst:208
 msgid ""
@@ -344,6 +392,8 @@ msgid ""
 "because it can rely on version-specific implementation details of the list "
 "object."
 msgstr ""
+"例如，虽然 :c:func:`PyList_GetItem` 可用，但它的“非安全”宏变体 :c:func:`PyList_GET_ITEM` "
+"不可用。该宏可能更快，因为它可以依赖列表对象的版本专属实现细节。"
 
 #: ../../c-api/stable.rst:213
 msgid ""
@@ -352,6 +402,8 @@ msgid ""
 "disables this inlining, allowing stability as Python's data structures are "
 "improved, but possibly reducing performance."
 msgstr ""
+"再举一例，当 *不* 针对稳定 ABI 编译时，某些 C API 函数会被内联或被宏替换。针对稳定 ABI 编译会禁用这种内联，使其在 Python "
+"的数据结构得到改进时仍保持稳定，但可能会降低性能。"
 
 #: ../../c-api/stable.rst:218
 msgid ""
@@ -361,10 +413,13 @@ msgid ""
 "then be distributed alongside a version compiled for Stable ABI -- a slower "
 "but more compatible fallback."
 msgstr ""
+"通过省略 :c:macro:`!Py_LIMITED_API` 或 :c:macro:`!Py_TARGET_ABI3T` 定义，可以将与稳定 ABI "
+"兼容的源代码编译为版本专属 ABI。这样就可以将一个可能更快的版本专属扩展，与一个针对稳定 ABI 编译的版本一同分发 —— "
+"后者较慢，但兼容性更好，可作为回退方案。"
 
 #: ../../c-api/stable.rst:229
 msgid "Stable ABI Caveats"
-msgstr ""
+msgstr "稳定 ABI 注意事项"
 
 #: ../../c-api/stable.rst:231
 msgid ""
@@ -374,6 +429,8 @@ msgid ""
 "due to changes in structure layouts or function signatures. However, other "
 "changes in Python can change the *behavior* of extensions."
 msgstr ""
+"请注意，针对稳定 ABI 编译 *并不* 完全保证代码会与预期的 Python 版本兼容。稳定 ABI 防止的是 *ABI* "
+"问题，例如因缺少符号导致的链接器错误，或因结构体布局或函数签名改变导致的数据损坏。然而，Python 中的其他改变可能会改变扩展的 *行为*。"
 
 #: ../../c-api/stable.rst:238
 msgid ""
@@ -385,12 +442,15 @@ msgid ""
 "directly, causing a ``NULL`` dereference and crash. A similar argument works"
 " for fields of structs."
 msgstr ""
+"有一个问题是 :c:macro:`Py_TARGET_ABI3T` 和 :c:macro:`Py_LIMITED_API` 宏无法防范的：使用在较低 "
+"Python 版本中无效的参数来调用函数。例如，假设某个函数开始接受 ``NULL`` 作为参数。在 Python 3.9 中，``NULL`` "
+"现在会选择一种默认行为，但在 Python 3.8 中，该参数会被直接使用，从而导致 ``NULL`` 解引用并崩溃。结构体字段也存在类似情况。"
 
 #: ../../c-api/stable.rst:246
 msgid ""
 "For these reasons, we recommend testing an extension with *all* minor Python"
 " versions it supports."
-msgstr ""
+msgstr "由于这些原因，我们建议使用扩展所支持的 *所有* Python 次要版本来测试该扩展。"
 
 #: ../../c-api/stable.rst:249
 msgid ""
@@ -410,6 +470,9 @@ msgid ""
 "3.12. In general, parts of the Limited API may be deprecated and removed, "
 "provided that Stable ABI stays stable."
 msgstr ""
+"还要注意，虽然使用 ``Py_LIMITED_API`` 3.8 编译意味着扩展应当能在 Python 3.12 上 *加载*，也能使用 Python "
+"3.12 *编译*，但同一份源代码不一定能在将 ``Py_LIMITED_API`` 设为 3.12 时完成编译。通常，只要稳定 ABI 保持稳定，受限"
+" API 的某些部分可能会被弃用并移除。"
 
 #: ../../c-api/stable.rst:265
 msgid "Platform Considerations"
@@ -422,6 +485,8 @@ msgid ""
 ":ref:`Stable ABIs <stable-abi>`, these details define a “platform”. They "
 "usually depend on the OS type and processor architecture"
 msgstr ""
+"ABI 稳定性不仅取决于 Python，还取决于所使用的编译器、底层库和编译器选项。就 :ref:`稳定 ABI <stable-abi>` "
+"而言，这些细节定义了一个“平台”。它们通常取决于操作系统类型和处理器架构"
 
 #: ../../c-api/stable.rst:272
 msgid ""
@@ -431,14 +496,16 @@ msgid ""
 "case with Windows and macOS releases from ``python.org`` and many third-"
 "party distributors."
 msgstr ""
+"每个特定的 Python 分发方都有责任确保特定平台上的所有 Python 版本都以不会破坏稳定 ABI 或版本专属 ABI 的方式构建。来自 "
+"``python.org`` 的 Windows 和 macOS 发布版以及许多第三方分发版就是这种情况。"
 
 #: ../../c-api/stable.rst:280
 msgid "ABI Checking"
-msgstr ""
+msgstr "ABI 检查"
 
 #: ../../c-api/stable.rst:284
 msgid "Python includes a rudimentary check for ABI compatibility."
-msgstr ""
+msgstr "Python 包含一种基本的 ABI 兼容性检查。"
 
 #: ../../c-api/stable.rst:286
 msgid ""
@@ -447,19 +514,22 @@ msgid ""
 " not take :ref:`platform incompatibilities <stable-abi-platform>` into "
 "account. It can only be done after an extension is successfully loaded."
 msgstr ""
+"这种检查并不全面。它只能防范将不兼容模块安装给错误解释器的常见情况。它也不会考虑 :ref:`平台不兼容性 <stable-abi-"
+"platform>`。它只能在扩展成功加载后进行。"
 
 #: ../../c-api/stable.rst:293
 msgid ""
 "Despite these limitations, it is recommended that extension modules use this"
 " mechanism, so that detectable incompatibilities raise exceptions rather "
 "than crash."
-msgstr ""
+msgstr "尽管存在这些限制，仍建议扩展模块使用此机制，以便可检测到的不兼容性会引发异常，而不是导致崩溃。"
 
 #: ../../c-api/stable.rst:297
 msgid ""
 "Most modules can use this check via the :c:data:`Py_mod_abi` slot and the "
 ":c:macro:`PyABIInfo_VAR` macro, for example like this:"
 msgstr ""
+"大多数模块可以通过 :c:data:`Py_mod_abi` 槽位和 :c:macro:`PyABIInfo_VAR` 宏来使用此检查，例如："
 
 #: ../../c-api/stable.rst:300
 msgid ""
@@ -470,32 +540,38 @@ msgid ""
 "   ...\n"
 "};"
 msgstr ""
+"PyABIInfo_VAR(abi_info);\n"
+"\n"
+"static PyModuleDef_Slot mymodule_slots[] = {\n"
+"   {Py_mod_abi, &abi_info},\n"
+"   ...\n"
+"};"
 
 #: ../../c-api/stable.rst:310
 msgid "The full API is described below for advanced use cases."
-msgstr ""
+msgstr "完整 API 将在下文针对高级使用场景进行说明。"
 
 #: ../../c-api/stable.rst:314
 msgid ""
 "Verify that the given *info* is compatible with the currently running "
 "interpreter."
-msgstr ""
+msgstr "验证给定的 *info* 是否与当前正在运行的解释器兼容。"
 
 #: ../../c-api/stable.rst:317
 msgid "Return 0 on success. On failure, raise an exception and return -1."
-msgstr ""
+msgstr "成功时返回 0。失败时引发异常并返回 -1。"
 
 #: ../../c-api/stable.rst:319
 msgid ""
 "If the ABI is incompatible, the raised exception will be "
 ":py:exc:`ImportError`."
-msgstr ""
+msgstr "如果 ABI 不兼容，引发的异常将是 :py:exc:`ImportError`。"
 
 #: ../../c-api/stable.rst:321
 msgid ""
 "The *module_name* argument can be ``NULL``, or point to a NUL-terminated "
 "UTF-8-encoded string used for error messages."
-msgstr ""
+msgstr "*module_name* 参数可以为 ``NULL``，也可以指向一个以 NUL 终止、使用 UTF-8 编码、用于错误消息的字符串。"
 
 #: ../../c-api/stable.rst:324
 msgid ""
@@ -504,12 +580,14 @@ msgid ""
 " lead to crashes. In particular, it is not safe to examine the raised "
 "exception."
 msgstr ""
+"请注意，如果 *info* 描述的是当前代码所使用的 ABI（例如由 :c:macro:`PyABIInfo_VAR` 定义），则使用任何其他 "
+"Python C API 都可能导致崩溃。尤其是，检查所引发的异常是不安全的。"
 
 #: ../../c-api/stable.rst:333
 msgid ""
 "Define a static :c:struct:`PyABIInfo` variable with the given *NAME* that "
 "describes the ABI that the current code will use. This macro expands to:"
-msgstr ""
+msgstr "定义一个具有给定 *NAME* 的静态 :c:struct:`PyABIInfo` 变量，用于描述当前代码将使用的 ABI。此宏会展开为："
 
 #: ../../c-api/stable.rst:337
 msgid ""
@@ -520,18 +598,24 @@ msgid ""
 "    PyABIInfo_DEFAULT_ABI_VERSION\n"
 "}"
 msgstr ""
+"static PyABIInfo NAME = {\n"
+"    1, 0,\n"
+"    PyABIInfo_DEFAULT_FLAGS,\n"
+"    PY_VERSION_HEX,\n"
+"    PyABIInfo_DEFAULT_ABI_VERSION\n"
+"}"
 
 #: ../../c-api/stable.rst:352
 msgid "The major version of :c:struct:`PyABIInfo`. Can be set to:"
-msgstr ""
+msgstr ":c:struct:`PyABIInfo` 的主版本号。可以设为："
 
 #: ../../c-api/stable.rst:354
 msgid "``0`` to skip all checking, or"
-msgstr ""
+msgstr "``0`` 表示跳过所有检查，或者"
 
 #: ../../c-api/stable.rst:355
 msgid "``1`` to specify this version of :c:struct:`!PyABIInfo`."
-msgstr ""
+msgstr "``1`` 表示指定此版本的 :c:struct:`!PyABIInfo`。"
 
 #: ../../c-api/stable.rst:359
 msgid ""
@@ -539,39 +623,42 @@ msgid ""
 "values are reserved for backwards-compatible future versions of "
 ":c:struct:`!PyABIInfo`."
 msgstr ""
+":c:struct:`PyABIInfo` 的次版本号。必须设为 ``0``；更大的值将保留给未来向后兼容版本的 "
+":c:struct:`!PyABIInfo`。"
 
 #: ../../c-api/stable.rst:367
 msgid "This field is usually set to the following macro:"
-msgstr ""
+msgstr "此字段通常设为以下宏："
 
 #: ../../c-api/stable.rst:371
 msgid ""
 "Default flags, based on current values of macros such as "
 ":c:macro:`Py_LIMITED_API` and :c:macro:`Py_GIL_DISABLED`."
 msgstr ""
+"默认标志，基于 :c:macro:`Py_LIMITED_API` 和 :c:macro:`Py_GIL_DISABLED` 等宏的当前值。"
 
 #: ../../c-api/stable.rst:374
 msgid ""
 "Alternately, the field can be set to the following flags, combined by "
 "bitwise OR. Unused bits must be set to zero."
-msgstr ""
+msgstr "或者，可以将此字段设为以下标志，并通过按位或组合。未使用的位必须设为零。"
 
 #: ../../c-api/stable.rst:378
 msgid "ABI variant -- one of:"
-msgstr ""
+msgstr "ABI 变体 —— 以下之一："
 
 #: ../../c-api/stable.rst:382
 msgid "Specifies that Stable ABI is used."
-msgstr ""
+msgstr "指定使用稳定 ABI。"
 
 #: ../../c-api/stable.rst:386
 msgid ""
 "Specifies ABI specific to a particular build of CPython. Internal use only."
-msgstr ""
+msgstr "指定特定于某个 CPython 构建的 ABI。仅限内部使用。"
 
 #: ../../c-api/stable.rst:389
 msgid "Free-threading compatibility -- one of:"
-msgstr ""
+msgstr "自由线程兼容性 —— 以下之一："
 
 #: ../../c-api/stable.rst:393
 msgid ""
@@ -579,35 +666,37 @@ msgid ""
 "build>` of CPython. (That is, ones compiled with :option:`--disable-gil`; "
 "with ``t`` in :py:data:`sys.abiflags`)"
 msgstr ""
+"指定与 CPython 的 :term:`自由线程构建 <free-threaded build>` 兼容的 ABI。（即使用 "
+":option:`--disable-gil` 编译，并且 :py:data:`sys.abiflags` 中带有 ``t`` 的构建）"
 
 #: ../../c-api/stable.rst:400
 msgid ""
 "Specifies ABI compatible with non-free-threaded builds of CPython (ones "
 "compiled *without* :option:`--disable-gil`)."
-msgstr ""
+msgstr "指定与 CPython 的非自由线程构建兼容的 ABI（即 *未* 使用 :option:`--disable-gil` 编译的构建）。"
 
 #: ../../c-api/stable.rst:405
 msgid ""
 "Specifies ABI compatible with both free-threaded and non-free-threaded "
 "builds of CPython, that is, both ``abi3`` and ``abi3t``."
-msgstr ""
+msgstr "指定与 CPython 的自由线程构建和非自由线程构建二者都兼容的 ABI，也就是同时兼容 ``abi3`` 和 ``abi3t``。"
 
 #: ../../c-api/stable.rst:411
 msgid ""
 "The version of the Python headers used to build the code, in the format used"
 " by :c:macro:`PY_VERSION_HEX`."
-msgstr ""
+msgstr "用于构建代码的 Python 头文件版本，采用 :c:macro:`PY_VERSION_HEX` 所使用的格式。"
 
 #: ../../c-api/stable.rst:414
 msgid ""
 "This can be set to ``0`` to skip any checks related to this field. This "
 "option is meant mainly for projects that do not use the CPython headers "
 "directly, and do not emulate a specific version of them."
-msgstr ""
+msgstr "可以将其设为 ``0``，以跳过与此字段相关的任何检查。此选项主要面向不直接使用 CPython 头文件，并且不模拟其某个特定版本的项目。"
 
 #: ../../c-api/stable.rst:420
 msgid "The ABI version."
-msgstr ""
+msgstr "ABI 版本。"
 
 #: ../../c-api/stable.rst:422
 msgid ""
@@ -616,14 +705,17 @@ msgid ""
 "(If :c:macro:`Py_LIMITED_API` is ``3``; use :c:expr:`Py_PACK_VERSION(3, 2)` "
 "instead of ``3``.)"
 msgstr ""
+"对于稳定 ABI，此字段应为 :c:macro:`Py_LIMITED_API` 或 :c:macro:`Py_TARGET_ABI3T` "
+"的值。如果二者都被定义，则使用较小的值。（如果 :c:macro:`Py_LIMITED_API` 为 ``3``，则使用 "
+":c:expr:`Py_PACK_VERSION(3, 2)` 而不是 ``3``。）"
 
 #: ../../c-api/stable.rst:428
 msgid "Otherwise, it should be set to :c:macro:`PY_VERSION_HEX`."
-msgstr ""
+msgstr "否则，应将其设为 :c:macro:`PY_VERSION_HEX`。"
 
 #: ../../c-api/stable.rst:430
 msgid "It can also be set to ``0`` to skip any checks related to this field."
-msgstr ""
+msgstr "也可以将其设为 ``0``，以跳过与此字段相关的任何检查。"
 
 #: ../../c-api/stable.rst:436
 msgid ""
@@ -631,6 +723,8 @@ msgid ""
 "macros such as :c:macro:`Py_LIMITED_API`, :c:macro:`PY_VERSION_HEX` and "
 ":c:macro:`Py_GIL_DISABLED`."
 msgstr ""
+"此字段应使用的值，基于 :c:macro:`Py_LIMITED_API`、:c:macro:`PY_VERSION_HEX` 和 "
+":c:macro:`Py_GIL_DISABLED` 等宏的当前值。"
 
 #: ../../c-api/stable.rst:447
 msgid "Contents of Limited API"
@@ -640,7 +734,7 @@ msgstr "受限 API 的内容"
 msgid ""
 "This is the definitive list of :ref:`Limited API <limited-c-api>` for Python"
 " |version|:"
-msgstr ""
+msgstr "这是 Python |version| 的 :ref:`受限 API <limited-c-api>` 权威列表："
 
 #: ../../c-api/stable.rst:42
 msgid "PyUnstable"
