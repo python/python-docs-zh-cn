@@ -1432,6 +1432,8 @@ msgid ""
 "every type as assignable to :data:`Any` and :data:`Any` as assignable to "
 "every type."
 msgstr ""
+"还有一种特殊的类型 :data:`Any`。 静态类型检查器会认为所有类型均可被赋给 :data:`Any` 而 :data:`Any` "
+"也可被赋给所有类型。"
 
 #: ../../library/typing.rst:725
 msgid ""
@@ -1556,6 +1558,23 @@ msgid ""
 "hash_b(42)\n"
 "hash_b(\"foo\")"
 msgstr ""
+"def hash_a(item: object) -> int:\n"
+"    # 不能通过类型检查；对象没有 'magic' 方法。\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"def hash_b(item: Any) -> int:\n"
+"    # 通过类型检查\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"# 通过类型检查，因为 int 和 str 都是 object 的子类\n"
+"hash_a(42)\n"
+"hash_a(\"foo\")\n"
+"\n"
+"# 过类型检查，因为 Any 可以兼容所有类型\n"
+"hash_b(42)\n"
+"hash_b(\"foo\")"
 
 #: ../../library/typing.rst:792
 msgid ""
@@ -1674,7 +1693,7 @@ msgstr "特殊类型，表示没有约束的类型。"
 
 #: ../../library/typing.rst:854
 msgid "Every type is assignable to :data:`Any`."
-msgstr ""
+msgstr "所有类型均可被赋给 :data:`Any`。"
 
 #: ../../library/typing.rst:855
 msgid ":data:`Any` is assignable to every type."
@@ -4237,7 +4256,7 @@ msgstr ""
 
 #: ../../library/typing.rst:2344
 msgid "The :term:`qualified name` of the type alias:"
-msgstr ""
+msgstr "类型别名的 :term:`qualified name`:"
 
 #: ../../library/typing.rst:2346
 msgid ""
@@ -4269,11 +4288,11 @@ msgstr ""
 
 #: ../../library/typing.rst:2364
 msgid "This attribute is writable."
-msgstr ""
+msgstr "该属性是可写的。"
 
 #: ../../library/typing.rst:2368
 msgid "The attribute is now writable."
-msgstr ""
+msgstr "该属性现在是可写的。"
 
 #: ../../library/typing.rst:2372
 msgid ""
@@ -6397,7 +6416,7 @@ msgstr ""
 msgid ""
 "This function only returns true for ``Protocol`` classes, not for "
 ":ref:`generic aliases <types-genericalias>` of them:"
-msgstr ""
+msgstr "此函数只会对 ``Protocol`` 类返回真值，对它们的 :ref:`泛型别名 <types-genericalias>` 则不会："
 
 #: ../../library/typing.rst:3650
 msgid ""
@@ -6407,6 +6426,11 @@ msgid ""
 "\n"
 "assert not is_protocol(GenericP[int])"
 msgstr ""
+"class GenericP[T](Protocol):\n"
+"    def a(self) -> T: ...\n"
+"    b: int\n"
+"\n"
+"assert not is_protocol(GenericP[int])"
 
 #: ../../library/typing.rst:3662
 msgid "Check if a type is a :class:`TypedDict`."
