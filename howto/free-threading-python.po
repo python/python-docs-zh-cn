@@ -5,17 +5,17 @@
 # 
 # Translators:
 # python-doc bot, 2025
-# Freesand Leo <yuqinju@163.com>, 2025
 # 99 <wh2099@pm.me>, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.14\n"
+"Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-05 15:48+0000\n"
+"POT-Creation-Date: 2026-05-31 15:14+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: 99 <wh2099@pm.me>, 2026\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -300,3 +300,195 @@ msgstr ""
 "的构建中，该标志默认设置为 false。如果该标志为 true，则 :class:`warnings.catch_warnings` "
 "上下文管理器使用上下文变量用于警告过滤器。如果该标志为 false，则 :class:`~warnings.catch_warnings` "
 "修改全局过滤器列表，这不是线程安全的。详情请参阅 :mod:`warnings` 模块。"
+
+#: ../../howto/free-threading-python.rst:171
+msgid "Increased memory usage"
+msgstr "增加的内存使用"
+
+#: ../../howto/free-threading-python.rst:173
+msgid ""
+"The free-threaded build will typically use more memory compared to the "
+"default build.  There are multiple reasons for this, mostly due to design "
+"decisions."
+msgstr "自由线程构建版相比默认构建版通常会使用更多内存。 这有很多原因，大部分是由于设计上的决定。"
+
+#: ../../howto/free-threading-python.rst:178
+msgid "All interned strings are immortal"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:180
+msgid ""
+"For modern Python versions (since version 2.3), interning a string (e.g. "
+"with :func:`sys.intern`) does not cause it to become immortal.  Instead, if "
+"the last reference to that string disappears, it will be removed from the "
+"interned string table.  This is not the case for the free-threaded build and"
+" any interned string will become immortal, surviving until interpreter "
+"shutdown."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:188
+msgid "Non-GC objects have a larger object header"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:190
+msgid ""
+"The free-threaded build uses a different :c:type:`PyObject` structure.  "
+"Instead of having the GC related information allocated before the "
+":c:type:`PyObject` structure, like in the default build, the GC related info"
+" is part of the normal object header.  For example, on the AMD64 platform, "
+"``None`` uses 32 bytes on the free-threaded build vs 16 bytes for the "
+"default build.  GC objects (such as dicts and lists) are the same size for "
+"both builds since the free-threaded build does not use additional space for "
+"the GC info."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:200
+msgid "QSBR can delay freeing of memory"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:202
+msgid ""
+"In order to safely implement lock-free data structures, a safe memory "
+"reclamation (SMR) scheme is used, known as quiescent state-based reclamation"
+" (QSBR).  This means that the memory backing data structures allowing lock-"
+"free access will use QSBR, which defers the free operation, rather than "
+"immediately freeing the memory.  Two examples of these data structures are "
+"the list object and the dictionary keys object.  See "
+"``InternalDocs/qsbr.md`` in the CPython source tree for more details on how "
+"QSBR is implemented.  Running :func:`gc.collect` should cause all memory "
+"being held by QSBR to be actually freed.  Note that even when QSBR frees the"
+" memory, the underlying memory allocator may not immediately return that "
+"memory to the OS and so the resident set size (RSS) of the process might not"
+" decrease."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:216
+msgid "mimalloc allocator vs pymalloc"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:218
+msgid ""
+"The default build will normally use the \"pymalloc\" memory allocator for "
+"small allocations (512 bytes or smaller).  The free-threaded build does not "
+"use pymalloc and allocates all Python objects using the \"mimalloc\" "
+"allocator.  The pymalloc allocator has the following properties that help "
+"keep memory usage low: small per-allocated-block overhead, effective memory "
+"fragmentation prevention, and quick return of free memory to the operating "
+"system.  The mimalloc allocator does quite well in these respects as well "
+"but can have some more overhead."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:227
+msgid ""
+"In the free-threaded build, mimalloc manages memory in a number of separate "
+"heaps (currently four).  For example, all GC supporting objects are "
+"allocated from their own heap.  Using separate heaps means that free memory "
+"in one heap cannot be used for an allocation that uses another heap.  Also, "
+"some heaps are configured to use QSBR (quiescent-state based reclamation) "
+"when freeing the memory that backs up the heap (known as \"pages\" in "
+"mimalloc terminology).  The use of QSBR creates a delay between all memory "
+"blocks for a page being freed and the memory page being released, either for"
+" new allocations or back to the OS."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:237
+msgid ""
+"The mimalloc allocator also defers returning freed memory back to the OS.  "
+"You can reduce that delay by setting the environment variable "
+":envvar:`!MIMALLOC_PURGE_DELAY` to ``0``.  Note that this will likely reduce"
+" the performance of the allocator."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:244
+msgid "Free-threaded reference counting can cause objects to live longer"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:246
+msgid ""
+"In the default build, when an object's reference count reaches zero, it is "
+"normally deallocated.  The free-threaded build uses \"biased reference "
+"counting\", with a fast-path for objects \"owned\" by the current thread and"
+" a slow path for other objects.  See :pep:`703` for additional details.  Any"
+" time an object's reference count ends up in a \"queued\" state, "
+"deallocation can be deferred.  The queued state is cleared from the \"eval "
+"breaker\" section of the bytecode evaluator."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:254
+msgid ""
+"The free-threaded build also allows a different mode of reference counting, "
+"known as \"deferred reference counting\".  This mode is enabled by setting a"
+" flag on a per-object basis.  Deferred reference counting is enabled for the"
+" following types:"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:259
+msgid "module objects"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:260
+msgid "module top-level functions"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:261
+msgid "class methods defined in the class scope"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:262
+msgid "descriptor objects"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:263
+msgid "thread-local objects, created by :class:`threading.local`"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:265
+msgid ""
+"When deferred reference counting is enabled, references from Python function"
+" stacks are not added to the reference count.  This scheme reduces the "
+"overhead of reference counting, especially for objects used from multiple "
+"threads. Because the stack references are not counted, objects with deferred"
+" reference counting are not immediately freed when their internal reference "
+"count goes to zero.  Instead, they are examined by the next GC run and, if "
+"no stack references to them are found, they are freed.  This means these "
+"objects are freed by the GC and not when their reference count goes to zero,"
+" as is typical."
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:276
+msgid "Per-thread reference counting can delay freeing objects"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:278
+msgid ""
+"To avoid contention on the reference count fields of frequently shared "
+"objects, the free-threaded build also uses \"per-thread reference counting\""
+" for a few selected object types.  Rather than updating a single shared "
+"reference count, each thread maintains its own local reference count array, "
+"indexed by a unique id assigned to the object.  The true reference count is "
+"only computed by summing the per-thread counts when the object's local count"
+" drops to zero.  Per-thread reference counting is currently used for:"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:286
+msgid "heap type objects (classes created in Python)"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:287
+msgid "code objects"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:288
+msgid "the ``__dict__`` of module objects"
+msgstr ""
+
+#: ../../howto/free-threading-python.rst:290
+msgid ""
+"Because the per-thread counts must be merged back to the object before it "
+"can be deallocated, objects using per-thread reference counting are "
+"typically freed later than they would be in the default build.  In "
+"particular, such an object is usually not freed until the thread that "
+"referenced it reaches a safe point (for example, in the \"eval breaker\" "
+"section of the bytecode evaluator) or exits.  Running :func:`gc.collect` "
+"will merge the per-thread counts and allow these objects to be freed."
+msgstr ""
