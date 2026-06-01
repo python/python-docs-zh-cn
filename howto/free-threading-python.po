@@ -314,7 +314,7 @@ msgstr "自由线程构建版相比默认构建版通常会使用更多内存。
 
 #: ../../howto/free-threading-python.rst:178
 msgid "All interned strings are immortal"
-msgstr ""
+msgstr "所有内生字符串都是永生对象"
 
 #: ../../howto/free-threading-python.rst:180
 msgid ""
@@ -325,10 +325,13 @@ msgid ""
 " any interned string will become immortal, surviving until interpreter "
 "shutdown."
 msgstr ""
+"对于现代的 Python 版本（从 2.3 版开始），内生字符串 (例如通过 :func:`sys.intern`) 不会使它成为永生对象。 "
+"作为替代，如果对某字符串的最后一次引用消失，它将从内生字符串表中移除。  "
+"对于自由线程构建版来说则并非如此而是任何内生字符串都将成为永生对象，会保持存活直到解释器关闭。"
 
 #: ../../howto/free-threading-python.rst:188
 msgid "Non-GC objects have a larger object header"
-msgstr ""
+msgstr "非 GC 对象具有更大的对象标头"
 
 #: ../../howto/free-threading-python.rst:190
 msgid ""
@@ -480,7 +483,7 @@ msgstr ""
 
 #: ../../howto/free-threading-python.rst:288
 msgid "the ``__dict__`` of module objects"
-msgstr ""
+msgstr "模块对象的 ``__dict__``"
 
 #: ../../howto/free-threading-python.rst:290
 msgid ""
@@ -492,3 +495,6 @@ msgid ""
 "section of the bytecode evaluator) or exits.  Running :func:`gc.collect` "
 "will merge the per-thread counts and allow these objects to be freed."
 msgstr ""
+"由于对象的每线程计数必须在释放前合并回对象，使用每线程引用计数的对象通常会比在默认构建中更晚被释放。 "
+"具体而言，这样的对象往往要等到引用它的线程处于安全点位（例如，在字节码求值器的 \"eval breaker\" 节中）或退出时才会被释放。 运行 "
+":func:`gc.collect` 将合并每线程计数并允许这些对象被释放。"
