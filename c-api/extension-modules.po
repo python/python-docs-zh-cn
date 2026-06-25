@@ -5,17 +5,17 @@
 # 
 # Translators:
 # python-doc bot, 2025
-# 99 <wh2099@pm.me>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# 99 <wh2099@pm.me>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-09 14:43+0000\n"
+"POT-Creation-Date: 2026-06-25 16:18+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: 99 <wh2099@pm.me>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -143,15 +143,15 @@ msgstr ""
 msgid "specifies the :c:expr:`PySlot*` return type,"
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:79 ../../c-api/extension-modules.rst:224
+#: ../../c-api/extension-modules.rst:79 ../../c-api/extension-modules.rst:248
 msgid "adds any special linkage declarations required by the platform, and"
 msgstr "添加平台所需的任何特殊链接声明，以及"
 
-#: ../../c-api/extension-modules.rst:80 ../../c-api/extension-modules.rst:225
+#: ../../c-api/extension-modules.rst:80 ../../c-api/extension-modules.rst:249
 msgid "for C++, declares the function as ``extern \"C\"``."
 msgstr "对于 C++，将函数声明为 ``extern \"C\"``。"
 
-#: ../../c-api/extension-modules.rst:82 ../../c-api/extension-modules.rst:255
+#: ../../c-api/extension-modules.rst:82 ../../c-api/extension-modules.rst:279
 msgid "For example, a module called ``spam`` would be defined like this::"
 msgstr "例如，一个名为 ``spam`` 的模块可以这样定义::"
 
@@ -180,15 +180,54 @@ msgid ""
 "module's C source."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:103
+#: ../../c-api/extension-modules.rst:105
 msgid ""
-"The hook should be kept short -- ideally, one line as above. If you do need "
-"to use Python C API in this function, it is recommended to call "
-"``PyABIInfo_Check(&abi_info, \"modulename\")`` first to raise an exception, "
-"rather than crash, in common cases of ABI mismatch."
+"The hook should be kept short. If it does more than ``return`` a static "
+"array, several caveats apply:"
+msgstr ""
+
+#: ../../c-api/extension-modules.rst:108
+msgid ""
+"If you need to use any Python C API, it is recommended to call "
+":c:func:`PyABIInfo_Check` first to raise an exception, rather than crash, in"
+" common cases of ABI mismatch."
 msgstr ""
 
 #: ../../c-api/extension-modules.rst:111
+msgid ""
+"Code in the export hook must never rely on the :term:`GIL`: :term:`free-"
+"threaded builds <free-threaded build>` of Python can only check the "
+":c:macro:`Py_mod_gil` slot (or the lack of it) after the hook returns,"
+msgstr ""
+
+#: ../../c-api/extension-modules.rst:114
+msgid ""
+"Similarly, the hook may be called in any subinterpreter, since the "
+":c:macro:`Py_mod_multiple_interpreters` slot (or lack of it) is only checked"
+" after the hook returns."
+msgstr ""
+
+#: ../../c-api/extension-modules.rst:118
+msgid "For example::"
+msgstr "例如::"
+
+#: ../../c-api/extension-modules.rst:120
+msgid ""
+"PyMODEXPORT_FUNC\n"
+"PyModExport_modulename(void)\n"
+"{\n"
+"   if (PyABIInfo_Check(&abi_info, \"modulename\") < 0) {\n"
+"      /* ABI mismatch. It's not safe to examine the raised exception. */\n"
+"      return NULL;\n"
+"   }\n"
+"\n"
+"   /* use Python API (as little as possible); don't rely on GIL */\n"
+"\n"
+"   return modulename_slots;\n"
+"}"
+msgstr ""
+
+#: ../../c-api/extension-modules.rst:135
 msgid ""
 "It is possible to export multiple modules from a single shared library by "
 "defining multiple export hooks. However, importing  them requires a custom "
@@ -199,21 +238,21 @@ msgid ""
 "section in :pep:`489` for details."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:123
+#: ../../c-api/extension-modules.rst:147
 msgid "Multi-phase initialization"
 msgstr "多阶段初始化"
 
-#: ../../c-api/extension-modules.rst:125
+#: ../../c-api/extension-modules.rst:149
 msgid "The process of creating an extension module follows several phases:"
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:127
+#: ../../c-api/extension-modules.rst:151
 msgid ""
 "Python finds and calls the export hook to get information on how to create "
 "the module."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:129
+#: ../../c-api/extension-modules.rst:153
 msgid ""
 "Before any substantial code is executed, Python can determine which "
 "capabilities the module supports, and it can adjust the environment or "
@@ -222,21 +261,21 @@ msgid ""
 "this step."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:134
+#: ../../c-api/extension-modules.rst:158
 msgid ""
 "By default, Python itself then creates the module object -- that is, it does"
 " the equivalent of calling :py:meth:`~object.__new__` when creating an "
 "object. This step can be overridden using the :c:data:`Py_mod_create` slot."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:137
+#: ../../c-api/extension-modules.rst:161
 msgid ""
 "Python sets initial module attributes like :attr:`~module.__package__` and "
 ":attr:`~module.__loader__`, and inserts the module object into "
 ":py:attr:`sys.modules`."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:140
+#: ../../c-api/extension-modules.rst:164
 msgid ""
 "Afterwards, the module object is initialized in an extension-specific way --"
 " the equivalent of :py:meth:`~object.__init__` when creating an object, or "
@@ -244,7 +283,7 @@ msgid ""
 "specified using the :c:data:`Py_mod_exec` slot."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:145
+#: ../../c-api/extension-modules.rst:169
 msgid ""
 "This is called *multi-phase initialization* to distinguish it from the "
 "legacy (but still supported) :ref:`single-phase initialization <single-"
@@ -252,15 +291,15 @@ msgid ""
 "constructed module."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:151
+#: ../../c-api/extension-modules.rst:175
 msgid "Added support for multi-phase initialization (:pep:`489`)."
 msgstr "增加了对多阶段初始化的支持 (:pep:`489`)。"
 
-#: ../../c-api/extension-modules.rst:155
+#: ../../c-api/extension-modules.rst:179
 msgid "Multiple module instances"
 msgstr "多个模块实例"
 
-#: ../../c-api/extension-modules.rst:157
+#: ../../c-api/extension-modules.rst:181
 msgid ""
 "By default, extension modules are not singletons. For example, if the "
 ":py:attr:`sys.modules` entry is removed and the module is re-imported, a new"
@@ -269,7 +308,7 @@ msgid ""
 "mirrors the behavior of pure-Python modules."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:164
+#: ../../c-api/extension-modules.rst:188
 msgid ""
 "Additional module instances may be created in :ref:`sub-interpreters <sub-"
 "interpreter-support>` or after Python runtime reinitialization "
@@ -281,7 +320,7 @@ msgstr ""
 "(:c:func:`Py_Finalize` 和 :c:func:`Py_Initialize`) 被创建。在这些情况下，模块实例间共享 Python"
 "  对象可能导致程序崩溃或未定义的行为。"
 
-#: ../../c-api/extension-modules.rst:171
+#: ../../c-api/extension-modules.rst:195
 msgid ""
 "To avoid such issues, each instance of an extension module should be "
 "*isolated*: changes to one instance should not implicitly affect the others,"
@@ -292,13 +331,13 @@ msgstr ""
 "为避免这种问题，每个扩展模块的实例都应当是 *隔离的*: 对一个实例的修改不应隐式地影响其他的实例，以及模块所拥有的全部状态，包括对 Python "
 "对象的引用，都应当是特定模块实例专属的。请参阅 :ref:`isolating-extensions-howto` 了解更多的细节和实用的指南。"
 
-#: ../../c-api/extension-modules.rst:177
+#: ../../c-api/extension-modules.rst:201
 msgid ""
 "A simpler way to avoid these issues is :ref:`raising an error on repeated "
 "initialization <isolating-extensions-optout>`."
 msgstr "一个避免这些问题的简单方式是 :ref:`针对重复的初始化引发一个错误 <isolating-extensions-optout>`。"
 
-#: ../../c-api/extension-modules.rst:180
+#: ../../c-api/extension-modules.rst:204
 msgid ""
 "All modules are expected to support :ref:`sub-interpreters <sub-interpreter-"
 "support>`, or otherwise explicitly signal a lack of support. This is usually"
@@ -310,23 +349,23 @@ msgstr ""
 "这往往是通过隔离或阻止重复的初始化，如上文所述。一个模块也可以使用 :c:data:`Py_mod_multiple_interpreters` "
 "槽位将其限制于主解释器中。"
 
-#: ../../c-api/extension-modules.rst:192
+#: ../../c-api/extension-modules.rst:216
 msgid "``PyInit`` function"
 msgstr "``PyInit`` 函数"
 
-#: ../../c-api/extension-modules.rst:196
+#: ../../c-api/extension-modules.rst:220
 msgid ""
 "This functionality will not get new features, but there are no plans to "
 "remove it."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:199
+#: ../../c-api/extension-modules.rst:223
 msgid ""
 "Instead of :c:func:`PyModExport_modulename`, an extension module can define "
 "an older-style :dfn:`initialization function` with the signature:"
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:204
+#: ../../c-api/extension-modules.rst:228
 msgid ""
 "Its name should be :samp:`PyInit_{<name>}`, with ``<name>`` replaced by the "
 "name of the module. For non-ASCII module names, use :samp:`PyInitU_{<name>}`"
@@ -334,28 +373,28 @@ msgid ""
 "hook <extension-export-hook>` (that is, using Punycode with underscores)."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:211
+#: ../../c-api/extension-modules.rst:235
 msgid ""
 "If a module exports both :samp:`PyInit_{<name>}` and "
 ":samp:`PyModExport_{<name>}`, the :samp:`PyInit_{<name>}` function is "
 "ignored."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:215
+#: ../../c-api/extension-modules.rst:239
 msgid ""
 "Like with :c:macro:`PyMODEXPORT_FUNC`, it is recommended to define the "
 "initialization function using a helper macro:"
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:220
+#: ../../c-api/extension-modules.rst:244
 msgid "Declare an extension module initialization function. This macro:"
 msgstr "声明一个扩展模块初始化函数。这个宏："
 
-#: ../../c-api/extension-modules.rst:223
+#: ../../c-api/extension-modules.rst:247
 msgid "specifies the :c:expr:`PyObject*` return type,"
 msgstr "指定了 :c:expr:`PyObject*` 返回类型，"
 
-#: ../../c-api/extension-modules.rst:228
+#: ../../c-api/extension-modules.rst:252
 msgid ""
 "Normally, the initialization function (``PyInit_modulename``) returns a "
 ":c:type:`PyModuleDef` instance with non-``NULL`` "
@@ -363,37 +402,37 @@ msgid ""
 "phase initialization <multi-phase-initialization>`."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:233
+#: ../../c-api/extension-modules.rst:257
 msgid ""
 "Before it is returned, the ``PyModuleDef`` instance must be initialized "
 "using the following function:"
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:238
+#: ../../c-api/extension-modules.rst:262
 msgid ""
 "Ensure a module definition is a properly initialized Python object that "
 "correctly reports its type and a reference count."
 msgstr "确保模块定义是一个正确初始化的 Python 对象，并正确报告其类型以及引用计数。"
 
-#: ../../c-api/extension-modules.rst:241
+#: ../../c-api/extension-modules.rst:265
 msgid "Return *def* cast to ``PyObject*``, or ``NULL`` if an error occurred."
 msgstr "返回强制转换为 ``PyObject*`` 的 *def*，或者如果出现错误则返回 ``NULL``。"
 
-#: ../../c-api/extension-modules.rst:243
+#: ../../c-api/extension-modules.rst:267
 msgid ""
 "Calling this function is required before returning a :c:type:`PyModuleDef` "
 "from a module initialization function. It should not be used in other "
 "contexts."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:247
+#: ../../c-api/extension-modules.rst:271
 msgid ""
 "Note that Python assumes that ``PyModuleDef`` structures are statically "
 "allocated. This function may return either a new reference or a borrowed "
 "one; this reference must not be released."
 msgstr "请注意 Python 会假定 ``PyModuleDef`` 结构体是静态分配的。此函数可以返回一个新引用或借用引用；这个引用不可被释放。"
 
-#: ../../c-api/extension-modules.rst:257
+#: ../../c-api/extension-modules.rst:281
 msgid ""
 "static struct PyModuleDef spam_module = {\n"
 "    .m_base = PyModuleDef_HEAD_INIT,\n"
@@ -419,22 +458,22 @@ msgstr ""
 "    return PyModuleDef_Init(&spam_module);\n"
 "}"
 
-#: ../../c-api/extension-modules.rst:273
+#: ../../c-api/extension-modules.rst:297
 msgid "Legacy single-phase initialization"
 msgstr "旧式的单阶段初始化"
 
-#: ../../c-api/extension-modules.rst:277
+#: ../../c-api/extension-modules.rst:301
 msgid ""
 "Single-phase initialization is a legacy mechanism to initialize extension "
 "modules, with known drawbacks and design flaws. Extension module authors are"
 " encouraged to use multi-phase initialization instead."
 msgstr "单阶段初始化是一种用于初始化扩展模块的旧机制，它具有已知的缺点和设计瑕疵。建议扩展模块作者改用多阶段初始化。"
 
-#: ../../c-api/extension-modules.rst:281
+#: ../../c-api/extension-modules.rst:305
 msgid "However, there are no plans to remove support for it."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:283
+#: ../../c-api/extension-modules.rst:307
 msgid ""
 "In single-phase initialization, the old-style :ref:`initialization function "
 "<extension-pyinit>` (``PyInit_modulename``) should create, populate and "
@@ -443,24 +482,24 @@ msgid ""
 ":c:func:`PyModule_AddObjectRef`."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:289
+#: ../../c-api/extension-modules.rst:313
 msgid ""
 "Single-phase initialization differs from the :ref:`default <multi-phase-"
 "initialization>` in the following ways:"
 msgstr "单阶段初始化与 :ref:`默认方式 <multi-phase-initialization>` 的主要区别如下："
 
-#: ../../c-api/extension-modules.rst:292
+#: ../../c-api/extension-modules.rst:316
 msgid "Single-phase modules are, or rather *contain*, “singletons”."
 msgstr "单阶段模块本质上是（更准确地说，*包含*）\"单例对象\"。"
 
-#: ../../c-api/extension-modules.rst:294
+#: ../../c-api/extension-modules.rst:318
 msgid ""
 "When the module is first initialized, Python saves the contents of the "
 "module's ``__dict__`` (that is, typically, the module's functions and "
 "types)."
 msgstr "当模块首次初始化时，Python 会保存该模块 ``__dict__`` 中的内容（通常包括模块的函数和类型等）。"
 
-#: ../../c-api/extension-modules.rst:298
+#: ../../c-api/extension-modules.rst:322
 msgid ""
 "For subsequent imports, Python does not call the initialization function "
 "again. Instead, it creates a new module object with a new ``__dict__``, and "
@@ -472,7 +511,7 @@ msgstr ""
 "的模块对象，并将已保存的内容复制到其中。例如，假设有一个单阶段模块 ``_testsinglephase`` [#testsinglephase]_ "
 "定义了函数 ``sum`` 和异常类 ``error``:"
 
-#: ../../c-api/extension-modules.rst:306
+#: ../../c-api/extension-modules.rst:330
 msgid ""
 ">>> import sys\n"
 ">>> import _testsinglephase as one\n"
@@ -500,12 +539,12 @@ msgstr ""
 ">>> one.error is two.error\n"
 "True"
 
-#: ../../c-api/extension-modules.rst:321
+#: ../../c-api/extension-modules.rst:345
 msgid ""
 "The exact behavior should be considered a CPython implementation detail."
 msgstr "该具体行为应被视为 CPython 的实现细节。"
 
-#: ../../c-api/extension-modules.rst:323
+#: ../../c-api/extension-modules.rst:347
 msgid ""
 "To work around the fact that ``PyInit_modulename`` does not take a *spec* "
 "argument, some state of the import machinery is saved and applied to the "
@@ -516,27 +555,27 @@ msgstr ""
 "为解决 ``PyInit_modulename`` 函数不接受 *spec* 参数的限制，导入机制会保存部分状态，并在 "
 "``PyInit_modulename`` 调用期间将其应用于首个匹配的模块对象。具体表现为：当导入子模块时，该机制会将父包名称自动前置到模块名前。"
 
-#: ../../c-api/extension-modules.rst:329
+#: ../../c-api/extension-modules.rst:353
 msgid ""
 "A single-phase ``PyInit_modulename`` function should create “its” module "
 "object as soon as possible, before any other module objects can be created."
 msgstr "单阶段 ``PyInit_modulename`` 函数应当尽早创建\"其所属\"模块对象，该操作需在任何其他模块对象创建之前完成。"
 
-#: ../../c-api/extension-modules.rst:332
+#: ../../c-api/extension-modules.rst:356
 msgid "Non-ASCII module names (``PyInitU_modulename``) are not supported."
 msgstr "不支持非 ASCII 模块名 (``PyInitU_modulename``)。"
 
-#: ../../c-api/extension-modules.rst:334
+#: ../../c-api/extension-modules.rst:358
 msgid ""
 "Single-phase modules support module lookup functions like "
 ":c:func:`PyState_FindModule`."
 msgstr "单阶段模块支持模块查找函数如 :c:func:`PyState_FindModule`。"
 
-#: ../../c-api/extension-modules.rst:337
+#: ../../c-api/extension-modules.rst:361
 msgid "The module's :c:member:`PyModuleDef.m_slots` must be NULL."
 msgstr ""
 
-#: ../../c-api/extension-modules.rst:339
+#: ../../c-api/extension-modules.rst:363
 msgid ""
 "``_testsinglephase`` is an internal module used in CPython's self-test "
 "suite; your installation may or may not include it."
