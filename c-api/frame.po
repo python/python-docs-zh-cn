@@ -11,9 +11,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Python 3.14\n"
+"Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-23 15:47+0000\n"
+"POT-Creation-Date: 2026-07-19 14:48+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: python-doc bot, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -292,3 +292,73 @@ msgid ""
 "Return the currently executing line number, or -1 if there is no line "
 "number."
 msgstr "返回当前正在执行的行号，如果没有行号则返回 -1。"
+
+#: ../../c-api/frame.rst:250
+msgid ""
+"An array of executable kinds (executor types) for frames, used for internal "
+"debugging and tracing."
+msgstr ""
+
+#: ../../c-api/frame.rst:253
+msgid ""
+"Tools like debuggers and profilers can use this to identify the type of "
+"execution context associated with a frame (such as to filter out internal "
+"frames). The entries are indexed by the following constants:"
+msgstr ""
+
+#: ../../c-api/frame.rst:261
+msgid "Constant"
+msgstr "常量"
+
+#: ../../c-api/frame.rst:262
+msgid "Description"
+msgstr "描述"
+
+#: ../../c-api/frame.rst:264
+msgid ""
+"The frame is internal (For example: inlined) and should be skipped by tools."
+msgstr ""
+
+#: ../../c-api/frame.rst:266
+msgid "The frame corresponds to a standard Python function."
+msgstr ""
+
+#: ../../c-api/frame.rst:268
+msgid "The frame corresponds to a function defined in native code."
+msgstr ""
+
+#: ../../c-api/frame.rst:270
+msgid "The frame corresponds to a method on a class instance."
+msgstr ""
+
+#: ../../c-api/frame.rst:272
+msgid ""
+"However, Python's C API lacks a function to read the executable kind from a "
+"frame. Instead, use this recipe:"
+msgstr ""
+
+#: ../../c-api/frame.rst:275
+msgid ""
+"int\n"
+"get_executable_kind(PyFrameObject *frame)\n"
+"{\n"
+"   _PyInterpreterFrame *f = frame->f_frame;\n"
+"   PyObject *exec = PyStackRef_AsPyObjectBorrow(f->f_executable);\n"
+"\n"
+"   if (PyCode_Check(exec)) {\n"
+"      return PyUnstable_EXECUTABLE_KIND_PY_FUNCTION;\n"
+"   }\n"
+"   if (PyMethod_Check(exec)) {\n"
+"      return PyUnstable_EXECUTABLE_KIND_BUILTIN_FUNCTION;\n"
+"   }\n"
+"   if (Py_IS_TYPE(exec, &PyMethodDescr_Type)) {\n"
+"      return PyUnstable_EXECUTABLE_KIND_METHOD_DESCRIPTOR;\n"
+"   }\n"
+"\n"
+"   return PyUnstable_EXECUTABLE_KIND_SKIP;\n"
+"}"
+msgstr ""
+
+#: ../../c-api/frame.rst:301
+msgid "The number of entries in :c:data:`PyUnstable_ExecutableKinds`."
+msgstr ""
