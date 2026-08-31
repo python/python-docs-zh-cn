@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-31 16:48+0000\n"
+"POT-Creation-Date: 2026-08-29 18:19+0000\n"
 "PO-Revision-Date: 2026-05-08 17:18+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2026\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1429,6 +1430,8 @@ msgid ""
 "every type as assignable to :data:`Any` and :data:`Any` as assignable to "
 "every type."
 msgstr ""
+"还有一种特殊的类型 :data:`Any`。 静态类型检查器会认为所有类型均可被赋给 :data:`Any` 而 :data:`Any` "
+"也可被赋给所有类型。"
 
 #: ../../library/typing.rst:725
 msgid ""
@@ -1553,6 +1556,23 @@ msgid ""
 "hash_b(42)\n"
 "hash_b(\"foo\")"
 msgstr ""
+"def hash_a(item: object) -> int:\n"
+"    # 不能通过类型检查；对象没有 'magic' 方法。\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"def hash_b(item: Any) -> int:\n"
+"    # 通过类型检查\n"
+"    item.magic()\n"
+"    ...\n"
+"\n"
+"# 通过类型检查，因为 int 和 str 都是 object 的子类\n"
+"hash_a(42)\n"
+"hash_a(\"foo\")\n"
+"\n"
+"# 过类型检查，因为 Any 可以兼容所有类型\n"
+"hash_b(42)\n"
+"hash_b(\"foo\")"
 
 #: ../../library/typing.rst:792
 msgid ""
@@ -1671,11 +1691,11 @@ msgstr "特殊类型，表示没有约束的类型。"
 
 #: ../../library/typing.rst:854
 msgid "Every type is assignable to :data:`Any`."
-msgstr ""
+msgstr "所有类型均可被赋给 :data:`Any`。"
 
 #: ../../library/typing.rst:855
 msgid ":data:`Any` is assignable to every type."
-msgstr ""
+msgstr ":data:`Any` 可以赋值任意类型。"
 
 #: ../../library/typing.rst:857
 msgid ""
@@ -2564,6 +2584,13 @@ msgid ""
 "   m[\"year\"] = 1999  # allowed\n"
 "   m[\"title\"] = \"The Matrix\"  # type checker error"
 msgstr ""
+"class Movie(TypedDict):\n"
+"   title: ReadOnly[str]\n"
+"   year: int\n"
+"\n"
+"def mutate_movie(m: Movie) -> None:\n"
+"   m[\"year\"] = 1999  # 允许\n"
+"   m[\"title\"] = \"The Matrix\"  # 类型检查器错误"
 
 #: ../../library/typing.rst:1370
 msgid "There is no runtime checking for this property."
@@ -6180,7 +6207,7 @@ msgstr ""
 msgid ""
 "This function only returns true for ``Protocol`` classes, not for "
 ":ref:`generic aliases <types-genericalias>` of them:"
-msgstr ""
+msgstr "此函数只会对 ``Protocol`` 类返回真值，对它们的 :ref:`泛型别名 <types-genericalias>` 则不会："
 
 #: ../../library/typing.rst:3497
 msgid ""
@@ -6190,6 +6217,11 @@ msgid ""
 "\n"
 "assert not is_protocol(GenericP[int])"
 msgstr ""
+"class GenericP[T](Protocol):\n"
+"    def a(self) -> T: ...\n"
+"    b: int\n"
+"\n"
+"assert not is_protocol(GenericP[int])"
 
 #: ../../library/typing.rst:3509
 msgid "Check if a type is a :class:`TypedDict`."
