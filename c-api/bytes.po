@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-15 17:49+0000\n"
+"POT-Creation-Date: 2026-10-11 18:31+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -512,14 +512,16 @@ msgid ""
 "The instance must be destroyed by :c:func:`PyBytesWriter_Finish` on success,"
 " or :c:func:`PyBytesWriter_Discard` on error."
 msgstr ""
+"该实例在操作成功时必须通过 :c:func:`PyBytesWriter_Finish`，出错时则通过 "
+":c:func:`PyBytesWriter_Discard` 来销毁。"
 
 #: ../../c-api/bytes.rst:310
 msgid "Create, Finish, Discard"
-msgstr ""
+msgstr "创建, 结束, 丢弃"
 
 #: ../../c-api/bytes.rst:314
 msgid "Create a :c:type:`PyBytesWriter` to write *size* bytes."
-msgstr ""
+msgstr "创建一个 :c:type:`PyBytesWriter` 来写入 *size* 个字节。"
 
 #: ../../c-api/bytes.rst:316
 msgid ""
@@ -534,7 +536,7 @@ msgstr "发生错误时，将设置异常并返回 ``NULL``。"
 
 #: ../../c-api/bytes.rst:323 ../../c-api/bytes.rst:426
 msgid "*size* must be positive or zero."
-msgstr ""
+msgstr "*size* 必须为正数或零。"
 
 #: ../../c-api/bytes.rst:327
 msgid ""
@@ -702,6 +704,144 @@ msgid ""
 "    return NULL;\n"
 "}\n"
 "return (char*)PyBytesWriter_GetData(writer) + pos;"
+msgstr ""
+
+#: ../../c-api/bytes.rst:464
+msgid "Example creating the string ``b'abc'``"
+msgstr ""
+
+#: ../../c-api/bytes.rst:466
+msgid ""
+"Example creating the bytes string ``b\"abc\"``, with a fixed size of 3 "
+"bytes::"
+msgstr ""
+
+#: ../../c-api/bytes.rst:468
+msgid ""
+"PyObject* create_abc(void)\n"
+"{\n"
+"    PyBytesWriter *writer = PyBytesWriter_Create(3);\n"
+"    if (writer == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    char *str = PyBytesWriter_GetData(writer);\n"
+"    memcpy(str, \"abc\", 3);\n"
+"    return PyBytesWriter_Finish(writer);\n"
+"}"
+msgstr ""
+
+#: ../../c-api/bytes.rst:480
+msgid "Variant using a pointer to compute the final size::"
+msgstr ""
+
+#: ../../c-api/bytes.rst:482
+msgid ""
+"PyObject* create_abc_ptr(void)\n"
+"{\n"
+"    PyBytesWriter *writer = PyBytesWriter_Create(3);\n"
+"    if (writer == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"\n"
+"    char *str = PyBytesWriter_GetData(writer);\n"
+"    memcpy(str, \"abc\", 3);\n"
+"    str += 1;\n"
+"    return PyBytesWriter_FinishWithPointer(writer, str);\n"
+"}"
+msgstr ""
+
+#: ../../c-api/bytes.rst:497
+msgid "Update ``PyBytes_FromStringAndSize()`` code"
+msgstr ""
+
+#: ../../c-api/bytes.rst:499
+msgid ""
+"Example of code using the soft deprecated ``PyBytes_FromStringAndSize(NULL, "
+"size)`` API::"
+msgstr ""
+
+#: ../../c-api/bytes.rst:502
+msgid ""
+"int copy_bytes(char *dest, const char *src, Py_ssize_t num_bytes)\n"
+"{\n"
+"    ...\n"
+"}\n"
+"\n"
+"PyObject* create_string(const char *start, Py_ssize_t num_bytes)\n"
+"{\n"
+"    PyObject *result = PyBytes_FromStringAndSize(NULL, num_bytes);\n"
+"    if (result == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"    if (copy_bytes(PyBytes_AS_STRING(result), start, num_bytes) < 0) {\n"
+"        Py_CLEAR(result);\n"
+"    }\n"
+"    return result;\n"
+"}"
+msgstr ""
+
+#: ../../c-api/bytes.rst:519 ../../c-api/bytes.rst:556
+msgid "It can now be updated to::"
+msgstr ""
+
+#: ../../c-api/bytes.rst:521
+msgid ""
+"PyObject* create_string(const char *start, Py_ssize_t num_bytes)\n"
+"{\n"
+"    PyBytesWriter *writer = PyBytesWriter_Create(num_bytes);\n"
+"    if (writer == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"    if (copy_bytes(PyBytesWriter_GetData(writer), start, num_bytes) < 0) {\n"
+"        PyBytesWriter_Discard(writer);\n"
+"        return NULL;\n"
+"    }\n"
+"    return PyBytesWriter_Finish(writer);\n"
+"}"
+msgstr ""
+
+#: ../../c-api/bytes.rst:536
+msgid "Update ``_PyBytes_Resize()`` code"
+msgstr ""
+
+#: ../../c-api/bytes.rst:538
+msgid "Example of code using the soft deprecated ``_PyBytes_Resize()`` API::"
+msgstr ""
+
+#: ../../c-api/bytes.rst:540
+msgid ""
+"void create_string(Py_ssize_t size)\n"
+"{\n"
+"    PyObject *bytes = PyBytes_FromStringAndSize(NULL, size);\n"
+"    if (bytes == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"    char *str = PyBytes_AS_STRING(bytes);\n"
+"\n"
+"    // ... write data into str ...\n"
+"\n"
+"    if (_PyBytes_Resize(&bytes, (str - PyBytes_AS_STRING(bytes)))) {\n"
+"        return NULL;\n"
+"    }\n"
+"    return bytes;\n"
+"}"
+msgstr ""
+
+#: ../../c-api/bytes.rst:558
+msgid ""
+"void create_string(Py_ssize_t size)\n"
+"{\n"
+"    PyBytesWriter *writer = PyBytesWriter_Create(size);\n"
+"    if (writer == NULL) {\n"
+"        return NULL;\n"
+"    }\n"
+"    char *str = PyBytesWriter_GetData(writer);\n"
+"\n"
+"    // ... write data into str ...\n"
+"\n"
+"    return PyBytesWriter_FinishWithPointer(writer, str);\n"
+"}"
 msgstr ""
 
 #: ../../c-api/bytes.rst:18
