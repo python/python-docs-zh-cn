@@ -765,6 +765,9 @@ msgid ""
 " containment check used the resolved path, but intermediate directories were"
 " created from the name as given."
 msgstr ""
+":gh:`155999`: 修复了 :mod:`tarfile` 的 ``tar`` 和 ``data`` "
+"提取过滤器对于名称先离开目标目录再返回其中的成员（例如 ``../evil/../dest/sub/file``）会在目标目录之外创建目录的问题。 "
+"包含性检查使用了已解析的路径，但中间目录却是根据所给定的名称创建的。"
 
 #: ../NEWS:320
 msgid ""
@@ -776,6 +779,10 @@ msgid ""
 "socket or is stored on the server object) were not affected. This addresses "
 ":cve:`2026-19445`."
 msgstr ""
+":gh:`156293`: 修复了 :mod:`ssl` 中的一个崩溃问题，该崩溃发生在当 "
+":attr:`~ssl.SSLContext.sni_callback` 将连接切换到另一个 :class:`~ssl.SSLContext` "
+"且携带该回调的上下文不再被应用程序引用时。 保持其 ``sni_callback`` "
+"上下文存活的服务器（在包装监听套接字或存储在服务器对象上时的通常情况）不受影响。 这解决了 :cve:`2026-19445`。"
 
 #: ../NEWS:328
 msgid ""
@@ -1100,6 +1107,10 @@ msgid ""
 "``needs_input`` and two-argument ``decompress()`` are vulnerable to "
 ":cve:`2026-15310`."
 msgstr ""
+":gh:`156002`: :mod:`zipfile` 再次支持通过给私有 ``_get_decompressor()`` "
+"打猴子补丁所安装的第三方解压缩器来读取成员，该解压缩器返回一个仅实现了来自 Python 3.3 的旧版 BZ2Decompressor API "
+"的对象。 请注意，不具备 ``needs_input`` 和双参数 ``decompress()`` 的解压缩器容易受到 "
+":cve:`2026-15310` 的攻击。"
 
 #: ../NEWS:505
 msgid ""
@@ -1263,7 +1274,7 @@ msgstr ""
 msgid ""
 ":gh:`156353`: Fix :mod:`configparser` parsing when using whitespace in "
 "*delimiters*."
-msgstr ""
+msgstr ":gh:`156353`: 修复了在 *delimiters* 中使用空白字符时 :mod:`configparser` 的解析问题。"
 
 #: ../NEWS:593
 msgid ""
@@ -2115,6 +2126,9 @@ msgid ""
 " when a socket timeout was in use. Reported by ``@YLChen-007`` via "
 "GHSA-w4q2-g22w-6fr4."
 msgstr ""
+":gh:`150743`: :mod:`http.client` 现在将其读取的分块响应尾部行数量限制为 100，并将其跳过的临时 (1xx) "
+"响应数量限制为 100。 之前，恶意或损坏的服务器可能会无休止地流式发送尾部行或 ``100 Continue`` "
+"响应，即使在使用了套接字超时的情况下也会导致客户端挂起。 由 ``@YLChen-007`` 通过 GHSA-w4q2-g22w-6fr4 报告。"
 
 #: ../NEWS:1085
 msgid ""
@@ -2435,6 +2449,8 @@ msgid ""
 " which contains many quote characters.  A doubled quote character is now "
 "also detected in a field which contains the delimiter or a line break."
 msgstr ""
+":gh:`109638`: 修复了 :meth:`csv.Sniffer.sniff` 对于包含大量引号字符的样本耗时呈指数级增长的问题。 "
+"现在还会在包含分隔符或换行符的字段中检测双引号字符。"
 
 #: ../NEWS:1257
 msgid ""
@@ -2442,6 +2458,8 @@ msgid ""
 "which contains quoted fields, in particular for a single column of quoted "
 "fields."
 msgstr ""
+":gh:`98820`: 修复了 :meth:`csv.Sniffer.sniff` "
+"对于包含带引号字段的样本（特别是带引号字段的单列）耗时呈二次方增长的问题。"
 
 #: ../NEWS:1261
 msgid ""
@@ -3517,7 +3535,7 @@ msgstr ""
 msgid ""
 ":gh:`153438`: Update Windows build and installer tooling and documentation "
 "to use the current download URL for ``nuget.exe``."
-msgstr ""
+msgstr ":gh:`153438`: 更新了 Windows 构建和安装程序工具链及文档，以使用 ``nuget.exe`` 的当前下载 URL。"
 
 #: ../NEWS:1843
 msgid ""
@@ -3779,6 +3797,9 @@ msgid ""
 "combining characters in non-canonical order. Replaced with a linear-time "
 "counting sort for long runs."
 msgstr ""
+":gh:`149079`: 修复了 :func:`unicodedata.normalize` 中潜在的拒绝服务漏洞。 Unicode "
+"规范化的标准排序步骤此前使用二次时间的插入排序来对组合字符进行重新排序，这可能会被包含大量非标准顺序组合字符的精心构造的输入所利用。 "
+"现已针对长连续序列替换为线性时间的计数排序。"
 
 #: ../NEWS:2002
 msgid ""
@@ -3904,6 +3925,8 @@ msgid ""
 ":gh:`139808`: Add branch protections for AArch64 (BTI/PAC) in assembly code "
 "used by :option:`-X perf_jit <-X>` (Linux perf profiler integration)."
 msgstr ""
+":gh:`139808`: 在 :option:`-X perf_jit <-X>` （Linux perf 性能分析器集成）所使用的汇编代码中添加针对"
+" AArch64 的分支保护（BTI/PAC）。"
 
 #: ../NEWS:2072
 msgid ""
@@ -4049,7 +4072,7 @@ msgstr ""
 msgid ""
 ":gh:`149231`: In :mod:`tomllib`, the number of parts in TOML keys is now "
 "limited."
-msgstr ""
+msgstr ":gh:`149231`: 在 :mod:`tomllib` 中，TOML 键中的部分数量现在受到了限制。"
 
 #: ../NEWS:2152
 msgid ""
@@ -4099,6 +4122,13 @@ msgid ""
 " `billion laughs <https://en.wikipedia.org/wiki/Billion_laughs_attack>`_ "
 "attacks. Patch by Bénédikt Tran."
 msgstr ""
+":gh:`90949`: 向 :ref:`xmlparser <xmlparser-objects>` 对象添加了 "
+":meth:`~xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionActivationThreshold`"
+" 和 "
+":meth:`~xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionMaximumAmplification`"
+" 以微调针对 `billion laughs "
+"<https://en.wikipedia.org/wiki/Billion_laughs_attack>`_ 攻击的防护。 补丁由 Bénédikt "
+"Tran 提供。"
 
 #: ../NEWS:2179
 msgid ""
