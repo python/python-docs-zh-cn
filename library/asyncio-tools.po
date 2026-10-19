@@ -1,0 +1,213 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2001 Python Software Foundation
+# This file is distributed under the same license as the Python package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# python-doc bot, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Python 3.15\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-05 21:29+0000\n"
+"PO-Revision-Date: 2026-07-11 14:48+0000\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../../library/asyncio-tools.rst:7
+msgid "Command-line introspection tools"
+msgstr "命令行内省工具"
+
+#: ../../library/asyncio-tools.rst:9
+msgid "**Source code:** :source:`Lib/asyncio/tools.py`"
+msgstr "**源代码:** :source:`Lib/asyncio/tools.py`"
+
+#: ../../library/asyncio-tools.rst:13
+msgid ""
+"The :mod:`!asyncio` module can be invoked as a script via ``python -m "
+"asyncio`` to inspect the task graph of another running Python process "
+"without modifying it or restarting it.  The :mod:`!asyncio.tools` submodule "
+"implements this interface."
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:18
+msgid "The following commands inspect the process identified by ``PID``:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:20
+msgid ""
+"$ python -m asyncio pstree [--retries N] PID\n"
+"$ python -m asyncio ps [--retries N] PID"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:25
+msgid ""
+"The commands read the target process state without executing any code in it."
+" They are only available on supported platforms and may require permission "
+"to inspect another process.  See the :ref:`permission requirements "
+"<permission-requirements>` for details."
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:31
+msgid ":ref:`asyncio-graph`"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:32
+msgid ""
+"Programmatic APIs for inspecting the async call graph of a task or future in"
+" the current process."
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:35
+msgid ""
+"The command examples below use this program, which creates a task hierarchy "
+"suitable for inspection and prints its process ID:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:38
+msgid "example.py"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:38
+msgid ""
+"import asyncio\n"
+"import os\n"
+"\n"
+"async def play(track):\n"
+"    await asyncio.sleep(3600)\n"
+"    print(f\"🎵 Finished: {track}\")\n"
+"\n"
+"async def album(name, tracks):\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        for track in tracks:\n"
+"            tg.create_task(play(track), name=track)\n"
+"\n"
+"async def main():\n"
+"    print(f\"PID: {os.getpid()}\")\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        tg.create_task(\n"
+"            album(\"Sundowning\", [\"TNDNBTG\", \"Levitate\"]),\n"
+"            name=\"Sundowning\",\n"
+"        )\n"
+"        tg.create_task(\n"
+"            album(\"TMBTE\", [\"DYWTYLM\", \"Aqua Regia\"]),\n"
+"            name=\"TMBTE\",\n"
+"        )\n"
+"\n"
+"asyncio.run(main())"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:67
+msgid "Run the program in one terminal and leave it running:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:69
+msgid ""
+"$ python example.py\n"
+"PID: 12345"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:74
+msgid ""
+"Then pass the printed process ID to the commands from another terminal. "
+"Thread IDs, task IDs, file paths, and line numbers vary between runs and "
+"source layouts."
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:81
+msgid "Command-line options"
+msgstr "命令行选项"
+
+#: ../../library/asyncio-tools.rst:85
+msgid ""
+"Display task and coroutine relationships as a tree.  Each task is shown with"
+" its full coroutine stack, nested under the task (if any) that is awaiting "
+"it.  This subcommand is useful for quickly identifying which branch of a "
+"task hierarchy is blocked and where in its coroutine stack execution has "
+"paused:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:91
+msgid ""
+"$ python -m asyncio pstree 12345\n"
+"└── (T) Task-1\n"
+"    └──  main example.py:12\n"
+"        └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"            └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                ├── (T) Sundowning\n"
+"                │   └──  album example.py:7\n"
+"                │       └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"                │           └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                │               ├── (T) TNDNBTG\n"
+"                │               │   └──  play example.py:4\n"
+"                │               │       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                │               └── (T) Levitate\n"
+"                │                   └──  play example.py:4\n"
+"                │                       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                └── (T) TMBTE\n"
+"                    └──  album example.py:7\n"
+"                        └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"                            └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                                ├── (T) DYWTYLM\n"
+"                                │   └──  play example.py:4\n"
+"                                │       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                                └── (T) Aqua Regia\n"
+"                                    └──  play example.py:4\n"
+"                                        └──  sleep Lib/asyncio/tasks.py:702"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:119
+msgid ""
+"If the await graph contains a cycle, ``pstree`` reports an error instead of "
+"printing a tree.  A cycle in the await graph is unusual and typically "
+"indicates a programming error:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:123
+msgid ""
+"$ python -m asyncio pstree 12345\n"
+"ERROR: await-graph contains cycles - cannot print a tree!\n"
+"\n"
+"cycle: Task-2 → Task-3 → Task-2"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:132
+msgid ""
+"Display a flat table of all pending tasks in the process *PID*.  Each row "
+"shows the event-loop thread ID, task ID and name, coroutine stack, and the "
+"awaiting task's stack, name, and ID, if any."
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:136
+msgid ""
+"This subcommand prints all tasks regardless of whether the await graph "
+"contains cycles:"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:139
+msgid ""
+"$ python -m asyncio ps 12345\n"
+"tid        task id              task name            coroutine stack                                    awaiter chain                                      awaiter name    awaiter id\n"
+"------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+"18445801   0x10a456060          Task-1               TaskGroup._aexit -> TaskGroup.__aexit__ -> main                                                                       0x0\n"
+"18445801   0x10a439f60          Sundowning           TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TaskGroup._aexit -> TaskGroup.__aexit__ -> main    Task-1          0x10a456060\n"
+"18445801   0x10a439d70          TMBTE                TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TaskGroup._aexit -> TaskGroup.__aexit__ -> main    Task-1          0x10a456060\n"
+"18445801   0x10a2a3a80          TNDNBTG              sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   Sundowning      0x10a439f60\n"
+"18445801   0x10a2a38a0          Levitate             sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   Sundowning      0x10a439f60\n"
+"18445801   0x10a2d7150          DYWTYLM              sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70\n"
+"18445801   0x10a6bdaa0          Aqua Regia           sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70"
+msgstr ""
+
+#: ../../library/asyncio-tools.rst:154
+msgid ""
+"Retry failed attempts to inspect the target process up to *N* times.  This "
+"can help when the target process changes while its state is being read."
+msgstr ""
