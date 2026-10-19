@@ -4,11 +4,7 @@ name: Lint and test build
 on:
   schedule:
     - cron: '0 0 * * *'
-  push:
-    branches:
-      - '*'
   workflow_dispatch:
-  pull_request:
 
 jobs:
   lint:
@@ -16,14 +12,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ '3.14', '3.13', '3.12', '3.11', '3.10' ]
+        version: [ '3.15', '3.14', '3.13', '3.12', '3.11' ]
     continue-on-error: true
     steps:
-      - uses: actions/setup-python@master
+      - uses: actions/setup-python@v7
         with:
           python-version: 3
       - run: pip install sphinx-lint
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
         with:
           ref: ${{ matrix.version }}
       - uses: rffontenelle/sphinx-lint-problem-matcher@v1.0.0
@@ -34,19 +30,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ '3.14', '3.13', '3.12', '3.11', '3.10' ]
+        version: [ '3.15', '3.14', '3.13', '3.12', '3.11' ]
         format: [ html, latex ]
     steps:
-      - uses: actions/setup-python@master
+      - uses: actions/setup-python@7
         with:
           python-version: 3.12  # pinned for Sphinx 3.4.3 to build 3.10
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
         with:
           repository: python/cpython
           ref: ${{ matrix.version }}
       - run: make venv
         working-directory: ./Doc
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v7
         with:
           ref: ${{ matrix.version }}
           path: Doc/locales/zh_CN/LC_MESSAGES
@@ -55,7 +51,7 @@ jobs:
       - uses: sphinx-doc/github-problem-matcher@v1.1
       - run: make -e SPHINXOPTS="--color -D language='zh_CN' -W --keep-going" ${{ matrix.format }}
         working-directory: ./Doc
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v7
         if: success() || failure()
         with:
           name: build-${{ matrix.version }}-${{ matrix.format }}
@@ -65,16 +61,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [ '3.14', '3.13', '3.12', '3.11', '3.10' ]
+        version: [ '3.15', '3.14', '3.13', '3.12', '3.11' ]
     needs: [ 'build-translation' ]
     steps:
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v8
         with:
           name: build-${{ matrix.version }}-latex
       - run: sudo apt-get update
       - run: sudo apt-get install -y latexmk texlive-xetex fonts-freefont-otf xindy
       - run: make
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v7
         with:
           name: build-${{ matrix.version }}-pdf
           path: .
