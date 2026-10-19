@@ -13,7 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         version: [ '3.15', '3.14', '3.13', '3.12', '3.11' ]
-    continue-on-error: true
     steps:
       - uses: actions/setup-python@v7
         with:
@@ -33,7 +32,7 @@ jobs:
         version: [ '3.15', '3.14', '3.13', '3.12', '3.11' ]
         format: [ html, latex ]
     steps:
-      - uses: actions/setup-python@7
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.12  # pinned for Sphinx 3.4.3 to build 3.10
       - uses: actions/checkout@v7
@@ -46,8 +45,6 @@ jobs:
         with:
           ref: ${{ matrix.version }}
           path: Doc/locales/zh_CN/LC_MESSAGES
-      - run: git pull
-        working-directory: ./Doc/locales/zh_CN/LC_MESSAGES
       - uses: sphinx-doc/github-problem-matcher@v1.1
       - run: make -e SPHINXOPTS="--color -D language='zh_CN' -W --keep-going" ${{ matrix.format }}
         working-directory: ./Doc
@@ -68,7 +65,7 @@ jobs:
         with:
           name: build-${{ matrix.version }}-latex
       - run: sudo apt-get update
-      - run: sudo apt-get install -y latexmk texlive-xetex fonts-freefont-otf xindy
+      - run: sudo apt-get install -y latexmk texlive-xetex fonts-freefont-otf xindy texlive-lang-chinese fonts-noto-cjk
       - run: make
       - uses: actions/upload-artifact@v7
         with:
