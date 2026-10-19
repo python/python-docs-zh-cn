@@ -2,7 +2,7 @@ zh_CN Translation of the Python Documentation
 =============================================
 
 All translations are done on transifex.
-https://www.transifex.com/python-doc/public/
+https://explore.transifex.com/python-doc/
 
 Maintained versions:
 
@@ -37,11 +37,6 @@ Maintained versions:
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-311
      - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.11%2F.stat.json&query=%24.translation&label=zh-CN
           :target: https://app.transifex.com/python-doc/python-311/
-   * - `3.10 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
-     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-310/badge.svg
-          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
-     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.10%2F.stat.json&query=%24.translation&label=zh-CN
-          :target: https://app.transifex.com/python-doc/python-310/
 
 EOL versions:
 
@@ -51,6 +46,11 @@ EOL versions:
    * - Version
      - Sync status
      - Translation progress
+   * - `3.10 <https://github.com/python/python-docs-zh-cn/tree/3.10>`_
+     - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-310/badge.svg
+          :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-310
+     - .. image:: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpython%2Fpython-docs-zh-cn%2F3.10%2F.stat.json&query=%24.translation&label=zh-CN
+          :target: https://app.transifex.com/python-doc/python-310/
    * - `3.9 <https://github.com/python/python-docs-zh-cn/tree/3.9>`_
      - .. image:: https://github.com/python/python-docs-zh-cn/workflows/python-39/badge.svg
           :target: https://github.com/python/python-docs-zh-cn/actions?workflow=python-39
