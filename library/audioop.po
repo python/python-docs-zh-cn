@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2025, Python Software Foundation
+# Copyright (C) 2001-2026, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2025
+# Alpha Du <alphanow@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-25 16:03+0000\n"
+"POT-Creation-Date: 2026-10-17 19:14+0000\n"
 "PO-Revision-Date: 2025-07-18 19:57+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2025\n"
+"Last-Translator: Alpha Du <alphanow@gmail.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -223,6 +224,8 @@ msgid ""
 "new_frames = audioop.lin2lin(frames, old_width, 1)\n"
 "new_frames = audioop.bias(new_frames, 1, 128)"
 msgstr ""
+"new_frames = audioop.lin2lin(frames, old_width, 1)\n"
+"new_frames = audioop.bias(new_frames, 1, 128)"
 
 #: ../../library/audioop.rst:166
 msgid ""
@@ -340,6 +343,14 @@ msgid ""
 "    rsample = audioop.tostereo(rsample, width, 0, 1)\n"
 "    return audioop.add(lsample, rsample, width)"
 msgstr ""
+"def mul_stereo(sample, width, lfactor, rfactor):\n"
+"    lsample = audioop.tomono(sample, width, 1, 0)\n"
+"    rsample = audioop.tomono(sample, width, 0, 1)\n"
+"    lsample = audioop.mul(lsample, width, lfactor)\n"
+"    rsample = audioop.mul(rsample, width, rfactor)\n"
+"    lsample = audioop.tostereo(lsample, width, 1, 0)\n"
+"    rsample = audioop.tostereo(rsample, width, 0, 1)\n"
+"    return audioop.add(lsample, rsample, width)"
 
 #: ../../library/audioop.rst:258
 msgid ""
@@ -389,6 +400,18 @@ msgid ""
 "    outputdata = prefill + audioop.mul(outputdata, 2, -factor) + postfill\n"
 "    return audioop.add(inputdata, outputdata, 2)"
 msgstr ""
+"def echocancel(outputdata, inputdata):\n"
+"    pos = audioop.findmax(outputdata, 800)    # 十分之一秒\n"
+"    out_test = outputdata[pos*2:]\n"
+"    in_test = inputdata[pos*2:]\n"
+"    ipos, factor = audioop.findfit(in_test, out_test)\n"
+"    # 可选（为了更好的消除效果）：\n"
+"    # factor = audioop.findfactor(in_test[ipos*2:ipos*2+len(out_test)],\n"
+"    #              out_test)\n"
+"    prefill = '\\0'*(pos+ipos)*2\n"
+"    postfill = '\\0'*(len(inputdata)-len(prefill)-len(outputdata))\n"
+"    outputdata = prefill + audioop.mul(outputdata, 2, -factor) + postfill\n"
+"    return audioop.add(inputdata, outputdata, 2)"
 
 #: ../../library/audioop.rst:24
 msgid "Intel/DVI ADPCM"

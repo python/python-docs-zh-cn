@@ -1038,12 +1038,16 @@ msgid ""
 ">>> PurePath('a/b.py').match('/*.py')\n"
 "False"
 msgstr ""
+">>> PurePath('/a.py').match('/*.py')\n"
+"True\n"
+">>> PurePath('a/b.py').match('/*.py')\n"
+"False"
 
 #: ../../library/pathlib.rst:584
 msgid ""
 "The *pattern* may be another path object; this speeds up matching the same "
 "pattern against multiple files::"
-msgstr ""
+msgstr "*pattern* 可以是另一个路径对象；这可以加快将同一模式与多个文件进行匹配的速度::"
 
 #: ../../library/pathlib.rst:587
 msgid ""
@@ -1051,16 +1055,19 @@ msgid ""
 ">>> PurePath('a/b.py').match(pattern)\n"
 "True"
 msgstr ""
+">>> pattern = PurePath('*.py')\n"
+">>> PurePath('a/b.py').match(pattern)\n"
+"True"
 
 #: ../../library/pathlib.rst:592
 msgid ""
 "The recursive wildcard \"``**``\" isn't supported by this method (it acts "
 "like non-recursive \"``*``\".)"
-msgstr ""
+msgstr "此方法不支持递归通配符 \"``**``\"（它的作用类似于非递归的 \"``*``\"）。"
 
 #: ../../library/pathlib.rst:595
 msgid "Accepts an object implementing the :class:`os.PathLike` interface."
-msgstr ""
+msgstr "接受实现了 :class:`os.PathLike` 接口的对象。"
 
 #: ../../library/pathlib.rst:598
 msgid "As with other methods, case-sensitivity follows platform defaults::"
@@ -1073,6 +1080,10 @@ msgid ""
 ">>> PureWindowsPath('b.py').match('*.PY')\n"
 "True"
 msgstr ""
+">>> PurePosixPath('b.py').match('*.PY')\n"
+"False\n"
+">>> PureWindowsPath('b.py').match('*.PY')\n"
+"True"
 
 #: ../../library/pathlib.rst:605
 msgid ""
@@ -1390,6 +1401,19 @@ msgid ""
 "    % (cls.__name__,))\n"
 "NotImplementedError: cannot instantiate 'WindowsPath' on your system"
 msgstr ""
+">>> import os\n"
+">>> os.name\n"
+"'posix'\n"
+">>> Path('setup.py')\n"
+"PosixPath('setup.py')\n"
+">>> PosixPath('setup.py')\n"
+"PosixPath('setup.py')\n"
+">>> WindowsPath('setup.py')\n"
+"Traceback (most recent call last):\n"
+"  File \"<stdin>\", line 1, in <module>\n"
+"  File \"pathlib.py\", line 798, in __new__\n"
+"    % (cls.__name__,))\n"
+"NotImplementedError: cannot instantiate 'WindowsPath' on your system"
 
 #: ../../library/pathlib.rst:798
 msgid ""
@@ -1902,6 +1926,10 @@ msgid ""
 ">>> sorted(Path('.').glob('*/*.py'))\n"
 "[PosixPath('docs/conf.py')]"
 msgstr ""
+">>> sorted(Path('.').glob('*.py'))\n"
+"[PosixPath('pathlib.py'), PosixPath('setup.py'), PosixPath('test_pathlib.py')]\n"
+">>> sorted(Path('.').glob('*/*.py'))\n"
+"[PosixPath('docs/conf.py')]"
 
 #: ../../library/pathlib.rst:1182
 msgid ""
@@ -1921,6 +1949,12 @@ msgid ""
 " PosixPath('setup.py'),\n"
 " PosixPath('test_pathlib.py')]"
 msgstr ""
+">>> sorted(Path('.').glob('**/*.py'))\n"
+"[PosixPath('build/lib/pathlib.py'),\n"
+" PosixPath('docs/conf.py'),\n"
+" PosixPath('pathlib.py'),\n"
+" PosixPath('setup.py'),\n"
+" PosixPath('test_pathlib.py')]"
 
 #: ../../library/pathlib.rst:1193
 msgid ""
@@ -1928,6 +1962,8 @@ msgid ""
 "propagates any :exc:`OSError` exception that is raised. Subsequent "
 ":exc:`OSError` exceptions from scanning directories are suppressed."
 msgstr ""
+"此方法会在顶层目录上调用 :meth:`Path.is_dir` 并传播所引发的任何 :exc:`OSError` 异常。扫描目录时产生的后续 "
+":exc:`OSError` 异常则会被抑制。"
 
 #: ../../library/pathlib.rst:1197 ../../library/pathlib.rst:1229
 msgid ""
@@ -1967,6 +2003,8 @@ msgid ""
 ":func:`Path.glob` with \"``**/``\" added in front of the *pattern*, where "
 "*patterns* are the same as for :mod:`fnmatch`::"
 msgstr ""
+"递归地对给定的相对 *pattern* 执行 glob 通配。 这类似于调用 :func:`Path.glob` 时在 *pattern* 之前加上 "
+"\"``**/``\"，其中 *patterns* 的形式与 :mod:`fnmatch` 的相同::"
 
 #: ../../library/pathlib.rst:1222
 msgid ""
@@ -1977,6 +2015,12 @@ msgid ""
 " PosixPath('setup.py'),\n"
 " PosixPath('test_pathlib.py')]"
 msgstr ""
+">>> sorted(Path().rglob(\"*.py\"))\n"
+"[PosixPath('build/lib/pathlib.py'),\n"
+" PosixPath('docs/conf.py'),\n"
+" PosixPath('pathlib.py'),\n"
+" PosixPath('setup.py'),\n"
+" PosixPath('test_pathlib.py')]"
 
 #: ../../library/pathlib.rst:1234
 msgid ""
@@ -2380,13 +2424,13 @@ msgstr "访问权限与所有权"
 msgid ""
 "Return the name of the user owning the file.  :exc:`KeyError` is raised if "
 "the file's user identifier (UID) isn't found in the system database."
-msgstr ""
+msgstr "返回拥有此文件的用户名。 如果文件的用户标识符 (UID) 无法在系统数据库中找到则会引发 :exc:`KeyError`。"
 
 #: ../../library/pathlib.rst:1493
 msgid ""
 "Return the name of the group owning the file.  :exc:`KeyError` is raised if "
 "the file's group identifier (GID) isn't found in the system database."
-msgstr ""
+msgstr "返回拥有此文件的用户组名。 如果文件的用户组标识符 (GID) 无法在系统数据库中找到则会引发 :exc:`KeyError`。"
 
 #: ../../library/pathlib.rst:1499
 msgid "Change the file mode and permissions, like :func:`os.chmod`."
