@@ -610,6 +610,8 @@ msgid ""
 " method of the dataclass.  This ensures that :ref:`__post_init__ <post-init-"
 "processing>`, if present, is also called."
 msgstr ""
+"新返回的对象是通过调用数据类的 :meth:`~object.__init__` 方法来创建的。 这确保了如果存在 "
+":ref:`__post_init__ <post-init-processing>`，则它也会被调用。"
 
 #: ../../library/dataclasses.rst:436
 msgid ""
@@ -710,6 +712,10 @@ msgid ""
 ":meth:`~object.__init__` method is generated, then :meth:`!__post_init__` "
 "will not automatically be called."
 msgstr ""
+"如果在类上定义了 :meth:`!__post_init__`，则生成的 :meth:`~object.__init__` 代码将调用名为 "
+":meth:`!__post_init__` 的方法。 它通常会被作为 ``self.__post_init__()`` 调用。 但是，如果定义了任何 "
+"``InitVar`` 字段，它们也将按照它们在类中定义的顺序被传递给 :meth:`!__post_init__`。 如果没有生成 "
+":meth:`~object.__init__` 方法，那么 :meth:`!__post_init__` 将不会被自动调用。"
 
 #: ../../library/dataclasses.rst:515
 msgid ""
@@ -726,19 +732,19 @@ msgstr ""
 
 #: ../../library/dataclasses.rst:522
 msgid "@dataclass class C:"
-msgstr ""
+msgstr "@dataclass class C:"
 
 #: ../../library/dataclasses.rst:525
 msgid "a: float b: float c: float = field(init=False)"
-msgstr ""
+msgstr "a: float b: float c: float = field(init=False)"
 
 #: ../../library/dataclasses.rst:530
 msgid "def __post_init__(self):"
-msgstr ""
+msgstr "def __post_init__(self):"
 
 #: ../../library/dataclasses.rst:530
 msgid "self.c = self.a + self.b"
-msgstr ""
+msgstr "self.c = self.a + self.b"
 
 #: ../../library/dataclasses.rst:532
 msgid ""
@@ -747,6 +753,9 @@ msgid ""
 " class has an :meth:`!__init__` method that has to be called, it is common "
 "to call this method in a :meth:`!__post_init__` method::"
 msgstr ""
+"由 :func:`@dataclass <dataclass>` 生成的 :meth:`~object.__init__` 方法不会调用基类的 "
+":meth:`!__init__` 方法。 如果基类有需要被调用的 :meth:`!__init__` 方法，通常是在 "
+":meth:`!__post_init__` 方法中调用此方法::"
 
 #: ../../library/dataclasses.rst:549
 msgid ""
@@ -800,6 +809,11 @@ msgid ""
 "to the optional :ref:`__post_init__ <post-init-processing>` method.  They "
 "are not otherwise used by dataclasses."
 msgstr ""
+":func:`@dataclass <dataclass>` 检查类型标注的另一个地方是确定字段是否为仅限初始化变量。 它通过查看字段的类型是否为 "
+"``dataclasses.InitVar`` 类型来做到这一点。 如果字段是一个 ``InitVar``，它将被视为被称为仅限初始化字段的伪字段。 "
+"由于它不是真正的字段，因此它不会被模块级的 :func:`fields` 函数所返回。 仅限初始化字段会作为形参添加到生成的 "
+":meth:`~object.__init__` 方法中，并被传递给可选的 :ref:`__post_init__ <post-init-"
+"processing>` 方法。 它们不会被数据类用于其他地方。"
 
 #: ../../library/dataclasses.rst:581
 msgid ""

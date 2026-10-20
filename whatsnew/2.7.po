@@ -1528,6 +1528,10 @@ msgid ""
 "how to convert between float and :class:`!Decimal`.  (Fixed by Mark "
 "Dickinson; :issue:`2531`.)"
 msgstr ""
+"现在将 :class:`~decimal.Decimal` 的实例与浮点数进行比较会根据操作数的数值产生合理的结果。 之前，此类比较会回退到 "
+"Python 比较对象的默认规则，即根据其类型产生任意结果。 请注意，仍然不能在诸如加法等其他运算中将 :class:`!Decimal` "
+"与浮点数结合使用，因为应当显式选择如何在浮点数和 :class:`!Decimal` 之间进行转换。 （由 Mark Dickinson "
+"修复；:issue:`2531`。）"
 
 #: ../../whatsnew/2.7.rst:1205
 msgid ""
@@ -1938,7 +1942,7 @@ msgstr ""
 msgid ""
 "The :mod:`nntplib` module now supports IPv6 addresses. (Contributed by Derek"
 " Morr; :issue:`1664`.)"
-msgstr ""
+msgstr ":mod:`nntplib` 模块现在支持 IPv6 地址。 （由 Derek Morr 贡献；:issue:`1664`。）"
 
 #: ../../whatsnew/2.7.rst:1436
 msgid ""
@@ -2148,6 +2152,10 @@ msgid ""
 "returned from :meth:`recv` operations that trigger an SSL renegotiation (fix"
 " by Antoine Pitrou; :issue:`8222`)."
 msgstr ""
+":mod:`ssl` 模块的 :class:`~ssl.SSLSocket` 对象现在支持缓冲区 API，这修复了一个测试套件失败问题（由 "
+"Antoine Pitrou 修复；:issue:`7133`），并会自动设置 OpenSSL 的 "
+":c:macro:`!SSL_MODE_AUTO_RETRY`，这将防止从触发 SSL 重新协商的 :meth:`recv` 操作返回错误码（由 "
+"Antoine Pitrou 修复；:issue:`8222`）。"
 
 #: ../../whatsnew/2.7.rst:1546
 msgid ""
@@ -2157,6 +2165,10 @@ msgid ""
 " <https://www.openssl.org/docs/man1.0.2/man1/ciphers.html>`__. (Added by "
 "Antoine Pitrou; :issue:`8322`.)"
 msgstr ""
+":func:`~ssl.SSLContext.wrap_socket` 构造函数现在接受一个 *ciphers* "
+"参数，该参数是一个列出所允许的加密算法的字符串；该字符串的格式在 `OpenSSL 文档 "
+"<https://www.openssl.org/docs/man1.0.2/man1/ciphers.html>`__ 中有描述。 （由 "
+"Antoine Pitrou 添加；:issue:`8322`。）"
 
 #: ../../whatsnew/2.7.rst:1553
 msgid ""
@@ -2245,6 +2257,9 @@ msgid ""
 "named :attr:`!major`, :attr:`!minor`, :attr:`!micro`, :attr:`!releaselevel`,"
 " and :attr:`!serial`.  (Contributed by Ross Light; :issue:`4285`.)"
 msgstr ""
+":attr:`sys.version_info` 的值现在是一个具名元组，具有名为 :attr:`!major`、 :attr:`!minor`、 "
+":attr:`!micro`、 :attr:`!releaselevel` 和 :attr:`!serial` 的属性。 （由 Ross Light "
+"贡献；:issue:`4285`。）"
 
 #: ../../whatsnew/2.7.rst:1609
 msgid ""
@@ -2450,6 +2465,10 @@ msgid ""
 "tiny subset that contains a single function, "
 ":func:`~importlib.import_module`."
 msgstr ""
+"Python 3.1 包含了 :mod:`importlib` 包，它是对 Python 的 :keyword:`import` "
+"语句底层逻辑的重新实现。 :mod:`importlib` 对于 Python 解释器的实现者以及希望编写可参与导入过程的新导入器的用户非常有用。 "
+"Python 2.7 并未包含完整的 :mod:`importlib` 包，而是拥有一个仅包含单个函数 "
+":func:`~importlib.import_module` 的极小子集。"
 
 #: ../../whatsnew/2.7.rst:1746
 msgid ""
@@ -2593,6 +2612,9 @@ msgid ""
 "separately for use with Python versions 2.4 to 2.6, packaged as the "
 ":mod:`!unittest2` package, from https://pypi.org/project/unittest2."
 msgstr ""
+":mod:`unittest` 模块得到了极大增强；添加了诸多新特性。 除非另有说明，这些特性大多由 Michael Foord 实现。 "
+"该模块的增强版可以单独下载以用于 Python 2.4 至 2.6 版本，它被打包为 :mod:`!unittest2` 包，下载地址为 "
+"https://pypi.org/project/unittest2。"
 
 #: ../../whatsnew/2.7.rst:1836
 msgid ""
@@ -3000,6 +3022,13 @@ msgid ""
 "the tree is written out, so you don't need to do more extensive "
 "rearrangement to remove a single element."
 msgstr ""
+"ElementTree 用于将树转换为字符串的代码经过了大幅重构，在许多情况下使其速度大约快了一倍。 "
+":meth:`ElementTree.write() <xml.etree.ElementTree.ElementTree.write>` 和 "
+":meth:`Element.write` 方法现在具有一个 *method* 参数，其值可以为 \"xml\" （默认值）、 \"html\" 或 "
+"\"text\"。 HTML 模式会将空元素输出为 ``<empty></empty>`` 而不是 "
+"``<empty/>``，而文本模式则会跳过元素并仅输出文本块。 如果将某个元素的 "
+":attr:`~xml.etree.ElementTree.Element.tag` 属性设为 ``None`` "
+"但保留其子元素不动，则在写出树时将省略该元素，因此无需为了移除单个元素而进行更广泛的重新排列。"
 
 #: ../../whatsnew/2.7.rst:2044
 msgid ""
@@ -3010,6 +3039,10 @@ msgid ""
 ":meth:`~xml.etree.ElementTree.register_namespace`.  In XML mode, you can use"
 " the true/false *xml_declaration* parameter to suppress the XML declaration."
 msgstr ""
+"命名空间的处理也得到了改进。 现在所有 ``xmlns:<whatever>`` 声明都会在根元素上输出，而不是分散在结果 XML 的各处。 "
+"你可以通过设置 :attr:`default_namespace` 属性来为树设置默认命名空间，并可以使用 "
+":meth:`~xml.etree.ElementTree.register_namespace` 注册新前缀。 在 XML 模式下，可以使用真/假值 "
+"*xml_declaration* 参数来抑制 XML 声明。"
 
 #: ../../whatsnew/2.7.rst:2052
 msgid ""
@@ -3129,6 +3162,9 @@ msgid ""
 ":c:func:`PyCode_New`, which had many more arguments.  (Added by Jeffrey "
 "Yasskin.)"
 msgstr ""
+"新函数： :c:func:`PyCode_NewEmpty` 创建一个空代码对象；只需要文件名、函数名和首行行号。 "
+"这对于试图构造更有用的回溯栈的扩展模块很有用。 之前，此类扩展需要调用参数多得多的 :c:func:`PyCode_New`。 （由 Jeffrey "
+"Yasskin 添加。）"
 
 #: ../../whatsnew/2.7.rst:2138
 msgid ""
@@ -3182,6 +3218,8 @@ msgid ""
 "script named by ``sys.argv[0]`` depending on the value of an *updatepath* "
 "parameter."
 msgstr ""
+"新函数： :c:func:`PySys_SetArgvEx` 设置 ``sys.argv`` 的值，并可根据 *updatepath* "
+"参数的值选择性地更新 ``sys.path`` 以包含含有由 ``sys.argv[0]`` 所命名脚本的目录。"
 
 #: ../../whatsnew/2.7.rst:2167
 msgid ""
@@ -3193,6 +3231,9 @@ msgid ""
 "(say, a file named :file:`os.py`) that your application would then import "
 "and run."
 msgstr ""
+"添加此函数是为了修补嵌入了 Python 的应用程序中的一个安全漏洞。 旧函数 :c:func:`PySys_SetArgv` 总是会更新 "
+"``sys.path``，并且有时还会添加当前目录。 这意味着，如果在由他人控制的目录中运行嵌入了 Python "
+"的应用程序，攻击者可能会在该目录中放置一个木马模块（比方说名为 :file:`os.py` 的文件），而你的应用程序随后就会将其导入并运行。"
 
 #: ../../whatsnew/2.7.rst:2175
 msgid ""
@@ -3201,6 +3242,8 @@ msgid ""
 "application should be using :c:func:`PySys_SetArgvEx` with *updatepath* set "
 "to false."
 msgstr ""
+"如果你维护着嵌入了 Python 的 C/C++ 应用程序，请检查是否调用了 :c:func:`PySys_SetArgv` "
+"并仔细考虑该应用程序是否应当改用将 *updatepath* 设为假值的 :c:func:`PySys_SetArgvEx`。"
 
 #: ../../whatsnew/2.7.rst:2180
 msgid ""
@@ -3208,6 +3251,9 @@ msgid ""
 "bin/cvename.cgi?name=CVE-2008-5983>`_; discussed in :issue:`5753`, and fixed"
 " by Antoine Pitrou."
 msgstr ""
+"作为 `CVE-2008-5983 <https://cve.mitre.org/cgi-"
+"bin/cvename.cgi?name=CVE-2008-5983>`_ 报告的安全问题；在 :issue:`5753` 中进行了讨论，并由 "
+"Antoine Pitrou 修复。"
 
 #: ../../whatsnew/2.7.rst:2184
 msgid ""
@@ -3293,6 +3339,8 @@ msgid ""
 "type, Python will no longer let you try to delete or set a "
 ":c:macro:`T_STRING_INPLACE` attribute."
 msgstr ""
+"当使用 :c:type:`PyMemberDef` 结构体定义类型的属性时，Python 将不再允许尝试删除或设置 "
+":c:macro:`T_STRING_INPLACE` 属性。"
 
 #: ../../whatsnew/2.7.rst:2242
 msgid ""
@@ -3342,6 +3390,9 @@ msgid ""
 "available if anyone wishes to use it. (Added by Mark Dickinson; "
 ":issue:`2937`.)"
 msgstr ""
+":program:`configure` 脚本现在会检查某些 32 位 Intel 芯片上的浮点舍入错误，并定义一个 "
+":c:macro:`X87_DOUBLE_ROUNDING` 预处理器定义。 目前还没有代码使用此定义，但如果有人希望使用它，它是可用的。 （由 "
+"Mark Dickinson 添加；:issue:`2937`。）"
 
 #: ../../whatsnew/2.7.rst:2268
 msgid ""
@@ -3349,6 +3400,8 @@ msgid ""
 " for supporting C++ linking.  (Contributed by Arfrever Frehtes Taifersar "
 "Arahesis; :issue:`1222585`.)"
 msgstr ""
+":program:`configure` 现在还会设置一个用于支持 C++ 链接的 :envvar:`LDCXXSHARED` Makefile 变量。"
+" （由 Arfrever Frehtes Taifersar Arahesis 贡献；:issue:`1222585`。）"
 
 #: ../../whatsnew/2.7.rst:2272
 msgid ""
@@ -3754,6 +3807,9 @@ msgid ""
 "consider whether the application should be using :c:func:`PySys_SetArgvEx` "
 "with *updatepath* set to false."
 msgstr ""
+"添加了 :c:func:`PySys_SetArgvEx` 函数，使应用程序能够修补使用现有 :c:func:`PySys_SetArgv` "
+"函数时存在的安全漏洞。 请检查是否调用了 :c:func:`PySys_SetArgv` 并仔细考虑该应用程序是否应当改用将 *updatepath* "
+"设为假值的 :c:func:`PySys_SetArgvEx`。"
 
 #: ../../whatsnew/2.7.rst:2565
 msgid "New Features Added to Python 2.7 Maintenance Releases"
@@ -3874,6 +3930,8 @@ msgid ""
 " python.org. (contributed by Zachary Ware in :issue:`21671` for "
 "CVE-2014-0224)"
 msgstr ""
+"在 python.org 上发布的官方 Windows 安装程序已升级至 OpenSSL 1.0.1h。 （由 Zachary Ware 在 "
+":issue:`21671` 中针对 CVE-2014-0224 贡献）"
 
 #: ../../whatsnew/2.7.rst:2630
 msgid ":pep:`466` related features added in Python 2.7.9:"
@@ -4013,6 +4071,7 @@ msgid ""
 "versions of those guides remaining available as :ref:`install-index` and "
 ":ref:`distutils-index`."
 msgstr ""
+"但是，由于此迁移目前仍未完成，这些指南的旧版本仍作为 :ref:`install-index` 和 :ref:`distutils-index` 提供。"
 
 #: ../../whatsnew/2.7.rst:2710
 msgid ":pep:`453` -- Explicit bootstrapping of pip in Python installations"

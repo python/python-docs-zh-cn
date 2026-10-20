@@ -31,11 +31,11 @@ msgstr "更新日志"
 
 #: ../../../build/NEWS:5
 msgid "Python 3.11.17 final"
-msgstr ""
+msgstr "Python 3.11.17 正式版"
 
 #: ../../../build/NEWS:7
 msgid "*Release date: 2026-10-01*"
-msgstr ""
+msgstr "*发布日期：2026-10-01*"
 
 #: ../../../build/NEWS:10 ../../../build/NEWS:120 ../../../build/NEWS:296
 #: ../../../build/NEWS:390 ../../../build/NEWS:466 ../../../build/NEWS:505
@@ -84,6 +84,11 @@ msgid ""
 "to ``True``, emitting :exc:`DeprecationWarning` if *server_hostname* is "
 "missing. (This will raise :exc:`ValueError` in Python 3.13 and later.)"
 msgstr ""
+":gh:`156793`: :mod:`asyncio`: 当传入了将 *check_hostname* 设为 ``True`` 的 "
+":class:`ssl.SSLContext` 时， :meth:`loop.start_tls <asyncio.loop.start_tls>` 和"
+" :meth:`loop.create_connection <asyncio.loop.create_connection>` 现在会验证 "
+"*server_hostname* 参数，如果缺少 *server_hostname* 则会发出 :exc:`DeprecationWarning`。 "
+"（在 Python 3.13 及之后版本中这将引发 :exc:`ValueError`。）"
 
 #: ../../../build/NEWS:26
 msgid ""
@@ -92,6 +97,10 @@ msgid ""
 ":meth:`ssl.SSLContext.wrap_socket`, but for backward compatiblity reasons "
 "emits :exc:`DeprecationWarning` instead of :exc:`ValueError`."
 msgstr ""
+":gh:`156793`: :meth:`ssl.SSLContext.wrap_bio` 现在会类似于 "
+":meth:`ssl.SSLContext.wrap_socket` 那样验证其 *server_side*、 *server_hostname* 和 "
+"*session* 参数，但出于向后兼容性的原因会发出 :exc:`DeprecationWarning` 而不是引发 "
+":exc:`ValueError`。"
 
 #: ../../../build/NEWS:31
 msgid ""
@@ -100,6 +109,9 @@ msgid ""
 ":exc:`DeprecationWarning` to indicate the hostname wasn't checked. (In "
 "Python 3.13 and later, this raises :exc:`ValueError`.)"
 msgstr ""
+"特别地，当启用了 :attr:`~ssl.SSLContext.check_hostname` 的上下文未向 :meth:`!wrap_bio` 传入 "
+"*server_hostname* 时，现在会发出 :exc:`DeprecationWarning` 以指明未检查主机名。 （在 Python "
+"3.13 及之后版本中，这将引发 :exc:`ValueError`。）"
 
 #: ../../../build/NEWS:36
 msgid ""
@@ -119,6 +131,9 @@ msgid ""
 "outside the destination directory, and expose its contents inside the "
 "extracted tree. This addresses CVE 2026-82049."
 msgstr ""
+":gh:`157190`: 修复了 :mod:`tarfile` 的 ``data`` 和 ``tar`` "
+"提取过滤器中的一个漏洞，在该漏洞中，使用指向符号链接的硬链接精心构造的归档文件可能会更改目标目录之外文件的权限和修改时间，并在提取出的目录树内部暴露其内容。"
+" 这解决了 CVE 2026-82049。"
 
 #: ../../../build/NEWS:47
 msgid ""
@@ -145,6 +160,9 @@ msgid ""
 " containment check used the resolved path, but intermediate directories were"
 " created from the name as given."
 msgstr ""
+":gh:`155999`: 修复了 :mod:`tarfile` 的 ``tar`` 和 ``data`` "
+"提取过滤器对于名称先离开目标目录再返回其中的成员（例如 ``../evil/../dest/sub/file``）会在目标目录之外创建目录的问题。 "
+"包含性检查使用了已解析的路径，但中间目录却是根据所给定的名称创建的。"
 
 #: ../../../build/NEWS:61
 msgid ""
@@ -156,6 +174,11 @@ msgid ""
 "socket or is stored on the server object) were not affected. This addresses "
 "`CVE-2026-19445 <https://www.cve.org/CVERecord?id=CVE-2026-19445>`_."
 msgstr ""
+":gh:`156293`: 修复了 :mod:`ssl` 中的一个崩溃问题，该崩溃发生在当 "
+":attr:`~ssl.SSLContext.sni_callback` 将连接切换到另一个 :class:`~ssl.SSLContext` "
+"且携带该回调的上下文不再被应用程序引用时。 保持其 ``sni_callback`` "
+"上下文存活的服务器（在包装监听套接字或存储在服务器对象上时的通常情况）不受影响。 这解决了 `CVE-2026-19445 "
+"<https://www.cve.org/CVERecord?id=CVE-2026-19445>`_。"
 
 #: ../../../build/NEWS:70
 msgid ""
@@ -174,6 +197,10 @@ msgid ""
 "preventing credentials stored for an HTTPS URL from being used for a "
 "matching HTTP URL, while URIs without a scheme continue to match any scheme."
 msgstr ""
+":gh:`155694`: 通过将 :class:`~urllib.request.HTTPPasswordMgr` 凭据的作用域限定到 URL "
+"方案来修复 `CVE-2026-15806 "
+"<https://www.cve.org/CVERecord?id=CVE-2026-15806>`_，从而防止为 HTTPS URL "
+"存储的凭据被用于匹配的 HTTP URL，而不带方案的 URI 则继续匹配任何方案。"
 
 #: ../../../build/NEWS:82 ../../../build/NEWS:252 ../../../build/NEWS:355
 #: ../../../build/NEWS:447 ../../../build/NEWS:482 ../../../build/NEWS:542
@@ -230,12 +257,16 @@ msgid ""
 "``needs_input`` and two-argument ``decompress()`` are vulnerable to CVE "
 "2026-15310."
 msgstr ""
+":gh:`156002`: :mod:`zipfile` 再次支持通过给私有 ``_get_decompressor()`` "
+"打猴子补丁所安装的第三方解压缩器来读取成员，该解压缩器返回一个仅实现了来自 Python 3.3 的旧版 BZ2Decompressor API "
+"的对象。 请注意，不具备 ``needs_input`` 和双参数 ``decompress()`` 的解压缩器容易受到 CVE 2026-15310 "
+"的攻击。"
 
 #: ../../../build/NEWS:91
 msgid ""
 ":gh:`156353`: Fix :mod:`configparser` parsing when using whitespace in "
 "*delimiters*."
-msgstr ""
+msgstr ":gh:`156353`: 修复了在 *delimiters* 中使用空白字符时 :mod:`configparser` 的解析问题。"
 
 #: ../../../build/NEWS:95 ../../../build/NEWS:284 ../../../build/NEWS:1000
 #: ../../../build/NEWS:1338 ../../../build/NEWS:1679 ../../../build/NEWS:1975
@@ -284,14 +315,16 @@ msgid ""
 "the test suite passes. Otherwise the calculated paths to the stdlib for "
 "frozen modules is incorrect."
 msgstr ""
+":gh:`155757`: 为 WASI 构建设置传给 wasmtime 的 ``--argv0`` 参数以便测试套件通过。 "
+"否则，为冻结模块计算出的标准库路径是不正确的。"
 
 #: ../../../build/NEWS:103
 msgid "Python 3.11.16 final"
-msgstr ""
+msgstr "Python 3.11.16 正式版"
 
 #: ../../../build/NEWS:105
 msgid "*Release date: 2026-08-13*"
-msgstr ""
+msgstr "*发布日期：2026-08-13*"
 
 #: ../../../build/NEWS:108 ../../../build/NEWS:1382 ../../../build/NEWS:1700
 #: ../../../build/NEWS:1995 ../../../build/NEWS:2283 ../../../build/NEWS:2599
@@ -374,6 +407,8 @@ msgid ""
 "version 2.8.3 for the fix to `CVE-2026-72522 "
 "<https://www.cve.org/CVERecord?id=CVE-2026-72522>`_."
 msgstr ""
+":gh:`155558`: 将捆绑的 `libexpat <https://libexpat.github.io/>`_ 更新至 2.8.3 版以修复 "
+"`CVE-2026-72522 <https://www.cve.org/CVERecord?id=CVE-2026-72522>`_。"
 
 #: ../../../build/NEWS:126
 msgid ""
@@ -438,6 +473,8 @@ msgid ""
 "pointing outside the destination directory. This was a bypass of "
 "CVE-2025-4330."
 msgstr ""
+":gh:`151558`: 修复了 :mod:`tarfile` 的 ``data`` 和 ``tar`` "
+"提取过滤器中的一个漏洞，在该漏洞中，精心构造的归档文件可能会创建一个指向目标目录之外的符号链接。 这是对 CVE-2025-4330 的绕过。"
 
 #: ../../../build/NEWS:158
 msgid ""
@@ -457,12 +494,17 @@ msgid ""
 " when a socket timeout was in use. Reported by ``@YLChen-007`` via "
 "GHSA-w4q2-g22w-6fr4."
 msgstr ""
+":gh:`150743`: :mod:`http.client` 现在将其读取的分块响应尾部行数量限制为 100，并将其跳过的临时 (1xx) "
+"响应数量限制为 100。 之前，恶意或损坏的服务器可能会无休止地流式发送尾部行或 ``100 Continue`` "
+"响应，即使在使用了套接字超时的情况下也会导致客户端挂起。 由 ``@YLChen-007`` 通过 GHSA-w4q2-g22w-6fr4 报告。"
 
 #: ../../../build/NEWS:169
 msgid ""
 ":gh:`149698`: Update bundled `libexpat <https://libexpat.github.io/>`_ to "
 "version 2.8.1 for the fix for CVE-2026-45186."
 msgstr ""
+":gh:`149698`: 将捆绑的 `libexpat <https://libexpat.github.io/>`_ 更新至 2.8.1 版以修复 "
+"CVE-2026-45186。"
 
 #: ../../../build/NEWS:172
 msgid ""
@@ -502,6 +544,9 @@ msgid ""
 "combining characters in non-canonical order. Replaced with a linear-time "
 "counting sort for long runs."
 msgstr ""
+":gh:`149079`: 修复了 :func:`unicodedata.normalize` 中潜在的拒绝服务漏洞。 Unicode "
+"规范化的标准排序步骤此前使用二次时间的插入排序来对组合字符进行重新排序，这可能会被包含大量非标准顺序组合字符的精心构造的输入所利用。 "
+"现已针对长连续序列替换为线性时间的计数排序。"
 
 #: ../../../build/NEWS:194
 msgid ""
@@ -537,6 +582,9 @@ msgid ""
 ":meth:`!decompress` call read or write through a stale pointer to the "
 "already-released caller buffer."
 msgstr ""
+":gh:`148395`: 修复了当内存分配失败并引发 :exc:`MemoryError` 时 "
+":class:`lzma.LZMADecompressor` 和 :class:`bz2.BZ2Decompressor` "
+"中的悬空输入指针问题，该问题可能会导致后续的 :meth:`!decompress` 调用通过指向已释放调用方缓冲区的过期指针进行读写。"
 
 #: ../../../build/NEWS:211
 msgid ""
@@ -580,6 +628,10 @@ msgid ""
 ":meth:`~xml.parsers.expat.xmlparser.ElementDeclHandler`. This addresses "
 "`CVE-2026-4224 <https://www.cve.org/CVERecord?id=CVE-2026-4224>`_."
 msgstr ""
+":gh:`145986`: :mod:`xml.parsers.expat`: 修复了在使用 "
+":meth:`~xml.parsers.expat.xmlparser.ElementDeclHandler` 转换深层嵌套的 XML 内容模型时由无界"
+" C 递归引起的崩溃问题。 这解决了 `CVE-2026-4224 "
+"<https://www.cve.org/CVERecord?id=CVE-2026-4224>`_。"
 
 #: ../../../build/NEWS:233
 msgid ""
@@ -588,12 +640,18 @@ msgid ""
 ":meth:`~http.cookies.BaseCookie.js_output`. This addresses `CVE-2026-3644 "
 "<https://www.cve.org/CVERecord?id=CVE-2026-3644>`_."
 msgstr ""
+":gh:`145599`: 在 :class:`http.cookies.Morsel` 的 "
+":meth:`~http.cookies.Morsel.update` 和 "
+":meth:`~http.cookies.BaseCookie.js_output` 中拒绝控制字符。 这解决了 `CVE-2026-3644 "
+"<https://www.cve.org/CVERecord?id=CVE-2026-3644>`_。"
 
 #: ../../../build/NEWS:238
 msgid ""
 ":gh:`145506`: Fixes CVE-2026-2297 by ensuring that ``SourcelessFileLoader`` "
 "uses :func:`io.open_code` when opening ``.pyc`` files."
 msgstr ""
+":gh:`145506`: 通过确保 ``SourcelessFileLoader`` 在打开 ``.pyc`` 文件时使用 "
+":func:`io.open_code` 修复了 CVE-2026-2297。"
 
 #: ../../../build/NEWS:241
 msgid ""
@@ -623,6 +681,8 @@ msgid ""
 " which contains many quote characters.  A doubled quote character is now "
 "also detected in a field which contains the delimiter or a line break."
 msgstr ""
+":gh:`109638`: 修复了 :meth:`csv.Sniffer.sniff` 对于包含大量引号字符的样本耗时呈指数级增长的问题。 "
+"现在还会在包含分隔符或换行符的字段中检测双引号字符。"
 
 #: ../../../build/NEWS:258
 msgid ""
@@ -630,12 +690,14 @@ msgid ""
 "which contains quoted fields, in particular for a single column of quoted "
 "fields."
 msgstr ""
+":gh:`98820`: 修复了 :meth:`csv.Sniffer.sniff` "
+"对于包含带引号字段的样本（特别是带引号字段的单列）耗时呈二次方增长的问题。"
 
 #: ../../../build/NEWS:262
 msgid ""
 ":gh:`149231`: In :mod:`tomllib`, the number of parts in TOML keys is now "
 "limited."
-msgstr ""
+msgstr ":gh:`149231`: 在 :mod:`tomllib` 中，TOML 键中的部分数量现在受到了限制。"
 
 #: ../../../build/NEWS:265
 msgid ""
@@ -662,6 +724,13 @@ msgid ""
 " `billion laughs <https://en.wikipedia.org/wiki/Billion_laughs_attack>`_ "
 "attacks. Patch by Bénédikt Tran."
 msgstr ""
+":gh:`90949`: 向 :ref:`xmlparser <xmlparser-objects>` 对象添加了 "
+":meth:`~xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionActivationThreshold`"
+" 和 "
+":meth:`~xml.parsers.expat.xmlparser.SetBillionLaughsAttackProtectionMaximumAmplification`"
+" 以微调针对 `billion laughs "
+"<https://en.wikipedia.org/wiki/Billion_laughs_attack>`_ 攻击的防护。 补丁由 Bénédikt "
+"Tran 提供。"
 
 #: ../../../build/NEWS:280
 msgid ""
@@ -675,15 +744,15 @@ msgstr ""
 msgid ""
 ":gh:`153438`: Update Windows build and installer tooling and documentation "
 "to use the current download URL for ``nuget.exe``."
-msgstr ""
+msgstr ":gh:`153438`: 更新了 Windows 构建和安装程序工具链及文档，以使用 ``nuget.exe`` 的当前下载 URL。"
 
 #: ../../../build/NEWS:291
 msgid "Python 3.11.15 final"
-msgstr ""
+msgstr "Python 3.11.15 正式版"
 
 #: ../../../build/NEWS:293
 msgid "*Release date: 2026-03-03*"
-msgstr ""
+msgstr "*发布日期：2026-03-03*"
 
 #: ../../../build/NEWS:298
 msgid ""
@@ -735,6 +804,10 @@ msgid ""
 "functions like :py:meth:`xml.dom.Document.documentElement` should be used "
 "instead."
 msgstr ""
+":gh:`142145`: 移除了 ``xml.minidom`` 节点 ID 缓存清理中的二次时间复杂度行为。 "
+"为了在不破坏现有用户代码的情况下做到这一点，我们还向通过直接实例化 ``Element`` 或 ``Attr`` 类所创建的 "
+":mod:`xml.dom.minidom` 元素和属性添加了 *ownerDocument* 属性。 请注意，不支持以这种方式创建节点；应当改用像 "
+":py:meth:`xml.dom.Document.documentElement` 这样的创建器函数。"
 
 #: ../../../build/NEWS:326
 msgid ""
@@ -876,20 +949,24 @@ msgid ""
 "concurrent modification of a list object, where one thread assigns a slice "
 "and another clears it."
 msgstr ""
+":gh:`120384`: 修复了 ``list_ass_subscript`` "
+"中的数组越界崩溃问题，该问题可能会通过某些特定构造的输入触发：包括对列表对象的并发修改，即一个线程对切片进行赋值而另一个线程清空列表。"
 
 #: ../../../build/NEWS:380
 msgid ""
 ":gh:`120298`: Fix use-after free in ``list_richcompare_impl`` which can be "
 "invoked via some specificly tailored evil input."
 msgstr ""
+":gh:`120298`: 修复了 ``list_richcompare_impl`` 中可通过某些特定构造的恶意输入触发的释放后使用 (use-"
+"after-free) 问题。"
 
 #: ../../../build/NEWS:385
 msgid "Python 3.11.14 final"
-msgstr ""
+msgstr "Python 3.11.14 正式版"
 
 #: ../../../build/NEWS:387
 msgid "*Release date: 2025-10-09*"
-msgstr ""
+msgstr "*发布日期：2025-10-09*"
 
 #: ../../../build/NEWS:392
 msgid ""
@@ -1025,11 +1102,11 @@ msgstr ""
 
 #: ../../../build/NEWS:457
 msgid ":gh:`135374`: Update the bundled copy of setuptools to 79.0.1."
-msgstr ""
+msgstr ":gh:`135374`: 将捆绑的 setuptools 副本更新至 79.0.1。"
 
 #: ../../../build/NEWS:461
 msgid "Python 3.11.13 final"
-msgstr ""
+msgstr "Python 3.11.13 正式版"
 
 #: ../../../build/NEWS:463
 msgid "*Release date: 2025-06-03*"
@@ -1047,7 +1124,7 @@ msgstr ""
 #: ../../../build/NEWS:472
 msgid ""
 "Addresses CVE 2024-12718, CVE 2025-4138, CVE 2025-4330, and CVE 2025-4517."
-msgstr ""
+msgstr "解决了 CVE 2024-12718、 CVE 2025-4138、 CVE 2025-4330 和 CVE 2025-4517。"
 
 #: ../../../build/NEWS:474
 msgid ""
@@ -1096,7 +1173,7 @@ msgstr ""
 
 #: ../../../build/NEWS:500
 msgid "Python 3.11.12 final"
-msgstr ""
+msgstr "Python 3.11.12 正式版"
 
 #: ../../../build/NEWS:502
 msgid "*Release date: 2025-04-08*"
@@ -1251,10 +1328,12 @@ msgid ""
 ":gh:`106883`: Disable GC during the _PyThread_CurrentFrames() and "
 "_PyThread_CurrentExceptions() calls to avoid the interpreter to deadlock."
 msgstr ""
+":gh:`106883`: 在调用 _PyThread_CurrentFrames() 和 _PyThread_CurrentExceptions() "
+"期间禁用垃圾回收 (GC) 以避免解释器死锁。"
 
 #: ../../../build/NEWS:562
 msgid "Python 3.11.11 final"
-msgstr ""
+msgstr "Python 3.11.11 正式版"
 
 #: ../../../build/NEWS:564
 msgid "*Release date: 2024-12-03*"
@@ -1326,11 +1405,11 @@ msgstr ":gh:`124651`: 在 :mod:`venv` 激活脚本中正确引用模板字符串
 
 #: ../../../build/NEWS:598
 msgid "Python 3.11.10 final"
-msgstr ""
+msgstr "Python 3.11.10 正式版"
 
 #: ../../../build/NEWS:600
 msgid "*Release date: 2024-09-07*"
-msgstr ""
+msgstr "*发布日期：2024-09-07*"
 
 #: ../../../build/NEWS:603 ../../../build/NEWS:1009 ../../../build/NEWS:1354
 #: ../../../build/NEWS:1689 ../../../build/NEWS:1988 ../../../build/NEWS:2267
@@ -1374,7 +1453,7 @@ msgstr ":gh:`123418`: 更新 Windows 构建以使用 OpenSSL 3.0.15。"
 msgid ""
 ":gh:`119690`: Fixes data type confusion in audit event raised by "
 "``_winapi.CreateNamedPipe``."
-msgstr ""
+msgstr ":gh:`119690`: 修复了由 ``_winapi.CreateNamedPipe`` 引发的审计事件中的数据类型混淆问题。"
 
 #: ../../../build/NEWS:613
 msgid ":gh:`123678`: Upgrade libexpat to 2.6.3"
@@ -1386,6 +1465,8 @@ msgid ""
 "now also properly firing for ``python -i``, as well as for ``python -m "
 "asyncio``. The event in question is ``cpython.run_stdin``."
 msgstr ""
+":gh:`121957`: 修复了与交互式使用 Python 相关的缺失审计事件问题，现在对于 ``python -i`` 以及 ``python -m"
+" asyncio`` 也会正确触发。 所涉及的事件是 ``cpython.run_stdin``。"
 
 #: ../../../build/NEWS:619
 msgid ""
@@ -1417,6 +1498,9 @@ msgid ""
 "affecting :func:`tempfile.mkdtemp` in scenarios where the base temporary "
 "directory is more permissive than the default."
 msgstr ""
+":gh:`118486`: Windows 上的 :func:`os.mkdir` 现在接受值为 ``0o700`` 的 *mode* "
+"以将新目录限制为仅限当前用户访问。 这修复了在基础临时目录比默认权限更宽松的场景下影响 :func:`tempfile.mkdtemp` 的 "
+"CVE-2024-4030。"
 
 #: ../../../build/NEWS:634
 msgid ":gh:`116741`: Update bundled libexpat to 2.6.2"
@@ -1513,6 +1597,11 @@ msgid ""
 "use to check if the *strict* paramater is available. Patch by Thomas Dwyer "
 "and Victor Stinner to improve the CVE-2023-27043 fix."
 msgstr ""
+":gh:`102988`: :func:`email.utils.getaddresses` 和 "
+":func:`email.utils.parseaddr` 现在在遇到无效电子邮件地址的更多情况下会返回 ``('', '')`` "
+"二元组，而不是潜在的不准确值。 向这两个函数添加了可选的 *strict* 参数：使用 ``strict=False`` 可获得接受畸形输入的旧行为。 "
+"可以使用 ``getattr(email.utils, 'supports_strict_parsing', False)`` 来检查 *strict*"
+" 参数是否可用。 补丁由 Thomas Dwyer 和 Victor Stinner 提供，以改进 CVE-2023-27043 的修复。"
 
 #: ../../../build/NEWS:681
 msgid ""
@@ -1530,6 +1619,8 @@ msgid ""
 "``posixmodule.c`` at fork is now fixed. Patch by ChuBoning based on previous"
 " Python 3.12 fix by Victor Stinner."
 msgstr ""
+":gh:`112275`: 修复了在 fork 时涉及 ``posixmodule.c`` 中 ``pystate.c`` 的 "
+"``HEAD_LOCK`` 的死锁问题。 补丁由 ChuBoning 基于此前 Victor Stinner 在 Python 3.12 中的修复提供。"
 
 #: ../../../build/NEWS:692
 msgid ""
@@ -1539,17 +1630,17 @@ msgstr ":gh:`109120`: 添加了对不正确星号表达式的处理，例如 ``f
 
 #: ../../../build/NEWS:697
 msgid "Python 3.11.9 final"
-msgstr ""
+msgstr "Python 3.11.9 正式版"
 
 #: ../../../build/NEWS:699
 msgid "*Release date: 2024-04-02*"
-msgstr ""
+msgstr "*发布日期：2024-04-02*"
 
 #: ../../../build/NEWS:704
 msgid ""
 ":gh:`115398`: Allow controlling Expat >=2.6.0 reparse deferral "
 "(CVE-2023-52425) by adding five new methods:"
-msgstr ""
+msgstr ":gh:`115398`: 通过添加五个新方法来允许控制 Expat >=2.6.0 的重解析延迟 (CVE-2023-52425)："
 
 #: ../../../build/NEWS:707
 msgid ":meth:`xml.etree.ElementTree.XMLParser.flush`"
@@ -1600,7 +1691,7 @@ msgstr ":gh:`116296`: 修复 :meth:`!object.__reduce__` 内部错误处理中可
 
 #: ../../../build/NEWS:729
 msgid ":gh:`116034`: Fix location of the error on a failed assertion."
-msgstr ""
+msgstr ":gh:`116034`: 修复了断言失败时的错误位置。"
 
 #: ../../../build/NEWS:731
 msgid ""
@@ -1616,6 +1707,7 @@ msgid ""
 ":gh:`112087`: For an empty reverse iterator for list will be reduced to "
 ":func:`reversed`. Patch by Donghee Na."
 msgstr ""
+":gh:`112087`: 对于列表的空反向迭代器，现在将被归约为 :func:`reversed`。 补丁由 Donghee Na 提供。"
 
 #: ../../../build/NEWS:738
 msgid ""
@@ -1854,6 +1946,8 @@ msgid ""
 " space and skipinitialspace is true and raises exception if quoting is not "
 "possible."
 msgstr ""
+":gh:`115712`: 当分隔符为空格且 skipinitialspace 为真值时， :func:`csv.writer` "
+"现在会用引号包裹空字段，并在无法加引号时引发异常。"
 
 #: ../../../build/NEWS:851
 msgid ""
@@ -1871,12 +1965,15 @@ msgid ""
 "the ``__doc__`` attributes of the deprecated ``typing.io`` and ``typing.re``"
 " pseudo-modules."
 msgstr ""
+":gh:`115570`: 在访问已弃用的 ``typing.io`` 和 ``typing.re`` 伪模块的 ``__doc__`` "
+"属性时，不再遗漏 :exc:`DeprecationWarning`。"
 
 #: ../../../build/NEWS:859
 msgid ""
 ":gh:`112006`: Fix :func:`inspect.unwrap` for types with the ``__wrapper__`` "
 "data descriptor."
 msgstr ""
+":gh:`112006`: 修复了针对带有 ``__wrapper__`` 数据描述器的类型的 :func:`inspect.unwrap`。"
 
 #: ../../../build/NEWS:862
 msgid ""
@@ -1904,6 +2001,9 @@ msgid ""
 " capital ``NAN`` / ``INF``) * incorrect output when applying the ``#`` "
 "format option (alternate form)"
 msgstr ""
+":gh:`114563`: 修复了使用 :class:`~decimal.Decimal` 的 C 实现时的几个 :func:`format` 错误： "
+"* 在某些罕见情况下使用 ``z`` 格式选项（强制转换负 0）时的内存泄漏 * 将 ``z`` 格式选项应用于类型 ``F`` （使用大写 "
+"``NAN`` / ``INF`` 的定点数）时的错误输出 * 应用 ``#`` 格式选项（替代形式）时的错误输出"
 
 #: ../../../build/NEWS:877
 msgid ""
@@ -1914,7 +2014,7 @@ msgstr ""
 
 #: ../../../build/NEWS:880
 msgid ":gh:`115198`: Fix support of Docutils >= 0.19 in :mod:`distutils`."
-msgstr ""
+msgstr ":gh:`115198`: 修复了 :mod:`distutils` 中对 Docutils >= 0.19 的支持。"
 
 #: ../../../build/NEWS:882
 msgid ""
@@ -2030,6 +2130,10 @@ msgid ""
 ":func:`io.BufferedRandom.tell`, :func:`io.BufferedRandom.seek` and "
 ":func:`_pyio.BufferedRandom.tell` being able to return negative offsets."
 msgstr ""
+":gh:`95782`: 修复了 :func:`io.BufferedReader.tell`、 "
+":func:`io.BufferedReader.seek`、 :func:`_pyio.BufferedReader.tell`、 "
+":func:`io.BufferedRandom.tell`、 :func:`io.BufferedRandom.seek` 和 "
+":func:`_pyio.BufferedRandom.tell` 可能会返回负偏移量的问题。"
 
 #: ../../../build/NEWS:938
 msgid ""
@@ -2059,6 +2163,8 @@ msgid ""
 "accept empty bytes as authkey. Not accepting empty bytes as key causes it to"
 " hang indefinitely."
 msgstr ""
+":issue:`43952`: 修复了 :meth:`multiprocessing.connection.Listener.accept` "
+"以接受空字节串作为 authkey。 不接受空字节串作为密钥会导致它无限期挂起。"
 
 #: ../../../build/NEWS:952
 msgid ""
@@ -2089,6 +2195,7 @@ msgid ""
 ":gh:`115399`: Document CVE-2023-52425 of Expat <2.6.0 under \"XML "
 "vulnerabilities\"."
 msgstr ""
+":gh:`115399`: 在 \"XML vulnerabilities\" 下记录了 Expat <2.6.0 的 CVE-2023-52425。"
 
 #: ../../../build/NEWS:969
 msgid ""
@@ -2120,6 +2227,8 @@ msgid ""
 ":gh:`116307`: Added import helper ``isolated_modules`` as ``CleanImport`` "
 "does not remove modules imported during the context."
 msgstr ""
+":gh:`116307`: 添加了导入辅助工具 ``isolated_modules``，因为 ``CleanImport`` "
+"不会移除在上下文期间导入的模块。"
 
 #: ../../../build/NEWS:986
 msgid ""
@@ -2148,6 +2257,8 @@ msgid ""
 ":gh:`115198`: Fix test_check_metadata_deprecate in distutils tests with a "
 "newer Docutils."
 msgstr ""
+":gh:`115198`: 修复了使用较新版本 Docutils 时 distutils 测试中的 "
+"test_check_metadata_deprecate。"
 
 #: ../../../build/NEWS:1002
 msgid ""
@@ -2250,11 +2361,11 @@ msgstr ":gh:`117021`: 修复非 Windows 64 位平台上 :c:func:`PyLong_AsPid` �
 
 #: ../../../build/NEWS:1050
 msgid "Python 3.11.8 final"
-msgstr ""
+msgstr "Python 3.11.8 正式版"
 
 #: ../../../build/NEWS:1052
 msgid "*Release date: 2024-02-06*"
-msgstr ""
+msgstr "*发布日期：2024-02-06*"
 
 #: ../../../build/NEWS:1057
 msgid ""
@@ -2279,6 +2390,9 @@ msgid ""
 ":exc:`RuntimeWarning` emitted when assign a negative integer value to an "
 "attribute that corresponds to a C struct member of type T_UINT."
 msgstr ""
+":gh:`114388`: 修复了在将不是 :class:`int` 实例的类整数值赋给对应于 T_UINT 和 T_ULONG 类型 C "
+"结构体成员的属性时发出的 :exc:`RuntimeWarning`。 修复了在将负整数值赋给对应于 T_UINT 类型 C "
+"结构体成员的属性时发出的双重 :exc:`RuntimeWarning`。"
 
 #: ../../../build/NEWS:1073
 msgid ""
@@ -2298,6 +2412,8 @@ msgid ""
 ":class:`~asyncio.Future` is requested after the module has already been "
 "garbage-collected."
 msgstr ""
+":gh:`113566`: 修复了在模块已被垃圾回收之后请求 :class:`~asyncio.Future` 的 ``repr`` 时 3.11 "
+"特有的崩溃问题。"
 
 #: ../../../build/NEWS:1083
 msgid ""
@@ -2550,7 +2666,7 @@ msgstr ":gh:`113421`: 修复多进程日志记录器对于 ``%(filename)s`` 的�
 msgid ""
 ":gh:`113358`: Fix rendering tracebacks for exceptions with a broken "
 "``__getattr__``."
-msgstr ""
+msgstr ":gh:`113358`: 修复了为具有损坏的 ``__getattr__`` 的异常渲染回溯的问题。"
 
 #: ../../../build/NEWS:1205
 msgid ""
@@ -2582,6 +2698,10 @@ msgid ""
 "not modify the permission bits if *follow_symlinks* is false and *src* is a "
 "symbolic link."
 msgstr ""
+":gh:`113188`: 修复了 Windows 上的 :func:`shutil.copymode` 和 "
+":func:`shutil.copystat`。 之前，如果 *dst* 是符号链接，它们的工作方式有所不同：如果 *follow_symlinks* "
+"为真值或 *src* 不是符号链接，它们会修改 *dst* 本身而不是它所指向的文件的权限位；而如果 *follow_symlinks* 为假值且 "
+"*src* 是符号链接，则它们不会修改权限位。"
 
 #: ../../../build/NEWS:1221
 msgid ":gh:`61648`: Detect line numbers of properties in doctests."
@@ -2610,7 +2730,7 @@ msgstr ""
 msgid ""
 ":gh:`79429`: Ignore FileNotFoundError when remove a temporary directory in "
 "the multiprocessing finalizer."
-msgstr ""
+msgstr ":gh:`79429`: 在 multiprocessing 终结器中移除临时目录时忽略 FileNotFoundError。"
 
 #: ../../../build/NEWS:1234
 msgid ""
@@ -2831,7 +2951,7 @@ msgstr ":issue:`40648`: 测试 Windows 上文件可以通过 chmod() 获取的�
 msgid ""
 ":gh:`101778`: Fix build error when there's a dangling symlink in the "
 "directory containing ``ffi.h``."
-msgstr ""
+msgstr ":gh:`101778`: 修复了当包含 ``ffi.h`` 的目录中存在悬空符号链接时的构建错误。"
 
 #: ../../../build/NEWS:1343
 msgid ""
@@ -3022,11 +3142,11 @@ msgstr ""
 
 #: ../../../build/NEWS:1444
 msgid "Python 3.11.7 final"
-msgstr ""
+msgstr "Python 3.11.7 正式版"
 
 #: ../../../build/NEWS:1446
 msgid "*Release date: 2023-12-04*"
-msgstr ""
+msgstr "*发布日期：2023-12-04*"
 
 #: ../../../build/NEWS:1451
 msgid ""
@@ -3062,6 +3182,7 @@ msgid ""
 ":gh:`109181`: Speed up :obj:`Traceback` object creation by lazily compute "
 "the line number. Patch by Pablo Galindo"
 msgstr ""
+":gh:`109181`: 通过惰性计算行号加快了 :obj:`Traceback` 对象的创建速度。 补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:1467
 msgid ""
@@ -3093,6 +3214,8 @@ msgid ""
 "(like emoji and asian characters) now are properly highlighted. Patch by "
 "Batuhan Taskaya and Pablo Galindo."
 msgstr ""
+":gh:`88116`: 涉及宽 unicode 字符（如表情符号和亚洲字符）的回溯位置范围现在能够被正确高亮显示。 补丁由 Batuhan "
+"Taskaya 和 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:1482
 msgid ""
@@ -3219,6 +3342,8 @@ msgid ""
 ":data:`io.DEFAULT_BUFFER_SIZE`, and :class:`io.IncrementalNewlineDecoder` to"
 " ``io.__all__``."
 msgstr ""
+":gh:`111356`: 将 :func:`io.text_encoding`、 :data:`io.DEFAULT_BUFFER_SIZE` 和 "
+":class:`io.IncrementalNewlineDecoder` 添加到了 ``io.__all__`` 中。"
 
 #: ../../../build/NEWS:1538
 msgid ""
@@ -3234,7 +3359,7 @@ msgstr ""
 #: ../../../build/NEWS:1543
 msgid ""
 ":gh:`111251`: Fix :mod:`_blake2` not checking for errors when initializing."
-msgstr ""
+msgstr ":gh:`111251`: 修复了 :mod:`_blake2` 在初始化时未检查错误的问题。"
 
 #: ../../../build/NEWS:1545
 msgid ""
@@ -3288,6 +3413,8 @@ msgid ""
 " now alwais refers to the line in the user code where gettext function or "
 "method is used. Previously it could refer to a line in ``gettext`` code."
 msgstr ""
+":gh:`110519`: :mod:`gettext` 中关于非整数数字的弃用警告现在总是会指向用户代码中使用 gettext 函数或方法的那一行。 "
+"之前它可能会指向 ``gettext`` 代码中的某一行。"
 
 #: ../../../build/NEWS:1570
 msgid ""
@@ -3303,6 +3430,7 @@ msgid ""
 ":gh:`110365`: Fix :func:`termios.tcsetattr` bug that was overwritting "
 "existing errors during parsing integers from ``term`` list."
 msgstr ""
+":gh:`110365`: 修复了 :func:`termios.tcsetattr` 在从 ``term`` 列表解析整数期间会覆盖现有错误的缺陷。"
 
 #: ../../../build/NEWS:1577
 msgid ""
@@ -3373,6 +3501,8 @@ msgid ""
 ":meth:`socket.setblocking` which caused it to interpret multiples of "
 "``2**32`` as ``False``."
 msgstr ""
+":issue:`35191`: 修复了 :meth:`socket.setblocking` 中意外的整数截断问题，该问题曾导致它将 ``2**32``"
+" 的倍数解释为 ``False``。"
 
 #: ../../../build/NEWS:1612
 msgid ""
@@ -3392,7 +3522,7 @@ msgstr ""
 #: ../../../build/NEWS:1622
 msgid ""
 ":gh:`111309`: :mod:`distutils` tests can now be run via :mod:`unittest`."
-msgstr ""
+msgstr ":gh:`111309`: :mod:`distutils` 测试现在可以通过 :mod:`unittest` 运行。"
 
 #: ../../../build/NEWS:1624
 msgid ""
@@ -3400,6 +3530,8 @@ msgid ""
 "``run_doctest()`` and class ``BasicTestRunner`` from the :mod:`test.support`"
 " module."
 msgstr ""
+":gh:`111165`: 从 :mod:`test.support` 模块中移除了不再使用的函数 ``run_unittest()`` 和 "
+"``run_doctest()`` 以及类 ``BasicTestRunner``。"
 
 #: ../../../build/NEWS:1628
 msgid ""
@@ -3590,6 +3722,8 @@ msgid ""
 "whether prev_frame is None before trying to use it. Greatly expand "
 "test_debugger."
 msgstr ""
+":issue:`35668`: 为 IDLE 调试器模块添加了文档字符串。 修复了两个错误：初始化 Idb.botframe （应当在 Bdb 中）；在"
+" Idb.in_rpc_code 中，在尝试使用 prev_frame 之前检查它是否为 None。 大幅扩展了 test_debugger。"
 
 #: ../../../build/NEWS:1731
 msgid ""
@@ -3613,11 +3747,11 @@ msgstr ""
 
 #: ../../../build/NEWS:1742
 msgid "Python 3.11.6 final"
-msgstr ""
+msgstr "Python 3.11.6 正式版"
 
 #: ../../../build/NEWS:1744
 msgid "*Release date: 2023-10-02*"
-msgstr ""
+msgstr "*发布日期：2023-10-02*"
 
 #: ../../../build/NEWS:1749
 msgid ""
@@ -3657,6 +3791,9 @@ msgid ""
 ":attr:`multiprocessing.synchronize.SemLock._is_fork_ctx`. This fixes a "
 "regression when passing a SemLock accross nested processes."
 msgstr ""
+":gh:`108520`: 修复了 :meth:`multiprocessing.synchronize.SemLock.__setstate__` "
+"以正确初始化 :attr:`multiprocessing.synchronize.SemLock._is_fork_ctx`。 这修复了跨嵌套进程传递"
+" SemLock 时的回归问题。"
 
 #: ../../../build/NEWS:1770
 msgid ""
@@ -3675,6 +3812,9 @@ msgid ""
 "process terminated as expected: store its exit code. Patch by Victor "
 "Stinner."
 msgstr ""
+":gh:`110036`: 在 Windows 上，multiprocessing 的 ``Popen.terminate()`` 现在会捕获 "
+":exc:`PermissionError` 并获取进程退出码。 如果进程仍在运行，则再次引发 :exc:`PermissionError`。 "
+"否则，进程已按预期终止：保存其退出码。 补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:1783
 msgid ""
@@ -3866,6 +4006,9 @@ msgid ""
 " than the timeout ot not. Keep the second future which does not complete "
 "before wait() timeout. Patch by Victor Stinner."
 msgstr ""
+":gh:`109594`: 修复了 test_concurrent_futures.test_wait 的 test_timeout()。 "
+"移除根据耗时是否超过超时时间而可能完成也可能不完成的期物 (future)。 保留在 wait() 超时前不会完成的第二个期物。 补丁由 Victor "
+"Stinner 提供。"
 
 #: ../../../build/NEWS:1879
 msgid ""
@@ -3947,6 +4090,11 @@ msgid ""
 "``test_gdb`` is no longer skipped on macOS if Python is built with Clang. "
 "Patch by Victor Stinner."
 msgstr ""
+":gh:`91960`: 如果 gdb 无法检索 Python 帧对象（即如果帧为 ``<optimized out>``），则跳过 "
+"``test_gdb``。 当使用 \"clang -Og\" 构建 Python 时，gdb 可能会无法检索 "
+"``_PyEval_EvalFrameDefault()`` 的 *frame* 参数。 在这种情况下，像 ``py_bt()`` "
+"这样的测试很可能会失败。 如果无法访问 Python 帧， ``python-gdb.py`` 基本上无从获取 Python 回溯。 此外，如果使用 "
+"Clang 构建 Python，在 macOS 上将不再跳过 ``test_gdb``。 补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:1927
 msgid ""
@@ -4038,6 +4186,7 @@ msgid ""
 ":gh:`98903`: The Python test suite now fails wit exit code 4 if no tests "
 "ran. It should help detecting typos in test names and test methods."
 msgstr ""
+":gh:`98903`: 如果没有运行任何测试，Python 测试套件现在会以退出码 4 失败。 这有助于检测测试名称和测试方法中的拼写错误。"
 
 #: ../../../build/NEWS:1966 ../../../build/NEWS:3735
 msgid ""
@@ -4083,7 +4232,7 @@ msgstr ":gh:`109991`: 更新 Windows 构建以使用 OpenSSL 3.0.11。"
 
 #: ../../../build/NEWS:1992
 msgid ":gh:`107565`: Update Windows build to use OpenSSL 3.0.10."
-msgstr ""
+msgstr ":gh:`107565`: 更新 Windows 构建以使用 OpenSSL 3.0.10。"
 
 #: ../../../build/NEWS:1997
 msgid ":gh:`109991`: Update macOS installer to use OpenSSL 3.0.11."
@@ -4099,11 +4248,11 @@ msgstr ""
 
 #: ../../../build/NEWS:2007
 msgid "Python 3.11.5 final"
-msgstr ""
+msgstr "Python 3.11.5 正式版"
 
 #: ../../../build/NEWS:2009
 msgid "*Release date: 2023-08-24*"
-msgstr ""
+msgstr "*发布日期：2023-08-24*"
 
 #: ../../../build/NEWS:2014
 msgid ""
@@ -4115,6 +4264,10 @@ msgid ""
 "bin/cvename.cgi?name=CVE-2023-40217>`_ by Aapo Oksman. Patch by Gregory P. "
 "Smith."
 msgstr ""
+":gh:`108310`: 修复了 :class:`ssl.SSLSocket` 的实例容易受到绕过 TLS "
+"握手及所含保护（如证书验证）攻击并将发送的未加密数据当作握手后 TLS 加密数据来处理的问题。 该安全问题由 Aapo Oksman 报告为 "
+"`CVE-2023-40217 <https://cve.mitre.org/cgi-"
+"bin/cvename.cgi?name=CVE-2023-40217>`_。 补丁由 Gregory P. Smith 提供。"
 
 #: ../../../build/NEWS:2025
 msgid ""
@@ -4211,6 +4364,8 @@ msgid ""
 "version. Now, both versions set up their internal state in ``__new__``. "
 "Formerly, the pure Python version did the set up in ``__init__``."
 msgstr ""
+":gh:`105736`: 统一了 OrderedDict 的纯 Python 版本与 C 版本。 现在，两个版本都会在 ``__new__`` "
+"中设置其内部状态。 之前，纯 Python 版本是在 ``__init__`` 中进行设置的。"
 
 #: ../../../build/NEWS:2075
 msgid ""
@@ -4256,6 +4411,8 @@ msgid ""
 ":gh:`106684`: Close :class:`asyncio.StreamWriter` when it is not closed by "
 "application leading to memory leaks. Patch by Kumar Aditya."
 msgstr ""
+":gh:`106684`: 当应用程序未关闭 :class:`asyncio.StreamWriter` 从而导致内存泄漏时将其关闭。 补丁由 "
+"Kumar Aditya 提供。"
 
 #: ../../../build/NEWS:2094
 msgid ""
@@ -4266,6 +4423,10 @@ msgid ""
 "detecting this situation and raising the appropiate "
 "``ssl.SSLCertVerificationError``. Patch by Pablo Galindo"
 msgstr ""
+":gh:`107077`: 在某些情况下，当证书验证失败时，OpenSSL 似乎会返回 ``SSL_ERROR_SYSCALL`` 而不是 "
+"``SSL_ERROR_SSL``，但错误参数仍会包含 ``ERR_LIB_SSL`` 和 "
+"``SSL_R_CERTIFICATE_VERIFY_FAILED``。 我们现在会检测这种情况并引发适当的 "
+"``ssl.SSLCertVerificationError``。 补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:2101
 msgid ""
@@ -4311,6 +4472,8 @@ msgid ""
 "``name``/``suffix``/``suffixes``/``stem`` operations when no filename is "
 "present and the Path is not at the root of the zipfile."
 msgstr ""
+":gh:`106752`: 修复了当不存在文件名且 Path 不位于 zipfile 根目录时 zipfile.Path 在 "
+"``name``/``suffix``/``suffixes``/``stem`` 操作中的若干错误。"
 
 #: ../../../build/NEWS:2123
 msgid ":gh:`106602`: Add __copy__ and __deepcopy__ in :mod:`enum`"
@@ -4360,7 +4523,7 @@ msgstr ""
 msgid ""
 ":gh:`102541`: Make pydoc.doc catch bad module ImportError when output stream"
 " is not None."
-msgstr ""
+msgstr ":gh:`102541`: 使 pydoc.doc 在输出流不为 None 时捕获损坏模块的 ImportError。"
 
 #: ../../../build/NEWS:2146
 msgid ""
@@ -4418,7 +4581,7 @@ msgstr ":gh:`105375`: 修复 :class:`array.array` 类中可能导致异常被覆
 msgid ""
 ":gh:`105375`: Fix bugs in :mod:`_ctypes` where exceptions could end up being"
 " overwritten."
-msgstr ""
+msgstr ":gh:`105375`: 修复了 :mod:`_ctypes` 中异常最终可能会被覆盖的错误。"
 
 #: ../../../build/NEWS:2174
 msgid ""
@@ -4462,6 +4625,9 @@ msgid ""
 "protocols at runtime unless they had a ``__final__`` attribute. Patch by "
 "Alex Waygood."
 msgstr ""
+":gh:`103171`: 恢复了 Python 3.11 中与使用 :func:`typing.final` "
+"装饰的可在运行时检查的协议相关的未记录行为更改。 该行为更改曾意味着除非对象具有 ``__final__`` "
+"属性，否则在运行时不会被视为这些协议的实例。 补丁由 Alex Waygood 提供。"
 
 #: ../../../build/NEWS:2196
 msgid ""
@@ -4613,10 +4779,12 @@ msgid ""
 ":gh:`106844`: Fix integer overflow in :func:`!_winapi.LCMapStringEx` which "
 "affects :func:`ntpath.normcase`."
 msgstr ""
+":gh:`106844`: 修复了 :func:`!_winapi.LCMapStringEx` 中影响 :func:`ntpath.normcase`"
+" 的整数溢出问题。"
 
 #: ../../../build/NEWS:2277
 msgid ":gh:`99079`: Update Windows build to use OpenSSL 3.0.9"
-msgstr ""
+msgstr ":gh:`99079`: 更新 Windows 构建以使用 OpenSSL 3.0.9"
 
 #: ../../../build/NEWS:2279
 msgid ""
@@ -4626,7 +4794,7 @@ msgstr ":gh:`105436`: 确保空环境块以两个空字符终止，这是Windows
 
 #: ../../../build/NEWS:2285
 msgid ":gh:`107565`: Update macOS installer to use OpenSSL 3.0.10."
-msgstr ""
+msgstr ":gh:`107565`: 更新 macOS 安装程序以使用 OpenSSL 3.0.10。"
 
 #: ../../../build/NEWS:2287
 msgid ":gh:`99079`: Update macOS installer to use OpenSSL 3.0.9."
@@ -4637,6 +4805,8 @@ msgid ""
 ":gh:`107565`: Update multissltests and GitHub CI workflows to use OpenSSL "
 "1.1.1v, 3.0.10, and 3.1.2."
 msgstr ""
+":gh:`107565`: 更新 multissltests 和 GitHub CI 工作流以使用 OpenSSL 1.1.1v、3.0.10 和 "
+"3.1.2。"
 
 #: ../../../build/NEWS:2295
 msgid ""
@@ -4644,6 +4814,8 @@ msgid ""
 " signature by using directive ``@text_signature``. See `the Argument Clinic "
 "docs <devguide.python.org/development-tools/clinic/>`__."
 msgstr ""
+":gh:`95065`: Argument Clinic 现在支持使用指令 ``@text_signature`` 覆盖自动生成的签名。请参阅 "
+"`Argument Clinic 文档 <devguide.python.org/development-tools/clinic/>`__。"
 
 #: ../../../build/NEWS:2299
 msgid ""
@@ -4703,23 +4875,25 @@ msgstr ""
 
 #: ../../../build/NEWS:2328
 msgid "Python 3.11.4 final"
-msgstr ""
+msgstr "Python 3.11.4 最终版"
 
 #: ../../../build/NEWS:2330
 msgid "*Release date: 2023-06-06*"
-msgstr ""
+msgstr "*发布日期：2023-06-06*"
 
 #: ../../../build/NEWS:2335
 msgid ""
 ":gh:`103142`: The version of OpenSSL used in our binary builds has been "
 "upgraded to 1.1.1u to address several CVEs."
-msgstr ""
+msgstr ":gh:`103142`: 二进制构建中使用的 OpenSSL 版本已升级至 1.1.1u，以修复多个 CVE。"
 
 #: ../../../build/NEWS:2338
 msgid ""
 ":gh:`99889`: Fixed a security in flaw in :func:`uu.decode` that could allow "
 "for directory traversal based on the input if no ``out_file`` was specified."
 msgstr ""
+":gh:`99889`: 修复了 :func:`uu.decode` 中的一个安全漏洞，该漏洞在未指定 ``out_file`` "
+"时可能允许基于输入进行目录遍历。"
 
 #: ../../../build/NEWS:2342
 msgid ""
@@ -4735,6 +4909,8 @@ msgid ""
 "and space characters following the specification for URLs defined by WHATWG "
 "in response to CVE-2023-24329. Patch by Illia Volochii."
 msgstr ""
+":gh:`102153`: :func:`urllib.parse.urlsplit` 现在会遵循 WHATWG 定义的 URL 规范去除开头的 C0 "
+"控制字符和空格字符，以应对 CVE-2023-24329。补丁由 Illia Volochii 提供。"
 
 #: ../../../build/NEWS:2352
 msgid ""
@@ -4784,7 +4960,7 @@ msgstr ":gh:`104018`: 在字节对象的 %-格式化中禁止使用 \"z\" 格式
 msgid ""
 ":gh:`103971`: Fix an issue where incorrect locations numbers could be "
 "assigned to code following ``case`` blocks."
-msgstr ""
+msgstr ":gh:`103971`: 修复了 ``case`` 块之后的代码可能被分配错误位置编号的问题。"
 
 #: ../../../build/NEWS:2375
 msgid ":gh:`102310`: Change the error range for invalid bytes literals."
@@ -4837,6 +5013,8 @@ msgid ""
 "code containing null bytes. Backported from ``aab01e3``. Patch by Pablo "
 "Galindo"
 msgstr ""
+":gh:`96670`: 解析器现在会在解析包含空字节的源代码时引发 :exc:`SyntaxError`。自 ``aab01e3`` 回移植。补丁由 "
+"Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:2399
 msgid ""
@@ -5005,6 +5183,8 @@ msgid ""
 ":func:`io.open_code`. The new method would also call into the hook set by "
 ":func:`PyFile_SetOpenCodeHook`."
 msgstr ""
+":gh:`103578`: 通过将 :func:`io.open` 替换为 :func:`io.open_code`，修复了 :mod:`pdb` "
+"在读取具有不同编码的源文件时崩溃的错误。新方法还会调用由 :func:`PyFile_SetOpenCodeHook` 设置的钩子。"
 
 #: ../../../build/NEWS:2480
 msgid ""
@@ -5061,7 +5241,7 @@ msgstr ":gh:`103225`: 修复 :mod:`pdb` 在显示模块级源代码行号时的�
 
 #: ../../../build/NEWS:2506
 msgid ":gh:`93910`: Remove deprecation of enum ``memmber.member`` access."
-msgstr ""
+msgstr ":gh:`93910`: 移除对枚举 ``memmber.member`` 访问的弃用。"
 
 #: ../../../build/NEWS:2508
 msgid ""
@@ -5149,6 +5329,8 @@ msgid ""
 "urllib.request.urlopen and urllib.request.Requst needing to be encoded "
 "properly."
 msgstr ""
+":gh:`48241`: 澄清了关于 urllib.request.urlopen 和 urllib.request.Requst 的 url "
+"形参需要正确编码的文档说明。"
 
 #: ../../../build/NEWS:2556
 msgid ""
@@ -5231,7 +5413,7 @@ msgstr ""
 
 #: ../../../build/NEWS:2601
 msgid ":gh:`103142`: Update macOS installer to use OpenSSL 1.1.1u."
-msgstr ""
+msgstr ":gh:`103142`: 更新 macOS 安装程序以使用 OpenSSL 1.1.1u。"
 
 #: ../../../build/NEWS:2603
 msgid ":gh:`104623`: Update macOS installer to SQLite 3.42.0."
@@ -5263,7 +5445,7 @@ msgstr ":gh:`88496`: 修复 macOS 上的 IDLE 测试挂起问题。"
 
 #: ../../../build/NEWS:2622
 msgid "Python 3.11.3 final"
-msgstr ""
+msgstr "Python 3.11.3 最终版"
 
 #: ../../../build/NEWS:2624
 msgid "*Release date: 2023-04-04*"
@@ -5276,6 +5458,10 @@ msgid ""
 "CVE-2022-4303 per `the OpenSSL 2023-02-07 security advisory "
 "<https://www.openssl.org/news/secadv/20230207.txt>`_."
 msgstr ""
+":gh:`101727`: 根据 `OpenSSL 2023-02-07 安全公告 "
+"<https://www.openssl.org/news/secadv/20230207.txt>`_ 将 Windows 和 macOS "
+"二进制发布构建中使用的 OpenSSL 版本更新至 1.1.1t，以修复 CVE-2023-0286、CVE-2022-4303 和 "
+"CVE-2022-4303。"
 
 #: ../../../build/NEWS:2634
 msgid ""
@@ -5436,6 +5622,8 @@ msgid ""
 ":gh:`101566`: In zipfile, apply fix for extractall on the underlying zipfile"
 " after being wrapped in ``Path``."
 msgstr ""
+":gh:`101566`: 在 zipfile 中，当底层 zipfile 被包装在 ``Path`` 中后，对其应用针对 extractall "
+"的修复。"
 
 #: ../../../build/NEWS:2716
 msgid ""
@@ -5486,6 +5674,8 @@ msgid ""
 "mock objects. Now it correctly returns ``(*args, **kwargs)`` as infered "
 "signature."
 msgstr ""
+":gh:`96127`: ``inspect.signature`` 之前在使用模拟对象调用时会引发 ``TypeError``。现在它会正确返回 "
+"``(*args, **kwargs)`` 作为推断签名。"
 
 #: ../../../build/NEWS:2739
 msgid ""
@@ -5497,6 +5687,11 @@ msgid ""
 "no longer includes :data:`~ssl.OP_IGNORE_UNEXPECTED_EOF` by default. This "
 "option may be set to specify the previous OpenSSL 3.0 behavior."
 msgstr ""
+":gh:`95495`: 在针对 OpenSSL 3.0 构建时 :mod:`ssl` 模块存在一个错误，会将未认证的 EOF（即没有 "
+"close_notify）报告为正常的 TLS 级 EOF。现在它会引发 :exc:`~ssl.SSLEOFError`，与早期版本 OpenSSL "
+"中的行为保持一致。此外 :class:`~ssl.SSLContext` 上的 :attr:`~ssl.SSLContext.options` "
+"属性默认也不再包含 :data:`~ssl.OP_IGNORE_UNEXPECTED_EOF`。可以设置此选项以指定先前的 OpenSSL 3.0 "
+"行为。"
 
 #: ../../../build/NEWS:2747
 msgid ""
@@ -5586,6 +5781,8 @@ msgid ""
 " to workaround the macOS 13 Ventura “The installer encountered an error” "
 "failure."
 msgstr ""
+":gh:`103207`: 在 macOS 安装程序欢迎界面中添加了关于如何绕过 macOS 13 Ventura “The installer "
+"encountered an error” 故障的说明。"
 
 #: ../../../build/NEWS:2803
 msgid ":gh:`101759`: Update macOS installer to SQLite 3.40.1."
@@ -5593,7 +5790,7 @@ msgstr ":gh:`101759`: 更新macOS安装程序中的SQLite至3.40.1版本。"
 
 #: ../../../build/NEWS:2807
 msgid "Python 3.11.2 final"
-msgstr ""
+msgstr "Python 3.11.2 最终版"
 
 #: ../../../build/NEWS:2809
 msgid "*Release date: 2023-02-07*"
@@ -5663,6 +5860,8 @@ msgid ""
 ":gh:`100637`: Fix :func:`int.__sizeof__` calculation to include the 1 "
 "element ob_digit array for 0 and False."
 msgstr ""
+":gh:`100637`: 修复 :func:`int.__sizeof__` 的计算，使其包含 0 和 False 的含 1 个元素的 "
+"ob_digit 数组。"
 
 #: ../../../build/NEWS:2842
 msgid ""
@@ -5815,6 +6014,7 @@ msgid ""
 ":gh:`100160`: Remove any deprecation warnings in "
 ":func:`asyncio.get_event_loop`. They are deferred to Python 3.12."
 msgstr ""
+":gh:`100160`: 移除 :func:`asyncio.get_event_loop` 中的所有弃用警告。它们被推迟到 Python 3.12。"
 
 #: ../../../build/NEWS:2913
 msgid ""
@@ -6114,7 +6314,7 @@ msgstr ":gh:`99240`: 在参数解析中，释放新分配的内存后，将其�
 
 #: ../../../build/NEWS:3068
 msgid "Python 3.11.1 final"
-msgstr ""
+msgstr "Python 3.11.1 最终版"
 
 #: ../../../build/NEWS:3070
 msgid "*Release date: 2022-12-06*"
@@ -6135,6 +6335,8 @@ msgid ""
 ":class:`BaseHTTPRequestHandler` ``.log_message`` method to replace control "
 "characters with a ``\\xHH`` hex escape before printing."
 msgstr ""
+"这是通过修改 :mod:`http.server` :class:`BaseHTTPRequestHandler` 的 ``.log_message``"
+" 方法，在打印前将控制字符替换为 ``\\xHH`` 十六进制转义序列来实现的。"
 
 #: ../../../build/NEWS:3083
 msgid ""
@@ -6151,6 +6353,9 @@ msgid ""
 "were decoded. Some protocols such as :mod:`urllib` http ``3xx`` redirects "
 "potentially allow for an attacker to supply such a name."
 msgstr ""
+":gh:`98433`: 由 :mod:`socket` 或 :mod:`asyncio` 相关名称解析函数在 DNS 主机名上使用的 IDNA "
+"编解码器解码器不再涉及二次方复杂度算法。这防止了在解码包含双向字符且超出规范的超长主机名时潜在的 CPU 拒绝服务攻击。某些协议（例如 "
+":mod:`urllib` 的 http ``3xx`` 重定向）可能允许攻击者提供此类名称。"
 
 #: ../../../build/NEWS:3093
 msgid ":gh:`98739`: Update bundled libexpat to 2.5.0"
@@ -6163,12 +6368,14 @@ msgid ""
 "``openssl`` commands. Issue reported and initial fix by Caleb Shortt. Patch "
 "by Victor Stinner."
 msgstr ""
+":gh:`97612`: 修复了 ``get-remote-certificate.py`` 示例脚本中的 shell 代码注入漏洞。该脚本不再使用 "
+"shell 来运行 ``openssl`` 命令。问题由 Caleb Shortt 报告并提供初步修复。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:3103
 msgid ""
 ":gh:`99886`: Fix a crash when an object which does not have a dictionary "
 "frees its instance values."
-msgstr ""
+msgstr ":gh:`99886`: 修复了没有字典的对象释放其实例值时发生的崩溃。"
 
 #: ../../../build/NEWS:3106
 msgid ""
@@ -6192,6 +6399,8 @@ msgid ""
 "creation of the first sub-interpreter for modules ``builtins`` and ``sys``. "
 "Patch by Victor Stinner."
 msgstr ""
+":gh:`99578`: 修复了在创建第一个子解释器后 :func:`_imp.create_builtin` 中针对模块 ``builtins`` 和"
+" ``sys`` 的引用错误。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:3118
 msgid ""
@@ -6199,6 +6408,8 @@ msgid ""
 " copies a line missing the newline caracter from a file that is as long as "
 "the available tokenizer buffer. Patch by Pablo galindo"
 msgstr ""
+":gh:`99581`: 修复了一个错误，即当分词器从长度等于可用分词器缓冲区大小的文件中复制缺少换行符的行时会导致缓冲区溢出。补丁由 Pablo "
+"galindo 提供。"
 
 #: ../../../build/NEWS:3122
 msgid ""
@@ -6280,7 +6491,7 @@ msgstr ""
 msgid ""
 ":gh:`98925`: Lower the recursion depth for marshal on WASI to support "
 "wasmtime 2.0/main."
-msgstr ""
+msgstr ":gh:`98925`: 降低 WASI 上 marshal 的递归深度以支持 wasmtime 2.0/main。"
 
 #: ../../../build/NEWS:3160
 msgid ""
@@ -6327,13 +6538,14 @@ msgstr ""
 msgid ""
 ":gh:`93354`: Fix an issue that could delay the specialization of "
 ":opcode:`PRECALL` instructions."
-msgstr ""
+msgstr ":gh:`93354`: 修复了可能延迟 :opcode:`PRECALL` 指令特化的问题。"
 
 #: ../../../build/NEWS:3183
 msgid ""
 ":gh:`97943`: Bugfix: :func:`PyFunction_GetAnnotations` should return a "
 "borrowed reference. It was returning a new reference."
 msgstr ""
+":gh:`97943`: 错误修复： :func:`PyFunction_GetAnnotations` 应当返回借入引用，而之前返回的是新引用。"
 
 #: ../../../build/NEWS:3186
 msgid ""
@@ -6412,6 +6624,10 @@ msgid ""
 "number. ``getpath.py`` now ignores :exc:`PermissionError` when it cannot "
 "open landmark files ``pybuilddir.txt`` and ``pyenv.cfg``."
 msgstr ""
+":gh:`96005`: 在 WASI 上 :data:`~errno.ENOTCAPABLE` 现在被映射到 "
+":exc:`PermissionError`。该 :mod:`errno` 模块公开了这个新的错误号。当无法打开标志文件 "
+"``pybuilddir.txt`` 和 ``pyenv.cfg`` 时， ``getpath.py`` 现在会忽略 "
+":exc:`PermissionError`。"
 
 #: ../../../build/NEWS:3225
 msgid ""
@@ -6442,6 +6658,9 @@ msgid ""
 "\\xHH is ambiguious as to if it is a hex replacement we put in or the "
 "characters r\"\\x\" came through in the original request line."
 msgstr ""
+":gh:`100001`: 在 http.server BaseHTTPRequestHandler.log_message 中同样对 \\ 进行 \\"
+" 转义，从而在技术上可以解析该行并重构原始数据。如果不这样做，\\xHH 会产生歧义，无法区分它是我们填入的十六进制替换还是原始请求行中传入的字符 "
+"r\"\\x\"。"
 
 #: ../../../build/NEWS:3244
 msgid ""
@@ -6449,6 +6668,8 @@ msgid ""
 "warning when a new event loop was created implicitly. It no longer emits a "
 "deprecation warning if the current event loop was set."
 msgstr ""
+":gh:`93453`: :func:`asyncio.get_event_loop` "
+"现在仅在隐式创建新事件循环时发出弃用警告。如果当前事件循环已设置，则不再发出弃用警告。"
 
 #: ../../../build/NEWS:3248
 msgid ""
@@ -6566,18 +6787,18 @@ msgstr ":gh:`99134`: 将捆绑的 pip 更新到版本 22.3.1。"
 msgid ""
 ":gh:`83004`: Clean up refleak on failed module initialisation in "
 ":mod:`_zoneinfo`"
-msgstr ""
+msgstr ":gh:`83004`: 清理 :mod:`_zoneinfo` 中模块初始化失败时的引用泄漏"
 
 #: ../../../build/NEWS:3299
 msgid ""
 ":gh:`83004`: Clean up refleaks on failed module initialisation in in "
 ":mod:`_pickle`"
-msgstr ""
+msgstr ":gh:`83004`: 清理 :mod:`_pickle` 中模块初始化失败时的引用泄漏"
 
 #: ../../../build/NEWS:3302
 msgid ""
 ":gh:`83004`: Clean up refleak on failed module initialisation in :mod:`_io`."
-msgstr ""
+msgstr ":gh:`83004`: 清理 :mod:`_io` 中模块初始化失败时的引用泄漏。"
 
 #: ../../../build/NEWS:3304
 msgid ""
@@ -6597,6 +6818,11 @@ msgid ""
 "``PathDistribution._name_from_stem`` and "
 "``PathDistribution._normalized_name``."
 msgstr ""
+":gh:`98706`: [3.11] 应用了来自 importlib_metadata `4.11.4 至 4.13 "
+"<https://importlib-metadata.readthedocs.io/en/latest/history.html#v4-13-0>`_"
+" 的更改，包括针对没有 ``_normalized_name`` 的 ``Distribution`` 对象的兼容性和健壮性修复、禁止向 "
+"``Distribution.from_name`` 传入无效输入，以及改进 ``PathDistribution._name_from_stem`` "
+"和 ``PathDistribution._normalized_name`` 的行为。"
 
 #: ../../../build/NEWS:3316
 msgid ""
@@ -6687,6 +6913,8 @@ msgid ""
 ":gh:`98251`: Allow :mod:`venv` to pass along :envvar:`PYTHON*` variables to "
 "``ensurepip`` and ``pip`` when they do not impact path resolution"
 msgstr ""
+":gh:`98251`: 允许 :mod:`venv` 在 :envvar:`PYTHON*` 变量不影响路径解析时将其传递给 "
+"``ensurepip`` 和 ``pip``"
 
 #: ../../../build/NEWS:3356
 msgid ""
@@ -6758,6 +6986,9 @@ msgid ""
 " :mod:`ipaddress` module. Previously non-private networks (0.0.0.0/0) would "
 "return True from this method; now they correctly return False."
 msgstr ""
+":gh:`82836`: 修复 :mod:`ipaddress` 模块中的 "
+":attr:`~ipaddress.IPv4Address.is_private` 属性。此前非私有网络 (0.0.0.0/0) 从该方法返回 "
+"True；现在它们会正确返回 False。"
 
 #: ../../../build/NEWS:3390
 msgid ""
@@ -6842,6 +7073,8 @@ msgid ""
 ":gh:`96192`: Fix handling of ``bytes`` :term:`path-like objects <path-like "
 "object>` in :func:`os.ismount()`."
 msgstr ""
+":gh:`96192`: 修复 :func:`os.ismount` 中对 ``bytes`` :term:`路径型对象 <path-like "
+"object>` 的处理。"
 
 #: ../../../build/NEWS:3431
 msgid ""
@@ -7051,6 +7284,9 @@ msgid ""
 "``libexpat`` headers if :option:`--with-system-expat` is passed to "
 ":program:`!configure`."
 msgstr ""
+":gh:`98707`: 如果向 :program:`configure` 传入了 :option:`--with-system-"
+"libmpdec`，则不使用自带的 ``libmpdec`` 头文件。如果向 :program:`!configure` 传入了 "
+":option:`--with-system-expat`，则不使用自带的 ``libexpat`` 头文件。"
 
 #: ../../../build/NEWS:3539
 msgid ""
@@ -7111,6 +7347,8 @@ msgid ""
 "CVE-2022-37434, but the vulnerable ``inflateGetHeader`` API is not used by "
 "Python."
 msgstr ""
+":gh:`98689`: 将 Windows 构建更新至 zlib v1.2.13。v1.2.12 存在 CVE-2022-37434，但 Python"
+" 未使用存在漏洞的 ``inflateGetHeader`` API。"
 
 #: ../../../build/NEWS:3570
 msgid ""
@@ -7153,6 +7391,8 @@ msgid ""
 "files in ``Python\\deepfreeze`` and ``Python\\frozen_modules`` directories "
 "on Windows. Patch by Charlie Zhao."
 msgstr ""
+":gh:`94781`: 修复 Windows 上的 :file:`pcbuild.proj` 以清理 ``Python\\deepfreeze`` 和"
+" ``Python\\frozen_modules`` 目录中先前生成的输出文件实例。补丁由 Charlie Zhao 提供。"
 
 #: ../../../build/NEWS:3591
 msgid ""
@@ -7241,11 +7481,11 @@ msgstr ""
 
 #: ../../../build/NEWS:3642
 msgid "Python 3.11.0 final"
-msgstr ""
+msgstr "Python 3.11.0 最终版"
 
 #: ../../../build/NEWS:3644
 msgid "*Release date: 2022-10-24*"
-msgstr ""
+msgstr "*发布日期：2022-10-24*"
 
 #: ../../../build/NEWS:3649
 msgid ""
@@ -7287,6 +7527,8 @@ msgid ""
 "This prevents Linux `CVE-2022-42919 <https://cve.mitre.org/cgi-"
 "bin/cvename.cgi?name=CVE-2022-42919>`_."
 msgstr ""
+"这可以防止 Linux `CVE-2022-42919 <https://cve.mitre.org/cgi-"
+"bin/cvename.cgi?name=CVE-2022-42919>`_。"
 
 #: ../../../build/NEWS:3673
 msgid ""
@@ -7415,10 +7657,12 @@ msgid ""
 "option when default preferences have been set in environment variables or "
 "configuration files."
 msgstr ""
+":gh:`98414`: 修复在环境变量或配置文件中设置了默认首选项时 :file:`py.exe` 启动器对 ``-V:<company>/`` "
+"选项的处理。"
 
 #: ../../../build/NEWS:3759
 msgid ":gh:`90989`: Clarify some text in the Windows installer."
-msgstr ""
+msgstr ":gh:`90989`: 澄清了 Windows 安装程序中的部分文本。"
 
 #: ../../../build/NEWS:3764
 msgid ""
@@ -7436,11 +7680,11 @@ msgstr ""
 
 #: ../../../build/NEWS:3773
 msgid "Python 3.11.0 release candidate 2"
-msgstr ""
+msgstr "Python 3.11.0 候选发布版 2"
 
 #: ../../../build/NEWS:3775
 msgid "*Release date: 2022-09-11*"
-msgstr ""
+msgstr "*发布日期：2022-09-11*"
 
 #: ../../../build/NEWS:3780
 msgid ""
@@ -7451,6 +7695,10 @@ msgid ""
 "the algorithmic complexity. This is a mitigation for `CVE-2020-10735 "
 "<https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-10735>`_."
 msgstr ""
+":gh:`95778`: 在 2（二进制）、4、8（八进制）、16（十六进制）或 32 以外的进制（如 10 进制）下进行 :class:`int` 和"
+" :class:`str` 之间的转换时，如果字符串形式的数字位数超过限制，现在会引发 "
+":exc:`ValueError`，以避免由于算法复杂度导致的潜在拒绝服务攻击。这是针对 `CVE-2020-10735 "
+"<https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-10735>`_ 的缓解措施。"
 
 #: ../../../build/NEWS:3787
 msgid ""
@@ -7459,6 +7707,8 @@ msgid ""
 "conversion length limitation <int_max_str_digits>` documentation.  The "
 "default limit is 4300 digits in string form."
 msgstr ""
+"此新限制可以通过环境变量、命令行标志或 :mod:`sys` API 进行配置或禁用。请参阅 :ref:`整数字符串转换长度限制 "
+"<int_max_str_digits>` 文档。默认限制为字符串形式下的 4300 位数字。"
 
 #: ../../../build/NEWS:3792
 msgid ""
@@ -7466,6 +7716,8 @@ msgid ""
 "feedback from Victor Stinner, Thomas Wouters, Steve Dower, Ned Deily, and "
 "Mark Dickinson."
 msgstr ""
+"补丁由 Gregory P. Smith [Google] 和 Christian Heimes [Red Hat] 提供，并获得了 Victor "
+"Stinner、Thomas Wouters、Steve Dower、Ned Deily 和 Mark Dickinson 的反馈。"
 
 #: ../../../build/NEWS:3799
 msgid ":gh:`96678`: Fix case of undefined behavior in ceval.c"
@@ -7473,7 +7725,7 @@ msgstr ":gh:`96678`: 修复 ceval.c 中的未定义行为情况。"
 
 #: ../../../build/NEWS:3801
 msgid ":gh:`96641`: Do not expose ``KeyWrapper`` in :mod:`_functools`."
-msgstr ""
+msgstr ":gh:`96641`: 不在 :mod:`_functools` 中公开 ``KeyWrapper``。"
 
 #: ../../../build/NEWS:3803
 msgid ""
@@ -7589,7 +7841,7 @@ msgstr ""
 
 #: ../../../build/NEWS:3856
 msgid ":gh:`96700`: Fix incorrect error message in the :mod:`io` module."
-msgstr ""
+msgstr ":gh:`96700`: 修复 :mod:`io` 模块中不正确的错误消息。"
 
 #: ../../../build/NEWS:3858
 msgid ""
@@ -7688,6 +7940,9 @@ msgid ""
 "happen when trying to load ``MD5`` on a Linux kernel with :abbr:`FIPS "
 "(Federal Information Processing Standard)` enabled."
 msgstr ""
+":gh:`95231`: 如果在加载 :mod:`crypt` 方法时引发 :data:`~errno.EPERM` 或 "
+":data:`~errno.ENOSYS`，则会优雅地失败。当尝试在启用了 :abbr:`FIPS (Federal Information "
+"Processing Standard)` 的 Linux 内核上加载 ``MD5`` 时可能会发生这种情况。"
 
 #: ../../../build/NEWS:3904
 msgid ""
@@ -7699,7 +7954,7 @@ msgstr ""
 
 #: ../../../build/NEWS:3907
 msgid ":gh:`92986`: Fix :func:`ast.unparse` when ``ImportFrom.level`` is None"
-msgstr ""
+msgstr ":gh:`92986`: 修复当 ``ImportFrom.level`` 为 None 时的 :func:`ast.unparse`"
 
 #: ../../../build/NEWS:3912
 msgid ""
@@ -7733,7 +7988,7 @@ msgstr ":gh:`94682`: 使用 OpenSSL 1.1.1q 进行构建和测试"
 
 #: ../../../build/NEWS:3934
 msgid ":gh:`96577`: Fixes a potential buffer overrun in :mod:`msilib`."
-msgstr ""
+msgstr ":gh:`96577`: 修复了 :mod:`msilib` 中潜在的缓冲区越界问题。"
 
 #: ../../../build/NEWS:3936
 msgid ""
@@ -7744,11 +7999,11 @@ msgstr ":gh:`96559`: 修复了当没有向命令传递标签时，Windows启动�
 
 #: ../../../build/NEWS:3942
 msgid "Python 3.11.0 release candidate 1"
-msgstr ""
+msgstr "Python 3.11.0 候选发布版 1"
 
 #: ../../../build/NEWS:3944
 msgid "*Release date: 2022-08-05*"
-msgstr ""
+msgstr "*发布日期：2022-08-05*"
 
 #: ../../../build/NEWS:3949
 msgid ""
@@ -7817,6 +8072,8 @@ msgid ""
 ":exc:`asyncio.CancelledError` was replaced with another exception by a "
 "context manger. Patch by Kumar Aditya and Guido van Rossum."
 msgstr ""
+":gh:`95289`: 修复 :class:`asyncio.TaskGroup`，使其在 :exc:`asyncio.CancelledError`"
+" 被上下文管理器替换为另一个异常时传播异常。补丁由 Kumar Aditya 和 Guido van Rossum 提供。"
 
 #: ../../../build/NEWS:3984
 msgid ":gh:`95339`: Update bundled pip to 22.2.1."
@@ -7845,6 +8102,8 @@ msgid ""
 ":data:`os.EFD_NONBLOCK` and :data:`os.EFD_SEMAPHORE` flags on older kernel "
 "versions where these flags are not present. Patch by Kumar Aditya."
 msgstr ""
+":gh:`93899`: 修复在不存在 :data:`os.EFD_CLOEXEC`、 :data:`os.EFD_NONBLOCK` 和 "
+":data:`os.EFD_SEMAPHORE` 标志的旧版内核上对这些标志是否存在的检查。补丁由 Kumar Aditya 提供。"
 
 #: ../../../build/NEWS:3997
 msgid ""
@@ -7874,7 +8133,7 @@ msgstr ""
 msgid ""
 ":gh:`91447`: Fix findtext in the xml module to only give an empty string "
 "when the text attribute is set to None."
-msgstr ""
+msgstr ":gh:`91447`: 修复 xml 模块中的 findtext，使其仅在 text 属性设为 None 时才返回空字符串。"
 
 #: ../../../build/NEWS:4014
 msgid ""
@@ -8072,11 +8331,11 @@ msgstr ""
 
 #: ../../../build/NEWS:4120
 msgid "Python 3.11.0 beta 5"
-msgstr ""
+msgstr "Python 3.11.0 beta 5"
 
 #: ../../../build/NEWS:4122
 msgid "*Release date: 2022-07-25*"
-msgstr ""
+msgstr "*发布日期：2022-07-25*"
 
 #: ../../../build/NEWS:4131
 msgid ""
@@ -8195,6 +8454,9 @@ msgid ""
 ":class:`~sqlite3.Connection` factory. The regression was introduced in "
 "3.11a1 with PR 24421 (:gh:`85128`). Patch by Erlend E. Aasland.`"
 msgstr ""
+":gh:`95132`: 修复了 :mod:`sqlite3` 的一个回归问题，即 ``*args`` 和 ``**kwds`` 被错误地从 "
+":py:func:`~sqlite3.connect` 转发给 :class:`~sqlite3.Connection` 工厂函数。该回归问题是在 "
+"3.11a1 中由 PR 24421 (:gh:`85128`) 引入的。补丁由 Erlend E. Aasland 提供。"
 
 #: ../../../build/NEWS:4193
 msgid ""
@@ -8236,7 +8498,7 @@ msgstr ""
 
 #: ../../../build/NEWS:4208
 msgid ":issue:`47025`: Drop support for :class:`bytes` on :attr:`sys.path`."
-msgstr ""
+msgstr ":issue:`47025`: 移除在 :attr:`sys.path` 上对 :class:`bytes` 的支持。"
 
 #: ../../../build/NEWS:4213
 msgid ""
@@ -8306,6 +8568,8 @@ msgid ""
 ":gh:`94864`: Fix ``PyArg_Parse*`` with deprecated format units \"u\" and "
 "\"Z\". It returned 1 (success) when warnings are turned into exceptions."
 msgstr ""
+":gh:`94864`: 修复使用已弃用格式单元 \"u\" 和 \"Z\" 的 ``PyArg_Parse*``。此前当警告被转为异常时它会返回 "
+"1（成功）。"
 
 #: ../../../build/NEWS:4253
 msgid ""
@@ -8319,11 +8583,11 @@ msgstr ""
 
 #: ../../../build/NEWS:4260
 msgid "Python 3.11.0 beta 4"
-msgstr ""
+msgstr "Python 3.11.0 beta 4"
 
 #: ../../../build/NEWS:4262
 msgid "*Release date: 2022-07-11*"
-msgstr ""
+msgstr "*发布日期：2022-07-11*"
 
 #: ../../../build/NEWS:4267
 msgid ""
@@ -8519,6 +8783,8 @@ msgid ""
 ":gh:`93382`: Cache the result of :c:func:`PyCode_GetCode` function to "
 "restore the O(1) lookup of the :attr:`~types.CodeType.co_code` attribute."
 msgstr ""
+":gh:`93382`: 缓存 :c:func:`PyCode_GetCode` 函数的结果，以恢复 "
+":attr:`~types.CodeType.co_code` 属性的 O(1) 查找。"
 
 #: ../../../build/NEWS:4366
 msgid ""
@@ -8648,6 +8914,7 @@ msgid ""
 ":gh:`94207`: Made :class:`_struct.Struct` GC-tracked in order to fix a "
 "reference leak in the :mod:`_struct` module."
 msgstr ""
+":gh:`94207`: 使 :class:`_struct.Struct` 接受垃圾回收跟踪，以修复 :mod:`_struct` 模块中的引用泄漏。"
 
 #: ../../../build/NEWS:4430
 msgid ""
@@ -8947,6 +9214,8 @@ msgid ""
 " need to keep strong references to tasks and added a code snippet detailing "
 "how to to this."
 msgstr ""
+":gh:`88831`: 扩充了 asyncio.create_task() "
+"的文档。阐明了保持对任务的强引用的必要性，并添加了一个详细介绍如何执行此操作的代码片段。"
 
 #: ../../../build/NEWS:4567
 msgid ""
@@ -9102,6 +9371,9 @@ msgid ""
 "using ``LCMapStringEx`` instead of :func:`str.lower` in "
 ":func:`ntpath.normcase`. Add ``LCMapStringEx`` to the :mod:`_winapi` module."
 msgstr ""
+":issue:`42658`: 通过在 :func:`ntpath.normcase` 中使用 ``LCMapStringEx`` 代替 "
+":func:`str.lower`，支持原生 Windows 不区分大小写的路径比较。将 ``LCMapStringEx`` 添加到 "
+":mod:`_winapi` 模块中。"
 
 #: ../../../build/NEWS:4650
 msgid ""
@@ -9190,11 +9462,11 @@ msgstr ""
 
 #: ../../../build/NEWS:4687
 msgid "Python 3.11.0 beta 3"
-msgstr ""
+msgstr "Python 3.11.0 beta 3"
 
 #: ../../../build/NEWS:4689
 msgid "*Release date: 2022-06-01*"
-msgstr ""
+msgstr "*发布日期：2022-06-01*"
 
 #: ../../../build/NEWS:4694
 msgid ""
@@ -9216,11 +9488,11 @@ msgstr ":gh:`69093`: 修复了 ``Modules/Setup.stdlib.in`` 中 ``_sqlite3`` 扩�
 
 #: ../../../build/NEWS:4707
 msgid "Python 3.11.0 beta 2"
-msgstr ""
+msgstr "Python 3.11.0 beta 2"
 
 #: ../../../build/NEWS:4709
 msgid "*Release date: 2022-05-30*"
-msgstr ""
+msgstr "*发布日期：2022-05-30*"
 
 #: ../../../build/NEWS:4714
 msgid ""
@@ -9358,6 +9630,8 @@ msgid ""
 ":gh:`92839`: Fixed crash resulting from calling bisect.insort() or "
 "bisect.insort_left() with the key argument not equal to None."
 msgstr ""
+":gh:`92839`: 修复了在 key 参数不等于 None 的情况下调用 bisect.insort() 或 "
+"bisect.insort_left() 导致的崩溃。"
 
 #: ../../../build/NEWS:4780
 msgid ""
@@ -9465,6 +9739,8 @@ msgid ""
 ":issue:`28249`: Set :attr:`doctest.DocTest.lineno` to ``None`` when object "
 "does not have :attr:`__doc__`."
 msgstr ""
+":issue:`28249`: 当对象没有 :attr:`__doc__` 时，将 :attr:`doctest.DocTest.lineno` 设为 "
+"``None``。"
 
 #: ../../../build/NEWS:4830
 msgid ""
@@ -9656,6 +9932,9 @@ msgid ""
 "referenced by the code object. closure has a default value of None, and it "
 "must be None if the code object doesn't refer to any free variables."
 msgstr ""
+":gh:`92203`: 为 exec() 添加仅限关键字形参 "
+"closure。它只能在执行使用自由变量的代码对象时指定。指定时，它必须是一个元组，其元素数量必须恰好等于代码对象所引用的单元变量数量。closure "
+"的默认值为 None，且如果代码对象未引用任何自由变量，则它必须为 None。"
 
 #: ../../../build/NEWS:4942
 msgid ""
@@ -9820,6 +10099,8 @@ msgid ""
 "check if a :c:type:`PyFrameObject` is an entry frame. Patch by Pablo "
 "Galindo."
 msgstr ""
+":gh:`91502`: 添加新的 :c:func:`_PyFrame_IsEntryFrame` API 函数，用于检查 "
+":c:type:`PyFrameObject` 是否为入口帧。补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:5016
 msgid ""
@@ -9913,6 +10194,8 @@ msgid ""
 ":issue:`47120`: Make opcodes :opcode:`JUMP_IF_TRUE_OR_POP` and "
 ":opcode:`JUMP_IF_FALSE_OR_POP` relative rather than absolute."
 msgstr ""
+":issue:`47120`: 使操作码 :opcode:`JUMP_IF_TRUE_OR_POP` 和 "
+":opcode:`JUMP_IF_FALSE_OR_POP` 成为相对跳转而非绝对跳转。"
 
 #: ../../../build/NEWS:5059
 msgid ""
@@ -10109,6 +10392,8 @@ msgid ""
 "and if slots=True, add a slot named \"__weakref__\", which will allow "
 "instances to be weakref'd. Contributed by Eric V. Smith"
 msgstr ""
+":gh:`91215`: 为 @dataclass 添加 weakref_slot。默认值为 False。如果为 True 且 "
+"slots=True，则会添加一个名为 \"__weakref__\" 的槽位，从而允许对实例进行弱引用。由 Eric V. Smith 贡献。"
 
 #: ../../../build/NEWS:5152
 msgid ":gh:`85984`: New function os.login_tty() for Unix."
@@ -10207,6 +10492,8 @@ msgid ""
 " in Python 3.13. See :pep:`594` for the rationale and the :mod:`mimetypes` "
 "module for an alternative. Patch by Victor Stinner."
 msgstr ""
+":gh:`68966`: :mod:`mailcap` 模块现已弃用，并将在 Python 3.13 中移除。有关原因请参阅 "
+":pep:`594`，替代方案请参阅 :mod:`mimetypes` 模块。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:5196
 msgid ""
@@ -10938,6 +11225,9 @@ msgid ""
 "Strings paragraph <https://www.python.org/dev/peps/pep-0007/#documentation-"
 "strings>`_. Patch by Oleg Iarygin."
 msgstr ""
+":issue:`46962`: 代码片段中的所有文档字符串现在都包装在 :c:macro:`PyDoc_STR` 中，以遵循 `PEP 7 "
+"的文档字符串段落 <https://www.python.org/dev/peps/pep-0007/#documentation-strings>`_"
+" 的准则。补丁由 Oleg Iarygin 提供。"
 
 #: ../../../build/NEWS:5526
 msgid ""
@@ -11103,6 +11393,8 @@ msgid ""
 ":gh:`88279`: Deprecate the C functions: :c:func:`PySys_SetArgv`, "
 ":c:func:`PySys_SetArgvEx`, :c:func:`PySys_SetPath`. Patch by Victor Stinner."
 msgstr ""
+":gh:`88279`: 弃用以下 C 函数： :c:func:`PySys_SetArgv`、 :c:func:`PySys_SetArgvEx`、 "
+":c:func:`PySys_SetPath`。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:5616
 msgid ""
@@ -11390,6 +11682,8 @@ msgid ""
 "comprehensions by optimizing for the common case, where no resize is needed."
 " Patch by Dennis Sweeney."
 msgstr ""
+":issue:`47009`: 通过针对无需调整大小的常见情况进行优化，提升了 :meth:`list.append` 和列表推导式的性能。补丁由 "
+"Dennis Sweeney 提供。"
 
 #: ../../../build/NEWS:5748
 msgid ""
@@ -11443,6 +11737,8 @@ msgid ""
 " and remove the internal machinery for managing the (now unused) non-inline "
 "caches."
 msgstr ""
+":issue:`46841`: 对 :opcode:`PRECALL` 和 :opcode:`CALL` "
+"使用内联缓存，并移除用于管理（现已不再使用的）非内联缓存的内部机制。"
 
 #: ../../../build/NEWS:5770
 msgid ""
@@ -11763,6 +12059,8 @@ msgid ""
 "and deprecation warnings and have now been updated to note they will removed"
 " in Python 3.12 (:pep:`594`)."
 msgstr ""
+":issue:`47022`: :mod:`asynchat`、 :mod:`asyncore` 和 :mod:`smtpd` 模块至少自 Python"
+" 3.6 起就已弃用。它们的文档和弃用警告现已更新，以指明它们将在 Python 3.12 中移除 (:pep:`594`)。"
 
 #: ../../../build/NEWS:5918
 msgid ""
@@ -11973,6 +12271,9 @@ msgid ""
 "Will be removed in Python 3.13. Use :class:`BasicInterpolation` or "
 ":class:`ExtendedInterpolation` instead."
 msgstr ""
+":issue:`46607`: 为自 Python 3.2 起已在文档字符串中弃用的 :class:`LegacyInterpolation` 添加 "
+":exc:`DeprecationWarning`。它将在 Python 3.13 中移除。请改用 "
+":class:`BasicInterpolation` 或 :class:`ExtendedInterpolation`。"
 
 #: ../../../build/NEWS:6017
 msgid ""
@@ -12004,6 +12305,7 @@ msgid ""
 ":issue:`22859`: :meth:`~unittest.TestProgram.usageExit` is marked "
 "deprecated, to be removed in 3.13."
 msgstr ""
+":issue:`22859`: :meth:`~unittest.TestProgram.usageExit` 已被标记为弃用，将在 3.13 中移除。"
 
 #: ../../../build/NEWS:6031
 msgid ""
@@ -12083,6 +12385,8 @@ msgid ""
 " user tries to :meth:`~sqlite3.Cursor.execute()` more than one SQL "
 "statement."
 msgstr ""
+"如果用户尝试通过 :meth:`~sqlite3.Cursor.execute` 执行多条 SQL 语句，则引发 "
+":exc:`~sqlite3.ProgrammingError` 而不是 :exc:`~sqlite3.Warning`。"
 
 #: ../../../build/NEWS:6063
 msgid ""
@@ -12125,6 +12429,8 @@ msgid ""
 "*asyncio* Lib in order to be consistant with Barrier from *threading* and "
 "*multiprocessing* libs*"
 msgstr ""
+":issue:`43352`: 在 *asyncio* 库的同步原语中添加 Barrier 对象，以与 *threading* 和 "
+"*multiprocessing* 库中的 Barrier 保持一致。"
 
 #: ../../../build/NEWS:6083
 msgid ""
@@ -12148,6 +12454,8 @@ msgid ""
 ":func:`binascii.crc32` / :func:`zlib.adler32` / :func:`zlib.crc32` "
 "functions."
 msgstr ""
+":issue:`47040`: 澄清了 :func:`binascii.crc32` / :func:`zlib.adler32` / "
+":func:`zlib.crc32` 函数的旧 Python 版本兼容性说明。"
 
 #: ../../../build/NEWS:6097
 msgid ":issue:`46033`: Clarify ``for`` statement execution in its doc."
@@ -12229,6 +12537,8 @@ msgid ""
 "deprecated :mod:`asyncore` (see :pep:`594`) to :mod:`asyncio`. Patch by Oleg"
 " Iarygin."
 msgstr ""
+":issue:`47015`: :func:`os.sendfile` 的一个测试用例已从已弃用的 :mod:`asyncore` （参见 "
+":pep:`594` ）转换为 :mod:`asyncio`。补丁由 Oleg Iarygin 提供。"
 
 #: ../../../build/NEWS:6139
 msgid ""
@@ -12284,7 +12594,7 @@ msgstr ""
 msgid ""
 ":issue:`46917`: Building Python now requires support of IEEE 754 floating "
 "point numbers. Patch by Victor Stinner."
-msgstr ""
+msgstr ":issue:`46917`: 构建 Python 现在需要支持 IEEE 754 浮点数。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:6165
 msgid ""
@@ -12296,7 +12606,7 @@ msgstr ""
 
 #: ../../../build/NEWS:6171
 msgid ":issue:`47194`: Update ``zlib`` to v1.2.12 to resolve CVE-2018-25032."
-msgstr ""
+msgstr ":issue:`47194`: 将 ``zlib`` 更新至 v1.2.12 以解决 CVE-2018-25032。"
 
 #: ../../../build/NEWS:6173
 msgid ""
@@ -12333,12 +12643,16 @@ msgid ""
 ":issue:`44549`: Update bzip2 to 1.0.8 in Windows builds to mitigate "
 "CVE-2016-3189 and CVE-2019-12900"
 msgstr ""
+":issue:`44549`: 在 Windows 构建中将 bzip2 更新至 1.0.8 以缓解 CVE-2016-3189 和 "
+"CVE-2019-12900"
 
 #: ../../../build/NEWS:6191
 msgid ""
 ":issue:`46948`: Prevent CVE-2022-26488 by ensuring the Add to PATH option in"
 " the Windows installer uses the correct path when being repaired."
 msgstr ""
+":issue:`46948`: 确保 Windows 安装程序中的 Add to PATH 选项在修复时使用正确的路径，从而防止 "
+"CVE-2022-26488。"
 
 #: ../../../build/NEWS:6197
 msgid ""
@@ -12639,7 +12953,7 @@ msgstr ":issue:`45885`: 在收集专门化统计信息时不要取消适配 :opc
 msgid ""
 ":issue:`46329`: Fix specialization stats gathering for :opcode:`PRECALL` "
 "instructions."
-msgstr ""
+msgstr ":issue:`46329`: 修复针对 :opcode:`PRECALL` 指令的特化统计信息收集。"
 
 #: ../../../build/NEWS:6341
 msgid ":issue:`46794`: Bump up the libexpat version into 2.4.6"
@@ -13271,6 +13585,8 @@ msgid ""
 ":issue:`46656`: Building Python now requires support for floating point Not-"
 "a-Number (NaN): remove the ``Py_NO_NAN`` macro. Patch by Victor Stinner."
 msgstr ""
+":issue:`46656`: 构建 Python 现在需要支持浮点数非数字 (NaN)：移除 ``Py_NO_NAN`` 宏。补丁由 Victor "
+"Stinner 提供。"
 
 #: ../../../build/NEWS:6636
 msgid ""
@@ -13299,6 +13615,10 @@ msgid ""
 "workarounds for missing _multiprocessing and failing socket.accept(). - "
 "Enable bzip2. - Disable large file support. - Disable signal.alarm."
 msgstr ""
+":issue:`40280`: 修复 wasm32-emscripten 测试失败和平台问题。 - 禁用不支持或无法工作的系统调用，例如 "
+"wait、getrusage、prlimit、mkfifo、mknod、setres[gu]id、setgroups。 - 使用 fd_count "
+"统计打开的文件描述符数量。 - 为 subprocess 和 fork 添加更多检查。 - 为缺失的 _multiprocessing 和失败的 "
+"socket.accept() 添加变通方案。 - 启用 bzip2。 - 禁用大文件支持。 - 禁用 signal.alarm。"
 
 #: ../../../build/NEWS:6651
 msgid ""
@@ -13351,6 +13671,8 @@ msgid ""
 "leaving code that embedd/extends Python free to define ``bool``, ``true`` "
 "and ``false``."
 msgstr ""
+":issue:`46748`: Python 的公共头文件不再导入 ``<stdbool.h>``，从而使嵌入/扩展 Python 的代码可以自由定义 "
+"``bool``、``true`` 和 ``false``。"
 
 #: ../../../build/NEWS:6684
 msgid ""
@@ -13367,6 +13689,8 @@ msgid ""
 "``Include/pybuffer.h`` to avoid conflits with projects having an existing "
 "``buffer.h`` header file. Patch by Victor Stinner."
 msgstr ""
+":issue:`45459`: 将 ``Include/buffer.h`` 头文件重命名为 ``Include/pybuffer.h``，以避免与已有"
+" ``buffer.h`` 头文件的项目发生冲突。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:6692
 msgid ""
@@ -13381,6 +13705,7 @@ msgid ""
 ":issue:`46613`: Added function :c:func:`PyType_GetModuleByDef`, which allows"
 " accesss to module state when a method's defining class is not available."
 msgstr ""
+":issue:`46613`: 新增函数 :c:func:`PyType_GetModuleByDef`，允许在方法的定义类不可用时访问模块状态。"
 
 #: ../../../build/NEWS:6700
 msgid "Python 3.11.0 alpha 5"
@@ -13771,6 +14096,8 @@ msgid ""
 ":attr:`__doc__` is missing, for example when run with pregenerated optimized"
 " ``.pyc`` files."
 msgstr ""
+":issue:`46434`: 当缺少 :attr:`__doc__` 时（例如使用预生成的优化 ``.pyc`` 文件运行时），:mod:`pdb` "
+"现在能够妥善处理 ``help``。"
 
 #: ../../../build/NEWS:6886
 msgid ""
@@ -13972,6 +14299,9 @@ msgid ""
 " test_builtin is not intented to test the readline module. Patch by Victor "
 "Stinner."
 msgstr ""
+":issue:`13886`: 如果加载了 readline 模块，则跳过针对非 ASCII 字符的 test_builtin PTY "
+"测试。readline 模块会改变 input() 的行为，但 test_builtin 的目的并不是测试 readline 模块。补丁由 Victor"
+" Stinner 提供。"
 
 #: ../../../build/NEWS:6984
 msgid ""
@@ -14165,6 +14495,10 @@ msgid ""
 " crashed if the previous or the next object of the :c:type:`PyGC_Head` "
 "structure became a dangling pointer. Patch by Victor Stinner."
 msgstr ""
+":issue:`46070`: :c:func:`Py_EndInterpreter` "
+"现在会显式取消追踪当前由垃圾回收器追踪的所有对象。在此之前，如果某个对象之后被另一个解释器使用，当 :c:type:`PyGC_Head` "
+"结构体的前一个或后一个对象变成悬垂指针时，对该对象调用 :c:func:`PyObject_GC_UnTrack` 会导致崩溃。补丁由 Victor "
+"Stinner 提供。"
 
 #: ../../../build/NEWS:7095
 msgid ":issue:`46347`: Fix memory leak in PyEval_EvalCodeEx."
@@ -14275,7 +14609,7 @@ msgstr ""
 msgid ""
 ":issue:`46221`: :opcode:`PREP_RERAISE_STAR` no longer pushes ``lasti`` to "
 "the stack."
-msgstr ""
+msgstr ":issue:`46221`: :opcode:`PREP_RERAISE_STAR` 不再将 ``lasti`` 压入栈中。"
 
 #: ../../../build/NEWS:7146
 msgid ""
@@ -14355,6 +14689,8 @@ msgid ""
 " to improve error handling. It now exits immediately upon an unrecoverable "
 "error."
 msgstr ""
+":issue:`45635`: 重构了从 :c:func:`_PyErr_Display` "
+"调用的代码以改进错误处理。它现在会在遇到不可恢复的错误时立即退出。"
 
 #: ../../../build/NEWS:7183
 msgid ""
@@ -14744,6 +15080,8 @@ msgid ""
 ":issue:`46016`: Adding :attr:`F_DUP2FD` and :attr:`F_DUP2FD_CLOEXEC` "
 "constants from FreeBSD into the fcntl module."
 msgstr ""
+":issue:`46016`: 将来自 FreeBSD 的 :attr:`F_DUP2FD` 和 :attr:`F_DUP2FD_CLOEXEC` "
+"常量添加到 fcntl 模块中。"
 
 #: ../../../build/NEWS:7358
 msgid ""
@@ -15086,6 +15424,8 @@ msgid ""
 "``exc_info`` (including setting the traceback on the exception instance) "
 "because ``exc_info`` is always normalized."
 msgstr ""
+":issue:`45711`: :c:func:`_PyErr_ChainStackItem` 不再规范化 ``exc_info`` "
+"（包括在异常实例上设置回溯信息），因为 ``exc_info`` 始终是已规范化的。"
 
 #: ../../../build/NEWS:7536
 msgid ""
@@ -15381,6 +15721,8 @@ msgid ""
 "since Python 3.1, it now emits a deprecation warning and will be removed in "
 "Python 3.13."
 msgstr ""
+":issue:`45837`: :meth:`turtle.RawTurtle.settiltangle` 自 Python 3.1 "
+"起已弃用，它现在会发出弃用警告，并将在 Python 3.13 中移除。"
 
 #: ../../../build/NEWS:7685
 msgid "Use :meth:`turtle.RawTurtle.tiltangle` instead."
@@ -16071,6 +16413,8 @@ msgid ""
 ":issue:`45688`: :data:`sys.stdlib_module_names` now contains the macOS-"
 "specific module :mod:`_scproxy`."
 msgstr ""
+":issue:`45688`: :data:`sys.stdlib_module_names` 现在包含 macOS 专属模块 "
+":mod:`_scproxy`。"
 
 #: ../../../build/NEWS:8012
 msgid ""
@@ -16082,7 +16426,7 @@ msgstr ":issue:`45379`: 澄清当我们尝试显式导入一个冻结模块但�
 msgid ""
 ":issue:`44525`: Specialize simple calls to Python functions (no starargs, "
 "keyowrd dict, or closure)"
-msgstr ""
+msgstr ":issue:`44525`: 特化对 Python 函数的简单调用（无星号参数、关键字字典或闭包）"
 
 #: ../../../build/NEWS:8018
 msgid ""
@@ -16330,6 +16674,8 @@ msgid ""
 ":issue:`45557`: pprint.pprint() now handles underscore_numbers correctly. "
 "Previously it was always setting it to False."
 msgstr ""
+":issue:`45557`: pprint.pprint() 现在能正确处理 underscore_numbers。在此之前它总是将其设为 "
+"False。"
 
 #: ../../../build/NEWS:8136
 msgid ""
@@ -16569,6 +16915,9 @@ msgid ""
 ":meth:`Signature.from_callable() <inspect.Signature.from_callable>` method "
 "instead."
 msgstr ""
+"未写入文档的 ``Signature.from_callable`` 和 ``Signature.from_function`` 函数（自 Python"
+" 3.5 起已弃用）；请改用 :meth:`Signature.from_callable "
+"<inspect.Signature.from_callable>` 方法。"
 
 #: ../../../build/NEWS:8245
 msgid ""
@@ -16879,6 +17228,9 @@ msgid ""
 "obsolete macros ``HAVE_EXPAT_CONFIG_H`` and ``USE_PYEXPAT_CAPI``. "
 "``XML_POOR_ENTROPY`` is now defined in ``expat_config.h``."
 msgstr ""
+":issue:`45570`: :mod:`pyexpat` 和 :mod:`_elementtree` 不再定义已过时的宏 "
+"``HAVE_EXPAT_CONFIG_H`` 和 ``USE_PYEXPAT_CAPI``。``XML_POOR_ENTROPY`` 现在在 "
+"``expat_config.h`` 中定义。"
 
 #: ../../../build/NEWS:8391
 msgid ""
@@ -17193,6 +17545,8 @@ msgid ""
 "to get the fix for the CVE-2013-0340 \"Billion Laughs\" vulnerability. This "
 "copy is most used on Windows and macOS."
 msgstr ""
+":issue:`44394`: 将捆绑的 libexpat 副本从 2.2.8 更新至 2.4.1，以获取针对 CVE-2013-0340 "
+"\"Billion Laughs\" 漏洞的修复。此副本主要在 Windows 和 macOS 上使用。"
 
 #: ../../../build/NEWS:8548
 msgid ""
@@ -17680,6 +18034,8 @@ msgid ""
 ":issue:`44725`: Expose specialization stats in python via "
 ":func:`_opcode.get_specialization_stats`."
 msgstr ""
+":issue:`44725`: 在 Python 中通过 :func:`_opcode.get_specialization_stats` "
+"暴露特化统计信息。"
 
 #: ../../../build/NEWS:8771
 msgid ""
@@ -17835,6 +18191,8 @@ msgid ""
 " variable) is deprecated in Python 3.10 and will be removed in Python 3.12. "
 "This feature requires a debug build of Python. Patch by Victor Stinner."
 msgstr ""
+":issue:`44584`: 线程调试 (:envvar:`PYTHONTHREADDEBUG` 环境变量) 在 Python 3.10 "
+"中已弃用，并将在 Python 3.12 中移除。此特性需要调试版本的 Python。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:8844
 msgid ""
@@ -17956,7 +18314,7 @@ msgid ""
 ":issue:`44297`: Make sure that the line number is set when entering a "
 "comprehension scope. Ensures that backtraces inclusing generator expressions"
 " show the correct line number."
-msgstr ""
+msgstr ":issue:`44297`: 确保在进入推导式作用域时设置行号。这能确保包含生成器表达式的回溯信息显示正确的行号。"
 
 #: ../../../build/NEWS:8902
 msgid ""
@@ -18329,6 +18687,8 @@ msgid ""
 " now uses correct clang option to add a runtime library directory (rpath) to"
 " a shared library."
 msgstr ""
+":issue:`45371`: 修复 :mod:`distutils` 中的 clang rpath 问题。UnixCCompiler 现在使用正确的 "
+"clang 选项向共享库添加运行时库目录 (rpath)。"
 
 #: ../../../build/NEWS:9082
 msgid ""
@@ -18553,6 +18913,8 @@ msgid ""
 ":issue:`38371`: Remove the deprecated ``split()`` method of "
 ":class:`_tkinter.TkappType`. Patch by Erlend E. Aasland."
 msgstr ""
+":issue:`38371`: 移除 :class:`_tkinter.TkappType` 中已弃用的 ``split()`` 方法。补丁由 "
+"Erlend E. Aasland 提供。"
 
 #: ../../../build/NEWS:9182
 msgid ""
@@ -18662,6 +19024,8 @@ msgid ""
 "able to parse Python 3.10 or newer. See the :pep:`617` (New PEG parser for "
 "CPython). Patch by Victor Stinner."
 msgstr ""
+":issue:`40360`: :mod:`lib2to3` 包现已弃用，并且可能无法解析 Python 3.10 或更新版本的代码。请参阅 "
+":pep:`617` （CPython 的新 PEG 解析器）。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:9240
 msgid ""
@@ -18808,6 +19172,8 @@ msgid ""
 " in Python 3.13. It is untested and undocumented and also not used by "
 "webbrowser itself. Patch by Donghee Na."
 msgstr ""
+":issue:`42255`: :class:`webbrowser.MacOSX` 已弃用并将在 Python 3.13 "
+"中移除。它未经测试且未写入文档，同时 webbrowser 本身也没有使用它。补丁由 Donghee Na 提供。"
 
 #: ../../../build/NEWS:9292
 msgid ""
@@ -18835,6 +19201,8 @@ msgid ""
 ":issue:`44935`: :mod:`subprocess` on Solaris now also uses "
 ":func:`os.posix_spawn()` for better performance."
 msgstr ""
+":issue:`44935`: Solaris 上的 :mod:`subprocess` 现在也使用 :func:`os.posix_spawn` "
+"以获得更好的性能。"
 
 #: ../../../build/NEWS:9304
 msgid ""
@@ -19113,6 +19481,9 @@ msgid ""
 ":meth:`_ssl._SSLSocket.read` for a big value of the ``len`` parameter. Patch"
 " by Pablo Galindo"
 msgstr ""
+":issue:`42854`: 修复了 :mod:`_ssl` 模块中的一个 bug，该 bug 会在对较大的 ``len`` 参数值使用 "
+":meth:`_ssl._SSLSocket.write` 和 :meth:`_ssl._SSLSocket.read` 时抛出 "
+":exc:`OverflowError`。补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:9414
 msgid ""
@@ -19183,6 +19554,7 @@ msgid ""
 ":issue:`44608`: Fix memory leak in :func:`_tkinter._flatten` if it is called"
 " with a sequence or set, but not list or tuple."
 msgstr ""
+":issue:`44608`: 修复使用序列或集合（但不是列表或元组）调用 :func:`_tkinter._flatten` 时的内存泄漏。"
 
 #: ../../../build/NEWS:9446
 msgid ""
@@ -19441,6 +19813,8 @@ msgid ""
 " default value of None when the ``const`` kwarg is not provided. Previously,"
 " this raised a :exc:`TypeError`."
 msgstr ""
+":issue:`37880`: 当未提供 ``const`` 关键字参数时，argparse 的 store_const 和 append_const "
+"动作现在都会收到默认值 None。在此之前，这会引发 :exc:`TypeError`。"
 
 #: ../../../build/NEWS:9561
 msgid ":issue:`44389`: Fix deprecation of :data:`ssl.OP_NO_TLSv1_3`"
@@ -19491,12 +19865,16 @@ msgid ""
 ":mod:`distutils.sysconfig` because it behaves differently than the similar "
 "implementation in :mod:`sysconfig`."
 msgstr ""
+":issue:`44351`: 在 :mod:`distutils.sysconfig` 中恢复 "
+":func:`parse_makefile`，因为它的行为与 :mod:`sysconfig` 中的类似实现不同。"
 
 #: ../../../build/NEWS:9585
 msgid ""
 ":issue:`35800`: :class:`smtpd.MailmanProxy` is now removed as it is unusable"
 " without an external module, ``mailman``. Patch by Donghee Na."
 msgstr ""
+":issue:`35800`: :class:`smtpd.MailmanProxy` 现已移除，因为在没有外部模块 ``mailman`` "
+"的情况下它无法使用。补丁由 Donghee Na 提供。"
 
 #: ../../../build/NEWS:9588
 msgid ""
@@ -20033,15 +20411,15 @@ msgstr ":issue:`5846`: 弃用了以下 :mod:`unittest` 函数，计划在 Python
 
 #: ../../../build/NEWS:9831
 msgid ":func:`~unittest.findTestCases`"
-msgstr ""
+msgstr ":func:`~unittest.findTestCases`"
 
 #: ../../../build/NEWS:9832
 msgid ":func:`~unittest.makeSuite`"
-msgstr ""
+msgstr ":func:`~unittest.makeSuite`"
 
 #: ../../../build/NEWS:9833
 msgid ":func:`~unittest.getTestCaseNames`"
-msgstr ""
+msgstr ":func:`~unittest.getTestCaseNames`"
 
 #: ../../../build/NEWS:9835
 msgid "Use :class:`~unittest.TestLoader` methods instead:"
@@ -20419,6 +20797,8 @@ msgid ""
 ":issue:`41621`: Document that :class:`collections.defaultdict` parameter "
 "``default_factory`` defaults to None and is positional-only."
 msgstr ""
+":issue:`41621`: 在文档中说明 :class:`collections.defaultdict` 的参数 "
+"``default_factory`` 默认为 None 且为仅限位置参数。"
 
 #: ../../../build/NEWS:10011
 msgid ":issue:`41576`: document BaseException in favor of bare except"
@@ -20567,6 +20947,8 @@ msgid ""
 " optional to allow running on alternative Python implementations. Patch by "
 "Serhiy Storchaka."
 msgstr ""
+":issue:`45011`: 使依赖于 :mod:`_asyncio` C 扩展模块的测试成为可选测试，以便允许在其他 Python "
+"实现上运行。补丁由 Serhiy Storchaka 提供。"
 
 #: ../../../build/NEWS:10078
 msgid ""
@@ -20601,7 +20983,7 @@ msgstr ""
 
 #: ../../../build/NEWS:10092
 msgid ":issue:`44734`: Fixed floating point precision issue in turtle tests."
-msgstr ""
+msgstr ":issue:`44734`: 修复了 turtle 测试中的浮点数精度问题。"
 
 #: ../../../build/NEWS:10094
 msgid ""
@@ -21476,7 +21858,7 @@ msgstr ""
 msgid ""
 ":issue:`43963`: Importing the :mod:`_signal` module in a subinterpreter has "
 "no longer side effects."
-msgstr ""
+msgstr ":issue:`43963`: 在子解释器中导入 :mod:`_signal` 模块不再产生副作用。"
 
 #: ../../../build/NEWS:10512
 msgid ""
@@ -21550,6 +21932,8 @@ msgid ""
 "syntax error itself, instead of just where the problem is detected. Patch by"
 " Pablo Galindo."
 msgstr ""
+":issue:`43914`: 解释器引发的 :exc:`SyntaxError` "
+"异常现在会高亮显示构成语法错误本身的表达式的完整错误范围，而不再仅仅是检测到问题的位置。补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:10549
 msgid ""
@@ -21945,6 +22329,10 @@ msgid ""
 "methods are now callable in Python 3.10. Moreover, :func:`_pyio.OpenWrapper`"
 " becomes a simple alias to :func:`_pyio.open`. Patch by Victor Stinner."
 msgstr ""
+":issue:`43680`: Python :func:`_pyio.open` 函数变为静态方法，使其行为与内置函数 :func:`io.open`"
+" 一致：在存储为类变量时不会变为绑定方法。由于静态方法在 Python 3.10 "
+"中已成为可调用对象，因此这一改变得以实现。此外，:func:`_pyio.OpenWrapper` 变为指向 :func:`_pyio.open` "
+"的简单别名。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:10742
 msgid ""
@@ -22082,7 +22470,7 @@ msgstr ""
 #: ../../../build/NEWS:10803
 msgid ""
 ":issue:`43731`: Add an ``encoding`` parameter :func:`logging.fileConfig()`."
-msgstr ""
+msgstr ":issue:`43731`: 为 :func:`logging.fileConfig` 添加 ``encoding`` 参数。"
 
 #: ../../../build/NEWS:10805
 msgid ""
@@ -22253,12 +22641,14 @@ msgid ""
 ":issue:`41282`: Install schemes in :mod:`distutils.command.install` are now "
 "loaded from :mod:`sysconfig`."
 msgstr ""
+":issue:`41282`: :mod:`distutils.command.install` 中的安装方案现在从 :mod:`sysconfig` "
+"加载。"
 
 #: ../../../build/NEWS:10880
 msgid ""
 ":issue:`41282`: :mod:`distutils.sysconfig` has been merged to "
 ":mod:`sysconfig`."
-msgstr ""
+msgstr ":issue:`41282`: :mod:`distutils.sysconfig` 已合并到 :mod:`sysconfig` 中。"
 
 #: ../../../build/NEWS:10882
 msgid ""
@@ -22356,6 +22746,8 @@ msgid ""
 ":issue:`36470`: Fix dataclasses with ``InitVar``\\s and "
 ":func:`~dataclasses.replace()`. Patch by Claudiu Popa."
 msgstr ""
+":issue:`36470`: 修复包含 ``InitVar`` 的数据类与 :func:`~dataclasses.replace` "
+"的配合问题。补丁由 Claudiu Popa 提供。"
 
 #: ../../../build/NEWS:10926
 msgid ":issue:`40849`: Expose X509_V_FLAG_PARTIAL_CHAIN ssl flag"
@@ -22383,6 +22775,8 @@ msgid ""
 "home directories if the basename of current user's home directory does not "
 "match their username."
 msgstr ""
+":issue:`39899`: 如果当前用户主目录的基本名称与其用户名不匹配，:func:`os.path.expanduser` 现在会拒绝猜测 "
+"Windows 主目录。"
 
 #: ../../../build/NEWS:10939
 msgid ""
@@ -22391,6 +22785,9 @@ msgid ""
 "cannot be resolved. Previously a :exc:`KeyError` exception could be raised "
 "on Windows when the ``\"USERNAME\"``  environment variable was unset."
 msgstr ""
+"当无法解析主目录时，:meth:`pathlib.Path.expanduser` 和 :meth:`~pathlib.Path.home` "
+"现在会一致地引发 :exc:`RuntimeError` 异常。在此之前，当 Windows 上未设置 ``\"USERNAME\"`` "
+"环境变量时，可能会引发 :exc:`KeyError` 异常。"
 
 #: ../../../build/NEWS:10944
 msgid ""
@@ -22536,7 +22933,7 @@ msgstr ":issue:`35306`: 向 :func:`os.startfile` 函数添加额外的参数。"
 msgid ""
 ":issue:`43538`: Avoid raising errors from :meth:`pathlib.Path.exists()` when"
 " passed an invalid filename."
-msgstr ""
+msgstr ":issue:`43538`: 避免在传入无效文件名时从 :meth:`pathlib.Path.exists` 引发错误。"
 
 #: ../../../build/NEWS:11019
 msgid ""
@@ -22776,6 +23173,9 @@ msgid ""
 "Python modules can contain sensitive data like passwords. Vulnerability "
 "reported by David Schwörer."
 msgstr ""
+":issue:`42988`: CVE-2021-3426：移除 :mod:`pydoc` 模块中的 ``getfile`` "
+"特性，该特性可能被滥用于读取磁盘上的任意文件（目录遍历漏洞）。此外，即便是 Python 模块的源代码也可能包含密码等敏感数据。该漏洞由 David "
+"Schwörer 报告。"
 
 #: ../../../build/NEWS:11146
 msgid ""
@@ -22834,7 +23234,7 @@ msgstr ""
 msgid ""
 ":issue:`40645`: Fix reference leak in the :mod:`_hashopenssl` extension. "
 "Patch by Pablo Galindo."
-msgstr ""
+msgstr ":issue:`40645`: 修复 :mod:`_hashopenssl` 扩展中的引用泄漏。补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:11177
 msgid ""
@@ -23299,7 +23699,7 @@ msgstr ""
 msgid ""
 ":issue:`42782`: Fail fast in :func:`shutil.move()` to avoid creating "
 "destination directories on failure."
-msgstr ""
+msgstr ":issue:`42782`: 在 :func:`shutil.move` 中快速失败，以避免在失败时创建目标目录。"
 
 #: ../../../build/NEWS:11390
 msgid ""
@@ -23338,6 +23738,10 @@ msgid ""
 ":func:`tempfile.gettempdir()` and :func:`tempfile.gettempdirb()` functions "
 "*always* return ``str`` and ``bytes`` respectively."
 msgstr ""
+":issue:`40701`: 当全局变量 :data:`tempfile.tempdir` 被设为 bytes "
+"类型的值时，现在能够一致地进行处理。在此之前，当该目录尚不存在时，某些 tempfile API 可能会在这种情况下引发异常。同时还确保了 "
+":func:`tempfile.gettempdir` 和 :func:`tempfile.gettempdirb` 函数分别 *始终* 返回 "
+"``str`` 和 ``bytes``。"
 
 #: ../../../build/NEWS:11410
 msgid ""
@@ -23346,6 +23750,10 @@ msgid ""
 " as explained in https://www.openssl.org/docs/man1.1.1/man7/proxy-"
 "certificates.html."
 msgstr ""
+":issue:`39342`: 将 ``X509_V_FLAG_ALLOW_PROXY_CERTS`` 暴露为 "
+":const:`~ssl.VERIFY_ALLOW_PROXY_CERTS`，以允许如 "
+"https://www.openssl.org/docs/man1.1.1/man7/proxy-certificates.html "
+"中所解释的代理证书验证。"
 
 #: ../../../build/NEWS:11415
 msgid ""
@@ -23907,6 +24315,8 @@ msgid ""
 "(:mod:`_elementree`) regarding default attribute values (by not setting "
 "``specified_attributes=1``)."
 msgstr ""
+":issue:`42151`: 使 :mod:`xml.etree.ElementTree` 的纯 Python 实现在默认属性值方面的行为与 C 实现"
+" (:mod:`_elementree`) 保持一致（通过不设置 ``specified_attributes=1`` ）。"
 
 #: ../../../build/NEWS:11695
 msgid ""
@@ -24173,6 +24583,9 @@ msgid ""
 ":c:func:`Py_Finalize` is called multiple times: preserve "
 "``_PyRuntime.unicode_ids.next_index`` value."
 msgstr ""
+":issue:`42882`: 修复多次调用 :c:func:`Py_Initialize` / :c:func:`Py_Finalize` 时的 "
+":c:func:`_PyUnicode_FromId` 函数 (_Py_IDENTIFIER(var) API)：保留 "
+"``_PyRuntime.unicode_ids.next_index`` 的值。"
 
 #: ../../../build/NEWS:11843
 msgid ""
@@ -24457,6 +24870,8 @@ msgid ""
 ":issue:`42811`: Updated importlib.utils.resolve_name() doc to use "
 "__spec__.parent instead of __package__. (Thanks Yair Frid.)"
 msgstr ""
+":issue:`42811`: 更新了 importlib.utils.resolve_name() 的文档，改用 __spec__.parent "
+"而不是 __package__。（感谢 Yair Frid。）"
 
 #: ../../../build/NEWS:11980
 msgid ""
@@ -24748,6 +25163,8 @@ msgid ""
 "subinterpreters. Each interpreter now has an array of identifier objects "
 "(interned strings decoded from UTF-8). Patch by Victor Stinner."
 msgstr ""
+":issue:`39465`: 使 :c:func:`_PyUnicode_FromId` 函数与子解释器兼容。每个解释器现在都拥有一个标识符对象（从 "
+"UTF-8 解码的驻留字符串）数组。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:12135
 msgid ""
@@ -24872,6 +25289,8 @@ msgid ""
 ":issue:`1635741`: Port the :mod:`_thread` extension module to the multiphase"
 " initialization API (:pep:`489`) and convert its static types to heap types."
 msgstr ""
+":issue:`1635741`: 将 :mod:`_thread` 扩展模块移植到多阶段初始化 API "
+"(:pep:`489`)，并将其静态类型转换为堆类型。"
 
 #: ../../../build/NEWS:12192
 msgid ""
@@ -24907,6 +25326,8 @@ msgid ""
 " its parameter. It also now accepts strings representing the levels (as does"
 " ``loging.setLevel``) instead of only the numerical values."
 msgstr ""
+":issue:`42644`: ``logging.disable`` 现在会验证其参数的类型和值。它现在还接受表示级别的字符串（如同 "
+"``loging.setLevel`` 一样），而不再仅接受数值。"
 
 #: ../../../build/NEWS:12208
 msgid ""
@@ -25133,7 +25554,7 @@ msgstr ":issue:`31904`: 为没有主目录的 VxWorks RTOS 修复 site 和 sysco
 #: ../../../build/NEWS:12310
 msgid ""
 ":issue:`41462`: Add :func:`os.set_blocking()` support for VxWorks RTOS."
-msgstr ""
+msgstr ":issue:`41462`: 为 VxWorks RTOS 添加 :func:`os.set_blocking` 支持。"
 
 #: ../../../build/NEWS:12312
 msgid ""
@@ -25292,6 +25713,8 @@ msgid ""
 "longer needed. Use :c:func:`_Py_wfopen` or :c:func:`_Py_fopen_obj` instead. "
 "Patch by Victor Stinner."
 msgstr ""
+":issue:`32381`: 移除不再需要的私有函数 :c:func:`_Py_fopen`。请改用 :c:func:`_Py_wfopen` 或 "
+":c:func:`_Py_fopen_obj`。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:12405
 msgid ""
@@ -25464,7 +25887,7 @@ msgid ""
 ":issue:`42349`: Make sure that the compiler front-end produces a well-formed"
 " control flow graph. Be be more aggressive in the compiler back-end, as it "
 "is now safe to do so."
-msgstr ""
+msgstr ":issue:`42349`: 确保编译器前端生成格式良好的控制流图。在编译器后端采取更激进的优化，因为现在这样做是安全的。"
 
 #: ../../../build/NEWS:12497
 msgid ""
@@ -25711,6 +26134,9 @@ msgid ""
 "already fully working and so can be used to import builtin modules like "
 ":mod:`sys`. Patch by Victor Stinner."
 msgstr ""
+":issue:`42403`: 简化 :mod:`importlib` 外部引导代码：``importlib._bootstrap_external``"
+" 现在使用常规导入来导入内置模块。当它被导入时，内置的 :func:`__import__` 函数已经完全可用，因此可用于导入如 :mod:`sys` "
+"等内置模块。补丁由 Victor Stinner 提供。"
 
 #: ../../../build/NEWS:12616
 msgid ""
@@ -25736,6 +26162,8 @@ msgid ""
 ":func:`time.monotonic()` functions can no longer fail with a Python fatal "
 "error, instead raise a regular Python exception on failure."
 msgstr ""
+":issue:`37205`: :func:`time.time`、:func:`time.perf_counter` 和 "
+":func:`time.monotonic` 函数不再会因 Python 致命错误而失败，而是在失败时引发常规的 Python 异常。"
 
 #: ../../../build/NEWS:12629
 msgid ""
@@ -25765,6 +26193,10 @@ msgid ""
 ":func:`time.monotonic_ns()` added in Python 3.7 to avoid this precision "
 "loss."
 msgstr ""
+":issue:`37205`: Windows 上的 :func:`time.perf_counter` 和 macOS 上的 "
+":func:`time.monotonic` 现在是系统范围的。在此之前，它们使用在启动时计算的偏移量来减少由 float 类型引起的精度损失。请使用在"
+" Python 3.7 中添加的 :func:`time.perf_counter_ns` 和 :func:`time.monotonic_ns` "
+"来避免这种精度损失。"
 
 #: ../../../build/NEWS:12645
 msgid ""
@@ -26310,7 +26742,7 @@ msgstr ":issue:`1635741`: 将 _struct 扩展模块移植到多阶段初始化 (:
 msgid ""
 ":issue:`1635741`: Port :mod:`spwd` extension module to multiphase "
 "initialization (:pep:`489`)"
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`spwd` 扩展模块移植到多阶段初始化 (:pep:`489`)"
 
 #: ../../../build/NEWS:12912
 msgid ""
@@ -26377,6 +26809,8 @@ msgid ""
 "private :c:func:`_PyTrash_cond()` function which hides implementation "
 "details."
 msgstr ""
+":issue:`40170`: ``Py_TRASHCAN_BEGIN`` 宏不再访问 PyTypeObject "
+"属性，而是现在可以通过调用隐藏了实现细节的新私有函数 :c:func:`_PyTrash_cond` 来获取条件。"
 
 #: ../../../build/NEWS:12943
 msgid ""
@@ -26659,6 +27093,9 @@ msgid ""
 "by default. The values found in :attr:`__annotations__` dicts are now "
 "strings, e.g. ``{\"x\": \"int\"}`` instead of ``{\"x\": int}``."
 msgstr ""
+":issue:`38605`: 默认启用 ``from __future__ import annotations`` "
+"(:pep:`563`)。:attr:`__annotations__` 字典中的值现在是字符串，例如 ``{\"x\": \"int\"}`` 而不是"
+" ``{\"x\": int}``。"
 
 #: ../../../build/NEWS:13088
 msgid ""
@@ -26774,6 +27211,8 @@ msgid ""
 ":meth:`_codecs.charmap_decode` when called with a mapped value outside the "
 "range of valid Unicode code points. PR by Max Bernstein."
 msgstr ""
+":issue:`42065`: 修复在使用超出有效 Unicode 码位范围的映射值调用 :meth:`_codecs.charmap_decode` "
+"时错误格式不正确的问题。PR 由 Max Bernstein 提供。"
 
 #: ../../../build/NEWS:13139
 msgid ""
@@ -26789,6 +27228,8 @@ msgid ""
 " event, if two events with same priority are scheduled for the same time. "
 "Patch by Bar Harel."
 msgstr ""
+":issue:`19270`: 如果两个具有相同优先级的事件被安排在同一时间，:meth:`sched.scheduler.cancel` "
+"现在会取消正确的事件。补丁由 Bar Harel 提供。"
 
 #: ../../../build/NEWS:13146
 msgid ""
@@ -27156,6 +27597,8 @@ msgid ""
 ":issue:`41986`: :c:data:`Py_FileSystemDefaultEncodeErrors` and "
 ":c:data:`Py_UTF8Mode` are available again in limited API."
 msgstr ""
+":issue:`41986`: :c:data:`Py_FileSystemDefaultEncodeErrors` 和 "
+":c:data:`Py_UTF8Mode` 在受限 API 中再次可用。"
 
 #: ../../../build/NEWS:13332
 msgid ""
@@ -27184,6 +27627,8 @@ msgid ""
 ":issue:`41304`: Fixes ``python3x._pth`` being ignored on Windows, caused by "
 "the fix for :issue:`29778` (CVE-2020-15801)."
 msgstr ""
+":issue:`41304`: 修复在 Windows 上忽略 ``python3x._pth`` 的问题，该问题由针对 :issue:`29778` "
+"(CVE-2020-15801) 的修复所引起。"
 
 #: ../../../build/NEWS:13350
 msgid ""
@@ -27196,6 +27641,7 @@ msgid ""
 ":issue:`29778`: Ensure :file:`python3.dll` is loaded from correct locations "
 "when Python is embedded (CVE-2020-15523)."
 msgstr ""
+":issue:`29778`: 确保在嵌入 Python 时从正确的位置加载 :file:`python3.dll` (CVE-2020-15523)。"
 
 #: ../../../build/NEWS:13356
 msgid ""
@@ -27252,7 +27698,7 @@ msgstr ""
 msgid ""
 ":issue:`1635741`: Port the :mod:`_bisect` module to the multi-phase "
 "initialization API (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_bisect` 模块移植到多阶段初始化 API (:pep:`489`)。"
 
 #: ../../../build/NEWS:13384
 msgid ""
@@ -27274,7 +27720,7 @@ msgstr ""
 msgid ""
 ":issue:`1635741`: Port the :mod:`_lsprof` extension module to multi-phase "
 "initialization (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_lsprof` 扩展模块移植到多阶段初始化 (:pep:`489`)。"
 
 #: ../../../build/NEWS:13394
 msgid ""
@@ -27286,7 +27732,7 @@ msgstr ":issue:`1635741`: 将 :mod:`cmath` 扩展模块移植到多阶段初始�
 msgid ""
 ":issue:`1635741`: Port the :mod:`_scproxy` extension module to multi-phase "
 "initialization (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_scproxy` 扩展模块移植到多阶段初始化 (:pep:`489`)。"
 
 #: ../../../build/NEWS:13400
 msgid ""
@@ -27298,7 +27744,7 @@ msgstr ":issue:`1635741`: 将 :mod:`termios` 扩展模块移植到多阶段初�
 msgid ""
 ":issue:`1635741`: Convert the :mod:`_sha256` extension module types to heap "
 "types."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_sha256` 扩展模块的类型转换为堆类型。"
 
 #: ../../../build/NEWS:13406
 msgid ""
@@ -27311,19 +27757,19 @@ msgstr ":issue:`41690`: 修复解析器在解析具有大量参数的函数和�
 msgid ""
 ":issue:`1635741`: Port the :mod:`_overlapped` extension module to multi-"
 "phase initialization (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_overlapped` 扩展模块移植到多阶段初始化 (:pep:`489`)。"
 
 #: ../../../build/NEWS:13413
 msgid ""
 ":issue:`1635741`: Port the :mod:`_curses_panel` extension module to multi-"
 "phase initialization (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_curses_panel` 扩展模块移植到多阶段初始化 (:pep:`489`)。"
 
 #: ../../../build/NEWS:13416
 msgid ""
 ":issue:`1635741`: Port the :mod:`_opcode` extension module to multi-phase "
 "initialization (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_opcode` 扩展模块移植到多阶段初始化 (:pep:`489`)。"
 
 #: ../../../build/NEWS:13419
 msgid ""
@@ -27378,19 +27824,19 @@ msgstr ""
 #: ../../../build/NEWS:13442
 msgid ""
 ":issue:`40077`: Convert :mod:`_operator` to use :c:func:`PyType_FromSpec`."
-msgstr ""
+msgstr ":issue:`40077`: 将 :mod:`_operator` 转换为使用 :c:func:`PyType_FromSpec`。"
 
 #: ../../../build/NEWS:13444
 msgid ""
 ":issue:`1653741`: Port :mod:`_sha3` to multi-phase init.  Convert static "
 "types to heap types."
-msgstr ""
+msgstr ":issue:`1653741`: 将 :mod:`_sha3` 移植到多阶段初始化。将静态类型转换为堆类型。"
 
 #: ../../../build/NEWS:13447
 msgid ""
 ":issue:`1635741`: Port the :mod:`_blake2` extension module to the multi-"
 "phase initialization API (:pep:`489`)."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_blake2` 扩展模块移植到多阶段初始化 API (:pep:`489`)。"
 
 #: ../../../build/NEWS:13450
 msgid ""
@@ -27418,6 +27864,8 @@ msgid ""
 ":issue:`1635741`: Port the :mod:`_sha1`, :mod:`_sha512`, and :mod:`_md5` "
 "extension modules to multi-phase initialization API (:pep:`489`)."
 msgstr ""
+":issue:`1635741`: 将 :mod:`_sha1`、:mod:`_sha512` 和 :mod:`_md5` 扩展模块移植到多阶段初始化 "
+"API (:pep:`489`)。"
 
 #: ../../../build/NEWS:13462
 msgid ""
@@ -27615,7 +28063,7 @@ msgstr ":issue:`40939`: 移除旧解析器和 :mod:`symbol` 模块的剩余文�
 
 #: ../../../build/NEWS:13551
 msgid ":issue:`40077`: Convert :mod:`_bz2` to use :c:func:`PyType_FromSpec`."
-msgstr ""
+msgstr ":issue:`40077`: 将 :mod:`_bz2` 转换为使用 :c:func:`PyType_FromSpec`。"
 
 #: ../../../build/NEWS:13553
 msgid ""
@@ -27636,7 +28084,7 @@ msgstr ""
 
 #: ../../../build/NEWS:13561
 msgid ":issue:`1635741`: Port :mod:`_gdbm` to multiphase initialization."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_gdbm` 移植到多阶段初始化。"
 
 #: ../../../build/NEWS:13563
 msgid ""
@@ -27656,7 +28104,7 @@ msgstr ""
 
 #: ../../../build/NEWS:13570
 msgid ":issue:`1635741`: Port :mod:`_dbm` to multiphase initialization."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_dbm` 移植到多阶段初始化。"
 
 #: ../../../build/NEWS:13572
 msgid ""
@@ -27668,6 +28116,8 @@ msgid ""
 ":issue:`40950`: Add a state to the :mod:`nis` module (:pep:`3121`) and apply"
 " the multiphase initialization. Patch by Donghee Na."
 msgstr ""
+":issue:`40950`: 为 :mod:`nis` 模块添加状态 (:pep:`3121`) 并应用多阶段初始化。补丁由 Donghee Na "
+"提供。"
 
 #: ../../../build/NEWS:13577
 msgid ""
@@ -27900,7 +28350,7 @@ msgstr ":issue:`1635741`: 将 :mod:`mmap` 移植到多阶段初始化。"
 
 #: ../../../build/NEWS:13683
 msgid ":issue:`1635741`: Port :mod:`_lzma` to multiphase initialization."
-msgstr ""
+msgstr ":issue:`1635741`: 将 :mod:`_lzma` 移植到多阶段初始化。"
 
 #: ../../../build/NEWS:13685
 msgid ""
@@ -27919,6 +28369,8 @@ msgid ""
 ":issue:`29882`: Add :meth:`int.bit_count()`, counting the number of ones in "
 "the binary representation of an integer. Patch by Niklas Fiekas."
 msgstr ""
+":issue:`29882`: 添加 :meth:`int.bit_count`，用于计算整数的二进制表示中 1 的个数。补丁由 Niklas "
+"Fiekas 提供。"
 
 #: ../../../build/NEWS:13694
 msgid ""
@@ -28258,7 +28710,7 @@ msgstr ""
 
 #: ../../../build/NEWS:13848
 msgid ":issue:`41440`: Add :func:`os.cpu_count()` support for VxWorks RTOS."
-msgstr ""
+msgstr ":issue:`41440`: 为 VxWorks RTOS 添加 :func:`os.cpu_count` 支持。"
 
 #: ../../../build/NEWS:13850
 msgid ""
@@ -28321,6 +28773,7 @@ msgid ""
 ":issue:`39017`: Avoid infinite loop when reading specially crafted TAR files"
 " using the tarfile module (CVE-2019-20907)."
 msgstr ""
+":issue:`39017`: 避免在使用 tarfile 模块读取特殊构造的 TAR 文件时陷入无限循环 (CVE-2019-20907)。"
 
 #: ../../../build/NEWS:13878
 msgid ""
@@ -28502,6 +28955,8 @@ msgid ""
 ":issue:`40967`: Removed :meth:`asyncio.Task.current_task` and "
 ":meth:`asyncio.Task.all_tasks`. Patch contributed by Rémi Lapeyre."
 msgstr ""
+":issue:`40967`: 移除了 :meth:`asyncio.Task.current_task` 和 "
+":meth:`asyncio.Task.all_tasks`。补丁由 Rémi Lapeyre 贡献。"
 
 #: ../../../build/NEWS:13961
 msgid ""
@@ -28751,6 +29206,8 @@ msgid ""
 ":issue:`40698`: :mod:`distutils` upload creates SHA2-256 and Blake2b-256 "
 "digests. MD5 digests is skipped if platform blocks MD5."
 msgstr ""
+":issue:`40698`: :mod:`distutils` upload 会创建 SHA2-256 和 Blake2b-256 摘要。如果平台阻止"
+" MD5，则会跳过 MD5 摘要。"
 
 #: ../../../build/NEWS:14070
 msgid ""
@@ -28937,6 +29394,7 @@ msgid ""
 ":issue:`26543`: Fix :meth:`IMAP4.noop()` when debug mode is enabled (ex: "
 "``imaplib.Debug = 3``)."
 msgstr ""
+":issue:`26543`: 修复在启用调试模式（例如：``imaplib.Debug = 3`` ）时的 :meth:`IMAP4.noop`。"
 
 #: ../../../build/NEWS:14152
 msgid ""
@@ -29307,6 +29765,8 @@ msgid ""
 ":issue:`41142`: :mod:`msilib` now supports creating CAB files with non-ASCII"
 " file path and adding files with non-ASCII file path to them."
 msgstr ""
+":issue:`41142`: :mod:`msilib` 现在支持使用非 ASCII 文件路径创建 CAB 文件，以及向其中添加具有非 ASCII "
+"文件路径的文件。"
 
 #: ../../../build/NEWS:14330
 msgid ""
@@ -29314,6 +29774,9 @@ msgid ""
 ":func:`msilib.OpenDatabase` and :func:`msilib.init_database` and non-ASCII "
 "SQL in method :meth:`msilib.Database.OpenView`."
 msgstr ""
+":issue:`41074`: 修复了函数 :func:`msilib.OpenDatabase` 和 "
+":func:`msilib.init_database` 中对非 ASCII 名称的支持，以及方法 "
+":meth:`msilib.Database.OpenView` 中对非 ASCII SQL 的支持。"
 
 #: ../../../build/NEWS:14334
 msgid ""
@@ -30038,6 +30501,8 @@ msgid ""
 ":issue:`39305`: Update :mod:`nntplib` to merge :class:`nntplib.NNTP` and "
 ":class:`nntplib._NNTPBase`. Patch by Donghee Na."
 msgstr ""
+":issue:`39305`: 更新 :mod:`nntplib` 以合并 :class:`nntplib.NNTP` 和 "
+":class:`nntplib._NNTPBase`。补丁由 Donghee Na 提供。"
 
 #: ../../../build/NEWS:14678
 msgid ""
@@ -30070,6 +30535,8 @@ msgid ""
 ":issue:`40394`: Added default arguments to "
 ":meth:`difflib.SequenceMatcher.find_longest_match()`."
 msgstr ""
+":issue:`40394`: 为 :meth:`difflib.SequenceMatcher.find_longest_match` "
+"添加了默认参数。"
 
 #: ../../../build/NEWS:14692
 msgid ""
@@ -30437,6 +30904,10 @@ msgid ""
 "to prevent the catastrophic backtracking. Vulnerability reported by Ben "
 "Caller and Matt Schwager."
 msgstr ""
+":issue:`39503`: CVE-2020-8492：:mod:`urllib.request` 模块的 "
+":class:`~urllib.request.AbstractBasicAuthHandler` "
+"类使用了一个低效的正则表达式，攻击者可以利用它导致拒绝服务。修复了该正则表达式以防止灾难性回溯。该漏洞由 Ben Caller 和 Matt "
+"Schwager 报告。"
 
 #: ../../../build/NEWS:14884
 msgid ":issue:`40313`: Improve the performance of bytes.hex()."
@@ -30497,7 +30968,7 @@ msgstr ""
 msgid ""
 ":issue:`40077`: Fix possible refleaks in :mod:`_json`, memo of "
 "PyScannerObject should be traversed."
-msgstr ""
+msgstr ":issue:`40077`: 修复 :mod:`_json` 中潜在的引用泄漏，应当遍历 PyScannerObject 的 memo。"
 
 #: ../../../build/NEWS:14914
 msgid ""
@@ -30666,7 +31137,7 @@ msgstr ""
 msgid ""
 ":issue:`40360`: The :mod:`lib2to3` module is pending deprecation due to "
 ":pep:`617`."
-msgstr ""
+msgstr ":issue:`40360`: 由于 :pep:`617`，:mod:`lib2to3` 模块即将弃用。"
 
 #: ../../../build/NEWS:14998
 msgid ""
@@ -30716,6 +31187,8 @@ msgid ""
 ":issue:`40148`: Added :meth:`pathlib.Path.with_stem()` to create a new Path "
 "with the stem replaced."
 msgstr ""
+":issue:`40148`: 添加了 :meth:`pathlib.Path.with_stem` 以创建替换了主干名称 (stem) 的新 "
+"Path。"
 
 #: ../../../build/NEWS:15019
 msgid ":issue:`40325`: Deprecated support for set objects in random.sample()."
@@ -30829,7 +31302,7 @@ msgstr ":issue:`40149`: 在 _abc._abc_data 类型中实现了遍历和清除槽�
 #: ../../../build/NEWS:15067
 msgid ""
 ":issue:`40208`: Remove deprecated :meth:`symtable.SymbolTable.has_exec`."
-msgstr ""
+msgstr ":issue:`40208`: 移除已弃用的 :meth:`symtable.SymbolTable.has_exec`。"
 
 #: ../../../build/NEWS:15069
 msgid ""
@@ -30885,6 +31358,8 @@ msgid ""
 "using :mod:`runpy` and incorrently use the \".py\" extension at the end of "
 "the module name. Patch by Pablo Galindo."
 msgstr ""
+":issue:`40108`: 改进了尝试使用 :mod:`runpy` 导入模块并在模块名称末尾错误地使用了 \".py\" "
+"扩展名时的错误消息。补丁由 Pablo Galindo 提供。"
 
 #: ../../../build/NEWS:15093
 msgid ""
@@ -30912,6 +31387,11 @@ msgid ""
 " ``_reset_internal_locks()`` method of :class:`threading.Event` to "
 "``_at_fork_reinit()``."
 msgstr ""
+":issue:`40089`: 为 "
+":class:`_thread.Lock`、:class:`_thread.RLock`、:class:`threading.RLock` 和 "
+":class:`threading.Condition` 类添加了私有方法 ``_at_fork_reinit()``：在 fork "
+"时于子进程中重新初始化锁，并将锁重置为未锁定状态。同时将 :class:`threading.Event` 的私有方法 "
+"``_reset_internal_locks()`` 重命名为 ``_at_fork_reinit()``。"
 
 #: ../../../build/NEWS:15107
 msgid ""
@@ -31064,6 +31544,8 @@ msgid ""
 ":issue:`33262`: Deprecate passing None as an argument for "
 ":func:`shlex.split()`'s ``s`` parameter.  Patch by Zackery Spytz."
 msgstr ""
+":issue:`33262`: 弃用将 None 作为参数传递给 :func:`shlex.split` 的 ``s`` 形参的做法。补丁由 "
+"Zackery Spytz 提供。"
 
 #: ../../../build/NEWS:15179
 msgid ""
@@ -31232,7 +31714,7 @@ msgstr ""
 msgid ""
 ":issue:`40241`: Move the :c:type:`PyGC_Head` structure to the internal C "
 "API."
-msgstr ""
+msgstr ":issue:`40241`: 将 :c:type:`PyGC_Head` 结构体移至内部 C API。"
 
 #: ../../../build/NEWS:15278
 msgid ""
@@ -31259,6 +31741,9 @@ msgid ""
 "implementation details. They no longer access directly the "
 ":c:member:`PyTypeObject.tp_basicsize` member."
 msgstr ""
+":issue:`40170`: 为隐藏实现细节，:c:func:`PyObject_NEW` 宏成为 :c:func:`PyObject_New` "
+"宏的别名，而 :c:func:`PyObject_NEW_VAR` 宏成为 :c:func:`PyObject_NewVar` "
+"宏的别名。它们不再直接访问 :c:member:`PyTypeObject.tp_basicsize` 成员。"
 
 #: ../../../build/NEWS:15292
 msgid ""
@@ -31276,6 +31761,8 @@ msgid ""
 " a function to hide implementation details: the macro accessed directly to "
 "the :c:member:`PyTypeObject.tp_weaklistoffset` member."
 msgstr ""
+":issue:`40170`: 将 :c:func:`PyObject_GET_WEAKREFS_LISTPTR` "
+"宏转换为函数以隐藏实现细节：该宏此前直接访问了 :c:member:`PyTypeObject.tp_weaklistoffset` 成员。"
 
 #: ../../../build/NEWS:15301
 msgid ""
@@ -31316,6 +31803,8 @@ msgid ""
 "addressing CVE-2019-18348. Such potentially malicious header injection URLs "
 "now cause a InvalidURL to be raised."
 msgstr ""
+":issue:`38576`: 禁止在 http.client 的主机名中使用控制字符，以解决 CVE-2019-18348。此类潜在的恶意标头注入 "
+"URL 现在会引发 InvalidURL。"
 
 #: ../../../build/NEWS:15328
 msgid ""
@@ -31741,6 +32230,8 @@ msgid ""
 "attributes of AST nodes are now set as class attributes (e.g. "
 "``Constant.kind`` is set to ``None``)."
 msgstr ""
+":issue:`36287`: :func:`ast.dump` 不再输出具有默认值的可选字段和属性。AST "
+"节点的可选字段和属性的默认值现在被设为类属性（例如 ``Constant.kind`` 被设为 ``None`` ）。"
 
 #: ../../../build/NEWS:15531
 msgid ""
@@ -31797,6 +32288,8 @@ msgid ""
 ":issue:`39763`: Reimplement :func:`distutils.spawn.spawn` function with the "
 ":mod:`subprocess` module."
 msgstr ""
+":issue:`39763`: 使用 :mod:`subprocess` 模块重新实现了 :func:`distutils.spawn.spawn` "
+"函数。"
 
 #: ../../../build/NEWS:15556
 msgid ""
@@ -32095,6 +32588,8 @@ msgid ""
 "future releases of CPython will include a copy of this DLL to ensure "
 "distributed extensions can continue to load."
 msgstr ""
+":issue:`38597`: 当可再发行版本不可用时，:mod:`distutils` 将不再静态链接 "
+":file:`vcruntime140.dll`。CPython 未来的所有发行版都将包含此 DLL 的副本，以确保分发的扩展能够继续加载。"
 
 #: ../../../build/NEWS:15707
 msgid ":issue:`38380`: Update Windows builds to use SQLite 3.31.1"
@@ -32891,6 +33386,10 @@ msgid ""
 ":func:`os.path.expanduser`, which was changed to ignore :envvar:`HOME` in "
 "3.8, see :issue:`36264`."
 msgstr ""
+":issue:`38883`: Windows 上的 :meth:`~pathlib.Path.home` 和 "
+":meth:`~pathlib.Path.expanduser` 现在优先使用 :envvar:`USERPROFILE` 而不再使用 "
+":envvar:`HOME` （常规用户账户通常不会设置该变量）。这使得它们的行为再次与 :func:`os.path.expanduser` "
+"保持一致，后者在 3.8 中已改为忽略 :envvar:`HOME` ，参见 :issue:`36264`。"
 
 #: ../../../build/NEWS:16100
 msgid ""
@@ -33328,6 +33827,8 @@ msgid ""
 ":issue:`39366`: The previously deprecated ``xpath()`` and ``xgtitle()`` "
 "methods of :class:`nntplib.NNTP` have been removed."
 msgstr ""
+":issue:`39366`: 已移除 :class:`nntplib.NNTP` 中此前已弃用的 ``xpath()`` 和 "
+"``xgtitle()`` 方法。"
 
 #: ../../../build/NEWS:16309
 msgid ""
@@ -33426,6 +33927,9 @@ msgid ""
 "raise a :class:`ValueError` if the given timeout for their constructor is "
 "zero to prevent the creation of a non-blocking socket. Patch by Donghee Na."
 msgstr ""
+":issue:`39259`: 如果传给其构造器的超时时间为零，:class:`~nntplib.NNTP` 和 "
+":class:`~nntplib.NNTP_SSL` 现在会引发 :class:`ValueError` ，以防止创建非阻塞套接字。补丁由 "
+"Donghee Na 提供。"
 
 #: ../../../build/NEWS:16353
 msgid ""
@@ -33457,6 +33961,8 @@ msgid ""
 "news.gmane.io which is used for examples of :class:`~nntplib.NNTP` news "
 "reader server and nntplib tests."
 msgstr ""
+":issue:`39242`: 将用于 :class:`~nntplib.NNTP` 新闻阅读器服务器示例和 nntplib 测试的 Gmane 域名从"
+" news.gmane.org 更新为 news.gmane.io。"
 
 #: ../../../build/NEWS:16368
 msgid ""
@@ -33515,6 +34021,8 @@ msgid ""
 ":issue:`38871`: Correctly parenthesize filter-based statements that contain "
 "lambda expressions in :mod:`lib2to3`. Patch by Donghee Na."
 msgstr ""
+":issue:`38871`: 在 :mod:`lib2to3` 中正确地为包含 lambda 表达式的基于 filter 的语句加上括号。补丁由 "
+"Donghee Na 提供。"
 
 #: ../../../build/NEWS:16392
 msgid ""
@@ -34476,6 +34984,8 @@ msgid ""
 "incompatible methods with an :class:`ssl.SSLSocket` socket.  Patch by Ido "
 "Michael."
 msgstr ""
+":issue:`37404`: 当使用 :class:`ssl.SSLSocket` 套接字调用不兼容的方法时，:mod:`asyncio` 现在会引发"
+" :exc:`TyperError`。补丁由 Ido Michael 提供。"
 
 #: ../../../build/NEWS:16859
 msgid ""
@@ -34597,7 +35107,7 @@ msgstr ""
 msgid ""
 ":issue:`38174`: Update vendorized expat library version to 2.2.8, which "
 "resolves CVE-2019-15903."
-msgstr ""
+msgstr ":issue:`38174`: 将内置的 expat 库版本更新至 2.2.8，以解决 CVE-2019-15903。"
 
 #: ../../../build/NEWS:16929
 msgid ""
@@ -34640,6 +35150,10 @@ msgid ""
 ":mod:`telnetlib`, :mod:`tempfile` and :mod:`webbrowser`, as well as "
 ":func:`os.listdir`, :func:`os.scandir` and :func:`breakpoint`."
 msgstr ""
+":issue:`37363`: 为 "
+":mod:`ensurepip`、:mod:`ftplib`、:mod:`glob`、:mod:`imaplib`、:mod:`nntplib`、:mod:`pdb`、:mod:`poplib`、:mod:`shutil`、:mod:`smtplib`、:mod:`sqlite3`、:mod:`subprocess`、:mod:`telnetlib`、:mod:`tempfile`"
+" 和 :mod:`webbrowser` 以及 :func:`os.listdir`、:func:`os.scandir` 和 "
+":func:`breakpoint` 添加了审计事件。"
 
 #: ../../../build/NEWS:16951
 msgid ""
@@ -34673,6 +35187,8 @@ msgid ""
 ":issue:`38639`: Optimized :func:`math.floor()`, :func:`math.ceil()` and "
 ":func:`math.trunc()` for floats."
 msgstr ""
+":issue:`38639`: 针对浮点数优化了 :func:`math.floor`、:func:`math.ceil` 和 "
+":func:`math.trunc`。"
 
 #: ../../../build/NEWS:16969
 msgid ""
@@ -34794,6 +35310,8 @@ msgid ""
 "startup to control the floating point control mode. The call became useless "
 "since FreeBSD 6: it became the default mode."
 msgstr ""
+":issue:`37474`: 在 FreeBSD 上，Python 启动时不再调用 ``fedisableexcept()`` "
+"来控制浮点控制模式。该调用自 FreeBSD 6 起已无用处：它已成为默认模式。"
 
 #: ../../../build/NEWS:17025
 msgid ""
@@ -35600,6 +36118,9 @@ msgid ""
 "content-type encoding from propagating all the way to "
 ":func:`email.message.get`."
 msgstr ""
+":issue:`38332`: 防止在给定具有无效 content-type 编码的编码字 (encoded-word) 时由 "
+":func:`_encoded_words.decode` 抛出的 :exc:`KeyError` 一路传播到 "
+":func:`email.message.get`。"
 
 #: ../../../build/NEWS:17382
 msgid ""
@@ -35607,6 +36128,8 @@ msgid ""
 ":class:`_tkinter.TkappType` in favour of the ``splitlist()`` method which "
 "has more consistent and predicable behavior."
 msgstr ""
+":issue:`38371`: 弃用了 :class:`_tkinter.TkappType` 中的 ``split()`` "
+"方法，转而推荐使用行为更加一致且可预测的 ``splitlist()`` 方法。"
 
 #: ../../../build/NEWS:17386
 msgid ""
@@ -36816,6 +37339,8 @@ msgid ""
 "non-BMP characters on platforms with 16-bit :c:type:`wchar_t` (for example, "
 "Windows and AIX)."
 msgstr ""
+":issue:`19865`: 在具有 16 位 :c:type:`wchar_t` 的平台（例如 Windows 和 "
+"AIX）上，:func:`ctypes.create_unicode_buffer` 现在也支持非 BMP 字符。"
 
 #: ../../../build/NEWS:17928
 msgid ""
@@ -36832,6 +37357,8 @@ msgid ""
 ":issue:`37210`: Allow pure Python implementation of :mod:`pickle` to work "
 "even when the C :mod:`_pickle` module is unavailable."
 msgstr ""
+":issue:`37210`: 允许 :mod:`pickle` 的纯 Python 实现即使在 C :mod:`_pickle` "
+"模块不可用时也能正常工作。"
 
 #: ../../../build/NEWS:17936
 msgid ""
@@ -36866,6 +37393,8 @@ msgid ""
 ":func:`asyncio.all_tasks()` if internal tasks weak set is changed by another"
 " thread during iteration."
 msgstr ""
+":issue:`36607`: 消除了当内部任务弱集合在迭代期间被另一线程修改时由 :func:`asyncio.all_tasks` 引发的 "
+":exc:`RuntimeError`。"
 
 #: ../../../build/NEWS:17953
 msgid ""
@@ -36873,6 +37402,8 @@ msgid ""
 " the ``closed`` attribute fails to better mimic :class:`_io.IOBase` "
 "finalizer."
 msgstr ""
+":issue:`18748`: 如果获取 ``closed`` 属性失败，:class:`_pyio.IOBase` "
+"析构函数现在不执行任何操作，以便更好地模拟 :class:`_io.IOBase` 终结器。"
 
 #: ../../../build/NEWS:17957
 msgid ""
@@ -37159,6 +37690,8 @@ msgid ""
 ":issue:`20504`: Fixes a bug in :mod:`cgi` module when a multipart/form-data "
 "request has no ``Content-Length`` header."
 msgstr ""
+":issue:`20504`: 修复了 :mod:`cgi` 模块中当 multipart/form-data 请求没有 ``Content-"
+"Length`` 标头时的一个程序错误。"
 
 #: ../../../build/NEWS:18084
 msgid ""
@@ -37219,6 +37752,8 @@ msgid ""
 ":issue:`32498`: Made :func:`urllib.parse.unquote()` accept bytes in addition"
 " to strings. Patch by Stein Karlsen."
 msgstr ""
+":issue:`32498`: 使 :func:`urllib.parse.unquote` 除了接受字符串外还能接受字节串。补丁由 Stein "
+"Karlsen 提供。"
 
 #: ../../../build/NEWS:18108
 msgid ""
@@ -37422,6 +37957,8 @@ msgid ""
 ":issue:`34903`: Documented that in :meth:`datetime.datetime.strptime()`, the"
 " leading zero in some two-digit formats is optional. Patch by Mike Gleen."
 msgstr ""
+":issue:`34903`: 在文档中说明了 :meth:`datetime.datetime.strptime` "
+"中某些两位数字格式的前导零是可选的。补丁由 Mike Gleen 提供。"
 
 #: ../../../build/NEWS:18205
 msgid ""
@@ -38179,6 +38716,9 @@ msgid ""
 " module is not available, the ImportError will include a message explaining "
 "the problem."
 msgstr ""
+":issue:`25172`: 尝试在 Windows 上导入 :mod:`crypt` 模块将导致 :exc:`ImportError` "
+"，并附带一条解释该模块在 Windows 上不受支持的消息。在其他平台上，如果底层的 ``_crypt`` 模块不可用，ImportError "
+"将包含一条解释该问题的消息。"
 
 #: ../../../build/NEWS:18551
 msgid ""
@@ -38270,6 +38810,8 @@ msgid ""
 ":issue:`28269`: Replace use of :c:func:`strcasecmp` for the system function "
 ":c:func:`_stricmp`. Patch by Minmin Gong."
 msgstr ""
+":issue:`28269`: 将对 :c:func:`strcasecmp` 的使用替换为系统函数 :c:func:`_stricmp`。补丁由 "
+"Minmin Gong 提供。"
 
 #: ../../../build/NEWS:18590
 msgid ":issue:`36590`: Add native Bluetooth RFCOMM support to socket module."
@@ -38705,6 +39247,8 @@ msgid ""
 ":issue:`37645`: Add :c:func:`_PyObject_FunctionStr` to get a user-friendly "
 "string representation of a function-like object. Patch by Jeroen Demeyer."
 msgstr ""
+":issue:`37645`: 添加了 :c:func:`_PyObject_FunctionStr` 以获取类函数对象的用户友好字符串表示形式。补丁由"
+" Jeroen Demeyer 提供。"
 
 #: ../../../build/NEWS:18805
 msgid ""
@@ -38760,6 +39304,9 @@ msgid ""
 ":c:func:`_PyObject_VectorcallMethod`, :c:func:`_PyObject_CallMethodNoArgs` "
 "and :c:func:`_PyObject_CallMethodOneArg`."
 msgstr ""
+":issue:`37337`: "
+"添加了用于调用方法的快速函数：:c:func:`_PyObject_VectorcallMethod`、:c:func:`_PyObject_CallMethodNoArgs`"
+" 和 :c:func:`_PyObject_CallMethodOneArg`。"
 
 #: ../../../build/NEWS:18830
 msgid ""
@@ -38774,6 +39321,8 @@ msgid ""
 "*posonlyargcount* parameter for indicating the number of positonal-only "
 "arguments."
 msgstr ""
+":issue:`37221`: 新函数 :c:func:`PyCode_NewWithPosOnlyArgs` 允许像 "
+":c:func:`PyCode_New` 一样创建代码对象，但带有一个额外的 *posonlyargcount* 形参用于指明仅限位置形参的数量。"
 
 #: ../../../build/NEWS:18838
 msgid ":issue:`37215`: Fix dtrace issue introduce by :issue:`36842`"
@@ -38811,7 +39360,7 @@ msgstr ""
 msgid ""
 ":issue:`34331`: Use singular/plural noun in error message when instantiating"
 " an abstract class with non-overriden abstract method(s)."
-msgstr ""
+msgstr ":issue:`34331`: 在实例化具有未重写的抽象方法的抽象类时，在错误消息中使用单数/复数名词。"
 
 #: ../../../build/NEWS:18858
 msgid "Python 3.8.0 beta 1"
@@ -38827,6 +39376,9 @@ msgid ""
 "file://`` and ``local_file://`` URL schemes in ``URLopener().open()`` and "
 "``URLopener().retrieve()`` of :mod:`urllib.request`."
 msgstr ""
+":issue:`35907`: CVE-2019-9948：通过在 :mod:`urllib.request` 的 "
+"``URLopener().open()`` 和 ``URLopener().retrieve()`` 中禁止 ``local-file://`` 和 "
+"``local_file://`` URL 方案来避免文件读取。"
 
 #: ../../../build/NEWS:18870
 msgid ""
@@ -38959,6 +39511,9 @@ msgid ""
 ":func:`socket.if_nametoindex()`, and :func:`socket.if_indextoname()` on "
 "Windows."
 msgstr ""
+":issue:`37007`: 在 Windows 上实现了 "
+":func:`socket.if_nameindex`、:func:`socket.if_nametoindex` 和 "
+":func:`socket.if_indextoname`。"
 
 #: ../../../build/NEWS:18938
 msgid ""
@@ -39200,6 +39755,8 @@ msgid ""
 ":issue:`12202`: Fix the error handling in "
 ":meth:`msilib.SummaryInformation.GetProperty`. Patch by Zackery Spytz."
 msgstr ""
+":issue:`12202`: 修复了 :meth:`msilib.SummaryInformation.GetProperty` 中的错误处理。补丁由"
+" Zackery Spytz 提供。"
 
 #: ../../../build/NEWS:19052
 msgid ""
@@ -39219,6 +39776,8 @@ msgid ""
 ":issue:`12639`: :meth:`msilib.Directory.start_component()` no longer fails "
 "if *keyfile* is not ``None``."
 msgstr ""
+":issue:`12639`: 如果 *keyfile* 不为 ``None`` "
+"，:meth:`msilib.Directory.start_component` 不再失败。"
 
 #: ../../../build/NEWS:19061
 msgid ""
@@ -39266,6 +39825,8 @@ msgid ""
 " as possible (in the class body), because it's used by ``__del__()`` which "
 "calls ``close()``."
 msgstr ""
+":issue:`37054`: 修复了 :class:`_pyio.BytesIO` 和 :class:`_pyio.TextIOWrapper` "
+"的析构函数：尽早（在类体中）初始化它们的 ``_buffer`` 属性，因为调用 ``close()`` 的 ``__del__()`` 会使用该属性。"
 
 #: ../../../build/NEWS:19084
 msgid ""
@@ -39859,6 +40420,9 @@ msgid ""
 "leaks file descriptors if ``Popen`` fails and called with "
 "``stdin=subprocess.PIPE``. Patch by Niklas Fiekas."
 msgstr ""
+":issue:`35721`: 修复了当以 ``stdin=subprocess.PIPE`` 调用且 ``Popen`` 失败时 "
+":meth:`asyncio.SelectorEventLoop.subprocess_exec` 泄漏文件描述符的问题。补丁由 Niklas "
+"Fiekas 提供。"
 
 #: ../../../build/NEWS:19353
 msgid ""
@@ -40411,6 +40975,8 @@ msgid ""
 "request.  Such potentially malicious header injection URLs now cause an "
 "http.client.InvalidURL exception to be raised."
 msgstr ""
+":issue:`30458`: 通过禁止包含嵌入空白字符或控制字符的 URL 路径进入底层 http 客户端请求来解决 "
+"CVE-2019-9740。此类潜在的恶意标头注入 URL 现在会引发 http.client.InvalidURL 异常。"
 
 #: ../../../build/NEWS:19631
 msgid ""
@@ -40659,6 +41225,9 @@ msgid ""
 "``project_base``.  Fix also the distutils build command: don't use "
 ":data:`sys.executable` if it is ``None`` or an empty string."
 msgstr ""
+":issue:`28552`: 修复了当 :data:`sys.executable` 为 ``None`` 或空字符串时的 "
+":mod:`distutils.sysconfig`：使用 :func:`os.getcwd` 初始化 ``project_base``。同时修复了 "
+"distutils 的 build 命令：如果 :data:`sys.executable` 为 ``None`` 或空字符串，则不使用它。"
 
 #: ../../../build/NEWS:19751
 msgid ""
@@ -40669,6 +41238,10 @@ msgid ""
 ":data:`os.defpath` if the ``PATH`` environment variable is set to an empty "
 "string."
 msgstr ""
+":issue:`35755`: 如果未设置 ``PATH`` 环境变量，:func:`shutil.which` 和 "
+":func:`distutils.spawn.find_executable` 现在会在可用时使用 "
+"``os.confstr(\"CS_PATH\")`` 而不是 :data:`os.defpath`。此外，如果 ``PATH`` "
+"环境变量被设为空字符串，则既不使用 ``os.confstr(\"CS_PATH\")`` 也不使用 :data:`os.defpath`。"
 
 #: ../../../build/NEWS:19758
 msgid ":issue:`25430`: improve performance of ``IPNetwork.__contains__()``"
@@ -40846,7 +41419,7 @@ msgstr ":issue:`36348`: :meth:`imap.IMAP4.logout` 方法不再静默忽略任意
 msgid ""
 ":issue:`31904`: Add time module support and fix test_time faiures for "
 "VxWorks."
-msgstr ""
+msgstr ":issue:`31904`: 为 VxWorks 添加了 time 模块支持并修复了 test_time 失败问题。"
 
 #: ../../../build/NEWS:19839
 msgid ""
@@ -40902,6 +41475,10 @@ msgid ""
 "accepting both IPv4 and IPv6 connections on the same socket.  (Contributed "
 "by Giampaolo Rodola in :issue:`17561`.)"
 msgstr ""
+":issue:`35934`: 添加了 :meth:`~socket.create_server` 和 "
+":meth:`~socket.has_dualstack_ipv6` "
+"便捷函数，以自动完成创建服务器套接字时通常涉及的必要任务，包括在同一套接字上同时接受 IPv4 和 IPv6 连接。（由 Giampaolo "
+"Rodola 在 :issue:`17561` 中贡献。）"
 
 #: ../../../build/NEWS:19866
 msgid ""
@@ -41023,7 +41600,7 @@ msgstr ""
 
 #: ../../../build/NEWS:19921
 msgid ":issue:`36157`: Added Documention for  PyInterpreterState_Main()."
-msgstr ""
+msgstr ":issue:`36157`: 为 PyInterpreterState_Main() 添加了文档。"
 
 #: ../../../build/NEWS:19923
 msgid ""
@@ -41099,7 +41676,7 @@ msgstr ""
 msgid ""
 ":issue:`36635`: Add a new :mod:`_testinternalcapi` module to test the "
 "internal C API."
-msgstr ""
+msgstr ":issue:`36635`: 添加了一个新的 :mod:`_testinternalcapi` 模块用于测试内部 C API。"
 
 #: ../../../build/NEWS:19961
 msgid ""
@@ -41421,6 +41998,8 @@ msgid ""
 ":issue:`36763`: Fix memory leak in :c:func:`Py_SetStandardStreamEncoding`: "
 "release memory if the function is called twice."
 msgstr ""
+":issue:`36763`: 修复了 :c:func:`Py_SetStandardStreamEncoding` "
+"中的内存泄漏：如果该函数被调用两次则释放内存。"
 
 #: ../../../build/NEWS:20129
 msgid ""
@@ -41455,6 +42034,10 @@ msgid ""
 "mojibake issue. They must now be enabled explicitly (opt-in) using the new "
 ":c:func:`_Py_PreInitialize` API with ``_PyPreConfig``."
 msgstr ""
+":issue:`36443`: 自 Python 3.7.0 起，如果强制转换了 ``LC_CTYPE`` 语言区域和/或由用户配置启用了 UTF-8 "
+"模式，则在 :c:func:`Py_Initialize` 之前调用 :c:func:`Py_DecodeLocale` 会产生乱码。LC_CTYPE "
+"强制转换和 UTF-8 模式现在默认禁用以修复乱码问题。现在必须使用带有 ``_PyPreConfig`` 的新 "
+":c:func:`_Py_PreInitialize` API 显式启用（主动选择）它们。"
 
 #: ../../../build/NEWS:20147
 msgid ""
@@ -42283,7 +42866,7 @@ msgstr ""
 msgid ""
 ":issue:`35904`: Added statistics.fmean() as a faster, floating point variant"
 " of the existing mean() function."
-msgstr ""
+msgstr ":issue:`35904`: 添加了 statistics.fmean()，作为现有 mean() 函数的更快浮点数变体。"
 
 #: ../../../build/NEWS:20562
 msgid ""
@@ -42550,6 +43133,9 @@ msgid ""
 "Vulnerability (TALOS-2018-0758) reported by Colin Read and Nicolas Edet of "
 "Cisco."
 msgstr ""
+":issue:`35746`: [CVE-2019-5010] 修复了 ssl 模块中的空指针解引用问题。证书解析器未能正确处理具有空 DP 或 URI"
+" 的 CRL 分发点。恶意或存在缺陷的证书可能导致段错误。该漏洞 (TALOS-2018-0758) 由 Cisco 的 Colin Read 和 "
+"Nicolas Edet 报告。"
 
 #: ../../../build/NEWS:20705
 msgid ""
@@ -42558,6 +43144,9 @@ msgid ""
 " modules when spawning child processes. Previously, only :option:`-E` and "
 ":option:`-s` options (enabled by :option:`-I`) were copied."
 msgstr ""
+":issue:`34812`: 当生成子进程时，:option:`-I` 命令行选项（以隔离模式运行 Python）现在也会被 "
+":mod:`multiprocessing` 和 :mod:`distutils` 模块复制。此前仅复制了 :option:`-E` 和 "
+":option:`-s` 选项 (由 :option:`-I` 启用)。"
 
 #: ../../../build/NEWS:20711
 msgid ""
@@ -42583,6 +43172,8 @@ msgid ""
 "initializes hash randomization salt from _Py_HashSecret instead of "
 "libexpat's default CSPRNG."
 msgstr ""
+":issue:`34623`: CVE-2018-14647：C 加速的 _elementtree 模块现在从 _Py_HashSecret 而不是 "
+"libexpat 的默认 CSPRNG 初始化哈希随机化盐值。"
 
 #: ../../../build/NEWS:20723
 msgid ":issue:`34405`: Updated to OpenSSL 1.1.0i for Windows builds."
@@ -42607,6 +43198,8 @@ msgid ""
 "X509_VERIFY_PARAM_set1_host() is called with an explicit namelen. A new test"
 " ensures that NULL bytes are not allowed."
 msgstr ""
+":issue:`33136`: 针对 LibreSSL CVE-2018-8970 加固了 ssl 模块。使用显式的 namelen 调用 "
+"X509_VERIFY_PARAM_set1_host()。新增的测试确保不允许 NULL 字节。"
 
 #: ../../../build/NEWS:20735 ../../../build/NEWS:24235
 #: ../../../build/NEWS:28630
@@ -42623,6 +43216,8 @@ msgid ""
 "(REDOS). They have been refactored. This resolves CVE-2018-1060 and "
 "CVE-2018-1061. Patch by Jamie Davis."
 msgstr ""
+":issue:`32981`: difflib 和 poplib 中的正则表达式容易发生灾难性回溯。这些正则表达式构成了潜在的拒绝服务攻击向量 "
+"(REDOS)。它们已被重构。这解决了 CVE-2018-1060 和 CVE-2018-1061。补丁由 Jamie Davis 提供。"
 
 #: ../../../build/NEWS:20742 ../../../build/NEWS:24449
 msgid ""
@@ -42705,6 +43300,8 @@ msgid ""
 "floating point formatting with \"n\" format, zero padding and small width. "
 "Release build is not impacted. Patch by Karthikeyan Singaravelan."
 msgstr ""
+":issue:`35560`: 修复了调试构建中 :func:`format` 在使用 \"n\" "
+"格式、零填充和较小宽度进行浮点数格式化时的断言错误。发布构建不受影响。补丁由 Karthikeyan Singaravelan 提供。"
 
 #: ../../../build/NEWS:20785
 msgid ""
@@ -43003,6 +43600,9 @@ msgid ""
 "mode with :func:`sys.getobjects()`. Remove the optimization, it's not really"
 " worth it and it causes 3 different crashes last years."
 msgstr ""
+":issue:`30156`: C 函数 ``property_descr_get()`` "
+"使用一个“缓存”元组来优化函数调用。但该元组在调试模式下可通过 :func:`sys.getobjects` "
+"被发现。移除了这项优化，它实际上得不偿失，并且在过去几年中引发了 3 次不同的崩溃。"
 
 #: ../../../build/NEWS:20924
 msgid ":issue:`34762`: Fix contextvars C API to use PyObject* pointer types."
@@ -44234,6 +44834,9 @@ msgid ""
 ":func:`pwd.getpwuid`: don't create the ``HOME`` environment variable in this"
 " case."
 msgstr ""
+":issue:`10496`: :mod:`distutils.utils` 的 "
+":func:`~distutils.utils.check_environ` 现在会在调用 :func:`pwd.getpwuid` 时捕获 "
+":exc:`KeyError`：在这种情况下不创建 ``HOME`` 环境变量。"
 
 #: ../../../build/NEWS:21478
 msgid ""
@@ -44423,6 +45026,8 @@ msgid ""
 ":issue:`35062`: Fix incorrect parsing of "
 ":class:`_io.IncrementalNewlineDecoder`'s *translate* argument."
 msgstr ""
+":issue:`35062`: 修复了对 :class:`_io.IncrementalNewlineDecoder` 的 *translate* "
+"参数的错误解析。"
 
 #: ../../../build/NEWS:21564
 msgid ""
@@ -44601,6 +45206,8 @@ msgid ""
 ":issue:`16965`: The :term:`2to3` :2to3fixer:`execfile` fixer now opens the "
 "file with mode ``'rb'``.  Patch by Zackery Spytz."
 msgstr ""
+":issue:`16965`: :term:`2to3` 的 :2to3fixer:`execfile` 修复器现在使用 ``'rb'`` "
+"模式打开文件。补丁由 Zackery Spytz 提供。"
 
 #: ../../../build/NEWS:21643
 msgid ""
@@ -44681,6 +45288,8 @@ msgid ""
 ":meth:`~hashlib.shake.digest()` and :meth:`~hashlib.shake.hexdigest()` "
 "methods for the SHAKE algorithm in the :mod:`hashlib` module."
 msgstr ""
+":issue:`34922`: 修复了 :mod:`hashlib` 模块中 SHAKE 算法的 "
+":meth:`~hashlib.shake.digest` 和 :meth:`~hashlib.shake.hexdigest` 方法中的整数溢出问题。"
 
 #: ../../../build/NEWS:21680
 msgid ""
@@ -44853,7 +45462,7 @@ msgstr ""
 msgid ""
 ":issue:`34738`: ZIP files created by :mod:`distutils` will now include "
 "entries for directories."
-msgstr ""
+msgstr ":issue:`34738`: 由 :mod:`distutils` 创建的 ZIP 文件现在将包含目录条目。"
 
 #: ../../../build/NEWS:21757
 msgid ""
@@ -44958,6 +45567,10 @@ msgid ""
 " for :func:`~unittest.setUpModule()` and "
 ":meth:`~unittest.TestCase.setUpClass()`. Patch by Lisa Roach."
 msgstr ""
+":issue:`24412`: 向 unittest 添加了 :func:`~unittest.addModuleCleanup` 和 "
+":meth:`~unittest.TestCase.addClassCleanup` ，以支持针对 "
+":func:`~unittest.setUpModule` 和 :meth:`~unittest.TestCase.setUpClass` "
+"的清理操作。补丁由 Lisa Roach 提供。"
 
 #: ../../../build/NEWS:21805
 msgid ""
@@ -45141,6 +45754,8 @@ msgid ""
 "``__subclasses__`` is passed as the second argument to :func:`issubclass()`."
 " Patch by Alexey Izbyshev."
 msgstr ""
+":issue:`34441`: 修复了将具有无效 ``__subclasses__`` 的 ``ABC`` 派生类作为第二个参数传给 "
+":func:`issubclass` 时的崩溃问题。补丁由 Alexey Izbyshev 提供。"
 
 #: ../../../build/NEWS:21887
 msgid ""
@@ -45308,6 +45923,11 @@ msgid ""
 "no initial name is set, the default Task implementation generates a name "
 "like ``Task-1`` using a monotonic counter."
 msgstr ""
+":issue:`34270`: 默认的 asyncio 任务类现在始终具有名称，可以使用两个新方法 "
+"(:meth:`~asyncio.Task.get_name` 和 :meth:`~asyncio.Task.set_name`) "
+"来获取或设置，并且会在 :func:`repr` 输出中显示。也可以使用 :func:`asyncio.create_task` 或事件循环的 "
+":meth:`~asyncio.AbstractEventLoop.create_task` 方法的新 ``name`` "
+"关键字参数来设置初始名称。如果未设置初始名称，默认的 Task 实现会使用单调计数器生成类似 ``Task-1`` 的名称。"
 
 #: ../../../build/NEWS:21963
 msgid ""
@@ -45342,6 +45962,8 @@ msgid ""
 ":issue:`34251`: Restore ``msilib.Win64`` to preserve backwards compatibility"
 " since it's already used by :mod:`distutils`' ``bdist_msi`` command."
 msgstr ""
+":issue:`34251`: 恢复 ``msilib.Win64`` 以保持向后兼容性，因为它已被 :mod:`distutils` 的 "
+"``bdist_msi`` 命令使用。"
 
 #: ../../../build/NEWS:21978
 msgid ""
@@ -45419,6 +46041,8 @@ msgid ""
 ":issue:`21446`: The :2to3fixer:`reload` fixer now uses "
 ":func:`importlib.reload` instead of deprecated :func:`imp.reload`."
 msgstr ""
+":issue:`21446`: :2to3fixer:`reload` 修复器现在使用 :func:`importlib.reload` 而不是已弃用的"
+" :func:`imp.reload`。"
 
 #: ../../../build/NEWS:22014
 msgid ""
@@ -45674,6 +46298,12 @@ msgid ""
 ":exc:`UnicodeDecodeError` for paths that contain characters or bytes "
 "unrepresentable at the OS level."
 msgstr ""
+":issue:`33721`: 对于包含在操作系统级别无法表示的字符或字节的路径，返回布尔结果的 :mod:`os.path` 函数 "
+"(:func:`~os.path.exists`、:func:`~os.path.lexists`、:func:`~os.path.isdir`、:func:`~os.path.isfile`、:func:`~os.path.islink`"
+" 和 :func:`~os.path.ismount`) 以及返回布尔结果的 :mod:`pathlib.Path` 方法 "
+"(:meth:`~pathlib.Path.exists`、:meth:`~pathlib.Path.is_dir`、:meth:`~pathlib.Path.is_file`、:meth:`~pathlib.Path.is_mount`、:meth:`~pathlib.Path.is_symlink`、:meth:`~pathlib.Path.is_block_device`、:meth:`~pathlib.Path.is_char_device`、:meth:`~pathlib.Path.is_fifo`、:meth:`~pathlib.Path.is_socket`)"
+" 现在会返回 ``False`` ，而不是引发 :exc:`ValueError` 或其子类 :exc:`UnicodeEncodeError` 和 "
+":exc:`UnicodeDecodeError`。"
 
 #: ../../../build/NEWS:22136
 msgid ""
@@ -46530,7 +47160,7 @@ msgstr ""
 msgid ""
 ":issue:`20104`: Improved error handling and fixed a reference leak in "
 ":func:`os.posix_spawn()`."
-msgstr ""
+msgstr ":issue:`20104`: 改进了 :func:`os.posix_spawn` 中的错误处理并修复了一处引用泄漏。"
 
 #: ../../../build/NEWS:22500
 msgid ""
@@ -46756,6 +47386,8 @@ msgid ""
 "and sample width when read an audio file in modules :mod:`aifc`, :mod:`wave`"
 " and :mod:`sunau`."
 msgstr ""
+":issue:`32056`: 改进了在模块 :mod:`aifc`、:mod:`wave` 和 :mod:`sunau` "
+"中读取音频文件时针对无效通道数和采样宽度所引发的异常。"
 
 #: ../../../build/NEWS:22600
 msgid ":issue:`32970`: Improved disassembly of the MAKE_FUNCTION instruction."
@@ -46979,6 +47611,9 @@ msgid ""
 " future versions. Currently they emit warnings. fnmatch.translate() now "
 "avoids producing patterns containing such sets by accident."
 msgstr ""
+":issue:`32775`: :func:`fnmatch.translate` 不再生成包含集合运算的模式。以 '[' 开头或包含 "
+"'--'、'&&'、'~~' 或 '||' 的集合在未来版本的正则表达式中将会有不同的解释。目前它们会发出警告。fnmatch.translate() "
+"现在可避免意外生成包含此类集合的模式。"
 
 #: ../../../build/NEWS:22701 ../../../build/NEWS:24555
 msgid ""
@@ -47291,7 +47926,7 @@ msgstr ":issue:`34913`: 添加了关于gzip模块新命令行界面的文档。"
 msgid ""
 ":issue:`32174`: chm document displays non-ASCII charaters properly on some "
 "MBCS Windows systems."
-msgstr ""
+msgstr ":issue:`32174`: chm 文档现在可以在某些 MBCS Windows 系统上正确显示非 ASCII 字符。"
 
 #: ../../../build/NEWS:22846
 msgid ""
@@ -48510,6 +49145,8 @@ msgid ""
 ":issue:`31903`: In :mod:`_scproxy`, drop the GIL when calling into "
 "``SystemConfiguration`` to avoid deadlocks."
 msgstr ""
+":issue:`31903`: 在 :mod:`_scproxy` 中，调用 ``SystemConfiguration`` 时释放 GIL "
+"以避免死锁。"
 
 #: ../../../build/NEWS:23405
 msgid ""
@@ -49759,6 +50396,10 @@ msgid ""
 ":class:`importlib.abc.ResourceLoader` is deprecated in favor of these new "
 "APIs."
 msgstr ""
+":issue:`32248`: 添加了 :mod:`importlib.resources` 和 "
+":class:`importlib.abc.ResourceReader` 作为读取包内所含资源的统一 API。希望支持资源读取的加载器必须实现 "
+":meth:`get_resource_reader` 方法。基于文件和基于 zipimport 的加载器均已实现这些 "
+"API。:class:`importlib.abc.ResourceLoader` 已弃用，转而推荐使用这些新 API。"
 
 #: ../../../build/NEWS:24900
 msgid ":issue:`32320`: collections.namedtuple() now supports default values."
@@ -49960,6 +50601,8 @@ msgid ""
 ":issue:`10381`: Add C API access to the ``datetime.timezone`` constructor "
 "and ``datetime.timzone.UTC`` singleton."
 msgstr ""
+":issue:`10381`: 添加了对 ``datetime.timezone`` 构造器和 ``datetime.timzone.UTC`` 单例的"
+" C API 访问支持。"
 
 #: ../../../build/NEWS:25011
 msgid "Python 3.7.0 alpha 4"
@@ -50286,6 +50929,8 @@ msgid ""
 ":issue:`32323`: :func:`urllib.parse.urlsplit()` does not convert zone-id "
 "(scope) to lower case for scoped IPv6 addresses in hostnames now."
 msgstr ""
+":issue:`32323`: 对于主机名中带作用域的 IPv6 地址，:func:`urllib.parse.urlsplit` 现在不会将区域 ID"
+" (scope) 转换为小写。"
 
 #: ../../../build/NEWS:25166 ../../../build/NEWS:28788
 msgid ""
@@ -50305,7 +50950,7 @@ msgstr ""
 msgid ""
 ":issue:`32308`: :func:`re.sub()` now replaces empty matches adjacent to a "
 "previous non-empty match."
-msgstr ""
+msgstr ":issue:`32308`: :func:`re.sub` 现在会替换紧邻前一个非空匹配的空匹配。"
 
 #: ../../../build/NEWS:25175
 msgid ""
@@ -50399,6 +51044,8 @@ msgid ""
 "ouput. Added types.ClassMethodDescriptorType for unbound class methods of "
 "builtin types."
 msgstr ""
+":issue:`32265`: 内置类型的所有类方法和静态方法现在都能被 inspect.classify_class_attrs() 正确分类并在 "
+"pydoc 输出中分组。为内置类型的未绑定类方法添加了 types.ClassMethodDescriptorType。"
 
 #: ../../../build/NEWS:25219
 msgid ""
@@ -50578,6 +51225,8 @@ msgid ""
 ":issue:`32241`: :c:func:`Py_SetProgramName` and :c:func:`Py_SetPythonHome` "
 "now take the ``const wchar *`` arguments instead of ``wchar *``."
 msgstr ""
+":issue:`32241`: :c:func:`Py_SetProgramName` 和 :c:func:`Py_SetPythonHome` "
+"现在接受 ``const wchar *`` 参数而不是 ``wchar *``。"
 
 #: ../../../build/NEWS:25315
 msgid "Python 3.7.0 alpha 3"
@@ -50867,6 +51516,9 @@ msgid ""
 "``None`` when the value of property is ``VT_EMPTY``.  Initial patch by Mark "
 "Mc Mahon."
 msgstr ""
+":issue:`12239`: 当属性的值为 ``VT_EMPTY`` 时，使 "
+":meth:`msilib.SummaryInformation.GetProperty` 返回 ``None``。初始补丁由 Mark Mc "
+"Mahon 提供。"
 
 #: ../../../build/NEWS:25462
 msgid ""
@@ -50908,6 +51560,8 @@ msgid ""
 "message when it couldn't open or create an MSI file.  Initial patch by "
 "William Tisäter."
 msgstr ""
+":issue:`12382`: 当无法打开或创建 MSI 文件时，:func:`msilib.OpenDatabase` "
+"现在会引发具有更佳异常消息的异常。初始补丁由 William Tisäter 提供。"
 
 #: ../../../build/NEWS:25481
 msgid ""
@@ -52364,6 +53018,12 @@ msgid ""
 " already gets entropy from the OS to set the expat secret using "
 "``XML_SetHashSalt()``."
 msgstr ""
+":issue:`30694`: 将 expat 副本从 2.2.0 升级到 2.2.1 "
+"以获取多个安全漏洞的修复，包括：CVE-2017-9233（外部实体死循环 "
+"DoS）、CVE-2016-9063（整数溢出，重新修复）、CVE-2016-0718（修复 2.2.0 对 CVE-2016-0718 "
+"的修复所引入的回归错误）和 CVE-2012-0876（使用 SipHash 抵御哈希洪泛攻击）。注意：CVE-2016-5300（使用如 "
+"getrandom 等特定于操作系统的熵源）不影响 Python，因为 Python 已经从操作系统获取熵并通过 "
+"``XML_SetHashSalt()`` 设置 expat 密钥。"
 
 #: ../../../build/NEWS:26199 ../../../build/NEWS:29874
 #: ../../../build/NEWS:33802
@@ -52384,6 +53044,8 @@ msgid ""
 "CVE-2016-0718 and CVE-2016-4472. See "
 "https://sourceforge.net/p/expat/bugs/537/ for more information."
 msgstr ""
+":issue:`29591`: 将 expat 副本从 2.1.1 更新到 2.2.0 以获取对 CVE-2016-0718 和 "
+"CVE-2016-4472 的修复。欲了解更多信息，请参阅 https://sourceforge.net/p/expat/bugs/537/。"
 
 #: ../../../build/NEWS:26211 ../../../build/NEWS:29025
 msgid ""
@@ -52492,6 +53154,8 @@ msgid ""
 ":issue:`31343`: Include sys/sysmacros.h for major(), minor(), and makedev()."
 " GNU C libray plans to remove the functions from sys/types.h."
 msgstr ""
+":issue:`31343`: 为 major()、minor() 和 makedev() 引入 sys/sysmacros.h。GNU C "
+"函数库计划从 sys/types.h 中移除这些函数。"
 
 #: ../../../build/NEWS:26259 ../../../build/NEWS:29429
 msgid ""
@@ -53402,6 +54066,7 @@ msgid ""
 ":issue:`28120`: Fix dict.pop() for splitted dictionary when trying to remove"
 " a \"pending key\" (Not yet inserted in split-table). Patch by Xiang Zhang."
 msgstr ""
+":issue:`28120`: 修复了拆分字典在尝试移除“待定键”（尚未插入拆分表中）时的 dict.pop()。补丁由 Xiang Zhang 提供。"
 
 #: ../../../build/NEWS:26657 ../../../build/NEWS:30981
 msgid ""
@@ -54183,6 +54848,8 @@ msgid ""
 ":issue:`30463`: Addded empty __slots__ to abc.ABC.  This allows subclassers "
 "to deny __dict__ and __weakref__ creation.  Patch by Aaron Hall."
 msgstr ""
+":issue:`30463`: 向 abc.ABC 添加了空的 __slots__。这允许子类禁止创建 __dict__ 和 "
+"__weakref__。补丁由 Aaron Hall 提供。"
 
 #: ../../../build/NEWS:27005
 msgid ":issue:`30520`: Loggers are now pickleable."
@@ -55646,7 +56313,7 @@ msgstr ""
 msgid ""
 ":issue:`25651`: Allow falsy values to be used for msg parameter of "
 "subTest()."
-msgstr ""
+msgstr ":issue:`25651`: 允许将假值 (falsy value) 用于 subTest() 的 msg 形参。"
 
 #: ../../../build/NEWS:27622 ../../../build/NEWS:31059
 msgid ""
@@ -58396,6 +59063,7 @@ msgid ""
 ":issue:`27850`: Remove 3DES from ssl module's default cipher list to counter"
 " measure sweet32 attack (CVE-2016-2183)."
 msgstr ""
+":issue:`27850`: 从 ssl 模块的默认加密算法列表中移除 3DES，以抵御 sweet32 攻击 (CVE-2016-2183)。"
 
 #: ../../../build/NEWS:31479 ../../../build/NEWS:34533
 msgid ""
@@ -59060,6 +59728,8 @@ msgid ""
 "HTTP_PROXY variable when REQUEST_METHOD environment is set, which indicates "
 "that the script is in CGI mode."
 msgstr ""
+":issue:`27568`: 防止 HTTPoxy 攻击 (CVE-2016-1000110)。当设置了 REQUEST_METHOD "
+"环境变量（这表明脚本处于 CGI 模式）时，忽略 HTTP_PROXY 变量。"
 
 #: ../../../build/NEWS:31815
 msgid ""
@@ -59663,13 +60333,13 @@ msgstr "*发布日期: 2016-06-13*"
 
 #: ../../../build/NEWS:32143 ../../../build/NEWS:34909
 msgid ":issue:`26556`: Update expat to 2.1.1, fixes CVE-2015-1283."
-msgstr ""
+msgstr ":issue:`26556`: 将 expat 更新至 2.1.1，修复了 CVE-2015-1283。"
 
 #: ../../../build/NEWS:32145
 msgid ""
 "Fix TLS stripping vulnerability in smtplib, CVE-2016-0772. Reported by Team "
 "Oststrom."
-msgstr ""
+msgstr "修复了 smtplib 中的 TLS 剥离漏洞，即 CVE-2016-0772。由 Team Oststrom 报告。"
 
 #: ../../../build/NEWS:32148 ../../../build/NEWS:34914
 msgid ""
@@ -61228,6 +61898,8 @@ msgid ""
 "packages (module splitted into multiple directories) for the package "
 "parameter."
 msgstr ""
+":issue:`26641`: doctest.DocFileTest 和 doctest.testfile() 的 package "
+"形参现在支持包（拆分为多个目录的模块）。"
 
 #: ../../../build/NEWS:32895 ../../../build/NEWS:35208
 msgid ""
@@ -61294,6 +61966,9 @@ msgid ""
 ":mod:`tracemalloc` module. Add :c:func:`_PyTraceMalloc_GetTraceback` to get "
 "the traceback of an object."
 msgstr ""
+":issue:`26530`: 添加了 C 函数 :c:func:`_PyTraceMalloc_Track` 和 "
+":c:func:`_PyTraceMalloc_Untrack` 以使用 :mod:`tracemalloc` 模块追踪内存块。添加了 "
+":c:func:`_PyTraceMalloc_GetTraceback` 以获取对象的回溯信息。"
 
 #: ../../../build/NEWS:32926
 msgid ""
@@ -63041,6 +63716,8 @@ msgid ""
 "CVE-2017-1000158. Original patch by Jay Bosamiya; rebased to Python 3 by "
 "Miro Hrončok."
 msgstr ""
+":issue:`30657`: 修复了 PyBytes_DecodeEscape 中潜在的整数溢出问题，即 CVE-2017-1000158。原始补丁由"
+" Jay Bosamiya 提供；由 Miro Hrončok 变基至 Python 3。"
 
 #: ../../../build/NEWS:33770
 msgid "Python 3.5.4 final"
@@ -63331,7 +64008,7 @@ msgstr "*发布日期: 2016-06-12*"
 msgid ""
 "Fix TLS stripping vulnerability in smtplib, CVE-2016-0772. Reported by Team "
 "Oststrom"
-msgstr ""
+msgstr "修复了 smtplib 中的 TLS 剥离漏洞，即 CVE-2016-0772。由 Team Oststrom 报告"
 
 #: ../../../build/NEWS:34942
 msgid ""
@@ -63741,6 +64418,8 @@ msgid ""
 ":issue:`23572`: Fixed functools.singledispatch on classes with falsy "
 "metaclasses.  Patch by Ethan Furman."
 msgstr ""
+":issue:`23572`: 修复了 functools.singledispatch 在具有假值 (falsy) 元类的类上的行为。补丁由 "
+"Ethan Furman 提供。"
 
 #: ../../../build/NEWS:35952
 msgid "asyncio: ensure_future() now accepts awaitable objects."
@@ -67132,6 +67811,7 @@ msgid ""
 ":issue:`16043`: Add a default limit for the amount of data "
 "xmlrpclib.gzip_decode will return. This resolves CVE-2013-1753."
 msgstr ""
+":issue:`16043`: 为 xmlrpclib.gzip_decode 将返回的数据量添加了默认限制。这解决了 CVE-2013-1753。"
 
 #: ../../../build/NEWS:37803
 msgid ""
@@ -68601,7 +69281,7 @@ msgstr ":issue:`21402`: 当未设置默认根窗口时，tkinter.ttk现在可以
 msgid ""
 ":issue:`3015`: _tkinter.create() now creates tkapp object with wantobject=1 "
 "by default."
-msgstr ""
+msgstr ":issue:`3015`: _tkinter.create() 现在默认使用 wantobject=1 创建 tkapp 对象。"
 
 #: ../../../build/NEWS:38464
 msgid ""
@@ -69020,6 +69700,8 @@ msgid ""
 " negative second parameter. Bug reported by Guido Vranken. (See also: "
 "CVE-2014-4616)"
 msgstr ""
+":issue:`21529`: 修复了 JSONDecoder.raw_decode 在第二个形参为负数时的任意内存访问问题。错误由 Guido "
+"Vranken 报告。（另请参阅：CVE-2014-4616）"
 
 #: ../../../build/NEWS:38646
 msgid ""
@@ -70011,6 +70693,8 @@ msgid ""
 "true division to benchmark integers instead of floating point numbers. Set "
 "pystone version to 1.2. Patch written by Lennart Regebro."
 msgstr ""
+":issue:`21634`: 修复了 pystone 微基准测试：使用向下取整除法而不是真除法来对整数而非浮点数进行基准测试。将 pystone "
+"版本设为 1.2。补丁由 Lennart Regebro 编写。"
 
 #: ../../../build/NEWS:39112
 msgid ":issue:`21605`: Added tests for Tkinter images."

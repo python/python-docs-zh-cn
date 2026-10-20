@@ -1,19 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2001-2025, Python Software Foundation
+# Copyright (C) 2001-2026, Python Software Foundation
 # This file is distributed under the same license as the Python package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
 # python-doc bot, 2025
+# Alpha Du <alphanow@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.11\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-23 16:19+0000\n"
+"POT-Creation-Date: 2026-10-17 20:00+0000\n"
 "PO-Revision-Date: 2025-09-22 16:49+0000\n"
-"Last-Translator: python-doc bot, 2025\n"
+"Last-Translator: Alpha Du <alphanow@gmail.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1582,6 +1583,8 @@ msgid ""
 "Python code, only *tp_call* is updated, likely making it inconsistent with "
 "the vectorcall function."
 msgstr ""
+"不建议为 :ref:`可变堆类型 <heap-types>` 实现 vectorcall 协议。 当用户在 Python 代码中设置 "
+":attr:`__call__` 时，只有 *tp_call* 会被更新，这很可能会使其与 vectorcall 函数不一致。"
 
 #: ../../c-api/typeobj.rst:740
 msgid ""
@@ -1600,6 +1603,10 @@ msgid ""
 " case for types without the :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` flag set "
 "(including subclasses defined in Python)."
 msgstr ""
+"该字段总是会被继承。 但是， :c:macro:`Py_TPFLAGS_HAVE_VECTORCALL` 旗标并不总是会被继承。 "
+"如果未被继承，则子类将不会使用 :ref:`vectorcall <vectorcall>`，除非显式调用了 "
+":c:func:`PyVectorcall_Call`。 对于未设置 :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` "
+"旗标的类型（包括在 Python 中定义的子类）来说尤其如此。"
 
 #: ../../c-api/typeobj.rst:758
 msgid "An optional pointer to the get-attribute-string function."
@@ -2190,6 +2197,8 @@ msgid ""
 "This bit is inherited for types with the :c:macro:`Py_TPFLAGS_IMMUTABLETYPE`"
 " flag set, if :c:member:`~PyTypeObject.tp_call` is also inherited."
 msgstr ""
+"对于设置了 :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` 旗标的类型，如果 "
+":c:member:`~PyTypeObject.tp_call` 也被继承，则该位会被继承。"
 
 #: ../../c-api/typeobj.rst:1199
 msgid ""
@@ -2667,6 +2676,9 @@ msgid ""
 "the instance layout and setting the "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` of that slot's offset."
 msgstr ""
+"当由 class 语句定义的类型没有 :attr:`~object.__slots__` "
+"声明，并且它的所有基类型都不可被弱引用时，会通过向实例布局添加一个弱引用列表头槽位并将 "
+":c:member:`~PyTypeObject.tp_weaklistoffset` 设为该槽位的偏移量来使该类型可被弱引用。"
 
 #: ../../c-api/typeobj.rst:1530
 msgid ""
@@ -2675,6 +2687,9 @@ msgid ""
 "instances of the type, and the slot's offset is stored in the type's "
 ":c:member:`~PyTypeObject.tp_weaklistoffset`."
 msgstr ""
+"当类型的 :attr:`__slots__` 声明包含名为 :attr:`__weakref__` "
+"的槽位时，该槽位将成为该类型实例的弱引用列表头，并且该槽位的偏移量会存储在该类型的 "
+":c:member:`~PyTypeObject.tp_weaklistoffset` 中。"
 
 #: ../../c-api/typeobj.rst:1535
 msgid ""
@@ -2682,6 +2697,8 @@ msgid ""
 ":attr:`__weakref__`, the type inherits its "
 ":c:member:`~PyTypeObject.tp_weaklistoffset` from its base type."
 msgstr ""
+"当类型的 :attr:`__slots__` 声明不包含名为 :attr:`__weakref__` 的槽位时，该类型会从其基类型继承 "
+":c:member:`~PyTypeObject.tp_weaklistoffset`。"
 
 #: ../../c-api/typeobj.rst:1542
 msgid ""
@@ -2846,6 +2863,9 @@ msgid ""
 "they don't correspond to overloaded operations (like "
 ":meth:`~object.__add__`)."
 msgstr ""
+"在调用 PyType_Ready 之前，该字段通常应当被初始化为 ``NULL``；它也可以被初始化为一个包含该类型初始属性的字典。 一旦 "
+":c:func:`PyType_Ready` 初始化了该类型，则只有当该类型的额外属性不对应于重载操作（如 "
+":meth:`~object.__add__`）时，才可以将它们添加到此字典中。"
 
 #: ../../c-api/typeobj.rst:1667
 msgid ""
@@ -2918,6 +2938,11 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_dictoffset` should be set to ``-4`` to indicate "
 "that the dictionary is at the very end of the structure."
 msgstr ""
+"如果该字段的值大于零，则它指定从实例结构体开头算起的偏移量。 如果该值小于零，则它指定从实例结构体 *末尾* 算起的偏移量。 "
+"负偏移量的使用开销更大，应当仅在实例结构体包含变长部分时使用。 例如，这被用于向 :class:`str` 或 :class:`tuple` "
+"的子类型添加实例变量字典。 请注意，在这种情况下 :c:member:`~PyTypeObject.tp_basicsize` "
+"字段应当把添加到末尾的字典计算在内，即使该字典并未包含在基本对象布局中。 在指针大小为 4 字节的系统上，应当将 "
+":c:member:`~PyTypeObject.tp_dictoffset` 设为 ``-4`` 以表明该字典位于结构体的最末尾。"
 
 #: ../../c-api/typeobj.rst:1736
 msgid ""
@@ -2940,6 +2965,8 @@ msgid ""
 "dictionary is always found via :c:member:`~PyTypeObject.tp_dictoffset`, this"
 " should not be a problem."
 msgstr ""
+"该字段会被子类型继承，但请注意参阅下面列出的规则。 子类型可以覆盖此偏移量；这意味着子类型实例将在不同于基类型的偏移量处存储该字典。 由于字典总是通过 "
+":c:member:`~PyTypeObject.tp_dictoffset` 找到的，所以这应该不成问题。"
 
 #: ../../c-api/typeobj.rst:1749
 msgid ""
@@ -2948,6 +2975,9 @@ msgid ""
 " a dictionary slot is added to the instance layout and the "
 ":c:member:`~PyTypeObject.tp_dictoffset` is set to that slot's offset."
 msgstr ""
+"当由 class 语句定义的类型没有 :attr:`~object.__slots__` "
+"声明，并且它的所有基类型都没有实例变量字典时，会向实例布局添加一个字典槽位并将 "
+":c:member:`~PyTypeObject.tp_dictoffset` 设为该槽位的偏移量。"
 
 #: ../../c-api/typeobj.rst:1754
 msgid ""
@@ -2955,6 +2985,8 @@ msgid ""
 "declaration, the type inherits its :c:member:`~PyTypeObject.tp_dictoffset` "
 "from its base type."
 msgstr ""
+"当由 class 语句定义的类型具有 :attr:`__slots__` 声明时，该类型会从其基类型继承 "
+":c:member:`~PyTypeObject.tp_dictoffset`。"
 
 #: ../../c-api/typeobj.rst:1757
 msgid ""
@@ -2963,6 +2995,8 @@ msgid ""
 "Maybe this should be added as a feature just like :attr:`__weakref__` "
 "though.)"
 msgstr ""
+"（向 :attr:`__slots__` 声明中添加名为 :attr:`~object.__dict__` 的槽位并不会产生预期的效果，只会引起混淆。 "
+"不过也许这应当像 :attr:`__weakref__` 一样作为一项特性添加进来。）"
 
 #: ../../c-api/typeobj.rst:1763
 msgid ""
@@ -3389,6 +3423,8 @@ msgid ""
 ":c:func:`PyType_FromSpec`, :c:func:`PyType_FromSpecWithBases`, or "
 ":c:func:`PyType_FromModuleAndSpec`."
 msgstr ""
+"这可以通过填充一个 :c:type:`PyType_Spec` 结构体并调用 :c:func:`PyType_FromSpec`、 "
+":c:func:`PyType_FromSpecWithBases` 或 :c:func:`PyType_FromModuleAndSpec` 来完成。"
 
 #: ../../c-api/typeobj.rst:2107
 msgid "Number Object Structures"
