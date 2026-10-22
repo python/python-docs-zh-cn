@@ -143,15 +143,15 @@ msgstr "导出钩子可以返回 ``NULL`` 并设置一个异常来发出失败�
 #: ../../c-api/extension-modules.rst:71
 msgid ""
 "It is recommended to define the export hook function using a helper macro:"
-msgstr ""
+msgstr "建议使用一个辅助宏来定义导出钩子函数："
 
 #: ../../c-api/extension-modules.rst:75
 msgid "Declare an extension module export hook. This macro:"
-msgstr ""
+msgstr "声明一个扩展模块导出钩子。 这个宏："
 
 #: ../../c-api/extension-modules.rst:78
 msgid "specifies the :c:expr:`PySlot*` return type,"
-msgstr ""
+msgstr "指定 :c:expr:`PySlot*` 返回类型，"
 
 #: ../../c-api/extension-modules.rst:79 ../../c-api/extension-modules.rst:248
 msgid "adds any special linkage declarations required by the platform, and"
@@ -183,18 +183,33 @@ msgid ""
 "    return spam_slots;\n"
 "}"
 msgstr ""
+"PyABIInfo_VAR(abi_info);\n"
+"\n"
+"static PySlot spam_slots[] = {\n"
+"    PySlot_STATIC_DATA(Py_mod_abi, &abi_info),\n"
+"    PySlot_STATIC_DATA(Py_mod_name, \"spam\"),\n"
+"    PySlot_FUNC(Py_mod_init, spam_init_function),\n"
+"    ...\n"
+"    PySlot_END\n"
+"};\n"
+"\n"
+"PyMODEXPORT_FUNC\n"
+"PyModExport_spam(void)\n"
+"{\n"
+"    return spam_slots;\n"
+"}"
 
 #: ../../c-api/extension-modules.rst:100
 msgid ""
 "The export hook is typically the only non-\\ ``static`` item defined in the "
 "module's C source."
-msgstr ""
+msgstr "导出钩子通常是定义于模块 C 源代码中唯一的非 ``static`` 条目。"
 
 #: ../../c-api/extension-modules.rst:105
 msgid ""
 "The hook should be kept short. If it does more than ``return`` a static "
 "array, several caveats apply:"
-msgstr ""
+msgstr "此钩子应当保持简短。 如果它在 ``return`` 一个静态数组之个还做了其他事，则需注意几点："
 
 #: ../../c-api/extension-modules.rst:108
 msgid ""
@@ -202,6 +217,8 @@ msgid ""
 ":c:func:`PyABIInfo_Check` first to raise an exception, rather than crash, in"
 " common cases of ABI mismatch."
 msgstr ""
+"如果你需要使用任何 Python C API，在常见的 ABI 不匹配情况下，建议先调用 :c:func:`PyABIInfo_Check` "
+"来引发异常，而不是让程序崩溃。"
 
 #: ../../c-api/extension-modules.rst:111
 msgid ""
@@ -209,6 +226,8 @@ msgid ""
 "threaded builds <free-threaded build>` of Python can only check the "
 ":c:macro:`Py_mod_gil` slot (or the lack of it) after the hook returns,"
 msgstr ""
+"导出钩子中的代码绝不可依赖于 :term:`GIL`: Python 的 :term:`自由线程构建版 <free-threaded build>` "
+"只能在钩子返回后检查 :c:macro:`Py_mod_gil` 槽位（或确定其不存在）。"
 
 #: ../../c-api/extension-modules.rst:114
 msgid ""
@@ -216,6 +235,8 @@ msgid ""
 ":c:macro:`Py_mod_multiple_interpreters` slot (or lack of it) is only checked"
 " after the hook returns."
 msgstr ""
+"类似地，此钩子可在任意子解释器中被调用，因为对 :c:macro:`Py_mod_multiple_interpreters` "
+"槽位的存在（或不存在）的检查只在钩子返回后才执行。"
 
 #: ../../c-api/extension-modules.rst:118
 msgid "For example::"
