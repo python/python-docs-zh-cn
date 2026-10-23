@@ -6,15 +6,16 @@
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# Alpha Du <alphanow@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 20:12+0000\n"
+"POT-Creation-Date: 2026-10-21 19:19+0000\n"
 "PO-Revision-Date: 2026-05-08 17:17+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: Alpha Du <alphanow@gmail.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -890,6 +891,8 @@ msgid ""
 "before index *stop*).  Returns the first match or raises :exc:`ValueError` "
 "if not found."
 msgstr ""
+"返回 *value* 在双端队列中的位置（在索引 *start* 或其后且在索引 *stop* 之前）。 返回第一个匹配项，如果未找到则引发 "
+":exc:`ValueError`。"
 
 #: ../../library/collections.rst:541
 msgid "Insert *value* into the deque at position *index*."
@@ -1232,6 +1235,7 @@ msgid ""
 ":class:`!defaultdict`\\s are :ref:`generic <generics>` over two types, "
 "signifying (respectively) the types of the dictionary's keys and values."
 msgstr ""
+":class:`!defaultdict` 是对应两个类型的 :ref:`泛型 <generics>` 对象，（分别）表示字典键和值的类型。"
 
 #: ../../library/collections.rst:744
 msgid ""
@@ -1997,7 +2001,7 @@ msgstr ""
 msgid ""
 "An :class:`OrderedDict` would also be useful for implementing variants of "
 ":deco:`functools.lru_cache`:"
-msgstr ""
+msgstr ":class:`OrderedDict` 也可用于实现 :deco:`functools.lru_cache` 的变体："
 
 #: ../../library/collections.rst:1229
 msgid ""
@@ -2025,6 +2029,29 @@ msgid ""
 "            self.cache.popitem(last=False)\n"
 "        return result"
 msgstr ""
+"from collections import OrderedDict\n"
+"from time import monotonic\n"
+"\n"
+"class TimeBoundedLRU:\n"
+"    \"LRU Cache that invalidates and refreshes old entries.\"\n"
+"\n"
+"    def __init__(self, func, maxsize=128, maxage=30):\n"
+"        self.cache = OrderedDict()      # { args : (timestamp, result)}\n"
+"        self.func = func\n"
+"        self.maxsize = maxsize\n"
+"        self.maxage = maxage\n"
+"\n"
+"    def __call__(self, *args):\n"
+"        if args in self.cache:\n"
+"            self.cache.move_to_end(args)\n"
+"            timestamp, result = self.cache[args]\n"
+"            if monotonic() - timestamp <= self.maxage:\n"
+"                return result\n"
+"        result = self.func(*args)\n"
+"        self.cache[args] = monotonic(), result\n"
+"        if len(self.cache) > self.maxsize:\n"
+"            self.cache.popitem(last=False)\n"
+"        return result"
 
 #: ../../library/collections.rst:1256
 msgid ""
@@ -2117,12 +2144,14 @@ msgid ""
 ":class:`!UserDict` instances.  If arguments are provided, they are used to "
 "initialize :attr:`data`, like a regular dictionary."
 msgstr ""
+"模拟字典的类。 该实例的内容保存在一个常规字典中，可通过 :class:`!UserDict` 实例的 :attr:`data` 属性进行访问。 "
+"如果提供了参数，它们将像常规字典一样用于初始化 :attr:`data`。"
 
 #: ../../library/collections.rst:1342
 msgid ""
 "In addition to supporting the methods and operations of mappings, "
 ":class:`!UserDict` instances provide the following attribute:"
-msgstr ""
+msgstr "除了支持映射的方法和操作， :class:`!UserDict` 实例还提供以下属性："
 
 #: ../../library/collections.rst:1347
 msgid ""
