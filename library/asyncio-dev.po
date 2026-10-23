@@ -6,15 +6,16 @@
 # Translators:
 # python-doc bot, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# Alpha Du <alphanow@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 19:05+0000\n"
+"POT-Creation-Date: 2026-10-21 20:14+0000\n"
 "PO-Revision-Date: 2025-09-15 01:03+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: Alpha Du <alphanow@gmail.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -677,6 +678,8 @@ msgid ""
 "These callbacks update the list of running asynchronous generators to keep "
 "it in a consistent state."
 msgstr ""
+"为了确保异步生成器可靠地关闭，事件循环使用 :func:`sys.set_asyncgen_hooks` "
+"函数注册回调函数。这些回调更新正在运行的异步生成器列表，以使其保持一致状态。"
 
 #: ../../library/asyncio-dev.rst:361
 msgid ""
@@ -684,13 +687,15 @@ msgid ""
 " function is called, the running generators are stopped gracefully and the "
 "list is cleared."
 msgstr ""
+"当调用 :meth:`loop.shutdown_asyncgens() <asyncio.loop.shutdown_asyncgens>` "
+"函数时，正在运行的生成器将被妥善停止，并且该列表将被清空。"
 
 #: ../../library/asyncio-dev.rst:365
 msgid ""
 "The asynchronous generator invokes the corresponding system hook during its "
 "first iteration. At the same time, the generator records that the hook has "
 "been called and does not call it again."
-msgstr ""
+msgstr "异步生成器在其第一次迭代期间调用相应的系统钩子。与此同时，生成器会记录该钩子已被调用并且不会再次调用它。"
 
 #: ../../library/asyncio-dev.rst:369
 msgid ""
@@ -700,6 +705,7 @@ msgid ""
 "Consequently, the event loop will not be able to terminate the generator if "
 "necessary."
 msgstr ""
+"因此，如果在创建事件循环之前开始迭代，事件循环将无法将生成器添加到其活动生成器列表中，因为钩子是在生成器尝试调用它们之后设置的。因此，如有必要，事件循环将无法终止该生成器。"
 
 #: ../../library/asyncio-dev.rst:375
 msgid "Consider the following example::"
@@ -804,7 +810,7 @@ msgstr ""
 
 #: ../../library/asyncio-dev.rst:427
 msgid "Let's consider the following example::"
-msgstr ""
+msgstr "让我们来看下面的例子::"
 
 #: ../../library/asyncio-dev.rst:429
 msgid ""
@@ -827,6 +833,24 @@ msgid ""
 "\n"
 "asyncio.run(amain())"
 msgstr ""
+"import asyncio\n"
+"\n"
+"async def consumer():\n"
+"    for idx in range(100):\n"
+"        await asyncio.sleep(0)\n"
+"        message = yield idx\n"
+"        print('received', message)\n"
+"\n"
+"async def amain():\n"
+"    agenerator = consumer()\n"
+"    await agenerator.asend(None)\n"
+"\n"
+"    fa = asyncio.create_task(agenerator.asend('A'))\n"
+"    fb = asyncio.create_task(agenerator.asend('B'))\n"
+"    await fa\n"
+"    await fb\n"
+"\n"
+"asyncio.run(amain())"
 
 #: ../../library/asyncio-dev.rst:450
 msgid ""
@@ -848,9 +872,26 @@ msgid ""
 "    await fb\n"
 "RuntimeError: anext(): asynchronous generator is already running"
 msgstr ""
+"received A\n"
+"Traceback (most recent call last):\n"
+"  File \"test.py\", line 38, in <module>\n"
+"    asyncio.run(amain())\n"
+"    ~~~~~~~~~~~^^^^^^^^^\n"
+"  File \"Lib/asyncio/runners.py\", line 204, in run\n"
+"    return runner.run(main)\n"
+"           ~~~~~~~~~~^^^^^^\n"
+"  File \"Lib/asyncio/runners.py\", line 127, in run\n"
+"    return self._loop.run_until_complete(task)\n"
+"           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n"
+"  File \"Lib/asyncio/base_events.py\", line 719, in run_until_complete\n"
+"    return future.result()\n"
+"           ~~~~~~~~~~~~~^^\n"
+"  File \"test.py\", line 36, in amain\n"
+"    await fb\n"
+"RuntimeError: anext(): asynchronous generator is already running"
 
 #: ../../library/asyncio-dev.rst:469
 msgid ""
 "Therefore, it is recommended to avoid using asynchronous generators in "
 "parallel tasks or across multiple event loops."
-msgstr ""
+msgstr "因此，建议避免在并行任务中或跨多个事件循环使用异步生成器。"

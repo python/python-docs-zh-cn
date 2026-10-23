@@ -6,15 +6,16 @@
 # Translators:
 # python-doc bot, 2025
 # Freesand Leo <yuqinju@163.com>, 2026
+# Alpha Du <alphanow@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-21 17:15+0000\n"
+"POT-Creation-Date: 2026-10-21 20:14+0000\n"
 "PO-Revision-Date: 2025-09-15 01:03+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: Alpha Du <alphanow@gmail.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -570,7 +571,7 @@ msgstr ""
 msgid ""
 "Read the source text as UTF-8, ignoring its :pep:`263` encoding declaration "
 "(\"coding cookie\"), if any:"
-msgstr ""
+msgstr "将源文本作为 UTF-8 读取，忽略其 :pep:`263` 编码声明（\"coding cookie\"，如果有的话）："
 
 #: ../../c-api/veryhigh.rst:406
 msgid ""
@@ -589,6 +590,20 @@ msgid ""
 "flags.cf_flags = PyCF_IGNORE_COOKIE;\n"
 "Py_CompileStringFlags(source, \"<input>\", Py_file_input, &flags);"
 msgstr ""
+"PyCompilerFlags flags = {\n"
+"    .cf_flags = 0,\n"
+"    .cf_feature_version = PY_MINOR_VERSION,\n"
+"};\n"
+"const char *source = \"# coding: latin-1\\ns = '\\xe9'\\n\";\n"
+"\n"
+"/* 遵循 coding cookie：字节 0xE9 被解码为\n"
+"   Latin-1，这会返回一个将 s 设为 \"é\" 的代码对象： */\n"
+"Py_CompileStringFlags(source, \"<input>\", Py_file_input, &flags);\n"
+"\n"
+"/* 带有该旗标时，cookie 会被忽略并且编译失败并引发\n"
+"   SyntaxError，因为 0xE9 不是有效的 UTF-8： */\n"
+"flags.cf_flags = PyCF_IGNORE_COOKIE;\n"
+"Py_CompileStringFlags(source, \"<input>\", Py_file_input, &flags);"
 
 #: ../../c-api/veryhigh.rst:423
 msgid ""
@@ -596,6 +611,8 @@ msgid ""
 "this flag when the source is a :class:`str` object, because they pass the "
 "text to the parser encoded as UTF-8."
 msgstr ""
+"内置函数 :func:`compile` 、 :func:`eval` 和 :func:`exec` 当源为 :class:`str` "
+"对象时会设置此旗标，因为它们在将文本传递给解析器时是以 UTF-8 编码的。"
 
 #: ../../c-api/veryhigh.rst:429
 msgid ""
@@ -603,6 +620,8 @@ msgid ""
 ":func:`eval` and :func:`exec` built-in functions set this flag, but it "
 "currently has no effect."
 msgstr ""
+"将源文本标记为已知是以 UTF-8 编码。内置函数 :func:`compile` 、 :func:`eval` 和 :func:`exec` "
+"会设置此旗标，但它目前没有任何效果。"
 
 #: ../../c-api/veryhigh.rst:433
 msgid ""
@@ -627,18 +646,21 @@ msgid ""
 "__future__ import`` statement, the flag for the imported feature is added to"
 " *flags*, so that code executed later in the same context inherits it."
 msgstr ""
+"所有 ``CO_FUTURE`` 旗标的位掩码（参见 :ref:`c_codeobject_flags` ），用于选择通常由 :ref:`future "
+"语句 <future>` 启用的特性。当使用 ``PyCompilerFlags *flags`` 实参编译的代码包含 ``from "
+"__future__ import`` 语句时，所导入特性的旗标会被添加到 *flags* 中，以便随后在相同上下文中执行的代码能够继承它。"
 
 #: ../../c-api/veryhigh.rst:452
 msgid ""
 "Do not use this mask in new code.  It is kept only so that old code passing "
 "its flags to :func:`compile` keeps working."
-msgstr ""
+msgstr "不要在新的代码中使用此掩码。保留它只是为了让将其旗标传递给 :func:`compile` 的旧代码继续工作。"
 
 #: ../../c-api/veryhigh.rst:455
 msgid ""
 "Bitmask of flags for obsolete future features that no longer have any "
 "effect."
-msgstr ""
+msgstr "不再具有任何效果的已废弃 future 特性旗标的位掩码。"
 
 #: ../../c-api/veryhigh.rst:460
 msgid ""
@@ -646,6 +668,8 @@ msgid ""
 "as :c:macro:`PyCF_ONLY_AST`. The :func:`compile` built-in function uses this"
 " mask to validate its *flags* argument."
 msgstr ""
+"更改源编译方式的所有 ``PyCF`` 旗标的位掩码，例如 :c:macro:`PyCF_ONLY_AST` 。内置函数 :func:`compile`"
+" 使用此掩码来验证其 *flags* 实参。"
 
 #: ../../c-api/veryhigh.rst:469
 msgid "Available start symbols"
