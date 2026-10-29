@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-09 14:43+0000\n"
+"POT-Creation-Date: 2026-10-29 19:20+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
 "Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
@@ -392,13 +392,10 @@ msgid ""
 "to *visit* being the contained object and the *arg* value passed to the "
 "handler.  The *visit* function must not be called with a ``NULL`` object "
 "argument.  If *visit* returns a non-zero value, that value should be "
-"returned immediately."
+"returned immediately. Otherwise, return zero."
 msgstr ""
-"针对垃圾收集对象的遍历函数，被垃圾收集器用于检测引用循环。 具体实现必须为 *self* 直接包含的每个对象调用 *visit* 函数，传给 "
-"*visit* 的形参为所包含对象和传给处理器的 *arg* 值。 *visit* 函数调用不可附带 ``NULL`` 对象作为参数。 如果 "
-"*visit* 返回非零值，则该值应当被立即返回。"
 
-#: ../../c-api/gcsupport.rst:255
+#: ../../c-api/gcsupport.rst:256
 msgid ""
 "A typical :c:member:`!tp_traverse` function calls the :c:func:`Py_VISIT` "
 "convenience macro on each of the instance's members that are Python objects "
@@ -409,7 +406,7 @@ msgstr ""
 ":c:func:`Py_VISIT` 便捷宏。 例如，下面是一个针对 :py:class:`threading.local` "
 "类的（略微过时的）遍历函数::"
 
-#: ../../c-api/gcsupport.rst:261
+#: ../../c-api/gcsupport.rst:262
 msgid ""
 "static int\n"
 "local_traverse(PyObject *op, visitproc visit, void *arg)\n"
@@ -433,7 +430,7 @@ msgstr ""
 "    return 0;\n"
 "}"
 
-#: ../../c-api/gcsupport.rst:273
+#: ../../c-api/gcsupport.rst:274
 msgid ""
 ":c:func:`Py_VISIT` requires the *visit* and *arg* parameters to "
 ":c:func:`!local_traverse` to have these specific names; don't name them just"
@@ -442,17 +439,17 @@ msgstr ""
 ":c:func:`Py_VISIT` 要求传给 :c:func:`!local_traverse` 的 *visit* 和 *arg* "
 "形参具有这些指定名称；请不要随意命名它们。"
 
-#: ../../c-api/gcsupport.rst:277
+#: ../../c-api/gcsupport.rst:278
 msgid ""
 "Instances of :ref:`heap-allocated types <heap-types>` hold a reference to "
 "their type. Their traversal function must therefore visit the type::"
 msgstr ":ref:`堆分配类型 <heap-types>` 的实例会持有一个对其类型的引用。 因此它们的遍历函数必须访问其类型::"
 
-#: ../../c-api/gcsupport.rst:280
+#: ../../c-api/gcsupport.rst:281
 msgid "Py_VISIT(Py_TYPE(self));"
 msgstr "Py_VISIT(Py_TYPE(self));"
 
-#: ../../c-api/gcsupport.rst:282
+#: ../../c-api/gcsupport.rst:283
 msgid ""
 "Alternately, the type may delegate this responsibility by calling "
 "``tp_traverse`` of a heap-allocated superclass (or another heap-allocated "
@@ -460,7 +457,7 @@ msgid ""
 "collected."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:287
+#: ../../c-api/gcsupport.rst:288
 msgid ""
 "If the :c:macro:`Py_TPFLAGS_MANAGED_DICT` bit is set in the "
 ":c:member:`~PyTypeObject.tp_flags` field, the traverse function must call "
@@ -470,7 +467,7 @@ msgstr ""
 ":c:macro:`Py_TPFLAGS_MANAGED_DICT` 比特位，则遍历函数必须这样调用 "
 ":c:func:`PyObject_VisitManagedDict`::"
 
-#: ../../c-api/gcsupport.rst:291
+#: ../../c-api/gcsupport.rst:292
 msgid ""
 "int err = PyObject_VisitManagedDict((PyObject*)self, visit, arg);\n"
 "if (err) {\n"
@@ -482,7 +479,7 @@ msgstr ""
 "    return err;\n"
 "}"
 
-#: ../../c-api/gcsupport.rst:296
+#: ../../c-api/gcsupport.rst:297
 msgid ""
 "Only the members that the instance *owns* (by having :term:`strong "
 "references <strong reference>` to them) must be visited. For instance, if an"
@@ -492,18 +489,18 @@ msgid ""
 "instance does not directly own the weak references to itself."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:303
+#: ../../c-api/gcsupport.rst:304
 msgid "The traversal function has a limitation:"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:307
+#: ../../c-api/gcsupport.rst:308
 msgid ""
 "The traversal function must not have any side effects.  Implementations may "
 "not modify the reference counts of any Python objects nor create or destroy "
 "any Python objects, directly or indirectly."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:311
+#: ../../c-api/gcsupport.rst:312
 msgid ""
 "This means that *most* Python C API functions may not be used, since they "
 "can raise a new exception, return a new reference to a result object, have "
@@ -512,13 +509,23 @@ msgid ""
 "future versions, without warning."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:317
+#: ../../c-api/gcsupport.rst:318
 msgid ""
 "For a list of safe functions, see a :ref:`separate section <duringgc-"
 "functions>` below."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:322
+#: ../../c-api/gcsupport.rst:321
+msgid ""
+"If an error occurs during traversal, ignore it and return 0. If "
+"``tp_traverse`` fails to visit some strong references, garbage reference "
+"cycles involving the skipped references will not be reliably broken, but "
+"correctness won't be affected. For example, if traversal requires a lock "
+"that cannot be acquired promptly, skip the traversal. The garbage collector "
+"will visit your object again in a future pass."
+msgstr ""
+
+#: ../../c-api/gcsupport.rst:331
 msgid ""
 "The :c:func:`Py_VISIT` call may be skipped for those members that provably "
 "cannot participate in reference cycles. In the ``local_traverse`` example "
@@ -526,7 +533,7 @@ msgid ""
 "a Python string and therefore cannot be part of a reference cycle."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:328
+#: ../../c-api/gcsupport.rst:337
 msgid ""
 "On the other hand, even if you know a member can never be part of a cycle, "
 "as a debugging aid you may want to visit it anyway just so the :mod:`gc` "
@@ -535,20 +542,20 @@ msgstr ""
 "在另一方面，即使你知道某个成员永远不会成为循环引用的一部分，作为调试的辅助你仍然可能想要访问它因此 :mod:`gc` 模块的 "
 ":func:`~gc.get_referents` 函数将会包括它。"
 
-#: ../../c-api/gcsupport.rst:334
+#: ../../c-api/gcsupport.rst:343
 msgid ""
 "The :c:member:`~PyTypeObject.tp_traverse` function can be called from any "
 "thread."
 msgstr ":c:member:`~PyTypeObject.tp_traverse` 函数可以从任何线程调用。"
 
-#: ../../c-api/gcsupport.rst:339
+#: ../../c-api/gcsupport.rst:348
 msgid ""
 "Garbage collection is a \"stop-the-world\" operation: even in :term:`free "
 "threading` builds, only one thread state is :term:`attached <attached thread"
 " state>` when :c:member:`!tp_traverse` handlers run."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:346
+#: ../../c-api/gcsupport.rst:355
 msgid ""
 "Heap-allocated types are expected to visit ``Py_TYPE(self)`` in "
 "``tp_traverse``.  In earlier versions of Python, due to `bug 40217 "
@@ -558,7 +565,7 @@ msgstr ""
 "堆分配类型应当访问 ``tp_traverse`` 中的 ``Py_TYPE(self)``。在较早的 Python 版本中，由于 `bug 40217"
 " <https://bugs.python.org/issue40217>`_，这样做可能会导致在子类中发生崩溃。"
 
-#: ../../c-api/gcsupport.rst:351
+#: ../../c-api/gcsupport.rst:360
 msgid ""
 "To simplify writing :c:member:`~PyTypeObject.tp_traverse` handlers, a "
 ":c:func:`Py_VISIT` macro is provided. In order to use this macro, the "
@@ -566,21 +573,21 @@ msgid ""
 " exactly *visit* and *arg*:"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:358
+#: ../../c-api/gcsupport.rst:367
 msgid ""
 "If the :c:expr:`PyObject *` *o* is not ``NULL``, call the *visit* callback, "
 "with arguments *o* and *arg*. If *visit* returns a non-zero value, then "
 "return it."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:362
+#: ../../c-api/gcsupport.rst:371
 msgid "This corresponds roughly to::"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:364
+#: ../../c-api/gcsupport.rst:373
 msgid ""
 "#define Py_VISIT(o)                             \\\n"
-"   if (op) {                                    \\\n"
+"   if (o) {                                    \\\n"
 "      int visit_result = visit(o, arg);         \\\n"
 "      if (visit_result != 0) {                  \\\n"
 "         return visit_result;                   \\\n"
@@ -588,67 +595,67 @@ msgid ""
 "   }"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:374
+#: ../../c-api/gcsupport.rst:383
 msgid "Traversal-safe functions"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:376
+#: ../../c-api/gcsupport.rst:385
 msgid ""
 "The following functions and macros are safe to use in a "
 ":c:member:`~PyTypeObject.tp_traverse` handler:"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:379
+#: ../../c-api/gcsupport.rst:388
 msgid "the *visit* function passed to ``tp_traverse``"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:380
+#: ../../c-api/gcsupport.rst:389
 msgid ":c:func:`Py_VISIT`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:381
+#: ../../c-api/gcsupport.rst:390
 msgid ":c:func:`Py_SIZE`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:382
+#: ../../c-api/gcsupport.rst:391
 msgid ""
 ":c:func:`Py_TYPE`: if called from a :c:member:`!tp_traverse` handler, "
 ":c:func:`!Py_TYPE`'s result will be valid for the duration of the handler "
 "call"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:384
+#: ../../c-api/gcsupport.rst:393
 msgid ":c:func:`PyObject_VisitManagedDict`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:385
+#: ../../c-api/gcsupport.rst:394
 msgid ""
 ":c:func:`PyObject_TypeCheck`, :c:func:`PyType_IsSubtype`, "
 ":c:func:`PyType_HasFeature`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:387
+#: ../../c-api/gcsupport.rst:396
 msgid ""
 ":samp:`Py{<type>}_Check` and :samp:`Py{<type>}_CheckExact` -- for example, "
 ":c:func:`PyTuple_Check`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:389
+#: ../../c-api/gcsupport.rst:398
 msgid ":ref:`duringgc-functions`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:394
+#: ../../c-api/gcsupport.rst:403
 msgid "\"DuringGC\" functions"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:396
+#: ../../c-api/gcsupport.rst:405
 msgid ""
 "The following functions should *only* be used in a "
 ":c:member:`~PyTypeObject.tp_traverse` handler; calling them in other "
 "contexts may have unintended consequences."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:400
+#: ../../c-api/gcsupport.rst:409
 msgid ""
 "These functions act like their counterparts without the ``_DuringGC`` "
 "suffix, but they are guaranteed to not have side effects, they do not set an"
@@ -656,37 +663,37 @@ msgid ""
 "<borrowed reference>` as detailed in the individual documentation."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:405
+#: ../../c-api/gcsupport.rst:414
 msgid ""
 "Note that these functions may fail (return ``NULL`` or ``-1``), but as they "
 "do not set an exception, no error information is available. In some cases, "
 "failure is not distinguishable from a successful ``NULL`` result."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:415 ../../c-api/gcsupport.rst:430
-#: ../../c-api/gcsupport.rst:443
+#: ../../c-api/gcsupport.rst:424 ../../c-api/gcsupport.rst:439
+#: ../../c-api/gcsupport.rst:452
 msgid "See :ref:`duringgc-functions` for common information."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:421
+#: ../../c-api/gcsupport.rst:430
 msgid ""
 ":c:func:`PyObject_GetTypeData`, :c:func:`PyObject_GetItemData`, "
 ":c:func:`PyType_GetModuleState`, :c:func:`PyModule_GetState`, "
 ":c:func:`PyModule_GetToken`, :c:func:`PyType_GetBaseByToken`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:432
+#: ../../c-api/gcsupport.rst:441
 msgid ""
 "Sets *\\*result* to a :term:`borrowed reference` rather than a strong one. "
 "The reference is valid for the duration of the :c:member:`!tp_traverse` "
 "handler call."
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:438
+#: ../../c-api/gcsupport.rst:447
 msgid ":c:func:`PyType_GetBaseByToken`"
 msgstr ""
 
-#: ../../c-api/gcsupport.rst:445
+#: ../../c-api/gcsupport.rst:454
 msgid ""
 "These functions return a :term:`borrowed reference`, which is valid for the "
 "duration of the :c:member:`!tp_traverse` handler call."
@@ -694,27 +701,27 @@ msgstr ""
 "这些函数将返回 :term:`borrowed reference`，它会在 :c:member:`!tp_traverse` "
 "处理器调用持续期间保持可用。"
 
-#: ../../c-api/gcsupport.rst:452
+#: ../../c-api/gcsupport.rst:461
 msgid ":c:func:`PyType_GetModule`, :c:func:`PyType_GetModuleByToken`"
 msgstr ":c:func:`PyType_GetModule`, :c:func:`PyType_GetModuleByToken`"
 
-#: ../../c-api/gcsupport.rst:457
+#: ../../c-api/gcsupport.rst:466
 msgid "Controlling the Garbage Collector State"
 msgstr "控制垃圾回收器状态"
 
-#: ../../c-api/gcsupport.rst:459
+#: ../../c-api/gcsupport.rst:468
 msgid ""
 "The C-API provides the following functions for controlling garbage "
 "collection runs."
 msgstr "这个 C-API 提供了以下函数用于控制垃圾回收的运行。"
 
-#: ../../c-api/gcsupport.rst:464
+#: ../../c-api/gcsupport.rst:473
 msgid ""
 "Perform a full garbage collection, if the garbage collector is enabled. "
 "(Note that :func:`gc.collect` runs it unconditionally.)"
 msgstr "执行完全的垃圾回收，如果垃圾回收器已启用的话。 （请注意 :func:`gc.collect` 会无条件地执行它。）"
 
-#: ../../c-api/gcsupport.rst:467
+#: ../../c-api/gcsupport.rst:476
 msgid ""
 "Returns the number of collected + unreachable objects which cannot be "
 "collected. If the garbage collector is disabled or already collecting, "
@@ -724,54 +731,54 @@ msgstr ""
 "返回已回收的 + 无法回收的不可获取对象的数量。如果垃圾回收器被禁用或已在执行回收，则立即返回 ``0``。在垃圾回收期间发生的错误会被传给 "
 ":data:`sys.unraisablehook`。此函数不会引发异常。"
 
-#: ../../c-api/gcsupport.rst:477
+#: ../../c-api/gcsupport.rst:486
 msgid ""
 "Enable the garbage collector: similar to :func:`gc.enable`. Returns the "
 "previous state, 0 for disabled and 1 for enabled."
 msgstr "启用垃圾回收器：类似于 :func:`gc.enable`。返回之前的状态，0 为禁用而 1 为启用。"
 
-#: ../../c-api/gcsupport.rst:485
+#: ../../c-api/gcsupport.rst:494
 msgid ""
 "Disable the garbage collector: similar to :func:`gc.disable`. Returns the "
 "previous state, 0 for disabled and 1 for enabled."
 msgstr "禁用垃圾回收器：类似于 :func:`gc.disable`。返回之前的状态，0 为禁用而 1 为启用。"
 
-#: ../../c-api/gcsupport.rst:493
+#: ../../c-api/gcsupport.rst:502
 msgid ""
 "Query the state of the garbage collector: similar to :func:`gc.isenabled`. "
 "Returns the current state, 0 for disabled and 1 for enabled."
 msgstr "查询垃圾回收器的状态：类似于 :func:`gc.isenabled`。返回当前的状态，0 为禁用而 1 为启用。"
 
-#: ../../c-api/gcsupport.rst:500
+#: ../../c-api/gcsupport.rst:509
 msgid "Querying Garbage Collector State"
 msgstr "查询垃圾回收器状态"
 
-#: ../../c-api/gcsupport.rst:502
+#: ../../c-api/gcsupport.rst:511
 msgid ""
 "The C-API provides the following interface for querying information about "
 "the garbage collector."
 msgstr "该 C-API 提供了以下接口用于查询有关垃圾回收器的信息。"
 
-#: ../../c-api/gcsupport.rst:507
+#: ../../c-api/gcsupport.rst:516
 msgid ""
 "Run supplied *callback* on all live GC-capable objects. *arg* is passed "
 "through to all invocations of *callback*."
 msgstr "在全部活动的支持 GC 的对象上运行所提供的 *callback*。 *arg* 会被传递给所有 *callback* 的调用。"
 
-#: ../../c-api/gcsupport.rst:511
+#: ../../c-api/gcsupport.rst:520
 msgid ""
 "If new objects are (de)allocated by the callback it is undefined if they "
 "will be visited."
 msgstr "如果新对象被回调所（取消）分配，则它们是否会被访问是未定义的。"
 
-#: ../../c-api/gcsupport.rst:514
+#: ../../c-api/gcsupport.rst:523
 msgid ""
 "Garbage collection is disabled during operation. Explicitly running a "
 "collection in the callback may lead to undefined behaviour e.g. visiting the"
 " same objects multiple times or not at all."
 msgstr "垃圾回收在运行期间被禁用。在回调中显式地运行回收可能导致未定义的行为，例如多次访问同一对象或完全不访问。"
 
-#: ../../c-api/gcsupport.rst:522
+#: ../../c-api/gcsupport.rst:531
 msgid ""
 "Type of the visitor function to be passed to "
 ":c:func:`PyUnstable_GC_VisitObjects`. *arg* is the same as the *arg* passed "
