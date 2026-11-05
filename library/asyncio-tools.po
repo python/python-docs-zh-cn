@@ -7,15 +7,16 @@
 # Tianyu Chen (billchenchina) <billchenchina2001@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
 # python-doc bot, 2026
+# 1721324295, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-13 20:58+0000\n"
+"POT-Creation-Date: 2026-11-03 21:22+0000\n"
 "PO-Revision-Date: 2026-07-09 16:26+0000\n"
-"Last-Translator: python-doc bot, 2026\n"
+"Last-Translator: 1721324295, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,16 +39,20 @@ msgid ""
 "without modifying it or restarting it.  The :mod:`!asyncio.tools` submodule "
 "implements this interface."
 msgstr ""
+":mod:`!asyncio` 模块可以通过 ``python -m asyncio`` 作为脚本调用，用于检查另一个正在运行的 Python "
+"进程的任务图，而无需修改或重启该进程。:mod:`!asyncio.tools` 子模块实现了这一接口。"
 
 #: ../../library/asyncio-tools.rst:18
 msgid "The following commands inspect the process identified by ``PID``:"
-msgstr ""
+msgstr "以下命令用于检查由 ``PID`` 标识的进程："
 
 #: ../../library/asyncio-tools.rst:20
 msgid ""
 "$ python -m asyncio pstree PID\n"
 "$ python -m asyncio ps PID"
 msgstr ""
+"$ python -m asyncio pstree PID\n"
+"$ python -m asyncio ps PID"
 
 #: ../../library/asyncio-tools.rst:25
 msgid ""
@@ -56,26 +61,28 @@ msgid ""
 "to inspect another process.  See the :ref:`permission requirements "
 "<permission-requirements>` for details."
 msgstr ""
+"这些命令只读取目标进程的状态，不会在其中执行任何代码。它们仅在受支持的平台上可用，并且可能需要获得检查另一进程的权限。详情请参阅 :ref:`权限要求 "
+"<permission-requirements>`。"
 
 #: ../../library/asyncio-tools.rst:31
 msgid ":ref:`asyncio-graph`"
-msgstr ""
+msgstr ":ref:`asyncio-graph`"
 
 #: ../../library/asyncio-tools.rst:32
 msgid ""
 "Programmatic APIs for inspecting the async call graph of a task or future in"
 " the current process."
-msgstr ""
+msgstr "用于检查当前进程中某个任务或 future 对象的异步调用图的编程接口。"
 
 #: ../../library/asyncio-tools.rst:35
 msgid ""
 "The command examples below use this program, which creates a task hierarchy "
 "suitable for inspection and prints its process ID:"
-msgstr ""
+msgstr "下面的命令示例使用此程序，它创建了一个适合检查的任务层级结构，并打印出它的进程 ID："
 
 #: ../../library/asyncio-tools.rst:38
 msgid "example.py"
-msgstr ""
+msgstr "example.py"
 
 #: ../../library/asyncio-tools.rst:38
 msgid ""
@@ -105,23 +112,50 @@ msgid ""
 "\n"
 "asyncio.run(main())"
 msgstr ""
+"import asyncio\n"
+"import os\n"
+"\n"
+"async def play(track):\n"
+"    await asyncio.sleep(3600)\n"
+"    print(f\"🎵 Finished: {track}\")\n"
+"\n"
+"async def album(name, tracks):\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        for track in tracks:\n"
+"            tg.create_task(play(track), name=track)\n"
+"\n"
+"async def main():\n"
+"    print(f\"PID: {os.getpid()}\")\n"
+"    async with asyncio.TaskGroup() as tg:\n"
+"        tg.create_task(\n"
+"            album(\"Sundowning\", [\"TNDNBTG\", \"Levitate\"]),\n"
+"            name=\"Sundowning\",\n"
+"        )\n"
+"        tg.create_task(\n"
+"            album(\"TMBTE\", [\"DYWTYLM\", \"Aqua Regia\"]),\n"
+"            name=\"TMBTE\",\n"
+"        )\n"
+"\n"
+"asyncio.run(main())"
 
 #: ../../library/asyncio-tools.rst:67
 msgid "Run the program in one terminal and leave it running:"
-msgstr ""
+msgstr "在一个终端中运行该程序，并让它保持运行："
 
 #: ../../library/asyncio-tools.rst:69
 msgid ""
 "$ python example.py\n"
 "PID: 12345"
 msgstr ""
+"$ python example.py\n"
+"PID: 12345"
 
 #: ../../library/asyncio-tools.rst:74
 msgid ""
 "Then pass the printed process ID to the commands from another terminal. "
 "Thread IDs, task IDs, file paths, and line numbers vary between runs and "
 "source layouts."
-msgstr ""
+msgstr "然后在另一个终端中把打印出来的进程 ID 传给这些命令。线程 ID、任务 ID、文件路径和行号会随每次运行以及源代码布局的不同而变化。"
 
 #: ../../library/asyncio-tools.rst:81
 msgid "Command-line options"
@@ -135,6 +169,7 @@ msgid ""
 "task hierarchy is blocked and where in its coroutine stack execution has "
 "paused:"
 msgstr ""
+"以树形结构显示任务与协程之间的关系。每个任务都会连同其完整的协程调用栈一起显示，并嵌套在等待它的任务（如果有）之下。该子命令有助于快速找出任务层级中哪个分支被阻塞，以及协程栈的执行停在了哪里："
 
 #: ../../library/asyncio-tools.rst:91
 msgid ""
@@ -164,13 +199,38 @@ msgid ""
 "                                    └──  play example.py:4\n"
 "                                        └──  sleep Lib/asyncio/tasks.py:702"
 msgstr ""
+"$ python -m asyncio pstree 12345\n"
+"└── (T) Task-1\n"
+"    └──  main example.py:12\n"
+"        └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"            └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                ├── (T) Sundowning\n"
+"                │   └──  album example.py:7\n"
+"                │       └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"                │           └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                │               ├── (T) TNDNBTG\n"
+"                │               │   └──  play example.py:4\n"
+"                │               │       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                │               └── (T) Levitate\n"
+"                │                   └──  play example.py:4\n"
+"                │                       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                └── (T) TMBTE\n"
+"                    └──  album example.py:7\n"
+"                        └──  TaskGroup.__aexit__ Lib/asyncio/taskgroups.py:75\n"
+"                            └──  TaskGroup._aexit Lib/asyncio/taskgroups.py:124\n"
+"                                ├── (T) DYWTYLM\n"
+"                                │   └──  play example.py:4\n"
+"                                │       └──  sleep Lib/asyncio/tasks.py:702\n"
+"                                └── (T) Aqua Regia\n"
+"                                    └──  play example.py:4\n"
+"                                        └──  sleep Lib/asyncio/tasks.py:702"
 
 #: ../../library/asyncio-tools.rst:119
 msgid ""
 "If the await graph contains a cycle, ``pstree`` reports an error instead of "
 "printing a tree.  A cycle in the await graph is unusual and typically "
 "indicates a programming error:"
-msgstr ""
+msgstr "如果等待图（await graph）中存在环，``pstree`` 会报错而不会打印树。等待图中出现环并不常见，通常意味着存在编程错误："
 
 #: ../../library/asyncio-tools.rst:123
 msgid ""
@@ -179,6 +239,10 @@ msgid ""
 "\n"
 "cycle: Task-2 → Task-3 → Task-2"
 msgstr ""
+"$ python -m asyncio pstree 12345\n"
+"ERROR: await-graph contains cycles - cannot print a tree!\n"
+"\n"
+"cycle: Task-2 → Task-3 → Task-2"
 
 #: ../../library/asyncio-tools.rst:132
 msgid ""
@@ -186,12 +250,14 @@ msgid ""
 "shows the event-loop thread ID, task ID and name, coroutine stack, and the "
 "awaiting task's stack, name, and ID, if any."
 msgstr ""
+"以扁平表格的形式显示进程 *PID* 中所有挂起的任务。每一行显示事件循环线程 ID、任务 ID 与名称、协程调用栈，以及等待它的任务的调用栈、名称和 "
+"ID（如果有）。"
 
 #: ../../library/asyncio-tools.rst:136
 msgid ""
 "This subcommand prints all tasks regardless of whether the await graph "
 "contains cycles:"
-msgstr ""
+msgstr "无论等待图中是否含有环，该子命令都会打印所有任务："
 
 #: ../../library/asyncio-tools.rst:139
 msgid ""
@@ -206,3 +272,13 @@ msgid ""
 "18445801   0x10a2d7150          DYWTYLM              sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70\n"
 "18445801   0x10a6bdaa0          Aqua Regia           sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70"
 msgstr ""
+"$ python -m asyncio ps 12345\n"
+"tid        task id              task name            coroutine stack                                    awaiter chain                                      awaiter name    awaiter id\n"
+"------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+"18445801   0x10a456060          Task-1               TaskGroup._aexit -> TaskGroup.__aexit__ -> main                                                                       0x0\n"
+"18445801   0x10a439f60          Sundowning           TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TaskGroup._aexit -> TaskGroup.__aexit__ -> main    Task-1          0x10a456060\n"
+"18445801   0x10a439d70          TMBTE                TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TaskGroup._aexit -> TaskGroup.__aexit__ -> main    Task-1          0x10a456060\n"
+"18445801   0x10a2a3a80          TNDNBTG              sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   Sundowning      0x10a439f60\n"
+"18445801   0x10a2a38a0          Levitate             sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   Sundowning      0x10a439f60\n"
+"18445801   0x10a2d7150          DYWTYLM              sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70\n"
+"18445801   0x10a6bdaa0          Aqua Regia           sleep -> play                                      TaskGroup._aexit -> TaskGroup.__aexit__ -> album   TMBTE           0x10a439d70"
