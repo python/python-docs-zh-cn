@@ -7,6 +7,7 @@
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
 # Alpha Du <alphanow@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-05 21:52+0000\n"
 "PO-Revision-Date: 2026-05-08 17:18+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -383,7 +384,7 @@ msgid ""
 "Multiple adjacent string or bytes literals, possibly using different quoting"
 " conventions, are allowed, and their meaning is the same as their "
 "concatenation::"
-msgstr ""
+msgstr "允许使用多个相邻的字符串或字节字面量，这些字面量可能采用不同的引号规范；它们的含义等同于将其拼接在一起后的结果::"
 
 #: ../../reference/expressions.rst:269
 msgid ""
@@ -742,6 +743,8 @@ msgid ""
 ":ref:`comprehensions <comprehensions>`, except that they are enclosed in "
 "parentheses instead of brackets. For example::"
 msgstr ""
+":dfn:`generator expressions` 的语法与列表 :ref:`comprehensions <comprehensions>` "
+"相同，不同之处在于前者被置于括号内，而非方括号内。例如::"
 
 #: ../../reference/expressions.rst:558
 msgid ""
@@ -749,24 +752,29 @@ msgid ""
 ">>> iterator\n"
 "<generator object <genexpr> at ...>"
 msgstr ""
+">>> iterator = (x ** 2 for x in range(10))\n"
+">>> iterator\n"
+"<generator object <genexpr> at ...>"
 
 #: ../../reference/expressions.rst:562
 msgid ""
 "At runtime, a generator expression evaluates to a :term:`generator iterator`"
 " which yields the same values as the corresponding list comprehension::"
-msgstr ""
+msgstr "在运行时，生成器表达式会求值为一个 :term:`generator iterator`，其产生的值与相应的列表推导式相同::"
 
 #: ../../reference/expressions.rst:565
 msgid ""
 ">>> list(iterator)\n"
 "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]"
 msgstr ""
+">>> list(iterator)\n"
+"[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]"
 
 #: ../../reference/expressions.rst:568
 msgid ""
 "Thus, the example above is roughly equivalent to defining and calling the "
 "following generator function::"
-msgstr ""
+msgstr "因此，上述示例大致等同于定义并调用以下生成器函数::"
 
 #: ../../reference/expressions.rst:571
 msgid ""
@@ -776,6 +784,11 @@ msgid ""
 "\n"
 "make_generator_of_squares(iter(range(10)))"
 msgstr ""
+"def make_generator_of_squares(iterator):\n"
+"    for x in iterator:\n"
+"        yield x ** 2\n"
+"\n"
+"make_generator_of_squares(iter(range(10)))"
 
 #: ../../reference/expressions.rst:577
 msgid ""
@@ -783,6 +796,8 @@ msgid ""
 "expression is the only positional argument and there are no keyword "
 "arguments. See the :ref:`Calls section <calls>` for details. For example::"
 msgstr ""
+"当生成器表达式是唯一的位置参数且不存在关键字参数时，在调用中可以省略外层的括号。详情请参阅 :ref:`Calls section "
+"<calls>`。例如::"
 
 #: ../../reference/expressions.rst:583
 msgid ""
@@ -794,6 +809,13 @@ msgid ""
 ">>> sum((x ** 2 for x in range(10)), start=1000)\n"
 "1285"
 msgstr ""
+"# The parentheses after `sum` are part of the call syntax:\n"
+">>> sum(x ** 2 for x in range(10))\n"
+"285\n"
+"\n"
+"# The generator needs its own parentheses if it's not the only argument:\n"
+">>> sum((x ** 2 for x in range(10)), start=1000)\n"
+"1285"
 
 #: ../../reference/expressions.rst:591
 msgid ""
@@ -802,6 +824,8 @@ msgid ""
 "the point where the generator expression is defined, rather than at the "
 "point where the first value is retrieved::"
 msgstr ""
+"最左侧 :keyword:`!for` "
+"子句中的可迭代表达式会立即求值，因此，该表达式所引发的错误会在生成器表达式定义的位置发出，而不是在获取第一个值的位置发出::"
 
 #: ../../reference/expressions.rst:596
 msgid ""
@@ -810,6 +834,10 @@ msgid ""
 "  ...\n"
 "NameError: name 'nonexistent_iterable' is not defined"
 msgstr ""
+">>> (x ** 2 for x in nonexistent_iterable)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"NameError: name 'nonexistent_iterable' is not defined"
 
 #: ../../reference/expressions.rst:601
 msgid ""
@@ -817,6 +845,7 @@ msgid ""
 "as if :py:func:`iter` was called on it. Any error raised when creating the "
 "iterator is also emitted immediately::"
 msgstr ""
+"表达式求值后，会基于该结果创建一个迭代器，就好像对该迭代器调用了 :py:func:`iter` 一样。创建迭代器时产生的任何错误也会立即被抛出::"
 
 #: ../../reference/expressions.rst:605
 msgid ""
@@ -825,12 +854,16 @@ msgid ""
 "  ...\n"
 "TypeError: 'NoneType' object is not iterable"
 msgstr ""
+">>> (x ** 2 for x in None)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"TypeError: 'NoneType' object is not iterable"
 
 #: ../../reference/expressions.rst:610
 msgid ""
 "All other expressions are evaluated lazily, in the same fashion as normal "
 "generators (that is, when the iterator is asked to yield a value)::"
-msgstr ""
+msgstr "所有其他表达式均采用惰性求值方式求值，其方式与常规生成器相同（即当迭代器被请求返回一个值时）::"
 
 #: ../../reference/expressions.rst:613
 msgid ""
@@ -842,6 +875,13 @@ msgid ""
 "  ...\n"
 "NameError: name 'nonexistent_value' is not defined"
 msgstr ""
+">>> iterator = (nonexistent_value for x in range(10))\n"
+">>> iterator\n"
+"<generator object <genexpr> at ...>\n"
+">>> list(iterator)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"NameError: name 'nonexistent_value' is not defined"
 
 #: ../../reference/expressions.rst:623
 msgid ""
@@ -853,13 +893,20 @@ msgid ""
 "  ...\n"
 "NameError: name 'nonexistent_iterable' is not defined"
 msgstr ""
+">>> iterator = (x * y for x in range(10) for y in nonexistent_iterable)\n"
+">>> iterator\n"
+"<generator object <genexpr> at ...>\n"
+">>> list(iterator)\n"
+"Traceback (most recent call last):\n"
+"  ...\n"
+"NameError: name 'nonexistent_iterable' is not defined"
 
 #: ../../reference/expressions.rst:631
 msgid ""
 "To avoid interfering with the expected operation of the generator expression"
 " itself, ``yield`` and ``yield from`` expressions are prohibited inside the "
 "implicitly nested scope."
-msgstr ""
+msgstr "为避免干扰生成器表达式本身的预期运行，禁止在隐式嵌套作用域内使用 ``yield`` 和 ``yield from`` 表达式。"
 
 #: ../../reference/expressions.rst:635
 msgid ""
@@ -869,10 +916,13 @@ msgid ""
 " generator object, which is an asynchronous iterator (see :ref:`async-"
 "iterators`)."
 msgstr ""
+"如果生成器表达式包含 :keyword:`!async for` 子句或 :keyword:`await` 表达式，则称其为 "
+":dfn:`asynchronous generator "
+"expression`。异步生成器表达式会返回一个新的异步生成器对象，该对象是一个异步迭代器（参见 :ref:`async-iterators`）。"
 
 #: ../../reference/expressions.rst:641
 msgid "The formal grammar for generator expressions is:"
-msgstr ""
+msgstr "生成器表达式的形式语法为："
 
 #: ../../reference/expressions.rst:648
 msgid "Asynchronous generator expressions were introduced."
@@ -1312,6 +1362,9 @@ msgid ""
 " explicitly close the async generator by calling :meth:`~agen.aclose` method"
 " to finalize the generator and ultimately detach it from the event loop."
 msgstr ""
+"如果异步生成器因 :keyword:`break` "
+"而意外提前退出、调用者任务被取消，或发生其他异常，生成器的异步清理代码将会执行，并可能在非预期上下文中引发异常或访问上下文变量——例如在其所依赖的任务生命周期结束后，或在事件循环关闭期间。为防止这种情况发生，调用者必须通过调用"
+" :meth:`~agen.aclose` 方法显式关闭该异步生成器，以完成生成器的最终化，并最终将其从事件循环中解绑。"
 
 #: ../../reference/expressions.rst:938
 msgid ""
@@ -1326,6 +1379,11 @@ msgid ""
 "the resulting awaitable, thus allowing any pending :keyword:`!finally` "
 "clauses to execute."
 msgstr ""
+"在异步生成器函数中，yield 表达式可以出现在 :keyword:`try` "
+"构造体的任意位置。然而，如果异步生成器在最终化之前（即达到零引用计数或被垃圾回收时）未被恢复，那么 :keyword:`!try` 构造体中的 "
+"yield 表达式可能导致未执行的待处理 :keyword:`finally` "
+"子句无法执行。在这种情况下，负责运行该异步生成器的事件循环或调度器有责任调用异步生成器-迭代器的 :meth:`~agen.aclose` "
+"方法，并运行由此产生的 awaitable，从而允许任何待处理的 :keyword:`!finally` 子句得以执行。"
 
 #: ../../reference/expressions.rst:948
 msgid ""
@@ -1339,6 +1397,11 @@ msgid ""
 "implementation of ``asyncio.BaseEventLoop._asyncgen_finalizer_hook`` in "
 ":source:`Lib/asyncio/base_events.py`."
 msgstr ""
+"当异步生成器即将被垃圾回收时，为处理最终化过程，事件循环应定义一个 *finalizer* 函数；该函数接收一个异步生成器-迭代器，并调度由 "
+":meth:`~agen.aclose` 返回的可 await 对象。可通过调用 :func:`sys.set_asyncgen_hooks` 来注册此"
+" *finalizer*。当异步生成器-迭代器首次被遍历时，会将其注册的 *finalizer* 存储起来，以便在最终化时调用。关于 "
+"*finalizer* 方法的参考示例，请参阅 :source:`Lib/asyncio/base_events.py` 中对 "
+"``asyncio.BaseEventLoop._asyncgen_finalizer_hook`` 的实现。"
 
 #: ../../reference/expressions.rst:958
 msgid ""
@@ -1642,7 +1705,7 @@ msgid ""
 "least one colon::"
 msgstr ""
 "一种更高级的抽取形式 :dfn:`切片` 通常被用于从 :ref:`序列 <datamodel-sequences>` 中提取一部分。 "
-"在这种形式中，下标是一个 :term:`slice`：最多三个以冒号分隔的表达式。 其中任何表达式都可以省略，但切片必须包含至少一个冒号::"
+"在这种形式中，下标是一个 :term:`slice`: 最多三个以冒号分隔的表达式。 其中任何表达式都可以省略，但切片必须包含至少一个冒号::"
 
 #: ../../reference/expressions.rst:1204
 msgid ""
@@ -2111,6 +2174,8 @@ msgid ""
 ":ref:`converted to a common type <stdtypes-mixed-arithmetic>`, and the "
 "result is of that type."
 msgstr ""
+"当以两个参数调用时，幂运算符的语义与内置函数 :func:`pow` 相同：它返回左参数以右参数为指数进行幂运算后的结果。数值型参数首先被 "
+":ref:`converted to a common type <stdtypes-mixed-arithmetic>`，结果也为此类型。"
 
 #: ../../reference/expressions.rst:1539
 msgid ""
@@ -2199,6 +2264,9 @@ msgid ""
 "then multiplied together.  In the latter case, sequence repetition is "
 "performed; a negative repetition factor yields an empty sequence."
 msgstr ""
+"``*`` （乘法）运算符会返回其参数的乘积。参数必须同时为数字，或者其中一个参数为整数而另一个为序列。在前一种情况下，两个数字通过 "
+":ref:`转换为共同的实数类型 <stdtypes-mixed-arithmetic>` "
+"后再相乘；在后一种情况下，则执行序列重复操作；若重复因子为负数，则生成空序列。"
 
 #: ../../reference/expressions.rst:1628
 msgid ""
@@ -2236,6 +2304,10 @@ msgid ""
 "function applied to the result.  Division by zero raises the "
 ":exc:`ZeroDivisionError` exception."
 msgstr ""
+"``/``（除法）和 ``//`` （向下取整除法）运算符会返回其参数的商。数值参数首先经过 :ref:`converted to a common "
+"type <stdtypes-mixed-arithmetic>` "
+"处理；整数除法的结果为浮点数，而整数向下取整除法的结果为整数；该结果相当于对数学除法结果应用“向下取整”函数后所得的值。除以零会触发 "
+":exc:`ZeroDivisionError` 异常。"
 
 #: ../../reference/expressions.rst:1661
 msgid ""
@@ -2260,6 +2332,10 @@ msgid ""
 "value of the result is strictly smaller than the absolute value of the "
 "second operand [#]_."
 msgstr ""
+"``%`` （取模）运算符用于计算第一个参数除以第二个参数后的余数。数值参数首先需满足 :ref:`converted to a common type"
+" <stdtypes-mixed-arithmetic>` 条件。若右侧参数为零，则会触发 :exc:`ZeroDivisionError` "
+"异常。这些参数可以是浮点数，例如 ``3.14%0.7`` 等于 ``0.34``（因为 ``3.14`` 等于 ``4*0.7 + "
+"0.34``）。取模运算符始终返回一个符号与第二个操作数相同的结果（或零）；结果的绝对值严格小于第二个操作数的绝对值 [#]_。"
 
 #: ../../reference/expressions.rst:1680
 msgid ""
@@ -2305,6 +2381,9 @@ msgid ""
 "<stdtypes-mixed-arithmetic>` and then added together. In the latter case, "
 "the sequences are concatenated."
 msgstr ""
+"``+`` （加法）运算符会返回其所有参数的总和。这些参数必须要么均为数字，要么均为同类型的序列。在前一种情况下，数字为 :ref:`converted"
+" to a common real type <stdtypes-mixed-"
+"arithmetic>`，随后将它们相加；在后一种情况下，则将这些序列拼接在一起。"
 
 #: ../../reference/expressions.rst:1709
 msgid ""
@@ -2318,6 +2397,8 @@ msgid ""
 " numeric arguments are first :ref:`converted to a common real type "
 "<stdtypes-mixed-arithmetic>`."
 msgstr ""
+"``-`` （减法）运算符会计算其参数的差值。数值参数首先被 :ref:`converted to a common real type "
+"<stdtypes-mixed-arithmetic>`。"
 
 #: ../../reference/expressions.rst:1725
 msgid ""
@@ -3393,7 +3474,7 @@ msgstr "NameError"
 
 #: ../../reference/expressions.rst:121
 msgid "mangling"
-msgstr "扭曲"
+msgstr "改写"
 
 #: ../../reference/expressions.rst:121
 msgid "private"
@@ -3405,7 +3486,7 @@ msgstr "names"
 
 #: ../../reference/expressions.rst:172
 msgid "literal"
-msgstr "字面值"
+msgstr "字面量"
 
 #: ../../reference/expressions.rst:205 ../../reference/expressions.rst:527
 msgid "immutable"
@@ -3532,7 +3613,7 @@ msgstr "dictionary -- 字典"
 
 #: ../../reference/expressions.rst:484
 msgid "key"
-msgstr "键"
+msgstr "key -- 键"
 
 #: ../../reference/expressions.rst:484
 msgid "value"
@@ -4029,7 +4110,7 @@ msgstr "赋值表达式"
 
 #: ../../reference/expressions.rst:2122
 msgid "walrus operator"
-msgstr "海象运算符"
+msgstr "walrus operator -- 海象运算符"
 
 #: ../../reference/expressions.rst:2122
 msgid "named expression"

@@ -7,15 +7,16 @@
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
 # Alpha Du <alphanow@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 18:52+0000\n"
+"POT-Creation-Date: 2026-11-05 21:52+0000\n"
 "PO-Revision-Date: 2026-05-08 17:18+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -71,7 +72,7 @@ msgstr ""
 #: ../../library/ssl.rst:456 ../../library/ssl.rst:471
 #: ../../includes/wasm-notavail.rst:3
 msgid "Availability"
-msgstr "Availability"
+msgstr "可用性"
 
 #: ../../includes/wasm-notavail.rst:5
 msgid ""
@@ -696,6 +697,9 @@ msgid ""
 "data. Trust specifies the purpose of the certificate as a set of OIDS or "
 "exactly ``True`` if the certificate is trustworthy for all purposes."
 msgstr ""
+"该函数返回一个包含 (cert_bytes，encoding_type，trust) 元组的列表。encoding_type 指定 cert_bytes"
+" 的编码方式，可以是 ``'x509_asn'``，用于 X.509 ASN .1 数据；或者 ``'pkcs_7_asn'``，用于 PKCS #7 "
+"ASN .1 数据。Trust 指定证书的目的，可以是一组 OIDS ，或者如果证书适用于所有用途，则指定为 ``True``。"
 
 #: ../../library/ssl.rst:450 ../../library/ssl.rst:1618
 #: ../../library/ssl.rst:1940
@@ -727,6 +731,9 @@ msgid ""
 "``'x509_asn'`` for X.509 ASN.1 data or ``'pkcs_7_asn'`` for PKCS#7 ASN.1 "
 "data."
 msgstr ""
+"该函数返回一个由 (cert_bytes，encoding_type) 组成的元组列表。encoding_type 指定 cert_bytes "
+"的编码方式。它可以是 ``'x509_asn'``，用于 X.509 ASN .1 数据；或者 ``'pkcs_7_asn'``，用于 PKCS #7 "
+"ASN .1 数据。"
 
 #: ../../library/ssl.rst:477
 msgid "Constants"
@@ -1738,7 +1745,7 @@ msgstr ""
 msgid ""
 "The verified chain is not stored with a session, so the list is empty when "
 "the session is resumed (see :attr:`~SSLSocket.session_reused`)."
-msgstr ""
+msgstr "已验证的链不会与会话一起存储，因此当会话恢复时，列表为空（参见 :attr:`~SSLSocket.session_reused`）。"
 
 #: ../../library/ssl.rst:1266
 msgid ""
@@ -1753,6 +1760,8 @@ msgid ""
 " the session, which for a session resumed from a ticket on the server side "
 "is the peer's own certificate only."
 msgstr ""
+"恢复会话时不会交换任何证书（参见 "
+":attr:`~SSLSocket.session_reused`）；此时列表中保存的是与该会话一起存储的内容，对于从服务器端票据恢复的会话，该内容仅为对端自身的证书。"
 
 #: ../../library/ssl.rst:1278
 msgid ""
@@ -2449,8 +2458,8 @@ msgid ""
 msgstr ""
 "此回调函数将附带三个参数来调用；第一个参数是 :class:`ssl.SSLSocket`，第二个参数是代表客户端准备与之通信的服务器的字符串 "
 "(或者如果 TLS Client Hello 不包含服务器名称则为 :const:`None`) 而第三个参数是原来的 "
-":class:`SSLContext`。服务器名称参数为文本形式。对于国际化域名，服务器名称是一个 IDN A 标签 "
-"(``\\mua.org\"``)。"
+":class:`SSLContext`。 服务器名称参数为文本形式。 对于国际化域名，服务器名称是一个 IDN A 标签 (``\"xn--pythn-"
+"mua.org\"``)。"
 
 #: ../../library/ssl.rst:1727
 msgid ""
@@ -2469,8 +2478,9 @@ msgid ""
 "1.3 HelloRetryRequest) is dispatched to the new context's *sni_callback*, if"
 " it has one; the original callback is not called again for that connection."
 msgstr ""
-"如果回调将一个新上下文赋值给 :attr:`SSLSocket.context`，则同一连接上的任何后续 ClientHello 消息（例如在 TLS "
-"1.3 HelloRetryRequest 之后）都将被分派给新上下文的 *sni_callback* （如果存在的话）；原回调不会再针对该连接被调用。"
+"如果回调将一个新上下文赋值给 :attr:`SSLSocket.context` ，则同一连接上的任何后续 ClientHello 消息（例如在 TLS"
+" 1.3 HelloRetryRequest 之后）都将被分派给新上下文的 *sni_callback* "
+"（如果存在的话）；原回调不会再针对该连接被调用。"
 
 #: ../../library/ssl.rst:1738
 msgid ""
@@ -3021,6 +3031,11 @@ msgid ""
 "shared key. With TLS 1.2 and earlier, return a zero length PSK to reject the"
 " connection."
 msgstr ""
+"参数 ``callback`` 是一个可调用对象，其签名为：``def callback(hint: str | None) -> tuple[str "
+"| None, bytes]``。参数 ``hint`` 是服务器发送的可选身份提示。返回值是一个元组，形式为 (client-"
+"identity，psk)。client-identity 是一个可选字符串，服务器可以使用它来选择与客户端对应的 PSK 。当采用 UTF-8 "
+"编码时，该字符串的长度必须小于或等于 ``256`` 个字节。 PSK 是一个 :term:`bytes-like object`，代表预共享密钥。在 "
+"TLS 1.2 及更早版本中，返回一个长度为零的 PSK 以拒绝连接。"
 
 #: ../../library/ssl.rst:2109 ../../library/ssl.rst:2166
 msgid "Setting ``callback`` to :const:`None` removes any existing callback."
@@ -3048,6 +3063,10 @@ msgid ""
 "A PSK handshake does not need any CA certificates to be loaded when using "
 ":const:`CERT_REQUIRED`."
 msgstr ""
+"PSK 仅提供给服务器，服务器可以拒绝它并改用证书进行身份验证。该证书会依据 :attr:`~SSLContext.verify_mode` "
+"进行检查，因此依赖 PSK 来验证服务器身份的客户端不应将其设为 :const:`CERT_NONE`，或者应当检查 "
+":attr:`SSLSocket.session_reused` （若使用了 PSK，则该值为真）。使用 :const:`CERT_REQUIRED` "
+"时，PSK 握手无需加载任何 CA 证书。"
 
 #: ../../library/ssl.rst:2123
 msgid ""
@@ -3121,6 +3140,9 @@ msgid ""
 "representing the pre-shared key. With TLS 1.2 and earlier, return a zero "
 "length PSK to reject the connection."
 msgstr ""
+"参数 ``callback`` 是一个可调用对象，其签名如下：``def callback(identity: str | None) -> "
+"bytes``。参数 ``identity`` 是由客户端发送的可选标识符，可用于选择相应的 PSK 。返回值是一个 :term:`bytes-like"
+" object`，代表预共享密钥。在 TLS 1.2 及更早版本中，返回一个长度为零的 PSK 以拒绝连接。"
 
 #: ../../library/ssl.rst:2168
 msgid ""
@@ -3144,6 +3166,9 @@ msgid ""
 "PSK to authenticate clients should not load one, or should check "
 ":attr:`SSLSocket.session_reused`, which is true if the PSK was used."
 msgstr ""
+"零长度的 PSK ，或回调函数引发的异常，只会拒绝客户端的 PSK 。如果证书加载时带有 "
+":meth:`~SSLContext.load_cert_chain`，握手过程将继续进行证书认证而不会失败，因此依赖 PSK "
+"来认证客户端的服务器不应加载此类证书，或者应检查 :attr:`SSLSocket.session_reused`，如果使用了 PSK ，则此条件成立。"
 
 #: ../../library/ssl.rst:2182
 msgid ""
@@ -3151,6 +3176,8 @@ msgid ""
 "certificate is loaded, OpenSSL's default TLS 1.3 cipher suite order selects "
 "a SHA-384 suite instead, so the PSK is declined even if it matches."
 msgstr ""
+"PSK 只能在使用 SHA-256 的密码套件时接受。当证书加载时，OpenSSL 默认的 TLS 1.3 密码套件顺序会选择 SHA-384 "
+"套件，因此即使 PSK 匹配，也会被拒绝。"
 
 #: ../../library/ssl.rst:2189
 msgid ""
@@ -3243,7 +3270,9 @@ msgid ""
 "Python uses files to contain certificates.  They should be formatted as "
 "\"PEM\" (see :rfc:`1422`), which is a base-64 encoded form wrapped with a "
 "header line and a footer line::"
-msgstr "Python 使用文件来包含证书。它们应当采用 \\编码包装形式::"
+msgstr ""
+"Python 使用文件来包含证书。 它们应当采用 \"PEM\" 格式 (参见 :rfc:`1422`)，这是一种带有头部行和尾部行的 base-64 "
+"编码包装形式::"
 
 #: ../../library/ssl.rst:2251
 msgid ""

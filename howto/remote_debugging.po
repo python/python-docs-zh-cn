@@ -6,15 +6,16 @@
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-15 18:55+0000\n"
+"POT-Creation-Date: 2026-11-05 21:52+0000\n"
 "PO-Revision-Date: 2026-05-08 17:17+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -110,7 +111,7 @@ msgstr "这也可以被持久化配置，通常是在 ``/etc/sysctl.d`` 中。"
 msgid ""
 "Disabling ``ptrace_scope`` reduces system hardening and should only be done "
 "in low-security environments."
-msgstr ""
+msgstr "禁用 ``ptrace_scope`` 会降低系统加固程度，因此仅应在低安全级别环境中执行。"
 
 #: ../../howto/remote_debugging.rst:53
 msgid ""
@@ -124,6 +125,10 @@ msgid ""
 "disable the system call security filter for that container. This weakens the"
 " container's isolation and should only be done in low-security environments."
 msgstr ""
+"``ptrace`` 系统调用也可能因安全过滤器而被禁用。尤其常见于某些容器软件的旧版本。Docker 19.03 或更高版本（发布于 2019 "
+"年）以及 containerd 1.6.7 或更高版本（发布于 2022 年）在基于 Linux 内核 4.8 或更高版本运行时，将自动允许在容器内使用"
+" ``ptrace`` 系统调用。如果您无法升级到这些版本，可以通过使用诸如 ``--security-opt seccomp=unconfined``"
+" 之类的选项创建容器，以禁用该容器的系统调用安全过滤器。这会削弱容器的隔离性，因此应仅在低安全级别环境中使用此方法。"
 
 #: ../../howto/remote_debugging.rst:63
 msgid ""
@@ -133,6 +138,8 @@ msgid ""
 "processes (though this is unusual for Python). Try running the debugging "
 "command with ``sudo -E``."
 msgstr ""
+"如果您需要跟踪一个*并非*由您所有进程的进程，则需要超级用户权限或同等权限。这也适用于已更改安全凭据的进程，例如 set-user-ID 或 set-"
+"group-ID 进程（尽管在 Python 中这种情况并不常见）。请尝试使用 ``sudo -E`` 运行调试命令。"
 
 #: ../../howto/remote_debugging.rst:70
 msgid ""
@@ -143,6 +150,10 @@ msgid ""
 "gives the debugging process much more access than it needs and should only "
 "be done in low-security environments."
 msgstr ""
+"``CAP_SYS_PTRACE`` "
+"功能等同于超级用户权限，因为它允许对*任意*进程进行调试，而不仅仅是自己的进程。您可能会在网络上看到一些建议，建议利用该功能来绕过 ptrace "
+"的限制或系统调用过滤器。这种做法在实践中或许可行，``sudo`` "
+"同样如此；但这样一来，调试进程将获得远超其所需权限的访问权限，因此应仅在低安全级别环境中使用。"
 
 #: ../../howto/remote_debugging.rst:77
 msgid ""
@@ -151,6 +162,8 @@ msgid ""
 "won't be able to simultaneously use remote debugging. (Superuser access "
 "cannot get around this restriction.)"
 msgstr ""
+"最后请注意，一个进程一次只能使用一个追踪器。如果您已经通过 ``strace``、``gdb`` 等标识符连接到某个 Python "
+"进程，就无法同时使用远程调试功能。（超级用户权限也无法绕过这一限制。）"
 
 #: ../../howto/remote_debugging.rst:83
 msgid "macOS"
@@ -158,7 +171,7 @@ msgstr "macOS"
 
 #: ../../howto/remote_debugging.rst:84
 msgid "By default, macOS disables the ability to debug other processes."
-msgstr ""
+msgstr "默认情况下，macOS 会禁用对其他进程的调试功能。"
 
 #: ../../howto/remote_debugging.rst:86
 msgid ""
@@ -168,33 +181,41 @@ msgid ""
 "actual cryptographic signature or a need for a certificate or anything else "
 "such as an Apple developer program membership.)"
 msgstr ""
+"您可以通过为 Python "
+"二进制文件提供一个**临时代码签名**，并设置一项允许对其进行调试的**权限**，从而将其修改为接受调试。（临时“签名”仅是一种配置，不包含任何实际的加密签名，也不需要证书或其他类似材料，例如"
+" Apple 开发者计划会员资格。）"
 
 #: ../../howto/remote_debugging.rst:92
 msgid ""
 "The following commands will create a file ``get-task-allow.plist`` with the "
 "necessary entitlement and add it to the Python binary:"
-msgstr ""
+msgstr "以下命令将创建一个具有必要权限的文件 ``get-task-allow.plist``，并将其添加到 Python 二进制文件中："
 
 #: ../../howto/remote_debugging.rst:95
 msgid ""
 "echo '{\"com.apple.security.get-task-allow\": true}' | plutil -convert xml1 -o get-task-allow.plist -\n"
 "codesign --sign - --entitlements get-task-allow.plist path/to/bin/python3"
 msgstr ""
+"echo '{\"com.apple.security.get-task-allow\": true}' | plutil -convert xml1 -o get-task-allow.plist -\n"
+"codesign --sign - --entitlements get-task-allow.plist path/to/bin/python3"
 
 #: ../../howto/remote_debugging.rst:100
 msgid ""
 "where ``path/to/bin/python3`` is the path to your Python binary, which you "
 "can find by e.g. running ``which python3`` or evaluating "
-"``sys.base_executable`` at the Python REPL. (These instructions are for a "
+"``sys._base_executable`` at the Python REPL. (These instructions are for a "
 "non-framework build of Python. Framework builds may need to be configured "
 "differently.)"
 msgstr ""
+"其中 ``path/to/bin/python3`` 是 Python 二进制文件的路径；您可以通过例如运行 ``which python3`` 或在 "
+"Python REPL 中评估 ``sys._base_executable`` 来找到该路径。（这些说明适用于非框架构建的 "
+"Python；框架构建可能需要采用不同的配置方式。）"
 
 #: ../../howto/remote_debugging.rst:105
 msgid ""
 "You should then be able to debug your own Python processes started with that"
 " binary."
-msgstr ""
+msgstr "之后，您应该就能对使用该二进制文件启动的自有 Python 进程进行调试了。"
 
 #: ../../howto/remote_debugging.rst:108
 msgid ""
@@ -203,6 +224,8 @@ msgid ""
 "the system (though there are additional checks on specific binaries, such as"
 " OS-provided commands, due to System Integrity Protection)."
 msgstr ""
+"或者，与 Linux 类似，具有超级用户权限的进程（例如 "
+"``sudo``）不受此检查的限制，因此可以调试系统中任何用户的进程（不过，由于系统完整性保护的存在，针对特定二进制文件——例如操作系统提供的命令——还会进行额外的检查）。"
 
 #: ../../howto/remote_debugging.rst:114
 msgid "Windows"
@@ -1155,7 +1178,7 @@ msgstr ""
 msgid ""
 "``debugger_pending_call``: An integer flag. Setting this to ``1`` tells the "
 "interpreter that a script is ready to be executed."
-msgstr "``debugger_pending_call``：一个整数型旗标。将其设为 ``1`` 表示告知解释器已有脚本准备就绪等待执行。"
+msgstr "``debugger_pending_call``: 一个整数型旗标。 将其设为 ``1`` 表示告知解释器已有脚本准备就绪等待执行。"
 
 #: ../../howto/remote_debugging.rst:593
 msgid ""
@@ -1355,7 +1378,7 @@ msgstr "下列原则定义了在此特征中什么将被视为，以及什么将
 
 #: ../../howto/remote_debugging.rst:693
 msgid "Attaching requires OS-level privileges"
-msgstr ""
+msgstr "执行附件操作需要操作系统级权限"
 
 #: ../../howto/remote_debugging.rst:694
 msgid ""
@@ -1365,12 +1388,15 @@ msgid ""
 "have already been obtained is **not** a vulnerability in CPython, since the "
 "OS security boundary was already crossed."
 msgstr ""
+"在所有受支持的平台上，操作系统都会通过权限检查（``CAP_SYS_PTRACE``、root "
+"或管理员权限）来管控跨进程内存访问。一份仅在获得这些权限之后才暴露问题的报告，**并不** 构成 CPython "
+"中的漏洞，因为此时操作系统安全边界已经被突破。"
 
 #: ../../howto/remote_debugging.rst:700
 msgid ""
 "Crashes or memory errors when reading a compromised process are not "
 "vulnerabilities"
-msgstr ""
+msgstr "读取受入侵进程时发生的崩溃或内存错误不属于漏洞。"
 
 #: ../../howto/remote_debugging.rst:701
 msgid ""
@@ -1383,10 +1409,13 @@ msgid ""
 "reading corrupted state) are **not** treated as security issues, though "
 "fixes that improve robustness are welcome."
 msgstr ""
+"一种从目标进程读取内部解释器状态的工具，必须信任该内存处于正确状态。如果目标进程已被破坏，或受到攻击者的控制，调试器或性能分析器可能会崩溃、产生垃圾输出，或表现出不可预测的行为。这是所有基于"
+" ``ptrace`` "
+"的调试器所接受的风险。此类漏洞（缓冲区溢出、段错误，或由于读取损坏状态而引发的未定义行为）**不**被视为安全问题，但欢迎通过改进鲁棒性来修复这些问题。"
 
 #: ../../howto/remote_debugging.rst:710
 msgid "Vulnerabilities in the target process are not in scope"
-msgstr ""
+msgstr "目标进程中的漏洞不在本次范围内"
 
 #: ../../howto/remote_debugging.rst:711
 msgid ""
@@ -1395,10 +1424,11 @@ msgid ""
 "impact from that starting point does not constitute a vulnerability in the "
 "remote debugging protocol."
 msgstr ""
+"如果正在被调试的 Python 进程已经遭到入侵，攻击者就已经能够控制该进程的执行。从这一起点进一步证明其影响，并不构成远程调试协议中的漏洞。"
 
 #: ../../howto/remote_debugging.rst:717
 msgid "When to use ``PYTHON_DISABLE_REMOTE_DEBUG``"
-msgstr ""
+msgstr "何时使用 ``PYTHON_DISABLE_REMOTE_DEBUG``"
 
 #: ../../howto/remote_debugging.rst:719
 msgid ""
@@ -1410,6 +1440,9 @@ msgid ""
 "reducing attack surface is a priority, even though the OS-level privilege "
 "checks already prevent unprivileged access."
 msgstr ""
+"环境变量 :envvar:`PYTHON_DISABLE_REMOTE_DEBUG` （以及对应的 :option:`-X disable-"
+"remote-debug` "
+"标志）允许运维人员禁用协议的内联处理端，作为一项**纵深防御**措施。在经过加固或处于沙箱化的部署环境中，由于预计不会对该进程进行调试或性能分析，且降低攻击面是优先事项，因此该功能可能非常有用；尽管操作系统级别的权限检查已经能够防止未授权访问。"
 
 #: ../../howto/remote_debugging.rst:727
 msgid ""
