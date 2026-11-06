@@ -9,15 +9,16 @@
 # lian Wu <xiguawulian@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
 # 钟旭尧 <python_zhong@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 20:20+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2026-05-08 18:37+0000\n"
-"Last-Translator: 钟旭尧 <python_zhong@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -501,6 +502,8 @@ msgid ""
 "graph and emits one section per task, with ``<task>`` markers separating "
 "coroutines awaiting each other."
 msgstr ""
+"在 ``await`` 边界之间重建堆栈。``dump`` 遍历任务图，为每个任务生成一个部分，并用 ``<task>`` "
+"标记分隔出等待彼此完成协作的协程。"
 
 #: ../../library/profiling.sampling.rst:281
 msgid "``--async-mode {running,all}``"
@@ -515,6 +518,9 @@ msgid ""
 "``all`` because a single snapshot is most useful when it shows the full task"
 " graph."
 msgstr ""
+"用于控制启用 ``--async-aware`` 时包含哪些任务。``running`` "
+"仅显示每个线程当前正在执行的任务；``all``（``dump`` 的默认值）还会包含因等待而暂停的任务。``attach`` 对此标志的默认值为 "
+"``running``；``dump`` 默认设为 ``all``，因为当单个快照显示完整的任务图时，其用途最为显著。"
 
 #: ../../library/profiling.sampling.rst:289
 msgid "``--blocking``"
@@ -527,16 +533,18 @@ msgid ""
 "stopping the target. Without it, ``dump`` reads memory while the target "
 "keeps running, which is faster but can occasionally produce a torn stack."
 msgstr ""
+"在读取目标线程的栈时暂停该目标中的每个线程，之后再恢复这些线程。这种方法以短暂停止目标线程为代价，可确保获得完全一致的快照。若不使用此机制，``dump``"
+" 会在目标线程持续运行的同时读取内存；这种方式速度更快，但偶尔可能导致栈不完整。"
 
 #: ../../library/profiling.sampling.rst:300
 msgid "The ``replay`` command"
-msgstr ""
+msgstr "``replay`` 命令"
 
 #: ../../library/profiling.sampling.rst:302
 msgid ""
 "The ``replay`` command converts binary profile files to other output "
 "formats::"
-msgstr ""
+msgstr "``replay`` 命令可将二进制性能分析文件转换为其他输出格式::"
 
 #: ../../library/profiling.sampling.rst:304
 msgid ""
@@ -570,6 +578,17 @@ msgid ""
 "# Convert binary to heatmap\n"
 "python -m profiling.sampling replay --heatmap -o my_heatmap profile.bin"
 msgstr ""
+"# Convert binary to pstats (default, prints to stdout)\n"
+"python -m profiling.sampling replay profile.bin\n"
+"\n"
+"# Convert binary to flame graph\n"
+"python -m profiling.sampling replay --flamegraph -o output.html profile.bin\n"
+"\n"
+"# Convert binary to gecko format for Firefox Profiler\n"
+"python -m profiling.sampling replay --gecko -o profile.json profile.bin\n"
+"\n"
+"# Convert binary to heatmap\n"
+"python -m profiling.sampling replay --heatmap -o my_heatmap profile.bin"
 
 #: ../../library/profiling.sampling.rst:328
 msgid "Profiling in production"
@@ -582,10 +601,11 @@ msgid ""
 " rather than instrumenting code. The target application continues running at"
 " full speed and is unaware it is being profiled."
 msgstr ""
+"采样分析器专为生产环境而设计。由于它是通过外部读取内存而非对代码进行插桩，因此不会对目标进程产生可测量的额外开销。目标应用程序将继续以全速运行，且不会察觉自己正被进行性能分析。"
 
 #: ../../library/profiling.sampling.rst:335
 msgid "When profiling production systems, keep these guidelines in mind:"
-msgstr ""
+msgstr "在对生产系统进行剖析时，请牢记以下指导原则："
 
 #: ../../library/profiling.sampling.rst:337
 msgid ""
@@ -594,13 +614,15 @@ msgid ""
 "until the target process completes, which is usually sufficient to identify "
 "major hotspots."
 msgstr ""
+"先从较短的持续时间（10–30 "
+"秒）开始，以快速获得结果；如果需要对统计精度有更高要求，再逐步延长持续时间。默认情况下，性能分析会持续运行至目标进程完成；通常这足以识别出主要热点。"
 
 #: ../../library/profiling.sampling.rst:341
 msgid ""
 "If possible, profile during representative load rather than peak traffic. "
 "Profiles collected during normal operation are easier to interpret than "
 "those collected during unusual spikes."
-msgstr ""
+msgstr "如果可能的话，应在典型负载期间而非高峰流量期间采集性能概况。在正常运行期间采集的性能概况比在异常峰值期间采集的更易于解读。"
 
 #: ../../library/profiling.sampling.rst:345
 msgid ""
@@ -608,23 +630,25 @@ msgid ""
 "the target process). On the same machine, this is typically negligible. When"
 " profiling remote processes, network latency does not affect the target."
 msgstr ""
+"分析器本身会在其运行的机器上占用一定的 CPU "
+"资源（而非在目标进程中占用）。在同一台机器上，这种占用通常可以忽略不计。在对远程进程进行性能分析时，网络延迟不会影响目标进程。"
 
 #: ../../library/profiling.sampling.rst:349
 msgid ""
 "Results from production may differ from development due to different data "
 "sizes, concurrent load, or caching effects. This is expected and is often "
 "exactly what you want to capture."
-msgstr ""
+msgstr "由于数据规模、并发负载或缓存效应存在差异，生产环境的结果可能与开发环境有所不同。这种情况在所预料之内，而且往往正是您希望捕捉到的结果。"
 
 #: ../../library/profiling.sampling.rst:357
 msgid "Platform requirements"
-msgstr ""
+msgstr "平台要求"
 
 #: ../../library/profiling.sampling.rst:359
 msgid ""
 "The profiler reads the target process's memory to capture stack traces. This"
 " requires elevated permissions on most operating systems."
-msgstr ""
+msgstr "分析器会读取目标进程的内存以捕获堆栈跟踪。在大多数操作系统上，这需要具备更高权限。"
 
 #: ../../library/profiling.sampling.rst:362
 msgid "**Linux**"
@@ -650,13 +674,14 @@ msgstr "具有 ``CAP_SYS_PTRACE`` 能力"
 #: ../../library/profiling.sampling.rst:369
 msgid ""
 "Adjusting the Yama ptrace scope: ``/proc/sys/kernel/yama/ptrace_scope``"
-msgstr ""
+msgstr "调整 Yama ptrace 观测器：``/proc/sys/kernel/yama/ptrace_scope``"
 
 #: ../../library/profiling.sampling.rst:371
 msgid ""
 "The default ptrace_scope of 1 restricts ptrace to parent processes only. To "
 "allow attaching to any process owned by the same user, set it to 0::"
 msgstr ""
+"默认的 ptrace_scope 值为 1，会将 ptrace 限制在仅适用于父进程。若允许绑定到由同一用户拥有的任意进程，则将其设置为 0::"
 
 #: ../../library/profiling.sampling.rst:374
 msgid "echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope"
@@ -670,17 +695,17 @@ msgstr "**macOS**"
 msgid ""
 "On macOS, the profiler uses ``task_for_pid()`` to access the target process."
 " This requires one of:"
-msgstr ""
+msgstr "在 macOS 上，性能分析器使用 ``task_for_pid()`` 来访问目标进程。这要求满足以下条件之一："
 
 #: ../../library/profiling.sampling.rst:382
 msgid ""
 "The profiler binary having the ``com.apple.security.cs.debugger`` "
 "entitlement"
-msgstr ""
+msgstr "具有 ``com.apple.security.cs.debugger`` 权限的性能分析器二进制文件"
 
 #: ../../library/profiling.sampling.rst:383
 msgid "System Integrity Protection (SIP) being disabled (not recommended)"
-msgstr ""
+msgstr "系统完整性保护 (SIP) 已禁用（不推荐这样做）"
 
 #: ../../library/profiling.sampling.rst:385
 msgid "**Windows**"
@@ -690,11 +715,11 @@ msgstr "**Windows**"
 msgid ""
 "On Windows, the profiler requires administrative privileges or the "
 "``SeDebugPrivilege`` privilege to read another process's memory."
-msgstr ""
+msgstr "在 Windows 上，性能分析器需要管理员权限，或 ``SeDebugPrivilege`` 权限，才能读取其他进程的内存。"
 
 #: ../../library/profiling.sampling.rst:392
 msgid "Version compatibility"
-msgstr ""
+msgstr "版本兼容性"
 
 #: ../../library/profiling.sampling.rst:394
 msgid ""
@@ -702,6 +727,8 @@ msgid ""
 "example, both Python 3.15). Attaching from Python 3.14 to a Python 3.15 "
 "process is not supported."
 msgstr ""
+"分析器和目标进程必须运行相同的 Python 次要版本（例如，两者均为 Python 3.15）。从 Python 3.14 连接到 Python "
+"3.15 进程的行为不受支持。"
 
 #: ../../library/profiling.sampling.rst:398
 msgid ""
@@ -709,16 +736,18 @@ msgid ""
 "profiler or target is running a pre-release (alpha, beta, or release "
 "candidate), both must run the exact same version."
 msgstr ""
+"对于预发布版 Python 版本还适用额外限制：如果 Profiler 或目标端正在运行预发布版本（alpha 版、beta "
+"版或发布候选版），则两者必须运行完全相同的版本。"
 
 #: ../../library/profiling.sampling.rst:402
 msgid ""
 "On free-threaded Python builds, the profiler cannot attach from a free-"
 "threaded build to a standard build, or vice versa."
-msgstr ""
+msgstr "在自由线程化 Python 构建版本中，性能分析器无法从自由线程化构建版本连接到标准构建版本，反之亦然。"
 
 #: ../../library/profiling.sampling.rst:407
 msgid "Sampling configuration"
-msgstr ""
+msgstr "采样配置"
 
 #: ../../library/profiling.sampling.rst:409
 msgid ""
@@ -728,10 +757,11 @@ msgid ""
 "collected, how long profiling runs, which threads are observed, and what "
 "additional context is captured in each sample."
 msgstr ""
+"在探讨各种输出格式和可视化选项之前，有必要先了解如何配置采样过程本身。分析器提供了多个选项，用于控制样本的采集频率、性能分析运行的时长、需要观察的线程，以及每个样本中捕获的附加上下文信息。"
 
 #: ../../library/profiling.sampling.rst:415
 msgid "The default configuration works well for most use cases:"
-msgstr ""
+msgstr "默认配置在大多数使用场景中都能良好运行："
 
 #: ../../library/profiling.sampling.rst:421
 msgid "Option"
@@ -743,93 +773,95 @@ msgstr "默认值"
 
 #: ../../library/profiling.sampling.rst:423
 msgid "Default for ``--sampling-rate`` / ``-r``"
-msgstr ""
+msgstr "``--sampling-rate`` / ``-r`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:424
 msgid "1 kHz"
-msgstr ""
+msgstr "1 kHz"
 
 #: ../../library/profiling.sampling.rst:425
 msgid "Default for ``--duration`` / ``-d``"
-msgstr ""
+msgstr "``--duration`` / ``-d`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:426
 msgid "Run to completion"
-msgstr ""
+msgstr "运行至完成"
 
 #: ../../library/profiling.sampling.rst:427
 msgid "Default for ``--all-threads`` / ``-a``"
-msgstr ""
+msgstr "``--all-threads`` / ``-a`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:428
 msgid "Main thread only"
-msgstr ""
+msgstr "仅限主线程"
 
 #: ../../library/profiling.sampling.rst:429
 msgid "Default for ``--native``"
-msgstr ""
+msgstr "``--native`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:430
 msgid "No ``<native>`` frames (C code time attributed to caller)"
-msgstr ""
+msgstr "无 ``<native>`` 帧（C 代码时间归因于调用者）"
 
 #: ../../library/profiling.sampling.rst:431
 msgid "Default for ``--no-gc``"
-msgstr ""
+msgstr "``--no-gc`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:432
 msgid "``<GC>`` frames included when garbage collection is active"
-msgstr ""
+msgstr "垃圾回收启用时包含的 ``<GC>`` 帧"
 
 #: ../../library/profiling.sampling.rst:433
 msgid "Default for ``--mode``"
-msgstr ""
+msgstr "``--mode`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:434
 msgid "Wall-clock mode (all samples recorded)"
-msgstr ""
+msgstr "Wall-clock mode (all samples recorded)"
 
 #: ../../library/profiling.sampling.rst:435
 msgid "Default for ``--realtime-stats``"
-msgstr ""
+msgstr "``--realtime-stats`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:436
 #: ../../library/profiling.sampling.rst:438
 msgid "Disabled"
-msgstr ""
+msgstr "丧失能力的"
 
 #: ../../library/profiling.sampling.rst:437
 msgid "Default for ``--subprocesses``"
-msgstr ""
+msgstr "``--subprocesses`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:439
 msgid "Default for ``--blocking``"
-msgstr ""
+msgstr "``--blocking`` 的默认值"
 
 #: ../../library/profiling.sampling.rst:440
 msgid "Disabled (non-blocking sampling)"
-msgstr ""
+msgstr "Disabled (non-blocking sampling)"
 
 #: ../../library/profiling.sampling.rst:444
 msgid "Sampling rate and duration"
-msgstr ""
+msgstr "采样率与持续时间"
 
 #: ../../library/profiling.sampling.rst:446
 msgid ""
 "The two most fundamental parameters are the sampling rate and duration. "
 "Together, these determine how many samples will be collected during a "
 "profiling session."
-msgstr ""
+msgstr "两个最基本的参数是采样率和持续时间。二者共同决定了在一次分析过程中将采集多少个样本。"
 
 #: ../../library/profiling.sampling.rst:450
 msgid ""
 "The :option:`--sampling-rate` option (:option:`-r`) sets how frequently "
 "samples are collected. The default is 1 kHz (1,000 samples per second)::"
 msgstr ""
+":option:`--sampling-rate` 选项（:option:`-r`）用于设置样本采集频率。默认值为 1 kHz（每秒采集 1,000 "
+"个样本）::"
 
 #: ../../library/profiling.sampling.rst:453
 msgid "python -m profiling.sampling run -r 20khz script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run -r 20khz script.py"
 
 #: ../../library/profiling.sampling.rst:455
 msgid ""
@@ -838,6 +870,8 @@ msgid ""
 " but may miss short-lived functions. For most applications, the default rate"
 " provides a good balance between accuracy and overhead."
 msgstr ""
+"较高的采样率能够捕获更多样本，并提供更细粒度的数据，但代价是使分析器 CPU "
+"使用率略微升高；较低的采样率则能减少分析器开销，但可能会遗漏短生命周期的函数。对于大多数应用程序而言，默认采样率能在准确性和开销之间取得良好平衡。"
 
 #: ../../library/profiling.sampling.rst:460
 msgid ""
@@ -845,10 +879,12 @@ msgid ""
 "seconds. By default, profiling continues until the target process exits or "
 "is interrupted::"
 msgstr ""
+":option:`--duration` 选项（:option:`-d`）用于设置 profiling "
+"持续的时间（以秒为单位）。默认情况下，profiling 会一直持续，直到目标进程退出或被中断::"
 
 #: ../../library/profiling.sampling.rst:463
 msgid "python -m profiling.sampling run -d 60 script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run -d 60 script.py"
 
 #: ../../library/profiling.sampling.rst:465
 msgid ""
@@ -857,17 +893,18 @@ msgid ""
 " script, the default behavior of running to completion is usually what you "
 "want."
 msgstr ""
+"在附加到长期运行的进程时，或希望将性能分析限制在特定时间窗口内时，指定持续时间会很有用。在对脚本进行性能分析时，通常希望采用默认行为，即运行至完成。"
 
 #: ../../library/profiling.sampling.rst:471
 msgid "Thread selection"
-msgstr ""
+msgstr "线程选择"
 
 #: ../../library/profiling.sampling.rst:473
 msgid ""
 "Python programs often use multiple threads, whether explicitly through the "
 ":mod:`threading` module or implicitly through libraries that manage thread "
 "pools."
-msgstr ""
+msgstr "Python 程序通常会使用多线程，无论是通过 :mod:`threading` 模块显式实现，还是通过管理线程池的库隐式实现。"
 
 #: ../../library/profiling.sampling.rst:477
 msgid ""
@@ -875,6 +912,8 @@ msgid ""
 "threads` option (:option:`-a`) enables sampling of all threads in the "
 "process::"
 msgstr ""
+"默认情况下，性能分析器仅对主线程进行采样。:option:`--all-threads` "
+"选项（:option:`-a`）可启用对进程中所有线程的采样::"
 
 #: ../../library/profiling.sampling.rst:480
 msgid "python -m profiling.sampling run -a script.py"
@@ -888,10 +927,11 @@ msgid ""
 "formats. This option is particularly useful when investigating concurrency "
 "issues or when work is distributed across a thread pool."
 msgstr ""
+"多线程性能分析可揭示工作如何在各线程间分配，并能识别出处于阻塞或资源饥饿状态的线程。各线程的采样数据会在输出中合并在一起，并支持按线程以某些格式进行筛选。当调查并发问题或工作被分布式到线程池时，此选项尤其有用。"
 
 #: ../../library/profiling.sampling.rst:492
 msgid "Blocking mode"
-msgstr ""
+msgstr "阻塞模式"
 
 #: ../../library/profiling.sampling.rst:494
 msgid ""
@@ -900,6 +940,8 @@ msgid ""
 "imposes virtually zero overhead on the target application: the profiled "
 "program runs at full speed and is unaware it is being observed."
 msgstr ""
+"默认情况下，Tachyon "
+"会在不中断目标进程的情况下读取其内存。这种非阻塞方式非常适合大多数性能分析场景，因为它几乎不会给目标应用程序带来任何开销：被分析的程序以全速运行，且不会察觉到自己正被监控。"
 
 #: ../../library/profiling.sampling.rst:499
 msgid ""
@@ -910,12 +952,14 @@ msgid ""
 "end of a single stack read, resulting in reconstructed stacks that mix "
 "frames from different execution states or that never actually existed."
 msgstr ""
+"然而，在非阻塞采样中，当应用程序包含大量生成器或协程，且这些生成器或协程在多个 yield "
+"点之间快速切换时，或者当程序中的调用栈变化极快，导致函数在单次栈读取的起始与结束之间不断进入和退出时，偶尔会生成不完整或不一致的堆栈跟踪；这会导致重建的堆栈混合了来自不同执行状态的帧，或包含一些实际上从未真实存在的帧。"
 
 #: ../../library/profiling.sampling.rst:506
 msgid ""
 "For these cases, the :option:`--blocking` option stops the target process "
 "during each sample::"
-msgstr ""
+msgstr "对于此类情况，:option:`--blocking` 选项会在每次采样期间停止目标进程::"
 
 #: ../../library/profiling.sampling.rst:509
 msgid ""
@@ -933,6 +977,7 @@ msgid ""
 " instant. The trade-off is that the target process runs slower because it is"
 " repeatedly paused."
 msgstr ""
+"当启用阻塞模式时，性能分析器会暂停目标进程，读取其栈，随后恢复该进程。这确保了每个捕获的栈都代表目标进程在某一时刻实际且一致的运行状态快照。其代价是目标进程的运行速度会变慢，因为它会反复被暂停。"
 
 #: ../../library/profiling.sampling.rst:520
 msgid ""
@@ -943,6 +988,9 @@ msgid ""
 " are recommended. The default 100 microsecond interval may cause noticeable "
 "slowdown in the target application."
 msgstr ""
+"在阻塞模式下，请勿使用过高的采样率（即较低的 ``--interval`` "
+"值）。进程的挂起和恢复需要一定时间；如果采样间隔过短，目标设备停止运行的时间将超过其运行时间。对于阻塞模式，建议采用 1000 微秒（1 "
+"毫秒）或更长的间隔。默认的 100 微秒间隔可能会导致目标应用程序出现明显的性能下降。"
 
 #: ../../library/profiling.sampling.rst:527
 msgid ""
@@ -951,10 +999,11 @@ msgid ""
 "most applications, the default non-blocking mode provides accurate results "
 "with zero impact on the target process."
 msgstr ""
+"仅在观察到配置文件中存在不一致的堆栈时，才使用阻塞模式；这种情况尤其常见于包含大量生成器或协程的代码。对于大多数应用程序而言，默认的非阻塞模式能够提供准确的结果，且不会对目标进程产生任何影响。"
 
 #: ../../library/profiling.sampling.rst:534
 msgid "Special frames"
-msgstr ""
+msgstr "特殊框架"
 
 #: ../../library/profiling.sampling.rst:536
 msgid ""
@@ -963,6 +1012,7 @@ msgid ""
 " each sample is taken. These synthetic frames help distinguish different "
 "types of execution that would otherwise be invisible."
 msgstr ""
+"分析器可以向捕获的堆栈中注入人工帧，从而为解释器在每次采样时正在执行的操作提供额外的上下文信息。这些合成帧有助于区分不同类型的执行行为；否则，这些行为将难以被察觉。"
 
 #: ../../library/profiling.sampling.rst:541
 msgid ""
@@ -970,6 +1020,8 @@ msgid ""
 "Python has called into C code (extension modules, built-in functions, or the"
 " interpreter itself)::"
 msgstr ""
+":option:`--native` 选项会添加 ``<native>`` 帧，用于指示 Python 何时调用了 C "
+"代码（扩展模块、内置函数或解释器本身）::"
 
 #: ../../library/profiling.sampling.rst:545
 msgid "python -m profiling.sampling run --native script.py"
@@ -983,12 +1035,14 @@ msgid ""
 "optimizing code that makes heavy use of C extensions like NumPy or database "
 "drivers."
 msgstr ""
+"这些框架有助于区分在 Python 代码中花费的时间与在原生库中花费的时间。若未启用此选项，原生代码的执行时间会显示为调用该代码的 Python "
+"函数所花费的时间。在优化大量使用 C 扩展（如 NumPy 或数据库驱动程序）的代码时，这一功能非常有用。"
 
 #: ../../library/profiling.sampling.rst:552
 msgid ""
 "By default, the profiler includes ``<GC>`` frames when garbage collection is"
 " active. The :option:`--no-gc` option suppresses these frames::"
-msgstr ""
+msgstr "默认情况下，当垃圾回收处于激活状态时，性能分析器会包含 ``<GC>`` 帧。:option:`--no-gc` 选项会抑制这些帧::"
 
 #: ../../library/profiling.sampling.rst:555
 msgid "python -m profiling.sampling run --no-gc script.py"
@@ -1001,16 +1055,18 @@ msgid ""
 "optimizing. If you see substantial time in ``<GC>`` frames, consider "
 "investigating object allocation rates or using object pooling."
 msgstr ""
+"GC 帧有助于识别垃圾回收占用大量时间的程序；这可能表明存在值得优化的内存分配模式。如果发现 ``<GC>`` "
+"帧中占用了大量时间，可考虑调查对象分配率，或采用对象池技术。"
 
 #: ../../library/profiling.sampling.rst:564
 msgid "Opcode-aware profiling"
-msgstr ""
+msgstr "基于操作码的性能分析"
 
 #: ../../library/profiling.sampling.rst:566
 msgid ""
 "The :option:`--opcodes` option enables instruction-level profiling that "
 "captures which Python bytecode instructions are executing at each sample::"
-msgstr ""
+msgstr ":option:`--opcodes` 选项可启用指令级性能分析，用于捕获每个采样点正在执行的 Python 字节码指令::"
 
 #: ../../library/profiling.sampling.rst:571
 msgid ""
@@ -1020,58 +1076,61 @@ msgid ""
 "``LOAD_ATTR_INSTANCE_VALUE``, the profiler shows both the specialized name "
 "and the base instruction."
 msgstr ""
+"该功能可让开发者了解 Python 字节码的执行情况，包括自适应特化优化。当像 ``LOAD_ATTR`` "
+"这样的通用指令在运行时被特化为更高效的变体，例如 ``LOAD_ATTR_INSTANCE_VALUE`` "
+"时，性能分析器会同时显示特化后的名称和基础指令。"
 
 #: ../../library/profiling.sampling.rst:577
 msgid "Opcode information appears in several output formats:"
-msgstr ""
+msgstr "OPCODE 信息以多种输出格式呈现："
 
 #: ../../library/profiling.sampling.rst:579
 msgid ""
 "**Flame graphs**: Hovering over a frame displays a tooltip with a bytecode "
 "instruction breakdown, showing which opcodes consumed time in that function"
-msgstr ""
+msgstr "**火焰图**：将鼠标悬停在某个帧上时，会显示一个包含字节码指令分解的工具提示，其中会显示哪些 opcodes 在该函数中消耗了时间。"
 
 #: ../../library/profiling.sampling.rst:581
 msgid ""
 "**Heatmap**: Expandable bytecode panels per source line show instruction "
 "breakdown with specialization percentages"
-msgstr ""
+msgstr "**热力图**：按源代码行展开的可扩展字节码面板，可显示指令分解及专业化程度百分比"
 
 #: ../../library/profiling.sampling.rst:583
 msgid ""
 "**Live mode**: An opcode panel shows instruction-level statistics for the "
 "selected function, accessible via keyboard navigation"
-msgstr ""
+msgstr "**实时模式**：操作码面板会显示所选函数的指令级统计信息，可通过键盘导航访问。"
 
 #: ../../library/profiling.sampling.rst:585
 msgid ""
 "**Gecko format**: Opcode transitions are emitted as interval markers in the "
 "Firefox Profiler timeline"
-msgstr ""
+msgstr "**Gecko 格式**： Opcode 转换会以间隔标记的形式显示在 Firefox Profiler 时间轴中"
 
 #: ../../library/profiling.sampling.rst:588
 msgid "This level of detail is particularly useful for:"
-msgstr ""
+msgstr "这种程度的细节尤其适用于以下情况："
 
 #: ../../library/profiling.sampling.rst:590
 msgid ""
 "Understanding the performance impact of Python's adaptive specialization"
-msgstr ""
+msgstr "理解 Python 自适应特化对性能的影响"
 
 #: ../../library/profiling.sampling.rst:591
 msgid ""
 "Identifying hot bytecode instructions that might benefit from optimization"
-msgstr ""
+msgstr "识别可能受益于优化的热点字节码指令"
 
 #: ../../library/profiling.sampling.rst:592
 msgid ""
 "Analyzing the effectiveness of different code patterns at the instruction "
 "level"
-msgstr ""
+msgstr "在指令级分析不同代码模式的有效性"
 
 #: ../../library/profiling.sampling.rst:593
 msgid "Debugging performance issues that occur at the bytecode level"
-msgstr ""
+msgstr "调试在字节码层面出现的性能问题"
 
 #: ../../library/profiling.sampling.rst:595
 msgid ""
@@ -1081,20 +1140,23 @@ msgid ""
 "reduce sampling performance, but provides unprecedented visibility into "
 "Python's execution model."
 msgstr ""
+":option:`--opcodes` 选项兼容 "
+":option:`--live`、:option:`--flamegraph`、:option:`--heatmap` 和 "
+":option:`--gecko` 格式。它需要额外的内存来存储操作码信息，可能会略微降低采样性能，但能以前所未有的方式揭示 Python 的执行模型。"
 
 #: ../../library/profiling.sampling.rst:602
 msgid "Real-time statistics"
-msgstr ""
+msgstr "实时统计"
 
 #: ../../library/profiling.sampling.rst:604
 msgid ""
 "The :option:`--realtime-stats` option displays sampling rate statistics "
 "during profiling::"
-msgstr ""
+msgstr ":option:`--realtime-stats` 选项会在性能分析期间显示采样率统计信息::"
 
 #: ../../library/profiling.sampling.rst:607
 msgid "python -m profiling.sampling run --realtime-stats script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run --realtime-stats script.py"
 
 #: ../../library/profiling.sampling.rst:609
 msgid ""
@@ -1104,16 +1166,18 @@ msgid ""
 "collected. See :ref:`sampling-efficiency` for details on interpreting these "
 "metrics."
 msgstr ""
+"这显示了实际达到的采样率；如果性能分析器无法跟上需求，该采样率可能会低于预期值。这些统计信息有助于验证性能分析是否正常运行，以及是否已收集到足够的样本。有关如何解读这些指标的详细信息，请参阅"
+" :ref:`sampling-efficiency`。"
 
 #: ../../library/profiling.sampling.rst:616
 msgid "Subprocess profiling"
-msgstr ""
+msgstr "子过程分析"
 
 #: ../../library/profiling.sampling.rst:618
 msgid ""
 "The :option:`--subprocesses` option enables automatic profiling of "
 "subprocesses spawned by the target::"
-msgstr ""
+msgstr ":option:`--subprocesses` 选项可启用对由 target 所启动的子进程进行自动分析::"
 
 #: ../../library/profiling.sampling.rst:621
 msgid ""
@@ -1133,6 +1197,10 @@ msgid ""
 ":class:`~concurrent.futures.ProcessPoolExecutor`, or other process spawning "
 "mechanisms."
 msgstr ""
+"启用后，性能分析器会监控目标进程是否创建子进程。当检测到新的 Python "
+"子进程时，系统会自动启动一个独立的性能分析器实例，对该子进程进行性能分析。这对于使用 "
+":mod:`multiprocessing`、:mod:`subprocess`、:mod:`concurrent.futures` 与 "
+":class:`~concurrent.futures.ProcessPoolExecutor` 组合，或采用其他进程创建机制的应用程序非常有用。"
 
 #: ../../library/profiling.sampling.rst:631
 msgid "worker_pool.py"
@@ -1174,6 +1242,7 @@ msgstr ""
 msgid ""
 "python -m profiling.sampling run --subprocesses --flamegraph worker_pool.py"
 msgstr ""
+"python -m profiling.sampling run --subprocesses --flamegraph worker_pool.py"
 
 #: ../../library/profiling.sampling.rst:653
 msgid ""
@@ -1181,31 +1250,36 @@ msgid ""
 "process: ``flamegraph_<main_pid>.html``, ``flamegraph_<worker1_pid>.html``, "
 "and so on."
 msgstr ""
+"这将为主进程和每个工作进程分别生成火焰图：``flamegraph_<main_pid>.html``、``flamegraph_<worker1_pid>.html``，依此类推。"
 
 #: ../../library/profiling.sampling.rst:657
 msgid ""
 "Each subprocess receives its own output file. The filename is derived from "
 "the specified output path (or the default) with the subprocess's process ID "
 "appended:"
-msgstr ""
+msgstr "每个子进程都会获得一个独立的输出文件。文件名由指定的输出路径（或默认路径）衍生而来，并在其后附加该子进程的进程 ID："
 
 #: ../../library/profiling.sampling.rst:661
 msgid ""
 "If you specify ``-o profile.html``, subprocesses produce "
 "``profile_12345.html``, ``profile_12346.html``, and so on"
 msgstr ""
+"如果您指定 ``-o profile.html``，子进程将生成 "
+"``profile_12345.html``、``profile_12346.html`` 等。"
 
 #: ../../library/profiling.sampling.rst:663
 msgid ""
 "With default output, subprocesses produce files like "
 "``flamegraph_12345.html`` or directories like ``heatmap_12345``"
 msgstr ""
+"在默认输出模式下，子进程会生成诸如 ``flamegraph_12345.html`` 之类的文件或诸如 ``heatmap_12345`` "
+"之类的目录。"
 
 #: ../../library/profiling.sampling.rst:665
 msgid ""
 "For pstats format (which defaults to stdout), subprocesses produce files "
 "like ``profile_12345.pstats``"
-msgstr ""
+msgstr "对于 pstats 格式（默认输出至 stdout），子进程会生成诸如 ``profile_12345.pstats`` 之类的文件。"
 
 #: ../../library/profiling.sampling.rst:668
 msgid ""
@@ -1214,6 +1288,8 @@ msgid ""
 "aware mode, and output format). All Python descendant processes are profiled"
 " recursively, including grandchildren and further descendants."
 msgstr ""
+"子进程性能分析器会从父进程继承大多数采样选项（采样率、持续时间、线程选择、原生帧、GC 帧、异步感知模式以及输出格式）。所有 Python "
+"派生进程都会递归地进行性能分析，包括孙进程及更深层的派生进程。"
 
 #: ../../library/profiling.sampling.rst:673
 msgid ""
@@ -1222,6 +1298,8 @@ msgid ""
 " by probing the process memory for Python runtime structures. Non-Python "
 "subprocesses (such as shell commands or external tools) are ignored."
 msgstr ""
+"子进程检测通过定期扫描目标进程的新子进程，并检测每个新进程是否为 Python 进程来实现；检测方式是通过探查进程内存中的 Python "
+"运行时结构来完成。非 Python 子进程（例如 shell 命令或外部工具）会被忽略。"
 
 #: ../../library/profiling.sampling.rst:678
 msgid ""
@@ -1229,6 +1307,8 @@ msgid ""
 "exhaustion in programs that spawn many processes. If this limit is reached, "
 "additional subprocesses are not profiled and a warning is printed."
 msgstr ""
+"为防止在启动大量进程的程序中导致资源耗尽，同时运行的子进程分析器数量上限为 100 "
+"个。若达到此上限，则不会再对额外的子进程进行分析，同时会打印一条警告信息。"
 
 #: ../../library/profiling.sampling.rst:682
 msgid ""
@@ -1236,17 +1316,19 @@ msgid ""
 "mode because live mode uses an interactive terminal interface that cannot "
 "accommodate multiple concurrent profiler displays."
 msgstr ""
+":option:`--subprocesses` 选项与 :option:`--live` 模式不兼容，因为实时模式采用交互式终端界面，无法同时支持多个"
+" profiler 显示界面。"
 
 #: ../../library/profiling.sampling.rst:690
 msgid "Sampling efficiency"
-msgstr ""
+msgstr "采样效率"
 
 #: ../../library/profiling.sampling.rst:692
 msgid ""
 "Sampling efficiency metrics help assess the quality of the collected data. "
 "These metrics appear in the profiler's terminal output and in the flame "
 "graph sidebar."
-msgstr ""
+msgstr "采样效率指标可用于评估所采集数据的质量。这些指标会显示在分析工具的终端输出以及火焰图侧边栏中。"
 
 #: ../../library/profiling.sampling.rst:696
 msgid ""
@@ -1258,6 +1340,8 @@ msgid ""
 "profiler could not keep up with the requested sampling rate, often due to "
 "system load or an overly aggressive interval setting."
 msgstr ""
+"**采样效率** "
+"是指采样尝试成功的百分比。每次采样尝试都会从内存中读取目标进程的调用栈。如果进程在读取时处于不一致状态，采样尝试可能会失败；例如在发生上下文切换期间，或解释器正在更新其内部结构时。效率较低可能表明采样器无法跟上所请求的采样率；这通常是由于系统负载过高，或采样间隔设置过于激进所致。"
 
 #: ../../library/profiling.sampling.rst:704
 msgid ""
@@ -1268,6 +1352,8 @@ msgid ""
 "heavy load. A small percentage of missed samples is normal and does not "
 "significantly affect the statistical accuracy of the profile."
 msgstr ""
+"**漏采样本** "
+"是指预期样本中未被采集到的百分比。根据配置的间隔和时长，分析器预期会采集一定数量的样本。如果分析器进度落后于计划，部分样本可能会被漏采，例如当系统处于高负载状态时。少量漏采样本属于正常现象，不会对分析结果的统计准确性产生显著影响。"
 
 #: ../../library/profiling.sampling.rst:711
 msgid ""
@@ -1276,10 +1362,11 @@ msgid ""
 "were collected. The profiler reports the actual number of samples captured, "
 "which you can use to judge whether the data is sufficient for your analysis."
 msgstr ""
+"这两项指标仅供参考。即使存在一些失败的尝试或遗漏的样本，只要采集了足够的样本，性能分析数据在统计上仍然有效。分析器会报告实际捕获的样本数，您可据此判断数据是否足以用于分析。"
 
 #: ../../library/profiling.sampling.rst:718
 msgid "Profiling modes"
-msgstr ""
+msgstr "分析模式"
 
 #: ../../library/profiling.sampling.rst:720
 msgid ""
@@ -1288,10 +1375,12 @@ msgid ""
 " CPU execution time, time spent holding the global interpreter lock, or "
 "exception handling."
 msgstr ""
+"采样分析器支持四种模式，用于控制记录哪些样本。模式决定了分析器测量哪些指标：累计经过时间、CPU "
+"执行时间、持有全局解释器锁所花费的时间，或异常处理时间。"
 
 #: ../../library/profiling.sampling.rst:727
 msgid "Wall-clock mode"
-msgstr ""
+msgstr "实时模式"
 
 #: ../../library/profiling.sampling.rst:729
 msgid ""
@@ -1299,6 +1388,8 @@ msgid ""
 "regardless of what the thread is doing. This is the default mode and "
 "provides a complete picture of where time passes during program execution::"
 msgstr ""
+"Wall-clock 模式（:option:`--mode`\\ "
+"``=wall``）会捕获所有样本，而不受线程当前执行操作的影响。这是默认模式，能够完整呈现程序执行过程中时间的流逝情况::"
 
 #: ../../library/profiling.sampling.rst:733
 msgid "python -m profiling.sampling run --mode=wall script.py"
@@ -1311,6 +1402,8 @@ msgid ""
 " makes wall-clock profiling ideal for understanding the overall time "
 "distribution in your program, including time spent waiting."
 msgstr ""
+"在实时模式（wall-clock mode）下，无论线程是正在主动执行 Python 代码、等待 "
+"I/O、被锁定阻塞，还是处于睡眠状态，系统都会记录样本。这使得实时性能分析非常适合用于了解程序的整体时间分布，包括等待所花费的时间。"
 
 #: ../../library/profiling.sampling.rst:740
 msgid ""
@@ -1319,16 +1412,18 @@ msgid ""
 "calling function. This is often exactly what you want when optimizing end-"
 "to-end latency."
 msgstr ""
+"如果您的程序在 I/O 操作、网络调用或睡眠中花费了相当长的时间，则 wall-clock "
+"模式会将这些等待时间显示为调用函数的耗时。在优化端到端延迟时，这通常正是您所需要的。"
 
 #: ../../library/profiling.sampling.rst:747
 msgid "CPU mode"
-msgstr ""
+msgstr "CPU 模式"
 
 #: ../../library/profiling.sampling.rst:749
 msgid ""
 "CPU mode (:option:`--mode`\\ ``=cpu``) records samples only when the thread "
 "is actually executing on a CPU core::"
-msgstr ""
+msgstr "CPU 模式（:option:`--mode`\\ ``=cpu``）仅在线程实际在某个 CPU 核心上执行时才会记录样本::"
 
 #: ../../library/profiling.sampling.rst:752
 msgid "python -m profiling.sampling run --mode=cpu script.py"
@@ -1340,6 +1435,7 @@ msgid ""
 " lock are discarded. The resulting profile shows where CPU cycles are "
 "consumed, filtering out idle time."
 msgstr ""
+"在线程处于休眠状态、被 I/O 阻塞或等待锁时采集的样本会被丢弃。由此生成的性能剖面图会显示 CPU 周期被消耗于何处，同时过滤掉空闲时间。"
 
 #: ../../library/profiling.sampling.rst:758
 msgid ""
@@ -1348,23 +1444,25 @@ msgid ""
 "computation and network calls, CPU mode reveals which computational sections"
 " are most expensive."
 msgstr ""
+"当您需要专注于计算热点，而不受 I/O 等待的干扰时，CPU 模式非常有用。如果您的程序在计算和网络调用之间交替执行，CPU "
+"模式可以揭示哪些计算段最为耗时。"
 
 #: ../../library/profiling.sampling.rst:765
 msgid "Comparing wall-clock and CPU profiles"
-msgstr ""
+msgstr "比较 Wall-clock 与 CPU 性能剖面"
 
 #: ../../library/profiling.sampling.rst:767
 msgid ""
 "Running both wall-clock and CPU mode profiles can reveal whether a "
 "function's time is spent computing or waiting."
-msgstr ""
+msgstr "同时运行 wall-clock 模式和 CPU 模式的性能分析，可以揭示某个函数的运行时间究竟用于计算还是用于等待。"
 
 #: ../../library/profiling.sampling.rst:770
 msgid ""
 "If a function appears prominently in both profiles, it is a true "
 "computational hotspot---actively using the CPU. Optimization should focus on"
 " algorithmic improvements or more efficient code."
-msgstr ""
+msgstr "如果某个函数在两个配置中均显著出现，那么它就是真正的计算热点——正在积极占用 CPU 资源。优化工作应侧重于算法改进或编写更高效的代码。"
 
 #: ../../library/profiling.sampling.rst:774
 msgid ""
@@ -1373,6 +1471,9 @@ msgid ""
 "network, disk, locks, or sleep. CPU optimization won't help here; consider "
 "async I/O, connection pooling, or reducing wait time instead."
 msgstr ""
+"如果某个函数在 wall-clock 模式下性能较高，但在 CPU 模式下性能较低或几乎不运行，那么该函数处于 I/O "
+"密集型状态或正在等待。此时，该函数大部分时间都在等待网络、磁盘、锁或睡眠操作；CPU 优化对此并无帮助；应考虑采用异步 "
+"I/O、连接池或缩短等待时间等措施。"
 
 #: ../../library/profiling.sampling.rst:779
 msgid ""
@@ -1405,20 +1506,22 @@ msgid ""
 "python -m profiling.sampling run --mode=wall script.py  # do_sleep ~98%, do_compute ~1%\n"
 "python -m profiling.sampling run --mode=cpu script.py   # do_sleep absent, do_compute dominates"
 msgstr ""
+"python -m profiling.sampling run --mode=wall script.py  # do_sleep ~98%, do_compute ~1%\n"
+"python -m profiling.sampling run --mode=cpu script.py   # do_sleep absent, do_compute dominates"
 
 #: ../../library/profiling.sampling.rst:800
 msgid "GIL mode"
-msgstr ""
+msgstr "吉尔模式"
 
 #: ../../library/profiling.sampling.rst:802
 msgid ""
 "GIL mode (:option:`--mode`\\ ``=gil``) records samples only when the thread "
 "holds Python's global interpreter lock::"
-msgstr ""
+msgstr "GIL 模式（:option:`--mode`\\ ``=gil``）仅在线程持有 Python 全局解释器锁时记录样本::"
 
 #: ../../library/profiling.sampling.rst:805
 msgid "python -m profiling.sampling run --mode=gil script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run --mode=gil script.py"
 
 #: ../../library/profiling.sampling.rst:807
 msgid ""
@@ -1427,6 +1530,8 @@ msgid ""
 "typically released. This means GIL mode effectively measures time spent "
 "running Python code specifically, filtering out time in native libraries."
 msgstr ""
+"GIL 仅在执行 Python 字节码期间保持激活状态。当 Python 调用 C 扩展、执行 I/O 操作或执行原生代码时，GIL "
+"通常会释放。这意味着 GIL 模式能够专门测量 Python 代码运行的耗时，从而排除原生库中的耗时。"
 
 #: ../../library/profiling.sampling.rst:812
 msgid ""
@@ -1435,6 +1540,8 @@ msgid ""
 " at a time, functions that appear frequently in GIL mode profiles are "
 "monopolizing the interpreter."
 msgstr ""
+"在多线程程序中，GIL 模式会揭示哪些代码正在阻止其他线程运行 Python 字节码。由于同一时间只能有一个线程持有 GIL，因此在 GIL "
+"模式分析报告中出现频率较高的函数，实际上正在独占解释器资源。"
 
 #: ../../library/profiling.sampling.rst:817
 msgid ""
@@ -1443,6 +1550,8 @@ msgid ""
 "single-threaded programs to distinguish Python execution time from time "
 "spent in C extensions or I/O."
 msgstr ""
+"GIL 模式有助于回答诸如“哪些函数正在独占 GIL？”以及“为什么我的其他线程处于饥饿状态？”等问题。在单线程程序中，它也有助于区分 Python "
+"的执行时间与用于 C 扩展或 I/O 所花费的时间。"
 
 #: ../../library/profiling.sampling.rst:822
 msgid ""
@@ -1462,26 +1571,43 @@ msgid ""
 "    hash_work()\n"
 "    python_work()"
 msgstr ""
+"import hashlib\n"
+"\n"
+"def hash_work():\n"
+"    # C extension - releases GIL during computation\n"
+"    for _ in range(200):\n"
+"        hashlib.sha256(b\"data\" * 250000).hexdigest()\n"
+"\n"
+"def python_work():\n"
+"    # Pure Python - holds GIL during computation\n"
+"    for _ in range(3):\n"
+"        sum(i**2 for i in range(1000000))\n"
+"\n"
+"if __name__ == \"__main__\":\n"
+"    hash_work()\n"
+"    python_work()"
 
 #: ../../library/profiling.sampling.rst:842
 msgid ""
 "python -m profiling.sampling run --mode=cpu script.py  # hash_work ~42%, python_work ~38%\n"
 "python -m profiling.sampling run --mode=gil script.py  # hash_work ~5%, python_work ~60%"
 msgstr ""
+"python -m profiling.sampling run --mode=cpu script.py  # hash_work ~42%, python_work ~38%\n"
+"python -m profiling.sampling run --mode=gil script.py  # hash_work ~5%, python_work ~60%"
 
 #: ../../library/profiling.sampling.rst:847
 msgid "Exception mode"
-msgstr ""
+msgstr "异常模式"
 
 #: ../../library/profiling.sampling.rst:849
 msgid ""
 "Exception mode (``--mode=exception``) records samples only when a thread has"
 " an active exception::"
-msgstr ""
+msgstr "异常模式（``--mode=exception``）仅在某个线程发生有效异常时才会记录样本::"
 
 #: ../../library/profiling.sampling.rst:852
 msgid "python -m profiling.sampling run --mode=exception script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run --mode=exception script.py"
 
 #: ../../library/profiling.sampling.rst:854
 msgid ""
@@ -1490,10 +1616,12 @@ msgid ""
 "when code is executing inside an ``except`` block where exception "
 "information is still present in the thread state."
 msgstr ""
+"样本会在两种情况下被记录：一是当异常沿调用堆栈向上传播时（在 ``raise`` 之后、被捕获之前）；二是当代码在 ``except`` "
+"块内部执行时，此时线程状态中仍包含异常信息。"
 
 #: ../../library/profiling.sampling.rst:859
 msgid "The following example illustrates which code regions are captured:"
-msgstr ""
+msgstr "以下示例说明了哪些代码区域会被捕获："
 
 #: ../../library/profiling.sampling.rst:861
 msgid ""
@@ -1520,6 +1648,28 @@ msgid ""
 "    finally:\n"
 "        cleanup()                    # NOT captured: no exception involved"
 msgstr ""
+"def example():\n"
+"    try:\n"
+"        raise ValueError(\"error\")    # Captured: exception being raised\n"
+"    except ValueError:\n"
+"        process_error()              # Captured: inside except block\n"
+"    finally:\n"
+"        cleanup()                    # NOT captured: exception already handled\n"
+"\n"
+"def example_propagating():\n"
+"    try:\n"
+"        try:\n"
+"            raise ValueError(\"error\")\n"
+"        finally:\n"
+"            cleanup()                # Captured: exception propagating through\n"
+"    except ValueError:\n"
+"        pass\n"
+"\n"
+"def example_no_exception():\n"
+"    try:\n"
+"        do_work()\n"
+"    finally:\n"
+"        cleanup()                    # NOT captured: no exception involved"
 
 #: ../../library/profiling.sampling.rst:886
 msgid ""
@@ -1530,6 +1680,9 @@ msgid ""
 "execution (when no exception was raised) are not captured because no "
 "exception state is present."
 msgstr ""
+"请注意，只有当异常正在这些 ``finally`` 块中主动传播时，这些 ``finally`` 块才会被捕获。一旦 ``except`` "
+"块完成执行，Python 会在运行任何后续的 ``finally`` 块之前清除异常信息。同样，在正常执行期间（未引发任何异常时）运行的 "
+"``finally`` 块也不会被捕获，因为此时不存在异常状态。"
 
 #: ../../library/profiling.sampling.rst:892
 msgid ""
@@ -1539,6 +1692,8 @@ msgid ""
 "iterators) or in applications that process many error conditions (such as "
 "network servers handling connection failures)."
 msgstr ""
+"这种模式有助于了解您的程序在何处花费时间处理错误。对于使用异常进行流控制（例如迭代器中的 "
+"``StopIteration``）或需要处理多种错误情况的应用程序（例如处理连接失败的网络服务器）而言，异常处理可能会成为代码中一个显著的开销来源。"
 
 #: ../../library/profiling.sampling.rst:898
 msgid ""
@@ -1550,10 +1705,11 @@ msgid ""
 "this mode will capture time spent in those handlers even if the calling code"
 " never sees the exceptions."
 msgstr ""
+"异常模式有助于回答诸如“处理异常所花费的时间是多少？”以及“哪些异常处理程序的性能开销最大？”这类问题。即使这些异常得到了妥善处理，该模式也能揭示出在捕获并处理大量异常的代码中隐藏的性能开销。例如，如果某个解析库在内部使用异常来指示格式错误，那么即使调用代码从未看到这些异常，该模式仍会捕获在这些处理程序中花费的时间。"
 
 #: ../../library/profiling.sampling.rst:908
 msgid "Output formats"
-msgstr ""
+msgstr "输出格式"
 
 #: ../../library/profiling.sampling.rst:910
 msgid ""
@@ -1561,16 +1717,17 @@ msgid ""
 "analysis workflows. The format is selected with a command-line flag, and "
 "output goes to stdout, a file, or a directory depending on the format."
 msgstr ""
+"该分析器可生成多种格式的输出，每种格式适用于不同的分析工作流。通过命令行标志选择格式，输出内容则根据格式不同，写入 stdout、文件或目录。"
 
 #: ../../library/profiling.sampling.rst:916
 msgid "pstats format"
-msgstr ""
+msgstr "pstats 格式"
 
 #: ../../library/profiling.sampling.rst:918
 msgid ""
 "The pstats format (:option:`--pstats`) produces a text table similar to what"
 " deterministic profilers generate. This is the default output format::"
-msgstr ""
+msgstr "pstats 格式（:option:`--pstats`）会生成一种与确定性分析器所生成结果类似的文本表格。这是默认的输出格式::"
 
 #: ../../library/profiling.sampling.rst:921
 msgid ""
@@ -1582,17 +1739,17 @@ msgstr ""
 
 #: ../../library/profiling.sampling.rst:924
 msgid "Tachyon pstats terminal output"
-msgstr ""
+msgstr "Tachyon pstats 终端输出"
 
 #: ../../library/profiling.sampling.rst:929
 msgid ""
 "The pstats format displays profiling results in a color-coded table showing "
 "function hotspots, sample counts, and timing estimates."
-msgstr ""
+msgstr "pstats 格式以彩色编码表格的形式展示分析结果，其中显示功能热点、样本计数和时序估计值。"
 
 #: ../../library/profiling.sampling.rst:932
 msgid "Output appears on stdout by default::"
-msgstr ""
+msgstr "默认情况下，输出会显示在 stdout 上::"
 
 #: ../../library/profiling.sampling.rst:934
 msgid ""
@@ -1610,7 +1767,7 @@ msgstr ""
 
 #: ../../library/profiling.sampling.rst:940
 msgid "The columns show sampling counts and estimated times:"
-msgstr ""
+msgstr "各列显示采样次数及估计时间："
 
 #: ../../library/profiling.sampling.rst:942
 msgid ""
@@ -1621,12 +1778,15 @@ msgid ""
 " shows ``10/50``, it was directly executing in 10 samples and was on the "
 "call stack in 50 samples total."
 msgstr ""
+"**nsamples**：以 ``direct/cumulative`` 的形式显示（例如 "
+"``10/50``）。直接样本是指函数处于堆栈顶部并正在主动执行时的样本；累积样本是指函数出现在堆栈的任意位置时的样本，包括等待被调用的函数时。如果某个函数显示为"
+" ``10/50``，则说明该函数有 10 个样本处于直接执行状态，且总计有 50 个样本处于调用堆栈中。"
 
 #: ../../library/profiling.sampling.rst:949
 msgid ""
 "**sample%** and **cumul%**: Percentages of total samples for direct and "
 "cumulative counts respectively."
-msgstr ""
+msgstr "**sample%** 和 **cumul%**：分别表示直接计数和累积计数的样本占总样本数的百分比。"
 
 #: ../../library/profiling.sampling.rst:952
 msgid ""
@@ -1635,12 +1795,14 @@ msgid ""
 "based on the magnitude: seconds for large values, milliseconds for moderate "
 "values, or microseconds for small values."
 msgstr ""
+"**tottime** 和 "
+"**cumtime**：根据样本数量和性能分析持续时间估算的实际运行时间。时间单位会根据数值大小自动选择：较大值使用秒，中等值使用毫秒，较小值则使用微秒。"
 
 #: ../../library/profiling.sampling.rst:957
 msgid ""
 "The output includes a legend explaining each column and a summary of "
 "interesting functions that highlights:"
-msgstr ""
+msgstr "输出内容包括一个说明各列含义的图例，以及一份重点介绍以下内容的有趣函数摘要："
 
 #: ../../library/profiling.sampling.rst:960
 msgid ""
@@ -1649,6 +1811,8 @@ msgid ""
 "code rather than waiting for callees. High ratios indicate where CPU time is"
 " actually consumed."
 msgstr ""
+"**热点函数**：直接样本占比或累计样本占比较高的函数（比值接近 1.0）。这类函数将大部分时间用于执行自身代码，而非等待被调用函数。高比值表明 CPU"
+" 时间真正消耗于这些函数。"
 
 #: ../../library/profiling.sampling.rst:965
 msgid ""
@@ -1656,32 +1820,33 @@ msgid ""
 "direct samples. These are orchestration functions that delegate work to "
 "other functions. They appear frequently on the stack but rarely at the top."
 msgstr ""
+"**间接调用**：累积样本与直接样本之间存在较大差异的函数。这类函数属于编排函数，会将工作委托给其他函数。它们频繁出现在调用栈中，但很少位于栈顶。"
 
 #: ../../library/profiling.sampling.rst:969
 msgid ""
 "**Call magnification**: Functions where cumulative samples far exceed direct"
 " samples (high cumulative/direct multiplier). These are frequently-nested "
 "functions that appear deep in many call chains."
-msgstr ""
+msgstr "**调用级放大**：指累积样本量远超过直接样本量的函数（累积/直接倍数较高）。这类函数通常具有嵌套特性，会出现在多个调用链的深层位置。"
 
 #: ../../library/profiling.sampling.rst:973
 msgid ""
 "Use :option:`--no-summary` to suppress both the legend and summary sections."
-msgstr ""
+msgstr "使用 :option:`--no-summary` 同时抑制图例部分和摘要部分。"
 
 #: ../../library/profiling.sampling.rst:975
 msgid "To save pstats output to a binary file instead of stdout::"
-msgstr ""
+msgstr "将 pstats 输出保存为二进制文件，而非输出到 stdout::"
 
 #: ../../library/profiling.sampling.rst:977
 msgid "python -m profiling.sampling run -o profile.pstats script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run -o profile.pstats script.py"
 
 #: ../../library/profiling.sampling.rst:979
 msgid ""
 "The pstats format supports several options for controlling the display. The "
 ":option:`--sort` option determines the column used for ordering results::"
-msgstr ""
+msgstr "pstats 格式支持多种用于控制显示方式的选项。:option:`--sort` 选项用于确定用于对结果进行排序的列::"
 
 #: ../../library/profiling.sampling.rst:982
 msgid ""
@@ -1695,27 +1860,27 @@ msgstr ""
 
 #: ../../library/profiling.sampling.rst:986
 msgid "The :option:`--limit` option restricts output to the top N entries::"
-msgstr ""
+msgstr ":option:`--limit` 选项将输出限制为前 N 条记录::"
 
 #: ../../library/profiling.sampling.rst:988
 msgid "python -m profiling.sampling run --limit=30 script.py"
-msgstr ""
+msgstr "python -m profiling.sampling run --limit=30 script.py"
 
 #: ../../library/profiling.sampling.rst:990
 msgid ""
 "The :option:`--no-summary` option suppresses the header summary that "
 "precedes the statistics table."
-msgstr ""
+msgstr ":option:`--no-summary` 选项会抑制统计表之前的标题摘要。"
 
 #: ../../library/profiling.sampling.rst:995
 msgid "Collapsed stacks format"
-msgstr ""
+msgstr "折叠堆栈格式"
 
 #: ../../library/profiling.sampling.rst:997
 msgid ""
 "Collapsed stacks format (:option:`--collapsed`) produces one line per unique"
 " call stack, with a count of how many times that stack was sampled::"
-msgstr ""
+msgstr "折叠堆栈格式（:option:`--collapsed`）会为每个唯一的调用堆栈生成一行，并记录该堆栈被采样的次数::"
 
 #: ../../library/profiling.sampling.rst:1000
 msgid "python -m profiling.sampling run --collapsed script.py"
@@ -1723,7 +1888,7 @@ msgstr "python -m profiling.sampling run --collapsed script.py"
 
 #: ../../library/profiling.sampling.rst:1002
 msgid "The output looks like:"
-msgstr ""
+msgstr "输出结果如下："
 
 #: ../../library/profiling.sampling.rst:1004
 msgid ""
@@ -1731,6 +1896,9 @@ msgid ""
 "main;process_data;parse_json 156\n"
 "main;handle_request;send_response 89"
 msgstr ""
+"main;process_data;parse_json;decode_utf8 42\n"
+"main;process_data;parse_json 156\n"
+"main;handle_request;send_response 89"
 
 #: ../../library/profiling.sampling.rst:1010
 msgid ""
@@ -1739,62 +1907,72 @@ msgid ""
 "format is designed for compatibility with external flame graph tools, "
 "particularly Brendan Gregg's ``flamegraph.pl`` script."
 msgstr ""
+"每行包含以分号分隔的函数名，这些函数名按从底到顶的顺序表示调用栈；随后是一个空格，以及样本数量。此格式旨在与外部火焰图工具保持兼容，尤其是 "
+"Brendan Gregg 的 ``flamegraph.pl`` 脚本。"
 
 #: ../../library/profiling.sampling.rst:1015
 msgid "To generate a flame graph from collapsed stacks::"
-msgstr ""
+msgstr "从折叠堆栈生成火焰图::"
 
 #: ../../library/profiling.sampling.rst:1017
 msgid ""
 "python -m profiling.sampling run --collapsed script.py > stacks.txt\n"
 "flamegraph.pl stacks.txt > profile.svg"
 msgstr ""
+"python -m profiling.sampling run --collapsed script.py > stacks.txt\n"
+"flamegraph.pl stacks.txt > profile.svg"
 
 #: ../../library/profiling.sampling.rst:1020
 msgid ""
 "The resulting SVG can be viewed in any web browser and provides an "
 "interactive visualization where you can click to zoom into specific call "
 "paths."
-msgstr ""
+msgstr "生成的 SVG 可以在任何网页浏览器中查看，并提供交互式可视化功能，您可以点击以放大特定呼叫路径。"
 
 #: ../../library/profiling.sampling.rst:1025
 msgid "Flame graph format"
-msgstr ""
+msgstr "火焰图格式"
 
 #: ../../library/profiling.sampling.rst:1027
 msgid ""
 "Flame graph format (:option:`--flamegraph`) produces a self-contained HTML "
 "file with an interactive flame graph visualization::"
 msgstr ""
+"Flame graph 格式（:option:`--flamegraph`）会生成一个独立的 HTML 文件，其中包含交互式 Flame graph "
+"可视化界面::"
 
 #: ../../library/profiling.sampling.rst:1030
 msgid ""
 "python -m profiling.sampling run --flamegraph script.py\n"
 "python -m profiling.sampling run --flamegraph -o profile.html script.py"
 msgstr ""
+"python -m profiling.sampling run --flamegraph script.py\n"
+"python -m profiling.sampling run --flamegraph -o profile.html script.py"
 
 #: ../../library/profiling.sampling.rst:1033
 msgid "Tachyon interactive flame graph"
-msgstr ""
+msgstr "Tachyon 交互式火焰图"
 
 #: ../../library/profiling.sampling.rst:1038
 msgid ""
 "The flame graph visualization shows call stacks as nested rectangles, with "
 "width proportional to time spent. The sidebar displays runtime statistics, "
 "GIL metrics, and hotspot functions."
-msgstr ""
+msgstr "火焰图可视化将调用栈显示为嵌套矩形，其宽度与耗时成正比；侧边栏则显示运行时统计信息、GIL 指标以及热点函数。"
 
 #: ../../library/profiling.sampling.rst:1044
 msgid ""
 "`Try the interactive example <../_static/tachyon-example-"
 "flamegraph.html>`__!"
 msgstr ""
+"`Try the interactive example <../_static/tachyon-example-"
+"flamegraph.html>`__!"
 
 #: ../../library/profiling.sampling.rst:1046
 msgid ""
 "If no output file is specified, the profiler generates a filename based on "
 "the process ID (for example, ``flamegraph.12345.html``)."
-msgstr ""
+msgstr "如果未指定输出文件，性能分析器将基于进程 ID 生成文件名（例如， ``flamegraph.12345.html``）。"
 
 #: ../../library/profiling.sampling.rst:1049
 msgid ""
@@ -1804,64 +1982,66 @@ msgid ""
 " shows details about that function including source code context, and "
 "clicking zooms into that portion of the call tree."
 msgstr ""
+"生成的 HTML "
+"文件无需任何外部依赖，可直接在网页浏览器中打开。可视化界面将调用栈以嵌套矩形形式呈现，矩形的宽度与所花费的时间成正比。将鼠标悬停在矩形上可查看该函数的详细信息，包括源代码上下文；点击矩形则可将调用树放大至该部分。"
 
 #: ../../library/profiling.sampling.rst:1055
 msgid "The flame graph interface includes:"
-msgstr ""
+msgstr "火焰图界面包括："
 
 #: ../../library/profiling.sampling.rst:1057
 msgid ""
 "A sidebar showing profile summary, thread statistics, sampling efficiency "
 "metrics (see :ref:`sampling-efficiency`), and top hotspot functions"
-msgstr ""
+msgstr "侧边栏显示性能分析摘要、线程统计信息、采样效率指标（参见 :ref:`sampling-efficiency`）以及主要热点函数"
 
 #: ../../library/profiling.sampling.rst:1059
 msgid ""
 "Search functionality supporting both function name matching and "
 "``file.py:42`` line patterns"
-msgstr ""
+msgstr "支持函数名称匹配和 ``file.py:42`` 行模式的搜索功能"
 
 #: ../../library/profiling.sampling.rst:1061
 msgid "Per-thread filtering via dropdown"
-msgstr ""
+msgstr "通过下拉菜单按线程筛选"
 
 #: ../../library/profiling.sampling.rst:1062
 msgid "Dark/light theme toggle (preference saved across sessions)"
-msgstr ""
+msgstr "Dark/light theme toggle (preference saved across sessions)"
 
 #: ../../library/profiling.sampling.rst:1063
 msgid "SVG export for saving the current view"
-msgstr ""
+msgstr "SVG 导出以保存当前视图"
 
 #: ../../library/profiling.sampling.rst:1065
 msgid "The thread statistics section shows runtime behavior metrics:"
-msgstr ""
+msgstr "线程统计部分显示运行时行为指标："
 
 #: ../../library/profiling.sampling.rst:1067
 msgid ""
 "**GIL Held**: percentage of samples where a thread held the global "
 "interpreter lock (actively running Python code)"
-msgstr ""
+msgstr "**GIL Held**：线程持有全局解释器锁（正在运行 Python 代码）的样本百分比"
 
 #: ../../library/profiling.sampling.rst:1069
 msgid "**GIL Released**: percentage of samples where no thread held the GIL"
-msgstr ""
+msgstr "**GIL 释放率**：未有任何线程持有 GIL 的样本百分比"
 
 #: ../../library/profiling.sampling.rst:1070
 msgid ""
 "**Waiting GIL**: percentage of samples where a thread was waiting to acquire"
 " the GIL"
-msgstr ""
+msgstr "**等待 GIL**：线程正在等待获取 GIL 的样本所占百分比"
 
 #: ../../library/profiling.sampling.rst:1072
 msgid "**GC**: percentage of samples during garbage collection"
-msgstr ""
+msgstr "**GC**：垃圾回收期间样本的百分比"
 
 #: ../../library/profiling.sampling.rst:1074
 msgid ""
 "These statistics help identify GIL contention and understand how time is "
 "distributed between Python execution, native code, and waiting."
-msgstr ""
+msgstr "这些统计数据有助于识别 GIL 争用情况，并了解时间是如何在 Python 执行、原生代码和等待之间分配的。"
 
 #: ../../library/profiling.sampling.rst:1077
 msgid ""
@@ -1869,11 +2049,11 @@ msgid ""
 " understanding the hierarchical structure of time consumption. Wide "
 "rectangles at the top indicate functions that consume significant time "
 "either directly or through their callees."
-msgstr ""
+msgstr "火焰图在识别深层调用栈和理解时间消耗的层级结构方面尤为有效。顶部的宽矩形表示那些直接或通过其被调用函数而消耗大量时间的函数。"
 
 #: ../../library/profiling.sampling.rst:1084
 msgid "Differential flame graphs"
-msgstr ""
+msgstr "差异火焰图"
 
 #: ../../library/profiling.sampling.rst:1086
 msgid ""
@@ -1881,6 +2061,7 @@ msgid ""
 "performance changed. This helps identify regressions introduced by code "
 "changes and validate that optimizations achieved their intended effect::"
 msgstr ""
+"差异火焰图通过对比两次性能分析运行，突出显示性能发生变化的位置。这有助于识别因代码变更而导致的性能倒退，并验证所实现的优化是否达到了预期效果::"
 
 #: ../../library/profiling.sampling.rst:1090
 msgid ""
@@ -1890,37 +2071,42 @@ msgid ""
 "# After modifying code, generate differential flamegraph\n"
 "python -m profiling.sampling run --diff-flamegraph baseline.bin -o diff.html script.py"
 msgstr ""
+"# Capture baseline profile\n"
+"python -m profiling.sampling run --binary -o baseline.bin script.py\n"
+"\n"
+"# After modifying code, generate differential flamegraph\n"
+"python -m profiling.sampling run --diff-flamegraph baseline.bin -o diff.html script.py"
 
 #: ../../library/profiling.sampling.rst:1096
 msgid ""
 "The visualization draws the current profile with frame widths showing "
 "current time consumption, then applies color to indicate how each function "
 "changed relative to the baseline."
-msgstr ""
+msgstr "该可视化会绘制当前的性能分析数据，其中帧宽表示当前的时间消耗；随后通过颜色标示出每个函数相对于基线发生了怎样的变化。"
 
 #: ../../library/profiling.sampling.rst:1100
 msgid "**Color coding**:"
-msgstr ""
+msgstr "**颜色编码**："
 
 #: ../../library/profiling.sampling.rst:1102
 msgid ""
 "**Red**: Functions consuming more time (regressions). Lighter shades "
 "indicate modest increases, while darker shades show severe regressions."
-msgstr ""
+msgstr "**红色**：耗时较长的函数（回归分析）。浅色表示适度增加，深色则表示严重回归。"
 
 #: ../../library/profiling.sampling.rst:1105
 msgid ""
 "**Blue**: Functions consuming less time (improvements). Lighter shades for "
 "modest reductions, darker shades for significant speedups."
-msgstr ""
+msgstr "**蓝色**：用于耗时更短的功能（性能提升）。浅色调表示适度降低，深色调表示显著提速。"
 
 #: ../../library/profiling.sampling.rst:1108
 msgid "**Gray**: Minimal or no change."
-msgstr ""
+msgstr "**灰色**：几乎无变化或无变化。"
 
 #: ../../library/profiling.sampling.rst:1110
 msgid "**Purple**: New functions not present in the baseline."
-msgstr ""
+msgstr "**紫色**：基线中未包含的新功能。"
 
 #: ../../library/profiling.sampling.rst:1112
 msgid ""
@@ -1929,6 +2115,7 @@ msgid ""
 " callees. Hovering over a frame shows comparison details including baseline "
 "time, current time, and the percentage change."
 msgstr ""
+"帧颜色表示**直接时间**的变化（即函数处于堆栈顶部、正在主动执行时的时间），而非包含被调用函数在内的累计时间。将鼠标悬停在帧上时，会显示对比详情，包括基准时间、当前时间及百分比变化。"
 
 #: ../../library/profiling.sampling.rst:1117
 msgid ""
@@ -1938,22 +2125,25 @@ msgid ""
 "toggle appears allowing you to switch between the main differential view and"
 " an elided-only view that shows just the removed paths (colored purple)."
 msgstr ""
+"某些调用路径可能会在配置文件之间完全消失。这类路径被称为**省略堆栈**；当优化操作移除了代码路径，或某些分支停止执行时，就会发生这种情况。如果存在省略堆栈，则会显示一个“省略”切换控件，允许您在主差异视图与仅显示已移除路径的省略视图之间进行切换（这些路径以紫色显示）。"
 
 #: ../../library/profiling.sampling.rst:1125
 msgid "Gecko format"
-msgstr ""
+msgstr "Gecko 格式"
 
 #: ../../library/profiling.sampling.rst:1127
 msgid ""
 "Gecko format (:option:`--gecko`) produces JSON output compatible with the "
 "Firefox Profiler::"
-msgstr ""
+msgstr "Gecko 格式（:option:`--gecko`）生成的 JSON 输出与 Firefox Profiler 兼容::"
 
 #: ../../library/profiling.sampling.rst:1130
 msgid ""
 "python -m profiling.sampling run --gecko script.py\n"
 "python -m profiling.sampling run --gecko -o profile.json script.py"
 msgstr ""
+"python -m profiling.sampling run --gecko script.py\n"
+"python -m profiling.sampling run --gecko -o profile.json script.py"
 
 #: ../../library/profiling.sampling.rst:1133
 msgid ""
@@ -1964,6 +2154,9 @@ msgid ""
 "documentation <https://profiler.firefox.com/docs/#/>`__ for detailed usage "
 "instructions."
 msgstr ""
+"`Firefox Profiler <https://profiler.firefox.com>`__ 是一款功能先进的基于 Web 的工具，最初是为对"
+" Firefox 本身进行性能分析而开发的。它提供的功能不仅限于基础火焰图，还包括时间线视图、调用树探索以及标记可视化。有关详细使用说明，请参阅 "
+"`Firefox Profiler documentation <https://profiler.firefox.com/docs/#/>`__。"
 
 #: ../../library/profiling.sampling.rst:1140
 msgid ""
@@ -1971,6 +2164,8 @@ msgid ""
 "JSON file. The profiler runs entirely client-side, so your profiling data "
 "never leaves your machine."
 msgstr ""
+"要使用输出结果，请在浏览器中打开 Firefox Profiler，并加载 JSON "
+"文件。该分析器完全在客户端运行，因此您的分析数据永远不会离开您的机器。"
 
 #: ../../library/profiling.sampling.rst:1144
 msgid ""
@@ -1979,57 +2174,59 @@ msgid ""
 "model. The profiler emits interval markers that appear as colored bands in "
 "the Firefox Profiler timeline:"
 msgstr ""
+"Gecko 格式会自动收集有关 GIL 状态和 CPU 活动的额外元数据，从而支持针对 Python "
+"线程模型而设计的特定分析功能。性能分析器会生成间隔标记，这些标记会在 Firefox Profiler 时间轴中以彩色条带的形式显示："
 
 #: ../../library/profiling.sampling.rst:1149
 msgid ""
 "**GIL markers**: show when threads hold or release the global interpreter "
 "lock"
-msgstr ""
+msgstr "**GIL 标记**：用于显示线程何时持有或释放全局解释器锁"
 
 #: ../../library/profiling.sampling.rst:1150
 msgid "**CPU markers**: show when threads are executing on CPU versus idle"
-msgstr ""
+msgstr "**CPU 标记**：显示线程是在 CPU 上执行还是处于空闲状态"
 
 #: ../../library/profiling.sampling.rst:1151
 msgid ""
 "**Code type markers**: distinguish Python code from native (C extension) "
 "code"
-msgstr ""
+msgstr "**代码类型标记**：用于区分 Python 代码与原生（C 扩展）代码"
 
 #: ../../library/profiling.sampling.rst:1152
 msgid "**GC markers**: indicate garbage collection activity"
-msgstr ""
+msgstr "**GC 标记**：表示垃圾回收活动"
 
 #: ../../library/profiling.sampling.rst:1154
 msgid ""
 "For this reason, the :option:`--mode` option is not available with Gecko "
 "format; all relevant data is captured automatically."
-msgstr ""
+msgstr "因此，:option:`--mode` 选项在 Gecko 格式下不可用；所有相关数据均会自动捕获。"
 
 #: ../../library/profiling.sampling.rst:1157
 msgid "Firefox Profiler Call Tree view"
-msgstr ""
+msgstr "Firefox Profiler 调用树视图"
 
 #: ../../library/profiling.sampling.rst:1162
 msgid ""
 "The Call Tree view shows the complete call hierarchy with sample counts and "
 "percentages. The sidebar displays detailed statistics for the selected "
 "function including running time and sample distribution."
-msgstr ""
+msgstr "调用树视图会显示完整的调用层级结构，以及样本数量和百分比。侧边栏则显示所选函数的详细统计信息，包括运行时间和样本分布。"
 
 #: ../../library/profiling.sampling.rst:1166
 msgid "Firefox Profiler Flame Graph view"
-msgstr ""
+msgstr "Firefox Profiler 火焰图视图"
 
 #: ../../library/profiling.sampling.rst:1171
 msgid ""
 "The Flame Graph visualization shows call stacks as nested rectangles. "
 "Functions names are visible in the call hierarchy."
-msgstr ""
+msgstr "火焰图可视化将调用栈显示为嵌套矩形；函数名称则显示在调用层级结构中。"
 
 #: ../../library/profiling.sampling.rst:1174
 msgid "Firefox Profiler Marker Chart with opcodes"
-msgstr ""
+msgstr "带有操作码的 Firefox Profiler 标记图"
 
 #: ../../library/profiling.sampling.rst:1179
 msgid ""
@@ -2038,16 +2235,19 @@ msgid ""
 "``BINARY_OP_ADD_FLOAT``, ``CALL_PY_EXACT_ARGS``, and ``CALL_LIST_APPEND`` "
 "appear as markers showing execution over time."
 msgstr ""
+"标记图会显示间隔标记，包括 CPU 状态、GIL 状态和操作码。当 ``--opcodes`` 启用时，诸如 "
+"``BINARY_OP_ADD_FLOAT``、``CALL_PY_EXACT_ARGS`` 和 ``CALL_LIST_APPEND`` "
+"等字节码指令会以标记形式显示，反映其随时间推移的执行情况。"
 
 #: ../../library/profiling.sampling.rst:1186
 msgid "Heatmap format"
-msgstr ""
+msgstr "热图格式"
 
 #: ../../library/profiling.sampling.rst:1188
 msgid ""
 "Heatmap format (:option:`--heatmap`) generates an interactive HTML "
 "visualization showing sample counts at the source line level::"
-msgstr ""
+msgstr "热图格式（:option:`--heatmap`）可生成交互式 HTML 可视化界面，以源行级别显示样本计数::"
 
 #: ../../library/profiling.sampling.rst:1191
 msgid ""
@@ -2059,7 +2259,7 @@ msgstr ""
 
 #: ../../library/profiling.sampling.rst:1194
 msgid "Tachyon heatmap visualization"
-msgstr ""
+msgstr "快子热力图可视化"
 
 #: ../../library/profiling.sampling.rst:1199
 msgid ""
@@ -2067,6 +2267,7 @@ msgid ""
 "color-coded from cool (few samples) to hot (many samples). Navigation "
 "buttons (▲▼) let you jump between callers and callees."
 msgstr ""
+"热图将样本计数直接叠加在您的源代码上。线条采用颜色编码，从冷色（样本数量少）到暖色（样本数量多）表示不同水平。导航按钮（▲▼）可让您在调用者和被调用者之间跳转。"
 
 #: ../../library/profiling.sampling.rst:1203
 msgid ""
@@ -2074,6 +2275,8 @@ msgid ""
 "directory containing HTML files for each profiled source file. If no output "
 "path is specified, the directory is named ``heatmap_PID``."
 msgstr ""
+"与其他生成单个文件的格式不同，热图输出会创建一个目录，其中包含每个经过分析的源文件的 HTML 文件。若未指定输出路径，则目录名称将设为 "
+"``heatmap_PID``。"
 
 #: ../../library/profiling.sampling.rst:1207
 msgid ""
@@ -2083,20 +2286,21 @@ msgid ""
 "in cool colors. This view helps pinpoint exactly which lines of code are "
 "responsible for time consumption."
 msgstr ""
+"热力图可视化通过颜色渐变显示您的源代码，颜色深浅表示每条代码行采集的样本数量。热线（样本较多）呈现暖色调，而冷线（样本较少或无样本）则呈现冷色调。这种视图有助于准确定位导致耗时问题的具体代码行。"
 
 #: ../../library/profiling.sampling.rst:1213
 msgid "The heatmap interface provides several interactive features:"
-msgstr ""
+msgstr "热力图界面提供多种交互式功能："
 
 #: ../../library/profiling.sampling.rst:1215
 msgid ""
 "**Coloring modes**: toggle between \"Self Time\" (direct execution) and "
 "\"Total Time\" (cumulative, including time in called functions)"
-msgstr ""
+msgstr "**着色模式**：可在“自时”（直接执行）与“总时”（累加计时，包含被调用函数内的时间）之间切换"
 
 #: ../../library/profiling.sampling.rst:1217
 msgid "**Cold code filtering**: show all lines or only lines with samples"
-msgstr ""
+msgstr "**冷代码过滤**：显示所有行，或仅显示包含样本的行"
 
 #: ../../library/profiling.sampling.rst:1218
 msgid ""
@@ -2105,48 +2309,51 @@ msgid ""
 "code. When multiple functions called or were called from a line, a menu "
 "appears showing all options with their sample counts."
 msgstr ""
+"**调用图导航**：每条行显示导航按钮（▲ 表示调用者，▼ "
+"表示被调用者），通过这些按钮可以追溯代码中的执行路径。当某一行调用了多个函数，或从某一行被多个函数调用时，会显示一个菜单，列出所有选项及其示例数量。"
 
 #: ../../library/profiling.sampling.rst:1222
 msgid ""
 "**Scroll minimap**: a vertical overview showing the heat distribution across"
 " the entire file"
-msgstr ""
+msgstr "**滚动小地图**：一种垂直概览视图，显示整个文件的热分布情况"
 
 #: ../../library/profiling.sampling.rst:1224
 msgid ""
 "**Hierarchical index**: files organized by type (stdlib, site-packages, "
 "project) with aggregate sample counts per folder"
-msgstr ""
+msgstr "**层级索引**：按类型（stdlib、site-packages、project）对文件进行组织，并统计每个文件夹中的汇总样本数量"
 
 #: ../../library/profiling.sampling.rst:1226
 msgid "**Dark/light theme**: toggle with preference saved across sessions"
-msgstr ""
+msgstr "**深色/浅色主题**：可通过切换实现，偏好设置将在不同会话间保存"
 
 #: ../../library/profiling.sampling.rst:1227
 msgid "**Line linking**: click line numbers to create shareable URLs"
-msgstr ""
+msgstr "**线路链接**：点击线路编号即可生成可共享的 URL"
 
 #: ../../library/profiling.sampling.rst:1229
 msgid ""
 "When opcode-level profiling is enabled with :option:`--opcodes`, each hot "
 "line can be expanded to show which bytecode instructions consumed time:"
-msgstr ""
+msgstr "当启用 :option:`--opcodes` 进行指令码级性能分析时，每条热点代码段都可以进一步展开，以显示哪些字节码指令消耗了时间："
 
 #: ../../library/profiling.sampling.rst:1232
 msgid "Heatmap with expanded bytecode panel"
-msgstr ""
+msgstr "带扩展字节码面板的热图"
 
 #: ../../library/profiling.sampling.rst:1237
 msgid ""
 "Expanding a hot line reveals the bytecode instructions executed, including "
 "specialized variants. The panel shows sample counts per instruction and the "
 "overall specialization percentage for the line."
-msgstr ""
+msgstr "扩展热线可查看已执行的字节码指令，包括专用变体。该面板显示每条指令的样本数量以及该行的总体专用化百分比。"
 
 #: ../../library/profiling.sampling.rst:1243
 msgid ""
 "`Try the interactive example <../_static/tachyon-example-heatmap.html>`__!"
 msgstr ""
+"`Try the interactive example <../_static/tachyon-example-heatmap.html>`__!"
 
 #: ../../library/profiling.sampling.rst:1245
 msgid ""
@@ -2157,57 +2364,65 @@ msgid ""
 "heatmaps provide an intuitive view that shows exactly where time is spent "
 "without requiring interpretation of hierarchical visualizations."
 msgstr ""
+"当你知道哪个文件存在性能问题，但需要找出具体是哪几行时，热力图尤其有用。许多开发者更倾向于使用这种格式，因为它能直接对应到源代码，便于阅读和定位。对于较小的脚本和有针对性的分析而言，热力图能提供直观的视图，准确显示时间消耗的具体位置，而无需对层次化可视化结果进行解读。"
 
 #: ../../library/profiling.sampling.rst:1254
 msgid "Binary format"
-msgstr ""
+msgstr "二进制格式"
 
 #: ../../library/profiling.sampling.rst:1256
 msgid ""
 "Binary format (:option:`--binary`) produces a compact binary file for "
 "efficient storage of profiling data::"
-msgstr ""
+msgstr "二进制格式（:option:`--binary`）可生成紧凑的二进制文件，从而高效存储分析数据::"
 
 #: ../../library/profiling.sampling.rst:1259
 msgid ""
 "python -m profiling.sampling run --binary -o profile.bin script.py\n"
 "python -m profiling.sampling attach --binary -o profile.bin 12345"
 msgstr ""
+"python -m profiling.sampling run --binary -o profile.bin script.py\n"
+"python -m profiling.sampling attach --binary -o profile.bin 12345"
 
 #: ../../library/profiling.sampling.rst:1262
 msgid "The :option:`--compression` option controls data compression:"
-msgstr ""
+msgstr ":option:`--compression` 选项用于控制数据压缩："
 
 #: ../../library/profiling.sampling.rst:1264
 msgid ""
 "``auto`` (default): Use zstd compression if available, otherwise no "
 "compression"
-msgstr ""
+msgstr "``auto`` （默认）：若支持 zstd 压缩则启用压缩；否则不压缩"
 
 #: ../../library/profiling.sampling.rst:1266
 msgid ""
 "``zstd``: Force zstd compression (requires :mod:`compression.zstd` support)"
 msgstr ""
+"``zstd``: Force zstd compression (requires :mod:`compression.zstd` support)"
 
 #: ../../library/profiling.sampling.rst:1267
 msgid "``none``: Disable compression"
-msgstr ""
+msgstr "``none``：禁用压缩"
 
 #: ../../library/profiling.sampling.rst:1271
 msgid ""
 "python -m profiling.sampling run --binary --compression=zstd -o profile.bin "
 "script.py"
 msgstr ""
+"python -m profiling.sampling run --binary --compression=zstd -o profile.bin "
+"script.py"
 
 #: ../../library/profiling.sampling.rst:1273
 msgid ""
 "To analyze binary profiles, use the :ref:`replay command <replay-command>` "
 "to convert them to other formats like flame graphs or pstats output."
 msgstr ""
+"若要分析二进制配置文件，请使用 :ref:`replay command <replay-command>` 将其转换为其他格式，例如火焰图或 "
+"pstats 输出格式。"
 
 #: ../../library/profiling.sampling.rst:1278
 msgid "Record and replay workflow"
-msgstr ""
+msgstr "录制与回放工作流"
 
 #: ../../library/profiling.sampling.rst:1280
 msgid ""
@@ -2216,16 +2431,17 @@ msgid ""
 "generating visualizations during profiling, you capture raw data to a "
 "compact binary file and convert it to different formats later."
 msgstr ""
+"二进制格式结合回放命令，可实现一种记录与回放工作流，从而将数据捕获与分析分离开来。在性能分析过程中，您无需生成可视化结果，而是将原始数据捕获到紧凑的二进制文件中，随后再将其转换为不同格式。"
 
 #: ../../library/profiling.sampling.rst:1285
 msgid "This approach has three main benefits:"
-msgstr ""
+msgstr "这种方法具有三大主要优势："
 
 #: ../../library/profiling.sampling.rst:1287
 msgid ""
 "Sampling runs faster because the work of building data structures for "
 "visualization is deferred until replay."
-msgstr ""
+msgstr "采样运行速度更快，因为构建用于可视化的数据结构的工作会被推迟到回放阶段才执行。"
 
 #: ../../library/profiling.sampling.rst:1289
 msgid ""
@@ -2233,16 +2449,18 @@ msgid ""
 "re-profiling: pstats for a quick overview, flame graph for visual "
 "exploration, heatmap for line-level detail."
 msgstr ""
+"单次二进制捕获结果无需重新进行 profiling 即可转换为多种输出格式：pstats 用于快速概览，flame graph "
+"用于可视化探索，heatmap 则用于行级细节分析。"
 
 #: ../../library/profiling.sampling.rst:1292
 msgid ""
 "Binary files are compact and easy to share with colleagues who can convert "
 "them to their preferred format."
-msgstr ""
+msgstr "二进制文件体积小巧，便于与同事共享；对方可以将这些文件转换为自己偏好的格式。"
 
 #: ../../library/profiling.sampling.rst:1295
 msgid "A typical workflow::"
-msgstr ""
+msgstr "典型工作流程::"
 
 #: ../../library/profiling.sampling.rst:1297
 msgid ""
@@ -2254,16 +2472,23 @@ msgid ""
 "python -m profiling.sampling replay --flamegraph -o profile.html profile.bin\n"
 "python -m profiling.sampling replay --heatmap -o heatmap profile.bin"
 msgstr ""
+"# Capture profile in production or during tests\n"
+"python -m profiling.sampling attach --binary -o profile.bin 12345\n"
+"\n"
+"# Later, analyze with different formats\n"
+"python -m profiling.sampling replay profile.bin\n"
+"python -m profiling.sampling replay --flamegraph -o profile.html profile.bin\n"
+"python -m profiling.sampling replay --heatmap -o heatmap profile.bin"
 
 #: ../../library/profiling.sampling.rst:1307
 msgid "Live mode"
-msgstr ""
+msgstr "直播模式"
 
 #: ../../library/profiling.sampling.rst:1309
 msgid ""
 "Live mode (:option:`--live`) provides a terminal-based real-time view of "
 "profiling data, similar to the ``top`` command for system processes::"
-msgstr ""
+msgstr "Live 模式（:option:`--live`）提供基于终端的实时分析数据视图，类似于用于系统进程的 ``top`` 命令::"
 
 #: ../../library/profiling.sampling.rst:1312
 msgid ""
@@ -2275,13 +2500,13 @@ msgstr ""
 
 #: ../../library/profiling.sampling.rst:1317
 msgid "Tachyon live mode showing all threads"
-msgstr ""
+msgstr "快子实时模式：显示所有线程"
 
 #: ../../library/profiling.sampling.rst:1322
 msgid ""
 "Live mode displays real-time profiling statistics, showing combined data "
 "from multiple threads in a multi-threaded application."
-msgstr ""
+msgstr "实时模式会显示实时分析统计信息，呈现多线程应用程序中多个线程的合并数据。"
 
 #: ../../library/profiling.sampling.rst:1325
 msgid ""
@@ -2291,6 +2516,8 @@ msgid ""
 "least 60 columns wide and 12 lines tall; larger terminals display more "
 "columns."
 msgstr ""
+"随着新样本的到达，显示内容会持续更新，呈现当前最热门的功能。此模式需要 :mod:`curses` 模块；该模块可在类 Unix 系统上使用，但 "
+"Windows 系统上则无法使用。终端的宽度必须至少为 60 列，高度必须至少为 12 行；更大的终端将显示更多列。"
 
 #: ../../library/profiling.sampling.rst:1330
 msgid ""
@@ -2299,6 +2526,8 @@ msgid ""
 "time). The main table shows function statistics with the currently sorted "
 "column indicated by an arrow (▼)."
 msgstr ""
+"标题栏显示最热门的 3 个函数、采样效率指标以及线程状态统计信息（GIL 持有百分比、CPU 使用率、GC "
+"时间）。主表显示函数统计信息，当前排序列由箭头（▼）标示。"
 
 #: ../../library/profiling.sampling.rst:1335
 msgid ""
@@ -2308,24 +2537,26 @@ msgid ""
 "executing most frequently, including specialized variants and their base "
 "opcodes."
 msgstr ""
+"当 :option:`--opcodes` "
+"启用时，主表格下方会显示一个额外的操作码面板，其中呈现当前所选函数的指令级统计信息。该面板会显示哪些字节码指令执行频率最高，包括专用变体及其基础操作码。"
 
 #: ../../library/profiling.sampling.rst:1342
 msgid "Tachyon live mode with opcode panel"
-msgstr ""
+msgstr "带有操作码面板的 Tachyon 实时模式"
 
 #: ../../library/profiling.sampling.rst:1347
 msgid ""
 "Live mode with ``--opcodes`` enabled shows an opcode panel with a bytecode "
 "instruction breakdown for the selected function."
-msgstr ""
+msgstr "启用 ``--opcodes`` 的实时模式会显示一个操作码面板，其中包含所选函数的字节码指令分解视图。"
 
 #: ../../library/profiling.sampling.rst:1352
 msgid "Keyboard commands"
-msgstr ""
+msgstr "键盘命令"
 
 #: ../../library/profiling.sampling.rst:1354
 msgid "Within live mode, keyboard commands control the display:"
-msgstr ""
+msgstr "在实时模式下，键盘命令用于控制显示内容："
 
 #: ../../library/profiling.sampling.rst:1356
 msgid ":kbd:`q`"
@@ -2333,7 +2564,7 @@ msgstr ":kbd:`q`"
 
 #: ../../library/profiling.sampling.rst:1357
 msgid "Quit the profiler and return to the shell."
-msgstr ""
+msgstr "退出分析器，返回 shell。"
 
 #: ../../library/profiling.sampling.rst:1359
 msgid ":kbd:`s` / :kbd:`S`"
@@ -2343,7 +2574,7 @@ msgstr ":kbd:`s` / :kbd:`S`"
 msgid ""
 "Cycle through sort orders forward/backward (sample count, percentage, total "
 "time, cumulative percentage, cumulative time)."
-msgstr ""
+msgstr "按排序顺序前后循环切换（样本数量、百分比、总时长、累计百分比、累计时长）。"
 
 #: ../../library/profiling.sampling.rst:1363
 msgid ":kbd:`p`"
@@ -2354,7 +2585,7 @@ msgid ""
 "Pause or resume display updates. Sampling continues in the background while "
 "the display is paused, so you can freeze the view to examine results without"
 " stopping data collection."
-msgstr ""
+msgstr "暂停或恢复显示更新。显示暂停期间，采样仍会在后台继续；因此，您可以冻结视图以查看结果，而无需中断数据收集。"
 
 #: ../../library/profiling.sampling.rst:1368
 msgid ":kbd:`r`"
@@ -2364,7 +2595,7 @@ msgstr ":kbd:`r`"
 msgid ""
 "Reset all statistics and start fresh. This is disabled after profiling "
 "finishes to prevent accidental data loss."
-msgstr ""
+msgstr "重置所有统计数据并重新开始。在完成分析后，此功能将被禁用，以防止意外导致数据丢失。"
 
 #: ../../library/profiling.sampling.rst:1372
 msgid ":kbd:`/`"
@@ -2377,6 +2608,8 @@ msgid ""
 "a pattern and press Enter to apply, or Escape to cancel. Glob patterns and "
 "regular expressions are not supported."
 msgstr ""
+"进入筛选模式，即可按名称搜索函数。该筛选器会对文件名和函数名进行不区分大小写的子字符串匹配。输入一个模式并按 Enter 键应用筛选，或按 Escape"
+" 键取消筛选。不支持通配符模式和正则表达式。"
 
 #: ../../library/profiling.sampling.rst:1378
 msgid ":kbd:`c`"
@@ -2384,7 +2617,7 @@ msgstr ":kbd:`c`"
 
 #: ../../library/profiling.sampling.rst:1379
 msgid "Clear the current filter and show all functions again."
-msgstr ""
+msgstr "清除当前筛选条件，再次显示所有功能。"
 
 #: ../../library/profiling.sampling.rst:1381
 msgid ":kbd:`t`"
@@ -2396,6 +2629,7 @@ msgid ""
 "per-thread mode, a thread counter (for example, ``1/4``) appears showing "
 "your position among the available threads."
 msgstr ""
+"可在查看所有线程合并统计与按线程统计之间切换。在按线程统计模式下，会显示线程计数器（例如 ``1/4``），用于显示您在当前可用线程中的位置。"
 
 #: ../../library/profiling.sampling.rst:1386
 msgid ":kbd:`←` :kbd:`→` or :kbd:`↑` :kbd:`↓`"
@@ -2405,7 +2639,7 @@ msgstr ":kbd:`←` :kbd:`→` 或 :kbd:`↑` :kbd:`↓`"
 msgid ""
 "In per-thread view, navigate between threads. Navigation wraps around from "
 "the last thread to the first and vice versa."
-msgstr ""
+msgstr "在按线程查看时，可在各线程之间进行导航。导航会从最后一个线程循环返回到第一个线程，反之亦然。"
 
 #: ../../library/profiling.sampling.rst:1390
 msgid ":kbd:`+` / :kbd:`-`"
@@ -2417,6 +2651,8 @@ msgid ""
 " Hz, very responsive) to 1.0 second (1 Hz, lower overhead). Faster refresh "
 "rates use more CPU. The default is 0.1 seconds (10 Hz)."
 msgstr ""
+"可增大或减小显示刷新率。范围从 0.05 秒（20 Hz，响应非常迅速）到 1.0 秒（1 Hz，系统开销较低）。刷新率越高，CPU "
+"占用率越大。默认值为 0.1 秒（10 Hz）。"
 
 #: ../../library/profiling.sampling.rst:1395
 msgid ":kbd:`x`"
@@ -2427,7 +2663,7 @@ msgid ""
 "Toggle trend indicators that show whether functions are becoming hotter or "
 "cooler over time. When enabled, increasing metrics appear in green and "
 "decreasing metrics appear in red, comparing each update to the previous one."
-msgstr ""
+msgstr "切换趋势指示器，用于显示各函数随时间推移是变得更热还是更冷。启用后，与上一次更新相比，上升的指标显示为绿色，下降的指标显示为红色。"
 
 #: ../../library/profiling.sampling.rst:1400
 msgid ":kbd:`h` or :kbd:`?`"
@@ -2435,7 +2671,7 @@ msgstr ":kbd:`h` 或 :kbd:`?`"
 
 #: ../../library/profiling.sampling.rst:1401
 msgid "Show the help screen with all available commands."
-msgstr ""
+msgstr "显示包含所有可用命令的帮助界面。"
 
 #: ../../library/profiling.sampling.rst:1403
 msgid ":kbd:`j` / :kbd:`k` (or :kbd:`Up` / :kbd:`Down`)"
@@ -2447,6 +2683,7 @@ msgid ""
 "enabled). These keys scroll through the instruction-level statistics for the"
 " currently selected function."
 msgstr ""
+"在 opcode 面板中浏览 opcode 条目（当 ``--opcodes`` 启用时）。这些按键可滚动查看当前所选函数的指令级统计信息。"
 
 #: ../../library/profiling.sampling.rst:1408
 msgid ""
@@ -2455,6 +2692,8 @@ msgid ""
 " You can still navigate, sort, and filter the results before pressing "
 ":kbd:`q` to exit."
 msgstr ""
+"当分析完成时（持续时间到期或目标进程退出），界面会显示“分析完成”横幅，并冻结最终结果。在按下 :kbd:`q` "
+"退出之前，您仍可继续浏览、排序和筛选结果。"
 
 #: ../../library/profiling.sampling.rst:1412
 msgid ""
@@ -2462,10 +2701,12 @@ msgid ""
 " :option:`--flamegraph`, and so on) because it uses an interactive terminal "
 "interface rather than producing file output."
 msgstr ""
+"Live 模式与输出格式选项（:option:`--collapsed`、:option:`--flamegraph` "
+"等）不兼容，因为它采用交互式终端界面，而非生成文件输出。"
 
 #: ../../library/profiling.sampling.rst:1418
 msgid "Async-aware profiling"
-msgstr ""
+msgstr "异步感知性能分析"
 
 #: ../../library/profiling.sampling.rst:1420
 msgid ""
@@ -2473,6 +2714,8 @@ msgid ""
 "(:option:`--async-aware`) that reconstructs call stacks based on the task "
 "structure rather than the raw Python frames::"
 msgstr ""
+"对于使用 :mod:`asyncio` 的程序，性能分析器提供了一种支持异步模式的模式（:option:`--async-"
+"aware`），该模式会根据任务结构而非原始 Python 帧来重建调用栈::"
 
 #: ../../library/profiling.sampling.rst:1424
 msgid "python -m profiling.sampling run --async-aware async_script.py"
@@ -2485,6 +2728,8 @@ msgid ""
 "coroutines. Async-aware mode addresses this by tracking which task is "
 "running and presenting stacks that reflect the ``await`` chain."
 msgstr ""
+"对异步代码进行标准剖析可能会令人困惑，因为实际的调用栈往往显示的是事件循环的内部结构，而非协程的逻辑执行流程。异步感知模式通过跟踪当前正在运行的任务，并呈现反映"
+" ``await`` 链的调用栈，从而解决了这一问题。"
 
 #: ../../library/profiling.sampling.rst:1431
 msgid ""
@@ -2528,16 +2773,18 @@ msgid ""
 " module loaded. If you profile a script before it imports asyncio, async-"
 "aware mode will not be able to capture task information."
 msgstr ""
+"异步感知式性能分析要求目标进程已加载 :mod:`asyncio` 模块。如果在脚本导入 asyncio "
+"之前对其执行性能分析，异步感知模式将无法捕获任务信息。"
 
 #: ../../library/profiling.sampling.rst:1458
 msgid "Async modes"
-msgstr ""
+msgstr "异步模式"
 
 #: ../../library/profiling.sampling.rst:1460
 msgid ""
 "The :option:`--async-mode` option controls which tasks appear in the "
 "profile::"
-msgstr ""
+msgstr ":option:`--async-mode` 选项用于控制哪些任务会显示在配置文件中::"
 
 #: ../../library/profiling.sampling.rst:1462
 msgid ""
@@ -2553,6 +2800,8 @@ msgid ""
 "currently executing on the CPU is profiled. This shows where your program is"
 " actively spending time and is the typical choice for performance analysis."
 msgstr ""
+"使用 :option:`--async-mode`\\ ``=running`` （默认设置）时，仅会对当前在 CPU "
+"上正在执行的任务进行性能分析。这可以显示您的程序正在积极消耗时间的具体位置，也是性能分析的典型选择。"
 
 #: ../../library/profiling.sampling.rst:1469
 msgid ""
@@ -2561,10 +2810,12 @@ msgid ""
 "understanding what your program is waiting on, but produces larger profiles "
 "since every suspended task appears in each sample."
 msgstr ""
+"使用 :option:`--async-mode`\\ ``=all`` 时，处于暂停状态的任务（正在等待 "
+"I/O、锁或其他任务）也会被纳入其中。这种模式有助于了解程序正在等待什么，但会生成更冗长的性能剖面，因为每个暂停任务都会出现在每个采样点中。"
 
 #: ../../library/profiling.sampling.rst:1476
 msgid "Task markers and stack reconstruction"
-msgstr ""
+msgstr "任务标记与堆栈重建"
 
 #: ../../library/profiling.sampling.rst:1478
 msgid ""
@@ -2573,6 +2824,8 @@ msgid ""
 "to show the task structure. The task name appears as the function name in "
 "these frames."
 msgstr ""
+"在支持异步处理的性能分析报告中，你会看到标记 asyncio 任务边界的 ``<task>`` "
+"帧。这些是性能分析器插入的合成帧，用于展示任务结构；在这些帧中，任务名称会以函数名称的形式显示。"
 
 #: ../../library/profiling.sampling.rst:1483
 msgid ""
@@ -2582,6 +2835,8 @@ msgid ""
 "Tasks being awaited by other tasks appear as part of their awaiter's stack "
 "instead."
 msgstr ""
+"当某项任务正在等待另一项任务时，性能分析器会通过追踪 ``await`` "
+"关系来重建逻辑调用链。只有“叶节点”任务（即当前没有其他任务正在等待它的任务）才会生成自身的栈条目；而被其他任务等待的任务，则会作为其等待者栈的一部分出现。"
 
 #: ../../library/profiling.sampling.rst:1488
 msgid ""
@@ -2591,10 +2846,12 @@ msgid ""
 "indicates that alternate execution paths exist but are not shown in this "
 "particular stack."
 msgstr ""
+"如果某个任务存在多个 awaiter（即任务图中呈现菱形结构），性能分析器会确定性地选择一个父任务，并将父任务数量标注在任务标记上，例如 "
+"``MyTask (2 parents)``。这表明存在其他执行路径，但这些路径并未显示在当前堆栈中。"
 
 #: ../../library/profiling.sampling.rst:1495
 msgid "Option restrictions"
-msgstr ""
+msgstr "选项限制"
 
 #: ../../library/profiling.sampling.rst:1497
 msgid ""
@@ -2602,6 +2859,9 @@ msgid ""
 "incompatible with: :option:`--native`, :option:`--no-gc`, :option:`--all-"
 "threads`, and :option:`--mode`\\ ``=cpu`` or :option:`--mode`\\ ``=gil``."
 msgstr ""
+"Async-aware 模式采用不同的栈重建机制，因此与以下模式不兼容：:option:`--native`、:option:`--no-"
+"gc`、:option:`--all-threads` 和 :option:`--mode`；``=cpu`` 或 "
+":option:`--mode`；以及 ``=gil``。"
 
 #: ../../library/profiling.sampling.rst:1503
 msgid "Command-line interface"
@@ -2609,58 +2869,58 @@ msgstr "命令行接口"
 
 #: ../../library/profiling.sampling.rst:1507
 msgid "The complete command-line interface for reference."
-msgstr ""
+msgstr "完整的命令行界面，供参考。"
 
 #: ../../library/profiling.sampling.rst:1511
 msgid "Global options"
-msgstr ""
+msgstr "全局选项"
 
 #: ../../library/profiling.sampling.rst:1515
 msgid "Run and profile a Python script or module."
-msgstr ""
+msgstr "运行并分析 Python 脚本或模块。"
 
 #: ../../library/profiling.sampling.rst:1519
 msgid "Attach to and profile a running process by PID."
-msgstr ""
+msgstr "通过 PID 关联并获取运行进程的属性。"
 
 #: ../../library/profiling.sampling.rst:1523
 msgid "Print a single one-shot snapshot of a running process's Python stack."
-msgstr ""
+msgstr "打印运行中进程的 Python 堆栈的一次性快照。"
 
 #: ../../library/profiling.sampling.rst:1527
 msgid "Convert a binary profile file to another output format."
-msgstr ""
+msgstr "将二进制配置文件转换为另一种输出格式。"
 
 #: ../../library/profiling.sampling.rst:1531
 msgid "Dump options"
-msgstr ""
+msgstr "丢弃选项"
 
 #: ../../library/profiling.sampling.rst:1533
 msgid "The following options apply to the ``dump`` subcommand:"
-msgstr ""
+msgstr "以下选项适用于 ``dump`` 子命令："
 
 #: ../../library/profiling.sampling.rst:1537
 msgid ""
 "Dump all threads in the target process instead of just the main thread."
-msgstr ""
+msgstr "将目标进程中的所有线程全部释放，而不仅仅是释放主线程。"
 
 #: ../../library/profiling.sampling.rst:1541
 #: ../../library/profiling.sampling.rst:1588
 msgid "Include ``<native>`` frames for non-Python code."
-msgstr ""
+msgstr "为非 Python 代码包含 ``<native>`` 帧。"
 
 #: ../../library/profiling.sampling.rst:1545
 msgid "Exclude ``<GC>`` frames for active garbage collection."
-msgstr ""
+msgstr "排除 ``<GC>`` 帧，以进行主动垃圾回收。"
 
 #: ../../library/profiling.sampling.rst:1549
 msgid "Show bytecode opcode names when available."
-msgstr ""
+msgstr "在可用时显示字节码操作码名称。"
 
 #: ../../library/profiling.sampling.rst:1553
 msgid ""
 "Reconstruct the stack across ``await`` boundaries for asyncio applications."
-msgstr ""
+msgstr "为 asyncio 应用程序在 ``await`` 边界处重建堆栈。"
 
 #: ../../library/profiling.sampling.rst:1558
 msgid ""
@@ -2668,40 +2928,42 @@ msgid ""
 "including waiting). Defaults to ``all`` for ``dump``. Requires "
 ":option:`--async-aware`."
 msgstr ""
+"异步堆栈模式：``running``（仅运行中的任务）或 ``all``（包括等待中的所有任务）。对于 ``dump``，默认设置为 "
+"``all``。需要 :option:`--async-aware`。"
 
 #: ../../library/profiling.sampling.rst:1564
 msgid "Pause all threads in the target process while reading the stack."
-msgstr ""
+msgstr "在读取堆栈期间，暂停目标进程中的所有线程。"
 
 #: ../../library/profiling.sampling.rst:1568
 msgid "Sampling options"
-msgstr ""
+msgstr "采样选项"
 
 #: ../../library/profiling.sampling.rst:1572
 msgid ""
 "Sampling rate (for example, ``10000``, ``10khz``, ``10k``). Default: "
 "``1khz``."
-msgstr ""
+msgstr "采样率（例如：``10000``、``10khz``、``10k``）。默认值：``1khz``。"
 
 #: ../../library/profiling.sampling.rst:1576
 msgid "Profiling duration in seconds. Default: run to completion."
-msgstr ""
+msgstr "分析时长（单位：秒）。默认值：运行至完成。"
 
 #: ../../library/profiling.sampling.rst:1580
 msgid "Sample all threads, not just the main thread."
-msgstr ""
+msgstr "对所有线程进行采样，而不仅仅是主线程。"
 
 #: ../../library/profiling.sampling.rst:1584
 msgid "Display sampling statistics during profiling."
-msgstr ""
+msgstr "在分析过程中显示采样统计信息。"
 
 #: ../../library/profiling.sampling.rst:1592
 msgid "Exclude ``<GC>`` frames for garbage collection."
-msgstr ""
+msgstr "排除 ``<GC>`` 帧以进行垃圾回收。"
 
 #: ../../library/profiling.sampling.rst:1596
 msgid "Enable async-aware profiling for asyncio programs."
-msgstr ""
+msgstr "为 asyncio 程序启用异步感知型性能分析。"
 
 #: ../../library/profiling.sampling.rst:1600
 msgid ""
@@ -2710,12 +2972,14 @@ msgid ""
 "Compatible with ``--live``, ``--flamegraph``, ``--heatmap``, and ``--gecko``"
 " formats only."
 msgstr ""
+"收集字节码操作码信息，用于指令级性能分析。显示正在执行的字节码指令，包括专用化指令。仅兼容 "
+"``--live``、``--flamegraph``、``--heatmap`` 和 ``--gecko`` 格式。"
 
 #: ../../library/profiling.sampling.rst:1607
 msgid ""
 "Also profile subprocesses. Each subprocess gets its own profiler instance "
 "and output file. Incompatible with ``--live``."
-msgstr ""
+msgstr "同时为子进程创建配置文件。每个子进程都会获得一个独立的 Profiler 实例和输出文件。与 ``--live`` 不兼容。"
 
 #: ../../library/profiling.sampling.rst:1612
 msgid ""
@@ -2724,10 +2988,12 @@ msgid ""
 "(1000 µs or higher) to minimize impact. See :ref:`blocking-mode` for "
 "details."
 msgstr ""
+"在每次采样期间暂停目标进程。这样可以确保堆栈跟踪结果保持一致，但会以降低目标进程运行速度为代价。建议采用较长的间隔时间（1000 µs "
+"或更长），以最大限度地减少影响。详情请参阅 :ref:`blocking-mode`。"
 
 #: ../../library/profiling.sampling.rst:1619
 msgid "Mode options"
-msgstr ""
+msgstr "模式选项"
 
 #: ../../library/profiling.sampling.rst:1623
 msgid ""
@@ -2735,55 +3001,59 @@ msgid ""
 "``cpu``, ``gil``, and ``exception`` modes are incompatible with ``--async-"
 "aware``."
 msgstr ""
+"采样模式：``wall``（默认）、``cpu``、``gil`` 或 ``exception``。``cpu``、``gil`` 和 "
+"``exception`` 模式与 ``--async-aware`` 不兼容。"
 
 #: ../../library/profiling.sampling.rst:1629
 msgid ""
 "Async profiling mode: ``running`` (default) or ``all``. Requires ``--async-"
 "aware``."
-msgstr ""
+msgstr "异步分析模式：``running``（默认值）或 ``all``。需要 ``--async-aware``。"
 
 #: ../../library/profiling.sampling.rst:1634
 msgid "Output options"
-msgstr ""
+msgstr "输出选项"
 
 #: ../../library/profiling.sampling.rst:1638
 msgid ""
 "Generate pstats statistics. This is the default. When written to stdout, the"
 " output is a text table; with :option:`-o`, it is a binary pstats file."
 msgstr ""
+"生成 pstats 统计信息。这是默认行为。当输出到 stdout 时，结果将以文本表格形式呈现；若使用 :option:`-o`，则生成二进制 "
+"pstats 文件。"
 
 #: ../../library/profiling.sampling.rst:1644
 msgid "Generate collapsed stack format for external flame graph tools."
-msgstr ""
+msgstr "为外部火焰图工具生成折叠堆栈格式。"
 
 #: ../../library/profiling.sampling.rst:1648
 msgid "Generate self-contained HTML flame graph."
-msgstr ""
+msgstr "生成独立的 HTML 火焰图。"
 
 #: ../../library/profiling.sampling.rst:1652
 msgid ""
 "Generate differential flamegraph comparing to a baseline binary profile."
-msgstr ""
+msgstr "生成与基准二进制配置文件相比的差异性火焰图。"
 
 #: ../../library/profiling.sampling.rst:1656
 msgid "Generate Gecko JSON format for Firefox Profiler."
-msgstr ""
+msgstr "为 Firefox Profiler 生成 Gecko JSON 格式。"
 
 #: ../../library/profiling.sampling.rst:1660
 msgid "Generate HTML heatmap with line-level sample counts."
-msgstr ""
+msgstr "生成包含行级样本计数的 HTML 热力图。"
 
 #: ../../library/profiling.sampling.rst:1664
 msgid ""
 "Generate high-performance binary format for later conversion with the "
 "``replay`` command."
-msgstr ""
+msgstr "生成高性能二进制格式，以便后续通过 ``replay`` 命令进行转换。"
 
 #: ../../library/profiling.sampling.rst:1669
 msgid ""
 "Compression for binary format: ``auto`` (use zstd if available, default), "
 "``zstd``, or ``none``."
-msgstr ""
+msgstr "二进制格式的压缩选项：``auto``（若可用请使用 zstd，默认为此选项）、``zstd`` 或 ``none``。"
 
 #: ../../library/profiling.sampling.rst:1674
 msgid ""
@@ -2793,6 +3063,10 @@ msgid ""
 "``<format>_<PID>.<ext>`` (for example, ``flamegraph_12345.html``). "
 ":option:`--heatmap` creates a directory named ``heatmap_<PID>``."
 msgstr ""
+"输出文件或目录路径。默认行为因格式而异：:option:`--pstats` 将文本表格输出到 stdout；而 ``-o`` 则写入二进制 "
+"pstats 文件。其他格式会生成一个名为 ``<format>_<PID>.<ext>`` 的文件（例如 "
+"``flamegraph_12345.html``）。:option:`--heatmap` 则创建一个名为 ``heatmap_<PID>`` "
+"的目录。"
 
 #: ../../library/profiling.sampling.rst:1682
 msgid ""
@@ -2801,29 +3075,34 @@ msgid ""
 "profiling with :option:`--subprocesses`, only the main process opens the "
 "browser; subprocess outputs are never auto-opened."
 msgstr ""
+"生成后，会自动在默认网页浏览器中打开 HTML 输出文件（:option:`--flamegraph` 和 "
+":option:`--heatmap`）。使用 :option:`--subprocesses` "
+"进行性能分析时，仅主进程会打开浏览器；子进程的输出内容绝不会自动打开。"
 
 #: ../../library/profiling.sampling.rst:1689
 msgid "pstats display options"
-msgstr ""
+msgstr "pstats 显示选项"
 
 #: ../../library/profiling.sampling.rst:1691
 msgid "These options apply only to pstats format output."
-msgstr ""
+msgstr "这些选项仅适用于 pstats 格式的输出。"
 
 #: ../../library/profiling.sampling.rst:1695
 msgid ""
 "Sort order: ``nsamples``, ``tottime``, ``cumtime``, ``sample-pct``, ``cumul-"
 "pct``, ``nsamples-cumul``, or ``name``. Default: ``nsamples``."
 msgstr ""
+"排序顺序：``nsamples``、``tottime``、``cumtime``、``sample-pct``、``cumul-"
+"pct``、``nsamples-cumul`` 或 ``name``。默认值：``nsamples``。"
 
 #: ../../library/profiling.sampling.rst:1700
 msgid "Maximum number of entries to display. Default: 15."
-msgstr ""
+msgstr "可显示的最大条目数。默认值：15。"
 
 #: ../../library/profiling.sampling.rst:1704
 msgid ""
 "Omit the Legend and Summary of Interesting Functions sections from output."
-msgstr ""
+msgstr "从输出中省略“图例”和“有趣功能摘要”部分。"
 
 #: ../../library/profiling.sampling.rst:1708
 msgid "Run command options"

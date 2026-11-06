@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-04 00:33+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2026-05-08 18:36+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,6 +35,10 @@ msgid ""
 "CPython -- and other Python C API implementations -- to update the "
 "structures without breaking backwards compatibility."
 msgstr ""
+"若要通过 C API 定义 :ref:`module objects <moduleobjects>` 和 :ref:`classes "
+"<creating-heap-types>`，您可以使用一个 *slots* "
+"数组——本质上，这些是用于描述待创建对象特性的键值对。这种方式将数据与运行时使用的结构解耦，使得 CPython 及其他 Python C API "
+"实现能够在不破坏向后兼容性的前提下更新这些结构。"
 
 #: ../../c-api/slots.rst:16
 msgid ""
@@ -60,12 +65,14 @@ msgid ""
 "and any data it points to (recursively), except data explicitly marked with "
 ":c:macro:`PySlot_STATIC`."
 msgstr ""
+"当槽被传递给一个用于应用这些槽的函数时，该函数不会修改槽数组，也不会修改其指向的任何数据（递归地）。函数执行完毕后，调用者可以修改该数组及其指向的任何数据（递归地），但明确标记为"
+" :c:macro:`PySlot_STATIC` 的数据除外。"
 
 #: ../../c-api/slots.rst:30
 msgid ""
 "Except when documented otherwise, multiple slots with the same ID "
 "(:c:member:`~PySlot.sl_id`) may not occur in a single slots array."
-msgstr ""
+msgstr "除非另有记录说明，否则同一 ID（:c:member:`~PySlot.sl_id`）的多个槽位不会出现在同一个槽位数组中。"
 
 #: ../../c-api/slots.rst:35
 msgid ""
@@ -74,21 +81,26 @@ msgid ""
 ":c:type:`PyModuleDef` with :c:type:`PyModuleDef_Slot` for modules. The "
 "earlier API is :term:`soft deprecated`; there are no plans to remove it."
 msgstr ""
+"Slot 数组推广了早期定义对象的一种方式：使用 :c:type:`PyType_Spec` 与 :c:type:`PyType_Slot` "
+"表示类型，使用 :c:type:`PyModuleDef` 与 :c:type:`PyModuleDef_Slot` 表示模块。早期的 API 是 "
+":term:`soft deprecated`；目前没有计划将其移除。"
 
 #: ../../c-api/slots.rst:40
 msgid "Entries of the slots array use the following structure:"
-msgstr ""
+msgstr "slot 数组的条目采用以下结构："
 
 #: ../../c-api/slots.rst:44
 msgid "An entry in a slots array. Defined as:"
-msgstr ""
+msgstr "槽位数组中的一个条目。定义如下："
 
 #: ../../c-api/slots.rst:46
 msgid ""
 "typedef struct {\n"
 "    uint16_t sl_id;\n"
 "    uint16_t sl_flags;\n"
-"    uint32_t _reserved;  // must be 0\n"
+"    union {\n"
+"        uint32_t sl_reserved;  // must be 0\n"
+"    };\n"
 "    union {\n"
 "        void *sl_ptr;\n"
 "        void (*sl_func)(void);\n"
@@ -98,58 +110,74 @@ msgid ""
 "    };\n"
 "} PySlot;"
 msgstr ""
-
-#: ../../c-api/slots.rst:63
-msgid "A slot ID, chosen from:"
-msgstr ""
+"typedef struct {\n"
+"    uint16_t sl_id;\n"
+"    uint16_t sl_flags;\n"
+"    union {\n"
+"        uint32_t sl_reserved;  // must be 0\n"
+"    };\n"
+"    union {\n"
+"        void *sl_ptr;\n"
+"        void (*sl_func)(void);\n"
+"        Py_ssize_t sl_size;\n"
+"        int64_t sl_int64;\n"
+"        uint64_t sl_uint64;\n"
+"    };\n"
+"} PySlot;"
 
 #: ../../c-api/slots.rst:65
-msgid "``Py_slot_*`` values documented in :ref:`pyslot-common-ids` below;"
-msgstr ""
-
-#: ../../c-api/slots.rst:66
-msgid ""
-"``Py_mod_*`` values for modules, as documented in :ref:`c_module_slots`;"
-msgstr ""
+msgid "A slot ID, chosen from:"
+msgstr "槽位 ID，选自："
 
 #: ../../c-api/slots.rst:67
-msgid "Values for types, as documented in :ref:`pyslot_type_slot_ids`."
-msgstr ""
+msgid "``Py_slot_*`` values documented in :ref:`pyslot-common-ids` below;"
+msgstr "``Py_slot_*`` 的值如下文 :ref:`pyslot-common-ids` 中所述；"
+
+#: ../../c-api/slots.rst:68
+msgid ""
+"``Py_mod_*`` values for modules, as documented in :ref:`c_module_slots`;"
+msgstr "模块的 ``Py_mod_*`` 值，详见 :ref:`c_module_slots` 中的说明；"
 
 #: ../../c-api/slots.rst:69
+msgid "Values for types, as documented in :ref:`pyslot_type_slot_ids`."
+msgstr "类型值，详见 :ref:`pyslot_type_slot_ids` 中的记录。"
+
+#: ../../c-api/slots.rst:71
 msgid ""
 "A :c:member:`!sl_id` of zero (:c:macro:`Py_slot_end`) marks the end of a "
 "slots array."
-msgstr ""
+msgstr "值为零的 :c:member:`!sl_id` （:c:macro:`Py_slot_end`）标志着槽位数组的结束。"
 
-#: ../../c-api/slots.rst:78
+#: ../../c-api/slots.rst:80
 msgid ""
 "The data for the slot. These members are part of an anonymous union; the "
 "member to use depends on which data type is required by the slot ID: data "
 "pointer, function pointer, size, signed or unsigned integer, respectively."
 msgstr ""
+"槽位的数据。这些成员属于一个匿名联合体；具体使用哪个成员取决于槽位 ID 所要求的数据类型：分别为数据指针、函数指针、大小、有符号整数或无符号整数。"
 
-#: ../../c-api/slots.rst:84
+#: ../../c-api/slots.rst:86
 msgid ""
 "Except when documented otherwise for a specific slot ID, pointers (that is "
 ":c:member:`!sl_ptr` and :c:member:`!sl_func`) may not be NULL."
 msgstr ""
+"除非针对特定槽位 ID 另有说明，否则指针（即 :c:member:`!sl_ptr` 和 :c:member:`!sl_func`）不得为 NULL。"
 
-#: ../../c-api/slots.rst:89
+#: ../../c-api/slots.rst:91
 msgid "Zero or more of the following flags, OR-ed together:"
-msgstr ""
+msgstr "以下标志中的零个或多个标志，以 OR 逻辑组合而成："
 
-#: ../../c-api/slots.rst:95
+#: ../../c-api/slots.rst:97
 msgid ""
 "All data the slot points to is statically allocated and constant. Thus, the "
 "interpreter does not need to copy the information."
-msgstr ""
-
-#: ../../c-api/slots.rst:98
-msgid "This flag is implied for function pointers."
-msgstr ""
+msgstr "slot 所指向的所有数据都是静态分配的且为常量。因此，解释器无需复制这些信息。"
 
 #: ../../c-api/slots.rst:100
+msgid "This flag is implied for function pointers."
+msgstr "该标志对于函数指针而言是隐含的。"
+
+#: ../../c-api/slots.rst:102
 msgid ""
 "The flag applies even to data the slot points to “indirectly”, except for "
 "slots nested via :c:macro:`Py_slot_subslots` which may have their own "
@@ -158,67 +186,77 @@ msgid ""
 ":c:type:`PyMemberDef` structures, then the entire array, as well as the name"
 " and doc strings in its elements, must be static and constant."
 msgstr ""
+"该标志同样适用于槽位“间接”指向的数据，但通过 :c:macro:`Py_slot_subslots` 嵌套的槽位除外；这类槽位可能拥有自己的 "
+":c:macro:`!PySlot_STATIC` 标志。例如，若将该标志应用于一个指向 :c:type:`PyMemberDef` 结构体数组的 "
+":c:macro:`Py_tp_members` 槽位，则整个数组以及其中各元素的名称和文档字符串都必须是静态且常量的。"
 
-#: ../../c-api/slots.rst:110
+#: ../../c-api/slots.rst:112
 msgid ""
 "The data is stored in ``sl_ptr``; CPython will cast it to the appropriate "
 "type."
-msgstr ""
+msgstr "数据存储在 ``sl_ptr`` 中；CPython 会将其转换为相应的类型。"
 
-#: ../../c-api/slots.rst:113
+#: ../../c-api/slots.rst:115
 msgid ""
 "This flag can simplify porting from the older :c:type:`PyType_Slot` and "
 ":c:type:`PyModuleDef_Slot` structures."
 msgstr ""
+"此标志可简化从较旧的 :c:type:`PyType_Slot` 和 :c:type:`PyModuleDef_Slot` 结构迁移的过程。"
 
-#: ../../c-api/slots.rst:118
+#: ../../c-api/slots.rst:120
 msgid ""
 "If the slot ID is unknown, the interpreter should ignore the slot, rather "
 "than fail."
-msgstr ""
+msgstr "如果槽位 ID 未知，解释器应忽略该槽位，而非导致失败。"
 
-#: ../../c-api/slots.rst:121
+#: ../../c-api/slots.rst:123
 msgid ""
 "For example, if Python 3.16 adds a new feature with a new slot ID,attr the "
 "corresponding slot may be marked :c:macro:`!PySlot_OPTIONAL` so that Python "
 "3.15 ignores it."
 msgstr ""
+"例如，如果 Python 3.16 添加了一项具有新槽位 ID 的新功能，则相应的槽位可能会被标记为 "
+":c:macro:`!PySlot_OPTIONAL`，从而使 Python 3.15 忽略该槽位。"
 
-#: ../../c-api/slots.rst:125
+#: ../../c-api/slots.rst:127
 msgid ""
 "Note that the \"optionality\" only applies to unknown slot IDs. This flag "
 "does not make Python skip invalid values of known slots."
-msgstr ""
+msgstr "请注意，“可选性”仅适用于未知的槽位 ID。该标志并不会使 Python 跳过已知槽位的无效值。"
 
-#: ../../c-api/slots.rst:132
+#: ../../c-api/slots.rst:134
 msgid "Convenience macros"
-msgstr ""
+msgstr "便捷宏"
 
-#: ../../c-api/slots.rst:141
+#: ../../c-api/slots.rst:143
 msgid ""
 "Convenience macros to define :c:type:`!PySlot` structures with "
 ":c:member:`~PySlot.sl_id` and a particular union member set."
 msgstr ""
+"用于通过 :c:member:`~PySlot.sl_id` 和特定的联合体成员集来定义 :c:type:`!PySlot` 结构的便捷宏。"
 
-#: ../../c-api/slots.rst:144
+#: ../../c-api/slots.rst:146
 msgid ""
 ":c:macro:`!PySlot_STATIC_DATA` sets the :c:macro:`PySlot_STATIC` flag; "
 "others set no flags."
 msgstr ""
+":c:macro:`!PySlot_STATIC_DATA` 设置 :c:macro:`PySlot_STATIC` 标志位；其他项不设置任何标志位。"
 
-#: ../../c-api/slots.rst:147
+#: ../../c-api/slots.rst:149
 msgid ""
 "Note that these macros use *designated initializers*, a C language feature "
 "that C++ added in the 2020 version of the standard. If your code needs to be"
 " compatible with C++11 or older, use :c:macro:`PySlot_PTR` instead."
 msgstr ""
+"请注意，这些宏使用了*指定初始化子*——这是 C++ 在 2020 年标准版本中引入的一项 C 语言特性。如果您的代码需要与 C++11 "
+"或更早版本保持兼容，请使用 :c:macro:`PySlot_PTR` 代替。"
 
-#: ../../c-api/slots.rst:152 ../../c-api/slots.rst:178
-#: ../../c-api/slots.rst:192
+#: ../../c-api/slots.rst:154 ../../c-api/slots.rst:180
+#: ../../c-api/slots.rst:194
 msgid "Defined as::"
-msgstr ""
+msgstr "定义为::"
 
-#: ../../c-api/slots.rst:154
+#: ../../c-api/slots.rst:156
 msgid ""
 "#define PySlot_DATA(NAME, VALUE) \\\n"
 "   {.sl_id=NAME, .sl_ptr=(void*)(VALUE)}\n"
@@ -238,70 +276,97 @@ msgid ""
 "#define PySlot_STATIC_DATA(NAME, VALUE) \\\n"
 "   {.sl_id=NAME, .sl_flags=PySlot_STATIC, .sl_ptr=(VALUE)}"
 msgstr ""
+"#define PySlot_DATA(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_ptr=(void*)(VALUE)}\n"
+"\n"
+"#define PySlot_FUNC(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_func=(VALUE)}\n"
+"\n"
+"#define PySlot_SIZE(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_size=(VALUE)}\n"
+"\n"
+"#define PySlot_INT64(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_int64=(VALUE)}\n"
+"\n"
+"#define PySlot_UINT64(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_uint64=(VALUE)}\n"
+"\n"
+"#define PySlot_STATIC_DATA(NAME, VALUE) \\\n"
+"   {.sl_id=NAME, .sl_flags=PySlot_STATIC, .sl_ptr=(VALUE)}"
 
-#: ../../c-api/slots.rst:176
+#: ../../c-api/slots.rst:178
 msgid "Convenience macro to mark the end of a :c:type:`!PySlot` array."
-msgstr ""
+msgstr "用于标记 :c:type:`!PySlot` 数组结束的便利宏。"
 
-#: ../../c-api/slots.rst:180
+#: ../../c-api/slots.rst:182
 msgid "#define PySlot_END {0}"
-msgstr ""
+msgstr "#define PySlot_END {0}"
 
-#: ../../c-api/slots.rst:187
+#: ../../c-api/slots.rst:189
 msgid ""
 "Convenience macros for use in C++11-compatible code. This version of C++ "
 "does not allow setting arbitrary union members in literals; instead, these "
 "macros set the :c:macro:`PySlot_INTPTR` flag and cast the value to "
 "``(void*)``."
 msgstr ""
+"适用于 C++11 兼容代码的便捷宏。此版本的 C++ 不允许在字面量中设置任意联合成员；相反，这些宏会设置 "
+":c:macro:`PySlot_INTPTR` 标志，并将该值类型转换为 ``(void*)``。"
 
-#: ../../c-api/slots.rst:194
+#: ../../c-api/slots.rst:196
 msgid ""
 "#define PySlot_PTR(NAME, VALUE) \\\n"
 "   {NAME, PySlot_INTPTR, {0}, {(void*)(VALUE)}}\n"
 "\n"
 "#define PySlot_PTR_STATIC(NAME, VALUE) \\\n"
-"   {NAME, PySlot_INTPTR|Py_SLOT_STATIC, {0}, {(void*)(VALUE)}}"
+"   {NAME, PySlot_INTPTR|PySlot_STATIC, {0}, {(void*)(VALUE)}}"
 msgstr ""
-
-#: ../../c-api/slots.rst:205
-msgid "Common slot IDs"
-msgstr ""
+"#define PySlot_PTR(NAME, VALUE) \\\n"
+"   {NAME, PySlot_INTPTR, {0}, {(void*)(VALUE)}}\n"
+"\n"
+"#define PySlot_PTR_STATIC(NAME, VALUE) \\\n"
+"   {NAME, PySlot_INTPTR|PySlot_STATIC, {0}, {(void*)(VALUE)}}"
 
 #: ../../c-api/slots.rst:207
+msgid "Common slot IDs"
+msgstr "常用槽位 ID"
+
+#: ../../c-api/slots.rst:209
 msgid ""
 "The following slot IDs may be used in both type and module definitions."
-msgstr ""
+msgstr "以下槽位 ID 可用于类型定义和模块定义。"
 
-#: ../../c-api/slots.rst:211
+#: ../../c-api/slots.rst:213
 msgid "Marks the end of a slots array. Defined as zero."
-msgstr ""
-
-#: ../../c-api/slots.rst:218
-msgid "Nested slots array."
-msgstr ""
+msgstr "标记槽位数组的末尾。定义为 0。"
 
 #: ../../c-api/slots.rst:220
+msgid "Nested slots array."
+msgstr "嵌套槽位数组。"
+
+#: ../../c-api/slots.rst:222
 msgid ""
 "The value (:c:member:`~PySlot.sl_ptr`) should point to an array of "
 ":c:type:`PySlot` structures. The slots in the array (up to but not including"
 " the zero-ID terminator) will be treated as if they were inserted if the "
 "current slot array, at the point :c:macro:`!Py_slot_subslots` appears."
 msgstr ""
+"变量 (:c:member:`~PySlot.sl_ptr`) 应指向一个由 :c:type:`PySlot` "
+"结构体组成的数组。该数组中的槽位（最多包含至但不包括零 ID 终止符）将被视为在出现当前槽位数组中 "
+":c:macro:`!Py_slot_subslots` 的位置时插入的槽位。"
 
-#: ../../c-api/slots.rst:226
+#: ../../c-api/slots.rst:228
 msgid ""
 "Slot nesting depth is limited to 5 levels. This restriction may be lifted in"
 " the future."
-msgstr ""
+msgstr "槽嵌套深度限制为 5 级。此限制未来可能会取消。"
 
-#: ../../c-api/slots.rst:233
+#: ../../c-api/slots.rst:235
 msgid ""
 "Reserved; will always be treated as an unknown slot ID. Defined as "
 "``UINT16_MAX`` (``0xFFFF``)."
-msgstr ""
+msgstr "保留；始终将被视为未知槽位 ID。定义为 ``UINT16_MAX`` (``0xFFFF``)。"
 
-#: ../../c-api/slots.rst:236
+#: ../../c-api/slots.rst:238
 msgid ""
 "When used with the :c:macro:`PySlot_OPTIONAL` flag, defines a slot with no "
 "effect. Without the flag, processing a slot with this ID will fail."

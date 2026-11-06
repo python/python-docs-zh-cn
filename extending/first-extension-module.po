@@ -7,15 +7,16 @@
 # 99 <wh2099@pm.me>, 2026
 # python-doc bot, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-09 14:43+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2026-05-08 18:36+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,13 +58,15 @@ msgid ""
 "be expected to know, like ``static`` functions or linkage declarations, "
 "understanding these is not necessary for success."
 msgstr ""
+"本教程对于任何能够编写基础 C 库的人来说都易于理解。虽然我们会提及一些 C 初学者通常不需要掌握的若干概念，例如 ``static`` "
+"函数或链接声明，但理解这些内容并非成功完成教程的必要条件。"
 
 #: ../../extending/first-extension-module.rst:27
 msgid ""
 "We will focus on giving you a \"feel\" of what Python's C API is like. It "
 "will not teach you important concepts, like error handling and reference "
 "counting, which are covered in later chapters."
-msgstr ""
+msgstr "我们将重点让您对 Python 的 C API 有一个直观的感受；它不会教您诸如错误处理和引用计数等重要概念，这些内容将在后续章节中讲解。"
 
 #: ../../extending/first-extension-module.rst:31
 msgid ""
@@ -71,6 +74,7 @@ msgid ""
 "or Windows. On other systems, you might need to adjust some details -- for "
 "example, a system command name."
 msgstr ""
+"我们假设您使用的是类 Unix 系统（包括 macOS 和 Linux）或 Windows。在其他系统中，您可能需要调整一些细节——例如系统命令的名称。"
 
 #: ../../extending/first-extension-module.rst:36
 msgid ""
@@ -78,6 +82,8 @@ msgid ""
 "installed. On Linux, headers are often in a package like ``python3-dev`` or "
 "``python3-devel``."
 msgstr ""
+"您需要安装合适的 C 编译器和 Python 开发头文件。在 Linux 上，头文件通常包含在诸如 ``python3-dev`` 或 "
+"``python3-devel`` 之类的软件包中。"
 
 #: ../../extending/first-extension-module.rst:40
 msgid ""
@@ -87,13 +93,17 @@ msgid ""
 "<https://docs.astral.sh/uv/>`_ (``uv pip install``). Preferably, have a "
 ":ref:`virtual environment <venv-def>` activated."
 msgstr ""
+"您需要能够安装 Python 软件包。本教程使用 `pip <https://pip.pypa.io/>`__（``pip "
+"install``），但您可以替换为任何能够构建并安装基于 ``pyproject.toml`` 的项目的工具，例如 `uv "
+"<https://docs.astral.sh/uv/>`_（``uv pip install``）。最好先启用 :ref:`virtual "
+"environment <venv-def>`。"
 
 #: ../../extending/first-extension-module.rst:49
 msgid ""
 "This tutorial uses APIs that were added in CPython 3.15. To create an "
 "extension that's compatible with earlier versions of CPython, please follow "
 "an earlier version of this documentation."
-msgstr ""
+msgstr "本教程使用的 API 是在 CPython 3.15 中新增的。若要创建与早期版本 CPython 兼容的扩展，请参考本文档的较早版本。"
 
 #: ../../extending/first-extension-module.rst:53
 msgid ""
@@ -101,10 +111,12 @@ msgid ""
 "to be compatible with earlier standards, please follow tutorials in "
 "documentation for Python 3.14 or below."
 msgstr ""
+"本教程采用了 C11 和 C++20 中新增的 C 语法。如果您的扩展需要与早期标准保持兼容，请参照 Python 3.14 "
+"或更低版本文档中的教程进行操作。"
 
 #: ../../extending/first-extension-module.rst:59
 msgid "What we'll do"
-msgstr ""
+msgstr "我们将采取的措施"
 
 #: ../../extending/first-extension-module.rst:61
 msgid ""
@@ -115,12 +127,17 @@ msgid ""
 "result value as an integer. A manual page for :c:func:`system` might "
 "summarize it this way::"
 msgstr ""
+"让我们创建一个名为 ``spam`` [#why-spam]_ 的扩展模块，该模块将包含一个指向 C 标准库函数 :c:func:`system` 的 "
+"Python 接口。该函数定义在 ``stdlib.h`` 中；它接受一个 C "
+"字符串作为参数，将该参数作为系统命令执行，并以整数值返回结果。:c:func:`system` 的手动页可能会这样概括其功能::"
 
 #: ../../extending/first-extension-module.rst:69
 msgid ""
 "#include <stdlib.h>\n"
 "int system(const char *command);"
 msgstr ""
+"#include <stdlib.h>\n"
+"int system(const char *command);"
 
 #: ../../extending/first-extension-module.rst:72
 msgid ""
@@ -128,10 +145,12 @@ msgid ""
 "already exposed in Python. In production, use :py:func:`os.system` or "
 ":py:func:`subprocess.run` rather than the module you'll write here."
 msgstr ""
+"请注意，与 C 标准库中的许多函数一样，此函数已在 Python 中提供接口。在生产环境中，请使用 :py:func:`os.system` 或 "
+":py:func:`subprocess.run`，而不是在此处编写的模块。"
 
 #: ../../extending/first-extension-module.rst:77
 msgid "We want this function to be callable from Python as follows:"
-msgstr ""
+msgstr "我们希望该函数能够以如下方式从 Python 中调用："
 
 #: ../../extending/first-extension-module.rst:79
 msgid ""
@@ -141,6 +160,11 @@ msgid ""
 ">>> status\n"
 "0"
 msgstr ""
+">>> import spam\n"
+">>> status = spam.system(\"whoami\")\n"
+"User Name\n"
+">>> status\n"
+"0"
 
 #: ../../extending/first-extension-module.rst:89
 msgid ""
@@ -148,10 +172,11 @@ msgid ""
 "tutorials like this one because it has the same name on both Unix and "
 "Windows."
 msgstr ""
+"系统命令 ``whoami`` 会打印出您的用户名。在像本教程这样的指南中，该命令非常实用，因为它在 Unix 和 Windows 上的名称相同。"
 
 #: ../../extending/first-extension-module.rst:95
 msgid "Start with the headers"
-msgstr ""
+msgstr "从标题开始"
 
 #: ../../extending/first-extension-module.rst:97
 msgid ""
@@ -159,6 +184,8 @@ msgid ""
 "command line. Then, create a file named :file:`spammodule.c` in your "
 "directory. [#why-spammodule]_"
 msgstr ""
+"首先为本教程创建一个目录，并在命令行中切换到该目录。然后，在您的目录中创建一个名为 :file:`spammodule.c` 的文件。[#why-"
+"spammodule]_"
 
 #: ../../extending/first-extension-module.rst:102
 msgid ""
@@ -166,16 +193,20 @@ msgid ""
 "declarations of the Python C API, and :file:`stdlib.h` for the "
 ":c:func:`system` function. [#stdlib-h]_"
 msgstr ""
+"在本文件中，我们将包含两个头文件：:file:`Python.h`，用于引入 Python C API 的所有声明；以及 "
+":file:`stdlib.h`，用于 :c:func:`system` 函数。[#stdlib-h]_"
 
 #: ../../extending/first-extension-module.rst:106
 msgid "Add the following lines to :file:`spammodule.c`:"
-msgstr ""
+msgstr "将以下行代码添加到 :file:`spammodule.c` 中："
 
 #: ../../extending/first-extension-module.rst:108
 msgid ""
 "#include <Python.h>\n"
 "#include <stdlib.h>     // for system()\n"
 msgstr ""
+"#include <Python.h>\n"
+"#include <stdlib.h>     // for system()\n"
 
 #: ../../extending/first-extension-module.rst:112
 msgid ""
@@ -183,10 +214,12 @@ msgid ""
 "*after* :file:`Python.h`. On some systems, Python may define some pre-"
 "processor definitions that affect the standard headers."
 msgstr ""
+"务必将 :file:`stdlib.h` 以及任何其他标准库包含的内容置于 :file:`Python.h` *之后*。在某些系统中，Python "
+"可能会定义一些预处理器宏，这些宏会影响标准头文件。"
 
 #: ../../extending/first-extension-module.rst:119
 msgid "Running your build tool"
-msgstr ""
+msgstr "运行您的构建工具"
 
 #: ../../extending/first-extension-module.rst:121
 msgid ""
@@ -195,6 +228,8 @@ msgid ""
 "your build tool works, so that you can make and test incremental changes as "
 "you follow the rest of the text."
 msgstr ""
+"如果仅启用 "
+"include，你的扩展将无法发挥任何作用。不过，现在正是编译它并尝试导入它的合适时机。这将确保你的构建工具能够正常运行，从而让你能够按照后续内容逐步实现并测试增量变更。"
 
 #: ../../extending/first-extension-module.rst:126
 msgid ""
@@ -203,14 +238,16 @@ msgid ""
 "use `meson-python`_. (If you want to use another one, see :ref:`first-"
 "extension-other-tools`.)"
 msgstr ""
+"CPython 本身并不提供用于构建扩展模块的工具；建议采用第三方项目来实现此功能。在本教程中，我们将使用 `meson-"
+"python`_。（如果您想使用另一个项目，请参阅 :ref:`first-extension-other-tools`。）"
 
 #: ../../extending/first-extension-module.rst:135
 msgid "``meson-python`` requires defining a \"project\" using two extra files."
-msgstr ""
+msgstr "``meson-python`` 需要使用两个额外文件来定义一个“项目”。"
 
 #: ../../extending/first-extension-module.rst:137
 msgid "First, add ``pyproject.toml`` with these contents:"
-msgstr ""
+msgstr "首先，添加包含以下内容的 ``pyproject.toml``："
 
 #: ../../extending/first-extension-module.rst:139
 msgid ""
@@ -224,10 +261,19 @@ msgid ""
 "name = 'sampleproject'\n"
 "version = '0'"
 msgstr ""
+"[build-system]\n"
+"build-backend = 'mesonpy'\n"
+"requires = ['meson-python']\n"
+"\n"
+"[project]\n"
+"# Placeholder project information\n"
+"# (change this before distributing the module)\n"
+"name = 'sampleproject'\n"
+"version = '0'"
 
 #: ../../extending/first-extension-module.rst:151
 msgid "Then, create ``meson.build`` containing the following:"
-msgstr ""
+msgstr "然后，创建 ``meson.build``，其中包含以下内容："
 
 #: ../../extending/first-extension-module.rst:153
 msgid ""
@@ -241,28 +287,37 @@ msgid ""
 "   install: true,\n"
 ")"
 msgstr ""
+"project(‘sampleproject’，‘c’)\n"
+"\n"
+"py = import(‘python’).find_installation (pure: false)\n"
+"\n"
+"py.extension_module(\n"
+" ‘spam’，# 可导入的 Python 模块名称\n"
+" ‘spammodule.c’，# C 源文件\n"
+" install: true，\n"
+")"
 
 #: ../../extending/first-extension-module.rst:167
 msgid ""
-"See `meson-python documentation <meson-python>`_ for details on "
+"See the `meson-python documentation <meson-python_>`_ for details on "
 "configuration."
-msgstr ""
+msgstr "有关配置详情，请参阅 `meson-python documentation <meson-python_>`_。"
 
 #: ../../extending/first-extension-module.rst:170
 msgid ""
 "Now, build install the *project in the current directory* (``.``) via "
 "``pip``:"
-msgstr ""
+msgstr "现在，通过 ``pip`` 构建并安装 *当前目录中的项目* （``.``）："
 
 #: ../../extending/first-extension-module.rst:172
 msgid "python -m pip -v install ."
-msgstr ""
+msgstr "python -m pip -v install ."
 
 #: ../../extending/first-extension-module.rst:176
 msgid ""
 "The ``-v`` (``--verbose``) option causes ``pip`` to show the output from the"
 " compiler, which is often useful during development."
-msgstr ""
+msgstr "``-v`` (``--verbose``) 选项会使 ``pip`` 显示编译器的输出结果；这在开发过程中通常非常有用。"
 
 #: ../../extending/first-extension-module.rst:181
 msgid ""
@@ -270,18 +325,20 @@ msgid ""
 " in a :ref:`virtual environment <venv-def>`. (Or, if you prefer another tool"
 " that can build and install ``pyproject.toml``-based projects, use that.)"
 msgstr ""
+"如果您尚未安装 ``pip``，请运行 ``python -m ensurepip``；最好是在 :ref:`virtual environment "
+"<venv-def>` 中运行。（或者，如果您更倾向于使用其他能够构建并安装基于 ``pyproject.toml`` 的项目的工具，请使用该工具。）"
 
 #: ../../extending/first-extension-module.rst:189
 msgid ""
 "Note that you will need to run this command again every time you change your"
 " extension. Unlike Python, C has an explicit compilation step."
-msgstr ""
+msgstr "请注意，每次更改扩展名时，您都需要再次运行此命令。与 Python 不同，C 语言包含一个显式的编译步骤。"
 
 #: ../../extending/first-extension-module.rst:193
 msgid ""
 "When your extension is compiled and installed, start Python and try to "
 "import it. This should fail with the following exception:"
-msgstr ""
+msgstr "当您的扩展编译并安装完成后，启动 Python 并尝试导入该扩展。此时应会抛出以下异常："
 
 #: ../../extending/first-extension-module.rst:197
 msgid ""
@@ -290,10 +347,14 @@ msgid ""
 "   ...\n"
 "ImportError: dynamic module does not define module export function (PyModExport_spam or PyInit_spam)"
 msgstr ""
+">>> import spam\n"
+"Traceback (most recent call last):\n"
+"   ...\n"
+"ImportError: dynamic module does not define module export function (PyModExport_spam or PyInit_spam)"
 
 #: ../../extending/first-extension-module.rst:206
 msgid "Module export hook"
-msgstr ""
+msgstr "模块导出钩子"
 
 #: ../../extending/first-extension-module.rst:208
 msgid ""
@@ -301,10 +362,12 @@ msgid ""
 "Python is looking for a \"module export function\", also known as a "
 ":ref:`module export hook <extension-export-hook>`. Let's define one."
 msgstr ""
+"您尝试导入该模块时收到的提示表明，Python 正在查找一个“模块导出函数”，也称为 :ref:`module export hook "
+"<extension-export-hook>`。让我们定义一个这样的函数。"
 
 #: ../../extending/first-extension-module.rst:213
 msgid "First, add a prototype below the ``#include`` lines:"
-msgstr ""
+msgstr "首先，在 ``#include`` 行下方添加一个原型："
 
 #: ../../extending/first-extension-module.rst:215
 msgid ""
@@ -312,13 +375,16 @@ msgid ""
 "PyMODEXPORT_FUNC PyModExport_spam(void);\n"
 "\n"
 msgstr ""
+"\n"
+"PyMODEXPORT_FUNC PyModExport_spam(void);\n"
+"\n"
 
 #: ../../extending/first-extension-module.rst:220
 msgid ""
 "The prototype is not strictly necessary, but some modern compilers emit "
 "warnings without it. It's generally better to add the prototype than to "
 "disable the warning."
-msgstr ""
+msgstr "原型并非严格必要，但某些现代编译器即使没有原型也会发出警告。通常，添加原型比禁用警告更为妥当。"
 
 #: ../../extending/first-extension-module.rst:224
 msgid ""
@@ -326,12 +392,14 @@ msgid ""
 "and adds any special linkage declarations needed to make the function "
 "visible and usable when CPython loads it."
 msgstr ""
+":c:macro:`PyMODEXPORT_FUNC` 宏用于声明函数的返回类型，并添加必要的特殊链接声明，以便 CPython "
+"加载该函数时能够使其可见且可用。"
 
 #: ../../extending/first-extension-module.rst:228
 msgid ""
 "After the prototype, add the function itself. For now, make it return "
 "``NULL``:"
-msgstr ""
+msgstr "原型完成后，再添加该函数本身。目前，使其返回 ``NULL``："
 
 #: ../../extending/first-extension-module.rst:231
 msgid ""
@@ -341,12 +409,17 @@ msgid ""
 "   return NULL;\n"
 "}"
 msgstr ""
+"PyMODEXPORT_FUNC\n"
+"PyModExport_spam(void)\n"
+"{\n"
+"   return NULL;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:239
 msgid ""
 "Compile and load the module again. You should get a different error this "
 "time."
-msgstr ""
+msgstr "重新编译并加载该模块。这次您应该会收到一个不同的错误信息。"
 
 #: ../../extending/first-extension-module.rst:242
 msgid ""
@@ -355,6 +428,10 @@ msgid ""
 "   ...\n"
 "SystemError: module export hook for module 'spam' failed without setting an exception"
 msgstr ""
+">>> import spam\n"
+"Traceback (most recent call last):\n"
+"   ...\n"
+"SystemError: module export hook for module 'spam' failed without setting an exception"
 
 #: ../../extending/first-extension-module.rst:249
 msgid ""
@@ -362,23 +439,25 @@ msgid ""
 "CPython complains about it. That's good -- it means that CPython found the "
 "function! Let's now make it do something useful."
 msgstr ""
+"仅仅返回 ``NULL`` 对于导出钩子而言*并非*正确的行为，CPython 会对此发出警告。这反而是件好事——说明 CPython "
+"已经找到了这个函数！现在，让我们让它实现一些有用的功能。"
 
 #: ../../extending/first-extension-module.rst:256
 msgid "The slot table"
-msgstr ""
+msgstr "槽位表"
 
 #: ../../extending/first-extension-module.rst:258
 msgid ""
 "Rather than ``NULL``, the export hook should return the information needed "
 "to create a module. Let's start with the basics: the name and docstring."
-msgstr ""
+msgstr "导出钩子不应返回 ``NULL``，而应返回创建模块所需的信息。让我们从基础内容开始：名称和 docstring。"
 
 #: ../../extending/first-extension-module.rst:262
 msgid ""
 "The information should be defined in an array of :c:type:`PySlot` entries, "
 "which are essentially key-value pairs. Define this array just before your "
 "export hook:"
-msgstr ""
+msgstr "相关信息应定义在一个由 :c:type:`PySlot` 个条目组成的数组中，这些条目本质上是一对键值。请在导出钩子之前定义该数组："
 
 #: ../../extending/first-extension-module.rst:266
 msgid ""
@@ -391,6 +470,14 @@ msgid ""
 "   PySlot_END\n"
 "};"
 msgstr ""
+"PyABIInfo_VAR(abi_info);\n"
+"\n"
+"static PySlot spam_slots[] = {\n"
+"   PySlot_STATIC_DATA(Py_mod_abi, &abi_info),\n"
+"   PySlot_STATIC_DATA(Py_mod_name, \"spam\"),\n"
+"   PySlot_STATIC_DATA(Py_mod_doc, \"A wonderful module with an example function\"),\n"
+"   PySlot_END\n"
+"};"
 
 #: ../../extending/first-extension-module.rst:277
 msgid ""
@@ -398,6 +485,8 @@ msgid ""
 "``&abi_info``, ``\"spam\"``, and the docstring) is a pointer to constant, "
 "statically allocated data."
 msgstr ""
+"当槽位值（此处为 ``&abi_info``、``\"spam\"`` 及文档字符串）是指向常量且静态分配数据的指针时，会使用 "
+":c:macro:`PySlot_STATIC_DATA` 宏。"
 
 #: ../../extending/first-extension-module.rst:281
 msgid ""
@@ -405,18 +494,22 @@ msgid ""
 " a bit of boilerplate that helps prevent extensions compiled for a different"
 " version of Python from crashing the interpreter."
 msgstr ""
+"``PyABIInfo_VAR(abi_info);`` 宏和 :c:data:`Py_mod_abi` 槽位是一些通用代码，有助于防止为不同 "
+"Python 版本编译的扩展导致解释器崩溃。"
 
 #: ../../extending/first-extension-module.rst:285
 msgid ""
 "For both :c:data:`Py_mod_name` and :c:data:`Py_mod_doc`, the values are C "
 "strings -- that is, NUL-terminated, UTF-8 encoded byte arrays."
 msgstr ""
+"对于 :c:data:`Py_mod_name` 和 :c:data:`Py_mod_doc`，其值均为 C 字符串——即以 NUL 终止、采用 "
+"UTF-8 编码的字节数组。"
 
 #: ../../extending/first-extension-module.rst:288
 msgid ""
 "Note ``PySlot_END`` sentinel entry at the end. This marks the end of the "
 "array. If you forget it, you'll trigger undefined behavior."
-msgstr ""
+msgstr "注意：在末尾设置 ``PySlot_END`` 哨兵条目。这标志着数组的结束。如果忽略这一点，将会引发未定义行为。"
 
 #: ../../extending/first-extension-module.rst:292
 msgid ""
@@ -425,10 +518,12 @@ msgid ""
 "export hook; all global variables and all other functions should generally "
 "be ``static``, so that they don't clash with other extensions."
 msgstr ""
+"该数组被定义为 ``static``——也就是说，它不会在 ``.c`` 文件之外可见。这将是一个贯穿始终的主题。CPython "
+"只需访问导出钩子即可；所有全局变量及所有其他函数通常都应设为 ``static``，以避免与其他扩展发生冲突。"
 
 #: ../../extending/first-extension-module.rst:298
 msgid "Return this array from your export hook instead of ``NULL``:"
-msgstr ""
+msgstr "请从您的导出钩子中返回此数组，而不是返回 ``NULL``："
 
 #: ../../extending/first-extension-module.rst:300
 msgid ""
@@ -438,10 +533,15 @@ msgid ""
 "   return spam_slots;\n"
 "}"
 msgstr ""
+"PyMODEXPORT_FUNC\n"
+"PyModExport_spam(void)\n"
+"{\n"
+"   return spam_slots;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:309
 msgid "Now, recompile and try it out:"
-msgstr ""
+msgstr "现在请重新编译并尝试运行："
 
 #: ../../extending/first-extension-module.rst:311
 msgid ""
@@ -449,18 +549,21 @@ msgid ""
 ">>> print(spam)\n"
 "<module 'spam' from '/home/encukou/dev/cpython/spam.so'>"
 msgstr ""
+">>> import spam\n"
+">>> print(spam)\n"
+"<module 'spam' from '/home/encukou/dev/cpython/spam.so'>"
 
 #: ../../extending/first-extension-module.rst:317
 msgid "You have an extension module! Try ``help(spam)`` to see the docstring."
-msgstr ""
+msgstr "您有一个扩展模块！请尝试使用 ``help(spam)`` 查看 docstring。"
 
 #: ../../extending/first-extension-module.rst:320
 msgid "The next step will be adding a function."
-msgstr ""
+msgstr "下一步将添加一项功能。"
 
 #: ../../extending/first-extension-module.rst:326
 msgid "Exposing a function"
-msgstr ""
+msgstr "暴露函数"
 
 #: ../../extending/first-extension-module.rst:328
 msgid ""
@@ -468,6 +571,8 @@ msgid ""
 "write a layer of glue code to convert arguments from Python objects to C "
 "values, and the C return value back to Python."
 msgstr ""
+"若要将 :c:func:`system` C 函数直接暴露给 Python，我们需要编写一层胶水代码，将 Python 对象中的参数转换为 C 值，并将"
+" C 返回值转换回 Python 类型。"
 
 #: ../../extending/first-extension-module.rst:332
 msgid ""
@@ -476,10 +581,12 @@ msgid ""
 " -- regardless of the Python type -- are represented in C as pointers to the"
 " :c:type:`PyObject` structure."
 msgstr ""
+"编写胶水代码最简单的方法之一，是使用 “:c:data:`METH_O`” 函数；该函数接收两个 Python 对象并返回一个对象。所有 Python "
+"对象——无论其 Python 类型为何——在 C 中均以指向 :c:type:`PyObject` 结构的指针形式表示。"
 
 #: ../../extending/first-extension-module.rst:337
 msgid "Add such a function above the slots array::"
-msgstr ""
+msgstr "在 slots 数组上方添加这样一个函数::"
 
 #: ../../extending/first-extension-module.rst:339
 msgid ""
@@ -489,6 +596,11 @@ msgid ""
 "   Py_RETURN_NONE;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   Py_RETURN_NONE;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:345
 msgid ""
@@ -496,6 +608,8 @@ msgid ""
 "macro, which expands to a ``return`` statement that properly returns a "
 "Python :py:data:`None` object."
 msgstr ""
+"目前，我们暂不理会这些论证，而是使用 :c:macro:`Py_RETURN_NONE` 宏；该宏会展开为一条 ``return`` "
+"语句，从而正确返回一个 Python :py:data:`None` 对象。"
 
 #: ../../extending/first-extension-module.rst:349
 msgid ""
@@ -503,10 +617,12 @@ msgid ""
 "haven't yet added ``spam_system`` to the module, so you might get a warning "
 "that ``spam_system`` is unused."
 msgstr ""
+"请重新编译您的扩展程序，以确保不存在语法错误。我们尚未将 ``spam_system`` 添加到模块中，因此您可能会收到一条提示，称 "
+"``spam_system`` 未被使用。"
 
 #: ../../extending/first-extension-module.rst:356
 msgid "Method definitions"
-msgstr ""
+msgstr "方法定义"
 
 #: ../../extending/first-extension-module.rst:358
 msgid ""
@@ -514,18 +630,20 @@ msgid ""
 "of information in a structure called :c:type:`PyMethodDef` [#why-"
 "pymethoddef]_:"
 msgstr ""
+"要将 C 函数暴露给 Python，您需要在一个名为 :c:type:`PyMethodDef` [#why-pymethoddef]_ "
+"的结构中提供若干信息："
 
 #: ../../extending/first-extension-module.rst:362
 msgid "``ml_name``: the name of the Python function;"
-msgstr ""
+msgstr "``ml_name``：Python 函数的名称；"
 
 #: ../../extending/first-extension-module.rst:363
 msgid "``ml_doc``: a docstring;"
-msgstr ""
+msgstr "``ml_doc``：一个 docstring；"
 
 #: ../../extending/first-extension-module.rst:364
 msgid "``ml_meth``: the C function to be called; and"
-msgstr ""
+msgstr "``ml_meth``：待调用的 C 函数；以及"
 
 #: ../../extending/first-extension-module.rst:365
 msgid ""
@@ -533,6 +651,8 @@ msgid ""
 "are passed to the C function. We'll use :c:data:`METH_O` here -- the flag "
 "that matches our ``spam_system`` function's signature."
 msgstr ""
+"``ml_flags``：一组用于描述相关细节的标志，例如 Python 参数如何传递给 C 函数。这里我们将使用 "
+":c:data:`METH_O`——该标志与我们的 ``spam_system`` 函数签名相匹配。"
 
 #: ../../extending/first-extension-module.rst:370
 msgid ""
@@ -540,6 +660,8 @@ msgid ""
 "to be collected in an array, with a zero-filled sentinel at the end. Add "
 "this array just below the ``spam_system`` function:"
 msgstr ""
+"由于模块通常会创建多个函数，因此这些定义需要被收集到一个数组中，并在末尾放置一个以零填充的哨兵值。请将此数组添加到 ``spam_system`` "
+"函数下方："
 
 #: ../../extending/first-extension-module.rst:374
 msgid ""
@@ -555,17 +677,29 @@ msgid ""
 "};\n"
 "\n"
 msgstr ""
+"\n"
+"static PyMethodDef spam_methods[] = {\n"
+"    {\n"
+"        .ml_name=\"system\",\n"
+"        .ml_meth=spam_system,\n"
+"        .ml_flags=METH_O,\n"
+"        .ml_doc=\"Execute a shell command.\",\n"
+"    },\n"
+"    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
+"};\n"
+"\n"
 
 #: ../../extending/first-extension-module.rst:378
 msgid ""
 "As with module slots, a zero-filled sentinel marks the end of the array."
-msgstr ""
+msgstr "与模块槽位类似，用零填充哨兵标志数组的末尾。"
 
 #: ../../extending/first-extension-module.rst:380
 msgid ""
 "Next, we'll add the method to the module. Add a :c:data:`Py_mod_methods` "
-"slot to your :c:type:`PyMethodDef` array:"
+"slot to your :c:type:`PySlot` array:"
 msgstr ""
+"接下来，我们将把该方法添加到模块中。在您的 :c:type:`PySlot` 数组中添加一个 :c:data:`Py_mod_methods` 槽位："
 
 #: ../../extending/first-extension-module.rst:383
 msgid ""
@@ -581,16 +715,27 @@ msgid ""
 "};\n"
 "\n"
 msgstr ""
+"\n"
+"PyABIInfo_VAR(abi_info);\n"
+"\n"
+"static PySlot spam_slots[] = {\n"
+"    PySlot_STATIC_DATA(Py_mod_abi, &abi_info),\n"
+"    PySlot_STATIC_DATA(Py_mod_name, \"spam\"),\n"
+"    PySlot_STATIC_DATA(Py_mod_doc, \"A wonderful module with an example function\"),\n"
+"    PySlot_STATIC_DATA(Py_mod_methods, spam_methods),\n"
+"    PySlot_END\n"
+"};\n"
+"\n"
 
 #: ../../extending/first-extension-module.rst:388
 msgid ""
 "Recompile your extension again, and test it. Be sure to restart the Python "
 "interpreter, so that ``import spam`` picks up the new version of the module."
-msgstr ""
+msgstr "请再次重新编译您的扩展程序，然后进行测试。务必重启 Python 解释器，以便 ``import spam`` 能够加载到该模块的新版本。"
 
 #: ../../extending/first-extension-module.rst:392
 msgid "You should now be able to call the function:"
-msgstr ""
+msgstr "现在您应该能够调用该函数了："
 
 #: ../../extending/first-extension-module.rst:394
 msgid ""
@@ -600,18 +745,23 @@ msgid ""
 ">>> print(spam.system('whoami'))\n"
 "None"
 msgstr ""
+">>> import spam\n"
+">>> print(spam.system)\n"
+"<built-in function system>\n"
+">>> print(spam.system('whoami'))\n"
+"None"
 
 #: ../../extending/first-extension-module.rst:402
 msgid ""
 "Note that our ``spam.system`` does not yet run the ``whoami`` command; it "
 "only returns ``None``."
-msgstr ""
+msgstr "请注意，我们的 ``spam.system`` 目前尚未执行 ``whoami`` 命令；它仅返回 ``None``。"
 
 #: ../../extending/first-extension-module.rst:405
 msgid ""
 "Check that the function accepts exactly one argument, as specified by the "
 ":c:data:`METH_O` flag:"
-msgstr ""
+msgstr "请确认该函数仅接受一个参数，且该参数由 :c:data:`METH_O` 标志指定："
 
 #: ../../extending/first-extension-module.rst:408
 msgid ""
@@ -620,10 +770,14 @@ msgid ""
 "   ...\n"
 "TypeError: spam.system() takes exactly one argument (3 given)"
 msgstr ""
+">>> print(spam.system('too', 'many', 'arguments'))\n"
+"Traceback (most recent call last):\n"
+"   ...\n"
+"TypeError: spam.system() takes exactly one argument (3 given)"
 
 #: ../../extending/first-extension-module.rst:417
 msgid "Returning an integer"
-msgstr ""
+msgstr "返回整数"
 
 #: ../../extending/first-extension-module.rst:419
 msgid ""
@@ -632,6 +786,8 @@ msgid ""
 "object. Eventually this will be the exit code of a system command, but let's"
 " start with a fixed value, say, ``3``."
 msgstr ""
+"现在，让我们来看看返回值。与其使用 ``None``，不如让 ``spam.system`` 返回一个数字——也就是一个 Python "
+":py:type:`int` 对象。最终，这将成为系统命令的退出码；不过，我们先从固定值开始，比如 ``3``。"
 
 #: ../../extending/first-extension-module.rst:425
 msgid ""
@@ -639,10 +795,12 @@ msgid ""
 "object from a C ``int`` value: :c:func:`PyLong_FromLong`. [#why-"
 "pylongfromlong]_"
 msgstr ""
+"Python C API 提供了一个函数，用于根据 C 中的 ``int`` 值创建 Python :py:type:`int` "
+"对象：:c:func:`PyLong_FromLong`。[#why-pylongfromlong]_"
 
 #: ../../extending/first-extension-module.rst:428
 msgid "To call it, replace the ``Py_RETURN_NONE`` with the following 3 lines:"
-msgstr ""
+msgstr "若要调用该功能，请将 ``Py_RETURN_NONE`` 替换为以下 3 行代码："
 
 #: ../../extending/first-extension-module.rst:432
 msgid ""
@@ -654,12 +812,19 @@ msgid ""
 "   return result;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   int status = 3;\n"
+"   PyObject *result = PyLong_FromLong(status);\n"
+"   return result;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:444
 msgid ""
 "Recompile, restart the Python interpreter again, and check that the function"
 " now returns 3:"
-msgstr ""
+msgstr "重新编译，再次重启 Python 解释器，然后检查该函数现在是否返回 3："
 
 #: ../../extending/first-extension-module.rst:447
 msgid ""
@@ -667,14 +832,17 @@ msgid ""
 ">>> spam.system('whoami')\n"
 "3"
 msgstr ""
+">>> import spam\n"
+">>> spam.system('whoami')\n"
+"3"
 
 #: ../../extending/first-extension-module.rst:455
 msgid "Accepting a string"
-msgstr ""
+msgstr "接受字符串"
 
 #: ../../extending/first-extension-module.rst:457
 msgid "Finally, let's handle the function argument."
-msgstr ""
+msgstr "最后，我们来处理函数参数。"
 
 #: ../../extending/first-extension-module.rst:459
 msgid ""
@@ -682,6 +850,8 @@ msgid ""
 "``PyObject *self``, will be set to the ``spam`` module object. This isn't "
 "useful in our case, so we'll ignore it."
 msgstr ""
+"我们的 C 函数 :c:func:`!spam_system` 接收两个参数。第一个参数 ``PyObject *self`` 将被设置为 "
+"``spam`` 模块对象。但在我们的用例中，这并无实际用途，因此我们将忽略它。"
 
 #: ../../extending/first-extension-module.rst:464
 msgid ""
@@ -690,6 +860,8 @@ msgid ""
 " use the information in it, we will need to convert it to a C value -- in "
 "this case, a C string (``const char *``)."
 msgstr ""
+"另一个变量 ``PyObject *arg`` 将设置为用户从 Python 传递过来的对象。我们预计该对象应是一个 Python "
+"字符串。为了使用其中的信息，我们需要将其转换为 C 值——在本例中，即一个 C 字符串（``const char *``）。"
 
 #: ../../extending/first-extension-module.rst:470
 msgid ""
@@ -699,6 +871,9 @@ msgid ""
 "be correct for system commands, but it's what :py:meth:`str.encode` uses by "
 "default, and the C API has special support for it.)"
 msgstr ""
+"这里存在轻微的类型不匹配：Python 的 :py:class:`str` 对象存储的是 Unicode 文本，而 C "
+"字符串则是字节数组。因此，我们需要对数据进行 *编码*，并将使用 UTF-8 编码。（UTF-8 对于系统命令可能并不总是正确，但这是 "
+":py:meth:`str.encode` 默认使用的编码，且 C API 对此有特别支持。）"
 
 #: ../../extending/first-extension-module.rst:477
 msgid ""
@@ -706,6 +881,8 @@ msgid ""
 ":c:func:`PyUnicode_AsUTF8AndSize` [#why-pyunicodeasutf8]_. Call it like "
 "this:"
 msgstr ""
+"将Python字符串编码为 UTF-8缓冲区的功能名为 :c:func:`PyUnicode_AsUTF8AndSize` [#why-"
+"pyunicodeasutf8]_。调用方式如下："
 
 #: ../../extending/first-extension-module.rst:481
 msgid ""
@@ -718,6 +895,14 @@ msgid ""
 "   return result;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
+"   int status = 3;\n"
+"   PyObject *result = PyLong_FromLong(status);\n"
+"   return result;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:493
 msgid ""
@@ -726,6 +911,8 @@ msgid ""
 " This buffer is managed by the *arg* object, which means we don't need to "
 "free it, but we must follow some rules:"
 msgstr ""
+"如果 :c:func:`PyUnicode_AsUTF8AndSize` 成功，*command* 将指向生成的 C 字符串——即一个以零结尾的字节数组"
+" [#embedded-nul]_。该缓冲区由 *arg* 对象管理，因此我们无需手动释放它，但必须遵守某些规则："
 
 #: ../../extending/first-extension-module.rst:498
 msgid ""
@@ -733,10 +920,12 @@ msgid ""
 "``spam_system`` returns, *arg* and the buffer it manages might be garbage-"
 "collected."
 msgstr ""
+"我们应当仅使用 ``spam_system`` 函数内部的缓冲区。在 ``spam_system`` 返回后，*arg* "
+"及其所管理的缓冲区可能会被垃圾回收。"
 
 #: ../../extending/first-extension-module.rst:501
 msgid "We must not modify it. This is why we use ``const``."
-msgstr ""
+msgstr "我们不得对其进行修改。这就是为什么我们使用 ``const``。"
 
 #: ../../extending/first-extension-module.rst:503
 msgid ""
@@ -746,6 +935,9 @@ msgid ""
 "of this documentation. For now, be assured that we are already handling "
 "errors from :c:func:`PyLong_FromLong` correctly."
 msgstr ""
+"如果 :c:func:`PyUnicode_AsUTF8AndSize` *未*成功，则会返回一个 ``NULL`` 指针。在调用 *任何* "
+"Python C API 时，我们始终需要处理此类错误情况。通常的处理方法将在本文档的后续章节中介绍。目前可以确定的是，我们已经正确处理了来自 "
+":c:func:`PyLong_FromLong` 的错误。"
 
 #: ../../extending/first-extension-module.rst:510
 msgid ""
@@ -753,13 +945,15 @@ msgid ""
 "errors is returning ``NULL`` from ``spam_system``. Add an ``if`` block for "
 "this:"
 msgstr ""
+"对于 :c:func:`PyUnicode_AsUTF8AndSize` 调用，正确处理错误的正确做法是从 ``spam_system`` 返回 "
+"``NULL``。为此请添加一个 ``if`` 块："
 
 #: ../../extending/first-extension-module.rst:515
 msgid ""
 "static PyObject *\n"
 "spam_system(PyObject *self, PyObject *arg)\n"
 "{\n"
-"   const char *command = PyUnicode_AsUTF8AndSize(arg);\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
 "   if (command == NULL) {\n"
 "      return NULL;\n"
 "   }\n"
@@ -768,6 +962,17 @@ msgid ""
 "   return result;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
+"   if (command == NULL) {\n"
+"      return NULL;\n"
+"   }\n"
+"   int status = 3;\n"
+"   PyObject *result = PyLong_FromLong(status);\n"
+"   return result;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:530
 msgid ""
@@ -775,6 +980,8 @@ msgid ""
 "``import spam`` picks up the new version of your module, and try passing a "
 "non-string value to your function:"
 msgstr ""
+"为验证错误处理是否正常工作，请再次编译、重启 Python，使 ``import spam`` "
+"能够加载模块的新版本，然后尝试将非字符串类型的值传递给函数："
 
 #: ../../extending/first-extension-module.rst:534
 msgid ""
@@ -784,19 +991,24 @@ msgid ""
 "   ...\n"
 "TypeError: bad argument type for built-in operation"
 msgstr ""
+">>> import spam\n"
+">>> spam.system(3)\n"
+"Traceback (most recent call last):\n"
+"   ...\n"
+"TypeError: bad argument type for built-in operation"
 
 #: ../../extending/first-extension-module.rst:542
 msgid ""
 "Now, all that is left is calling the C library function :c:func:`system` "
 "with the ``char *`` buffer, and using its result instead of the ``3``:"
-msgstr ""
+msgstr "现在，只需使用 ``char *`` 缓冲区调用 C 库函数 :c:func:`system`，并用其返回值替代 ``3``："
 
 #: ../../extending/first-extension-module.rst:545
 msgid ""
 "static PyObject *\n"
 "spam_system(PyObject *self, PyObject *arg)\n"
 "{\n"
-"   const char *command = PyUnicode_AsUTF8AndSize(arg);\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
 "   if (command == NULL) {\n"
 "      return NULL;\n"
 "   }\n"
@@ -805,12 +1017,23 @@ msgid ""
 "   return result;\n"
 "}"
 msgstr ""
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
+"   if (command == NULL) {\n"
+"      return NULL;\n"
+"   }\n"
+"   int status = system(command);\n"
+"   PyObject *result = PyLong_FromLong(status);\n"
+"   return result;\n"
+"}"
 
 #: ../../extending/first-extension-module.rst:560
 msgid ""
 "Compile your module, restart Python, and test. This time, you should see "
 "your username -- the output of the ``whoami`` system command:"
-msgstr ""
+msgstr "编译您的模块，重新启动 Python，然后进行测试。这一次，您应该能看到自己的用户名——即 ``whoami`` 系统命令的输出结果："
 
 #: ../../extending/first-extension-module.rst:564
 msgid ""
@@ -820,12 +1043,17 @@ msgid ""
 ">>> result\n"
 "0"
 msgstr ""
+">>> import spam\n"
+">>> result = spam.system('whoami')\n"
+"User Name\n"
+">>> result\n"
+"0"
 
 #: ../../extending/first-extension-module.rst:572
 msgid ""
 "You can also test with other commands, like ``ls``, ``dir``, or one that "
 "doesn't exist:"
-msgstr ""
+msgstr "您还可以使用其他命令进行测试，例如 ``ls``、``dir``，或一个不存在的命令："
 
 #: ../../extending/first-extension-module.rst:575
 msgid ""
@@ -835,20 +1063,25 @@ msgid ""
 ">>> result\n"
 "32512"
 msgstr ""
+">>> import spam\n"
+">>> result = spam.system('nonexistent-command')\n"
+"sh: line 1: nonexistent-command: command not found\n"
+">>> result\n"
+"32512"
 
 #: ../../extending/first-extension-module.rst:585
 msgid "The result"
-msgstr ""
+msgstr "结果"
 
 #: ../../extending/first-extension-module.rst:588
 msgid ""
 "Congratulations! You have written a complete Python C API extension module, "
 "and completed this tutorial!"
-msgstr ""
+msgstr "恭喜！您已成功编写一个完整的 Python C API 扩展模块，并完成本教程！"
 
 #: ../../extending/first-extension-module.rst:592
 msgid "Here is the entire source file, for your convenience:"
-msgstr ""
+msgstr "为方便您查阅，以下是完整的源文件："
 
 #: ../../extending/first-extension-module.rst:596
 msgid ""
@@ -907,16 +1140,70 @@ msgid ""
 "   return spam_slots;\n"
 "}\n"
 msgstr ""
+"/// Includes\n"
+"\n"
+"#include <Python.h>\n"
+"#include <stdlib.h>     // for system()\n"
+"\n"
+"/// Implementation of spam.system\n"
+"\n"
+"static PyObject *\n"
+"spam_system(PyObject *self, PyObject *arg)\n"
+"{\n"
+"   const char *command = PyUnicode_AsUTF8AndSize(arg, NULL);\n"
+"   if (command == NULL) {\n"
+"      return NULL;\n"
+"   }\n"
+"   int status = system(command);\n"
+"   PyObject *result = PyLong_FromLong(status);\n"
+"   return result;\n"
+"}\n"
+"\n"
+"/// Module method table\n"
+"\n"
+"static PyMethodDef spam_methods[] = {\n"
+"    {\n"
+"        .ml_name=\"system\",\n"
+"        .ml_meth=spam_system,\n"
+"        .ml_flags=METH_O,\n"
+"        .ml_doc=\"Execute a shell command.\",\n"
+"    },\n"
+"    {NULL, NULL, 0, NULL}        /* Sentinel */\n"
+"};\n"
+"\n"
+"/// Module slot table\n"
+"\n"
+"PyABIInfo_VAR(abi_info);\n"
+"\n"
+"static PySlot spam_slots[] = {\n"
+"    PySlot_STATIC_DATA(Py_mod_abi, &abi_info),\n"
+"    PySlot_STATIC_DATA(Py_mod_name, \"spam\"),\n"
+"    PySlot_STATIC_DATA(Py_mod_doc, \"A wonderful module with an example function\"),\n"
+"    PySlot_STATIC_DATA(Py_mod_methods, spam_methods),\n"
+"    PySlot_END\n"
+"};\n"
+"\n"
+"/// Export hook prototype\n"
+"\n"
+"PyMODEXPORT_FUNC PyModExport_spam(void);\n"
+"\n"
+"/// Module export hook\n"
+"\n"
+"PyMODEXPORT_FUNC\n"
+"PyModExport_spam(void)\n"
+"{\n"
+"   return spam_slots;\n"
+"}\n"
 
 #: ../../extending/first-extension-module.rst:603
 msgid "Appendix: Other build tools"
-msgstr ""
+msgstr "附录：其他构建工具"
 
 #: ../../extending/first-extension-module.rst:605
 msgid ""
 "You should be able to follow this tutorial -- except the *Running your build"
 " tool* section itself -- with a build tool other than ``meson-python``."
-msgstr ""
+msgstr "您应该能够按照本教程进行操作——除了“运行您的构建工具”章节本身——使用除 ``meson-python`` 以外的其他构建工具。"
 
 #: ../../extending/first-extension-module.rst:609
 msgid ""
@@ -924,22 +1211,27 @@ msgid ""
 "<https://packaging.python.org/en/latest/guides/tool-recommendations/#build-"
 "backends-for-extension-modules>`_; be sure to choose one for the C language."
 msgstr ""
+"《Python 软件包用户指南》中设有 `list of recommended tools "
+"<https://packaging.python.org/en/latest/guides/tool-recommendations/#build-"
+"backends-for-extension-modules>`_；请务必为 C 语言选择其中一个。"
 
 #: ../../extending/first-extension-module.rst:614
 msgid "Workaround for missing PyInit function"
-msgstr ""
+msgstr "PyInit 函数缺失时的临时解决方案"
 
 #: ../../extending/first-extension-module.rst:616
 msgid ""
 "If your build tool output complains about missing ``PyInit_spam``, add the "
 "following function to your module for now:"
-msgstr ""
+msgstr "如果您的构建工具输出报告中提到缺少 ``PyInit_spam``，请暂时在您的模块中添加以下函数："
 
 #: ../../extending/first-extension-module.rst:619
 msgid ""
 "// A workaround\n"
 "void *PyInit_spam(void) { return NULL; }"
 msgstr ""
+"// A workaround\n"
+"void *PyInit_spam(void) { return NULL; }"
 
 #: ../../extending/first-extension-module.rst:624
 msgid ""
@@ -948,6 +1240,8 @@ msgid ""
 "below. Current CPython does not need it, but some build tools may still "
 "assume that all extension modules need to define it."
 msgstr ""
+"这是一个用于旧版 :ref:`initialization function <extension-export-hook>` 的兼容性补丁；在 "
+"CPython 3.14 及更早版本的扩展模块中，该补丁是必需的。当前的 CPython 不再需要它，但某些构建工具仍可能假定所有扩展模块都必须定义它。"
 
 #: ../../extending/first-extension-module.rst:629
 msgid ""
@@ -955,17 +1249,20 @@ msgid ""
 "initialization of spam failed without raising an exception`` instead of "
 "``ImportError: dynamic module does not define module export function``."
 msgstr ""
+"如果您采用此临时解决方案，将会得到异常 ``SystemError: initialization of spam failed without "
+"raising an exception``，而不是 ``ImportError: dynamic module does not define "
+"module export function``。"
 
 #: ../../extending/first-extension-module.rst:636
 msgid "Compiling directly"
-msgstr ""
+msgstr "直接编译"
 
 #: ../../extending/first-extension-module.rst:638
 msgid ""
 "Using a third-party build tool is heavily recommended, as it will take care "
 "of various details of your platform and Python installation, of naming the "
 "resulting extension, and, later, of distributing your work."
-msgstr ""
+msgstr "强烈建议使用第三方构建工具，因为它会处理平台及 Python 安装相关的各项细节、为生成的扩展命名，以及后续分发您的成果。"
 
 #: ../../extending/first-extension-module.rst:643
 msgid ""
@@ -974,6 +1271,7 @@ msgid ""
 "this is system-specific; be prepared for issues you will need to solve "
 "yourself."
 msgstr ""
+"如果您是为某个*特定*系统构建扩展，或者仅为自己构建，那么您可能更希望直接运行编译器。具体实现方式取决于目标系统；请做好应对需要自行解决问题的准备。"
 
 #: ../../extending/first-extension-module.rst:649
 msgid "Linux"
@@ -986,17 +1284,20 @@ msgid ""
 "that it corresponds to the CPython interpreter you'll use to load the "
 "module. Then, start with the following command:"
 msgstr ""
+"在 Linux 上，Python 开发包可能包含一个 ``python3-config`` "
+"命令，该命令会打印出所需的编译器标志。如果您使用此命令，请确认其与您将用于加载该模块的 CPython 解释器相匹配。随后，请从以下命令开始："
 
 #: ../../extending/first-extension-module.rst:657
 msgid ""
 "gcc --shared $(python3-config --cflags --ldflags) spammodule.c -o spam.so"
 msgstr ""
+"gcc --shared $(python3-config --cflags --ldflags) spammodule.c -o spam.so"
 
 #: ../../extending/first-extension-module.rst:661
 msgid ""
 "This should generate a ``spam.so`` file that you need to put in a directory "
 "on :py:attr:`sys.path`."
-msgstr ""
+msgstr "这将生成一个 ``spam.so`` 文件，您需要将其放入 :py:attr:`sys.path` 上的某个目录中。"
 
 #: ../../extending/first-extension-module.rst:666
 msgid "Footnotes"
@@ -1004,7 +1305,7 @@ msgstr "脚注"
 
 #: ../../extending/first-extension-module.rst:667
 msgid "``spam`` is the favorite food of Monty Python fans..."
-msgstr ""
+msgstr "``spam`` 是蒙提·派森粉丝最喜爱的食物……"
 
 #: ../../extending/first-extension-module.rst:668
 msgid ""
@@ -1014,6 +1315,9 @@ msgid ""
 "named ``spam``, projects where Python isn't the primary language might use "
 "``py_spam.c``, and so on."
 msgstr ""
+"源文件名完全由您自行决定，不过某些工具对 ``.c`` 扩展名可能较为挑剔。本教程采用传统的 ``*module.c`` 后缀。有些人会直接使用 "
+":file:`spam.c` 来实现名为 ``spam`` 的模块；而将 Python 作为非主要语言的项目可能会使用 "
+"``py_spam.c``，依此类推。"
 
 #: ../../extending/first-extension-module.rst:675
 msgid ""
@@ -1022,12 +1326,16 @@ msgid ""
 "system-includes>` for its own use or for backwards compatibility. However, "
 "it is good practice to explicitly include what you need."
 msgstr ""
+"从技术角度而言，将 :file:`stdlib.h` 纳入其中并非必要，因为 :file:`Python.h` 已包含它，而 :ref:`several"
+" other standard headers <capi-system-includes>` "
+"则用于自身需求或向后兼容。不过，明确纳入所需内容仍是良好的实践做法。"
 
 #: ../../extending/first-extension-module.rst:680
 msgid ""
 "The :c:type:`!PyMethodDef` structure is also used to create methods of "
 "classes, so there's no separate \":c:type:`!PyFunctionDef`\"."
 msgstr ""
+":c:type:`!PyMethodDef` 结构也用于为类创建方法，因此不存在独立的 “:c:type:`!PyFunctionDef`”。"
 
 #: ../../extending/first-extension-module.rst:683
 msgid ""
@@ -1035,12 +1343,15 @@ msgid ""
 " to a the Python :py:class:`int`, which was originally called ``long``; the "
 "``FromLong`` refers to the C ``long`` (or ``long int``) type."
 msgstr ""
+"名称 :c:func:`PyLong_FromLong` 可能看起来并不直观。``PyLong`` 指的是 Python 中的 "
+":py:class:`int`，它最初被称为 ``long``；而 ``FromLong`` 则指的是 C 语言中的 ``long``（或 ``long"
+" int``）类型。"
 
 #: ../../extending/first-extension-module.rst:688
 msgid ""
 "Here, ``PyUnicode`` refers to the original name of the Python "
 ":py:class:`str` class: ``unicode``."
-msgstr ""
+msgstr "此处，``PyUnicode`` 指的是 Python :py:class:`str` 类的原始名称：``unicode``。"
 
 #: ../../extending/first-extension-module.rst:691
 msgid ""
@@ -1048,6 +1359,7 @@ msgid ""
 "also retrieve the size of the buffer, using an output argument. We don't "
 "need this, so we set the second argument to NULL."
 msgstr ""
+"名称中的 ``AndSize`` 部分表示，此函数还可以通过输出参数获取缓冲区的大小。由于我们不需要这一功能，因此将第二个参数设置为 NULL。"
 
 #: ../../extending/first-extension-module.rst:694
 msgid ""
@@ -1057,3 +1369,7 @@ msgid ""
 " can lead to security issues, so the real ``os.system`` function size checks"
 " for this case and raises an error."
 msgstr ""
+"我们忽略了这样一个事实：Python 字符串也可以包含 NUL 字节，而 NUL 字节会终止 C 语言字符串。换句话说，我们的函数会将 "
+"``spam.system(\"foo\\0bar\")`` 视为 "
+"``spam.system(\"foo\")``。这种可能性可能导致安全问题，因此实际的 ``os.system`` "
+"函数会对这种情况进行大小检查，并抛出错误。"

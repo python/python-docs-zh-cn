@@ -7,6 +7,7 @@
 # 99 <wh2099@pm.me>, 2026
 # python-doc bot, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,6 +103,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_traverse` handler or explicitly use one from a "
 "base class."
 msgstr ""
+"如果某个类型添加了 Py_TPFLAGS_HAVE_GC，那么它*必须*实现至少一个 "
+":c:member:`~PyTypeObject.tp_traverse` 处理程序，或显式使用基类中提供的处理程序。"
 
 #: ../../c-api/gcsupport.rst:47
 msgid ""
@@ -392,6 +395,9 @@ msgid ""
 "argument.  If *visit* returns a non-zero value, that value should be "
 "returned immediately. Otherwise, return zero."
 msgstr ""
+"用于垃圾回收对象的 *Traversal* 函数，由垃圾回收器用于检测引用循环。实现时必须为 *self* 直接包含的每个对象调用 *visit* "
+"函数；*visit* 的参数为被包含对象以及传递给处理器的 *arg* 值。*visit* 函数不得以 ``NULL`` 对象作为参数被调用。如果 "
+"*visit* 返回非零值，则应立即返回该值；否则，返回零。"
 
 #: ../../c-api/gcsupport.rst:256
 msgid ""
@@ -454,6 +460,8 @@ msgid ""
 "type, if applicable). If they do not, the type object may not be garbage-"
 "collected."
 msgstr ""
+"或者，该类型可以通过调用堆分配超类中的 ``tp_traverse`` "
+"（若适用，也可调用其他堆分配类型中的相应方法）来委托这一职责。如果未这样做，则该类型对象可能不会被垃圾回收。"
 
 #: ../../c-api/gcsupport.rst:288
 msgid ""
@@ -486,17 +494,20 @@ msgid ""
 "linked list (what *tp_weaklist* points to) must **not** be visited as the "
 "instance does not directly own the weak references to itself."
 msgstr ""
+"只有那些由实例*拥有*的成员（即通过 :term:`strong references <strong reference>` "
+"将其关联到实例中的成员）才必须被访问。例如，如果一个对象通过 :c:member:`~PyTypeObject.tp_weaklist` "
+"槽位支持弱引用，那么用于支持链表（即*tp_weaklist*所指向的内容）的指针**不得**被访问，因为该实例并不直接拥有指向自身的弱引用。"
 
 #: ../../c-api/gcsupport.rst:304
 msgid "The traversal function has a limitation:"
-msgstr ""
+msgstr "遍历函数存在一项限制："
 
 #: ../../c-api/gcsupport.rst:308
 msgid ""
 "The traversal function must not have any side effects.  Implementations may "
 "not modify the reference counts of any Python objects nor create or destroy "
 "any Python objects, directly or indirectly."
-msgstr ""
+msgstr "遍历函数不得产生任何副作用。实现代码不得修改任何 Python 对象的引用计数，也不得直接或间接地创建或销毁任何 Python 对象。"
 
 #: ../../c-api/gcsupport.rst:312
 msgid ""
@@ -506,12 +517,14 @@ msgid ""
 "functions that happen to not have side effects may start having them in "
 "future versions, without warning."
 msgstr ""
+"这意味着*大多数* Python C API "
+"函数可能无法使用，因为它们可能会抛出新的异常、返回指向结果对象的新引用，或包含使用副作用的内部逻辑。此外，除非另有说明，那些恰好没有副作用的函数也可能在后续版本中突然开始产生副作用，且不会提前发出警告。"
 
 #: ../../c-api/gcsupport.rst:318
 msgid ""
 "For a list of safe functions, see a :ref:`separate section <duringgc-"
 "functions>` below."
-msgstr ""
+msgstr "有关安全函数的列表，请参阅下方的 :ref:`separate section <duringgc-functions>`。"
 
 #: ../../c-api/gcsupport.rst:321
 msgid ""
@@ -522,6 +535,8 @@ msgid ""
 "that cannot be acquired promptly, skip the traversal. The garbage collector "
 "will visit your object again in a future pass."
 msgstr ""
+"如果在遍历过程中发生错误，请忽略该错误并返回 0。如果 ``tp_traverse`` "
+"未能访问某些强引用，则涉及被跳过引用的垃圾引用循环将无法被可靠地打破，但正确性不会受到影响。例如，如果遍历需要获取一个无法及时获得的锁，则跳过该遍历；垃圾回收器将在后续遍历中再次访问您的对象。"
 
 #: ../../c-api/gcsupport.rst:331
 msgid ""
@@ -530,6 +545,8 @@ msgid ""
 "above, there is also a ``self->key`` member, but it can only be ``NULL`` or "
 "a Python string and therefore cannot be part of a reference cycle."
 msgstr ""
+"对于那些经证实无法参与引用循环的成员，可以跳过 :c:func:`Py_VISIT` 调用。在上述 ``local_traverse`` "
+"示例中，还存在一个 ``self->key`` 成员，但它只能是 ``NULL`` 或 Python 字符串，因此无法成为引用循环的一部分。"
 
 #: ../../c-api/gcsupport.rst:337
 msgid ""
@@ -552,6 +569,9 @@ msgid ""
 "threading` builds, only one thread state is :term:`attached <attached thread"
 " state>` when :c:member:`!tp_traverse` handlers run."
 msgstr ""
+"垃圾回收是一种“停止整个系统运行”的操作：即使在 :term:`free threading` 构建版本中，当 "
+":c:member:`!tp_traverse` 处理程序运行时，也仅存在一个 :term:`attached <attached thread "
+"state>` 线程状态。"
 
 #: ../../c-api/gcsupport.rst:355
 msgid ""
@@ -570,6 +590,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_traverse` implementation must name its arguments"
 " exactly *visit* and *arg*:"
 msgstr ""
+"为简化 :c:member:`~PyTypeObject.tp_traverse` 处理器的编写，现提供了一个 :c:func:`Py_VISIT` "
+"宏。要使用此宏，:c:member:`~PyTypeObject.tp_traverse` 实现必须将其参数命名为 *visit* 和 *arg*："
 
 #: ../../c-api/gcsupport.rst:367
 msgid ""
@@ -577,10 +599,12 @@ msgid ""
 "with arguments *o* and *arg*. If *visit* returns a non-zero value, then "
 "return it."
 msgstr ""
+"如果 :c:expr:`PyObject *` *o* 不是 ``NULL``，则调用 *visit* 回调函数，传入参数 *o* 和 *arg*。如果"
+" *visit* 返回非零值，则将该值返回。"
 
 #: ../../c-api/gcsupport.rst:371
 msgid "This corresponds roughly to::"
-msgstr ""
+msgstr "这大致相当于::"
 
 #: ../../c-api/gcsupport.rst:373
 msgid ""
@@ -608,19 +632,19 @@ msgstr "可安全遍历的函数"
 msgid ""
 "The following functions and macros are safe to use in a "
 ":c:member:`~PyTypeObject.tp_traverse` handler:"
-msgstr ""
+msgstr "以下函数和宏可在 :c:member:`~PyTypeObject.tp_traverse` 处理程序中安全使用："
 
 #: ../../c-api/gcsupport.rst:388
 msgid "the *visit* function passed to ``tp_traverse``"
-msgstr ""
+msgstr "传递给 ``tp_traverse`` 的 *visit* 函数"
 
 #: ../../c-api/gcsupport.rst:389
 msgid ":c:func:`Py_VISIT`"
-msgstr ""
+msgstr ":c:func:`Py_VISIT`"
 
 #: ../../c-api/gcsupport.rst:390
 msgid ":c:func:`Py_SIZE`"
-msgstr ""
+msgstr ":c:func:`Py_SIZE`"
 
 #: ../../c-api/gcsupport.rst:391
 msgid ""
@@ -628,30 +652,36 @@ msgid ""
 ":c:func:`!Py_TYPE`'s result will be valid for the duration of the handler "
 "call"
 msgstr ""
+":c:func:`Py_TYPE`：若由 :c:member:`!tp_traverse` 处理程序调用，则 :c:func:`!Py_TYPE` "
+"的返回结果将在该处理程序调用期间保持有效"
 
 #: ../../c-api/gcsupport.rst:393
 msgid ":c:func:`PyObject_VisitManagedDict`"
-msgstr ""
+msgstr ":c:func:`PyObject_VisitManagedDict`"
 
 #: ../../c-api/gcsupport.rst:394
 msgid ""
 ":c:func:`PyObject_TypeCheck`, :c:func:`PyType_IsSubtype`, "
 ":c:func:`PyType_HasFeature`"
 msgstr ""
+":c:func:`PyObject_TypeCheck`, :c:func:`PyType_IsSubtype`, "
+":c:func:`PyType_HasFeature`"
 
 #: ../../c-api/gcsupport.rst:396
 msgid ""
 ":samp:`Py{<type>}_Check` and :samp:`Py{<type>}_CheckExact` -- for example, "
 ":c:func:`PyTuple_Check`"
 msgstr ""
+":samp:`Py{<type>}_Check` 和 :samp:`Py{<type>}_CheckExact` —— 例如 "
+":c:func:`PyTuple_Check`"
 
 #: ../../c-api/gcsupport.rst:398
 msgid ":ref:`duringgc-functions`"
-msgstr ""
+msgstr ":ref:`duringgc-functions`"
 
 #: ../../c-api/gcsupport.rst:403
 msgid "\"DuringGC\" functions"
-msgstr ""
+msgstr "“DuringGC”函数"
 
 #: ../../c-api/gcsupport.rst:405
 msgid ""
@@ -659,6 +689,8 @@ msgid ""
 ":c:member:`~PyTypeObject.tp_traverse` handler; calling them in other "
 "contexts may have unintended consequences."
 msgstr ""
+"以下函数*仅*应在 :c:member:`~PyTypeObject.tp_traverse` "
+"处理程序中使用；在其他上下文中调用这些函数可能会引发意外后果。"
 
 #: ../../c-api/gcsupport.rst:409
 msgid ""
@@ -667,6 +699,8 @@ msgid ""
 " exception on failure, and they return/set :term:`borrowed references "
 "<borrowed reference>` as detailed in the individual documentation."
 msgstr ""
+"这些函数与不带 ``_DuringGC`` 后缀的对应函数功能相同，但可以保证不会产生副作用；在失败时不会触发异常，并且会返回/设置 "
+":term:`borrowed references <borrowed reference>`，具体细节详见相应文档。"
 
 #: ../../c-api/gcsupport.rst:414
 msgid ""
@@ -674,11 +708,13 @@ msgid ""
 "do not set an exception, no error information is available. In some cases, "
 "failure is not distinguishable from a successful ``NULL`` result."
 msgstr ""
+"请注意，这些函数可能会失败（返回 ``NULL`` 或 ``-1``），但由于它们不会设置异常，因此无法获取错误信息。在某些情况下，失败结果与成功的 "
+"``NULL`` 结果无法区分。"
 
 #: ../../c-api/gcsupport.rst:424 ../../c-api/gcsupport.rst:439
 #: ../../c-api/gcsupport.rst:452
 msgid "See :ref:`duringgc-functions` for common information."
-msgstr ""
+msgstr "有关常用信息，请参阅 :ref:`duringgc-functions`。"
 
 #: ../../c-api/gcsupport.rst:430
 msgid ""
@@ -686,6 +722,9 @@ msgid ""
 ":c:func:`PyType_GetModuleState`, :c:func:`PyModule_GetState`, "
 ":c:func:`PyModule_GetToken`, :c:func:`PyType_GetBaseByToken`"
 msgstr ""
+":c:func:`PyObject_GetTypeData`, :c:func:`PyObject_GetItemData`, "
+":c:func:`PyType_GetModuleState`, :c:func:`PyModule_GetState`, "
+":c:func:`PyModule_GetToken`, :c:func:`PyType_GetBaseByToken`"
 
 #: ../../c-api/gcsupport.rst:441
 msgid ""
@@ -693,10 +732,12 @@ msgid ""
 "The reference is valid for the duration of the :c:member:`!tp_traverse` "
 "handler call."
 msgstr ""
+"将 *\\*result* 设置为 :term:`borrowed reference`，而非强引用。该引用在 "
+":c:member:`!tp_traverse` 处理程序调用期间有效。"
 
 #: ../../c-api/gcsupport.rst:447
 msgid ":c:func:`PyType_GetBaseByToken`"
-msgstr ""
+msgstr ":c:func:`PyType_GetBaseByToken`"
 
 #: ../../c-api/gcsupport.rst:454
 msgid ""

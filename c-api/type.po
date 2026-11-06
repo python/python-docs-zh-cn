@@ -8,15 +8,16 @@
 # 99 <wh2099@pm.me>, 2026
 # Alpha Du <alphanow@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-27 19:03+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -436,7 +437,7 @@ msgstr "如果 *type* 有关联的模块但其状态为 ``NULL``，则返回 ``N
 msgid ""
 "Find the first superclass whose module has the given :ref:`module token "
 "<ext-module-token>`, and return that module."
-msgstr ""
+msgstr "查找第一个其模块包含给定 :ref:`module token <ext-module-token>` 的超类，并返回该模块。"
 
 #: ../../c-api/type.rst:330
 msgid ""
@@ -461,6 +462,8 @@ msgid ""
 ":c:type:`PyModuleDef` *def*, or whose :ref:`module token <ext-module-token>`"
 " is equal to *def*, and return that module."
 msgstr ""
+"查找第一个其模块由给定的 :c:type:`PyModuleDef` *def* 创建，或其 :ref:`module token <ext-"
+"module-token>` 等于 *def* 的超类，并返回该模块。"
 
 #: ../../c-api/type.rst:347
 msgid ""
@@ -468,21 +471,25 @@ msgid ""
 "token set to the :c:type:`PyModuleDef`'s address. In other words, this "
 "function is equivalent to :c:func:`PyType_GetModuleByToken`, except that it:"
 msgstr ""
+"请注意，由 :c:type:`PyModuleDef` 创建的模块，其令牌始终会被设置为 :c:type:`PyModuleDef` "
+"的地址。换言之，该函数与 :c:func:`PyType_GetModuleByToken` 等效，但区别在于："
 
 #: ../../c-api/type.rst:352
 msgid "returns a borrowed reference, and"
-msgstr ""
+msgstr "返回一个借用的引用，并且"
 
 #: ../../c-api/type.rst:353
 msgid ""
 "has a non-``void*`` argument type (which is a cosmetic difference in C)."
-msgstr ""
+msgstr "具有非 ``void*`` 参数类型（这在 C 语言中仅是一种外观上的差异）。"
 
 #: ../../c-api/type.rst:364
 msgid ""
 "Find the first superclass in *type*'s :term:`method resolution order` whose "
 ":c:macro:`Py_tp_token` token is equal to *tp_token*."
 msgstr ""
+"在 *type* 的 :term:`method resolution order` 中，找到第一个其 :c:macro:`Py_tp_token` "
+"令牌与 *tp_token* 相等的超类。"
 
 #: ../../c-api/type.rst:367
 msgid ""
@@ -549,6 +556,8 @@ msgid ""
 "array. See :ref:`capi-slots` for general information on slots, and "
 ":ref:`pyslot_type_slot_ids` for slots specific to type creation."
 msgstr ""
+"从 :c:type:`!PySlot` 数组中创建并返回一个 :ref:`heap type <heap-types>`。有关槽位的通用信息，请参阅 "
+":ref:`capi-slots`；有关类型创建专用槽位的信息，请参阅 :ref:`pyslot_type_slot_ids`。"
 
 #: ../../c-api/type.rst:415 ../../c-api/type.rst:819
 msgid "This function calls :c:func:`PyType_Ready` on the new type."
@@ -594,6 +603,10 @@ msgid ""
 ":c:macro:`Py_slot_subslots` to refer to an array of static slots. For "
 "example::"
 msgstr ""
+"槽通常被定义为全局静态常量数组。然而，有时槽的值在编译时并非静态已知。例如，像 "
+":c:data:`Py_tp_bases`、:c:data:`Py_tp_metaclass` 和 :c:data:`Py_tp_module` "
+"这样的槽需要运行时 Python 对象。在这种情况下，建议将此类槽置于栈中，并使用 :c:macro:`Py_slot_subslots` "
+"来引用一个静态槽数组。例如::"
 
 #: ../../c-api/type.rst:438
 msgid ""
@@ -613,6 +626,21 @@ msgid ""
 "   return PyType_FromSlots(all_slots);\n"
 "}"
 msgstr ""
+"static const PySlot my_slots[] = {\n"
+"   PySlot_STATIC_DATA(Py_tp_name, \"MyClass\"),\n"
+"   PySlot_FUNC(Py_tp_repr, my_repr_func),\n"
+"   ...\n"
+"   PySlot_END\n"
+"};\n"
+"\n"
+"PyObject *make_my_class(PyObject *module) {\n"
+"   PySlot all_slots[] = {\n"
+"      PySlot_STATIC_DATA(Py_slot_subslots, my_slots),\n"
+"      PySlot_DATA(Py_tp_module, module),\n"
+"      PySlot_END\n"
+"   };\n"
+"   return PyType_FromSlots(all_slots);\n"
+"}"
 
 #: ../../c-api/type.rst:454
 msgid ""
@@ -622,6 +650,8 @@ msgid ""
 " initialize a type, but you may wish to prevent users from changing the type"
 " after the initialization is done:"
 msgstr ""
+"未使用 :c:macro:`Py_TPFLAGS_IMMUTABLETYPE` 标志创建的堆类型可能会被修改，例如通过为其设置属性；这与在 Python"
+" 代码中定义的类类似。有时，这类修改对于完整初始化类型是必要的；但您可能希望防止用户在初始化完成后更改该类型："
 
 #: ../../c-api/type.rst:463
 msgid ""
@@ -654,6 +684,9 @@ msgid ""
 ":c:type:`PySequenceMethods`, :c:type:`PyMappingMethods` and "
 ":c:type:`PyAsyncMethods` with an added ``Py_`` prefix. For example, use:"
 msgstr ""
+"大多数类型槽 ID 的命名方式与结构体字段名相同，即 "
+":c:type:`PyTypeObject`、:c:type:`PyNumberMethods`、:c:type:`PySequenceMethods`、:c:type:`PyMappingMethods`"
+" 和 :c:type:`PyAsyncMethods`，并在其后添加前缀 ``Py_``。例如，可以使用："
 
 #: ../../c-api/type.rst:487
 msgid ":c:data:`Py_tp_dealloc` to set :c:member:`PyTypeObject.tp_dealloc`"
@@ -768,10 +801,12 @@ msgid ""
 "may be set either to a type or a tuple of types. If both are specified, the "
 "value of :c:data:`Py_tp_bases` is used."
 msgstr ""
+":c:data:`Py_tp_base` 槽位与 :c:data:`Py_tp_bases` "
+"槽位等效；两者均可设置为某种类型或类型元组。若同时指定两者，则采用 :c:data:`Py_tp_bases` 的值。"
 
 #: ../../c-api/type.rst:534
 msgid "Slot values may not be ``NULL``, except for the following:"
-msgstr ""
+msgstr "槽位值不得为 ``NULL``，但以下情况除外："
 
 #: ../../c-api/type.rst:536
 msgid ":c:data:`Py_tp_doc`"
@@ -812,29 +847,34 @@ msgid ""
 " equivalent to the :c:data:`Py_tp_base` slot. Previously, a tuple of types "
 "was required."
 msgstr ""
+":c:data:`Py_tp_bases` 槽可设置为单一类型对象，从而使其与 :c:data:`Py_tp_base` "
+"槽等效。此前，必须使用类型元组。"
 
 #: ../../c-api/type.rst:558
 msgid ""
 "The following slots correspond to fields in the underlying type structure, "
 "but need extra remarks for use as slots:"
-msgstr ""
+msgstr "以下槽位对应于底层类型结构中的字段，但若要将其用作槽位，还需额外说明："
 
 #: ../../c-api/type.rst:563
 msgid ""
 ":c:member:`Slot ID <PySlot.sl_id>` for the name of the type, used to set "
 ":c:member:`PyTypeObject.tp_name`."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` 用于指定类型名称，用于设置 "
+":c:member:`PyTypeObject.tp_name`。"
 
 #: ../../c-api/type.rst:566
 msgid ""
 "This slot (or :c:member:`PyType_Spec.name`) is required to create a type."
-msgstr ""
+msgstr "此槽（或 :c:member:`PyType_Spec.name`）是创建类型所必需的。"
 
 #: ../../c-api/type.rst:568
 msgid ""
 "This may not be used in :c:member:`PyType_Spec.slots`. Use "
 ":c:member:`PyType_Spec.name` instead."
 msgstr ""
+"此内容不得用于 :c:member:`PyType_Spec.slots`。请改用 :c:member:`PyType_Spec.name`。"
 
 #: ../../c-api/type.rst:573
 msgid ""
@@ -842,22 +882,26 @@ msgid ""
 " the beginning of the slots array, so that if processing of a later slots "
 "fails, error messages can include the name."
 msgstr ""
+"CPython 会按顺序处理槽位。建议将 ``Py_tp_name`` 置于槽位数组的开头，这样如果后续槽位的处理失败，错误消息中就能包含该名称。"
 
 #: ../../c-api/type.rst:582
 msgid ""
 ":c:member:`Slot ID <PySlot.sl_id>` for the size of the instance in bytes. It"
 " is used to set :c:member:`PyTypeObject.tp_basicsize`."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` 表示实例的大小（以字节为单位）。它用于设置 "
+":c:member:`PyTypeObject.tp_basicsize`。"
 
 #: ../../c-api/type.rst:585 ../../c-api/type.rst:632
 msgid "The value must be positive."
-msgstr ""
+msgstr "该值必须为正数。"
 
 #: ../../c-api/type.rst:587
 msgid ""
 "This may not be used in :c:member:`PyType_Spec.slots`. Use "
 ":c:member:`PyType_Spec.basicsize` instead."
 msgstr ""
+"此内容不得用于 :c:member:`PyType_Spec.slots`。请改用 :c:member:`PyType_Spec.basicsize`。"
 
 #: ../../c-api/type.rst:590
 msgid ""
@@ -865,6 +909,8 @@ msgid ""
 ":c:member:`PyTypeObject.tp_basicsize` instead if needed, but be aware that a"
 " type's size is often considered an implementation detail."
 msgstr ""
+"此插槽不得与 :c:func:`PyType_GetSlot` 配合使用。如有需要，请使用 "
+":c:member:`PyTypeObject.tp_basicsize`；但请注意，类型的尺寸通常被视为实现细节。"
 
 #: ../../c-api/type.rst:598
 msgid ""
@@ -872,6 +918,8 @@ msgid ""
 " much space instances of the class need *in addition* to space needed for "
 "superclasses."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` "
+"表示类型数据的大小（以字节为单位），即该类实例除了需要占用超类所需空间之外，还需要额外占用多少空间。"
 
 #: ../../c-api/type.rst:602
 msgid ""
@@ -879,12 +927,14 @@ msgid ""
 ":c:member:`PyTypeObject.tp_basicsize`. Python will insert padding as needed "
 "to meet :c:member:`!tp_basicsize`'s alignment requirements."
 msgstr ""
+"该值将与超类的尺寸一起用于设置 :c:member:`PyTypeObject.tp_basicsize`。Python 将根据需要插入填充，以满足 "
+":c:member:`!tp_basicsize` 的对齐要求。"
 
 #: ../../c-api/type.rst:607
 msgid ""
 "Use :c:func:`PyObject_GetTypeData` to get a pointer to subclass-specific "
 "memory reserved this way."
-msgstr ""
+msgstr "使用 :c:func:`PyObject_GetTypeData` 获取一个指向以这种方式预留的类特定内存的指针。"
 
 #: ../../c-api/type.rst:610
 msgid ""
@@ -892,22 +942,27 @@ msgid ""
 "size (that is, size should be inherited), omit the "
 ":c:macro:`!Py_tp_extra_basicsize` slot rather than set it to zero."
 msgstr ""
+"该值必须为正数。若需指定实例无需额外空间（即空间应被继承），则应省略 :c:macro:`!Py_tp_extra_basicsize` "
+"槽，而非将其设置为零。"
 
 #: ../../c-api/type.rst:615
 msgid ""
 "Specifying both :c:macro:`Py_tp_basicsize` and "
 ":c:macro:`!Py_tp_extra_basicsize` is an error."
 msgstr ""
+"同时指定 :c:macro:`Py_tp_basicsize` 和 :c:macro:`!Py_tp_extra_basicsize` 会引发错误。"
 
 #: ../../c-api/type.rst:618 ../../c-api/type.rst:665
 msgid ""
 "This may not be used in :c:member:`PyType_Spec.slots`. Use negative "
 ":c:member:`PyType_Spec.basicsize` instead."
 msgstr ""
+"此内容不得用于 :c:member:`PyType_Spec.slots`。请使用负值 "
+":c:member:`PyType_Spec.basicsize` 代替。"
 
 #: ../../c-api/type.rst:621 ../../c-api/type.rst:653
 msgid "This slot may not be used with :c:func:`PyType_GetSlot`."
-msgstr ""
+msgstr "此插槽不得与 :c:func:`PyType_GetSlot` 配合使用。"
 
 #: ../../c-api/type.rst:627
 msgid ""
@@ -916,6 +971,8 @@ msgid ""
 ":c:member:`PyTypeObject.tp_itemsize`. See :c:member:`!tp_itemsize` "
 "documentation for caveats."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` 表示可变长度类型中一个元素的字节大小。用于设置 "
+":c:member:`PyTypeObject.tp_itemsize`。有关注意事项，请参阅 :c:member:`!tp_itemsize` 文档。"
 
 #: ../../c-api/type.rst:634
 msgid ""
@@ -925,6 +982,9 @@ msgid ""
 "sized memory used by a subclass. To help prevent mistakes, inheriting "
 "``itemsize`` is only possible in the following situations:"
 msgstr ""
+"如果此插槽缺失，则将继承 "
+":c:member:`~PyTypeObject.tp_itemsize`。扩展任意变量大小类是危险的，因为某些类型使用固定偏移量来容纳变量大小内存，这可能导致其与子类所使用的固定大小内存发生重叠。为防止此类错误，只有在以下情况下才能继承"
+" ``itemsize``："
 
 #: ../../c-api/type.rst:641
 msgid ""
@@ -974,13 +1034,15 @@ msgstr ""
 msgid ""
 "This slot may not be used with :c:func:`PyType_GetSlot`. Use "
 ":c:func:`PyType_GetFlags` instead."
-msgstr ""
+msgstr "此插槽不得与 :c:func:`PyType_GetSlot` 配合使用；请改用 :c:func:`PyType_GetFlags`。"
 
 #: ../../c-api/type.rst:675
 msgid ""
-":c:member:`Slot ID <PySlot.sl_id>` for type flags, used to set "
+":c:member:`Slot ID <PySlot.sl_id>` for base types, used to set "
 ":c:member:`PyTypeObject.tp_bases`."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` 用于基类型，用于设置 "
+":c:member:`PyTypeObject.tp_bases`。"
 
 #: ../../c-api/type.rst:678
 msgid ""
@@ -988,38 +1050,42 @@ msgid ""
 "should inherit from, like the \"positional arguments\" of a Python "
 ":ref:`class definition <class>`."
 msgstr ""
+"该槽可以设置为一个类型为 objects 的元组，新创建的类型应继承自该元组；例如 Python :ref:`class definition "
+"<class>` 的“位置参数”。"
 
 #: ../../c-api/type.rst:682
 msgid ""
 "Alternately, the slot can be set to a single type object to specify a single"
 " base. The effect is the same as specifying a one-element tuple."
-msgstr ""
+msgstr "或者，可以将 slot 设置为单个类型对象，以指定单个基元。其效果与指定一个元素组成的元组相同。"
 
 #: ../../c-api/type.rst:688
 msgid "Previously, :c:macro:`!Py_tp_bases` required a tuple of types."
-msgstr ""
+msgstr "此前，:c:macro:`!Py_tp_bases` 需要一个类型元组。"
 
 #: ../../c-api/type.rst:692
 msgid ""
 "Equivalent to :c:macro:`Py_tp_bases` (with ``s`` at the end). If both are "
 "specified, :c:macro:`!Py_tp_bases` takes priority and this slot is ignored."
 msgstr ""
+"等同于 :c:macro:`Py_tp_bases` （末尾为 ``s``）。若同时指定两者，则 :c:macro:`!Py_tp_bases` "
+"具有优先级，此插槽将被忽略。"
 
 #: ../../c-api/type.rst:698
 msgid ""
 "Previously, :c:macro:`!Py_tp_base` required a single type, not a tuple."
-msgstr ""
+msgstr "此前，:c:macro:`!Py_tp_base` 要求使用单一类型，而非元组。"
 
 #: ../../c-api/type.rst:702
 msgid ""
 "When not targeting older Python versions, prefer :c:macro:`!Py_tp_bases`."
-msgstr ""
+msgstr "除非需要针对较旧的 Python 版本，否则优先选用 :c:macro:`!Py_tp_bases`。"
 
 #: ../../c-api/type.rst:704
 msgid ""
 "The following slots do not correspond to public fields in the underlying "
 "structures:"
-msgstr ""
+msgstr "以下槽位与底层结构中的公共字段并不对应："
 
 #: ../../c-api/type.rst:709
 msgid ""
@@ -1028,6 +1094,9 @@ msgid ""
 "(:c:macro:`Py_tp_bases` or the *bases* argument of "
 ":c:func:`PyType_FromMetaclass`)."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` "
+"用于构建所得类型对象的元类。若未指定，则元类将从基类继承而来（:c:macro:`Py_tp_bases` 或 "
+":c:func:`PyType_FromMetaclass` 的 *bases* 参数）。"
 
 #: ../../c-api/type.rst:715
 msgid ""
@@ -1041,18 +1110,20 @@ msgid ""
 ":c:func:`PyType_FromMetaclass` to specify a metaclass with "
 ":c:type:`!PyType_Spec`."
 msgstr ""
+"此内容不得用于 :c:member:`PyType_Spec.slots`。请使用 :c:func:`PyType_FromMetaclass` "
+"来指定一个带有 :c:type:`!PyType_Spec` 的元类。"
 
 #: ../../c-api/type.rst:722
 msgid ""
 "This slot may not be used with :c:func:`PyType_GetSlot`. Use "
 ":c:func:`Py_TYPE` on the type object instead."
-msgstr ""
+msgstr "此槽位不得与 :c:func:`PyType_GetSlot` 配合使用。请改用类型对象中的 :c:func:`Py_TYPE`。"
 
 #: ../../c-api/type.rst:729
 msgid ""
 ":c:member:`Slot ID <PySlot.sl_id>` for recording the module in which the new"
 " class is defined."
-msgstr ""
+msgstr ":c:member:`Slot ID <PySlot.sl_id>` 用于记录定义新类的模块。"
 
 #: ../../c-api/type.rst:732
 msgid ""
@@ -1061,6 +1132,8 @@ msgid ""
 "associated module is not inherited by subclasses; it must be specified for "
 "each class individually."
 msgstr ""
+"该值必须是一个模块对象。该模块与新的类型相关联，之后可通过 :c:func:`PyType_GetModule` "
+"获取。关联的模块不会由子类继承；必须为每个类单独指定。"
 
 #: ../../c-api/type.rst:738
 msgid ""
@@ -1068,18 +1141,20 @@ msgid ""
 ":c:func:`PyType_FromMetaclass` to specify a module with "
 ":c:type:`!PyType_Spec`."
 msgstr ""
+"此内容不得用于 :c:member:`PyType_Spec.slots`。请使用 :c:func:`PyType_FromMetaclass` "
+"来指定包含 :c:type:`!PyType_Spec` 的模块。"
 
 #: ../../c-api/type.rst:742
 msgid ""
 "This slot may not be used with :c:func:`PyType_GetSlot`. Use "
 ":c:func:`PyType_GetModule` instead."
-msgstr ""
+msgstr "此插槽不得与 :c:func:`PyType_GetSlot` 配合使用；请改用 :c:func:`PyType_GetModule`。"
 
 #: ../../c-api/type.rst:749
 msgid ""
 ":c:member:`Slot ID <PySlot.sl_id>` for recording a static memory layout ID "
 "for a class."
-msgstr ""
+msgstr ":c:member:`Slot ID <PySlot.sl_id>` 用于为某个类记录静态内存布局 ID。"
 
 #: ../../c-api/type.rst:752
 msgid ""
@@ -1087,6 +1162,8 @@ msgid ""
 "statically allocated, the token can be set to the spec using the special "
 "value :c:data:`Py_TP_USE_SPEC`:"
 msgstr ""
+"如果类是通过 :c:type:`PyType_Spec` 定义的，且该规范采用静态分配，则可以使用特殊值 "
+":c:data:`Py_TP_USE_SPEC` 将令牌设置为该规范："
 
 #: ../../c-api/type.rst:756
 msgid ""
@@ -1131,10 +1208,12 @@ msgid ""
 ":c:type:`PyType_Spec`. May only be used for classes defined using "
 ":c:type:`!PyType_Spec`."
 msgstr ""
+"作为与 :c:data:`Py_tp_token` 一起使用的值，可将令牌设置为该类的 :c:type:`PyType_Spec`。仅可用于通过 "
+":c:type:`!PyType_Spec` 定义的类。"
 
 #: ../../c-api/type.rst:784
 msgid "Expands to ``NULL``."
-msgstr ""
+msgstr "扩展至 ``NULL``。"
 
 #: ../../c-api/type.rst:790
 msgid ""
@@ -1142,6 +1221,8 @@ msgid ""
 ":c:macro:`Py_slot_subslots`, except it specifies an array of "
 ":c:type:`PyType_Slot` structures."
 msgstr ""
+":c:member:`Slot ID <PySlot.sl_id>` 的工作方式与 :c:macro:`Py_slot_subslots` "
+"相同，不同之处在于它指定了一个由 :c:type:`PyType_Slot` 结构体组成的数组。"
 
 #: ../../c-api/type.rst:798
 msgid "Soft-deprecated API"
@@ -1154,6 +1235,8 @@ msgid ""
 ":c:func:`PyType_FromSlots`, not as arguments to new ``PyType_From*`` "
 "functions."
 msgstr ""
+"以下函数为 :term:`soft deprecated`。它们将继续正常运行，但新功能将以 :c:func:`PyType_FromSlots` "
+"的槽位形式添加，而非作为新 ``PyType_From*`` 函数的参数。"
 
 #: ../../c-api/type.rst:806
 msgid ""
@@ -1167,20 +1250,22 @@ msgstr ""
 msgid ""
 "A non-``NULL`` *metaclass* argument corresponds to the "
 ":c:macro:`Py_tp_metaclass` slot."
-msgstr ""
+msgstr "非 ``NULL`` *metaclass* 参数对应于 :c:macro:`Py_tp_metaclass` 槽位。"
 
 #: ../../c-api/type.rst:812
 msgid ""
 "A non-``NULL`` *bases* argument corresponds to the :c:data:`Py_tp_bases` "
-"slot, and takes precedence over :c:data:`Py_tp_bases` and "
+"slot, and takes precedence over :c:data:`Py_tp_base` and "
 ":c:data:`Py_tp_bases` slots."
 msgstr ""
+"非 ``NULL`` *bases* 参数对应于 :c:data:`Py_tp_bases` 槽位，其优先级高于 "
+":c:data:`Py_tp_base` 和 :c:data:`Py_tp_bases` 槽位。"
 
 #: ../../c-api/type.rst:816
 msgid ""
 "A non-``NULL`` *module* argument corresponds to the :c:macro:`Py_tp_module` "
 "slot."
-msgstr ""
+msgstr "非 ``NULL`` *module* 参数对应于 :c:macro:`Py_tp_module` 槽位。"
 
 #: ../../c-api/type.rst:821
 msgid ""
@@ -1188,11 +1273,13 @@ msgid ""
 ":py:class:`type() <type>` or using the :keyword:`class` statement. See the "
 "note in :c:func:`PyType_FromSlots` documentation for details."
 msgstr ""
+"请注意，此函数*并不完全等同于*调用 :py:class:`type() <type>` 或使用 :keyword:`class` "
+"语句时的行为。详情请参阅 :c:func:`PyType_FromSlots` 文档中的说明。"
 
 #: ../../c-api/type.rst:829 ../../c-api/type.rst:860 ../../c-api/type.rst:886
 #: ../../c-api/type.rst:911
 msgid "Prefer :c:func:`PyType_FromSlots` in new code."
-msgstr ""
+msgstr "在新代码中优先选用 :c:func:`PyType_FromSlots`。"
 
 #: ../../c-api/type.rst:834
 msgid "Equivalent to ``PyType_FromMetaclass(NULL, module, spec, bases)``."
@@ -1245,7 +1332,7 @@ msgstr ""
 msgid ""
 "Structure defining a type's behavior, used for soft-deprecated functions "
 "like :c:func:`PyType_FromMetaclass`."
-msgstr ""
+msgstr "用于定义类型行为的结构，适用于像 :c:func:`PyType_FromMetaclass` 这样的软弃用函数。"
 
 #: ../../c-api/type.rst:927
 msgid ""
@@ -1253,20 +1340,22 @@ msgid ""
 ":ref:`slots <pyslot_type_slot_ids>` for :c:func:`PyType_FromSlots`, and an "
 "array of slot entries with a simpler structure."
 msgstr ""
+"该结构包含多个成员，这些成员也可以指定为 :ref:`slots <pyslot_type_slot_ids>`，以对应于 "
+":c:func:`PyType_FromSlots`；此外还包含一个槽位条目数组，其结构更为简单。"
 
 #: ../../c-api/type.rst:933
 msgid "Corresponds to :c:macro:`Py_tp_name`."
-msgstr ""
+msgstr "对应于 :c:macro:`Py_tp_name`。"
 
 #: ../../c-api/type.rst:937
 msgid "If positive, corresponds to :c:macro:`Py_tp_basicsize`."
-msgstr ""
+msgstr "若结果为阳性，则对应于 :c:macro:`Py_tp_basicsize`。"
 
 #: ../../c-api/type.rst:939
 msgid ""
 "If negative, corresponds to :c:macro:`Py_tp_extra_basicsize` set to the "
 "absolute value."
-msgstr ""
+msgstr "若结果为负，则表示 :c:macro:`Py_tp_extra_basicsize` 被设置为其绝对值。"
 
 #: ../../c-api/type.rst:944
 msgid "Previously, this field could not be negative."
@@ -1274,27 +1363,27 @@ msgstr "在之前版本中，此字段不能为负数。"
 
 #: ../../c-api/type.rst:948
 msgid "Corresponds to :c:macro:`Py_tp_itemsize`."
-msgstr ""
+msgstr "对应于 :c:macro:`Py_tp_itemsize`。"
 
 #: ../../c-api/type.rst:952
 msgid "Corresponds to :c:macro:`Py_tp_flags`."
-msgstr ""
+msgstr "对应于 :c:macro:`Py_tp_flags`。"
 
 #: ../../c-api/type.rst:956
 msgid "Array of :c:type:`PyType_Slot` (not :c:type:`PySlot`) structures."
-msgstr ""
+msgstr ":c:type:`PyType_Slot` （非 :c:type:`PySlot`）结构数组。"
 
 #: ../../c-api/type.rst:958
 msgid ""
 "Terminated by the special slot value ``{0, NULL}``. Each slot ID should be "
 "specified at most once."
-msgstr ""
+msgstr "由特殊槽位值 ``{0, NULL}`` 终止。每个槽位 ID 最多只能指定一次。"
 
 #: ../../c-api/type.rst:971
 msgid ""
 "Structure defining optional functionality of a type, used for soft-"
 "deprecated functions like :c:func:`PyType_FromMetaclass`."
-msgstr ""
+msgstr "用于定义类型可选功能的结构，适用于如 :c:func:`PyType_FromMetaclass` 等软弃用函数。"
 
 #: ../../c-api/type.rst:974
 msgid ""
@@ -1302,21 +1391,28 @@ msgid ""
 ":c:type:`!PySlot` array using :c:macro:`Py_tp_slots`, and vice versa using "
 ":c:macro:`Py_slot_subslots`."
 msgstr ""
+"请注意，可以使用 :c:macro:`Py_tp_slots` 将 :c:type:`!PyType_Slot` 数组包含在 "
+":c:type:`!PySlot` 数组中；反之，也可以使用 :c:macro:`Py_slot_subslots` 实现这一操作。"
 
 #: ../../c-api/type.rst:978
 msgid ""
 "Each :c:type:`!PyType_Slot` structure ``tpslot`` is interpreted as the "
 "following :c:type:`PySlot` structure::"
-msgstr ""
+msgstr "每个 :c:type:`!PyType_Slot` 结构 ``tpslot`` 被解释为以下 :c:type:`PySlot` 结构::"
 
 #: ../../c-api/type.rst:981
 msgid ""
 "(PySlot){\n"
 "   .sl_id=tpslot.slot,\n"
 "   .sl_flags=PySlot_INTPTR | sub_static,\n"
-"   .sl_ptr=tpslot.func\n"
+"   .sl_ptr=tpslot.pfunc\n"
 "}"
 msgstr ""
+"(PySlot){\n"
+"   .sl_id=tpslot.slot,\n"
+"   .sl_flags=PySlot_INTPTR | sub_static,\n"
+"   .sl_ptr=tpslot.pfunc\n"
+"}"
 
 #: ../../c-api/type.rst:987
 msgid ""
@@ -1324,14 +1420,16 @@ msgid ""
 "(such as for :c:macro:`Py_tp_methods`), or if this flag is present on the "
 "\"parent\" :c:macro:`!Py_tp_slots` slot (if any)."
 msgstr ""
+"其中，若该插槽需要该标志（例如对于 :c:macro:`Py_tp_methods`），则 ``sub_static`` 为 "
+"``PySlot_STATIC``；或者，若该标志存在于“父”插槽 :c:macro:`!Py_tp_slots` 中（如有），则同样如此。"
 
 #: ../../c-api/type.rst:993
 msgid "Corresponds to :c:member:`PySlot.sl_id`."
-msgstr ""
+msgstr "对应于 :c:member:`PySlot.sl_id`。"
 
 #: ../../c-api/type.rst:997
 msgid "Corresponds to :c:member:`PySlot.sl_ptr`."
-msgstr ""
+msgstr "对应于 :c:member:`PySlot.sl_ptr`。"
 
 #: ../../c-api/type.rst:8
 msgid "object"

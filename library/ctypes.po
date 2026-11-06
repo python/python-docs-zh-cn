@@ -9,6 +9,7 @@
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
 # Alpha Du <alphanow@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2025-09-16 00:01+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -372,6 +373,11 @@ msgid ""
 "checked. Calling a function with an incorrect calling convention or with "
 "incorrect arguments can corrupt memory or crash Python."
 msgstr ""
+":mod:`!ctypes` 无法确定函数的调用约定或签名。请查阅函数的 C 语言头文件或文档，以选择正确的调用约定并设置 "
+":attr:`~_CFuncPtr.argtypes` 属性，具体方法如 :ref:`ctypes-specifying-required-"
+"argument-types` 所述。若缺少 "
+":attr:`~_CFuncPtr.argtypes`，则不会检查参数数量。使用错误的调用约定或错误的参数调用函数，可能会导致内存损坏或引发 "
+"Python 崩溃。"
 
 #: ../../library/ctypes.rst:189
 msgid ""
@@ -991,6 +997,20 @@ msgid ""
 "Hello, World\n"
 ">>>"
 msgstr ""
+">>> s = \"Hello, World\"\n"
+">>> c_s = c_wchar_p(s)\n"
+">>> print(c_s)\n"
+"c_wchar_p(139966785747344)\n"
+">>> print(c_s.value)\n"
+"Hello, World\n"
+">>> c_s.value = \"Hi, there\"\n"
+">>> print(c_s)              # the memory location has changed\n"
+"c_wchar_p(139966783348904)\n"
+">>> print(c_s.value)\n"
+"Hi, there\n"
+">>> print(s)                # first object is unchanged\n"
+"Hello, World\n"
+">>>"
 
 #: ../../library/ctypes.rst:437
 msgid ""
@@ -1288,6 +1308,8 @@ msgid ""
 "variadic functions. The declaration must match the function's actual "
 "signature; ctypes cannot verify this."
 msgstr ""
+"使用 ``stdcall`` 调用约定的函数必须恰好接受与 :attr:`~_CFuncPtr.argtypes` 中项目数量相等的参数。使用 "
+"``cdecl`` 调用约定的函数可接受额外参数，以支持变参函数。声明必须与函数的实际签名相匹配；CTypes 无法对此进行验证。"
 
 #: ../../library/ctypes.rst:593
 msgid ""
@@ -1708,7 +1730,7 @@ msgid ""
 "The :attr:`~Structure._align_` class attribute specifies the minimum "
 "alignment for the structure itself. See the attribute documentation for "
 "details."
-msgstr ""
+msgstr ":attr:`~Structure._align_` 类属性指定了结构体本身的最小对齐度。详情请参阅属性文档。"
 
 #: ../../library/ctypes.rst:816
 msgid ""
@@ -2135,6 +2157,14 @@ msgid ""
 ">>> with lock:\n"
 "...    pointer_b[0] = 42"
 msgstr ""
+">>> import threading\n"
+">>> lock = threading.Lock()\n"
+">>> # Thread 1\n"
+">>> with lock:\n"
+"...    pointer_a[0] = 24\n"
+">>> # Thread 2\n"
+">>> with lock:\n"
+"...    pointer_b[0] = 42"
 
 #: ../../library/ctypes.rst:1043
 msgid "Type conversions"
@@ -2386,6 +2416,19 @@ msgid ""
 "b'foo' b'bar' b'foo' b'bar' b'foo' b'bar' b'foo' b'bar'\n"
 ">>>"
 msgstr ""
+">>> c1 = cell()\n"
+">>> c1.name = b\"foo\"\n"
+">>> c2 = cell()\n"
+">>> c2.name = b\"bar\"\n"
+">>> c1.next = pointer(c2)\n"
+">>> c2.next = pointer(c1)\n"
+">>> p = c1\n"
+">>> for i in range(8):\n"
+"...     print(p.name, end=\" \")\n"
+"...     p = p.next[0]\n"
+"...\n"
+"b'foo' b'bar' b'foo' b'bar' b'foo' b'bar' b'foo' b'bar'\n"
+">>>"
 
 #: ../../library/ctypes.rst:1175
 msgid "Callback functions"
@@ -2660,10 +2703,13 @@ msgid ""
 "similar to the :c:data:`PyImport_FrozenModules` table, which third-party "
 "code can use to provide additional frozen modules."
 msgstr ""
+"一个更详细的示例，同时演示了如何使用指针访问 Python 导出的 ``_PyImport_FrozenBootstrap`` 指针。该指针指向一个 "
+":c:struct:`_frozen` 记录数组，这些记录描述了启动期间使用的冻结模块；数组以一条其成员全部为 ``NULL`` "
+"或零的记录作为结束项。这与 :c:data:`PyImport_FrozenModules` 表类似，第三方代码可以利用该表提供额外的冻结模块。"
 
 #: ../../library/ctypes.rst:1310
 msgid "We can read this table with :mod:`!ctypes`::"
-msgstr ""
+msgstr "我们可以使用 :mod:`!ctypes` 读取此表::"
 
 #: ../../library/ctypes.rst:1312
 msgid ""
@@ -2678,6 +2724,16 @@ msgid ""
 "...\n"
 ">>>"
 msgstr ""
+">>> from ctypes import *\n"
+">>>\n"
+">>> class struct_frozen(Structure):\n"
+"...     _fields_ = [(\"name\", c_char_p),\n"
+"...                 (\"code\", POINTER(c_ubyte)),\n"
+"...                 (\"size\", c_int),\n"
+"...                 (\"is_package\", c_int),\n"
+"...                ]\n"
+"...\n"
+">>>"
 
 #: ../../library/ctypes.rst:1323
 msgid ""
@@ -2736,6 +2792,8 @@ msgid ""
 "``__hello__`` and ``__phello__``, in a separate table, "
 "``_PyImport_FrozenTest``."
 msgstr ""
+"冻结包由非零的 ``is_package`` 成员标识。Python 还会将用于测试的冻结模块和包（例如 ``__hello__`` 和 "
+"``__phello__``）单独列在另一张表 ``_PyImport_FrozenTest`` 中。"
 
 #: ../../library/ctypes.rst:1354
 msgid "Surprises"
@@ -3021,6 +3079,9 @@ msgid ""
 "must be present in *name*; they are not added automatically. See "
 ":ref:`ctypes-finding-shared-libraries` for more information."
 msgstr ""
+"在 Windows 上，``.DLL`` 后缀可能缺失。（详情请参阅 `LoadLibraryExW`_ 文档。）其他平台特定的前缀和后缀（例如 "
+"``lib``、``.so``、``.dylib`` 或版本号）必须出现在 *name* 中；这些内容不会自动添加。有关更多信息，请参阅 "
+":ref:`ctypes-finding-shared-libraries`。"
 
 #: ../../library/ctypes.rst:1509
 msgid ""
@@ -3029,6 +3090,8 @@ msgid ""
 " \"library\". (Some systems do the same if *name* is empty; "
 "``None``/``NULL`` is more portable.)"
 msgstr ""
+"在非 Windows 系统上，*name* 可以设为 ``None``。此时，:c:func:`!dlopen` 会通过 ``NULL`` "
+"被调用，从而将主程序作为“库”打开。（如果 *name* 为空，某些系统也会采用相同机制；``None``/``NULL`` 则更具可移植性。）"
 
 #: ../../library/ctypes.rst:1515
 msgid "CPython implementation detail"
@@ -3083,6 +3146,11 @@ msgid ""
 "example, a different CRT on Windows) has its own :data:`errno`, which "
 ":mod:`!ctypes` cannot observe."
 msgstr ""
+"当 *use_errno* 参数设置为 true 时，会启用一种 ctypes 机制，使能够以安全的方式访问系统 :data:`errno` "
+"错误号。:mod:`!ctypes` 维护一个线程局部副本的系统 :data:`errno` 变量；如果您调用由 ``use_errno=True`` "
+"创建的外部函数，那么在函数调用前将 :data:`errno` 值与 ctypes "
+"私有副本进行交换，函数调用结束后也会立即执行相同的操作。该机制仅适用于与解释器本身使用相同 C 运行时库的库；若库链接的是不同的 C 运行时环境（例如 "
+"Windows 上的不同 CRT），则其拥有独立的 :data:`errno`，而 :mod:`!ctypes` 无法观测到该变量。"
 
 #: ../../library/ctypes.rst:1544
 msgid ""
@@ -3114,6 +3182,9 @@ msgid ""
 "such as DLL hijacking. Passing the full path to the DLL is the safest way to"
 " ensure the correct library and dependencies are loaded."
 msgstr ""
+"*winmode* 参数用于在 Windows 上指定库的加载方式（因为 *mode* 会被忽略）。它可以接受任何对 Win32 API 的 "
+"`LoadLibraryExW`_ 标志参数有效的值。若未指定该参数，默认将使用能实现最安全 DLL 加载的标志；这样可以避免 DLL 劫持等问题。传递"
+" DLL 的完整路径是确保加载到正确库及其依赖项的最安全方式。"
 
 #: ../../library/ctypes.rst:1561
 msgid ""
@@ -3218,7 +3289,7 @@ msgstr ""
 #: ../../library/ctypes.rst:2426 ../../library/ctypes.rst:2453
 #: ../../library/ctypes.rst:2882 ../../library/ctypes.rst:3716
 msgid "Availability"
-msgstr "Availability"
+msgstr "可用性"
 
 #: ../../library/ctypes.rst:1621
 msgid ""
@@ -3370,6 +3441,8 @@ msgid ""
 "loader then interact in system-specific ways to find the filename of the "
 "library to load."
 msgstr ""
+"使用编译型语言进行编程时，共享库会在编译/链接程序以及运行程序时被访问。程序员指定一个短名称；随后，C "
+"编译器、链接器和运行时动态库加载器会以系统特定的方式协同工作，以查找需要加载的库文件名。"
 
 #: ../../library/ctypes.rst:1752
 msgid ""
@@ -3379,6 +3452,10 @@ msgid ""
 "compatibility concerns make it difficult to adjust its behavior for new "
 "platforms and configurations, the function is :term:`soft deprecated`."
 msgstr ""
+"虽然各平台并未始终如一地提供从短名称到文件名映射的功能，但 :mod:`!ctypes.util` 模块提供了一个名为 "
+":func:`!find_library` "
+"的函数，用于尝试实现这种匹配。然而，由于向后兼容性的考量使得难以针对新的平台和配置调整其行为，因此该函数被命名为 :term:`soft "
+"deprecated`。"
 
 #: ../../library/ctypes.rst:1759
 msgid ""
@@ -3389,10 +3466,13 @@ msgid ""
 " to let users select a library to use, and then perhaps use "
 ":func:`!find_library` as a default or fallback."
 msgstr ""
+"如果要用 :mod:`!ctypes` 封装共享库，建议考虑在开发阶段确定共享库的名称，并将其硬编码到封装模块中，而不是使用 "
+":func:`!find_library` 在运行时定位该库。此外，还应考虑添加一个配置选项或环境变量，让用户选择要使用的库；随后，可以将 "
+":func:`!find_library` 设为默认值或备用方案。"
 
 #: ../../library/ctypes.rst:1770
 msgid "Try to find a library and return a pathname."
-msgstr ""
+msgstr "尝试查找一个库并返回一个路径名。"
 
 #: ../../library/ctypes.rst:1772
 msgid ""
@@ -3401,10 +3481,12 @@ msgid ""
 "posix linker option :option:`!-l`.) The result is in a format suitable for "
 "passing to :py:class:`~ctypes.CDLL`."
 msgstr ""
+"*name* 是“简短”的库名，不包含诸如 ``lib``、``.so``、``.dylib`` 等前缀，也不包含版本号。（这是 posix 链接器选项"
+" :option:`!-l` 所采用的格式。）最终结果将采用适合传递给 :py:class:`~ctypes.CDLL` 的格式。"
 
 #: ../../library/ctypes.rst:1777
 msgid "If no library can be found, return ``None``."
-msgstr ""
+msgstr "若未找到任何库，则返回 ``None``。"
 
 #: ../../library/ctypes.rst:1779
 msgid ""
@@ -3413,12 +3495,14 @@ msgid ""
 "Python. It is recommended to only use this function as a default or "
 "fallback,"
 msgstr ""
+"具体功能取决于系统环境，且*不保证*与 Python 所用（或由 Python "
+"所用）的编译器、链接器和加载器的行为完全一致。建议仅将此函数用作默认选项或备用方案，"
 
 #: ../../library/ctypes.rst:1786
 msgid ""
 "This function is kept for use in cases where it works, but not expected to "
 "be updated for additional platforms and configurations."
-msgstr ""
+msgstr "保留此功能，以便在适用时继续使用；但不预计会针对其他平台和配置进行更新。"
 
 #: ../../library/ctypes.rst:1789
 msgid ""
@@ -3427,6 +3511,9 @@ msgid ""
 "file. If the output of these programs does not correspond to the dynamic "
 "linker used by Python, the result of this function may be misleading."
 msgstr ""
+"在 Linux 上，:func:`!find_library` "
+"会尝试运行外部程序（``/sbin/ldconfig``、``gcc``、``objdump`` 和 "
+"``ld``）以查找库文件。如果这些程序的输出结果与 Python 所使用的动态链接器不匹配，则该函数的结果可能会产生误导。"
 
 #: ../../library/ctypes.rst:1795
 msgid ""
@@ -3647,6 +3734,9 @@ msgid ""
 "more arguments; functions using the ``cdecl`` calling convention accept "
 "additional, unspecified arguments as well."
 msgstr ""
+"分配一个由 ctypes 类型组成的元组，用于指定函数可接受的参数类型。如果以少于该元组长度的参数调用函数，则会抛出 "
+":exc:`TypeError`；使用 ``stdcall`` 调用约定的函数在以更多参数调用时也会抛出 :exc:`TypeError`；而使用 "
+"``cdecl`` 调用约定的函数还可接受额外的、未指定的参数。"
 
 #: ../../library/ctypes.rst:1921
 msgid ""
@@ -3657,6 +3747,9 @@ msgid ""
 ":attr:`argtypes` tuple will adapt a bytes object passed as an argument to a "
 "C pointer to its contents. It does not accept a :class:`str` object."
 msgstr ""
+"当调用外部函数时，每个实际参数会被传递给 :attr:`argtypes` 元组中各元素的 :meth:`~_CData.from_param` "
+"类方法；该方法可将实际参数适配为外部函数所接受的对象。例如，:attr:`argtypes` 元组中的 :class:`c_char_p` "
+"元素会将作为参数传入的 bytes 对象适配为其内容中的 C 指针；它不接受 :class:`str` 对象。"
 
 #: ../../library/ctypes.rst:1928
 msgid ""
@@ -3692,6 +3785,8 @@ msgid ""
 "call, including any output parameters that :mod:`!ctypes` created for the "
 "call; this allows specializing the behavior on the arguments used."
 msgstr ""
+"*arguments* 是一个包含传递给函数调用的参数的元组，其中也包括 :mod:`!ctypes` "
+"为该调用创建的任何输出参数；这使得可以根据所使用的参数对行为进行专门化处理。"
 
 #: ../../library/ctypes.rst:1954
 msgid ""
@@ -3702,13 +3797,16 @@ msgid ""
 "call instead. The callable can also check the result value and raise an "
 "exception if the foreign function call failed."
 msgstr ""
+"如果可调用函数返回其所接收的 *arguments* 元组且未作任何修改，则 :mod:`!ctypes` "
+"将继续对结果进行常规处理，其中包括返回输出参数（参见 :ref:`ctypes-function-"
+"prototypes`）。可调用函数返回的任何其他对象，则将由外部函数调用直接返回。此外，可调用函数还可以检查结果值；若外部函数调用失败，则会抛出异常。"
 
 #: ../../library/ctypes.rst:1962
 msgid ""
 "For example, this callable raises an exception when the foreign function "
 "signals failure with a negative return value, and otherwise leaves the "
 "result to :mod:`!ctypes`::"
-msgstr ""
+msgstr "例如，当外部函数通过负返回值发出失败信号时，此可调用对象会抛出异常；否则，则将结果交由 :mod:`!ctypes` 处理::"
 
 #: ../../library/ctypes.rst:1966
 msgid ""
@@ -3717,18 +3815,24 @@ msgid ""
 "        raise RuntimeError(f\"call failed with error {result}\")\n"
 "    return arguments"
 msgstr ""
+"def errcheck(result, func, arguments):\n"
+"    if result < 0:\n"
+"        raise RuntimeError(f\"call failed with error {result}\")\n"
+"    return arguments"
 
 #: ../../library/ctypes.rst:1971
 msgid ""
 "This one instead replaces the result, converting a C ``int`` used as a "
 "boolean into a :class:`bool`::"
-msgstr ""
+msgstr "这一操作则用结果取而代之，将用作布尔型的 C ``int`` 转换为 :class:`bool`::"
 
 #: ../../library/ctypes.rst:1974
 msgid ""
 "def errcheck(result, func, arguments):\n"
 "    return result != 0"
 msgstr ""
+"def errcheck(result, func, arguments):\n"
+"    return result != 0"
 
 #: ../../library/ctypes.rst:1978 ../../library/ctypes.rst:1980
 msgid ""
@@ -3798,6 +3902,9 @@ msgid ""
 "the function may safely use the Python C API. Note that this does not "
 "prevent the GIL from being released *during* the call."
 msgstr ""
+"返回的函数原型会创建采用 Python 调用约定的函数。与 :func:`CFUNCTYPE` 和 :func:`WINFUNCTYPE` "
+"不同，ctypes 在调用外部函数之前*不会*释放 GIL，因此该函数可以安全地使用 Python C API。需要注意的是，这并不会阻止 GIL "
+"在*调用过程中*被释放。"
 
 #: ../../library/ctypes.rst:2035
 msgid ""
@@ -4056,6 +4163,9 @@ msgid ""
 "the function and return them instead, the normal processing will no longer "
 "take place::"
 msgstr ""
+"如果 :attr:`~_CFuncPtr.errcheck` 函数以未作任何修改的传入参数元组作为返回值，则 :mod:`!ctypes` "
+"将继续对输出参数执行其常规处理。如果您希望返回一个窗口坐标元组，而非 ``RECT`` "
+"实例，则可以在函数中检索相应字段并直接返回它们；此时常规处理将不再执行::"
 
 #: ../../library/ctypes.rst:2175
 msgid ""
@@ -4193,7 +4303,7 @@ msgstr "如果 *size* 等于 ``len(init)``，则不会增加一个 NUL 结束符
 
 #: ../../library/ctypes.rst:2267 ../../library/ctypes.rst:2916
 msgid "For example::"
-msgstr "例如："
+msgstr "例如::"
 
 #: ../../library/ctypes.rst:2269
 msgid ""
@@ -4677,6 +4787,7 @@ msgid ""
 "Class attribute that contains an internal type code, as a string. See "
 ":ref:`ctypes-fundamental-data-types` for a summary."
 msgstr ""
+"包含内部类型代码的类属性，以字符串形式表示。请参阅 :ref:`ctypes-fundamental-data-types` 以获取概要说明。"
 
 #: ../../library/ctypes.rst:2624
 msgid ""
@@ -4688,6 +4799,11 @@ msgid ""
 "single class, :class:`c_long`, whose :attr:`_type_` code is ``'l'``. The "
 "``'q'`` code will be unused."
 msgstr ""
+"摘要中标记为 \\* 的类型可能是（或始终就是）另一个 :class:`_SimpleCData` "
+"子类的别名，因此未必会采用所列的类型代码。例如，如果平台的 :c:expr:`long`、:c:expr:`long long` 和 "
+":c:expr:`time_t` C 类型相同，那么 :class:`c_long`、:class:`c_longlong` 和 "
+":class:`c_time_t` 均指向同一个类 :class:`c_long`，而该类的 :attr:`_type_` 代码为 ``'l'``；此时"
+" ``'q'`` 代码将不会被使用。"
 
 #: ../../library/ctypes.rst:2635
 msgid ""
@@ -4696,6 +4812,9 @@ msgid ""
 "<https://numpy.org/doc/stable/reference/arrays.interface.html#object.__array_interface__>`__,"
 " use similar -- but slightly different -- type codes."
 msgstr ""
+":mod:`array` 和 :ref:`struct <type-codes>` 模块，以及像 `numpy "
+"<https://numpy.org/doc/stable/reference/arrays.interface.html#object.__array_interface__>`__"
+" 这样的第三方模块，采用类似但略有不同的类型代码。"
 
 #: ../../library/ctypes.rst:2640
 msgid ""
@@ -4706,6 +4825,9 @@ msgid ""
 "will receive a Python bytes object or ``None`` for a ``NULL`` pointer, *not*"
 " a :class:`c_char_p` instance."
 msgstr ""
+"基本数据类型在作为外部函数调用结果返回时，或者例如通过检索结构体字段成员或数组项时，会透明地转换为 Python 原生类型。换言之，如果某个外部函数具有"
+" :attr:`~_CFuncPtr.restype` 或 :class:`c_char_p`，您将获得 Python bytes 对象，或对于 "
+"``NULL`` 指针获得 ``None``，而*不会*获得 :class:`c_char_p` 实例。"
 
 #: ../../library/ctypes.rst:2646
 msgid ""
@@ -4924,6 +5046,8 @@ msgid ""
 "platforms where ``sizeof(long long) == sizeof(long)`` it is an alias to "
 ":class:`c_ulong`."
 msgstr ""
+"表示 C :c:expr:`unsigned long long` 数据类型。构造函数可接受一个可选的整数初始化值；不会进行溢出检查。在支持 "
+"``sizeof(long long) == sizeof(long)`` 的平台中，该类型是 :class:`c_ulong` 的别名。"
 
 #: ../../library/ctypes.rst:2846
 msgid ""
@@ -4983,11 +5107,11 @@ msgstr ":class:`!py_object` 现在是一种 :term:`generic type`。"
 
 #: ../../library/ctypes.rst:2896
 msgid "Windows data types"
-msgstr ""
+msgstr "Windows 数据类型"
 
 #: ../../library/ctypes.rst:2901
 msgid "**Source code:** :source:`Lib/ctypes/wintypes.py`"
-msgstr ""
+msgstr "**源代码：** :source:`Lib/ctypes/wintypes.py`"
 
 #: ../../library/ctypes.rst:2903
 msgid ""
@@ -4998,6 +5122,10 @@ msgid ""
 "corresponding C definitions. On non-Windows platforms, the sizes and layouts"
 " of these types may differ from their Windows counterparts."
 msgstr ""
+":mod:`!ctypes.wintypes` 模块提供了可用于 Windows API 的类型。其中大多数类型是 :mod:`ctypes` "
+"中定义的类型的别名。有关相应的 C 语言定义，请参阅 Microsoft 的 `Windows data types "
+"<https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-"
+"types>`_ 文档。在非 Windows 平台上，这些类型的尺寸和布局可能与 Windows 平台上的对应类型有所不同。"
 
 #: ../../library/ctypes.rst:2911
 msgid ""
@@ -5005,6 +5133,9 @@ msgid ""
 ":class:`HDDEDATA`, :class:`HDROP`, :class:`HFILE`, :class:`HRESULT`, and "
 ":class:`HSZ`."
 msgstr ""
+"添加了 "
+":class:`HCONV`、:class:`HCONVLIST`、:class:`HCURSOR`、:class:`HDDEDATA`、:class:`HDROP`、:class:`HFILE`、:class:`HRESULT`"
+" 和 :class:`HSZ`。"
 
 #: ../../library/ctypes.rst:2918
 msgid ""
@@ -5018,86 +5149,95 @@ msgid ""
 ">>> LPRECT is POINTER(RECT)\n"
 "True"
 msgstr ""
+">>> from ctypes import POINTER\n"
+">>> from ctypes.wintypes import LPRECT, RECT, SHORT\n"
+">>> SHORT(-1).value\n"
+"-1\n"
+">>> rect = RECT(0, 0, 100, 50)\n"
+">>> rect.right, rect.bottom\n"
+"(100, 50)\n"
+">>> LPRECT is POINTER(RECT)\n"
+"True"
 
 #: ../../library/ctypes.rst:2930
 msgid "Simple types"
-msgstr ""
+msgstr "简单类型"
 
 #: ../../library/ctypes.rst:2932
 msgid "The following names are aliases for fundamental :mod:`ctypes` types:"
-msgstr ""
+msgstr "以下名称是基本 :mod:`ctypes` 类型的别名："
 
 #: ../../library/ctypes.rst:2937
 msgid "Windows types"
-msgstr ""
+msgstr "Windows 类型"
 
 #: ../../library/ctypes.rst:2938
 msgid ":mod:`ctypes` type"
-msgstr ""
+msgstr ":mod:`ctypes` 类型"
 
 #: ../../library/ctypes.rst:2942
 msgid ":class:`~ctypes.c_ubyte`"
-msgstr ""
+msgstr ":class:`~ctypes.c_ubyte`"
 
 #: ../../library/ctypes.rst:2945
 msgid ":class:`~ctypes.c_char`"
-msgstr ""
+msgstr ":class:`~ctypes.c_char`"
 
 #: ../../library/ctypes.rst:2948
 msgid ":class:`~ctypes.c_wchar`"
-msgstr ""
+msgstr ":class:`~ctypes.c_wchar`"
 
 #: ../../library/ctypes.rst:2954
 msgid ":class:`~ctypes.c_ushort`"
-msgstr ""
+msgstr ":class:`~ctypes.c_ushort`"
 
 #: ../../library/ctypes.rst:2962
 msgid ":class:`~ctypes.c_ulong`"
-msgstr ""
+msgstr ":class:`~ctypes.c_ulong`"
 
 #: ../../library/ctypes.rst:2967
 msgid ":class:`~ctypes.c_long`"
-msgstr ""
+msgstr ":class:`~ctypes.c_long`"
 
 #: ../../library/ctypes.rst:2971
 msgid ":class:`~ctypes.c_int`"
-msgstr ""
+msgstr ":class:`~ctypes.c_int`"
 
 #: ../../library/ctypes.rst:2974
 msgid ":class:`~ctypes.c_uint`"
-msgstr ""
+msgstr ":class:`~ctypes.c_uint`"
 
 #: ../../library/ctypes.rst:2977
 msgid ":class:`~ctypes.c_short`"
-msgstr ""
+msgstr ":class:`~ctypes.c_short`"
 
 #: ../../library/ctypes.rst:2980
 msgid ":class:`~ctypes.c_double`"
-msgstr ""
+msgstr ":class:`~ctypes.c_double`"
 
 #: ../../library/ctypes.rst:2983
 msgid ":class:`~ctypes.c_float`"
-msgstr ""
+msgstr ":class:`~ctypes.c_float`"
 
 #: ../../library/ctypes.rst:2986
 msgid ":class:`~ctypes.c_longlong`"
-msgstr ""
+msgstr ":class:`~ctypes.c_longlong`"
 
 #: ../../library/ctypes.rst:2989
 msgid ":class:`~ctypes.c_ulonglong`"
-msgstr ""
+msgstr ":class:`~ctypes.c_ulonglong`"
 
 #: ../../library/ctypes.rst:2993
 msgid ":class:`~ctypes.c_char_p`"
-msgstr ""
+msgstr ":class:`~ctypes.c_char_p`"
 
 #: ../../library/ctypes.rst:3000
 msgid ":class:`~ctypes.c_wchar_p`"
-msgstr ""
+msgstr ":class:`~ctypes.c_wchar_p`"
 
 #: ../../library/ctypes.rst:3004
 msgid ":class:`~ctypes.c_void_p`"
-msgstr ""
+msgstr ":class:`~ctypes.c_void_p`"
 
 #: ../../library/ctypes.rst:3006
 msgid ""
@@ -5105,15 +5245,17 @@ msgid ""
 ":attr:`!value` attribute, with no ``LowPart``, ``HighPart``, or ``QuadPart``"
 " fields."
 msgstr ""
+":class:`LARGE_INTEGER` 和 :class:`ULARGE_INTEGER` 提供一个整数属性 :attr:`!value`，且不含"
+" ``LowPart``、``HighPart`` 或 ``QuadPart`` 字段。"
 
 #: ../../library/ctypes.rst:3012
 msgid ""
 "An unsigned integer type with the same size as :class:`~ctypes.c_void_p`."
-msgstr ""
+msgstr "一种与 :class:`~ctypes.c_void_p` 大小相同的无符号整数类型。"
 
 #: ../../library/ctypes.rst:3016
 msgid "A signed integer type with the same size as :class:`~ctypes.c_void_p`."
-msgstr ""
+msgstr "一种与 :class:`~ctypes.c_void_p` 大小相同的有符号整数类型。"
 
 #: ../../library/ctypes.rst:3020
 msgid ""
@@ -5121,15 +5263,17 @@ msgid ""
 ":class:`bool`.  Assigning to :attr:`!value` stores ``-1`` for a true value "
 "and ``0`` for a false value."
 msgstr ""
+"一种 16 位布尔类型，其 :attr:`!value` 属性为 Python 的 :class:`bool`。将值赋给 :attr:`!value` "
+"时，若为真值则存储 ``-1``，若为假值则存储 ``0``。"
 
 #: ../../library/ctypes.rst:3026
 msgid "Handle types"
-msgstr ""
+msgstr "控件类型"
 
 #: ../../library/ctypes.rst:3030
 msgid ""
 "An alias for :class:`~ctypes.c_void_p`, used to represent Windows handles."
-msgstr ""
+msgstr ":class:`~ctypes.c_void_p` 的别名，用于表示 Windows 句柄。"
 
 #: ../../library/ctypes.rst:3070
 msgid ""
@@ -5137,44 +5281,50 @@ msgid ""
 ":class:`HFILE` is an alias for :class:`INT` and is listed among the simple "
 "types above."
 msgstr ""
+"用于与特定 Windows API 配合使用的 :class:`HANDLE` 别名。:class:`HFILE` 是 :class:`INT` "
+"的别名，列于上述简单类型之中。"
 
 #: ../../library/ctypes.rst:3076
 msgid "Structures"
-msgstr ""
+msgstr "结构"
 
 #: ../../library/ctypes.rst:3078
 msgid "The following types are subclasses of :class:`ctypes.Structure`."
-msgstr ""
+msgstr "以下类型是 :class:`ctypes.Structure` 的子类。"
 
 #: ../../library/ctypes.rst:3084
 msgid ""
 "A rectangle with ``left``, ``top``, ``right``, and ``bottom`` fields, all of"
 " type :class:`LONG`."
 msgstr ""
+"一个包含 ``left``、``top``、``right`` 和 ``bottom`` 字段的矩形，所有字段类型均为 :class:`LONG`。"
 
 #: ../../library/ctypes.rst:3089
 msgid ""
 "A rectangle with ``Left``, ``Top``, ``Right``, and ``Bottom`` fields, all of"
 " type :class:`SHORT`."
 msgstr ""
+"一个包含 ``Left``、``Top``、``Right`` 和 ``Bottom`` 字段的矩形，所有字段类型均为 :class:`SHORT`。"
 
 #: ../../library/ctypes.rst:3096
 msgid "A point with ``x`` and ``y`` fields, both of type :class:`LONG`."
-msgstr ""
+msgstr "一个包含 ``x`` 和 ``y`` 字段的点，这两个字段均为 :class:`LONG` 类型。"
 
 #: ../../library/ctypes.rst:3102
 msgid "Dimensions with ``cx`` and ``cy`` fields, both of type :class:`LONG`."
-msgstr ""
+msgstr "包含 ``cx`` 和 ``cy`` 字段的维度，两者类型均为 :class:`LONG`。"
 
 #: ../../library/ctypes.rst:3106
 msgid ""
 "A file time with ``dwLowDateTime`` and ``dwHighDateTime`` fields, both of "
 "type :class:`DWORD`."
 msgstr ""
+"一个包含 ``dwLowDateTime`` 和 ``dwHighDateTime`` 字段的文件时间，这两个字段类型均为 "
+":class:`DWORD`。"
 
 #: ../../library/ctypes.rst:3112
 msgid "A Windows message with the following fields:"
-msgstr ""
+msgstr "一个包含以下字段的 Windows 消息："
 
 #: ../../library/ctypes.rst:3117
 msgid "Field"
@@ -5186,53 +5336,53 @@ msgstr "类型"
 
 #: ../../library/ctypes.rst:3119
 msgid "``hWnd``"
-msgstr ""
+msgstr "``hWnd``"
 
 #: ../../library/ctypes.rst:3120
 msgid ":class:`HWND`"
-msgstr ""
+msgstr ":class:`HWND`"
 
 #: ../../library/ctypes.rst:3121
 msgid "``message``"
-msgstr ""
+msgstr "``message``"
 
 #: ../../library/ctypes.rst:3122 ../../library/ctypes.rst:3260
 msgid ":class:`UINT`"
-msgstr ""
+msgstr ":class:`UINT`"
 
 #: ../../library/ctypes.rst:3123
 msgid "``wParam``"
-msgstr ""
+msgstr "``wParam``"
 
 #: ../../library/ctypes.rst:3124
 msgid ":class:`WPARAM`"
-msgstr ""
+msgstr ":class:`WPARAM`"
 
 #: ../../library/ctypes.rst:3125
 msgid "``lParam``"
-msgstr ""
+msgstr "``lParam``"
 
 #: ../../library/ctypes.rst:3126
 msgid ":class:`LPARAM`"
-msgstr ""
+msgstr ":class:`LPARAM`"
 
 #: ../../library/ctypes.rst:3127
 msgid "``time``"
-msgstr ""
+msgstr "``time``"
 
 #: ../../library/ctypes.rst:3128 ../../library/ctypes.rst:3145
 #: ../../library/ctypes.rst:3149 ../../library/ctypes.rst:3151
 #: ../../library/ctypes.rst:3189
 msgid ":class:`DWORD`"
-msgstr ""
+msgstr ":class:`DWORD`"
 
 #: ../../library/ctypes.rst:3129
 msgid "``pt``"
-msgstr ""
+msgstr "``pt``"
 
 #: ../../library/ctypes.rst:3130 ../../library/ctypes.rst:3228
 msgid ":class:`POINT`"
-msgstr ""
+msgstr ":class:`POINT`"
 
 #: ../../library/ctypes.rst:3135
 msgid ""
@@ -5240,186 +5390,190 @@ msgid ""
 "  :class:`WIN32_FIND_DATAA` uses :class:`CHAR` for its file names, and "
 ":class:`WIN32_FIND_DATAW` uses :class:`WCHAR`."
 msgstr ""
+"Windows 文件搜索函数所使用的结构，包含以下字段：:class:`WIN32_FIND_DATAA` 使用 :class:`CHAR` "
+"作为文件名，而 :class:`WIN32_FIND_DATAW` 则使用 :class:`WCHAR`。"
 
 #: ../../library/ctypes.rst:3142
 msgid "Fields"
-msgstr ""
+msgstr "字段"
 
 #: ../../library/ctypes.rst:3144
 msgid "``dwFileAttributes``"
-msgstr ""
+msgstr "``dwFileAttributes``"
 
 #: ../../library/ctypes.rst:3146
 msgid "``ftCreationTime``, ``ftLastAccessTime``, ``ftLastWriteTime``"
-msgstr ""
+msgstr "``ftCreationTime``, ``ftLastAccessTime``, ``ftLastWriteTime``"
 
 #: ../../library/ctypes.rst:3147 ../../library/ctypes.rst:3193
 msgid ":class:`FILETIME`"
-msgstr ""
+msgstr ":class:`FILETIME`"
 
 #: ../../library/ctypes.rst:3148
 msgid "``nFileSizeHigh``, ``nFileSizeLow``"
-msgstr ""
+msgstr "``nFileSizeHigh``, ``nFileSizeLow``"
 
 #: ../../library/ctypes.rst:3150
 msgid "``dwReserved0``, ``dwReserved1``"
-msgstr ""
+msgstr "``dwReserved0``, ``dwReserved1``"
 
 #: ../../library/ctypes.rst:3152
 msgid "``cFileName``"
-msgstr ""
+msgstr "``cFileName``"
 
 #: ../../library/ctypes.rst:3153
 msgid "An array of :data:`MAX_PATH` characters"
-msgstr ""
+msgstr "一组 :data:`MAX_PATH` 字符"
 
 #: ../../library/ctypes.rst:3154
 msgid "``cAlternateFileName``"
-msgstr ""
+msgstr "``cAlternateFileName``"
 
 #: ../../library/ctypes.rst:3155
 msgid "An array of 14 characters"
-msgstr ""
+msgstr "由 14 个字符组成的数组"
 
 #: ../../library/ctypes.rst:3159 ../../library/ctypes.rst:3167
 msgid "Pointer types"
-msgstr ""
+msgstr "指针类型"
 
 #: ../../library/ctypes.rst:3161
 msgid ""
 "The following names are aliases for ``ctypes.POINTER(T)``, where *T* is the "
 "type in the second column:"
-msgstr ""
+msgstr "以下名称是 ``ctypes.POINTER(T)`` 的别名，其中 *T* 表示第二列中的类型："
 
 #: ../../library/ctypes.rst:3168
 msgid "Referenced type"
-msgstr ""
+msgstr "引用类型"
 
 #: ../../library/ctypes.rst:3172
 msgid ":class:`BOOL`"
-msgstr ""
+msgstr ":class:`BOOL`"
 
 #: ../../library/ctypes.rst:3175
 msgid ":class:`BOOLEAN`"
-msgstr ""
+msgstr ":class:`BOOLEAN`"
 
 #: ../../library/ctypes.rst:3179
 msgid ":class:`BYTE`"
-msgstr ""
+msgstr ":class:`BYTE`"
 
 #: ../../library/ctypes.rst:3182
 msgid ":class:`CHAR`"
-msgstr ""
+msgstr ":class:`CHAR`"
 
 #: ../../library/ctypes.rst:3185
 msgid ":class:`COLORREF`"
-msgstr ""
+msgstr ":class:`COLORREF`"
 
 #: ../../library/ctypes.rst:3196
 msgid ":class:`FLOAT`"
-msgstr ""
+msgstr ":class:`FLOAT`"
 
 #: ../../library/ctypes.rst:3200
 msgid ":class:`HANDLE`"
-msgstr ""
+msgstr ":class:`HANDLE`"
 
 #: ../../library/ctypes.rst:3203
 msgid ":class:`HKEY`"
-msgstr ""
+msgstr ":class:`HKEY`"
 
 #: ../../library/ctypes.rst:3206
 msgid ":class:`HKL`"
-msgstr ""
+msgstr ":class:`HKL`"
 
 #: ../../library/ctypes.rst:3210
 msgid ":class:`INT`"
-msgstr ""
+msgstr ":class:`INT`"
 
 #: ../../library/ctypes.rst:3213
 msgid ":class:`LARGE_INTEGER`"
-msgstr ""
+msgstr ":class:`LARGE_INTEGER`"
 
 #: ../../library/ctypes.rst:3216
 msgid ":class:`LCID`"
-msgstr ""
+msgstr ":class:`LCID`"
 
 #: ../../library/ctypes.rst:3220
 msgid ":class:`LONG`"
-msgstr ""
+msgstr ":class:`LONG`"
 
 #: ../../library/ctypes.rst:3224
 msgid ":class:`MSG`"
-msgstr ""
+msgstr ":class:`MSG`"
 
 #: ../../library/ctypes.rst:3231
 msgid ":class:`POINTL`"
-msgstr ""
+msgstr ":class:`POINTL`"
 
 #: ../../library/ctypes.rst:3235
 msgid ":class:`RECT`"
-msgstr ""
+msgstr ":class:`RECT`"
 
 #: ../../library/ctypes.rst:3239
 msgid ":class:`RECTL`"
-msgstr ""
+msgstr ":class:`RECTL`"
 
 #: ../../library/ctypes.rst:3242
 msgid ":class:`SC_HANDLE`"
-msgstr ""
+msgstr ":class:`SC_HANDLE`"
 
 #: ../../library/ctypes.rst:3245
 msgid ":class:`SHORT`"
-msgstr ""
+msgstr ":class:`SHORT`"
 
 #: ../../library/ctypes.rst:3249
 msgid ":class:`SIZE`"
-msgstr ""
+msgstr ":class:`SIZE`"
 
 #: ../../library/ctypes.rst:3253
 msgid ":class:`SIZEL`"
-msgstr ""
+msgstr ":class:`SIZEL`"
 
 #: ../../library/ctypes.rst:3256
 msgid ":class:`SMALL_RECT`"
-msgstr ""
+msgstr ":class:`SMALL_RECT`"
 
 #: ../../library/ctypes.rst:3263
 msgid ":class:`ULARGE_INTEGER`"
-msgstr ""
+msgstr ":class:`ULARGE_INTEGER`"
 
 #: ../../library/ctypes.rst:3266
 msgid ":class:`ULONG`"
-msgstr ""
+msgstr ":class:`ULONG`"
 
 #: ../../library/ctypes.rst:3269
 msgid ":class:`USHORT`"
-msgstr ""
+msgstr ":class:`USHORT`"
 
 #: ../../library/ctypes.rst:3272
 msgid ":class:`WCHAR`"
-msgstr ""
+msgstr ":class:`WCHAR`"
 
 #: ../../library/ctypes.rst:3276
 msgid ":class:`WIN32_FIND_DATAA`"
-msgstr ""
+msgstr ":class:`WIN32_FIND_DATAA`"
 
 #: ../../library/ctypes.rst:3280
 msgid ":class:`WIN32_FIND_DATAW`"
-msgstr ""
+msgstr ":class:`WIN32_FIND_DATAW`"
 
 #: ../../library/ctypes.rst:3284
 msgid ":class:`WORD`"
-msgstr ""
+msgstr ":class:`WORD`"
 
 #: ../../library/ctypes.rst:3288
 msgid "Constants and functions"
-msgstr ""
+msgstr "常量与函数"
 
 #: ../../library/ctypes.rst:3292
 msgid ""
 "The value ``260``, used as the size of the file-name arrays in "
 ":class:`WIN32_FIND_DATAA` and :class:`WIN32_FIND_DATAW`."
 msgstr ""
+"值 ``260`` 用于指定 :class:`WIN32_FIND_DATAA` 和 :class:`WIN32_FIND_DATAW` "
+"中文件名数组的大小。"
 
 #: ../../library/ctypes.rst:3297
 msgid ""
@@ -5427,6 +5581,8 @@ msgid ""
 "and *blue* arguments are integers from ``0`` to ``255``, specifying the "
 "intensity of each color component::"
 msgstr ""
+"返回一个 :class:`COLORREF` 值，该值应为 Python 整数。*red*、*green* 和 *blue* 参数为从 ``0`` 到 "
+"``255`` 的整数，用于指定每种颜色分量的强度::"
 
 #: ../../library/ctypes.rst:3301
 msgid ""
@@ -5434,6 +5590,9 @@ msgid ""
 ">>> hex(RGB(255, 128, 0))\n"
 "'0x80ff'"
 msgstr ""
+">>> from ctypes.wintypes import RGB\n"
+">>> hex(RGB(255, 128, 0))\n"
+"'0x80ff'"
 
 #: ../../library/ctypes.rst:3312
 msgid "Structured data types"
@@ -5482,6 +5641,8 @@ msgid ""
 ":mod:`!ctypes` will create :term:`descriptor`\\s which allow reading and "
 "writing the fields by direct attribute accesses."
 msgstr ""
+"具体的结构体和联合体类型必须通过继承其中一种类型来创建，并且至少需要定义一个 :attr:`_fields_` 类变量。:mod:`!ctypes` "
+"将创建 :term:`descriptor`\\s，从而允许通过直接访问属性来读写字段。"
 
 #: ../../library/ctypes.rst:3359
 msgid ""
@@ -5541,6 +5702,9 @@ msgid ""
 "use, the structure or union will have no own fields, as if :attr:`!_fields_`"
 " was empty."
 msgstr ""
+"此外，:attr:`!_fields_` 类变量必须在结构体或联合类型首次使用之前完成定义；例如，在创建实例或子类时。之后对 "
+":attr:`!_fields_` 的赋值将引发 :exc:`AttributeError`。如果在此类使用之前尚未为 "
+":attr:`!_fields_` 赋值，则该结构体或联合类型将不拥有任何自有字段，其状态相当于 :attr:`!_fields_` 为空。"
 
 #: ../../library/ctypes.rst:3391
 msgid ""
@@ -5712,6 +5876,17 @@ msgid ""
 "TYPEDESC._fields_ = [(\"u\", _U),\n"
 "                    (\"vt\", VARTYPE)]"
 msgstr ""
+"class TYPEDESC(Structure):\n"
+"    pass\n"
+"\n"
+"class _U(Union):\n"
+"    _fields_ = [(\"lptdesc\", POINTER(TYPEDESC)),\n"
+"                (\"lpadesc\", POINTER(ARRAYDESC)),\n"
+"                (\"hreftype\", HREFTYPE)]\n"
+"\n"
+"TYPEDESC._anonymous_ = (\"u\",)\n"
+"TYPEDESC._fields_ = [(\"u\", _U),\n"
+"                    (\"vt\", VARTYPE)]"
 
 #: ../../library/ctypes.rst:3495
 msgid ""
@@ -5734,6 +5909,11 @@ msgid ""
 "td.lptdesc = pointer(some_type)\n"
 "td.u.lptdesc = pointer(some_type)"
 msgstr ""
+"some_type = TYPEDESC()\n"
+"td = TYPEDESC()\n"
+"td.vt = VT_PTR\n"
+"td.lptdesc = pointer(some_type)\n"
+"td.u.lptdesc = pointer(some_type)"
 
 #: ../../library/ctypes.rst:3508
 msgid ""
@@ -5883,6 +6063,8 @@ msgid ""
 "right <shifting>` by :attr:`!bit_offset` and take the :attr:`!bit_size` "
 "least significant bits."
 msgstr ""
+"要获取该字段的值，请将存储单元视为整数，从 :ref:`shift right <shifting>` 到 :attr:`!bit_offset` "
+"读取，并提取 :attr:`!bit_size` 个最低有效位。"
 
 #: ../../library/ctypes.rst:3604
 msgid ""

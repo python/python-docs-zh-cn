@@ -7,15 +7,16 @@
 # python-doc bot, 2026
 # 99 <wh2099@pm.me>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-01 16:21+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2026-02-25 14:46+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -120,6 +121,8 @@ msgid ""
 ":c:func:`PyThreadState_EnsureFromView`, which will manage the thread state "
 "for you."
 msgstr ""
+"如果最终发现确实需要创建线程状态，建议使用 :c:func:`PyThreadState_Ensure` 或 "
+":c:func:`PyThreadState_EnsureFromView`；它们会为您管理线程状态。"
 
 #: ../../c-api/threads.rst:72
 msgid "Detaching the thread state from extension code"
@@ -322,6 +325,8 @@ msgid ""
 "The easiest way to do this is through :c:func:`PyThreadState_Ensure` or "
 ":c:func:`PyThreadState_EnsureFromView`."
 msgstr ""
+"实现此操作最简单的方法是通过 :c:func:`PyThreadState_Ensure` 或 "
+":c:func:`PyThreadState_EnsureFromView`。"
 
 #: ../../c-api/threads.rst:203
 msgid ""
@@ -335,6 +340,11 @@ msgid ""
 "be used to get a view for the main interpreter, but note that this will make"
 " the code incompatible with subinterpreters."
 msgstr ""
+"这些函数需要一个指向所需解释器的参数；该指针可以通过从创建线程的函数调用 "
+":c:func:`PyInterpreterGuard_FromCurrent` （适用于 ``PyThreadState_Ensure``）或 "
+":c:func:`PyInterpreterView_FromCurrent` （适用于 "
+"``PyThreadState_EnsureFromView``）来获取。如果无法获得指针（例如当所给的原生线程库未提供数据参数时），则可以使用 "
+":c:func:`PyInterpreterView_FromMain` 获取主解释器的视图；但请注意，这将导致代码与子解释器不兼容。"
 
 #: ../../c-api/threads.rst:214
 msgid "For example::"
@@ -362,6 +372,25 @@ msgid ""
 "PyThreadState_Release(token);\n"
 "PyInterpreterGuard_Close(guard);"
 msgstr ""
+"// The return value of PyInterpreterGuard_FromCurrent() from the\n"
+"// function that created this thread.\n"
+"PyInterpreterGuard *guard = thread_data->guard;\n"
+"\n"
+"// Create a new thread state for the interpreter.\n"
+"PyThreadStateToken *token = PyThreadState_Ensure(guard);\n"
+"if (token == NULL) {\n"
+"   PyInterpreterGuard_Close(guard);\n"
+"   return;\n"
+"}\n"
+"\n"
+"// We have a valid thread state -- perform Python actions here.\n"
+"result = CallSomeFunction();\n"
+"// Evaluate result or handle exceptions.\n"
+"\n"
+"// Release the thread state. No calls to the C API are allowed beyond this\n"
+"// point.\n"
+"PyThreadState_Release(token);\n"
+"PyInterpreterGuard_Close(guard);"
 
 #: ../../c-api/threads.rst:237
 msgid ""
@@ -371,14 +400,17 @@ msgid ""
 "may re-attach a thread state that was previously attached for the current "
 "thread."
 msgstr ""
+"请注意，调用 ``PyThreadState_Ensure`` 并不一定会始终创建一个新的线程状态；而调用 "
+"``PyThreadState_Release`` "
+"也不一定会始终将其分离。这些函数可能会重用一个已附接的现有线程状态，或者重新附接一个此前已为当前线程附接的线程状态。"
 
 #: ../../c-api/threads.rst:243
 msgid ":pep:`788`"
-msgstr ""
+msgstr ":pep:`788`"
 
 #: ../../c-api/threads.rst:248
 msgid "Reusing a thread state across repeated calls"
-msgstr ""
+msgstr "在多次调用中复用线程状态"
 
 #: ../../c-api/threads.rst:250
 msgid ""
@@ -390,6 +422,9 @@ msgid ""
 "thread starts (or lazily on its first call into Python), attach and detach "
 "it around each call, and tear it down once when the thread exits."
 msgstr ""
+"创建和销毁一个 :c:type:`PyThreadState` 并非免费操作，在 :term:`free-threaded build` "
+"上成本更高。一个多次调用解释器的外部线程——例如原生线程池中的工作线程——应避免在每次进入时都创建新的线程状态，并在每次退出时将其销毁。相反，应在线程启动时（或在其首次调用"
+" Python 时以惰性方式）建立一个线程状态，在每次调用前后将其附加和分离，并在线程退出时将其彻底销毁一次。"
 
 #: ../../c-api/threads.rst:258
 msgid ""
@@ -398,6 +433,8 @@ msgid ""
 ":c:func:`PyEval_SaveThread`.  This happens in three distinct phases, at "
 "different points in the thread's life."
 msgstr ""
+"使用 :c:func:`PyThreadState_New` 显式管理线程状态，并通过 :c:func:`PyEval_RestoreThread` 和"
+" :c:func:`PyEval_SaveThread` 实现线程的附加与解附。这一过程会在线程生命周期的不同阶段，分三个独立阶段完成。"
 
 #: ../../c-api/threads.rst:263
 msgid ""
@@ -406,10 +443,13 @@ msgid ""
 "held an attached thread state (for example via "
 ":c:func:`PyInterpreterState_Get`)::"
 msgstr ""
+"当线程启动时，为其创建一个线程状态。``interp`` "
+"是目标解释器；该解释器由创建此线程的代码捕获，而该代码在持有附加线程状态时执行了此操作（例如通过 "
+":c:func:`PyInterpreterState_Get`）::"
 
 #: ../../c-api/threads.rst:267
 msgid "PyThreadState *tstate = PyThreadState_New(interp);"
-msgstr ""
+msgstr "PyThreadState *tstate = PyThreadState_New(interp);"
 
 #: ../../c-api/threads.rst:269
 msgid ""
@@ -418,6 +458,8 @@ msgid ""
 "require it, and detach again so the thread does not hold the GIL while off "
 "doing non-Python work::"
 msgstr ""
+"随后，在每次调用 Python 时——这种情况在线程生命周期内可能会多次发生——将线程状态附加到当前调用中；执行需要该线程状态的 Python C "
+"API 调用；然后再次解绑线程，这样当线程处于非 Python 工作状态时就不会持有 GIL::"
 
 #: ../../c-api/threads.rst:274
 msgid ""
@@ -425,12 +467,15 @@ msgid ""
 "result = CallSomeFunction();  /* your Python C API calls go here */\n"
 "PyEval_SaveThread();"
 msgstr ""
+"PyEval_RestoreThread(tstate);\n"
+"result = CallSomeFunction();  /* your Python C API calls go here */\n"
+"PyEval_SaveThread();"
 
 #: ../../c-api/threads.rst:278
 msgid ""
 "When the thread is finished calling into Python, destroy the thread state "
 "once::"
-msgstr ""
+msgstr "当线程完成向 Python 的调用后，请一次性销毁该线程状态::"
 
 #: ../../c-api/threads.rst:280
 msgid ""
@@ -438,6 +483,9 @@ msgid ""
 "PyThreadState_Clear(tstate);\n"
 "PyThreadState_DeleteCurrent();"
 msgstr ""
+"PyEval_RestoreThread(tstate);\n"
+"PyThreadState_Clear(tstate);\n"
+"PyThreadState_DeleteCurrent();"
 
 #: ../../c-api/threads.rst:284
 msgid ""
@@ -449,6 +497,11 @@ msgid ""
 ":c:func:`PyThreadState_New`, as shown here, whenever you specifically want "
 "to reuse one thread state across calls."
 msgstr ""
+"用于从外部线程调用函数的通用入口点——:c:func:`PyThreadState_Ensure` 和较早的 "
+":c:func:`PyGILState_Ensure`——*并不* "
+"保证线程状态具有持久性：它们的线程状态生命周期被刻意定义为由具体实现决定，因此每次匹配的 acquire/release "
+"对都可能创建并销毁一个线程状态。当您特别希望在不同调用之间复用同一个线程状态时，请使用 "
+":c:func:`PyThreadState_New`，如此处所示。"
 
 #: ../../c-api/threads.rst:292
 msgid ""
@@ -460,16 +513,20 @@ msgid ""
 "without running the shutdown sequence, the thread state is leaked for the "
 "remainder of the process."
 msgstr ""
+"创建外线程的代码必须确保在线程退出之前、在调用 :c:func:`Py_FinalizeEx` "
+"之前完成关闭序列的执行。如果解释器最终化首先开始，则关闭时的 :c:func:`PyEval_RestoreThread` "
+"调用会使线程挂起，而不会返回（参见 :ref:`cautions-regarding-runtime-"
+"finalization`）。如果线程在未执行关闭序列的情况下退出，则该线程状态将在整个进程剩余时间内持续泄漏。"
 
 #: ../../c-api/threads.rst:303
 msgid "Attaching/detaching thread states"
-msgstr ""
+msgstr "线程状态的附加/分离"
 
 #: ../../c-api/threads.rst:307
 msgid ""
 "Ensure that the thread has an attached thread state for the interpreter "
 "protected by *guard*, and thus can safely invoke that interpreter."
-msgstr ""
+msgstr "确保线程已为受 *guard* 保护的解释器附加了线程状态，从而能够安全地调用该解释器。"
 
 #: ../../c-api/threads.rst:311
 msgid ""
@@ -478,24 +535,27 @@ msgid ""
 ":c:func:`PyThreadState_Release` that matches this one (meaning that "
 "\"nested\" calls to this function are permitted)."
 msgstr ""
+"如果线程已经关联了线程状态，那么调用此函数也是可以的，只要之后还有一次与本次调用相匹配的 :c:func:`PyThreadState_Release`"
+" 调用（这意味着允许对该函数进行“嵌套”调用）。"
 
 #: ../../c-api/threads.rst:316
 msgid ""
 "The function's effect (if any) will be reversed by the matching call to "
 ":c:func:`PyThreadState_Release`."
-msgstr ""
+msgstr "该函数的效果（如果存在）将通过与 :c:func:`PyThreadState_Release` 的匹配调用而逆转。"
 
 #: ../../c-api/threads.rst:319
 msgid ""
 "On error, this function returns ``NULL`` *without* an exception set. Do not "
 "call :c:func:`!PyThreadState_Release` in this case."
 msgstr ""
+"发生错误时，此函数会返回 ``NULL``，而不会设置异常。在这种情况下，请勿调用 :c:func:`!PyThreadState_Release`。"
 
 #: ../../c-api/threads.rst:322
 msgid ""
 "On success, this function returns a pointer value that must be passed to the"
 " matching call to :c:func:`!PyThreadState_Release`."
-msgstr ""
+msgstr "若成功，此函数将返回一个指针值，该值必须传递给与调用相匹配的 :c:func:`!PyThreadState_Release` 调用。"
 
 #: ../../c-api/threads.rst:325
 msgid ""
@@ -508,12 +568,15 @@ msgid ""
 "backwards-compatible manner. In particular, the saving of thread-local "
 "variables and similar state will be retained across Python versions."
 msgstr ""
+"此函数创建新 :term:`thread state` 时所处的条件被视为不稳定，且取决于具体实现。如果您需要精确控制线程状态的生命周期，可以考虑使用 "
+":c:func:`PyThreadState_New`。不过，请不要仅因线程状态的生命周期可能在不同版本之间不一致而避免使用此函数；对该函数的修改将谨慎进行，并采用向后兼容的方式实施。特别是，线程局部变量及类似状态的保存将在不同"
+" Python 版本之间保持一致。"
 
 #: ../../c-api/threads.rst:336
 msgid ""
 "The exact behavior of whether this function creates a new thread state is "
 "described below, but be aware that this may change in the future."
-msgstr ""
+msgstr "关于此函数是否会创建新的线程状态的具体行为，将在下文中说明；但请注意，这一行为未来可能会发生变化。"
 
 #: ../../c-api/threads.rst:339
 msgid ""
@@ -523,6 +586,8 @@ msgid ""
 "function simply marks the thread state as being used by a "
 "``PyThreadState_Ensure`` call and returns."
 msgstr ""
+"首先，该函数会检查是否存在已关联的线程状态。若存在，则进一步检查该线程状态的解释器是否与由 *guard* "
+"守护的解释器相匹配。若两者一致，则该函数只需将该线程状态标记为被 ``PyThreadState_Ensure`` 调用所使用，随后返回。"
 
 #: ../../c-api/threads.rst:345
 msgid ""
@@ -532,6 +597,9 @@ msgid ""
 "checks if that thread state's interpreter matches *guard*. If it does, it is"
 " re-attached and marked as used."
 msgstr ""
+"如果未附加任何线程状态，则此函数会检查当前操作系统线程是否已使用过任何线程状态。（该结果由 "
+":c:func:`PyGILState_GetThisThreadState` 返回。）若曾使用过，则此函数会检查该线程状态的解释器是否与 "
+"*guard* 匹配；若匹配，则将其重新附加并标记为已使用。"
 
 #: ../../c-api/threads.rst:351
 msgid ""
@@ -539,10 +607,12 @@ msgid ""
 "for *guard*. It is then attached and marked as owned by "
 "``PyThreadState_Ensure``."
 msgstr ""
+"否则，如果上述两种情况均不成立，将为 *guard* 创建一个新的线程状态；随后将其附加到线程中，并标记为由 "
+"``PyThreadState_Ensure`` 所有。"
 
 #: ../../c-api/threads.rst:359
 msgid "Get an attached thread state for the interpreter referenced by *view*."
-msgstr ""
+msgstr "获取由 *view* 所引用的解释器的附加线程状态。"
 
 #: ../../c-api/threads.rst:361
 msgid ""
@@ -551,30 +621,35 @@ msgid ""
 "interpreter referenced by *view* will be implicitly guarded. The guard will "
 "be released upon the corresponding :c:func:`PyThreadState_Release` call."
 msgstr ""
+"其行为和返回值与 :c:func:`PyThreadState_Ensure` 相同；此外，如果函数执行成功，*view* "
+"所引用的解释器将自动受到保护。该保护将在相应的 :c:func:`PyThreadState_Release` 调用时解除。"
 
 #: ../../c-api/threads.rst:371
 msgid ""
 "Undo a :c:func:`PyThreadState_Ensure` or "
 ":c:func:`PyThreadState_EnsureFromView` call."
 msgstr ""
+"撤销 :c:func:`PyThreadState_Ensure` 或 :c:func:`PyThreadState_EnsureFromView` "
+"调用。"
 
 #: ../../c-api/threads.rst:374
 msgid ""
 "This must be called exactly once for each successful *Ensure* call, with "
 "*token* set to that call's return value."
-msgstr ""
+msgstr "对于每次成功的 *Ensure* 调用，必须恰好调用一次；同时将 *token* 设置为该调用的返回值。"
 
 #: ../../c-api/threads.rst:377
 msgid ""
 "The state that was attached before the corresponding *Ensure* call (if any) "
 "will be attached when :c:func:`PyThreadState_Release` returns."
 msgstr ""
+"在相应的 *Ensure* 调用之前已附加的状态（如果存在）将在 :c:func:`PyThreadState_Release` 返回时附加。"
 
 #: ../../c-api/threads.rst:380
 msgid ""
 "The exact behavior of whether this function deletes a thread state is "
 "considered unstable and implementation-dependent."
-msgstr ""
+msgstr "该函数是否会删除线程状态，其具体行为被认为是不稳定的，且取决于具体实现。"
 
 #: ../../c-api/threads.rst:385
 msgid ""
@@ -582,6 +657,8 @@ msgid ""
 "thread state. If this counter ever reaches below zero, this function emits a"
 " fatal error (via :c:func:`Py_FatalError`)."
 msgstr ""
+"目前，该函数会递减所关联线程状态中的内部计数器。如果该计数器任何时刻降至零以下，此函数将发出致命错误（通过 "
+":c:func:`Py_FatalError`）。"
 
 #: ../../c-api/threads.rst:389
 msgid ""
@@ -590,12 +667,16 @@ msgid ""
 "counter reaching zero. Otherwise, nothing happens when the counter reaches "
 "zero."
 msgstr ""
+"如果所关联的线程状态由 ``PyThreadState_Ensure`` "
+"所有，则当内部计数器归零时，该关联的线程状态将被释放并删除；否则，计数器归零时不会发生任何操作。"
 
 #: ../../c-api/threads.rst:397
 msgid ""
 "An opaque token retrieved from a :c:func:`PyThreadState_Ensure` call and "
 "passed to a corresponding :c:func:`PyThreadState_Release` call."
 msgstr ""
+"从 :c:func:`PyThreadState_Ensure` 调用中获取的不可见令牌，并传递给相应的 "
+":c:func:`PyThreadState_Release` 调用。"
 
 #: ../../c-api/threads.rst:405
 msgid "GIL-state APIs"
@@ -609,6 +690,9 @@ msgid ""
 "deprecated` in Python 3.15 in favor of the :ref:`new APIs <c-api-foreign-"
 "threads>`."
 msgstr ""
+"以下 API 通常与子解释器不兼容，会在解释器最终化过程中导致进程卡死（参见 :ref:`cautions-regarding-runtime-"
+"finalization`）。因此，在 Python 3.15 中，这些 API 被 :term:`soft deprecated` 取代，以支持 "
+":ref:`new APIs <c-api-foreign-threads>`。"
 
 #: ../../c-api/threads.rst:416
 msgid ""
@@ -662,7 +746,7 @@ msgstr ""
 msgid ""
 "When the function returns, there will be an :term:`attached thread state` "
 "and the thread will be able to call arbitrary Python code."
-msgstr ""
+msgstr "当该函数返回时，将存在一个 :term:`attached thread state`，线程将能够调用任意 Python 代码。"
 
 #: ../../c-api/threads.rst:450
 msgid ""
@@ -671,6 +755,8 @@ msgid ""
 ":c:func:`Py_FatalError`), or the thread will be permanently blocked (such as"
 " during interpreter finalization)."
 msgstr ""
+"此函数无法返回错误。因此，错误要么是致命的（即会发送 ``SIGABRT`` 并导致进程崩溃；参见 "
+":c:func:`Py_FatalError`），要么会导致线程被永久阻塞（例如在解释器最终化过程中）。"
 
 #: ../../c-api/threads.rst:456
 msgid ""
@@ -678,6 +764,8 @@ msgid ""
 "hang the thread, which may cause deadlocks. :ref:`cautions-regarding-"
 "runtime-finalization` for more details."
 msgstr ""
+"在解释器完成最终处理时调用此函数会导致线程无限挂起，从而可能引发死锁。更多详情请参阅 :ref:`cautions-regarding-runtime-"
+"finalization`。"
 
 #: ../../c-api/threads.rst:460
 msgid ""
@@ -685,7 +773,7 @@ msgid ""
 " used from foreign threads, because this function has no way of knowing "
 "which interpreter created the thread (and as such, will implicitly pick the "
 "main interpreter)."
-msgstr ""
+msgstr "此外，当从外部线程调用此函数时，该函数通常无法与子解释器协同工作，因为该函数无法获知是哪个解释器创建了该线程（因此会默认选择主解释器）。"
 
 #: ../../c-api/threads.rst:465 ../../c-api/threads.rst:625
 #: ../../c-api/threads.rst:819
@@ -699,6 +787,8 @@ msgid ""
 "Use :c:func:`PyThreadState_Ensure` or :c:func:`PyThreadState_EnsureFromView`"
 " instead."
 msgstr ""
+"请使用 :c:func:`PyThreadState_Ensure` 或 :c:func:`PyThreadState_EnsureFromView` "
+"代替。"
 
 #: ../../c-api/threads.rst:476
 msgid ""
@@ -707,6 +797,8 @@ msgid ""
 ":c:func:`PyGILState_Ensure` call (but generally this state will be unknown "
 "to the caller, hence the use of the GIL-state API)."
 msgstr ""
+"释放先前获取的所有资源。本次调用结束后，Python 的状态将与对应 :c:func:`PyGILState_Ensure` "
+"调用之前相同（但通常调用者无法获知这一状态，因此采用了 GIL-state API）。"
 
 #: ../../c-api/threads.rst:481
 msgid ""
@@ -718,7 +810,7 @@ msgstr ""
 
 #: ../../c-api/threads.rst:484
 msgid "Use :c:func:`PyThreadState_Release` instead."
-msgstr ""
+msgstr "请使用 :c:func:`PyThreadState_Release` 代替。"
 
 #: ../../c-api/threads.rst:490
 msgid ""
@@ -726,10 +818,12 @@ msgid ""
 "<attached thread state>` for this thread. (If the most recent thread state "
 "has been deleted, this returns ``NULL``.)"
 msgstr ""
+"获取本线程最近一次处于 :term:`attached <attached thread state>` 状态的 :term:`thread "
+"state`。（如果最近一次线程状态已被删除，则返回 ``NULL``。）"
 
 #: ../../c-api/threads.rst:494
 msgid "If the caller has an attached thread state, it is returned."
-msgstr ""
+msgstr "如果调用者拥有关联的线程状态，则将其返回。"
 
 #: ../../c-api/threads.rst:496
 msgid ""
@@ -737,16 +831,19 @@ msgid ""
 ":c:func:`PyGILState_Ensure`. If this returns ``NULL``, then "
 "``PyGILState_Ensure`` will create a new thread state."
 msgstr ""
+"换言之，该函数会返回将用于 :c:func:`PyGILState_Ensure` 的线程状态。如果该函数返回 ``NULL``，则 "
+"``PyGILState_Ensure`` 将创建一个新的线程状态。"
 
 #: ../../c-api/threads.rst:500
 msgid "This function cannot fail."
-msgstr ""
+msgstr "此函数不会发生错误。"
 
 #: ../../c-api/threads.rst:502
 msgid ""
 "Use :c:func:`PyThreadState_Get` or :c:func:`PyThreadState_GetUnchecked` "
 "instead."
 msgstr ""
+"请使用 :c:func:`PyThreadState_Get` 或 :c:func:`PyThreadState_GetUnchecked` 代替。"
 
 #: ../../c-api/threads.rst:509
 msgid ""
@@ -755,20 +852,22 @@ msgid ""
 ":c:func:`PyGILState_GetThisThreadState`. If the caller has no attached "
 "thread state or it otherwise doesn't match, then this returns ``0``."
 msgstr ""
+"如果当前线程中存在与 :c:func:`PyGILState_GetThisThreadState` 返回的线程状态相匹配的 "
+":term:`attached thread state`，则返回 ``1``；如果调用者未附加任何线程状态，或线程状态不匹配，则返回 ``0``。"
 
 #: ../../c-api/threads.rst:514
 msgid ""
 "If the current Python process has ever created a subinterpreter, this "
 "function will *always* return ``1``."
-msgstr ""
+msgstr "如果当前 Python 进程曾创建过子解释器，则此函数将*始终*返回 ``1``。"
 
 #: ../../c-api/threads.rst:517
 msgid "This is mainly a helper/diagnostic function."
-msgstr ""
+msgstr "这主要是一种辅助/诊断功能。"
 
 #: ../../c-api/threads.rst:521
 msgid "Use ``PyThreadState_GetUnchecked() != NULL`` instead."
-msgstr ""
+msgstr "Use ``PyThreadState_GetUnchecked() != NULL`` instead."
 
 #: ../../c-api/threads.rst:528
 msgid "Cautions about fork()"
@@ -1242,6 +1341,9 @@ msgid ""
 "calling Python code from arbitrary C threads.  Instead, use "
 ":c:func:`PyThreadState_EnsureFromView`."
 msgstr ""
+"这是一个底层函数，仅适用于非常特殊的场景。无法保证 *func* 会被尽可能快速地调用；如果主线程正忙于执行系统调用，则 *func* "
+"不会在系统调用返回之前被调用。该函数通常**不**适合用于从任意 C 线程调用 Python 代码。相反，请使用 "
+":c:func:`PyThreadState_EnsureFromView`。"
 
 #: ../../c-api/threads.rst:880
 msgid ""
@@ -1286,7 +1388,7 @@ msgstr "此函数将只在主解释器中运行待命的调用。"
 msgid ""
 "Schedule an exception to be raised asynchronously in a thread. If the thread"
 " has a previously scheduled exception, it is overwritten."
-msgstr ""
+msgstr "在某个线程中异步触发一个异常。如果该线程此前已调度过异常，则当前调度内容将被覆盖。"
 
 #: ../../c-api/threads.rst:914
 msgid ""
@@ -1294,6 +1396,8 @@ msgid ""
 ":c:func:`PyThread_get_thread_ident`. *exc* is the class of the exception to "
 "be raised, or ``NULL`` to clear the pending exception (if any)."
 msgstr ""
+"*id* 参数是目标线程的线程 ID，由 :c:func:`PyThread_get_thread_ident` 返回。*exc* "
+"是将被抛出的异常类型；若需清除待处理异常（如有），则使用 ``NULL``。"
 
 #: ../../c-api/threads.rst:919
 msgid ""
@@ -1302,14 +1406,19 @@ msgid ""
 " or *exc* is ``NULL`` but no exception is pending). If the thread id isn't "
 "found, return ``0``.  This raises no exceptions."
 msgstr ""
+"返回受影响的线程状态数量。如果找到 *id*，则通常返回 ``1``，即使未进行任何更改（给定的 *exc* 已经处于待处理状态，或者 *exc* 为 "
+"``NULL`` 但尚未有异常处于待处理状态）。如果未找到线程 ID，则返回 ``0``。此操作不会引发任何异常。"
 
 #: ../../c-api/threads.rst:925
 msgid ""
 "To prevent naive misuse, you must write your own C extension to call this. "
 "This function must be called with an :term:`attached thread state`. This "
-"function does not steal any references to *exc*. This function does not "
-"necessarily interrupt system calls such as :py:func:`~time.sleep`."
+"function does not :term:`steal` any references to *exc*. This function does "
+"not necessarily interrupt system calls such as :py:func:`~time.sleep`."
 msgstr ""
+"为防止被无意误用，您必须编写自己的 C 语言扩展函数来调用此函数。调用此函数时必须传入一个 :term:`attached thread "
+"state`。此函数不会 :term:`steal` 任何指向 *exc* 的引用。此函数并不一定会中断诸如 "
+":py:func:`~time.sleep` 之类的系统调用。"
 
 #: ../../c-api/threads.rst:931
 msgid ""
@@ -1365,6 +1474,8 @@ msgid ""
 ":py:func:`threading.get_ident` and :py:attr:`threading.Thread.ident` expose "
 "this identifier to Python."
 msgstr ""
+":py:func:`threading.get_ident` 和 :py:attr:`threading.Thread.ident` 将此标识符暴露给 "
+"Python。"
 
 #: ../../c-api/threads.rst:973
 msgid ""

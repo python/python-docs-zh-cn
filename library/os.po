@@ -9,6 +9,7 @@
 # Nathan Peng, 2026
 # Alpha Du <alphanow@gmail.com>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2025-09-16 00:01+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -294,6 +295,9 @@ msgid ""
 "interpreter will default to enabling UTF-8 mode unless explicitly instructed"
 " not to do so."
 msgstr ""
+"如果 UTF-8 模式被禁用，解释器默认使用当前的区域设置，*除非* 当前区域被识别为基于 ASCII 的旧版区域（如 "
+":envvar:`PYTHONCOERCECLOCALE` "
+"中所述），且区域强制转换被禁用或失败。在这种情况下，除非明确指示不要启用，否则解释器将默认启用 UTF-8 模式。"
 
 #: ../../library/os.rst:161
 msgid ""
@@ -422,7 +426,7 @@ msgstr "返回与进程控制终端对应的文件名。"
 #: ../../library/os.rst:6244 ../../library/os.rst:6253
 #: ../../library/os.rst:6376
 msgid "Availability"
-msgstr "适用范围"
+msgstr "可用性"
 
 #: ../../library/os.rst:183
 msgid ""
@@ -493,6 +497,8 @@ msgid ""
 ":data:`os.environ`, and when one of the :meth:`~dict.pop` or "
 ":meth:`~dict.clear` methods is called."
 msgstr ""
+"您可以删除此映射中的项目，以取消设置相应的环境变量。当从 :data:`os.environ` 中删除项目，或调用 :meth:`~dict.pop` "
+"或 :meth:`~dict.clear` 方法中的任一方法时，:func:`unsetenv` 将自动被调用。"
 
 #: ../../library/os.rst:222
 msgid ""
@@ -500,6 +506,8 @@ msgid ""
 " method uses it and emits a single ``os._clearenv`` audit event. Otherwise, "
 "it emits an ``os.unsetenv`` event on each deleted variable."
 msgstr ""
+"如果 :manpage:`clearenv(3)` 功能可用，则 :meth:`~dict.clear` 方法会使用该功能，并发出一个单一的 "
+"``os._clearenv`` 审计事件；否则，它会在每个被删除的变量上发出一个 ``os.unsetenv`` 事件。"
 
 #: ../../library/os.rst:226 ../../library/os.rst:873
 msgid ""
@@ -740,6 +748,13 @@ msgid ""
 ":func:`sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET') "
 "<sysconfig.get_config_var>`."
 msgstr ""
+"在 macOS 上，:func:`getgroups` 的行为与其他 Unix 平台略有不同。如果 Python 解释器是以部署目标版本为 "
+"``10.5`` 或更早版本构建的，则 :func:`getgroups` 会返回与当前用户进程相关联的有效组 ID "
+"列表；该列表的条目数量受系统定义的条目上限限制，通常为 16 个；若具备相应权限，可通过调用 :func:`setgroups` "
+"对其进行修改。如果以大于 ``10.5`` 的部署目标版本构建，则 :func:`getgroups` 会返回与进程有效用户 ID "
+"相关联的用户当前的组访问列表；组访问列表在进程生命周期内可能发生变化，不会受到 :func:`setgroups` 调用的影响，且其长度不受 16 "
+"个条目的限制。可通过 :func:`sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET') "
+"<sysconfig.get_config_var>` 获取部署目标版本值。"
 
 #: ../../library/os.rst:451
 msgid ""
@@ -779,7 +794,7 @@ msgstr ""
 
 #: ../../library/os.rst:496
 msgid "Added support for Windows."
-msgstr "添加了 Windows 的支持。"
+msgstr "添加 Windows 的支持。"
 
 #: ../../library/os.rst:504
 msgid ""
@@ -2501,6 +2516,10 @@ msgid ""
 "variant of the function prefixed with ``f`` (e.g. call ``fchdir`` instead of"
 " ``chdir``)."
 msgstr ""
+"**指定文件描述符：** 通常，传递给 :mod:`!os` 模块中函数的 *path* "
+"参数必须是一个指定文件路径的字符串。不过，某些函数现在也可以接受一个已打开的文件描述符作为其 *path* "
+"参数；此时，该函数将针对由该描述符所引用的文件进行操作。对于 POSIX 系统，Python 会调用以 ``f`` 前缀标识的函数变体（例如，应调用 "
+"``fchdir`` 而非 ``chdir``）。"
 
 #: ../../library/os.rst:2068
 msgid ""
@@ -3281,6 +3300,9 @@ msgid ""
 "<mkdir_modebits>`.  Otherwise, intermediate directories are created with the"
 " default mode, which is also subject to the umask."
 msgstr ""
+"如果 *parent_mode* 不是 ``None``，它将被用作所有新建的中间层目录的模式。与 *mode* 一样，它会与进程的 umask "
+"值结合；请参阅 :ref:`the mkdir() description "
+"<mkdir_modebits>`。否则，中间目录将使用默认模式创建，该模式同样受 umask 影响。"
 
 #: ../../library/os.rst:2618
 msgid ""
@@ -3320,6 +3342,8 @@ msgid ""
 "earlier (where *mode* was applied to all created directories), pass "
 "``parent_mode=mode``."
 msgstr ""
+"*parent_mode* 参数。若要与 Python 3.6 及更早版本的行为保持一致（在该版本中，*mode* 会被应用于所有创建的目录），请传入 "
+"``parent_mode=mode``。"
 
 #: ../../library/os.rst:2650
 msgid ""
@@ -3352,6 +3376,11 @@ msgid ""
 " created device special file (probably using :func:`os.makedev`), otherwise "
 "it is ignored."
 msgstr ""
+"创建一个名为 *path* 的文件系统节点（文件、设备特殊文件或命名管道）。*mode* 同时指定要使用的权限和要创建的节点类型，该值会与 "
+":const:`stat.S_IFREG`、:const:`stat.S_IFCHR`、:const:`stat.S_IFBLK` 或 "
+":const:`stat.S_IFIFO` 之一进行按位或运算。对于 :const:`stat.S_IFCHR` 和 "
+":const:`stat.S_IFBLK`，*device* 用于定义新创建的设备特殊文件（可能使用 "
+":func:`os.makedev`）；否则，该参数将被忽略。"
 
 #: ../../library/os.rst:2695
 msgid ""
@@ -3359,6 +3388,8 @@ msgid ""
 ":attr:`~stat_result.st_dev` or :attr:`~stat_result.st_rdev` field from "
 ":c:struct:`stat`)."
 msgstr ""
+"从原始设备号中提取设备主号（通常取自 :c:struct:`stat` 的 :attr:`~stat_result.st_dev` 或 "
+":attr:`~stat_result.st_rdev` 字段）。"
 
 #: ../../library/os.rst:2701
 msgid ""
@@ -3366,6 +3397,8 @@ msgid ""
 ":attr:`~stat_result.st_dev` or :attr:`~stat_result.st_rdev` field from "
 ":c:struct:`stat`)."
 msgstr ""
+"从原始设备号中提取设备次号（通常取自 :c:struct:`stat` 中的 :attr:`~stat_result.st_dev` 或 "
+":attr:`~stat_result.st_rdev` 字段）。"
 
 #: ../../library/os.rst:2707
 msgid "Compose a raw device number from the major and minor device numbers."
@@ -3667,6 +3700,8 @@ msgid ""
 "which entries each thread receives is unspecified, and closing the iterator "
 "while another thread is iterating ends that iteration early."
 msgstr ""
+"在多个线程之间共享一个 :func:`scandir` 迭代器不会导致该迭代器损坏，但会受 :term:`race conditions <race "
+"condition>` 的影响：每个线程接收到的条目内容未作规定；若在另一个线程正在迭代时关闭该迭代器，则会提前结束该迭代过程。"
 
 #: ../../library/os.rst:2953
 msgid ""
@@ -3684,6 +3719,8 @@ msgid ""
 "garbage collected, or when an error happens during iterating.  However it is"
 " advisable to call it explicitly or use the :keyword:`with` statement."
 msgstr ""
+"当迭代器为 :term:`exhausted` 或发生垃圾回收时，或者在迭代过程中发生错误时，系统会自动执行此操作。不过，建议显式调用该函数，或使用 "
+":keyword:`with` 语句。"
 
 #: ../../library/os.rst:2967
 msgid ""
@@ -4472,6 +4509,11 @@ msgid ""
 ":attr:`~os.statx_result.stx_mask` attribute specifies the information "
 "actually retrieved (which may differ from *mask*)."
 msgstr ""
+"*path* 是一个 :term:`path-like object` 或一个打开的文件描述符。*mask* 是由模块级 :const:`STATX_*"
+" <STATX_TYPE>` 常量组合而成的，用于指定要检索的信息。*flags* 是由模块级 :const:`AT_STATX_* "
+"<AT_STATX_FORCE_SYNC>` 常量和/或 :const:`AT_NO_AUTOMOUNT` 组合而成的。返回一个 "
+":class:`statx_result` 对象，其 :attr:`~os.statx_result.stx_mask` "
+"属性指定了实际检索到的信息（该信息可能与 *mask* 不同）。"
 
 #: ../../library/os.rst:3483
 msgid ""
@@ -4479,6 +4521,9 @@ msgid ""
 ":ref:`paths relative to directory descriptors <dir_fd>`, and :ref:`not "
 "following symlinks <follow_symlinks>`."
 msgstr ""
+"此函数支持 :ref:`specifying a file descriptor <path_fd>`、:ref:`paths relative to "
+"directory descriptors <dir_fd>` 和 :ref:`not following symlinks "
+"<follow_symlinks>`。"
 
 #: ../../library/os.rst:3487 ../../library/os.rst:3744
 msgid "The :manpage:`statx(2)` man page."
@@ -4518,87 +4563,93 @@ msgstr "针对带有 torn-write 保护的直接 I/O 的最大尺寸。"
 
 #: ../../library/os.rst:3536
 msgid "Maximum optimized size for direct I/O with torn-write protection."
-msgstr ""
+msgstr "带有撕裂写入保护的直接 I/O 最大优化尺寸。"
 
 #: ../../library/os.rst:3546
 msgid "Minimum size for direct I/O with torn-write protection."
-msgstr ""
+msgstr "具备撕裂写入保护的直接 I/O 最小尺寸。"
 
 #: ../../library/os.rst:3556
 msgid ""
 "Bitmask of :const:`STATX_ATTR_* <stat.STATX_ATTR_COMPRESSED>` constants "
 "specifying the attributes of this file."
-msgstr ""
+msgstr "用于指定本文件属性的 :const:`STATX_ATTR_* <stat.STATX_ATTR_COMPRESSED>` 常量位掩码。"
 
 #: ../../library/os.rst:3561
 msgid ""
 "A mask indicating which bits in :attr:`stx_attributes` are supported by the "
 "VFS and the filesystem."
-msgstr ""
+msgstr "一个掩码，用于指示 :attr:`stx_attributes` 中哪些位被 VFS 和文件系统支持。"
 
 #: ../../library/os.rst:3571
 msgid ""
 "Number of 512-byte blocks allocated for file. This may be smaller than "
 ":attr:`stx_size`/512 when the file has holes."
-msgstr ""
+msgstr "为文件分配的 512 字节块数量。当文件存在空洞时，该数值可能小于 :attr:`stx_size`/512。"
 
 #: ../../library/os.rst:3574
 msgid ""
 "Equal to ``None`` if :data:`STATX_BLOCKS` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_BLOCKS`，则等于 ``None``。"
 
 #: ../../library/os.rst:3579
 msgid "Time of file creation expressed in seconds."
-msgstr ""
+msgstr "文件创建时间，以秒为单位。"
 
 #: ../../library/os.rst:3581 ../../library/os.rst:3588
 msgid ""
 "Equal to ``None`` if :data:`STATX_BTIME` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_BTIME`，则等于 ``None``。"
 
 #: ../../library/os.rst:3586
 msgid "Time of file creation expressed in nanoseconds as an integer."
-msgstr ""
+msgstr "文件创建时间以纳秒为单位，以整数形式表示。"
 
 #: ../../library/os.rst:3595 ../../library/os.rst:3603
 msgid ""
 "Equal to ``None`` if :data:`STATX_CTIME` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_CTIME`，则等于 ``None``。"
 
 #: ../../library/os.rst:3612
 msgid "Major number of the device on which this file resides."
-msgstr ""
+msgstr "存储此文件的设备主编号。"
 
 #: ../../library/os.rst:3616
 msgid "Minor number of the device on which this file resides."
-msgstr ""
+msgstr "存储此文件的设备编号较小。"
 
 #: ../../library/os.rst:3620
 msgid "Direct I/O memory buffer alignment requirement."
-msgstr ""
+msgstr "直接 I/O 内存缓冲区对齐要求。"
 
 #: ../../library/os.rst:3622 ../../library/os.rst:3632
 msgid ""
 "Equal to ``None`` if :data:`STATX_DIOALIGN` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_DIOALIGN`，则等于 ``None``。"
 
 #: ../../library/os.rst:3630
 msgid "Direct I/O file offset alignment requirement."
-msgstr ""
+msgstr "直接 I/O 文件偏移量对齐要求。"
 
 #: ../../library/os.rst:3640
 msgid "Direct I/O file offset alignment requirement for reads."
-msgstr ""
+msgstr "读取操作对直接 I/O 文件偏移量对齐的要求。"
 
 #: ../../library/os.rst:3642
 msgid ""
 "Equal to ``None`` if :data:`STATX_DIO_READ_ALIGN` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_DIO_READ_ALIGN`，则等于 "
+"``None``。"
 
 #: ../../library/os.rst:3652
 msgid ""
@@ -4620,65 +4671,71 @@ msgstr "如果 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_INO` 则等
 msgid ""
 "Bitmask of :const:`STATX_* <STATX_TYPE>` constants specifying the "
 "information retrieved, which may differ from what was requested."
-msgstr ""
+msgstr "用于指定所检索信息的 :const:`STATX_* <STATX_TYPE>` 常量位掩码；该信息可能与请求内容不同。"
 
 #: ../../library/os.rst:3669
 msgid "Mount identifier."
-msgstr ""
+msgstr "挂载标识符。"
 
 #: ../../library/os.rst:3671
 msgid ""
 "Equal to ``None`` if :data:`STATX_MNT_ID` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_MNT_ID`，则等于 ``None``。"
 
 #: ../../library/os.rst:3681
 msgid ""
 "Equal to ``None`` if :data:`STATX_TYPE | STATX_MODE <STATX_TYPE>` is missing"
 " from :attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_TYPE | STATX_MODE "
+"<STATX_TYPE>`，则等于 ``None``。"
 
 #: ../../library/os.rst:3688 ../../library/os.rst:3696
 msgid ""
 "Equal to ``None`` if :data:`STATX_MTIME` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_MTIME`，则等于 ``None``。"
 
 #: ../../library/os.rst:3703
 msgid ""
 "Equal to ``None`` if :data:`STATX_NLINK` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_NLINK`，则等于 ``None``。"
 
 #: ../../library/os.rst:3712
 msgid "Major number of the device this file represents."
-msgstr ""
+msgstr "本文件所代表的设备主编号。"
 
 #: ../../library/os.rst:3716
 msgid "Minor number of the device this file represents."
-msgstr ""
+msgstr "本文件所代表的设备数量较少。"
 
 #: ../../library/os.rst:3724
 msgid ""
 "Equal to ``None`` if :data:`STATX_SIZE` is missing from "
 ":attr:`~statx_result.stx_mask`."
-msgstr ""
+msgstr "若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_SIZE`，则等于 ``None``。"
 
 #: ../../library/os.rst:3729
 msgid "Subvolume identifier."
-msgstr ""
+msgstr "子卷标识符。"
 
 #: ../../library/os.rst:3731
 msgid ""
 "Equal to ``None`` if :data:`STATX_SUBVOL` is missing from "
 ":attr:`~statx_result.stx_mask`."
 msgstr ""
+"若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_SUBVOL`，则等于 ``None``。"
 
 #: ../../library/os.rst:3741
 msgid ""
 "Equal to ``None`` if :data:`STATX_UID` is missing from "
 ":attr:`~statx_result.stx_mask`."
-msgstr ""
+msgstr "若 :attr:`~statx_result.stx_mask` 中缺少 :data:`STATX_UID`，则等于 ``None``。"
 
 #: ../../library/os.rst:3771
 msgid ""
@@ -4686,6 +4743,8 @@ msgid ""
 " flags may be available even when their corresponding members in "
 ":class:`statx_result` are not available."
 msgstr ""
+"用于 :func:`os.statx` 的 *mask* 参数中的位标志。即使 :class:`statx_result` "
+"中对应的成员不可用，其中部分标志仍可能可用。"
 
 #: ../../library/os.rst:3781
 msgid ""
@@ -4693,12 +4752,14 @@ msgid ""
 "up-to-date information even when doing so is expensive (for example, "
 "requiring a round trip to the server for a file on a network filesystem)."
 msgstr ""
+"用于 :func:`os.statx` "
+"函数的标志。该标志要求内核返回最新信息，即使这样做成本较高（例如，若需通过网络文件系统获取某个文件，则需与服务器进行一次往返请求）。"
 
 #: ../../library/os.rst:3791
 msgid ""
 "A flag for the :func:`os.statx` function.  Requests that the kernel return "
 "cached information if possible."
-msgstr ""
+msgstr "用于 :func:`os.statx` 函数的标志。请求内核在可能的情况下返回缓存信息。"
 
 #: ../../library/os.rst:3800
 msgid ""
@@ -4708,6 +4769,10 @@ msgid ""
 "In the absence of the other two flags, the kernel will generally return "
 "information as fresh as :func:`os.stat` would return."
 msgstr ""
+"用于 :func:`os.statx` 函数的标志。该标志被定义为 ``0``，因此不会产生任何效果；但它可以用于明确表明既未传递 "
+":data:`AT_STATX_FORCE_SYNC` 也未传递 "
+":data:`AT_STATX_DONT_SYNC`。若未同时使用另外两个标志，内核通常将以与 :func:`os.stat` "
+"返回的信息同样新鲜的格式返回结果。"
 
 #: ../../library/os.rst:3813
 msgid ""
@@ -4716,6 +4781,8 @@ msgid ""
 ":func:`os.stat`, :func:`os.fstat` and :func:`os.lstat` always behave this "
 "way."
 msgstr ""
+"如果路径的最后一个组件是自动挂载点，则应对该自动挂载点进行操作，而不是执行自动挂载操作。在 Linux "
+"中，:func:`os.stat`、:func:`os.fstat` 和 :func:`os.lstat` 始终会按此方式运行。"
 
 #: ../../library/os.rst:3825
 msgid ""
@@ -4921,6 +4988,9 @@ msgid ""
 "underlying functionality Python uses to accept open file descriptors as "
 "*path* arguments is not available on all platforms Python supports."
 msgstr ""
+":class:`set` 对象用于指示 :mod:`!os` 模块中的哪些函数允许将 *path* "
+"参数指定为本地平台上的打开文件描述符。不同平台提供的功能各不相同，Python 用于将打开文件描述符作为 *path* 参数接受的底层功能并非在所有 "
+"Python 支持的平台上都可用。"
 
 #: ../../library/os.rst:4048
 msgid ""
@@ -4949,6 +5019,11 @@ msgid ""
 "available.  (Specifying ``True`` for *follow_symlinks* is always supported "
 "on all platforms.)"
 msgstr ""
+"一个 :class:`set` 对象，用于指示 :mod:`!os` 模块中的哪些函数在本地平台上允许其 *follow_symlinks* 参数接受 "
+"``False``。不同平台提供的功能各不相同，Python 用于实现 *follow_symlinks* 的底层功能并非在所有 Python "
+"支持的平台中均可用。为保持一致性，可能支持 *follow_symlinks* "
+"的函数始终允许指定该参数；但如果在该功能在本地不可用时仍被使用，则会抛出异常。（对于 *follow_symlinks*，指定 ``True`` "
+"在所有平台上始终受支持。）"
 
 #: ../../library/os.rst:4071
 msgid ""
@@ -5071,6 +5146,8 @@ msgid ""
 "mtime)`` where each member is a real number expressing seconds, rounded down"
 " to nanoseconds."
 msgstr ""
+"如果 *times* 不是 ``None``，则它必须是一个形如 ``(atime, mtime)`` 的 "
+"2-元组，其中每个元素都是一个表示秒的实数，并已向下舍入至纳秒级。"
 
 #: ../../library/os.rst:4189
 msgid ""
@@ -5114,7 +5191,7 @@ msgstr "新增支持将 *path* 参数指定为打开的文件描述符，以及�
 
 #: ../../library/os.rst:4215
 msgid "Accepts any real numbers as *times*, not only integers or floats."
-msgstr ""
+msgstr "接受任何实数作为 *times*，而不仅限于整数或浮点数。"
 
 #: ../../library/os.rst:4225
 msgid ""
@@ -5740,6 +5817,9 @@ msgid ""
 "elapsed since the previous expiration. If *interval* is less than zero, it "
 "raises :class:`OSError` with ``errno`` set to :const:`errno.EINVAL`."
 msgstr ""
+"定时器的间隔由 *interval* 实数设定。若 *interval* 为零，定时器仅在首次到期时触发一次；若 *interval* "
+"大于零，则每当自上次到期起经过 *interval* 秒后，定时器就会触发一次；若 *interval* 小于零，则会触发 "
+":class:`OSError`，同时将 ``errno`` 设置为 :const:`errno.EINVAL`。"
 
 #: ../../library/os.rst:4630
 msgid ""
@@ -5914,6 +5994,7 @@ msgid ""
 "``os.listxattr(-1)`` now fails with ``OSError(errno.EBADF)`` rather than "
 "listing extended attributes of the current directory."
 msgstr ""
+"``os.listxattr(-1)`` 现在会因 ``OSError(errno.EBADF)`` 而失败，而不是列出当前目录的扩展属性。"
 
 #: ../../library/os.rst:4783
 msgid ""
@@ -6014,6 +6095,9 @@ msgid ""
 "function will not call the Python signal handler registered for "
 ":const:`~signal.SIGABRT` with :func:`signal.signal`."
 msgstr ""
+"向当前进程生成一个 :const:`~signal.SIGABRT` 信号。在 Unix 系统中，默认行为是生成核心转储；在 Windows "
+"系统中，进程会立即返回退出码 ``3``。请注意，调用此函数不会触发为 :const:`~signal.SIGABRT` 注册的、使用 "
+":func:`signal.signal` 的 Python 信号处理程序。"
 
 #: ../../library/os.rst:4867
 msgid "Add a path to the DLL search path."
@@ -6777,7 +6861,7 @@ msgstr "函数注册后无法注销。"
 
 #: ../../library/os.rst:5468
 msgid "Execute the program *file* in a new process."
-msgstr ""
+msgstr "在新进程中执行 *file* 程序。"
 
 #: ../../library/os.rst:5470
 msgid ""
@@ -6835,6 +6919,11 @@ msgid ""
 "not use the :envvar:`PATH` variable to locate the executable; *file* must "
 "contain an appropriate absolute or relative path."
 msgstr ""
+"在末尾附近包含第二个“p”的变体（:func:`spawnlp`、:func:`spawnlpe`、:func:`spawnvp` 和 "
+":func:`spawnvpe`）将使用 :envvar:`PATH` 环境变量来定位程序 *文件*。当环境被替换时（使用下文将讨论的 "
+":func:`spawn\\*e <spawnl>` 变体之一），新环境将作为 :envvar:`PATH` 变量的来源。其他变体 "
+":func:`spawnl`、:func:`spawnle`、:func:`spawnv` 和 :func:`spawnve` 则不会使用 "
+":envvar:`PATH` 变量来定位可执行文件；*文件* 必须包含合适的绝对路径或相对路径。"
 
 #: ../../library/os.rst:5503
 msgid ""
@@ -6878,6 +6967,8 @@ msgid ""
 "Raises an :ref:`auditing event <auditing>` ``os.spawn`` with arguments "
 "``mode``, ``file``, ``args``, ``env``."
 msgstr ""
+"使用参数 ``mode``、``file``、``args``、``env`` 创建 :ref:`auditing event <auditing>` "
+"``os.spawn``。"
 
 #: ../../library/os.rst:5525
 msgid ""

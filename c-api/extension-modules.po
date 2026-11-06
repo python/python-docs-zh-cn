@@ -7,15 +7,16 @@
 # python-doc bot, 2025
 # 99 <wh2099@pm.me>, 2026
 # Freesand Leo <yuqinju@163.com>, 2026
+# zhoubo, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 18:01+0000\n"
+"POT-Creation-Date: 2026-11-05 20:53+0000\n"
 "PO-Revision-Date: 2025-09-16 00:00+0000\n"
-"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
+"Last-Translator: zhoubo, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -257,6 +258,18 @@ msgid ""
 "   return modulename_slots;\n"
 "}"
 msgstr ""
+"PyMODEXPORT_FUNC\n"
+"PyModExport_modulename(void)\n"
+"{\n"
+"   if (PyABIInfo_Check(&abi_info, \"modulename\") < 0) {\n"
+"      /* ABI mismatch. It's not safe to examine the raised exception. */\n"
+"      return NULL;\n"
+"   }\n"
+"\n"
+"   /* use Python API (as little as possible); don't rely on GIL */\n"
+"\n"
+"   return modulename_slots;\n"
+"}"
 
 #: ../../c-api/extension-modules.rst:135
 msgid ""
@@ -268,6 +281,9 @@ msgid ""
 "<https://peps.python.org/pep-0489/#multiple-modules-in-one-library>`__ "
 "section in :pep:`489` for details."
 msgstr ""
+"通过定义多个导出钩子，可以从同一个共享库中导出多个模块。然而，导入这些模块需要自定义导入器，或具备合适名称的扩展文件副本/链接，因为 Python "
+"的导入机制只会找到与文件名相对应的函数。详情请参阅 :pep:`489` 中的 `Multiple modules in one library "
+"<https://peps.python.org/pep-0489/#multiple-modules-in-one-library>`__ 部分。"
 
 #: ../../c-api/extension-modules.rst:147
 msgid "Multi-phase initialization"
@@ -275,13 +291,13 @@ msgstr "多阶段初始化"
 
 #: ../../c-api/extension-modules.rst:149
 msgid "The process of creating an extension module follows several phases:"
-msgstr ""
+msgstr "创建扩展模块的过程包含以下几个阶段："
 
 #: ../../c-api/extension-modules.rst:151
 msgid ""
 "Python finds and calls the export hook to get information on how to create "
 "the module."
-msgstr ""
+msgstr "Python 会查找并调用导出钩子，以获取有关如何创建该模块的信息。"
 
 #: ../../c-api/extension-modules.rst:153
 msgid ""
@@ -291,6 +307,9 @@ msgid ""
 ":c:data:`Py_mod_gil` and :c:data:`Py_mod_multiple_interpreters` influence "
 "this step."
 msgstr ""
+"在执行任何实质性代码之前，Python 可以确定该模块支持哪些功能，并可以调整环境或拒绝加载不兼容的扩展。诸如 "
+":c:data:`Py_mod_abi`、:c:data:`Py_mod_gil` 和 "
+":c:data:`Py_mod_multiple_interpreters` 之类的槽位会影响这一步骤。"
 
 #: ../../c-api/extension-modules.rst:158
 msgid ""
@@ -298,6 +317,8 @@ msgid ""
 " the equivalent of calling :py:meth:`~object.__new__` when creating an "
 "object. This step can be overridden using the :c:data:`Py_mod_create` slot."
 msgstr ""
+"默认情况下，Python 随后会创建模块对象——也就是说，它在创建对象时相当于调用 :py:meth:`~object.__new__`。这一步可以通过"
+" :c:data:`Py_mod_create` 槽位进行覆盖。"
 
 #: ../../c-api/extension-modules.rst:161
 msgid ""
@@ -305,6 +326,8 @@ msgid ""
 ":attr:`~module.__loader__`, and inserts the module object into "
 ":py:attr:`sys.modules`."
 msgstr ""
+"Python 会为模块设置诸如 :attr:`~module.__package__` 和 :attr:`~module.__loader__` "
+"之类的初始属性，并将模块对象插入到 :py:attr:`sys.modules` 中。"
 
 #: ../../c-api/extension-modules.rst:164
 msgid ""
@@ -313,6 +336,8 @@ msgid ""
 "of executing top-level code in a Python-language module. The behavior is "
 "specified using the :c:data:`Py_mod_exec` slot."
 msgstr ""
+"随后，模块对象会以一种与扩展相关的特定方式完成初始化——这相当于创建对象时执行 :py:meth:`~object.__init__`，或相当于在 "
+"Python 语言模块中执行顶层代码。其行为通过 :c:data:`Py_mod_exec` 槽位进行定义。"
 
 #: ../../c-api/extension-modules.rst:169
 msgid ""
@@ -321,6 +346,8 @@ msgid ""
 "phase-initialization>`, where an initialization function returns a fully "
 "constructed module."
 msgstr ""
+"这被称为*多阶段初始化*，用以将其与传统的（但仍受支持的） :ref:`single-phase initialization <single-"
+"phase-initialization>` 区分开来；在后者中，初始化函数会返回一个已完全构建好的模块。"
 
 #: ../../c-api/extension-modules.rst:175
 msgid "Added support for multi-phase initialization (:pep:`489`)."
@@ -338,6 +365,9 @@ msgid ""
 "type objects. The old module is subject to normal garbage collection. This "
 "mirrors the behavior of pure-Python modules."
 msgstr ""
+"默认情况下，扩展模块并非单例。例如，若移除 :py:attr:`sys.modules` "
+"条目并重新导入该模块，则会创建一个新的模块对象；通常，该对象会被填充全新的方法和类型对象。旧模块则遵循常规的垃圾回收机制。这与纯 Python "
+"模块的行为一致。"
 
 #: ../../c-api/extension-modules.rst:188
 msgid ""
@@ -388,13 +418,15 @@ msgstr "``PyInit`` 函数"
 msgid ""
 "This functionality will not get new features, but there are no plans to "
 "remove it."
-msgstr ""
+msgstr "该功能不会获得新功能，但目前暂无将其移除的计划。"
 
 #: ../../c-api/extension-modules.rst:223
 msgid ""
 "Instead of :c:func:`PyModExport_modulename`, an extension module can define "
 "an older-style :dfn:`initialization function` with the signature:"
 msgstr ""
+"与 :c:func:`PyModExport_modulename` 不同，扩展模块可以定义一种采用旧式签名的 :dfn:`initialization"
+" function`，其签名如下："
 
 #: ../../c-api/extension-modules.rst:228
 msgid ""
@@ -403,6 +435,9 @@ msgid ""
 " instead, with ``<name>`` encoded in the same way as for the :ref:`export "
 "hook <extension-export-hook>` (that is, using Punycode with underscores)."
 msgstr ""
+"其名称应为 :samp:`PyInit_{<name>}`，其中 ``<name>`` 应替换为模块名称。对于非 ASCII 模块名称，则应使用 "
+":samp:`PyInitU_{<name>}`；此时 ``<name>`` 的编码方式应与 :ref:`export hook <extension-"
+"export-hook>` 相同（即使用带下划线的 Punycode）。"
 
 #: ../../c-api/extension-modules.rst:235
 msgid ""
@@ -410,12 +445,14 @@ msgid ""
 ":samp:`PyModExport_{<name>}`, the :samp:`PyInit_{<name>}` function is "
 "ignored."
 msgstr ""
+"如果某个模块同时导出 :samp:`PyInit_{<name>}` 和 :samp:`PyModExport_{<name>}`，则 "
+":samp:`PyInit_{<name>}` 函数将被忽略。"
 
 #: ../../c-api/extension-modules.rst:239
 msgid ""
 "Like with :c:macro:`PyMODEXPORT_FUNC`, it is recommended to define the "
 "initialization function using a helper macro:"
-msgstr ""
+msgstr "与 :c:macro:`PyMODEXPORT_FUNC` 类似，建议使用辅助宏来定义初始化函数："
 
 #: ../../c-api/extension-modules.rst:244
 msgid "Declare an extension module initialization function. This macro:"
@@ -432,12 +469,15 @@ msgid ""
 ":c:member:`~PyModuleDef.m_slots`. This allows Python to use :ref:`multi-"
 "phase initialization <multi-phase-initialization>`."
 msgstr ""
+"通常，初始化函数 (``PyInit_modulename``) 会返回一个包含非 ``NULL`` "
+":c:member:`~PyModuleDef.m_slots` 的 :c:type:`PyModuleDef` 实例。这使得 Python 能够使用 "
+":ref:`multi-phase initialization <multi-phase-initialization>`。"
 
 #: ../../c-api/extension-modules.rst:257
 msgid ""
 "Before it is returned, the ``PyModuleDef`` instance must be initialized "
 "using the following function:"
-msgstr ""
+msgstr "在将其返回之前，必须使用以下函数对 ``PyModuleDef`` 实例进行初始化："
 
 #: ../../c-api/extension-modules.rst:262
 msgid ""
@@ -454,7 +494,7 @@ msgid ""
 "Calling this function is required before returning a :c:type:`PyModuleDef` "
 "from a module initialization function. It should not be used in other "
 "contexts."
-msgstr ""
+msgstr "在模块初始化函数中返回 :c:type:`PyModuleDef` 之前，必须调用此函数。不应在其他上下文中使用此函数。"
 
 #: ../../c-api/extension-modules.rst:271
 msgid ""
@@ -502,7 +542,7 @@ msgstr "单阶段初始化是一种用于初始化扩展模块的旧机制，它
 
 #: ../../c-api/extension-modules.rst:305
 msgid "However, there are no plans to remove support for it."
-msgstr ""
+msgstr "不过，目前暂无计划取消对其的支持。"
 
 #: ../../c-api/extension-modules.rst:307
 msgid ""
@@ -512,6 +552,9 @@ msgid ""
 ":c:func:`PyModule_Create` and functions like "
 ":c:func:`PyModule_AddObjectRef`."
 msgstr ""
+"在单阶段初始化过程中，旧式 :ref:`initialization function <extension-pyinit>` "
+"(``PyInit_modulename``) 应创建、填充并返回一个模块对象。通常通过 :c:func:`PyModule_Create` 以及 "
+":c:func:`PyModule_AddObjectRef` 等函数来实现这一操作。"
 
 #: ../../c-api/extension-modules.rst:313
 msgid ""
@@ -523,14 +566,14 @@ msgstr "单阶段初始化与 :ref:`默认方式 <multi-phase-initialization>` �
 msgid ""
 "Single-phase modules with :c:member:`PyModuleDef.m_size` set to -1 are, or "
 "rather *contain*, “singletons”."
-msgstr ""
+msgstr "将 :c:member:`PyModuleDef.m_size` 设置为 -1 的单相模块，或者更准确地说，是“包含”“单例”的模块。"
 
 #: ../../c-api/extension-modules.rst:319
 msgid ""
 "When such a module is first initialized, Python saves the contents of the "
 "module's ``__dict__`` (that is, typically, the module's functions and "
 "types)."
-msgstr ""
+msgstr "当此类模块首次完成初始化时，Python 会保存该模块的 ``__dict__`` 内容（通常即该模块中的函数和类型）。"
 
 #: ../../c-api/extension-modules.rst:323
 msgid ""
@@ -539,6 +582,8 @@ msgid ""
 "copies the saved contents to it. Modules are matched to the saved contents "
 "by a (*module_name*, *file_name*) tuple where:"
 msgstr ""
+"对于后续的导入操作，Python 不会再次调用初始化函数；相反，它会创建一个带有新 ``__dict__`` "
+"的新模块对象，并将已保存的内容复制到其中。模块通过 (*module_name*，*file_name*) 元组与已保存的内容进行匹配，其中："
 
 #: ../../c-api/extension-modules.rst:330
 msgid ""
@@ -548,6 +593,9 @@ msgid ""
 "initialization function uses to create the module (for example, "
 ":c:member:`PyModuleDef.m_name`) are not taken into account."
 msgstr ""
+"*module_name* 是该模块的完整点分隔名称，取自 :py:attr:`ModuleSpec.name "
+"<importlib.machinery.ModuleSpec.name>` （或导入函数中对应的参数）。请注意，初始化函数用于创建模块的名称（例如 "
+":c:member:`PyModuleDef.m_name`）不会被纳入考虑。"
 
 #: ../../c-api/extension-modules.rst:335
 msgid ""
@@ -556,6 +604,9 @@ msgid ""
 ":c:func:`PyImport_CreateModuleFromInitfunc` or "
 ":c:func:`PyImport_AppendInittab`."
 msgstr ""
+"*file_name* 是扩展名对应的文件名。对于未从文件中加载的模块（例如内置模块，以及通过 "
+":c:func:`PyImport_CreateModuleFromInitfunc` 或 "
+":c:func:`PyImport_AppendInittab` 添加的模块），该变量未设置。"
 
 #: ../../c-api/extension-modules.rst:340
 msgid ""
@@ -564,6 +615,9 @@ msgid ""
 " ``_testsinglephase`` [#testsinglephase]_ that defines a function ``sum`` "
 "and an exception class ``error``:"
 msgstr ""
+"作为首次初始化的一部分，Python 还会以该模块的名称将其添加到 :data:`sys.modules` 中。例如，假设有一个单相位模块 "
+"``_testsinglephase`` [#testsinglephase]_，该模块定义了一个函数 ``sum`` 和一个异常类 "
+"``error``："
 
 #: ../../c-api/extension-modules.rst:346
 msgid ""
@@ -604,6 +658,8 @@ msgid ""
 "Python may cache a pointer to the initialization function under the "
 "(*module_name*, *file_name*) key as for ``m_size == -1``."
 msgstr ""
+"对于具有非负 :c:member:`PyModuleDef.m_size` 的单相模块，Python 可能会像对待 ``m_size == -1`` "
+"那样，在 (*module_name*，*file_name*) 键下缓存一个指向初始化函数的指针。"
 
 #: ../../c-api/extension-modules.rst:367
 msgid ""
@@ -611,12 +667,14 @@ msgid ""
 "example, using :c:func:`PyImport_CreateModuleFromInitfunc`) may call either "
 "the cached function or the provided \"new\" one."
 msgstr ""
+"后续指定不同初始化函数的导入（例如使用 "
+":c:func:`PyImport_CreateModuleFromInitfunc`）可能会调用缓存函数，也可能调用所提供的“新”函数。"
 
 #: ../../c-api/extension-modules.rst:371
 msgid ""
 "The exact behavior should again be considered a CPython implementation "
 "detail."
-msgstr ""
+msgstr "具体行为应再次被视为 CPython 的实现细节。"
 
 #: ../../c-api/extension-modules.rst:373
 msgid ""
@@ -647,7 +705,7 @@ msgstr "单阶段模块支持模块查找函数如 :c:func:`PyState_FindModule`�
 
 #: ../../c-api/extension-modules.rst:387
 msgid "The module's :c:member:`PyModuleDef.m_slots` must be NULL."
-msgstr ""
+msgstr "该模块的 :c:member:`PyModuleDef.m_slots` 必须为 NULL。"
 
 #: ../../c-api/extension-modules.rst:389
 msgid ""
