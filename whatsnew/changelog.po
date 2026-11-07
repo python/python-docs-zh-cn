@@ -108,7 +108,7 @@ msgid ""
 "``America/C:\\file``.  Such a key could open a file outside the ``tzdata`` "
 "package; it now raises :exc:`ValueError`."
 msgstr ""
-":gh:`160420`：修复 Windows 上的 :class:`zoneinfo.ZoneInfo`，使其能够接受以下类型的密钥：在 ``/`` "
+":gh:`160420`：修复 Windows 上的 :class:`zoneinfo.ZoneInfo`，使其能够接受以下形式的键：在 ``/`` "
 "之后的某个组件以驱动器字母开头，例如 ``America/C:\\file``。此类密钥可能会打开 ``tzdata`` 包之外的文件；现在该问题会触发"
 " :exc:`ValueError`。"
 
@@ -194,13 +194,13 @@ msgid ""
 "system now raises :exc:`RecursionError` before taking an import lock when "
 "there is not enough stack left to release it."
 msgstr ""
-":gh:`159652`：在导入失败时修复挂起问题 :exc:`RecursionError` 因为 C "
-"堆栈几乎已耗尽：释放导入锁本身就可能失败，导致全局导入锁或某个模块锁被永久持有，从而使其他线程中后续的导入操作被无限期阻塞。导入系统现在会抛出 "
+":gh:`159652`：修复当 C 栈接近耗尽、导入因 :exc:`RecursionError` "
+"失败时出现的挂起：释放导入锁本身就可能失败，导致全局导入锁或某个模块锁被永久持有，从而使其他线程中后续的导入操作被无限期阻塞。导入系统现在会抛出 "
 ":exc:`RecursionError` 在堆栈中剩余空间不足以释放导入锁之前，先执行导入锁操作。"
 
 #: ../NEWS:57
 msgid ":gh:`159449`: Fix a free-threaded asyncio race leading to segfaults."
-msgstr ":gh:`159449`：修复一个导致段错误（segfault）的未锁定 asyncio 竞态条件。"
+msgstr ":gh:`159449`：修复一个导致段错误（segfault）的自由线程 asyncio 竞态条件。"
 
 #: ../NEWS:59
 msgid ""
@@ -321,7 +321,7 @@ msgstr ""
 msgid ""
 ":gh:`161212`: Bump the version of :pypi:`pip` bundled in :mod:`ensurepip` to"
 " version 26.3."
-msgstr ":gh:`161212`：将 :mod:`ensurepip` 中捆绑的 :pypi:`pip` 版本 bumped 至 26.3 版本。"
+msgstr ":gh:`161212`：将 :mod:`ensurepip` 中捆绑的 :pypi:`pip` 版本提升至 26.3。"
 
 #: ../NEWS:95
 msgid ""
@@ -352,7 +352,7 @@ msgid ""
 "leaving the socket open, and :meth:`asyncio.Server.wait_closed` hanging, "
 "when the peer resets the connection while the transport is being closed."
 msgstr ""
-":gh:`160429`：修复 :class:`asyncio.ProactorEventLoop` 套接字传输在套接字保持开放时仍会持续传输，以及 "
+":gh:`160429`：修复 :class:`asyncio.ProactorEventLoop` 套接字传输会令套接字保持打开并继续传输，以及 "
 ":meth:`asyncio.Server.wait_closed` 在传输关闭期间对端重置连接时出现的挂起问题。"
 
 #: ../NEWS:110
@@ -387,8 +387,8 @@ msgid ""
 "challenges per header: the first Digest challenge is used."
 msgstr ""
 ":gh:`59515`：:class:`urllib.request.HTTPDigestAuthHandler` 和 "
-":class:`urllib.request.ProxyDigestAuthHandler` 现在会解析所有 ``WWW-"
-"Authenticate``（或 ``Proxy-Authenticate``）头，并允许每个头接受多个挑战；其中第一个 Digest 挑战将被使用。"
+":class:`urllib.request.ProxyDigestAuthHandler` 现在会解析所有 ``WWW-Authenticate`` "
+"（或 ``Proxy-Authenticate``）头，并允许每个头接受多个挑战；其中第一个 Digest 挑战将被使用。"
 
 #: ../NEWS:126
 msgid ""
@@ -432,7 +432,7 @@ msgid ""
 ":exc:`OverflowError` when writing at a position close to "
 ":data:`sys.maxsize`."
 msgstr ""
-":gh:`160781`：在靠近 :data:`sys.maxsize` 的位置写入时，修复 :class:`io.BytesIO` 在写入时提升为 "
+":gh:`160781`：在靠近 :data:`sys.maxsize` 的位置写入时，修复 :class:`io.BytesIO` 在写入时引发 "
 ":exc:`SystemError` 而非 :exc:`OverflowError` 的问题。"
 
 #: ../NEWS:146
@@ -586,9 +586,8 @@ msgid ""
 ":class:`io.BytesIO`, whose end of central directory record places the "
 "central directory before the start of the file."
 msgstr ""
-":gh:`161094`：修复 :func:`zipfile.is_zipfile` 在针对 :exc:`ValueError` 时将其提升为 "
-"``False``，而非返回 ``False``；对于 :class:`io.BytesIO` "
-"这类文件式对象，其中央目录记录末尾会将中央目录置于文件起始位置之前。"
+":gh:`161094`：修复 :func:`zipfile.is_zipfile` 对某些 :class:`io.BytesIO` 等文件式对象抛出 "
+":exc:`ValueError` 而非返回 ``False`` 的问题；这类对象的中央目录记录末尾会把中央目录定位到文件起始位置之前。"
 
 #: ../NEWS:219
 msgid ""
@@ -705,8 +704,8 @@ msgid ""
 ":gh:`159168`: Fix :exc:`RecursionError` in ``python -m asyncio pstree`` on a"
 " deep chain of awaiting tasks. Patch by Timofei Ivankov."
 msgstr ""
-":gh:`159168`：修复 :exc:`RecursionError` 在 ``python -m asyncio pstree`` "
-"处于一个冗长的待处理任务链中。补丁作者：Timofei Ivankov。"
+":gh:`159168`：修复 ``python -m asyncio pstree`` 在等待任务链很深时引发的 "
+":exc:`RecursionError`。补丁作者：Timofei Ivankov。"
 
 #: ../NEWS:274
 msgid ""
@@ -848,7 +847,7 @@ msgid ""
 ":gh:`75929`: Fix a ``configure`` probe that could omit functions such as "
 ":func:`os.fchdir` from builds using ``-Wall -Werror``."
 msgstr ""
-":gh:`75929`：修复一个可能导致在使用 ``-Wall -Werror`` 构建时遗漏 :func:`os.fchdir` 等功能在内的 "
+":gh:`75929`：修复一个可能导致在使用 ``-Wall -Werror`` 构建时遗漏 :func:`os.fchdir` 等函数在内的 "
 "``configure`` 探针的问题。"
 
 #: ../NEWS:317
@@ -1078,7 +1077,7 @@ msgstr ":gh:`159739`：修复因分配错误导致自由线程垃圾回收提前
 msgid ""
 ":gh:`159739`: Prevent free-threaded builds from interning and immortalizing "
 "complex subclasses in code object constants."
-msgstr ":gh:`159739`：防止无锁线程构建将复杂的子类内存化，使其在代码对象常量中永久存在。"
+msgstr ":gh:`159739`：防止自由线程构建将复数子类驻留并永久化到代码对象常量中。"
 
 #: ../NEWS:421
 msgid ""
@@ -1132,9 +1131,9 @@ msgid ""
 ":term:`free-threaded build` when another thread concurrently mutates a list "
 "used as a key/value pair. Patch by Christian Aurich Zanettini Martins."
 msgstr ""
-":gh:`159244`：修复 :term:`free-threaded build` 中当另一线程同时修改被用作键/值对的列表时，导致 "
-":class:`dict` 和 :meth:`dict.update` 崩溃的问题。补丁由 Christian Aurich、Zanettini 和 "
-"Martins 提交。"
+":gh:`159244`：修复 :term:`自由线程构建 <free-threaded build>` "
+"中当另一线程同时修改被用作键/值对的列表时，导致 :class:`dict` 和 :meth:`dict.update` 崩溃的问题。补丁由 "
+"Christian Aurich、Zanettini 和 Martins 提交。"
 
 #: ../NEWS:448
 msgid ""
@@ -1201,7 +1200,7 @@ msgid ""
 ":meth:`queue.Queue.get`, instead of returning at once or looping without "
 "ever timing out."
 msgstr ""
-":gh:`160326`：在 :meth:`threading.Condition.wait` 中为 NaN *timeout* 设置 "
+":gh:`160326`：在 :meth:`threading.Condition.wait` 中为 NaN *timeout* 引发 "
 ":exc:`ValueError`，并基于此构建阻塞式调用（例如 "
 ":meth:`threading.Event.wait`、:meth:`threading.Semaphore.acquire` 和 "
 ":meth:`queue.Queue.get`），而不是立即返回，或无限循环而不触发超时。"
@@ -1233,8 +1232,8 @@ msgid ""
 "comprehensions."
 msgstr ""
 ":gh:`160299`：修复 "
-":meth:`symtable.Symbol.is_referenced`，使其在函数作用域中对局部和非局部符号的处理仅限于这些符号仅被用于内联 "
-"comprehensions 时。"
+":meth:`symtable.Symbol.is_referenced`，使其在函数作用域中对局部和非局部符号的处理仅限于这些符号仅被用于内联推导式 "
+"时。"
 
 #: ../NEWS:498
 msgid ""
@@ -1332,7 +1331,7 @@ msgid ""
 ":gh:`159739`: Avoid undefined behavior when :func:`struct.pack_into` copies "
 "a bytearray into overlapping output."
 msgstr ""
-":gh:`159739`：当 :func:`struct.pack_into` 将 bytearray 复制到重叠的输出区域时，应避免未定义行为。"
+":gh:`159739`：当 :func:`struct.pack_into` 将 bytearray 复制到重叠的输出区域时，避免未定义行为。"
 
 #: ../NEWS:545
 msgid ""
@@ -1405,7 +1404,7 @@ msgid ""
 "(such as with ``SIGSTOP``) on macOS caused the event loop to block "
 "indefinitely."
 msgstr ""
-":gh:`158287`：修复了 :mod:`asyncio` 中的一个漏洞；在 macOS 上停止子进程（例如使用 "
+":gh:`158287`：修复了 :mod:`asyncio` 中的一个缺陷；在 macOS 上停止子进程（例如使用 "
 "``SIGSTOP``）会导致事件循环无限期阻塞。"
 
 #: ../NEWS:578
@@ -1414,8 +1413,8 @@ msgid ""
 "strings before use, and fall back to the default prompts if the conversion "
 "raises."
 msgstr ""
-":gh:`130698`：修复 PyREPL，使其在将 :data:`sys.ps1` 和 :data:`sys.ps2` "
-"转换为字符串之前先完成转换；若转换过程中发生异常，则回退至默认提示符。"
+":gh:`130698`：修复 PyREPL，使其先把 :data:`sys.ps1` 和 :data:`sys.ps2` "
+"转换为字符串再使用；若转换过程中发生异常，则回退至默认提示符。"
 
 #: ../NEWS:582
 msgid ""
@@ -1658,7 +1657,7 @@ msgstr ":gh:`159739`：在泛型类构建过程中传播错误，避免在泛型
 msgid ""
 ":gh:`159739`: Raise :exc:`OverflowError` when the absolute value of a "
 "dynamic printf-style formatting width is too large."
-msgstr ":gh:`159739`：当动态 printf 式格式宽度的绝对值过大时，启用 :exc:`OverflowError`。"
+msgstr ":gh:`159739`：当动态 printf 式格式宽度的绝对值过大时，引发 :exc:`OverflowError`。"
 
 #: ../NEWS:706
 msgid ""
@@ -1692,7 +1691,7 @@ msgstr ":gh:`159739`：如果分配可选错误元数据失败，则保留原始
 msgid ""
 ":gh:`159739`: Avoid a crash if formatting an integer with the ``c`` "
 "presentation type runs out of memory."
-msgstr ":gh:`159739`：若使用 ``c`` 呈现类型对整数进行格式化时内存不足，请避免发生崩溃。"
+msgstr ":gh:`159739`：若使用 ``c`` 呈现类型对整数进行格式化时内存不足，避免发生崩溃。"
 
 #: ../NEWS:723
 msgid ""
@@ -1820,8 +1819,8 @@ msgid ""
 " atomically so readers cannot observe an increased size before the "
 "corresponding order entry is initialized."
 msgstr ""
-":gh:`158197`：修复在遍历分拆后的字典时，当另一线程删除条目或清空该字典时，:term:`free-threaded build` "
-"中出现的崩溃和调试构建断言失败问题。以原子方式发布插入顺序更新，从而确保读者不会在相应的顺序条目初始化之前观察到字典大小增加。"
+":gh:`158197`：修复在遍历分拆后的字典时，当另一线程删除条目或清空该字典时，:term:`自由线程构建 <free-threaded "
+"build>` 中出现的崩溃和调试构建断言失败问题。以原子方式发布插入顺序更新，从而确保读者不会在相应的顺序条目初始化之前观察到字典大小增加。"
 
 #: ../NEWS:782
 msgid ""
@@ -1879,7 +1878,7 @@ msgid ""
 " by Victor Stinner."
 msgstr ""
 ":gh:`157242`：如果 :meth:`bytearray.resize` 或 :meth:`bytearray.take_bytes` "
-"发生故障，请保持 :class:`bytearray` 不变，而不是将其清除。补丁作者：Victor Stinner。"
+"发生故障，保持 :class:`bytearray` 不变，而不是将其清除。补丁作者：Victor Stinner。"
 
 #: ../NEWS:810
 msgid ""
@@ -1910,7 +1909,8 @@ msgid ""
 ":gh:`156371`: Fix missing ``PyRefTracer_DESTROY`` events for trashcan "
 "deferred objects. Patch by Donghee Na."
 msgstr ""
-":gh:`156371`：修复垃圾回收延迟对象中缺失的 ``PyRefTracer_DESTROY`` 事件。补丁作者：Donghee Na。"
+":gh:`156371`：修复trashcan 延迟释放对象中缺失的 ``PyRefTracer_DESTROY`` 事件。补丁作者：Donghee "
+"Na。"
 
 #: ../NEWS:824
 msgid ""
@@ -1929,7 +1929,7 @@ msgid ""
 ":exc:`AttributeError` instead of finishing normally."
 msgstr ""
 ":gh:`155823`：修复一个 JIT "
-"漏洞：当虚拟迭代器被耗尽时，所执行的侧退出会在栈上留下一个过时的值，导致一级解释器以损坏的状态继续执行，进而使 ``yield from`` 触发 "
+"缺陷：当虚拟迭代器被耗尽时，所执行的侧退出会在栈上留下一个过时的值，导致一级解释器以损坏的状态继续执行，进而使 ``yield from`` 触发 "
 ":exc:`AttributeError`，而非正常完成。"
 
 #: ../NEWS:833
@@ -1953,8 +1953,8 @@ msgid ""
 "``_thread._shutdown()`` runs concurrently with the startup of non-daemon "
 "threads in the :term:`free-threaded build`."
 msgstr ""
-":gh:`154937`：当 ``_thread._shutdown()`` 与 :term:`free-threaded build` "
-"中的非守护线程启动同时运行时，修复线程句柄标识符处存在的数据竞争问题。"
+":gh:`154937`：当 ``_thread._shutdown()`` 与 :term:`自由线程构建 <free-threaded "
+"build>` 中的非守护线程启动同时运行时，修复线程句柄标识符处存在的数据竞争问题。"
 
 #: ../NEWS:844
 msgid ""
@@ -2074,7 +2074,7 @@ msgstr ":gh:`159739`：允许循环垃圾回收回收由 :mod:`grp` 返回的组
 msgid ""
 ":gh:`159739`: Fix :class:`io.BytesIO` reads into overlapping views of the "
 "same buffer."
-msgstr ":gh:`159739`：将 :class:`io.BytesIO` 的读取操作修复到同一缓冲区的重叠视图中。"
+msgstr ":gh:`159739`：修复 :class:`io.BytesIO` 读入同一缓冲区重叠视图时的问题。"
 
 #: ../NEWS:901
 msgid ""
@@ -2095,7 +2095,8 @@ msgstr ""
 msgid ""
 ":gh:`159739`: Fix incorrect :mod:`ctypes` scalar values after "
 ":func:`ctypes.resize` enlarges the object."
-msgstr ":gh:`159739`：在 :func:`ctypes.resize` 扩大对象后，修复错误的 :mod:`ctypes` 标量值。"
+msgstr ""
+":gh:`159739`：在 :func:`ctypes.resize` 扩大对象后，修复 :mod:`ctypes` 标量值不正确的问题。"
 
 #: ../NEWS:911
 msgid ""
@@ -2213,7 +2214,7 @@ msgid ""
 "annotation names a :ref:`lazy import <lazy-imports>` that cannot be "
 "resolved, matching the behavior for non-string annotations."
 msgstr ""
-":gh:`158936`：当字符串注释引用了一个无法解析的 :ref:`lazy import <lazy-imports>` "
+":gh:`158936`：当字符串注解引用了一个无法解析的 :ref:`lazy import <lazy-imports>` "
 "时，:func:`~dataclasses.dataclass` 不再失败，其行为与非字符串注释保持一致。"
 
 #: ../NEWS:966
@@ -2244,7 +2245,7 @@ msgid ""
 "target memory in the sampling profiler's blocking mode. Resume the target if"
 " waiting for suspension fails."
 msgstr ""
-":gh:`158552`：在采样分析器的阻塞模式下读取目标内存之前，请等待 Windows 线程完成挂起操作；若等待挂起失败，则恢复对目标内存的访问。"
+":gh:`158552`：在采样分析器的阻塞模式下读取目标内存之前，等待 Windows 线程完成挂起操作；若等待挂起失败，则恢复对目标内存的访问。"
 
 #: ../NEWS:980
 msgid ""
@@ -2383,8 +2384,8 @@ msgid ""
 "to the underlying buffer reentrantly detaches it. Patched by Shamil "
 "Abdulaev."
 msgstr ""
-":gh:`157364`：修复 :class:`io.TextIOWrapper` 中因对底层缓冲区调用导致其以重入方式脱离而引发的使用-after-"
-"free 问题。由 Shamil Abdulaev 修复。"
+":gh:`157364`：修复 :class:`io.TextIOWrapper` 中因对底层缓冲区调用导致其以重入方式脱离而引发的释放后使用 问题。由"
+" Shamil Abdulaev 修复。"
 
 #: ../NEWS:1043
 msgid ""
@@ -2876,8 +2877,8 @@ msgid ""
 ":gh:`154523`: Fixed data-race when calling :meth:`io.TextIOBase.detach` in "
 ":term:`free-threaded build`."
 msgstr ""
-":gh:`154523`：在调用 :term:`free-threaded build` 中的 :meth:`io.TextIOBase.detach`"
-" 时修复了数据竞态问题。"
+":gh:`154523`：在 :term:`自由线程构建 <free-threaded build>` 中调用 "
+":meth:`io.TextIOBase.detach` 时修复了数据竞态问题。"
 
 #: ../NEWS:1269
 msgid ""
@@ -3001,7 +3002,7 @@ msgid ""
 "Pawłowski-Wieroński."
 msgstr ""
 ":gh:`153364`：使帧、协程和任务等待器遍历操作具备迭代性和有界性，从而避免潜在的死锁和栈溢出问题。修复当 await-by "
-"集合中包含已移除条目时，asio 任务检查出现异常的情况。补丁由 Maurycy Pawłowski-Wieroński 提交。"
+"集合中包含已移除条目时，asyncio 任务检查出现异常的情况。补丁由 Maurycy Pawłowski-Wieroński 提交。"
 
 #: ../NEWS:1330
 msgid ""
@@ -3058,8 +3059,8 @@ msgid ""
 "raised with :data:`NotImplemented` as its argument, which caused unexpected "
 "REPL exit and IDLE Shell restart."
 msgstr ""
-":gh:`152490`：修复 :exc:`TypeError` 在格式化时 :exc:`SyntaxError` 以……抚养长大 "
-":data:`NotImplemented` 作为其参数，这导致 REPL 意外退出，并引发 IDLE Shell 重启。"
+":gh:`152490`：修复当以 :data:`NotImplemented` 作为参数引发 :exc:`SyntaxError` "
+"时，格式化该异常会引发 :exc:`TypeError`，进而导致 REPL 意外退出并重启 IDLE Shell 的问题。"
 
 #: ../NEWS:1356
 msgid ""
@@ -3220,7 +3221,7 @@ msgstr ""
 
 #: ../NEWS:1433
 msgid ":gh:`107689`: Added docstrings to abstract ctypes."
-msgstr ":gh:`107689`：为 abstract ctypes 添加了 docstrings。"
+msgstr ":gh:`107689`：为抽象的 ctypes 添加了文档字符串。"
 
 #: ../NEWS:1438
 msgid ""
@@ -3242,7 +3243,8 @@ msgid ""
 "descriptors, sum=0\" deltas, instead of reporting a leak. Patch by Victor "
 "Stinner."
 msgstr ""
-":gh:`157628`：在重新测试时，仅考虑以下情况：如果所有测试运行都至少泄漏了一个文件描述符，则判定为存在泄漏。例如，忽略“[0,1，-1] "
+":gh:`157628`：在 regrtest "
+"中，仅考虑以下情况：如果所有测试运行都至少泄漏了一个文件描述符，则判定为存在泄漏。例如，忽略“[0,1，-1] "
 "文件描述符，sum=0”的增量，而不要报告泄漏。补丁作者：Victor Stinner。"
 
 #: ../NEWS:1450
@@ -3314,7 +3316,7 @@ msgid ""
 "framework builds, which do not install one."
 msgstr ""
 ":gh:`159759`：修复 ``libpython.static`` 路径在 :pep:`739` ``build-"
-"details.json``，该问题指出，在使用……进行构建时，有一个未安装的文件 :option:`--enable-"
+"details.json``，该问题指向，在使用……进行构建时，有一个未安装的文件 :option:`--enable-"
 "shared`，也不再为框架构建列出静态库，因为框架构建不会安装静态库。"
 
 #: ../NEWS:1487
@@ -3375,8 +3377,8 @@ msgid ""
 ":gh:`157789`: Use compiler option ``-Og`` in case of clang-cl debug builds "
 "on Windows to reduce stack usage. Patch by Chris Eibl."
 msgstr ""
-":gh:`157789`：在 Windows 上使用 clang-cl 调试构建时，请启用编译器选项 "
-"``-Og``，以减少栈使用量。补丁作者：Chris Eibl。"
+":gh:`157789`：在 Windows 上使用 clang-cl 调试构建时，启用编译器选项 ``-Og``，以减少栈使用量。补丁作者：Chris"
+" Eibl。"
 
 #: ../NEWS:1517
 msgid ""
@@ -3449,7 +3451,7 @@ msgstr "IDLE"
 msgid ""
 ":gh:`159517`: Fix the completion list and the call tip grabbing the focus on"
 " macOS with Tcl/Tk 9.1."
-msgstr ":gh:`159517`：使用 Tcl/Tk 9.1 修复 macOS 上的完成列表及调用提示获取焦点功能。"
+msgstr ":gh:`159517`：修复在 Tcl/Tk 9.1 的 macOS 上补全列表和调用提示抢占焦点的问题。"
 
 #: ../NEWS:1542
 msgid ""
@@ -3719,7 +3721,7 @@ msgid ""
 ":gh:`158810`: Fix :c:macro:`Py_ARRAY_LENGTH()` macro on C++: do not use "
 "``__builtin_types_compatible_p()`` on C++. Patch by Victor Stinner."
 msgstr ""
-":gh:`158810`：修复 C++ 中的 :c:macro:`Py_ARRAY_LENGTH()` 宏：在 C++ 中请勿使用 "
+":gh:`158810`：修复 C++ 中的 :c:macro:`Py_ARRAY_LENGTH()` 宏：在 C++ 中不要使用 "
 "``__builtin_types_compatible_p()``。补丁作者：Victor Stinner。"
 
 #: ../NEWS:1667
@@ -3775,7 +3777,7 @@ msgid ""
 ":c:func:`PyLong_AsUInt64`. Leave the result unchanged in this case. Patch by"
 " Victor Stinner."
 msgstr ""
-":gh:`156101`：请勿将结果设置为 error，不要对 "
+":gh:`156101`：不要在出错时设置结果，不要对 "
 ":c:func:`PyLong_AsInt32`、:c:func:`PyLong_AsUInt32`、:c:func:`PyLong_AsInt64` "
 "和 :c:func:`PyLong_AsUInt64` 执行此操作；在此情况下应保持结果不变。补丁作者：Victor Stinner。"
 
@@ -3899,7 +3901,7 @@ msgid ""
 "accessing one does not import another merely because its declaration came "
 "last."
 msgstr ""
-":gh:`158140`：以惰性方式独立解析已导入的兄弟子模块，因此访问其中一个子模块时，并不会仅仅因为它的声明位置靠后而自动导入另一个子模块。"
+":gh:`158140`：以惰性方式独立解析惰性导入的兄弟子模块，因此访问其中一个子模块时，并不会仅仅因为它的声明位置靠后而自动导入另一个子模块。"
 
 #: ../NEWS:1764
 msgid ""
@@ -4010,10 +4012,9 @@ msgid ""
 "free-threaded build when a bytearray was shrunk to one byte from another "
 "thread."
 msgstr ""
-":gh:`156995`: 修复 :class:`bytearray` 与相同值的单字节 :class:`bytes` 对象共享其缓冲区，因此写入到 "
-"bytearray 会修改该 :class:`bytes` 对象的问题。 这种情况会在 :meth:`bytearray.take_bytes` "
-"恰好只有一个字节，以及在自由线程构建版上当一个 bytearray 从另一个线程缩减至一个字节时发生。was shrunk to one byte "
-"from another thread."
+":gh:`156995`：修复 :class:`bytearray` 与值相同的单字节 :class:`bytes` 对象共享缓冲区、以致写入 "
+"bytearray 会修改该 :class:`bytes` 对象的问题。当 :meth:`bytearray.take_bytes` "
+"恰好只剩一个字节时，以及自由线程构建版中 bytearray 被另一个线程缩减到一个字节时，都会出现该问题。"
 
 #: ../NEWS:1817
 msgid ""
@@ -4608,8 +4609,8 @@ msgid ""
 " slot could never be reclaimed, so the QSBR array grew without bound across "
 "repeated failures."
 msgstr ""
-":gh:`155363`：在创建线程状态失败时，修复 :term:`free-threaded build` 中的泄漏问题，该问题发生在为其预留内部 "
-"QSBR 槽之后。该槽无法被回收，因此 QSBR 数组在多次失败中无限制地增长。"
+":gh:`155363`：在创建线程状态失败时，修复 :term:`自由线程构建 <free-threaded build>` "
+"中的泄漏问题，该问题发生在为其预留内部 QSBR 槽之后。该槽无法被回收，因此 QSBR 数组在多次失败中无限制地增长。"
 
 #: ../NEWS:2124
 msgid ""
@@ -4807,7 +4808,7 @@ msgid ""
 "after the first to be scrambled."
 msgstr ""
 ":gh:`154566`：修复 :meth:`array.array.byteswap` 对包含多个元素的 ``'Zd'`` "
-"（复杂双精度）数组造成的数据损坏问题：16 字节项循环在每次迭代时仅将缓冲区指针前移 8 字节，导致首个项之后的项发生错位。"
+"（双精度复数）数组造成的数据损坏问题：16 字节项循环在每次迭代时仅将缓冲区指针前移 8 字节，导致首个项之后的项发生错位。"
 
 #: ../NEWS:2219
 msgid ""
@@ -4847,7 +4848,7 @@ msgstr ":gh:`154060`：将测得的持续时间和采样率存储在 Tachyon 二
 msgid ""
 ":gh:`154085`: Prevent differential flamegraphs from duplicating self time "
 "across line nodes for the same function."
-msgstr ":gh:`154085`：防止同一函数的差分火焰图在线路节点之间重复使用自时。"
+msgstr ":gh:`154085`：防止同一函数的差分火焰图在行节点之间重复计算自身耗时。"
 
 #: ../NEWS:2238
 msgid ""
@@ -5502,7 +5503,7 @@ msgid ""
 "show \"Function not implemented\" error."
 msgstr ""
 ":gh:`148665`：Emscripten 构建版本现已启用 ``socket.shutdown`` 函数。但如果运行时未实现 shutdown "
-"系统调用，则会显示“函数未实现”错误。"
+"系统调用，则会显示 ``\"Function not implemented\"`` 错误。"
 
 #: ../NEWS:2559
 msgid ""
@@ -5700,8 +5701,8 @@ msgid ""
 ":gh:`153205`: Fix a potential :exc:`SystemError` during vector calls when "
 "memory allocation fails. A :exc:`MemoryError` is now raised instead."
 msgstr ""
-":gh:`153205`：修复向量调用期间内存分配失败时可能发生的 :exc:`SystemError` 问题。现在将改用 raise "
-":exc:`MemoryError` 来处理。"
+":gh:`153205`：修复向量调用期间内存分配失败时可能发生的 :exc:`SystemError` 问题。现在会改为引发 "
+":exc:`MemoryError`。"
 
 #: ../NEWS:2678
 msgid ""
@@ -5737,8 +5738,8 @@ msgid ""
 ":gh:`152492`: :type:`collections.OrderedDict` ``update`` method can now "
 "accept :type:`frozendict` as an argument."
 msgstr ""
-":gh:`152492`: :type:`collections.OrderedDict` ``update`` 方法现在可接受 "
-":type:`frozendict` 作为参数。as an argument."
+":gh:`152492`：:type:`collections.OrderedDict` 的 ``update`` 方法现在可以接受 "
+":type:`frozendict` 作为参数。"
 
 #: ../NEWS:2695
 msgid ""
@@ -5915,7 +5916,7 @@ msgid ""
 ":term:`free-threaded build` when called from C++ static local initializers."
 msgstr ""
 ":gh:`149162`：修复当从 C++ 静态局部初始化子程序调用时，:c:func:`PyUnicode_InternFromString` 及 "
-":term:`free-threaded build` 中其他 intern 函数可能出现的死锁问题。"
+":term:`自由线程构建 <free-threaded build>` 中其他 intern 函数可能出现的死锁问题。"
 
 #: ../NEWS:2776
 msgid ":gh:`148825`: Fix build error if specialization is disabled."
@@ -6651,7 +6652,7 @@ msgid ""
 "``STRING`` format could leak internal names used by the annotation "
 "machinery."
 msgstr ""
-":gh:`150641`：修复一个漏洞：采用 ``STRING`` 格式的 :func:`typing.evaluate_forward_ref` "
+":gh:`150641`：修复一个缺陷：采用 ``STRING`` 格式的 :func:`typing.evaluate_forward_ref` "
 "可能会泄露注释机制所使用的内部名称。"
 
 #: ../NEWS:3122
@@ -6974,7 +6975,7 @@ msgstr ""
 msgid ""
 ":gh:`151722`: Defer GC tracking of :class:`frozendict` to end of "
 "construction. Patch by Donghee Na."
-msgstr ":gh:`151722`：将 :class:`frozendict` 的 GC 跟踪推迟至施工结束。由 Donghee Na 修复。"
+msgstr ":gh:`151722`：将 :class:`frozendict` 的 GC 跟踪推迟至构造结束。由 Donghee Na 修复。"
 
 #: ../NEWS:3294
 msgid ""
@@ -6983,7 +6984,7 @@ msgid ""
 "limits. Patch by Victor Stinner."
 msgstr ""
 ":gh:`151546`：若 Python 链接的是 musl（例如 Alpine "
-"Linux），请修复堆栈上限检查；使用链接器设置的堆栈大小来计算堆栈上限。补丁作者：Victor Stinner。"
+"Linux），修复堆栈上限检查；使用链接器设置的堆栈大小来计算堆栈上限。补丁作者：Victor Stinner。"
 
 #: ../NEWS:3298
 msgid ""
@@ -7085,9 +7086,9 @@ msgid ""
 "``mach_absolute_time()``. The mismatch prevented the JIT code mappings from "
 "lining up with the samples, so no Python frame could be resolved."
 msgstr ""
-":gh:`150723`: 修复 macOS 上的 perf jitdump 时间戳问题。 事件时间戳将使用 ``CLOCK_MONOTONIC``，但"
-" macOS 性能分析器则会使用 ``mach_absolute_time()`` 给采样打时间戳。 此种错误匹配将阻止 JIT "
-"代码映射与采样保持对应，使得 Python 帧无法被解析。frame could be resolved."
+":gh:`150723`：修复 macOS 上 perf jitdump 的时间戳问题。事件时间戳使用的是 ``CLOCK_MONOTONIC``，而 "
+"macOS 的性能分析器则用 ``mach_absolute_time()`` 给采样打时间戳。两者不一致使 JIT "
+"代码映射无法与采样对齐，因此无法解析出任何 Python 帧。"
 
 #: ../NEWS:3346
 msgid ""
@@ -7109,7 +7110,7 @@ msgid ""
 "Sławecki."
 msgstr ""
 ":gh:`150700`：在编译包含引用 ``__class__``、``__classdict__`` 或 "
-"``__conditional_annotations__`` 的 ``lambda`` 的类作用域 comprehension 时，修复 "
+"``__conditional_annotations__`` 的 ``lambda`` 的类作用域 推导式 时，修复 "
 ":exc:`SystemError`。补丁作者：Bartosz Sławecki。"
 
 #: ../NEWS:3357
@@ -7224,7 +7225,7 @@ msgid ""
 ":gh:`151390`: Colorize ``match`` in the :term:`REPL` when followed by a "
 "unary ``+`` or ``-`` operator. Patch by Bartosz Sławecki."
 msgstr ""
-":gh:`151390`：当 ``match`` 后接一元运算符 ``+`` 或 ``-`` 时，将其着色为 :term:`REPL` 的颜色。由 "
+":gh:`151390`：当 ``match`` 后接一元运算符 ``+`` 或 ``-`` 时，在 :term:`REPL` 中为其着色。由 "
 "Bartosz Sławecki 完成补丁。"
 
 #: ../NEWS:3412
@@ -7614,7 +7615,7 @@ msgstr ""
 msgid ""
 ":gh:`150374`: Fix double release of the import lock on lazy import "
 "reification errors."
-msgstr ":gh:`150374`：修复懒式导入重现实例化错误中导入锁被双重释放的问题。"
+msgstr ":gh:`150374`：修复惰性导入具体化错误中导入锁被双重释放的问题。"
 
 #: ../NEWS:3619
 msgid ""
@@ -7669,7 +7670,7 @@ msgstr ""
 msgid ""
 ":gh:`150042`: Fix refleak in queue.SimpleQueue.put if memory allocation "
 "fails."
-msgstr ":gh:`150042`：若内存分配失败，则修复 queue.SimpleQueue.put 中的反射问题。"
+msgstr ":gh:`150042`：若内存分配失败，则修复 queue.SimpleQueue.put 中的引用泄漏问题。"
 
 #: ../NEWS:3644
 msgid ":gh:`149590`: Fix crash when faulthandler is imported more than once."
@@ -7685,7 +7686,7 @@ msgstr ":gh:`149816`：修复自由线程模式下 ``_PyBytes_FromList`` 中的�
 msgid ""
 ":gh:`149816`: Fix a race condition in :class:`memoryview` with free-"
 "threading."
-msgstr ":gh:`149816`：通过自由线程机制修复 :class:`memoryview` 中的竞态条件。"
+msgstr ":gh:`149816`：修复自由线程构建下 :class:`memoryview` 中的竞态条件。"
 
 #: ../NEWS:3652
 msgid ""
@@ -7734,9 +7735,7 @@ msgstr ""
 msgid ""
 ":gh:`144957`: Fix lazy ``from`` imports of module attributes provided by "
 "module-level ``__getattr__``."
-msgstr ""
-":gh:`144957`: 修复由模块级 ``__getattr__`` 提供的模块属性的惰性 ``from`` 导入。imports of "
-"module attributes provided by module-level."
+msgstr ":gh:`144957`：修复由模块级 ``__getattr__`` 提供的模块属性的惰性 ``from`` 导入。"
 
 #: ../NEWS:3672
 msgid ""
@@ -8309,7 +8308,7 @@ msgid ""
 "cyclic garbage is freed since mimalloc defers returning memory of the OS. "
 "This change applies to the free-threaded GC only."
 msgstr ""
-":gh:`148940`：恢复基于进程大小的垃圾回收延迟机制（:gh:`133464`）。这一变更所解决的性能问题也通过 :gh:`142562` "
+":gh:`148940`：回滚基于进程大小的垃圾回收延迟机制（:gh:`133464`）。这一变更所解决的性能问题也通过 :gh:`142562` "
 "得到修复。该方法存在一个问题：由于 mimalloc 会延迟向操作系统返回内存，因此操作系统所看到的进程大小（例如驻留大小或 "
 "RSS）在循环垃圾回收释放内存后并不会立即下降。此变更仅适用于自由线程 GC。"
 
@@ -8429,7 +8428,7 @@ msgid ""
 ":gh:`142516`: Forward-port the generational cycle garbage collector to the "
 "default 3.15 build, replacing the incremental collector while leaving the "
 "free-threaded collector unchanged."
-msgstr ":gh:`142516`：将代际循环垃圾回收器转发至默认的 3.15 版本构建，替换增量回收器，同时保持自由线程回收器不变。"
+msgstr ":gh:`142516`：将分代循环垃圾回收器前向移植到默认的 3.15 版本构建，替换增量回收器，同时保持自由线程回收器不变。"
 
 #: ../NEWS:4026
 msgid ""
@@ -8489,7 +8488,7 @@ msgstr ""
 msgid ""
 ":gh:`148398`: Fix a bug in the JIT optimizer where class attribute loads "
 "were not invalidated after type mutation."
-msgstr ":gh:`148398`：修复 JIT 优化器中的一个漏洞，该漏洞导致类属性加载在类型变更后仍未被失效。"
+msgstr ":gh:`148398`：修复 JIT 优化器中的一个缺陷，该漏洞导致类属性加载在类型变更后仍未被失效。"
 
 #: ../NEWS:4054
 msgid ""
@@ -8553,8 +8552,8 @@ msgid ""
 ":class:`enum.Enum` improving performance and scaling in free-threading. "
 "Patch by Kumar Aditya."
 msgstr ""
-":gh:`95004`：该专用解释器现已专门用于 :class:`enum.Enum`，从而提升性能并实现自由线程化下的可扩展性。补丁由 Kumar "
-"Aditya 提交。"
+":gh:`95004`：特化解释器现在会针对 :class:`enum.Enum` 进行特化，从而提升性能并实现自由线程化下的可扩展性。补丁由 "
+"Kumar Aditya 提交。"
 
 #: ../NEWS:4084
 msgid ""
@@ -8567,7 +8566,7 @@ msgid ""
 msgstr ""
 ":gh:`149202`：对于兼容 GCC 的 CPython 构建版本，默认启用帧指针；在 32 位 ARM 平台上启用 ``-mno-omit-"
 "leaf-frame-pointer`` 和 ``-marm``，在 s390x 平台上启用 ``-mbackchain`` "
-"（前提是编译器支持这些选项），以便性能性能分析器和调试器能够更可靠地展开原生解释器帧。用户可将 :option:`--without-frame-"
+"（前提是编译器支持这些选项），以便性能分析器和调试器能够更可靠地展开原生解释器帧。用户可将 :option:`--without-frame-"
 "pointers` 传递给 ``./configure`` 以禁用该功能。"
 
 #: ../NEWS:4091
@@ -8625,9 +8624,8 @@ msgid ""
 "inlined dispatch."
 msgstr ""
 ":gh:`146031`：不稳定的API _PyInterpreterState_SetEvalFrameFunc 有一个配套函数 "
-"_PyInterpreterState_SetEvalFrameAllowSpecialization "
-"，用于指定是否允许特化。当此选项设置为1时，特化器会将Python -> "
-"Python调用转换为特化操作码，替换后的解释器循环可以选择遵循这些操作码并执行内联调度。"
+"_PyInterpreterState_SetEvalFrameAllowSpecialization，用于指定是否允许特化。当此选项设置为1时，特化器会将Python"
+" -> Python调用转换为特化操作码，替换后的解释器循环可以选择遵循这些操作码并执行内联调度。"
 
 #: ../NEWS:4119
 msgid ""
@@ -8914,7 +8912,7 @@ msgstr ""
 ":gh:`149189`：:mod:`pprint` 现在采用现代默认设置：``indent=4`` 和 ``width=88``；默认 "
 "``compact=False`` 输出现在采用与美观打印的 :func:`json.dumps` "
 "类似的格式，即以左括号和方括号开头，随后换行，内容缩进一级。自 3.15.0a8 起添加的 *expand* "
-"参数已被移除；``compact=False``（默认设置）现在将生成原先的 ``expand=True`` 布局。补丁由 Hugo van "
+"参数已被移除；``compact=False`` （默认设置）现在将生成原先的 ``expand=True`` 布局。补丁由 Hugo van "
 "Kemenade 提交。"
 
 #: ../NEWS:4257
@@ -9047,7 +9045,7 @@ msgid ""
 "3.19. Use :meth:`http.cookies.Morsel.output` or "
 ":meth:`http.cookies.BaseCookie.output` instead."
 msgstr ""
-":gh:`148849`：请弃用 :meth:`http.cookies.Morsel.js_output` 和 "
+":gh:`148849`：弃用 :meth:`http.cookies.Morsel.js_output` 和 "
 ":meth:`http.cookies.BaseCookie.js_output`；这两者将在 Python 3.19 中移除。请改用 "
 ":meth:`http.cookies.Morsel.output` 或 :meth:`http.cookies.BaseCookie.output`。"
 
@@ -9151,7 +9149,7 @@ msgid ""
 "new format ``<name>.start`` parallel to ``<name>.pth`` files, to replace "
 "``import`` lines in the latter."
 msgstr ""
-":gh:`148641`：:pep:`829`（软件包启动配置文件）采用了一种与 ``<name>.pth`` 文件并行且全新的格式 "
+":gh:`148641`：:pep:`829` （软件包启动配置文件）采用了一种与 ``<name>.pth`` 文件类似的另一种新格式 "
 "``<name>.start``，用以替换后者中的 ``import`` 行。"
 
 #: ../NEWS:4364
@@ -9416,7 +9414,7 @@ msgid ""
 "entire ``currentProfilerContext`` linked list instead of only freeing the "
 "top context."
 msgstr ""
-":gh:`145846`：在带有嵌套调用的主动剖析过程中调用 ``clear()`` 时，修复 ``_lsprof`` "
+":gh:`145846`：在带有嵌套调用的主动性能分析过程中调用 ``clear()`` 时，修复 ``_lsprof`` "
 "中的内存泄漏问题。现在，``clearEntries()`` 会遍历整个 ``currentProfilerContext`` "
 "链表，而不再仅释放顶层上下文。"
 
@@ -9541,9 +9539,7 @@ msgstr ""
 msgid ""
 ":gh:`141449`: Improve tests and documentation for non-function callables as "
 ":term:`annotate functions <annotate function>`."
-msgstr ""
-":gh:`141449`：将非函数调用函数的测试和文档完善为 :term:`annotate functions <annotate "
-"function>`。"
+msgstr ":gh:`141449`：改进作为 :term:`注解函数 <annotate function>` 的非函数可调用对象的测试与文档。"
 
 #: ../NEWS:4537
 msgid ""
@@ -9666,11 +9662,11 @@ msgid ""
 "correctly pass through the internationalized domain name as Unicode "
 "characters."
 msgstr ""
-":gh:`83938`：:mod:`email` 模块不再错误地使用 :rfc:`2047` 编码处理域中包含非 ASCII 字符的邮箱。在将 "
-":attr:`~email.policy.EmailPolicy.utf8` 设置为 ``False`` 的策略下，尝试序列化此类消息时现在会引发 "
-":exc:`~email.errors.HeaderWriteError`。要么在序列化前应用适当的 IDNA 编码将域转换为 ASCII，要么使用 "
-":data:`email.policy.SMTPUTF8` （或另一个将 ``utf8=True`` 设置为 ``False`` 的策略）以 "
-"Unicode 字符正确传递国际化域名。"
+":gh:`83938`：:mod:`email` 模块不再错误地对域名中含非 ASCII 字符的邮箱使用 :rfc:`2047` 编码。在 "
+":attr:`~email.policy.EmailPolicy.utf8` 设为 ``False`` 的策略下，尝试序列化此类消息现在会引发 "
+":exc:`~email.errors.HeaderWriteError`。要么在序列化前应用适当的 IDNA 编码把域名转换为 ASCII，要么使用 "
+":data:`email.policy.SMTPUTF8` （或其他 ``utf8=True`` 的策略），以便将国际化域名作为 Unicode "
+"字符正确传递。"
 
 #: ../NEWS:4593
 msgid ""
@@ -9863,8 +9859,8 @@ msgid ""
 "linked to ``python3t.dll``, and will include a copy of that library in "
 "normal installs that references the non-freethreaded runtime."
 msgstr ""
-":gh:`148690`：Windows 上的非线程化构建现在支持与 ``python3t.dll`` "
-"关联的扩展；在常规安装中，该扩展将包含一个引用非线程化运行时的该库副本。"
+":gh:`148690`：Windows 上的非自由线程构建现在支持与 ``python3t.dll`` "
+"关联的扩展；在常规安装中，该扩展将包含一个引用非自由线程运行时的该库副本。"
 
 #: ../NEWS:4694
 msgid ""
@@ -10090,7 +10086,7 @@ msgid ""
 " support. Patch by Pablo Galindo"
 msgstr ""
 ":gh:`144319`：修复一个可能导致采用特定分配模式的应用程序在启用 Huge Page 支持编译时通过 Huge Pages "
-"导致内存泄漏的漏洞。补丁作者：Pablo Galindo"
+"导致内存泄漏的缺陷。补丁作者：Pablo Galindo"
 
 #: ../NEWS:4815
 msgid ""
@@ -10138,7 +10134,7 @@ msgid ""
 "by Diego Russo"
 msgstr ""
 ":gh:`126910`：在 ``aarch64-unknown-linux-gnu`` JIT "
-"代码中设置帧指针，使大多数原生性能性能分析器和调试器能够通过这些指针进行回溯。补丁作者：Diego Russo"
+"代码中设置帧指针，使大多数原生性能分析器和调试器能够通过这些指针进行回溯。补丁作者：Diego Russo"
 
 #: ../NEWS:4837
 msgid ""
@@ -10410,7 +10406,7 @@ msgid ""
 "allowing most native profilers and debuggers to unwind through them."
 msgstr ""
 ":gh:`126910`：在 ``x86_64-unknown-linux-gnu`` JIT "
-"代码中设置帧指针，使大多数原生性能性能分析器和调试器能够通过这些指针进行回溯。"
+"代码中设置帧指针，使大多数原生性能分析器和调试器能够通过这些指针进行回溯。"
 
 #: ../NEWS:4959
 msgid ""
@@ -10456,7 +10452,7 @@ msgid ""
 ":func:`base64.urlsafe_b64decode` by default."
 msgstr ""
 ":gh:`73613`：在 :mod:`binascii` 和 :mod:`base64` 模块中与 Base32 及 Base64 "
-"编解码器相关的函数中，添加 *填充* "
+"编解码器相关的函数中，添加 *padded* "
 "参数。在编码函数中，该参数控制输出时是否可添加填充字符；在解码函数中，则控制输入时是否需要进行填充。默认情况下，:func:`base64.urlsafe_b64decode`"
 " 不再要求对输入进行填充。"
 
@@ -10658,7 +10654,7 @@ msgid ""
 ":gh:`146171`: Nested :exc:`AttributeError` suggestions now include property-"
 "backed attributes on nested objects without executing the property getter."
 msgstr ""
-":gh:`146171`：嵌套的 :exc:`AttributeError` 建议现在支持在嵌套对象上设置基于属性的属性，而无需执行属性获取器。"
+":gh:`146171`：嵌套的 :exc:`AttributeError` 建议现在支持在嵌套对象上包含由属性支持的属性，而无需执行属性获取器。"
 
 #: ../NEWS:5077
 msgid ""
@@ -10675,7 +10671,7 @@ msgid ""
 "sequence that raises an exception in ``__getitem__`` would cause a "
 ":exc:`SystemError` instead of propagating the original exception."
 msgstr ""
-":gh:`146091`：修复 :func:`termios.tcsetwinsize` 中的一个漏洞：在 ``__getitem__`` "
+":gh:`146091`：修复 :func:`termios.tcsetwinsize` 中的一个缺陷：在 ``__getitem__`` "
 "中传递一个会引发异常的序列时，原本应传播原始异常，却会引发 :exc:`SystemError`。"
 
 #: ../NEWS:5085
@@ -10806,7 +10802,7 @@ msgid ""
 "between runs."
 msgstr ""
 ":gh:`138122`：``profiling.sampling`` 模块现在通过 ``--diff-flamegraph`` "
-"支持差分火焰图可视化，用于比较两次性能分析运行结果。函数以红色（性能下降）、蓝色（性能提升）、灰色（无变化）或紫色（新增）进行着色；省略的堆栈则显示在两次运行之间消失的代码路径。"
+"支持差异火焰图可视化，用于比较两次性能分析运行的结果。函数以红色（性能下降）、蓝色（性能提升）、灰色（无变化）或紫色（新增）进行着色；省略的堆栈则显示在两次运行之间消失的代码路径。"
 
 #: ../NEWS:5146
 msgid ""
@@ -11052,7 +11048,7 @@ msgstr ":gh:`139633`：:mod:`netrc` 安全检查现在改为每次解析运行�
 msgid ""
 ":gh:`130472`: Add fancycompleter and enable it by default when using pyrepl."
 " This gives colored tab completion."
-msgstr ":gh:`130472`：添加 fancycompleter，并在使用 pyrepl 时默认启用它。这样即可实现带颜色的选项卡补全。"
+msgstr ":gh:`130472`：添加 fancycompleter，并在使用 pyrepl 时默认启用它。这样即可实现带颜色的 Tab 键补全。"
 
 #: ../NEWS:5258
 msgid ""
@@ -11246,8 +11242,8 @@ msgid ""
 ":c:macro:`PY_UINT32_T`, :c:macro:`PY_INT64_T`, :c:macro:`PY_UINT64_T`, "
 ":c:macro:`PY_SIZE_MAX`, :c:macro:`Py_UNICODE_SIZE`, :c:macro:`Py_VA_COPY`."
 msgstr ""
-":gh:`146175`：以下宏为 :term:`soft "
-"deprecated`：:c:macro:`Py_ALIGNED`、:c:macro:`PY_FORMAT_SIZE_T`、:c:macro:`Py_LL`、:c:macro:`Py_ULL`、:c:macro:`PY_LONG_LONG`、:c:macro:`PY_LLONG_MIN`、:c:macro:`PY_LLONG_MAX`、:c:macro:`PY_ULLONG_MAX`、:c:macro:`PY_INT32_T`、:c:macro:`PY_UINT32_T`、:c:macro:`PY_INT64_T`、:c:macro:`PY_UINT64_T`、:c:macro:`PY_SIZE_MAX`、:c:macro:`Py_UNICODE_SIZE`、:c:macro:`Py_VA_COPY`。"
+":gh:`146175`：以下宏为 :term:`软弃用 <soft "
+"deprecated>`：:c:macro:`Py_ALIGNED`、:c:macro:`PY_FORMAT_SIZE_T`、:c:macro:`Py_LL`、:c:macro:`Py_ULL`、:c:macro:`PY_LONG_LONG`、:c:macro:`PY_LLONG_MIN`、:c:macro:`PY_LLONG_MAX`、:c:macro:`PY_ULLONG_MAX`、:c:macro:`PY_INT32_T`、:c:macro:`PY_UINT32_T`、:c:macro:`PY_INT64_T`、:c:macro:`PY_UINT64_T`、:c:macro:`PY_SIZE_MAX`、:c:macro:`Py_UNICODE_SIZE`、:c:macro:`Py_VA_COPY`。"
 
 #: ../NEWS:5370
 msgid ""
@@ -11563,7 +11559,7 @@ msgid ""
 ":gh:`142224`: :func:`unicodedata.bidirectional` now return the correct "
 "default bidi class for unassigned code points."
 msgstr ""
-":gh:`142224`：:func:`unicodedata.bidirectional` 现在应为未分配代码点返回正确的默认双向字符类。"
+":gh:`142224`：:func:`unicodedata.bidirectional` 现在会为未分配代码点返回正确的默认双向字符类。"
 
 #: ../NEWS:5523
 msgid ":gh:`117865`: Reduce the import time of :mod:`inspect` module by ~20%."
@@ -11605,8 +11601,8 @@ msgid ""
 "classes now supports passing any :term:`iterable` of fields and types. "
 "Previously, only sequences were supported."
 msgstr ""
-":gh:`144321`：用于创建 :class:`typing.NamedTuple` 类的功能语法现在支持传递任意由字段和类型组成的 "
-":term:`iterable`；此前仅支持序列。"
+":gh:`144321`：用于创建 :class:`typing.NamedTuple` 类的函数式语法现在支持传递任意由字段和类型组成的 "
+":term:`可迭代对象 <iterable>`；此前仅支持序列。"
 
 #: ../NEWS:5544
 msgid ""
@@ -11746,13 +11742,13 @@ msgid ""
 ":meth:`!weakref.WeakKeyDictionary.update` is used with keyword-only "
 "parameters."
 msgstr ""
-":gh:`124748`：当 :meth:`!weakref.WeakKeyDictionary.update` 与仅使用关键字的参数一起使用时，改进 "
+":gh:`124748`：当 :meth:`!weakref.WeakKeyDictionary.update` 与关键字参数一起使用时，改进 "
 ":exc:`TypeError` 的错误消息。"
 
 #: ../NEWS:5607
 msgid ""
 ":gh:`80667`: Add support for Tangut Ideographs names in :mod:`unicodedata`."
-msgstr ":gh:`80667`：在 :mod:`unicodedata` 中添加对唐兀文姓名的支持。"
+msgstr ":gh:`80667`：在 :mod:`unicodedata` 中添加对西夏文表意文字名称的支持。"
 
 #: ../NEWS:5609
 msgid ""
@@ -11874,7 +11870,7 @@ msgid ""
 ":gh:`143055`: Fix crash in AST unparser when unparsing dict comprehension "
 "unpacking. Found by OSS Fuzz in :oss-fuzz:`489790200`."
 msgstr ""
-":gh:`143055`：修复 AST 解析器在解析字典推导式解包时发生的崩溃。该问题由 OSS Fuzz 在 :oss-"
+":gh:`143055`：修复 AST 反解析器在反解析字典推导式解包时时发生的崩溃。该问题由 OSS Fuzz 在 :oss-"
 "fuzz:`489790200` 中发现。"
 
 #: ../NEWS:5670
@@ -12123,8 +12119,7 @@ msgid ""
 ":gh:`138912`: Improve :opcode:`MATCH_CLASS` performance by up to 52% in "
 "certain cases. Patch by Marc Mueller."
 msgstr ""
-":gh:`138912`：在某些情况下，可将 :opcode:`MATCH_CLASS` 的性能提升至最高 52% in。补丁作者：Marc "
-"Mueller。"
+":gh:`138912`：在某些情况下，可将 :opcode:`MATCH_CLASS` 的性能最高提升 52%。补丁作者：Marc Mueller。"
 
 #: ../NEWS:5778
 msgid ""
@@ -12474,7 +12469,7 @@ msgid ""
 "imaging) with the official MIME type ``application/dicom``. Patch by "
 "Benedikt Johannes."
 msgstr ""
-":gh:`144217`：:mod:`mimetypes`：新增对 dicom 文件（用于医学成像）的支持，采用官方 MIME 类型 "
+":gh:`144217`：:mod:`mimetypes`：新增对 DICOM 文件（用于医学成像）的支持，采用官方 MIME 类型 "
 "``application/dicom``。补丁由 Benedikt Johannes 提交。"
 
 #: ../NEWS:5955
@@ -12737,7 +12732,7 @@ msgid ""
 "(raise exception). Contributed by Nick Neumann and Gregory P. Smith."
 msgstr ""
 ":gh:`141860`：向 :func:`multiprocessing.set_forkserver_preload` 添加一个仅含关键字的参数 "
-"``on_error``，用于控制模块预加载期间导入失败时的处理方式。该参数可接受 ``'ignore'``（默认值：静默）、``'warn'`` "
+"``on_error``，用于控制模块预加载期间导入失败时的处理方式。该参数可接受 ``'ignore'`` （默认值：静默）、``'warn'`` "
 "（发出 :exc:`ImportWarning`）或 ``'fail'`` （抛出异常）。由 Nick Neumann 和 Gregory P. "
 "Smith 贡献。"
 
@@ -12748,8 +12743,8 @@ msgid ""
 " now deprecated. In future Python versions they will be errors in the strict"
 " mode and discarded in the non-strict mode."
 msgstr ""
-":gh:`125346`：现在已弃用在 :func:`base64.b64decode` 和 "
-":func:`base64.urlsafe_b64decode` 中使用替代字母表来接受 ``+`` 和 ``/`` 字符。在未来的 Python "
+":gh:`125346`：在 :func:`base64.b64decode` 和 :func:`base64.urlsafe_b64decode` "
+"中，原先允许使用替代字母表接受 ``+`` 和 ``/`` 字符的做法已被弃用。在未来的 Python "
 "版本中，这些操作将在严格模式下引发错误，并在非严格模式下被忽略。"
 
 #: ../NEWS:6078
@@ -12868,7 +12863,7 @@ msgstr ""
 msgid ""
 ":gh:`139103`: Improve scaling of :func:`~collections.namedtuple` "
 "instantiation in the free-threaded build."
-msgstr ":gh:`139103`：改进自由线程构建中 :func:`~collections.namedtuple` 实例化的缩放性能。"
+msgstr ":gh:`139103`：改进自由线程构建中 :func:`~collections.namedtuple` 实例化的可扩展性。"
 
 #: ../NEWS:6140
 msgid ""
@@ -12909,7 +12904,7 @@ msgid ""
 "loop more usefully for a 2x speedup in the common no-deletions specified "
 "case."
 msgstr ""
-":gh:`144157`：:meth:`bytes.translate` 现在允许编译器更有效地展开循环，从而在常见的无删除指定情况下实现 2 "
+":gh:`144157`：:meth:`bytes.translate` 现在允许编译器更有效地展开循环，从而在常见的未指定删除的情况下实现 2 "
 "倍的加速。"
 
 #: ../NEWS:6160
@@ -12983,15 +12978,15 @@ msgid ""
 "programs. Note that when deferred reference counting is enabled, the object "
 "will be deallocated by the GC, rather than by :c:func:`Py_DECREF`."
 msgstr ""
-":gh:`132657`：如果我们的任务专门针对 ``LOAD_GLOBAL_MODULE`` 或 "
-"``LOAD_ATTR_MODULE``，且该对象由另一个线程持有，请尝试为该值启用延迟引用计数。此设置仅适用于自由线程构建版本，应能改善多线程程序的扩展性。请注意，当启用延迟引用计数时，对象将由"
+":gh:`132657`：在专门化到 ``LOAD_GLOBAL_MODULE`` 或 ``LOAD_ATTR_MODULE`` "
+"时，如果该对象由另一个线程持有，请尝试为该值启用延迟引用计数。此设置仅适用于自由线程构建版本，应能改善多线程程序的扩展性。请注意，当启用延迟引用计数时，对象将由"
 " GC 而非 :c:func:`Py_DECREF` 进行释放。"
 
 #: ../NEWS:6195
 msgid ""
 ":gh:`143055`: Implement :pep:`798` (Unpacking in Comprehensions).  Patch by "
 "Adam Hartz."
-msgstr ":gh:`143055`：实现 :pep:`798` （使用 comprehensions 展开）。补丁作者：Adam Hartz。"
+msgstr ":gh:`143055`：实现 :pep:`798` （推导式中的展开）。补丁作者：Adam Hartz。"
 
 #: ../NEWS:6198
 msgid ""
@@ -13214,7 +13209,7 @@ msgid ""
 " for lazy modules; caused Buildbot failures."
 msgstr ""
 ":gh:`139686`：回滚 0a97941245f1dda6d838f9aaf0512104e5253929 和 "
-"57db12514ac686f0a752ec8fe1c08b6daa0c6219 ，这两个改动导致 importlib.reload "
+"57db12514ac686f0a752ec8fe1c08b6daa0c6219，这两个改动导致 importlib.reload "
 "对于惰性模块而言变为无操作；由此引发了 Buildbot 失败。"
 
 #: ../NEWS:6324
@@ -13605,7 +13600,7 @@ msgid ""
 ":gh:`142982`: Specialize :opcode:`CALL_FUNCTION_EX` for Python and non-"
 "Python callables."
 msgstr ""
-":gh:`142982`：针对 Python 及非 Python 可调用对象，专门提供 :opcode:`CALL_FUNCTION_EX`。"
+":gh:`142982`：针对 Python 及非 Python 可调用对象，对 :opcode:`CALL_FUNCTION_EX` 进行特化。"
 
 #: ../NEWS:6507
 msgid ""
@@ -13850,7 +13845,7 @@ msgstr ""
 msgid ""
 ":gh:`80744`: Fix issue where ``pdb`` would read a ``.pdbrc`` twice if "
 "launched from the home directory"
-msgstr ":gh:`80744`：修复以下问题：若从当前目录启动，``pdb`` 会两次读取 ``.pdbrc``"
+msgstr ":gh:`80744`：修复以下问题：若从主目录启动，``pdb`` 会两次读取 ``.pdbrc``"
 
 #: ../NEWS:6629
 msgid ""
@@ -13909,9 +13904,9 @@ msgid ""
 "``version`` from :mod:`!xml.sax.expatreader` and :mod:`xml.sax.handler`. "
 "Patch by Hugo van Kemenade."
 msgstr ""
-":gh:`76007`：将 ``VERSION`` 从 :mod:`xml.etree.ElementTree` 中移除，并将 ``version`` "
-"从 :mod:`!xml.sax.expatreader` 和 :mod:`xml.sax.handler` 中移除。由 Hugo van "
-"Kemenade 修复。"
+":gh:`76007`：将 :mod:`xml.etree.ElementTree` 的 ``VERSION`` 以及 "
+":mod:`!xml.sax.expatreader` 和 :mod:`xml.sax.handler` 的 ``version`` 标记为弃用。由 "
+"Hugo van Kemenade 修复。"
 
 #: ../NEWS:6657
 msgid ""
@@ -14156,9 +14151,9 @@ msgid ""
 "could have led to symptoms including a :exc:`MemoryError`, swapping, out of "
 "memory (OOM) killed processes or containers, or even system crashes."
 msgstr ""
-":gh:`119342`: 修正a potential memory denial of service in the :mod:`plistlib` "
-"模块中一个潜在的内存拒绝服务问题。 当读取从不受信任的源接收的 Plist 文件时，它可能导致分配任意大小的内存。 这会造成多种问题包括 "
-":exc:`MemoryError`、消耗交换空间、内存不足（OOM）杀死进程或容器，甚至系统崩溃。"
+":gh:`119342`：修复 :mod:`plistlib` 模块中一个潜在的内存拒绝服务问题。当读取来自不受信任来源的 Plist "
+"文件时，它可能导致分配任意大小的内存。这会造成多种症状，包括 "
+":exc:`MemoryError`、使用交换空间、内存不足（OOM）杀死进程或容器，甚至系统崩溃。"
 
 #: ../NEWS:6790
 msgid ""
@@ -14224,7 +14219,7 @@ msgid ""
 "parallelism. Patch by Pablo Galindo."
 msgstr ""
 ":gh:`138122`：在 :mod:`profiling.sampling` CLI 中添加 ``--subprocesses`` "
-"标志，以自动对目标进程所启动的子进程进行性能剖析。启用后，性能性能分析器会监控新创建的 Python "
+"标志，以自动对目标进程所启动的子进程进行性能剖析。启用后，性能分析器会监控新创建的 Python "
 "子进程，并分别对每个子进程进行剖析，将结果写入独立的输出文件。这对于剖析使用 "
 ":mod:`multiprocessing`、:class:`~concurrent.futures.ProcessPoolExecutor` "
 "或其他基于子进程并行机制的应用程序非常有用。补丁作者：Pablo Galindo。"
@@ -14366,7 +14361,9 @@ msgstr ""
 msgid ""
 ":gh:`142207`: Fix: profiling.sampling may cause assertion ``!(has_gil && "
 "gil_requested)``"
-msgstr ":gh:`142207`：修复：性能分析。采样可能导致断言失败 ``!(has_gil && gil_requested)``"
+msgstr ""
+":gh:`142207`：修复：``profiling.sampling`` 可能导致断言失败 ``!(has_gil && "
+"gil_requested)``"
 
 #: ../NEWS:6890
 msgid ""
@@ -14384,7 +14381,7 @@ msgstr ":gh:`142282`: 修复 :func:`winreg.QueryValueEx` 在竞争条件下意�
 msgid ""
 ":gh:`142318`: Fix typing ``'q'`` at the help of the interactive tachyon "
 "profiler exiting the profiler."
-msgstr ":gh:`142318`：在交互式快子分析器退出时，借助该分析器修复 ``'q'`` 的输入问题。"
+msgstr ":gh:`142318`：在交互式 Tachyon 分析器退出时，借助该分析器修复 ``'q'`` 的输入问题。"
 
 #: ../NEWS:6899
 msgid ""
@@ -14772,7 +14769,7 @@ msgid ""
 ":gh:`76007`: :mod:`pydoc`: Fix :exc:`DeprecationWarning` being raised when "
 "generating doc for :term:`stdlib` modules."
 msgstr ""
-":gh:`76007`：:mod:`pydoc`：修复在为 :term:`stdlib` 模块生成文档时 "
+":gh:`76007`：:mod:`pydoc`：修复在为 :term:`标准库 <stdlib>` 模块生成文档时 "
 ":exc:`DeprecationWarning` 被触发的问题。"
 
 #: ../NEWS:7078
@@ -14806,7 +14803,7 @@ msgstr ""
 msgid ""
 ":gh:`135559`: Flag: a ``dir()`` on a ``Flag`` enumeration now shows non-"
 "canonical members. (i.e. aliases)."
-msgstr ":gh:`135559`：标志：当 ``Flag`` 枚举中的 ``dir()`` 显示为非规范成员时（即别名）。"
+msgstr ":gh:`135559`：标志：对 ``Flag`` 枚举调用 ``dir()`` 现在会显示非规范成员（即别名）。"
 
 #: ../NEWS:7093
 msgid ""
@@ -14815,9 +14812,9 @@ msgid ""
 "platforms. Those are now properly cast to a byte shaped view instead of "
 "truncating the input.  Windows platforms did not have this bug."
 msgstr ""
-":gh:`134453`: 修正 POSIX 平台上 :func:`subprocess.Popen.communicate` 对于非字节形状 "
-":class:`memoryview` 实例的 ``input=`` 处理。 现在它们会被正确转换为字节形状视图而不是截断输入。 Windows "
-"平台不存在此程序缺陷。platforms did not have this bug."
+":gh:`134453`：修复 POSIX 平台上 :func:`subprocess.Popen.communicate` 对非字节形状的 "
+":class:`memoryview` 实例的 ``input=`` 处理。它们现在会被正确转换为字节形状视图，而不是截断输入。Windows "
+"平台不存在此缺陷。"
 
 #: ../NEWS:7098
 msgid ":gh:`127930`: Add ``__all__`` to :mod:`tkinter.simpledialog`."
@@ -14976,7 +14973,7 @@ msgid ""
 ":gh:`142276`: Fix missing type watcher when promoting attribute loads to "
 "constants in the JIT. Patch by Ken Jin. Reproducer by Yuancheng Jiang."
 msgstr ""
-":gh:`142276`：修复在 JIT 中将属性加载提升为常量时缺失的类型监视器问题。修复者：Ken Jin；复现者：Yuancheng Jiang。"
+":gh:`142276`：修复在 JIT 中将属性加载提升为常量时缺失类型监视器的问题。修复者：Ken Jin；复现者：Yuancheng Jiang。"
 
 #: ../NEWS:7178
 msgid ""
@@ -14995,8 +14992,8 @@ msgid ""
 "import system and importlib. The method has been deprecated in favor of "
 "``importlib.abc.Loader.exec_module()`` since Python 3.4."
 msgstr ""
-":gh:`97850`：从 import system 和 importlib 中移除所有 ``*.load_module()`` 的使用和定义。自 "
-"Python 3.4 起，该方法已被弃用，转而采用 ``importlib.abc.Loader.exec_module()``。"
+":gh:`97850`：从导入系统和 importlib 中移除所有 ``*.load_module()`` 的使用和定义。自 Python 3.4 "
+"起，该方法已被弃用，转而采用 ``importlib.abc.Loader.exec_module()``。"
 
 #: ../NEWS:7187
 msgid ""
@@ -15030,7 +15027,7 @@ msgid ""
 ":gh:`142029`: Raise :exc:`ValueError` instead of crashing when empty string "
 "is used as a name in ``_imp.create_builtin()``."
 msgstr ""
-":gh:`142029`：当在 ``_imp.create_builtin()`` 中使用空字符串作为名称时，应显示 "
+":gh:`142029`：当在 ``_imp.create_builtin()`` 中使用空字符串作为名称时，应引发 "
 ":exc:`ValueError`，而不是崩溃。"
 
 #: ../NEWS:7202
@@ -15147,7 +15144,7 @@ msgid ""
 ":gh:`132657`: For the free-threaded build, avoid locking the :class:`set` "
 "object for the ``__contains__`` method."
 msgstr ""
-":gh:`132657`：对于无锁线程构建版本，应避免在 ``__contains__`` 方法中对 :class:`set` 对象进行锁定。"
+":gh:`132657`：对于自由线程构建版本，应避免在 ``__contains__`` 方法中对 :class:`set` 对象进行锁定。"
 
 #: ../NEWS:7256
 msgid ":gh:`134584`: Eliminate redundant refcounting from ``_CALL_STR_1``."
@@ -15231,7 +15228,7 @@ msgid ""
 ":gh:`141070`: Add :c:func:`!PyUnstable_Object_Dump` to dump an object to "
 "``stderr``. It should only be used for debugging. Patch by Victor Stinner."
 msgstr ""
-":gh:`141070`：将 :c:func:`!PyUnstable_Object_Dump` 添加至 ``stderr``，用于将对象转储到 "
+":gh:`141070`：添加 :c:func:`!PyUnstable_Object_Dump`，用于将对象转储到 "
 "``stderr``。此功能仅用于调试。补丁作者：Victor Stinner。"
 
 #: ../NEWS:7297
@@ -15299,7 +15296,7 @@ msgid ""
 " is otherwise executable (e.g., via transparent emulation)."
 msgstr ""
 ":gh:`141926`：``RUNSHARED`` 在交叉编译时不再被清除。此前，``RUNSHARED`` 在交叉编译时会被清除，这会导致在使用 "
-"``--enabled-shared`` 时，在那些交叉编译的 CPython 可以正常运行的系统上（例如通过透明模拟）破坏 PGO 。"
+"``--enabled-shared`` 时，在那些交叉编译的 CPython 可以正常运行的系统上（例如通过透明模拟）破坏 PGO。"
 
 #: ../NEWS:7329
 msgid ""
@@ -15335,7 +15332,7 @@ msgid ""
 msgstr ""
 ":gh:`139707`：添加配置选项 :option:`--with-missing-stdlib-"
 "config=FILE`，允许发行商传递包含自定义错误消息的 `JSON <https://www.json.org/json-en.html>`_ "
-"配置文件，这些消息用于提示缺失的 :term:`standard library` 模块。"
+"配置文件，这些消息用于提示缺失的 :term:`标准库 <standard library>` 模块。"
 
 #: ../NEWS:7347
 msgid ""
@@ -15343,8 +15340,8 @@ msgid ""
 "library installation path, if ``PLATLIBDIR`` doesn't match the value used in"
 " ``LIBDIR``."
 msgstr ""
-":gh:`108819`：若 ``PLATLIBDIR`` 与 ``LIBDIR`` 中使用的值不匹配，则在纯 Python 标准库安装路径中设置 "
-":option:`--with-platlibdir`。"
+":gh:`108819`：当 ``PLATLIBDIR`` 与 ``LIBDIR`` 的值不匹配时，在纯 Python 标准库安装路径中遵循 "
+":option:`--with-platlibdir` 的设置。"
 
 #: ../NEWS:7353
 msgid "Python 3.15.0 alpha 2"
@@ -15484,7 +15481,7 @@ msgid ""
 ":gh:`87710`: :mod:`mimetypes`: Update mime type for ``.ai`` files to "
 "``application/pdf``."
 msgstr ""
-":gh:`87710`: :mod:`mimetypes`：更新 mime 类型 ``.ai`` 文件至 ``application/pdf``."
+":gh:`87710`: :mod:`mimetypes`：将 ``.ai`` 文件的 MIME 类型更新为 ``application/pdf``。"
 
 #: ../NEWS:7431
 msgid ""
@@ -15576,8 +15573,8 @@ msgid ""
 ":gh:`140873`: Add support of non-:term:`descriptor` callables in "
 ":func:`functools.singledispatchmethod`."
 msgstr ""
-":gh:`140873`：在 :func:`functools.singledispatchmethod` 中增加对非 "
-":term:`descriptor` 可调用函数的支持。"
+":gh:`140873`：在 :func:`functools.singledispatchmethod` 中增加对非 :term:`描述符 "
+"<descriptor>` 可调用函数的支持。"
 
 #: ../NEWS:7470
 msgid ""
@@ -15754,9 +15751,8 @@ msgid ""
 "handling :class:`ast.Interpolation` nodes that do not have a specified "
 "source."
 msgstr ""
-":gh:`138774`: 现在当处理没有指定源的 :class:`ast.Interpolation` 节点时 :func:`ast.unparse`"
-" 会生成完整的源代码。now generates full source code when handlingnodes that do not "
-"have a specified source."
+":gh:`138774`：在处理未指定源的 :class:`ast.Interpolation` 节点时，:func:`ast.unparse` "
+"现在会生成完整的源代码。"
 
 #: ../NEWS:7549
 msgid ""
@@ -15859,8 +15855,8 @@ msgid ""
 ":gh:`139707`: Improve :exc:`ModuleNotFoundError` error message when a "
 ":term:`standard library` module is missing."
 msgstr ""
-":gh:`139707`：当缺少 :term:`standard library` 模块时，改进 :exc:`ModuleNotFoundError` "
-"的错误消息。"
+":gh:`139707`：当缺少 :term:`标准库 <standard library>` 模块时，改进 "
+":exc:`ModuleNotFoundError` 的错误消息。"
 
 #: ../NEWS:7595
 msgid ""
@@ -16082,7 +16078,7 @@ msgid ""
 "<sqlite3-cli>`."
 msgstr ""
 ":gh:`133390`：为 :mod:`sqlite3` 的 :ref:`command-line interface <sqlite3-cli>` "
-"提供支持表、索引、触发器、视图、列、函数及模式补全功能。"
+"提供表、索引、触发器、视图、列、函数及模式的补全功能。"
 
 #: ../NEWS:7693
 msgid ""
@@ -16152,7 +16148,7 @@ msgstr ":gh:`121011`：:func:`math.log` 现在支持任意大小的类整数型�
 msgid ""
 ":gh:`119668`: Publicly expose and document "
 ":class:`importlib.machinery.NamespacePath`."
-msgstr ":gh:`119668`：公开披露并记录 :class:`importlib.machinery.NamespacePath`。"
+msgstr ":gh:`119668`：公开导出并编写文档 :class:`importlib.machinery.NamespacePath`。"
 
 #: ../NEWS:7724
 msgid ""
@@ -16195,7 +16191,7 @@ msgid ""
 "not for list subclasses, to avoid unnecessary deopt. Patch by Mikhail "
 "Efimov."
 msgstr ""
-":gh:`141367`：仅针对列表专门优化 ``CALL_LIST_APPEND`` "
+":gh:`141367`：仅对列表（而不对列表子类）特化 ``CALL_LIST_APPEND`` "
 "指令，而不针对列表子类，以避免不必要的性能下降。补丁作者：Mikhail Efimov。"
 
 #: ../NEWS:7745
@@ -16273,8 +16269,8 @@ msgid ""
 "``concurrent.futures.ProcessPoolExecutor`` script can not be properly "
 "pickled and executed in worker processes."
 msgstr ""
-":gh:`140729`：在使用 ``concurrent.futures.ProcessPoolExecutor`` "
-"脚本时，采样分析器中的序列化错误无法正确序列化并在工作进程中执行。"
+":gh:`140729`：修复了在使用 ``concurrent.futures.ProcessPoolExecutor`` "
+"时采样分析器中出现的序列化错误。"
 
 #: ../NEWS:7797
 msgid ""
@@ -16466,7 +16462,7 @@ msgid ""
 "pattern now throws a specialized syntax error. Contributed by Bartosz "
 "Sławecki in :gh:`140253`."
 msgstr ""
-":gh:`140253`：在映射模式内部错误放置双星图案时，现在会触发一种专门的语法错误。由 Bartosz Sławecki 在 "
+":gh:`140253`：在映射模式内部错误放置双星号模式时，现在会触发一种专门的语法错误。由 Bartosz Sławecki 在 "
 ":gh:`140253` 中提出。"
 
 #: ../NEWS:7894
@@ -16642,7 +16638,8 @@ msgstr ":gh:`141004`：:c:macro:`!Py_MATH_El` 和 :c:macro:`!Py_MATH_PIl` 已弃
 #: ../NEWS:7972
 msgid ""
 ":gh:`141004`: The :c:macro:`!Py_INFINITY` macro is :term:`soft deprecated`."
-msgstr ":gh:`141004`：:c:macro:`!Py_INFINITY` 宏为 :term:`soft deprecated`。"
+msgstr ""
+":gh:`141004`：:c:macro:`!Py_INFINITY` 宏为 :term:`软弃用 <soft deprecated>`。"
 
 #: ../NEWS:7974
 msgid ""
@@ -17230,7 +17227,7 @@ msgid ""
 ":gh:`139958`: The ``application/toml`` mime type is now supported by "
 ":mod:`mimetypes`. Patch by Gil Forcada."
 msgstr ""
-":gh:`139958`：``application/toml`` 模拟类型现已被 :mod:`mimetypes` 支持。补丁作者：GIL "
+":gh:`139958`：``application/toml`` MIME 类型现已被 :mod:`mimetypes` 支持。补丁作者：Gil "
 "Forcada。"
 
 #: ../NEWS:8267
@@ -17703,7 +17700,7 @@ msgid ""
 ":gh:`132657`: Improve the scaling of :func:`copy.copy` and "
 ":func:`copy.deepcopy` in the free-threading build."
 msgstr ""
-":gh:`132657`：优化自由线程构建中 :func:`copy.copy` 和 :func:`copy.deepcopy` 的缩放性能。"
+":gh:`132657`：改善自由线程构建中 :func:`copy.copy` 和 :func:`copy.deepcopy` 的可扩展性。"
 
 #: ../NEWS:8483
 msgid ""
@@ -17828,7 +17825,7 @@ msgid ""
 ":gh:`138092`: Fixed a bug in :meth:`mmap.mmap.flush` where calling with only"
 " an offset parameter would fail."
 msgstr ""
-":gh:`138092`：修复了 :meth:`mmap.mmap.flush` 中的一个漏洞，该漏洞会导致仅使用偏移量参数进行调用时失败。"
+":gh:`138092`：修复了 :meth:`mmap.mmap.flush` 中的一个缺陷，该漏洞会导致仅使用偏移量参数进行调用时失败。"
 
 #: ../NEWS:8538
 msgid ""
@@ -17918,8 +17915,8 @@ msgid ""
 "``@``-modifiers. ``@``-modifier are no longer silently removed in "
 ":func:`locale.getlocale`, but included in the language code."
 msgstr ""
-":gh:`137729`：:func:`locale.setlocale` 现在支持带有 ``@``-modifier "
-"的语言代码。``@``-modifier 不再会在 :func:`locale.getlocale` 中被静默移除，而是被纳入语言代码中。"
+":gh:`137729`：:func:`locale.setlocale` 现在支持带有 ``@``-modifier 的语言代码。``@`` "
+"修饰符不再会在 :func:`locale.getlocale` 中被静默移除，而是被纳入语言代码中。"
 
 #: ../NEWS:8579
 msgid ""
@@ -18363,7 +18360,7 @@ msgstr ""
 
 #: ../NEWS:8778
 msgid ":gh:`83336`: ``utf8_sig`` is now aliased to :mod:`encodings.utf_8_sig`"
-msgstr ":gh:`83336`：``utf8_sig`` 现被重命名为 :mod:`encodings.utf_8_sig`"
+msgstr ":gh:`83336`：``utf8_sig`` 现作为别名指向 :mod:`encodings.utf_8_sig`"
 
 #: ../NEWS:8780
 msgid ""
@@ -18439,7 +18436,7 @@ msgid ""
 msgstr ""
 ":gh:`135953`：实现一种新型高频运行时分析器，该分析器利用现有的远程调试功能，从正在运行的 Python "
 "进程中收集详细的执行统计信息。此工具在 ``profile.sample`` "
-"模块中提供，可通过连接到已运行的进程，在不进行任何代码修改、重启或设置特殊启动标志的情况下，实现对生产环境的非侵入式观测。观测器可对堆栈跟踪和解释器状态进行极高频率的采样，从而为运行中的应用程序提供详细的运行时执行分析。"
+"模块中提供，可通过连接到已运行的进程，在不进行任何代码修改、重启或设置特殊启动标志的情况下，实现对生产环境的非侵入式观测。作用范围可对堆栈跟踪和解释器状态进行极高频率的采样，从而为运行中的应用程序提供详细的运行时执行分析。"
 
 #: ../NEWS:8815
 msgid ""
@@ -18493,7 +18490,7 @@ msgid ""
 ":gh:`136193`: Improve :exc:`TypeError` error message, when richcomparing two"
 " :class:`types.SimpleNamespace` objects."
 msgstr ""
-":gh:`136193`：改进在通过 richcomparing 比较两个 :class:`types.SimpleNamespace` 对象时显示的 "
+":gh:`136193`：改进对两个 :class:`types.SimpleNamespace` 对象进行富比较时显示的 "
 ":exc:`TypeError` 错误消息。"
 
 #: ../NEWS:8841
@@ -18585,8 +18582,8 @@ msgid ""
 ":gh:`135853`: Add :func:`math.fmax` and :func:`math.fmin` to get the larger "
 "and smaller of two floating-point values. Patch by Bénédikt Tran."
 msgstr ""
-":gh:`135853`：将 :func:`math.fmax` 和 :func:`math.fmin` "
-"相加，以获取两个浮点值中的较大值和较小值。补丁作者：Bénédikt Tran。"
+":gh:`135853`：添加 :func:`math.fmax` 和 "
+":func:`math.fmin`，用于获取两个浮点值中的较大值和较小值。补丁作者：Bénédikt Tran。"
 
 #: ../NEWS:8880
 msgid ""
@@ -18644,8 +18641,8 @@ msgid ""
 "check for the ownership of the default configuration file ``~/.netrc`` "
 "fails. Patch by Bénédikt Tran."
 msgstr ""
-":gh:`135823`: :mod:`netrc`：在检查默认配置文件所有权的安全校验时，改进错误消息 ``~/.netrc`` "
-"失败。补丁作者：Bénédikt Tran。"
+":gh:`135823`: :mod:`netrc`：改进默认配置文件 ``~/.netrc`` "
+"的所有权安全校验失败时的错误消息。补丁作者：Bénédikt Tran。"
 
 #: ../NEWS:8905
 msgid ""
@@ -18838,7 +18835,7 @@ msgid ""
 "``.name``, ``.stem`` and other basename-based properties on Windows when "
 "working with a zipfile on disk."
 msgstr ""
-":gh:`135276`：同步 Zip 文件。使用 zipp 3.23 实现的路径，包括针对非读取模式的 "
+":gh:`135276`：将 ``zipfile.Path`` 与 zipp 3.23 同步，包括针对非读取模式的 "
 ":meth:`zipfile.Path.open` 性能改进；依赖 :func:`functools.cached_property` "
 "在实例上缓存值；依赖 ``save_method_args`` 保存初始化方法参数。修复了在 Windows 上处理磁盘上的 Zip 文件时涉及的 "
 "``.name``、``.stem`` 及其他基于 basename 的属性问题。"
@@ -19198,7 +19195,7 @@ msgstr ""
 msgid ""
 ":gh:`71189`: Add support of the all-but-last mode in "
 ":func:`os.path.realpath`."
-msgstr ":gh:`71189`：在 :func:`os.path.realpath` 中增加对“除最后一种模式”的支持。"
+msgstr ":gh:`71189`：在 :func:`os.path.realpath` 中增加对 ``all-but-last`` 模式的支持。"
 
 #: ../NEWS:9153
 msgid ""
@@ -19904,7 +19901,7 @@ msgid ""
 ":gh:`91216`: ``importlib.metadata`` now raises a ``KeyError`` instead of "
 "returning ``None`` when a key is missing from the metadata."
 msgstr ""
-":gh:`91216`：当元数据中缺少键时，``importlib.metadata`` 现在会返回 ``KeyError``，而不是返回 "
+":gh:`91216`：当元数据中缺少键时，``importlib.metadata`` 现在会引发 ``KeyError``，而不是返回 "
 "``None``。"
 
 #: ../NEWS:9465
@@ -20179,10 +20176,9 @@ msgid ""
 ":c:data:`PyRefTracer_TRACKER_REMOVED`. This will happen just before the new "
 "function is registered. Patch by Pablo Galindo"
 msgstr ""
-":gh:`138794`: 当使用When a new tracing function is registered with "
-":c:func:`PyRefTracer_SetTracer` 注册新的追踪函数时，会将当前调用替换为追踪函数并将 object 设为 **NULL**"
-" 而 **event** 设为 :c:data:`PyRefTracer_TRACKER_REMOVED`。 这将在新注册被注册之前发生。 由 "
-"Pablo Galindo 编写补丁。"
+":gh:`138794`：当使用 :c:func:`PyRefTracer_SetTracer` 注册新的追踪函数时，会在注册新函数之前，以对象为 "
+"**NULL**、**event** 为 :c:data:`PyRefTracer_TRACKER_REMOVED` 的方式调用原有的追踪函数。 补丁由"
+" Pablo Galindo 提供。"
 
 #: ../NEWS:9606
 msgid ""
@@ -20747,8 +20743,8 @@ msgid ""
 "specializing for reference lifetime and type. This will also enable easier "
 "top of stack caching in the JIT compiler."
 msgstr ""
-":gh:`134584`：通过针对引用生命周期和类型进行特化，使 :opcode:`POP_TOP` 在 JIT 编译器中实现专业化。这也将使 JIT "
-"编译器中的栈顶缓存操作变得更加容易。"
+":gh:`134584`：通过针对引用生命周期和类型进行特化，在 JIT 编译器中根据引用生命周期和类型对 :opcode:`POP_TOP` "
+"进行特化。这也将使 JIT 编译器中的栈顶缓存操作变得更加容易。"
 
 #: ../NEWS:9907
 msgid ""
@@ -21278,7 +21274,7 @@ msgid ""
 "PyFunction_EVENT_MODIFY_QUALNAME event when a watched function's qualname is"
 " changed."
 msgstr ""
-":gh:`139924`：功能观察者现在可以在被观察函数的 qualname 发生变更时，收到 "
+":gh:`139924`：函数监视器现在可以在被监视函数的 qualname 发生变更时，收到 "
 "PyFunction_EVENT_MODIFY_QUALNAME 事件。"
 
 #: ../NEWS:10193
@@ -21367,8 +21363,8 @@ msgid ""
 ":gh:`137573`: Mark ``_PyOptimizer_Optimize`` as :c:macro:`Py_NO_INLINE` to "
 "prevent stack overflow crashes on macOS."
 msgstr ""
-":gh:`137573`: 将 ``_PyOptimizer_Optimize`` 标记为 :c:macro:`Py_NO_INLINE` 以防止在to"
-" prevent stack overflow crashes on macOS 上发生栈溢出崩溃。"
+":gh:`137573`：将 ``_PyOptimizer_Optimize`` 标记为 :c:macro:`Py_NO_INLINE`，以防止在 "
+"macOS 上发生栈溢出崩溃。"
 
 #: ../NEWS:10226
 msgid ""
@@ -29227,8 +29223,8 @@ msgid ""
 ":gh:`125703`: Correctly honour :mod:`tracemalloc` hooks in specialized "
 "``Py_DECREF`` paths. Patch by Pablo Galindo"
 msgstr ""
-":gh:`125703`: 在专门的 ``Py_DECREF`` 路径中正确遵循 :mod:`tracemalloc` 钩子。Patch by "
-"Pablo Galindo"
+":gh:`125703`：在专门的 ``Py_DECREF`` 路径中正确遵循 :mod:`tracemalloc` 钩子。补丁由 Pablo "
+"Galindo 提供。"
 
 #: ../NEWS:14061
 msgid ""
@@ -29249,15 +29245,13 @@ msgid ""
 ":gh:`125588`: The Python PEG generator can now use f-strings in the grammar "
 "actions. Patch by Pablo Galindo"
 msgstr ""
-":gh:`125588`: Python PEG 生成器现在可以在语法动作中使用 f-strings。Patch by Pablo Galindo"
+":gh:`125588`：Python PEG 生成器现在可以在语法动作中使用 f-strings。补丁由 Pablo Galindo 提供。"
 
 #: ../NEWS:14070
 msgid ""
 ":gh:`125444`: Fix illegal instruction for older Arm architectures. Patch by "
 "Diego Russo, testing by Ross Burton."
-msgstr ""
-":gh:`125444`: 修复旧版 Arm 架构的非法指令问题。Patch by Diego Russo, testing by Ross "
-"Burton."
+msgstr ":gh:`125444`：修复旧版 Arm 架构上的非法指令问题。补丁由 Diego Russo 提供，Ross Burton 测试。"
 
 #: ../NEWS:14073
 msgid ""
@@ -29270,14 +29264,14 @@ msgid ""
 ":gh:`125038`: Fix crash when iterating over a generator expression after "
 "direct changes on ``gi_frame.f_locals``. Patch by Mikhail Efimov."
 msgstr ""
-":gh:`125038`: 修复在直接更改 ``gi_frame.f_locals`` 后迭代生成器表达式时的崩溃问题。Patch by Mikhail"
-" Efimov."
+":gh:`125038`：修复直接修改 ``gi_frame.f_locals`` 后迭代生成器表达式时的崩溃问题。补丁由 Mikhail Efimov"
+" 提供。"
 
 #: ../NEWS:14079
 msgid ""
 ":gh:`124855`: Don't allow the JIT and perf support to be active at the same "
 "time. Patch by Pablo Galindo"
-msgstr ":gh:`124855`: 不允许 JIT 和 perf 支持同时激活。Patch by Pablo Galindo"
+msgstr ":gh:`124855`：不允许 JIT 与 perf 支持同时激活。补丁由 Pablo Galindo 提供。"
 
 #: ../NEWS:14082
 msgid ":gh:`123714`: Update JIT compilation to use LLVM 19"
@@ -29300,8 +29294,8 @@ msgid ""
 "*strict* flag like :func:`zip` to check that all the iterables are of equal "
 "length. Patch by Wannes Boeykens."
 msgstr ""
-":gh:`119793`: :func:`map` 内置函数现在有一个可选的仅关键字参数 *strict*，类似于 "
-":func:`zip`，用于检查所有可迭代对象是否长度相等。Patch by Wannes Boeykens."
+":gh:`119793`：:func:`map` 内置函数现在有一个可选的仅关键字参数 *strict*，类似 "
+":func:`zip`，用于检查所有可迭代对象长度是否相等。补丁由 Wannes Boeykens 提供。"
 
 #: ../NEWS:14097
 msgid ""
@@ -57372,9 +57366,9 @@ msgid ""
 "``OSError(\"AF_UNIX path too long\")`` if the temporary directory (the "
 ":envvar:`TMPDIR` environment variable) is too long. Patch by Victor Stinner."
 msgstr ""
-":gh:`93852`: test_asyncio, test_logging, test_socket 和 test_socketserver "
-"现在在当前目录中创建 AF_UNIX 域，以避免如果临时目录（:envvar:`TMPDIR` 环境变量）太长时因 "
-"``OSError(\"AF_UNIX 路径太长\")`` 而失败。由 Victor Stinner 提供补丁。"
+":gh:`93852`：test_asyncio、test_logging、test_socket 和 test_socketserver "
+"现在会在当前目录中创建 AF_UNIX 域，这样即使临时目录（由 :envvar:`TMPDIR` 环境变量指定）路径过长，也不会再因 "
+"``OSError(\"AF_UNIX path too long\")`` 而失败。 补丁由 Victor Stinner 提供。"
 
 #: ../NEWS:27536
 msgid ""

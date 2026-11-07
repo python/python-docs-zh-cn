@@ -708,6 +708,8 @@ msgid ""
 "convert from offset to line number should use the new "
 ":meth:`~codeobject.co_lines` method instead."
 msgstr ""
+":ref:`代码对象 <code-objects>` 的 :attr:`!codeobject.co_lnotab` 属性已被弃用，并将在 3.12 "
+"中移除。需要将偏移量转换为行号的代码应改用新的 :meth:`~codeobject.co_lines` 方法。"
 
 #: ../../whatsnew/3.10.rst:412
 msgid "PEP 634: Structural Pattern Matching"
@@ -3094,6 +3096,15 @@ msgid ""
 ":exc:`DeprecationWarning` will be raised as appropriate to help identify "
 "code which needs updating during this transition."
 msgstr ""
+"从这个版本开始，将着手清理为兼容 Python 2.7 而保留的旧式导入语义。 "
+"具体来说，:meth:`!find_loader`/:meth:`!find_module` （已被 "
+":meth:`~importlib.abc.MetaPathFinder.find_spec` "
+"取代）、``importlib.abc.Loader.load_module`` (已被 "
+":meth:`~importlib.abc.Loader.exec_module` 取代)、:meth:`!module_repr` "
+"(导入系统会代为处理)、``__package__`` 属性（已被 ``__spec__.parent`` 取代）、``__loader__`` "
+"属性（已被 ``__spec__.loader`` 取代）和 ``__cached__`` 属性（已被 ``__spec__.cached`` "
+"取代）都将逐步移除（以及 :mod:`importlib` 中的其他类和方法）。 在过渡期内，将视情况引发 :exc:`ImportWarning` "
+"和/或 :exc:`DeprecationWarning`，以帮助找出需要更新的代码。"
 
 #: ../../whatsnew/3.10.rst:1637
 msgid ""
@@ -3131,6 +3142,9 @@ msgid ""
 " for :meth:`~zipimport.zipimporter.exec_module`. (Contributed by Brett "
 "Cannon in :issue:`26131`.)"
 msgstr ""
+":meth:`!zipimport.zipimporter.load_module` 已被弃用，建议改用 "
+":meth:`~zipimport.zipimporter.exec_module`。（由 Brett Cannon 在 :issue:`26131` "
+"中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1655
 msgid ""
@@ -3139,6 +3153,9 @@ msgid ""
 ":meth:`~importlib.abc.Loader.exec_module` is preferred. (Contributed by "
 "Brett Cannon in :issue:`26131`.)"
 msgstr ""
+"导入系统对 ``importlib.abc.Loader.load_module`` 的使用现在会触发 "
+":exc:`ImportWarning`，因为更推荐使用 :meth:`~importlib.abc.Loader.exec_module`。（由 "
+"Brett Cannon 在 :issue:`26131` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1660
 msgid ""
@@ -3251,6 +3268,9 @@ msgid ""
 "slated for removal in Python 3.12. (Contributed by Brett Cannon in "
 ":issue:`42136`.)"
 msgstr ""
+":meth:`!importlib.abc.Loader.module_repr`、:meth:`!importlib.machinery.FrozenImporter.module_repr`"
+" 和 :meth:`!importlib.machinery.BuiltinImporter.module_repr` 已被弃用，并计划在 Python"
+" 3.12 中移除。（由 Brett Cannon 在 :issue:`42136` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:1719
 msgid ""
@@ -3307,7 +3327,7 @@ msgstr "``threading.Thread.setName`` => :attr:`threading.Thread.name`"
 
 #: ../../whatsnew/3.10.rst:1745
 msgid "``threading.Thread.getName`` => :attr:`threading.Thread.name`"
-msgstr ""
+msgstr "``threading.Thread.getName`` => :attr:`threading.Thread.name`"
 
 #: ../../whatsnew/3.10.rst:1747
 msgid "``threading.Thread.isDaemon`` => :attr:`threading.Thread.daemon`"
@@ -3759,6 +3779,12 @@ msgid ""
 "source_buf = PyBytes_AsString(source_bytes_object);\n"
 "code = Py_CompileString(source_buf, filename, Py_file_input);"
 msgstr ""
+"io_module = PyImport_ImportModule(\"io\");\n"
+"fileobject = PyObject_CallMethod(io_module, \"open\", \"ss\", filename, \"rb\");\n"
+"source_bytes_object = PyObject_CallMethod(fileobject, \"read\", \"\");\n"
+"result = PyObject_CallMethod(fileobject, \"close\", \"\");\n"
+"source_buf = PyBytes_AsString(source_bytes_object);\n"
+"code = Py_CompileString(source_buf, filename, Py_file_input);"
 
 #: ../../whatsnew/3.10.rst:1974
 msgid ""
@@ -4177,6 +4203,11 @@ msgid ""
 ":ref:`init-config` API to get the :ref:`init-path-config`. (Contributed by "
 "Victor Stinner in :issue:`42260`.)"
 msgstr ""
+"如果 "
+":c:func:`!Py_GetPath`、:c:func:`!Py_GetPrefix`、:c:func:`!Py_GetExecPrefix`、:c:func:`!Py_GetProgramFullPath`、:c:func:`!Py_GetPythonHome`"
+" 和 :c:func:`!Py_GetProgramName` 函数在 :c:func:`Py_Initialize` 之前（即 Python "
+"初始化之前）被调用，现在将返回 ``NULL``。请使用新的 :ref:`init-config` API 来获取 :ref:`init-path-"
+"config`。（由 Victor Stinner 在 :issue:`42260` 中贡献。）"
 
 #: ../../whatsnew/3.10.rst:2187
 msgid ""
