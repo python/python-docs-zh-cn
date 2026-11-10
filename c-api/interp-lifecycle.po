@@ -7,17 +7,17 @@
 # python-doc bot, 2026
 # 99 <wh2099@pm.me>, 2026
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
-# Freesand Leo <yuqinju@163.com>, 2026
 # zhoubo, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.15\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-05 20:53+0000\n"
+"POT-Creation-Date: 2026-11-09 23:13+0000\n"
 "PO-Revision-Date: 2026-02-25 14:46+0000\n"
-"Last-Translator: zhoubo, 2026\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1055,7 +1055,7 @@ msgstr ""
 msgid ""
 "Create a finalization guard for the current interpreter. This will prevent "
 "finalization until the guard is closed."
-msgstr ""
+msgstr "为当前解释器创建一个最终化守卫对象。 这将防止最终化直到守卫对象被关闭。"
 
 #: ../../c-api/interp-lifecycle.rst:683
 msgid "For example:"
@@ -1079,18 +1079,33 @@ msgid ""
 "// allowed to finalize again.\n"
 "PyInterpreterGuard_Close(guard);"
 msgstr ""
+"// Temporarily prevent finalization.\n"
+"PyInterpreterGuard *guard = PyInterpreterGuard_FromCurrent();\n"
+"if (guard == NULL) {\n"
+"   // Finalization has already started or we're out of memory.\n"
+"   return NULL;\n"
+"}\n"
+"\n"
+"Py_BEGIN_ALLOW_THREADS;\n"
+"// Do some critical processing here. For example, we can safely acquire\n"
+"// locks that might be acquired by the finalization thread.\n"
+"Py_END_ALLOW_THREADS;\n"
+"\n"
+"// Now that we're done with our critical processing, the interpreter is\n"
+"// allowed to finalize again.\n"
+"PyInterpreterGuard_Close(guard);"
 
 #: ../../c-api/interp-lifecycle.rst:703
 msgid ""
 "On success, this function returns a guard for the current interpreter; on "
 "failure, it returns ``NULL`` with an exception set."
-msgstr ""
+msgstr "成功时，此函数将返回针对当前解释器的守卫对象；失败时，它将返回 ``NULL`` 并设置一个异常。"
 
 #: ../../c-api/interp-lifecycle.rst:706
 msgid ""
 "This function will fail only if the current interpreter has already started "
 "finalizing, or if the process is out of memory."
-msgstr ""
+msgstr "此函数仅在当前解释器已启动最终化，或者进程内存不足时才会失败。"
 
 #: ../../c-api/interp-lifecycle.rst:709
 msgid ""
@@ -1098,6 +1113,8 @@ msgid ""
 ":c:func:`PyInterpreterGuard_Close`; failing to do so will result in the "
 "Python process infinitely hanging."
 msgstr ""
+"此函数返回的守卫指针最终必须通过 :c:func:`PyInterpreterGuard_Close` 来关闭；如果不这样做则会导致 Python "
+"进程无限挂起。"
 
 #: ../../c-api/interp-lifecycle.rst:713 ../../c-api/interp-lifecycle.rst:780
 msgid "The caller must hold an :term:`attached thread state`."
