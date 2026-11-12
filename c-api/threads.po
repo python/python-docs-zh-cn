@@ -5,15 +5,17 @@
 # 
 # Translators:
 # Rafael Fontenelle <rffontenelle@gmail.com>, 2026
+# JiaShu Xu <colinxu2020@gmail.com>, 2026
+# Freesand Leo <yuqinju@163.com>, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Python 3.14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-01 17:14+0000\n"
+"POT-Creation-Date: 2026-11-11 21:52+0000\n"
 "PO-Revision-Date: 2026-05-08 17:16+0000\n"
-"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2026\n"
+"Last-Translator: Freesand Leo <yuqinju@163.com>, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/python-doc/teams/5390/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,7 +38,7 @@ msgid ""
 "threads simultaneously increment the reference count of the same object, the"
 " reference count could end up being incremented only once instead of twice."
 msgstr ""
-"除非使用 :term:`CPython` 的 :term:`free-threaded build` 版本，否则Python "
+"除非使用 :term:`CPython` 的 :term:`free-threaded build` 版本，否则 Python "
 "解释器通常都不是线程安全的。 为了支持多线程的 Python 程序，解释器有一个全局锁，称为 :term:`global interpreter "
 "lock` 或 :term:`GIL`，线程必须在访问 Python 对象之前先持有它。 "
 "如果没有这个锁，即使最简单的操作在多线程的程序中也可能造成问题：例如，当两个线程同时递增同一个对象的引用计数时，引用计数可能只增加一次而不是两次。"
@@ -329,6 +331,8 @@ msgid ""
 "interpreter; such a pointer can be acquired via a call to "
 ":c:func:`PyInterpreterState_Get` from the code where the thread was created."
 msgstr ""
+"``PyThreadState_New`` 需要一个指向目标解释器的指针作为参数，可以通过在线程被创建时调用 "
+":c:func:`PyInterpreterState_Get` 来获得这样的指针。"
 
 #: ../../c-api/threads.rst:204
 msgid "For example::"
@@ -355,16 +359,32 @@ msgid ""
 "PyThreadState_Clear(tstate);\n"
 "PyThreadState_DeleteCurrent();"
 msgstr ""
+"/* 创建了该线程的函数调用 PyInterpreterState_Get() 的返回值。*/\n"
+"PyInterpreterState *interp = thread_data->interp;\n"
+"\n"
+"/*对这个解释器创建一个新的线程状态，这时它还没有被附加到当前线程。 */\n"
+"PyThreadState *tstate = PyThreadState_New(interp);\n"
+"\n"
+"/* 将线程状态附加到当前线程，这将获取 GIL。 */\n"
+"PyThreadState_Swap(tstate);\n"
+"\n"
+"/* 在此处调用 Python API。 */\n"
+"result = CallSomeFunction();\n"
+"/*对结果求值或者处理异常 */\n"
+"\n"
+"/*销毁线程状态。此后不允许进行 Python API 操作。 */\n"
+"PyThreadState_Clear(tstate);\n"
+"PyThreadState_DeleteCurrent();"
 
 #: ../../c-api/threads.rst:227
 msgid ""
 "If the interpreter finalized before ``PyThreadState_Swap`` was called, then "
 "``interp`` will be a dangling pointer!"
-msgstr ""
+msgstr "如果在 ``PyThreadState_Swap`` 被调用前解释器就终结了，那么 ``interp`` 会成为一个悬空指针！"
 
 #: ../../c-api/threads.rst:233
 msgid "Legacy API"
-msgstr ""
+msgstr "旧版 API"
 
 #: ../../c-api/threads.rst:235
 msgid ""
@@ -372,6 +392,8 @@ msgid ""
 "use :c:func:`PyGILState_Ensure` followed by a call to "
 ":c:func:`PyGILState_Release`."
 msgstr ""
+"另一个从非 Python 创建的线程调用 Python 代码的常用方法是使用 :c:func:`PyGILState_Ensure` 获取 GIL "
+"并在之后使用 :c:func:`PyGILState_Release` 释放 GIL。"
 
 #: ../../c-api/threads.rst:238
 msgid ""
@@ -381,6 +403,8 @@ msgid ""
 "``PyGILState_Ensure`` will create and attach a thread state for the \"main\""
 " interpreter (the first interpreter in the Python process)."
 msgstr ""
+"这些函数无法在多个解释器同时存在于 Python 进程时妥善工作。如果当前线程没有使用过任何一个 Python 解释器（对于非 Python "
+"创建的线程是常见的）``PyGILState_Ensure``会为主解释器（Python 进程的第一个解释器）创建并附加一个线程状态。"
 
 #: ../../c-api/threads.rst:244
 msgid ""
@@ -388,6 +412,7 @@ msgid ""
 "finalization. Using ``PyGILState_Ensure`` during finalization will likely "
 "crash the process."
 msgstr ""
+"此外，这些函数在解释器终结时使用这些函数存在线程安全问题。若在解释器终结时使用 ``PyGILState_Ensure`` 则很可能会使进程崩溃。"
 
 #: ../../c-api/threads.rst:248
 msgid "Usage of these functions look like such::"
@@ -1091,6 +1116,10 @@ msgid ""
 "isn't found.  If *exc* is ``NULL``, the pending exception (if any) for the "
 "thread is cleared. This raises no exceptions."
 msgstr ""
+"异步的在一个线程抛出一个异常。*id* 参数是目标线程的线程 ID；*exc* 是将要被抛出的异常对象。这个函数不会 :term:`steal` 指向 "
+"*exc* 的任何引用。为避免简单的误用，您必须编写自己的 C 扩展来调用它。此函数必须从 :term:`attached thread state` "
+"被调用。此函数返回一个指示被修改的线程状态的数量的数字，通常是 1，但如果目标线程 ID 不存在则是 0。如果 *exc* 是 "
+"``NULL``，那么将清空目标线程的等待处理的异常（如有）。此函数不会抛出异常。"
 
 #: ../../c-api/threads.rst:750
 msgid ""
